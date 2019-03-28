@@ -232,6 +232,7 @@ cfg_if! {
 				fn fail_on_wasm() -> u64;
 				fn benchmark_indirect_call() -> u64;
 				fn benchmark_direct_call() -> u64;
+				fn returns_mutable_static() -> u64;
 			}
 		}
 	} else {
@@ -254,6 +255,7 @@ cfg_if! {
 				fn fail_on_wasm() -> u64;
 				fn benchmark_indirect_call() -> u64;
 				fn benchmark_direct_call() -> u64;
+				fn returns_mutable_static() -> u64;
 			}
 		}
 	}
@@ -278,6 +280,10 @@ fn benchmark_add_one(i: u64) -> u64 {
 /// The `benchmark_add_one` function as function pointer.
 #[cfg(not(feature = "std"))]
 static BENCHMARK_ADD_ONE: runtime_io::ExchangeableFunction<fn(u64) -> u64> = runtime_io::ExchangeableFunction::new(benchmark_add_one);
+
+/// Mutable static variables should be always observed to have
+/// the initialized value at the start of a runtime call.
+static mut MUTABLE_STATIC: u64 = 32;
 
 cfg_if! {
 	if #[cfg(feature = "std")] {
@@ -371,6 +377,12 @@ cfg_if! {
 				}
 				fn benchmark_direct_call() -> u64 {
 					(0..1000).fold(0, |p, i| p + benchmark_add_one(i))
+				}
+				fn returns_mutable_static() -> u64 {
+					unsafe {
+						MUTABLE_STATIC += 1;
+						MUTABLE_STATIC
+					}
 				}
 			}
 
@@ -474,6 +486,12 @@ cfg_if! {
 
 				fn benchmark_direct_call() -> u64 {
 					(0..10000).fold(0, |p, i| p + benchmark_add_one(i))
+				}
+				fn returns_mutable_static() -> u64 {
+					unsafe {
+						MUTABLE_STATIC += 1;
+						MUTABLE_STATIC
+					}
 				}
 			}
 
