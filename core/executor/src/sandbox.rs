@@ -86,6 +86,7 @@ impl ImportResolver for Imports {
 				module_name, field_name
 			))
 		})?;
+		println!("field_name={}, idx={}", field_name, idx.0);
 		Ok(::wasmi::FuncInstance::alloc_host(signature.clone(), idx.0))
 	}
 
@@ -219,6 +220,8 @@ impl<'a, FE: SandboxCapabilities + Externals + 'a> Externals for GuestExternals<
 					qed"
 			);
 
+		println!("invoke: {:?}, idx={}", args, index.0);
+
 		// Serialize arguments into a byte vector.
 		let invoke_args_data: Vec<u8> = args.as_ref()
 			.iter()
@@ -269,6 +272,7 @@ impl<'a, FE: SandboxCapabilities + Externals + 'a> Externals for GuestExternals<
 		// We do not have to check the signature here, because it's automatically
 		// checked by wasmi.
 
+		println!("serialized_result_val: {:?}", serialized_result_val);
 		deserialize_result(&serialized_result_val)
 	}
 }
@@ -355,14 +359,20 @@ fn decode_environment_definition(
 	raw_env_def: &[u8],
 	memories: &[Option<MemoryRef>],
 ) -> Result<(Imports, GuestToSupervisorFunctionMapping), InstantiationError> {
+	println!("decode_environment_definition1");
+
 	let env_def = sandbox_primitives::EnvironmentDefinition::decode(&mut &raw_env_def[..])
 		.ok_or_else(|| InstantiationError::EnvironmentDefintionCorrupted)?;
+
+	println!("decode_environment_definition2");
 
 	let mut func_map = HashMap::new();
 	let mut memories_map = HashMap::new();
 	let mut guest_to_supervisor_mapping = GuestToSupervisorFunctionMapping::new();
 
 	for entry in &env_def.entries {
+		println!("decode_environment_definition3: {:?}, name={}", entry, String::from_utf8_lossy(&entry.field_name).to_owned());
+
 		let module = entry.module_name.clone();
 		let field = entry.field_name.clone();
 
@@ -376,12 +386,20 @@ fn decode_environment_definition(
 				let memory_ref = memories
 					.get(memory_idx as usize)
 					.cloned()
-					.ok_or_else(|| InstantiationError::EnvironmentDefintionCorrupted)?
-					.ok_or_else(|| InstantiationError::EnvironmentDefintionCorrupted)?;
+					.ok_or_else(|| {
+						println!("no memory_idx={}", memory_idx);
+						InstantiationError::EnvironmentDefintionCorrupted
+					})?
+					.ok_or_else(|| {
+						println!("memory_idx={} is already disposed", memory_idx);
+						InstantiationError::EnvironmentDefintionCorrupted
+					})?;
 				memories_map.insert((module, field), memory_ref);
 			}
 		}
 	}
+
+	println!("decode_environment_definition4");
 
 	Ok((
 		Imports {
@@ -413,11 +431,25 @@ pub fn instantiate<FE: SandboxCapabilities + Externals>(
 	raw_env_def: &[u8],
 	state: u32,
 ) -> Result<u32, InstantiationError> {
+	println!("instantiate<>");
+
 	let (imports, guest_to_supervisor_mapping) =
 		decode_environment_definition(raw_env_def, &supervisor_externals.store().memories)?;
 
-	let module = Module::from_buffer(wasm).map_err(|_| InstantiationError::ModuleDecoding)?;
-	let instance = ModuleInstance::new(&module, &imports).map_err(|_| InstantiationError::Instantiation)?;
+	println!("instantiate<>2");
+
+	let module = Module::from_buffer(wasm).map_err(|e| {
+		println!("decode error {:?}", e);
+		InstantiationError::ModuleDecoding
+	})?;
+
+	println!("instantiate<>3");
+	let instance = ModuleInstance::new(&module, &imports).map_err(|e| {
+		println!("instantiate error: {:?}", e);
+		InstantiationError::Instantiation
+	})?;
+
+	println!("instantiate<>4");
 
 	let sandbox_instance = Rc::new(SandboxInstance {
 		// In general, it's not a very good idea to use `.not_started_instance()` for anything
@@ -435,7 +467,10 @@ pub fn instantiate<FE: SandboxCapabilities + Externals>(
 		|guest_externals| {
 			instance
 				.run_start(guest_externals)
-				.map_err(|_| InstantiationError::StartTrapped)
+				.map_err(|e| {
+					println!("start: {:?}", e);
+					InstantiationError::StartTrapped
+				})
 		},
 	)?;
 

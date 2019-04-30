@@ -511,6 +511,8 @@ impl<B: BlockT, S: Specialization<B>, H: ExHashT> Protocol<B, S, H> {
 
 		let extrinsics = self.transaction_pool.transactions();
 
+		println!("all extrinsics: {:?}", extrinsics);
+
 		let mut propagated_to = HashMap::new();
 		let mut peers = self.context_data.peers.write();
 		for (who, ref mut peer) in peers.iter_mut() {
@@ -520,6 +522,8 @@ impl<B: BlockT, S: Specialization<B>, H: ExHashT> Protocol<B, S, H> {
 				.cloned()
 				.unzip();
 
+			println!("who={:?}, to_send={:?}", who, to_send);
+
 			if !to_send.is_empty() {
 				let node_id = io.peer_id(*who).map(|id| id.to_base58());
 				if let Some(id) = node_id {
@@ -527,7 +531,7 @@ impl<B: BlockT, S: Specialization<B>, H: ExHashT> Protocol<B, S, H> {
 						propagated_to.entry(hash).or_insert_with(Vec::new).push(id.clone());
 					}
 				}
-				trace!(target: "sync", "Sending {} transactions to {}", to_send.len(), who);
+				debug!(target: "sync", "Sending {} transactions to {}", to_send.len(), who);
 				self.send_message(io, *who, GenericMessage::Transactions(to_send));
 			}
 		}

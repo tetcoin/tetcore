@@ -21,6 +21,7 @@ use rstd::prelude::*;
 use codec::{Decode, Encode};
 use gas::{GasMeter, GasMeterResult};
 use runtime_primitives::traits::{As, CheckedMul};
+use runtime_io::print;
 use sandbox;
 use system;
 use Trait;
@@ -320,7 +321,14 @@ define_env!(init_env, <E: Ext>,
 	// Copy data from the input buffer starting from `offset` with length `len` into the contract memory.
 	// The region at which the data should be put is specified by `dest_ptr`.
 	ext_input_copy(ctx, dest_ptr: u32, offset: u32, len: u32) => {
+		print(dest_ptr as u64);
+		print(offset as u64);
+		print(len as u64);
+		print(ctx.input_data.len() as u64);
+
+
 		let offset = offset as usize;
+
 		if offset > ctx.input_data.len() {
 			// Offset can't be larger than input buffer length.
 			return Err(sandbox::HostError);
@@ -328,11 +336,16 @@ define_env!(init_env, <E: Ext>,
 
 		// This can't panic since `offset <= ctx.input_data.len()`.
 		let src = &ctx.input_data[offset..];
+
+		print(src.len() as u64);
+
 		if src.len() != len as usize {
 			return Err(sandbox::HostError);
 		}
 
 		ctx.memory().set(dest_ptr, src)?;
+
+		print(228);
 
 		Ok(())
 	},

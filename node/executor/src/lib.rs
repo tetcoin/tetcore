@@ -49,10 +49,10 @@ mod tests {
 	use super::Executor;
 	use substrate_executor::{WasmExecutor, NativeExecutionDispatch};
 	use codec::{Encode, Decode, Joiner};
-	use keyring::Keyring;
+	use keyring::{self, Keyring};
 	use runtime_support::{Hashable, StorageValue, StorageMap};
 	use state_machine::{CodeExecutor, Externalities, TestExternalities};
-	use primitives::{twox_128, Blake2Hasher, ChangesTrieConfiguration,
+	use primitives::{twox_128, blake2_256, Blake2Hasher, ChangesTrieConfiguration,
 		ed25519::{Public, Pair}};
 	use node_primitives::{Hash, BlockNumber, AccountId};
 	use runtime_primitives::traits::{Header as HeaderT, Digest as DigestT};
@@ -63,11 +63,230 @@ mod tests {
 	use node_runtime::{Header, Block, UncheckedExtrinsic, CheckedExtrinsic, Call, Runtime, Balances,
 		BuildStorage, GenesisConfig, BalancesConfig, SessionConfig, StakingConfig, System,
 		SystemConfig, Event, Log};
+	use primitives::hexdisplay::HexDisplay;
+	use std::fmt::Write;
 	use wabt;
 
 	const BLOATY_CODE: &[u8] = include_bytes!("../../runtime/wasm/target/wasm32-unknown-unknown/release/node_runtime.wasm");
 	const COMPACT_CODE: &[u8] = include_bytes!("../../runtime/wasm/target/wasm32-unknown-unknown/release/node_runtime.compact.wasm");
 	const GENESIS_HASH: [u8; 32] = [69u8; 32];
+
+	// TODO: move into own crate.
+	macro_rules! map {
+		($( $name:expr => $value:expr ),*) => (
+			vec![ $( ( $name, $value ) ),* ].into_iter().collect()
+		)
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	const ADDER_INIT_CODE: &'static [u8] = include_bytes!("/Users/pepyakin/dev/parity/substrate-contracts-adder/target/adder.wasm");
+
+
+
+
+
+
+
+	/// Returns only a first part of the storage key.
+	///
+	/// Hashed by XX.
+	fn first_part_of_key(k1: AccountId) -> [u8; 16] {
+		let mut raw_prefix = Vec::new();
+		raw_prefix.extend(b"con:sto:");
+		raw_prefix.extend(Encode::encode(&k1));
+		twox_128(&raw_prefix)
+	}
+
+	/// Returns a compound key that consist of the two parts: (prefix, `k1`) and `k2`.
+	///
+	/// The first part is hased by XX and then concatenated with a blake2 hash of `k2`.
+	fn db_key_for_contract_storage(k1: AccountId, k2: Vec<u8>) -> Vec<u8> {
+		let first_part = first_part_of_key(k1);
+		let second_part = blake2_256(&Encode::encode(&k2));
+
+		let mut k = Vec::new();
+		k.extend(&first_part);
+		k.extend(&second_part);
+		k
+	}
+
+	fn print_extrinsic(pair: &Pair, genesis_hash: &[u8; 32], index: u64, func: Call) {
+		let pepa = AccountId::from(&pair.public().0[..]);
+
+		let era = Era::immortal();
+		let payload = (index, func.clone(), era, genesis_hash);
+		let signature = pair.sign(&payload.encode()).into();
+		let uxt = UncheckedExtrinsic {
+			signature: Some((balances::address::Address::Id(pepa), signature, index, era)),
+			function: func,
+		};
+
+		let raw_uxt = &uxt.encode();
+		let mut hex_raw_uxt = String::new();
+		write!(hex_raw_uxt, "0x");
+		for byte in raw_uxt {
+			write!(hex_raw_uxt, "{:02x}", byte);
+		}
+		println!("uxt: {}", hex_raw_uxt);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	#[test]
+	fn just_for_demo() {
+		//
+		// Define block hash of the genesis block (Required for creating extrinsics).
+		//
+		const GENESIS_HASH: &[u8; 32] = &hex!("771dfd2593b2f07998e3a1ffb196f78ca583c25641a3bc844d3d6a49405acde0");
+		println!("GENESIS_HASH: 0x{}\n", HexDisplay::from(GENESIS_HASH));
+
+		//
+		// Get keys for Alice.
+		//
+		let pair = Pair::from(Keyring::from_public(Public::from_raw(alice().clone().into())).unwrap());
+		let alice = AccountId::from(&pair.public().0[..]);
+		println!("alice: {:?} ({})\n", alice, keyring::ed25519::Public(alice.0).to_ss58check());
+
+		//
+		// Determine address of the deployed contract contract
+		//
+		let addr = <Runtime as contract::Trait>::DetermineContractAddress::contract_address_for(
+			&ADDER_INIT_CODE,
+			&[],
+			&alice,
+		);
+
+		println!("CALL extrinsic");
+		print_extrinsic(&pair, GENESIS_HASH, 2, Call::Contract(contract::Call::call::<Runtime>(addr, 1001.into(), 9_000_000.into(), vec![0x00, 0x07, 0x00, 0x00, 0x00])));
+		println!();
+
+
+
+		println!("DB key of contract's code:");
+		println!("0x{}", HexDisplay::from(&db_key_for_contract_storage(addr.clone(), [1u8; 32].to_vec())));
+		println!();
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	#[test]
+	fn pepyakin() {
+		// let pair = Pair::from_seed(&[0x11, 0xfd, 0xce, 0x2f, 0x30, 0x03, 0xf9, 0xe4, 0xdd, 0x7b, 0xad, 0xbb, 0xdc, 0xda, 0x4c, 0x0c, 0xd9, 0xb6, 0x6a,
+		// 0x28, 0x77, 0xab, 0x6a, 0x3b, 0xa8, 0x7e, 0x6a, 0xd3, 0x28, 0x7a, 0x1c, 0x49]);
+
+		let pair = Pair::from(Keyring::from_public(Public::from_raw(alice().clone().into())).unwrap());
+		// let ss58 = pair.public().to_ss58check();
+
+		let pepa = AccountId::from(&pair.public().0[..]);
+
+		// const GENESIS_HASH: &[u8; 32] = &[
+		// 	0x00, 0x00, 0xfc, 0xb6, 0xa1, 0x31, 0x83, 0xbf,
+		// 	0x24, 0x66, 0x9d, 0xc6, 0xd6, 0x6a, 0xd8, 0x0e,
+		// 	0xaf, 0x20, 0xee, 0x17, 0xe3, 0x71, 0x2b, 0xa7,
+		// 	0x9b, 0x02, 0x85, 0xc2, 0xb4, 0x2a, 0xdc, 0x79,
+		// ];
+
+		let index = 1;
+		// const GENESIS_HASH: &[u8; 32] = &hex!("0000fcb6a13183bf24669dc6d66ad80eaf20ee17e3712ba79b0285c2b42adc79");
+		// const GENESIS_HASH: &[u8; 32] = &hex!("20ad7dabfc7d7b15c77d465a2f36cc5425d65b904df755d7b659df7e5e9cb537");
+		const GENESIS_HASH: &[u8; 32] = &hex!("771dfd2593b2f07998e3a1ffb196f78ca583c25641a3bc844d3d6a49405acde0");
+
+		// let func = Call::Contract(contract::Call::create::<Runtime>(1001, 9_000_000, ADDER_INIT_CODE.to_vec(), Vec::new()));
+		// let func = Call::Balances(balances::Call::transfer::<Runtime>(bob().into(), 69));
+		let addr = <Runtime as contract::Trait>::DetermineContractAddress::contract_address_for(
+			&ADDER_INIT_CODE,
+			&[],
+			&pepa,
+		);
+		println!("addr of deployed contract = {} ({})", HexDisplay::from(&addr.0), keyring::ed25519::Public(addr.0).to_ss58check());
+
+		let mut code_of_key = b"Contract CodeOf".to_vec();
+		code_of_key.extend(&addr.0[..]);
+		println!("code of key: {}", HexDisplay::from(&twox_128(&code_of_key)));
+
+		println!("storage of key: {}", HexDisplay::from(&db_key_for_contract_storage(addr.clone(), [1u8; 32].to_vec())));
+
+		// let func = Call::Contract(contract::Call::create::<Runtime>(1001.into(), 9_000_000.into(), ADDER_INIT_CODE.to_vec(), Vec::new()));
+		let func = Call::Contract(contract::Call::call::<Runtime>(addr, 1001.into(), 9_000_000.into(), vec![0x00, 0x01, 0x00, 0x00, 0x00]));
+		// let func = Call::Contract(contract::Call::create::<Runtime>(1001, 9_000_000, ADDER_INIT_CODE.to_vec(), Vec::new()));
+
+		let era = Era::immortal();
+		let payload = (index, func.clone(), era, GENESIS_HASH);
+		let signature = pair.sign(&payload.encode()).into();
+		let uxt = UncheckedExtrinsic {
+			signature: Some((balances::address::Address::Id(pepa), signature, index, era)),
+			function: func,
+		};
+
+		println!("pepa: {:?}", pepa);
+		println!("pepa ss58: {:?}", keyring::ed25519::Public(pepa.0).to_ss58check());
+
+		let raw_uxt = &uxt.encode();
+		let mut hex_raw_uxt = String::new();
+		write!(hex_raw_uxt, "0x");
+		for byte in raw_uxt {
+			write!(hex_raw_uxt, "{:02x}", byte);
+		}
+		println!("uxt: {}", hex_raw_uxt);
+		println!("uxt: {:?}", UncheckedExtrinsic::decode(&mut &raw_uxt[..]));
+
+		let mut balances_key = b"Balances FreeBalance".to_vec();
+		balances_key.extend(&pepa.0[..]);
+		println!("balances key: {}", HexDisplay::from(&twox_128(&balances_key)));
+
+		let mut nonce_key = b"System AccountNonce".to_vec();
+		nonce_key.extend(&pepa.0[..]);
+		println!("nonce key: {}", HexDisplay::from(&twox_128(&nonce_key)));
+	}
 
 	fn alice() -> AccountId {
 		AccountId::from(Keyring::Alice.to_raw_public())

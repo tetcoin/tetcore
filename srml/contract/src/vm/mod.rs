@@ -23,6 +23,7 @@ use rstd::prelude::*;
 use runtime_primitives::traits::As;
 use Trait;
 use {balances, sandbox, system};
+use runtime_io::print;
 
 type BalanceOf<T> = <T as balances::Trait>::Balance;
 type AccountIdOf<T> = <T as system::Trait>::AccountId;
@@ -123,10 +124,14 @@ pub fn execute<'a, E: Ext>(
 ) -> Result<(), Error> {
 	let env = runtime::init_env();
 
+	print(0);
+
 	let PreparedContract {
 		instrumented_code,
 		memory,
 	} = prepare_contract(code, &config, &env)?;
+
+	print(1);
 
 	let mut imports = sandbox::EnvironmentDefinitionBuilder::new();
 	for (func_name, ext_func) in &env.funcs {
@@ -136,19 +141,28 @@ pub fn execute<'a, E: Ext>(
 
 	let mut runtime = Runtime::new(ext, input_data, output_data, &config, memory, gas_meter);
 
+	print(2);
+
 	// Instantiate the instance from the instrumented module code.
 	match sandbox::Instance::new(&instrumented_code, &imports, &mut runtime) {
 		// No errors or traps were generated on instantiation! That
 		// means we can now invoke the contract entrypoint.
 		Ok(mut instance) => {
+			print(3);
 			let err = instance.invoke(b"call", &[], &mut runtime).err();
 			to_execution_result(runtime, err)
 		}
 		// `start` function trapped. Treat it in the same manner as an execution error.
-		Err(err @ sandbox::Error::Execution) => to_execution_result(runtime, Some(err)),
+		Err(err @ sandbox::Error::Execution) => {
+			print(4);
+			to_execution_result(runtime, Some(err))
+		},
 		// Other instantiation errors.
 		// Return without executing anything.
-		Err(_) => return Err(Error::Instantiate),
+		Err(_) => {
+			print(5);
+			return Err(Error::Instantiate)
+		},
 	}
 }
 
