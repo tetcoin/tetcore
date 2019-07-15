@@ -17,6 +17,7 @@
 use std::sync::Arc;
 use client::backend::OffchainStorage;
 use crate::AuthorityKeyProvider;
+use crate::http::HttpRequestManager;
 use futures::{Stream, Future, sync::mpsc};
 use log::{info, debug, warn, error};
 use parity_codec::{Encode, Decode};
@@ -59,6 +60,7 @@ pub(crate) struct Api<Storage, KeyProvider> {
 	db: Storage,
 	keys_password: Protected<String>,
 	key_provider: KeyProvider,
+	http_manager: HttpRequestManager,
 }
 
 fn unavailable_yet<R: Default>(name: &str) -> R {
@@ -230,31 +232,35 @@ impl<Storage, KeyProvider> OffchainExt for Api<Storage, KeyProvider> where
 
 	fn http_request_start(
 		&mut self,
-		_method: &str,
-		_uri: &str,
-		_meta: &[u8]
+		method: &str,
+		uri: &str,
+		meta: &[u8]
 	) -> Result<HttpRequestId, ()> {
-		unavailable_yet::<()>("http_request_start");
-		Err(())
+		self.http_manager
+			.request_start(method, uri, meta)
+			.map_err(display_http_err)
 	}
 
 	fn http_request_add_header(
 		&mut self,
-		_request_id: HttpRequestId,
-		_name: &str,
-		_value: &str
+		request_id: HttpRequestId,
+		name: &str,
+		value: &str
 	) -> Result<(), ()> {
-		unavailable_yet::<()>("http_request_add_header");
-		Err(())
+		self.http_manager
+			.request_add_header(request_id, name, value)
+			.map_err(display_http_err)
 	}
 
 	fn http_request_write_body(
 		&mut self,
-		_request_id: HttpRequestId,
-		_chunk: &[u8],
-		_deadline: Option<Timestamp>
+		request_id: HttpRequestId,
+		chunk: &[u8],
+		deadline: Option<Timestamp>
 	) -> Result<(), HttpError> {
-		unavailable_yet::<()>("http_request_write_body");
+		self.http_manager
+			.request_write_body(request_id, chunk, deadline)
+			.map_err(display_http_err);
 		Err(HttpError::IoError)
 	}
 
@@ -310,6 +316,9 @@ impl<A: ChainApi> AsyncApi<A> {
 			db,
 			keys_password,
 			key_provider,
+			// NOTE we create that separate for every offchain worker.
+			// So offchain workers cannot share http requests!
+			http_manager: HttpRequestManager::new(),
 		};
 
 		let async_api = AsyncApi {
@@ -350,6 +359,10 @@ impl<A: ChainApi> AsyncApi<A> {
 			},
 		}
 	}
+}
+
+fn display_http_err(err: crate::http::Error) -> () {
+	log::warn!("{:?}", err)
 }
 
 #[cfg(test)]

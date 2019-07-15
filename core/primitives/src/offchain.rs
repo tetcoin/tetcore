@@ -100,7 +100,7 @@ impl From<CryptoKeyId> for u32 {
 
 /// Opaque type for offchain http requests.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[cfg_attr(feature = "std", derive(Debug))]
+#[cfg_attr(feature = "std", derive(Debug, Hash))]
 pub struct HttpRequestId(pub u16);
 
 impl From<HttpRequestId> for u32 {

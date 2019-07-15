@@ -53,6 +53,7 @@ use futures::future::Future;
 use transaction_pool::txpool::{Pool, ChainApi};
 
 mod api;
+mod http;
 
 pub mod testing;
 
