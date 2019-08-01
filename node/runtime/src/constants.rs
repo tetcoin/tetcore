@@ -20,9 +20,9 @@
 pub mod currency {
 	use node_primitives::Balance;
 
-	pub const MILLICENTS: Balance = 1_000_000_000;
-	pub const CENTS: Balance = 1_000 * MILLICENTS;    // assume this is worth about a cent.
-	pub const DOLLARS: Balance = 100 * CENTS;
+	pub const MILLICENTS: Balance = Balance::from(1_000_000_000u32);
+	pub const CENTS: Balance = Balance::from(1_000u32) * MILLICENTS;    // assume this is worth about a cent.
+	pub const DOLLARS: Balance = Balance::from(100u32) * CENTS;
 }
 
 /// Time.

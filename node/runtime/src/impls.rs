@@ -36,7 +36,7 @@ impl OnUnbalanced<NegativeImbalance> for Author {
 pub struct CurrencyToVoteHandler;
 
 impl CurrencyToVoteHandler {
-	fn factor() -> Balance { (Balances::total_issuance() / u64::max_value() as Balance).max(1) }
+	fn factor() -> Balance { (Balances::total_issuance() / Balance::from(u64::max_value())).max(sr_primitives::traits::One::one()) }
 }
 
 impl Convert<Balance, u64> for CurrencyToVoteHandler {
