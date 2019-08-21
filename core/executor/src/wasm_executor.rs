@@ -1198,8 +1198,7 @@ impl_function_executor!(this: FunctionExecutor<'e, E>,
 		wasm_ptr: *const u8,
 		wasm_len: usize,
 		imports_ptr: *const u8,
-		imports_len: usize,
-		state: usize
+		imports_len: usize
 	) -> u32 => {
 		let wasm = this.memory.get(wasm_ptr, wasm_len as usize)
 			.map_err(|_| "OOB while ext_sandbox_instantiate: wasm")?;
@@ -1217,7 +1216,7 @@ impl_function_executor!(this: FunctionExecutor<'e, E>,
 		};
 
 		let instance_idx_or_err_code =
-			match sandbox::instantiate(this, dispatch_thunk, &wasm, &raw_env_def, state) {
+			match sandbox::instantiate(this, dispatch_thunk, &wasm, &raw_env_def) {
 				Ok(instance_idx) => instance_idx,
 				Err(sandbox::InstantiationError::StartTrapped) => sandbox_primitives::ERR_EXECUTION,
 				Err(_) => sandbox_primitives::ERR_MODULE,
@@ -1236,8 +1235,7 @@ impl_function_executor!(this: FunctionExecutor<'e, E>,
 		args_ptr: *const u8,
 		args_len: usize,
 		return_val_ptr: *const u8,
-		return_val_len: usize,
-		state: usize
+		return_val_len: usize
 	) -> u32 => {
 		use codec::{Decode, Encode};
 
@@ -1259,7 +1257,7 @@ impl_function_executor!(this: FunctionExecutor<'e, E>,
 			.collect::<Vec<_>>();
 
 		let instance = this.sandbox_store.instance(instance_idx)?;
-		let result = instance.invoke(&export, &args, this, state);
+		let result = instance.invoke(&export, &args, this);
 
 		match result {
 			Ok(None) => Ok(sandbox_primitives::ERR_OK),

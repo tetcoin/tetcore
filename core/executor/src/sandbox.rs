@@ -183,7 +183,6 @@ pub trait SandboxCapabilities {
 pub struct GuestExternals<'a, FE: SandboxCapabilities + Externals + 'a> {
 	supervisor_externals: &'a mut FE,
 	sandbox_instance: &'a SandboxInstance,
-	state: u32,
 }
 
 fn trap(msg: &'static str) -> Trap {
@@ -232,8 +231,6 @@ impl<'a, FE: SandboxCapabilities + Externals + 'a> Externals for GuestExternals<
 			.collect::<Vec<_>>()
 			.encode();
 
-		let state = self.state;
-
 		// Move serialized arguments inside the memory and invoke dispatch thunk and
 		// then free allocated memory.
 		let invoke_args_ptr = self.supervisor_externals
@@ -245,7 +242,6 @@ impl<'a, FE: SandboxCapabilities + Externals + 'a> Externals for GuestExternals<
 			&[
 				RuntimeValue::I32(invoke_args_ptr as i32),
 				RuntimeValue::I32(invoke_args_data.len() as i32),
-				RuntimeValue::I32(state as i32),
 				RuntimeValue::I32(func_idx.0 as i32),
 			],
 			self.supervisor_externals,
@@ -281,7 +277,6 @@ impl<'a, FE: SandboxCapabilities + Externals + 'a> Externals for GuestExternals<
 fn with_guest_externals<FE, R, F>(
 	supervisor_externals: &mut FE,
 	sandbox_instance: &SandboxInstance,
-	state: u32,
 	f: F,
 ) -> R
 where
@@ -291,7 +286,6 @@ where
 	let mut guest_externals = GuestExternals {
 		supervisor_externals,
 		sandbox_instance,
-		state,
 	};
 	f(&mut guest_externals)
 }
@@ -319,20 +313,15 @@ impl SandboxInstance {
 	///
 	/// `supervisor_externals` is required to execute the implementations
 	/// of the syscalls that published to a sandboxed module instance.
-	///
-	/// The `state` parameter can be used to provide custom data for
-	/// these syscall implementations.
 	pub fn invoke<FE: SandboxCapabilities + Externals>(
 		&self,
 		export_name: &str,
 		args: &[RuntimeValue],
 		supervisor_externals: &mut FE,
-		state: u32,
 	) -> std::result::Result<Option<wasmi::RuntimeValue>, wasmi::Error> {
 		with_guest_externals(
 			supervisor_externals,
 			self,
-			state,
 			|guest_externals| {
 				self.instance
 					.invoke_export(export_name, args, guest_externals)
@@ -416,7 +405,6 @@ pub fn instantiate<FE: SandboxCapabilities + Externals>(
 	dispatch_thunk: FuncRef,
 	wasm: &[u8],
 	raw_env_def: &[u8],
-	state: u32,
 ) -> std::result::Result<u32, InstantiationError> {
 	let (imports, guest_to_supervisor_mapping) =
 		decode_environment_definition(raw_env_def, &supervisor_externals.store().memories)?;
@@ -436,7 +424,6 @@ pub fn instantiate<FE: SandboxCapabilities + Externals>(
 	with_guest_externals(
 		supervisor_externals,
 		&sandbox_instance,
-		state,
 		|guest_externals| {
 			instance
 				.run_start(guest_externals)

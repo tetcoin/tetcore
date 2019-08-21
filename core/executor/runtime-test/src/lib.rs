@@ -130,7 +130,7 @@ impl_stubs!(
 	},
 	test_sandbox_instantiate => |code: &[u8]| {
 		let env_builder = sandbox::EnvironmentDefinitionBuilder::new();
-		let code = match sandbox::Instance::new(code, &env_builder, &mut ()) {
+		let code = match sandbox::Instance::new(code, &env_builder) {
 			Ok(_) => 0,
 			Err(sandbox::Error::Module) => 1,
 			Err(sandbox::Error::Execution) => 2,
@@ -190,32 +190,29 @@ fn execute_sandboxed(code: &[u8], args: &[sandbox::TypedValue]) -> Result<sandbo
 		counter: u32,
 	}
 
-	fn env_assert(_e: &mut State, args: &[sandbox::TypedValue]) -> Result<sandbox::ReturnValue, sandbox::HostError> {
-		if args.len() != 1 {
-			return Err(sandbox::HostError);
-		}
-		let condition = args[0].as_i32().ok_or_else(|| sandbox::HostError)?;
+	static mut STATE: State = State { counter: 0 };
+
+	fn env_assert(condition: u32) -> Result<(), sandbox::HostError> {
 		if condition != 0 {
-			Ok(sandbox::ReturnValue::Unit)
+			Ok(())
 		} else {
 			Err(sandbox::HostError)
 		}
 	}
-	fn env_inc_counter(e: &mut State, args: &[sandbox::TypedValue]) -> Result<sandbox::ReturnValue, sandbox::HostError> {
-		if args.len() != 1 {
-			return Err(sandbox::HostError);
-		}
-		let inc_by = args[0].as_i32().ok_or_else(|| sandbox::HostError)?;
-		e.counter += inc_by as u32;
-		Ok(sandbox::ReturnValue::Value(sandbox::TypedValue::I32(e.counter as i32)))
+	fn env_inc_counter(inc_by: u32) -> Result<u32, sandbox::HostError> {
+		let counter = unsafe {
+			// This code is only compiled in wasm32-unknown-unknown which doesn't have support
+			// for threading.
+			STATE.counter += inc_by;
+			STATE.counter
+		};
+		Ok(counter)
 	}
-
-	let mut state = State { counter: 0 };
 
 	let env_builder = {
 		let mut env_builder = sandbox::EnvironmentDefinitionBuilder::new();
-		env_builder.add_host_func("env", "assert", env_assert);
-		env_builder.add_host_func("env", "inc_counter", env_inc_counter);
+		env_builder.add_host_func("env", "assert", env_assert as fn(_) -> _);
+		env_builder.add_host_func("env", "inc_counter", env_inc_counter as fn(_) -> _);
 		let memory = match sandbox::Memory::new(1, Some(16)) {
 			Ok(m) => m,
 			Err(_) => unreachable!("
@@ -228,8 +225,8 @@ fn execute_sandboxed(code: &[u8], args: &[sandbox::TypedValue]) -> Result<sandbo
 		env_builder
 	};
 
-	let mut instance = sandbox::Instance::new(code, &env_builder, &mut state)?;
-	let result = instance.invoke(b"call", args, &mut state);
+	let mut instance = sandbox::Instance::new(code, &env_builder)?;
+	let result = instance.invoke(b"call", args);
 
 	result.map_err(|_| sandbox::HostError)
 }
