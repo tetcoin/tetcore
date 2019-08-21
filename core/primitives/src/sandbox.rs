@@ -24,6 +24,27 @@ use rstd::vec::Vec;
 #[cfg_attr(feature = "std", derive(Debug))]
 pub struct HostError;
 
+/// Represents a function signature.
+pub struct Signature {
+	/// Types of parameters. Can be empty if the function doesn't take any arguments.
+	pub param_tys: Vec<ValueType>,
+	/// The return type. None if the function doesn't return any values.
+	pub return_ty: Option<ValueType>,
+}
+
+/// An enumeration of types available in wasm.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum ValueType {
+	/// 32-bit signer or unsigned integer.
+	I32,
+	/// 64-bit signer or unsigned integer.
+	I64,
+	/// 32-bit floating point number.
+	F32,
+	/// 64-bit floating point number.
+	F64,
+}
+
 /// Representation of a typed wasm value.
 #[derive(Clone, Copy, PartialEq, Encode, Decode)]
 #[cfg_attr(feature = "std", derive(Debug))]

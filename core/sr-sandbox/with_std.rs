@@ -23,7 +23,7 @@ use wasmi::{
 	RuntimeArgs, RuntimeValue, Signature, TableDescriptor, TableRef, Trap, TrapKind
 };
 use wasmi::memory_units::Pages;
-use super::{Error, TypedValue, ReturnValue, HostFuncType, HostError};
+use super::{Error, TypedValue, ReturnValue, HostError, HostFunc, UntypedHostFunc};
 
 #[derive(Clone)]
 pub struct Memory {
@@ -53,26 +53,19 @@ impl Memory {
 
 struct HostFuncIndex(usize);
 
-struct DefinedHostFunctions<T> {
-	funcs: Vec<HostFuncType<T>>,
+#[derive(Clone)]
+struct DefinedHostFunctions {
+	funcs: Vec<UntypedHostFunc>,
 }
 
-impl<T> Clone for DefinedHostFunctions<T> {
-	fn clone(&self) -> DefinedHostFunctions<T> {
-		DefinedHostFunctions {
-			funcs: self.funcs.clone(),
-		}
-	}
-}
-
-impl<T> DefinedHostFunctions<T> {
-	fn new() -> DefinedHostFunctions<T> {
+impl DefinedHostFunctions {
+	fn new() -> DefinedHostFunctions {
 		DefinedHostFunctions {
 			funcs: Vec::new(),
 		}
 	}
 
-	fn define(&mut self, f: HostFuncType<T>) -> HostFuncIndex {
+	fn define(&mut self, f: UntypedHostFunc) -> HostFuncIndex {
 		let idx = self.funcs.len();
 		self.funcs.push(f);
 		HostFuncIndex(idx)
@@ -110,12 +103,11 @@ fn to_runtime_value(v: TypedValue) -> RuntimeValue {
 	}
 }
 
-struct GuestExternals<'a, T: 'a> {
-	state: &'a mut T,
-	defined_host_functions: &'a DefinedHostFunctions<T>,
+struct GuestExternals<'a> {
+	defined_host_functions: &'a DefinedHostFunctions,
 }
 
-impl<'a, T> Externals for GuestExternals<'a, T> {
+impl<'a> Externals for GuestExternals<'a> {
 	fn invoke_index(
 		&mut self,
 		index: usize,
@@ -127,7 +119,7 @@ impl<'a, T> Externals for GuestExternals<'a, T> {
 			.map(from_runtime_value)
 			.collect::<Vec<_>>();
 
-		let result = (self.defined_host_functions.funcs[index])(self.state, &args);
+		let result = self.defined_host_functions.funcs[index].call(&args);
 		match result {
 			Ok(value) => Ok(match value {
 				ReturnValue::Value(v) => Some(to_runtime_value(v)),
@@ -143,25 +135,27 @@ enum ExternVal {
 	Memory(Memory),
 }
 
-pub struct EnvironmentDefinitionBuilder<T> {
+pub struct EnvironmentDefinitionBuilder {
 	map: BTreeMap<(Vec<u8>, Vec<u8>), ExternVal>,
-	defined_host_functions: DefinedHostFunctions<T>,
+	defined_host_functions: DefinedHostFunctions,
 }
 
-impl<T> EnvironmentDefinitionBuilder<T> {
-	pub fn new() -> EnvironmentDefinitionBuilder<T> {
+impl EnvironmentDefinitionBuilder {
+	pub fn new() -> EnvironmentDefinitionBuilder {
 		EnvironmentDefinitionBuilder {
 			map: BTreeMap::new(),
 			defined_host_functions: DefinedHostFunctions::new(),
 		}
 	}
 
-	pub fn add_host_func<N1, N2>(&mut self, module: N1, field: N2, f: HostFuncType<T>)
+	pub fn add_host_func<N1, N2, F>(&mut self, module: N1, field: N2, f: F)
 	where
 		N1: Into<Vec<u8>>,
 		N2: Into<Vec<u8>>,
+		F: HostFunc,
 	{
-		let idx = self.defined_host_functions.define(f);
+		let untyped_fn = f.untype();
+		let idx = self.defined_host_functions.define(untyped_fn);
 		self.map
 			.insert((module.into(), field.into()), ExternVal::HostFunc(idx));
 	}
@@ -176,7 +170,7 @@ impl<T> EnvironmentDefinitionBuilder<T> {
 	}
 }
 
-impl<T> ImportResolver for EnvironmentDefinitionBuilder<T> {
+impl ImportResolver for EnvironmentDefinitionBuilder {
 	fn resolve_func(
 		&self,
 		module_name: &str,
@@ -250,23 +244,20 @@ impl<T> ImportResolver for EnvironmentDefinitionBuilder<T> {
 	}
 }
 
-pub struct Instance<T> {
+pub struct Instance {
 	instance: ModuleRef,
-	defined_host_functions: DefinedHostFunctions<T>,
-	_marker: ::std::marker::PhantomData<T>,
+	defined_host_functions: DefinedHostFunctions,
 }
 
-impl<T> Instance<T> {
-	pub fn new(code: &[u8], env_def_builder: &EnvironmentDefinitionBuilder<T>, state: &mut T) -> Result<Instance<T>, Error> {
+impl Instance {
+	pub fn new(code: &[u8], env_def_builder: &EnvironmentDefinitionBuilder) -> Result<Instance, Error> {
 		let module = Module::from_buffer(code).map_err(|_| Error::Module)?;
 		let not_started_instance = ModuleInstance::new(&module, env_def_builder)
 			.map_err(|_| Error::Module)?;
 
-
 		let defined_host_functions = env_def_builder.defined_host_functions.clone();
 		let instance = {
 			let mut externals = GuestExternals {
-				state,
 				defined_host_functions: &defined_host_functions,
 			};
 			let instance = not_started_instance.run_start(&mut externals).map_err(|_| Error::Execution)?;
@@ -276,7 +267,6 @@ impl<T> Instance<T> {
 		Ok(Instance {
 			instance,
 			defined_host_functions,
-			_marker: ::std::marker::PhantomData::<T>,
 		})
 	}
 
@@ -284,13 +274,11 @@ impl<T> Instance<T> {
 		&mut self,
 		name: &[u8],
 		args: &[TypedValue],
-		state: &mut T,
 	) -> Result<ReturnValue, Error> {
 		let args = args.iter().cloned().map(Into::into).collect::<Vec<_>>();
 
 		let name = ::std::str::from_utf8(name).map_err(|_| Error::Execution)?;
 		let mut externals = GuestExternals {
-			state,
 			defined_host_functions: &self.defined_host_functions,
 		};
 		let result = self.instance
@@ -306,6 +294,8 @@ impl<T> Instance<T> {
 
 #[cfg(test)]
 mod tests {
+	use std::thread_local;
+	use std::cell::RefCell;
 	use wabt;
 	use crate::{Error, TypedValue, ReturnValue, HostError, EnvironmentDefinitionBuilder, Instance};
 	use assert_matches::assert_matches;
@@ -315,42 +305,31 @@ mod tests {
 			counter: u32,
 		}
 
-		fn env_assert(_e: &mut State, args: &[TypedValue]) -> Result<ReturnValue, HostError> {
-			if args.len() != 1 {
-				return Err(HostError);
-			}
-			let condition = args[0].as_i32().ok_or_else(|| HostError)?;
+		thread_local! {
+			static STATE: RefCell<State> = RefCell::new(State { counter: 0 });
+		}
+
+		fn env_assert(condition: u32) -> Result<(), HostError> {
 			if condition != 0 {
-				Ok(ReturnValue::Unit)
+				Ok(())
 			} else {
 				Err(HostError)
 			}
 		}
-		fn env_inc_counter(e: &mut State, args: &[TypedValue]) -> Result<ReturnValue, HostError> {
-			if args.len() != 1 {
-				return Err(HostError);
-			}
-			let inc_by = args[0].as_i32().ok_or_else(|| HostError)?;
-			e.counter += inc_by as u32;
-			Ok(ReturnValue::Value(TypedValue::I32(e.counter as i32)))
+		fn env_inc_counter(inc_by: u32) -> Result<u32, HostError> {
+			STATE.with(|state| {
+				let mut state = state.borrow_mut();
+				state.counter += inc_by as u32;
+				Ok(state.counter)
+			})
 		}
-		/// Function that takes one argument of any type and returns that value.
-		fn env_polymorphic_id(_e: &mut State, args: &[TypedValue]) -> Result<ReturnValue, HostError> {
-			if args.len() != 1 {
-				return Err(HostError);
-			}
-			Ok(ReturnValue::Value(args[0]))
-		}
-
-		let mut state = State { counter: 0 };
 
 		let mut env_builder = EnvironmentDefinitionBuilder::new();
-		env_builder.add_host_func("env", "assert", env_assert);
-		env_builder.add_host_func("env", "inc_counter", env_inc_counter);
-		env_builder.add_host_func("env", "polymorphic_id", env_polymorphic_id);
+		env_builder.add_host_func("env", "assert", env_assert as fn(_) -> _);
+		env_builder.add_host_func("env", "inc_counter", env_inc_counter as fn(_) -> _);
 
-		let mut instance = Instance::new(code, &env_builder, &mut state)?;
-		let result = instance.invoke(b"call", args, &mut state);
+		let mut instance = Instance::new(code, &env_builder)?;
+		let result = instance.invoke(b"call", args);
 
 		result.map_err(|_| HostError)
 	}
@@ -413,48 +392,13 @@ mod tests {
 	}
 
 	#[test]
-	fn signatures_dont_matter() {
-		let code = wabt::wat2wasm(r#"
-		(module
-			(import "env" "polymorphic_id" (func $id_i32 (param i32) (result i32)))
-			(import "env" "polymorphic_id" (func $id_i64 (param i64) (result i64)))
-			(import "env" "assert" (func $assert (param i32)))
-
-			(func (export "call")
-				;; assert that we can actually call the "same" function with different
-				;; signatures.
-				(call $assert
-					(i32.eq
-						(call $id_i32
-							(i32.const 0x012345678)
-						)
-						(i32.const 0x012345678)
-					)
-				)
-				(call $assert
-					(i64.eq
-						(call $id_i64
-							(i64.const 0x0123456789abcdef)
-						)
-						(i64.const 0x0123456789abcdef)
-					)
-				)
-			)
-		)
-		"#).unwrap();
-
-		let return_val = execute_sandboxed(&code, &[]).unwrap();
-		assert_eq!(return_val, ReturnValue::Unit);
-	}
-
-	#[test]
 	fn cant_return_unmatching_type() {
-		fn env_returns_i32(_e: &mut (), _args: &[TypedValue]) -> Result<ReturnValue, HostError> {
-			Ok(ReturnValue::Value(TypedValue::I32(42)))
+		fn env_returns_i32() -> Result<u32, HostError> {
+			Ok(42)
 		}
 
 		let mut env_builder = EnvironmentDefinitionBuilder::new();
-		env_builder.add_host_func("env", "returns_i32", env_returns_i32);
+		env_builder.add_host_func("env", "returns_i32", env_returns_i32 as fn() -> _);
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -470,11 +414,11 @@ mod tests {
 		"#).unwrap();
 
 		// It succeeds since we are able to import functions with types we want.
-		let mut instance = Instance::new(&code, &env_builder, &mut ()).unwrap();
+		let mut instance = Instance::new(&code, &env_builder).unwrap();
 
 		// But this fails since we imported a function that returns i32 as if it returned i64.
 		assert_matches!(
-			instance.invoke(b"call", &[], &mut ()),
+			instance.invoke(b"call", &[]),
 			Err(Error::Execution)
 		);
 	}

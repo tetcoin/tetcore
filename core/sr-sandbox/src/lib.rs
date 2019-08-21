@@ -36,11 +36,17 @@
 
 #![warn(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(not(feature = "std"), feature(core_intrinsics))]
 
 use rstd::prelude::*;
 
-pub use primitives::sandbox::{TypedValue, ReturnValue, HostError};
+// TODO: Replace with rstd
+#[cfg(feature = "std")]
+use std::any::TypeId;
+
+
+
+
+pub use primitives::sandbox::{Signature, ValueType, TypedValue, ReturnValue, HostError};
 
 mod imp {
 	#[cfg(feature = "std")]
@@ -70,12 +76,6 @@ impl From<Error> for HostError {
 		HostError
 	}
 }
-
-/// Function pointer for specifying functions by the
-/// supervisor in [`EnvironmentDefinitionBuilder`].
-///
-/// [`EnvironmentDefinitionBuilder`]: struct.EnvironmentDefinitionBuilder.html
-pub type HostFuncType<T> = fn(&mut T, &[TypedValue]) -> Result<ReturnValue, HostError>;
 
 /// Reference to a sandboxed linear memory, that
 /// will be used by the guest module.
@@ -122,17 +122,215 @@ impl Memory {
 	}
 }
 
+// TODO: Move it
+
+pub trait WasmReturnType {
+	const WASM_TYPE: Option<ValueType>;
+	fn into_return_value(self) -> ReturnValue;
+}
+
+impl WasmReturnType for () {
+	const WASM_TYPE: Option<ValueType> = None;
+	fn into_return_value(self) -> ReturnValue {
+		ReturnValue::Unit
+	}
+}
+
+impl WasmReturnType for u32 {
+	const WASM_TYPE: Option<ValueType> = Some(ValueType::I32);
+	fn into_return_value(self) -> ReturnValue {
+		ReturnValue::Value(TypedValue::I32(self as i32))
+	}
+}
+
+// TODO: Impls for i32, u64, i64, f32, f64
+
+pub trait WasmParamType: Sized {
+	const WASM_TYPE: ValueType;
+	fn from_typed_value(v: TypedValue) -> Option<Self>;
+}
+
+impl WasmParamType for u32 {
+	const WASM_TYPE: ValueType = ValueType::I32;
+	fn from_typed_value(v: TypedValue) -> Option<Self> {
+		match v {
+			TypedValue::I32(i) => Some(i as u32),
+			_ => None,
+		}
+	}
+}
+
+// TODO: Impls for i32, u64, i64, f32, f64
+
+// TODO: Rename to WasmParamTypes?
+pub trait WasmParams {
+	const WASM_TYPES: &'static [ValueType];
+}
+
+impl WasmParams for () {
+	const WASM_TYPES: &'static [ValueType] = &[];
+}
+
+impl<A: WasmParamType> WasmParams for (A,) {
+	const WASM_TYPES: &'static [ValueType] = &[A::WASM_TYPE];
+}
+
+impl<A: WasmParamType, B: WasmParamType> WasmParams for (A, B) {
+	const WASM_TYPES: &'static [ValueType] = &[A::WASM_TYPE, B::WASM_TYPE];
+}
+
+// TODO: Impls for tuples
+
+#[inline]
+pub fn signature_matches<F: HostFunc>(sig: &Signature) -> bool {
+	&*sig.param_tys == <F::ParamTypes as WasmParams>::WASM_TYPES
+		&& sig.return_ty == <F::ReturnType as WasmReturnType>::WASM_TYPE
+}
+
+pub fn signature_of<F: HostFunc>() -> Signature {
+	Signature {
+		param_tys: <F::ParamTypes as WasmParams>::WASM_TYPES.to_vec(),
+		return_ty: <F::ReturnType as WasmReturnType>::WASM_TYPE.clone(),
+	}
+}
+
+// TODO: Maybe move this into without_std? Maybe not, to simplify macro generation
+
+pub trait HostFunc {
+	type ReturnType: WasmReturnType;
+	type ParamTypes: WasmParams;
+
+	// TODO: Rename -> as fn index.
+	fn as_usize(&self) -> usize;
+
+	#[cfg(feature = "std")]
+	fn untype(&self) -> UntypedHostFunc;
+}
+
+impl<R: WasmReturnType + 'static> HostFunc for fn() -> Result<R, HostError> {
+	type ReturnType = R;
+	type ParamTypes = ();
+
+	fn as_usize(&self) -> usize {
+		*self as *const () as usize
+	}
+
+	#[cfg(feature = "std")]
+	fn untype(&self) -> UntypedHostFunc {
+		let dispatcher =
+			|untyped_fn: &UntypedHostFunc, _args: &[TypedValue]| -> Result<ReturnValue, HostError> {
+				let f: Self = untyped_fn.reify().unwrap();
+				(f)().map(|r| r.into_return_value())
+			};
+		UntypedHostFunc::from(*self, dispatcher).unwrap()
+	}
+}
+
+impl<R: WasmReturnType + 'static, A: WasmParamType + 'static> HostFunc for fn(A) -> Result<R, HostError> {
+	type ReturnType = R;
+	type ParamTypes = (A,);
+
+	fn as_usize(&self) -> usize {
+		*self as *const () as usize
+	}
+
+	#[cfg(feature = "std")]
+	fn untype(&self) -> UntypedHostFunc {
+		let dispatcher =
+			|untyped_fn: &UntypedHostFunc, args: &[TypedValue]| -> Result<ReturnValue, HostError> {
+				let f: Self = untyped_fn.reify().unwrap();
+
+				let arg0 = A::from_typed_value(args.get(0).cloned().unwrap()).unwrap();
+				(f)(arg0).map(|r| r.into_return_value())
+			};
+		UntypedHostFunc::from(*self, dispatcher).unwrap()
+	}
+}
+
+impl<R: WasmReturnType + 'static, A: WasmParamType + 'static, B: WasmParamType + 'static> HostFunc
+	for fn(A, B) -> Result<R, HostError>
+{
+	type ReturnType = R;
+	type ParamTypes = (A, B);
+
+	fn as_usize(&self) -> usize {
+		*self as *const () as usize
+	}
+
+	#[cfg(feature = "std")]
+	fn untype(&self) -> UntypedHostFunc {
+		let dispatcher =
+			|untyped_fn: &UntypedHostFunc, args: &[TypedValue]| -> Result<ReturnValue, HostError> {
+				let f: Self = untyped_fn.reify().unwrap();
+
+				let arg0 = A::from_typed_value(args.get(0).cloned().unwrap()).unwrap();
+				let arg1 = B::from_typed_value(args.get(1).cloned().unwrap()).unwrap();
+				(f)(arg0, arg1).map(|r| r.into_return_value())
+			};
+		UntypedHostFunc::from(*self, dispatcher).unwrap()
+	}
+}
+
+/// Internally this type is similar to `Any`, however, unlike `Any` this type is `Sized`.
+#[cfg(feature = "std")]
+#[derive(Clone)]
+pub struct UntypedHostFunc {
+	raw_fn_addr: usize,
+	type_id: TypeId,
+	dispatcher: fn(&UntypedHostFunc, args: &[TypedValue]) -> Result<ReturnValue, HostError>,
+}
+
+#[cfg(feature = "std")]
+impl UntypedHostFunc {
+	fn from<F: Copy + 'static>(
+		f: F,
+		dispatcher: fn(&UntypedHostFunc, args: &[TypedValue]) -> Result<ReturnValue, HostError>,
+	) -> Option<Self> {
+		if rstd::mem::size_of::<F>() == rstd::mem::size_of::<usize>() {
+			let raw_fn_addr = unsafe {
+				// This is safe since `F` and `usize` has the same sizes.
+				rstd::mem::transmute_copy::<F, usize>(&f)
+			};
+			let type_id = TypeId::of::<F>();
+			Some(UntypedHostFunc {
+				raw_fn_addr,
+				type_id,
+				dispatcher,
+			})
+		} else {
+			None
+		}
+	}
+
+	fn reify<F: Sized + Copy + 'static>(&self) -> Option<F> {
+		if TypeId::of::<F>() == self.type_id {
+			let f = unsafe {
+				// This should be safe since the original type of `raw_fn_addr` is the same as `F`
+				// and thus the sizes are equal. The type is `Copy` so it is safe to copy it out.
+				rstd::mem::transmute_copy::<usize, F>(&self.raw_fn_addr)
+			};
+			Some(f)
+		} else {
+			None
+		}
+	}
+
+	fn call(&self, args: &[TypedValue]) -> Result<ReturnValue, HostError> {
+		(self.dispatcher)(self, args)
+	}
+}
+
 /// Struct that can be used for defining an environment for a sandboxed module.
 ///
 /// The sandboxed module can access only the entities which were defined and passed
 /// to the module at the instantiation time.
-pub struct EnvironmentDefinitionBuilder<T> {
-	inner: imp::EnvironmentDefinitionBuilder<T>,
+pub struct EnvironmentDefinitionBuilder {
+	inner: imp::EnvironmentDefinitionBuilder,
 }
 
-impl<T> EnvironmentDefinitionBuilder<T> {
+impl EnvironmentDefinitionBuilder {
 	/// Construct a new `EnvironmentDefinitionBuilder`.
-	pub fn new() -> EnvironmentDefinitionBuilder<T> {
+	pub fn new() -> EnvironmentDefinitionBuilder {
 		EnvironmentDefinitionBuilder {
 			inner: imp::EnvironmentDefinitionBuilder::new(),
 		}
@@ -144,10 +342,11 @@ impl<T> EnvironmentDefinitionBuilder<T> {
 	/// can import function passed here with any signature it wants. It can even import
 	/// the same function (i.e. with same `module` and `field`) several times. It's up to
 	/// the user code to check or constrain the types of signatures.
-	pub fn add_host_func<N1, N2>(&mut self, module: N1, field: N2, f: HostFuncType<T>)
+	pub fn add_host_func<N1, N2, F>(&mut self, module: N1, field: N2, f: F)
 	where
 		N1: Into<Vec<u8>>,
 		N2: Into<Vec<u8>>,
+		F: HostFunc,
 	{
 		self.inner.add_host_func(module, field, f);
 	}
@@ -165,22 +364,22 @@ impl<T> EnvironmentDefinitionBuilder<T> {
 /// Sandboxed instance of a wasm module.
 ///
 /// This instance can be used for invoking exported functions.
-pub struct Instance<T> {
-	inner: imp::Instance<T>,
+pub struct Instance {
+	inner: imp::Instance,
 }
 
-impl<T> Instance<T> {
+impl Instance {
 	/// Instantiate a module with the given [`EnvironmentDefinitionBuilder`]. It will
-	/// run the `start` function with the given `state`.
+	/// run the `start` function.
 	///
 	/// Returns `Err(Error::Module)` if this module can't be instantiated with the given
 	/// environment. If execution of `start` function generated a trap, then `Err(Error::Execution)` will
 	/// be returned.
 	///
 	/// [`EnvironmentDefinitionBuilder`]: struct.EnvironmentDefinitionBuilder.html
-	pub fn new(code: &[u8], env_def_builder: &EnvironmentDefinitionBuilder<T>, state: &mut T) -> Result<Instance<T>, Error> {
+	pub fn new(code: &[u8], env_def_builder: &EnvironmentDefinitionBuilder) -> Result<Instance, Error> {
 		Ok(Instance {
-			inner: imp::Instance::new(code, &env_def_builder.inner, state)?,
+			inner: imp::Instance::new(code, &env_def_builder.inner)?,
 		})
 	}
 
@@ -199,8 +398,7 @@ impl<T> Instance<T> {
 		&mut self,
 		name: &[u8],
 		args: &[TypedValue],
-		state: &mut T,
 	) -> Result<ReturnValue, Error> {
-		self.inner.invoke(name, args, state)
+		self.inner.invoke(name, args)
 	}
 }

@@ -19,44 +19,17 @@ use rstd::{slice, marker, mem, vec};
 use rstd::rc::Rc;
 use codec::{Decode, Encode};
 use primitives::sandbox as sandbox_primitives;
-use super::{Error, TypedValue, ReturnValue, HostFuncType};
+use super::{Error, TypedValue, ReturnValue, HostFunc};
 
 mod ffi {
 	use rstd::mem;
-	use super::HostFuncType;
-
-	/// Index into the default table that points to a `HostFuncType`.
-	pub type HostFuncIndex = usize;
-
-	/// Coerce `HostFuncIndex` to a callable host function pointer.
-	///
-	/// # Safety
-	///
-	/// This function should be only called with a `HostFuncIndex` that was previously registered
-	/// in the environment definition. Typically this should only
-	/// be called with an argument received in `dispatch_thunk`.
-	pub unsafe fn coerce_host_index_to_func<T>(idx: HostFuncIndex) -> HostFuncType<T> {
-		// We need to ensure that sizes of a callable function pointer and host function index is
-		// indeed equal.
-		// We can't use `static_assertions` create because it makes compiler panic, fallback to runtime assert.
-		// const_assert!(mem::size_of::<HostFuncIndex>() == mem::size_of::<HostFuncType<T>>(),);
-		assert!(mem::size_of::<HostFuncIndex>() == mem::size_of::<HostFuncType<T>>());
-		mem::transmute::<HostFuncIndex, HostFuncType<T>>(idx)
-	}
 
 	extern "C" {
 		pub fn ext_sandbox_instantiate(
-			dispatch_thunk: extern "C" fn(
-				serialized_args_ptr: *const u8,
-				serialized_args_len: usize,
-				state: usize,
-				f: HostFuncIndex,
-			) -> u64,
 			wasm_ptr: *const u8,
 			wasm_len: usize,
 			imports_ptr: *const u8,
 			imports_len: usize,
-			state: usize,
 		) -> u32;
 		pub fn ext_sandbox_invoke(
 			instance_idx: u32,
@@ -66,7 +39,6 @@ mod ffi {
 			args_len: usize,
 			return_val_ptr: *mut u8,
 			return_val_len: usize,
-			state: usize,
 		) -> u32;
 		pub fn ext_sandbox_memory_new(initial: u32, maximum: u32) -> u32;
 		pub fn ext_sandbox_memory_get(
@@ -146,20 +118,18 @@ impl Memory {
 	}
 }
 
-pub struct EnvironmentDefinitionBuilder<T> {
+pub struct EnvironmentDefinitionBuilder {
 	env_def: sandbox_primitives::EnvironmentDefinition,
 	retained_memories: Vec<Memory>,
-	_marker: marker::PhantomData<T>,
 }
 
-impl<T> EnvironmentDefinitionBuilder<T> {
-	pub fn new() -> EnvironmentDefinitionBuilder<T> {
+impl EnvironmentDefinitionBuilder {
+	pub fn new() -> EnvironmentDefinitionBuilder {
 		EnvironmentDefinitionBuilder {
 			env_def: sandbox_primitives::EnvironmentDefinition {
 				entries: Vec::new(),
 			},
 			retained_memories: Vec::new(),
-			_marker: marker::PhantomData::<T>,
 		}
 	}
 
@@ -180,12 +150,13 @@ impl<T> EnvironmentDefinitionBuilder<T> {
 		self.env_def.entries.push(entry);
 	}
 
-	pub fn add_host_func<N1, N2>(&mut self, module: N1, field: N2, f: HostFuncType<T>)
+	pub fn add_host_func<N1, N2, F>(&mut self, module: N1, field: N2, f: F)
 	where
 		N1: Into<Vec<u8>>,
 		N2: Into<Vec<u8>>,
+		F: HostFunc,
 	{
-		let f = sandbox_primitives::ExternEntity::Function(f as u32);
+		let f = sandbox_primitives::ExternEntity::Function(f.as_usize() as u32);
 		self.add_entry(module, field, f);
 	}
 
@@ -202,68 +173,20 @@ impl<T> EnvironmentDefinitionBuilder<T> {
 	}
 }
 
-pub struct Instance<T> {
+pub struct Instance {
 	instance_idx: u32,
 	_retained_memories: Vec<Memory>,
-	_marker: marker::PhantomData<T>,
 }
 
-/// The primary responsibility of this thunk is to deserialize arguments and
-/// call the original function, specified by the index.
-extern "C" fn dispatch_thunk<T>(
-	serialized_args_ptr: *const u8,
-	serialized_args_len: usize,
-	state: usize,
-	f: ffi::HostFuncIndex,
-) -> u64 {
-	let serialized_args = unsafe {
-		if serialized_args_len == 0 {
-			&[]
-		} else {
-			slice::from_raw_parts(serialized_args_ptr, serialized_args_len)
-		}
-	};
-	let args = Vec::<TypedValue>::decode(&mut &serialized_args[..]).expect(
-		"serialized args should be provided by the runtime;
-			correctly serialized data should be deserializable;
-			qed",
-	);
-
-	unsafe {
-		// This should be safe since `coerce_host_index_to_func` is called with an argument
-		// received in an `dispatch_thunk` implementation, so `f` should point
-		// on a valid host function.
-		let f = ffi::coerce_host_index_to_func(f);
-
-		// This should be safe since mutable reference to T is passed upon the invocation.
-		let state = &mut *(state as *mut T);
-
-		// Pass control flow to the designated function.
-		let result = f(state, &args).encode();
-
-		// Leak the result vector and return the pointer to return data.
-		let result_ptr = result.as_ptr() as u64;
-		let result_len = result.len() as u64;
-		mem::forget(result);
-
-		(result_ptr << 32) | result_len
-	}
-}
-
-impl<T> Instance<T> {
-	pub fn new(code: &[u8], env_def_builder: &EnvironmentDefinitionBuilder<T>, state: &mut T) -> Result<Instance<T>, Error> {
+impl Instance {
+	pub fn new(code: &[u8], env_def_builder: &EnvironmentDefinitionBuilder) -> Result<Instance, Error> {
 		let serialized_env_def: Vec<u8> = env_def_builder.env_def.encode();
 		let result = unsafe {
-			// It's very important to instantiate thunk with the right type.
-			let dispatch_thunk = dispatch_thunk::<T>;
-
 			ffi::ext_sandbox_instantiate(
-				dispatch_thunk,
 				code.as_ptr(),
 				code.len(),
 				serialized_env_def.as_ptr(),
 				serialized_env_def.len(),
-				state as *const T as usize,
 			)
 		};
 		let instance_idx = match result {
@@ -276,7 +199,6 @@ impl<T> Instance<T> {
 		Ok(Instance {
 			instance_idx,
 			_retained_memories: retained_memories,
-			_marker: marker::PhantomData::<T>,
 		})
 	}
 
@@ -284,7 +206,6 @@ impl<T> Instance<T> {
 		&mut self,
 		name: &[u8],
 		args: &[TypedValue],
-		state: &mut T,
 	) -> Result<ReturnValue, Error> {
 		let serialized_args = args.to_vec().encode();
 		let mut return_val = vec![0u8; sandbox_primitives::ReturnValue::ENCODED_MAX_SIZE];
@@ -298,7 +219,6 @@ impl<T> Instance<T> {
 				serialized_args.len(),
 				return_val.as_mut_ptr(),
 				return_val.len(),
-				state as *const T as usize,
 			)
 		};
 		match result {
@@ -313,7 +233,7 @@ impl<T> Instance<T> {
 	}
 }
 
-impl<T> Drop for Instance<T> {
+impl Drop for Instance {
 	fn drop(&mut self) {
 		unsafe {
 			ffi::ext_sandbox_instance_teardown(self.instance_idx);
