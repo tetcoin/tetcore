@@ -327,7 +327,7 @@ fn decl_store_extra_genesis(
 					};
 
 					quote!{{
-						let v = (#builder)(&self);
+						let ref v: #typ = (#builder)(&self);
 						<
 							#name<#struct_trait #instance> as
 							#scrate::storage::StorageValue<#typ>
@@ -352,7 +352,7 @@ fn decl_store_extra_genesis(
 
 					quote!{{
 						let data = (#builder)(&self);
-						data.into_iter().for_each(|(k, v)| {
+						data.into_iter().for_each(|(ref k, ref v)| {
 							<
 								#name<#struct_trait #instance> as
 								#scrate::storage::#map<#key_type, #typ>
@@ -913,11 +913,11 @@ fn impl_store_fns(
 
 					quote!{
 						#( #[ #attrs ] )*
-						pub fn #get_fn<K: #scrate::rstd::borrow::Borrow<#key_type>>(key: K) -> #value_type {
+						pub fn #get_fn<K: #scrate::codec::EncodeLike<#key_type>>(key: &K) -> #value_type {
 							<
 								#name<#struct_trait #instance> as
 								#scrate::storage::#map<#key_type, #typ>
-							>::get(key.borrow())
+							>::get(key)
 						}
 					}
 				}

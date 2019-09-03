@@ -16,8 +16,9 @@
 
 #[cfg(not(feature = "std"))]
 use rstd::prelude::*;
+use rstd::iter::FromIterator;
 use rstd::borrow::Borrow;
-use codec::{Codec, Encode};
+use codec::{Codec, Encode, EncodeLike, EncodeAppend};
 use crate::{storage::{self, unhashed, hashed::StorageHasher}, traits::Len};
 
 /// Generator for `StorageMap` used by `decl_storage`.
@@ -40,12 +41,12 @@ pub trait StorageMap<K: Codec, V: Codec> {
 	fn from_query_to_optional_value(v: Self::Query) -> Option<V>;
 
 	/// Generate the full key used in top storage.
-	fn storage_map_final_key<KeyArg>(key: KeyArg) -> <Self::Hasher as StorageHasher>::Output
+	fn storage_map_final_key<KeyArg>(key: &KeyArg) -> <Self::Hasher as StorageHasher>::Output
 	where
-		KeyArg: Borrow<K>,
+		KeyArg: EncodeLike<K>,
 	{
 		let mut final_key = Self::prefix().to_vec();
-		key.borrow().encode_to(&mut final_key);
+		key.encode_to(&mut final_key);
 		Self::Hasher::hash(&final_key)
 	}
 }
@@ -53,11 +54,11 @@ pub trait StorageMap<K: Codec, V: Codec> {
 impl<K: Codec, V: Codec, G: StorageMap<K, V>> storage::StorageMap<K, V> for G {
 	type Query = G::Query;
 
-	fn hashed_key_for<KeyArg: Borrow<K>>(key: KeyArg) -> Vec<u8> {
+	fn hashed_key_for<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Vec<u8> {
 		Self::storage_map_final_key(key).as_ref().to_vec()
 	}
 
-	fn swap<KeyArg1: Borrow<K>, KeyArg2: Borrow<K>>(key1: KeyArg1, key2: KeyArg2) {
+	fn swap<KeyArg1: EncodeLike<K>, KeyArg2: EncodeLike<K>>(key1: &KeyArg1, key2: &KeyArg2) {
 		let k1 = Self::storage_map_final_key(key1);
 		let k2 = Self::storage_map_final_key(key2);
 
@@ -74,52 +75,48 @@ impl<K: Codec, V: Codec, G: StorageMap<K, V>> storage::StorageMap<K, V> for G {
 		}
 	}
 
-	fn exists<KeyArg: Borrow<K>>(key: KeyArg) -> bool {
+	fn exists<KeyArg: EncodeLike<K>>(key: &KeyArg) -> bool {
 		unhashed::exists(Self::storage_map_final_key(key).as_ref())
 	}
 
-	fn get<KeyArg: Borrow<K>>(key: KeyArg) -> Self::Query {
+	fn get<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Self::Query {
 		G::from_optional_value_to_query(unhashed::get(Self::storage_map_final_key(key).as_ref()))
 	}
 
-	fn insert<KeyArg: Borrow<K>, ValArg: Borrow<V>>(key: KeyArg, val: ValArg) {
-		unhashed::put(Self::storage_map_final_key(key).as_ref(), &val.borrow())
+	fn insert<KeyArg: EncodeLike<K>, ValArg: EncodeLike<V>>(key: &KeyArg, val: &ValArg) {
+		unhashed::put(Self::storage_map_final_key(key).as_ref(), &val)
 	}
 
-	fn insert_ref<KeyArg: Borrow<K>, ValArg: ?Sized + Encode>(key: KeyArg, val: &ValArg)
-		where V: AsRef<ValArg>
-	{
-		val.using_encoded(|b| unhashed::put_raw(Self::storage_map_final_key(key).as_ref(), b))
-	}
-
-	fn remove<KeyArg: Borrow<K>>(key: KeyArg) {
+	fn remove<KeyArg: EncodeLike<K>>(key: &KeyArg) {
 		unhashed::kill(Self::storage_map_final_key(key).as_ref())
 	}
 
-	fn mutate<KeyArg: Borrow<K>, R, F: FnOnce(&mut Self::Query) -> R>(key: KeyArg, f: F) -> R {
-		let mut val = G::get(key.borrow());
+	fn mutate<KeyArg: EncodeLike<K>, R, F: FnOnce(&mut Self::Query) -> R>(key: &KeyArg, f: F) -> R {
+		let mut val = G::get(key);
 
 		let ret = f(&mut val);
 		match G::from_query_to_optional_value(val) {
-			Some(ref val) => G::insert(key, val),
+			Some(ref val) => G::insert(key, &val),
 			None => G::remove(key),
 		}
 		ret
 	}
 
-	fn take<KeyArg: Borrow<K>>(key: KeyArg) -> Self::Query {
+	fn take<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Self::Query {
 		let key = Self::storage_map_final_key(key);
 		let value = unhashed::take(key.as_ref());
 		G::from_optional_value_to_query(value)
 	}
 
-	fn append<'a, I, R, KeyArg>(key: KeyArg, items: R) -> Result<(), &'static str>
+	fn append<'a, Iter, Item, EncodeLikeItem, KeyArg>(key: &KeyArg, items: Iter)
+		-> Result<(), &'static str>
 	where
-		KeyArg: Borrow<K>,
-		I: 'a + codec::Encode,
-		V: codec::EncodeAppend<Item=I>,
-		R: IntoIterator<Item=&'a I>,
-		R::IntoIter: ExactSizeIterator,
+		KeyArg: EncodeLike<K>,
+		Item: Encode,
+		EncodeLikeItem: 'a + EncodeLike<Item>,
+		V: EncodeAppend<Item=Item>,
+		Iter: IntoIterator<Item=&'a EncodeLikeItem>,
+		Iter::IntoIter: ExactSizeIterator,
 	{
 		let key = Self::storage_map_final_key(key);
 		let encoded_value = unhashed::get_raw(key.as_ref())
@@ -130,7 +127,7 @@ impl<K: Codec, V: Codec, G: StorageMap<K, V>> storage::StorageMap<K, V> for G {
 				}
 			});
 
-		let new_val = V::append(
+		let new_val = V::append_or_new(
 			encoded_value,
 			items,
 		).map_err(|_| "Could not append given item")?;
@@ -138,19 +135,23 @@ impl<K: Codec, V: Codec, G: StorageMap<K, V>> storage::StorageMap<K, V> for G {
 		Ok(())
 	}
 
-	fn append_or_insert<'a, I, R, KeyArg>(key: KeyArg, items: R)
+	fn append_or_put<'a, Iter, Item, EncodeLikeItem, EncodeLikeV, KeyArg>(key: &KeyArg, items: Iter)
 	where
-		KeyArg: Borrow<K>,
-		I: 'a + codec::Encode + Clone,
-		V: codec::EncodeAppend<Item=I> + crate::rstd::iter::FromIterator<I>,
-		R: IntoIterator<Item=&'a I> + Clone,
-		R::IntoIter: ExactSizeIterator,
+		KeyArg: EncodeLike<K>,
+		Item: Encode,
+		EncodeLikeV: EncodeLike<V> + FromIterator<EncodeLikeItem>,
+		EncodeLikeItem: 'a + EncodeLike<Item> + Clone,
+		V: EncodeAppend<Item=Item>,
+		Iter: IntoIterator<Item=&'a EncodeLikeItem> + Clone,
+		Iter::IntoIter: ExactSizeIterator,
 	{
-		Self::append(key.borrow(), items.clone())
-			.unwrap_or_else(|_| Self::insert(key, &items.into_iter().cloned().collect()));
+		Self::append(key.borrow(), items.clone()).unwrap_or_else(|_| {
+			let put: EncodeLikeV = items.into_iter().cloned().collect();
+			Self::insert(key, &put)
+		});
 	}
 
-	fn decode_len<KeyArg: Borrow<K>>(key: KeyArg) -> Result<usize, &'static str>
+	fn decode_len<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Result<usize, &'static str>
 		where V: codec::DecodeLength + Len
 	{
 		let key = Self::storage_map_final_key(key);

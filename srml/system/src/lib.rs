@@ -568,7 +568,7 @@ impl<T: Trait> Module<T> {
 				None => return,
 				Some(nc) => nc,
 			};
-			EventCount::put(new_event_count);
+			EventCount::put(&new_event_count);
 			old_event_count
 		};
 

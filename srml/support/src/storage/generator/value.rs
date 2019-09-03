@@ -16,8 +16,8 @@
 
 #[cfg(not(feature = "std"))]
 use rstd::prelude::*;
-use rstd::{borrow::Borrow, iter::FromIterator};
-use codec::{Codec, Encode};
+use rstd::iter::FromIterator;
+use codec::{Codec, Encode, EncodeLike, EncodeAppend};
 use crate::{storage::{self, unhashed, hashed::{Twox128, StorageHasher}}, traits::Len};
 
 /// Generator for `StorageValue` used by `decl_storage`.
@@ -58,12 +58,8 @@ impl<T: Codec, G: StorageValue<T>> storage::StorageValue<T> for G {
 		G::from_optional_value_to_query(value)
 	}
 
-	fn put<Arg: Borrow<T>>(val: Arg) {
-		unhashed::put(&Self::storage_value_final_key(), val.borrow())
-	}
-
-	fn put_ref<Arg: ?Sized + Encode>(val: &Arg) where T: AsRef<Arg> {
-		val.using_encoded(|b| unhashed::put_raw(&Self::storage_value_final_key(), b))
+	fn put<Arg: EncodeLike<T>>(val: &Arg) {
+		unhashed::put(&Self::storage_value_final_key(), val)
 	}
 
 	fn kill() {
@@ -75,7 +71,7 @@ impl<T: Codec, G: StorageValue<T>> storage::StorageValue<T> for G {
 
 		let ret = f(&mut val);
 		match G::from_query_to_optional_value(val) {
-			Some(ref val) => G::put(val),
+			Some(ref val) => G::put(&val),
 			None => G::kill(),
 		}
 		ret
@@ -93,12 +89,13 @@ impl<T: Codec, G: StorageValue<T>> storage::StorageValue<T> for G {
 	/// Append the given items to the value in the storage.
 	///
 	/// `T` is required to implement `codec::EncodeAppend`.
-	fn append<'a, I, R>(items: R) -> Result<(), &'static str>
+	fn append<'a, Iter, Item, EncodeLikeItem>(items: Iter) -> Result<(), &'static str>
 	where
-		I: 'a + codec::Encode,
-		T: codec::EncodeAppend<Item=I>,
-		R: IntoIterator<Item=&'a I>,
-		R::IntoIter: ExactSizeIterator,
+		Item: Encode,
+		EncodeLikeItem: 'a + EncodeLike<Item>,
+		T: EncodeAppend<Item=Item>,
+		Iter: IntoIterator<Item=&'a EncodeLikeItem>,
+		Iter::IntoIter: ExactSizeIterator,
 	{
 		let key = Self::storage_value_final_key();
 		let encoded_value = unhashed::get_raw(&key)
@@ -109,7 +106,7 @@ impl<T: Codec, G: StorageValue<T>> storage::StorageValue<T> for G {
 				}
 			});
 
-		let new_val = T::append(
+		let new_val = T::append_or_new(
 			encoded_value,
 			items,
 		).map_err(|_| "Could not append given item")?;
@@ -121,15 +118,18 @@ impl<T: Codec, G: StorageValue<T>> storage::StorageValue<T> for G {
 	/// old (presumably corrupt) value is replaced with the given `items`.
 	///
 	/// `T` is required to implement `codec::EncodeAppend`.
-	fn append_or_put<'a, I, R>(items: R)
-	where
-		I: 'a + codec::Encode + Clone,
-		T: codec::EncodeAppend<Item=I> + FromIterator<I>,
-		R: IntoIterator<Item=&'a I> + Clone,
-		R::IntoIter: ExactSizeIterator,
+	fn append_or_put<'a, Iter, Item, EncodeLikeItem, EncodeLikeT>(items: Iter) where
+		Item: Encode,
+		EncodeLikeT: EncodeLike<T> + FromIterator<EncodeLikeItem>,
+		EncodeLikeItem: 'a + EncodeLike<Item> + Clone,
+		T: EncodeAppend<Item=Item>,
+		Iter: IntoIterator<Item=&'a EncodeLikeItem> + Clone,
+		Iter::IntoIter: ExactSizeIterator
 	{
-		Self::append(items.clone())
-			.unwrap_or_else(|_| Self::put(&items.into_iter().cloned().collect()));
+		Self::append(items.clone()).unwrap_or_else(|_| {
+			let put: EncodeLikeT = items.into_iter().cloned().collect();
+			Self::put(&put)
+		});
 	}
 
 	/// Read the length of the value in a fast way, without decoding the entire value.
