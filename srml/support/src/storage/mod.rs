@@ -43,7 +43,7 @@ pub trait StorageValue<T: Codec> {
 	fn get() -> Self::Query;
 
 	/// Store a value under this key into the provided storage instance.
-	fn put<Arg: EncodeLike<T>>(val: &Arg);
+	fn put<Arg: EncodeLike<T>>(val: Arg);
 
 	/// Mutate the value
 	fn mutate<R, F: FnOnce(&mut Self::Query) -> R>(f: F) -> R;
@@ -97,33 +97,33 @@ pub trait StorageMap<K: Codec, V: Codec> {
 	type Query;
 
 	/// Get the storage key used to fetch a value corresponding to a specific key.
-	fn hashed_key_for<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Vec<u8>;
+	fn hashed_key_for<KeyArg: EncodeLike<K>>(key: KeyArg) -> Vec<u8>;
 
 	/// Does the value (explicitly) exist in storage?
-	fn exists<KeyArg: EncodeLike<K>>(key: &KeyArg) -> bool;
+	fn exists<KeyArg: EncodeLike<K>>(key: KeyArg) -> bool;
 
 	/// Load the value associated with the given key from the map.
-	fn get<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Self::Query;
+	fn get<KeyArg: EncodeLike<K>>(key: KeyArg) -> Self::Query;
 
 	/// Swap the values of two keys.
-	fn swap<KeyArg1: EncodeLike<K>, KeyArg2: EncodeLike<K>>(key1: &KeyArg1, key2: &KeyArg2);
+	fn swap<KeyArg1: EncodeLike<K>, KeyArg2: EncodeLike<K>>(key1: KeyArg1, key2: KeyArg2);
 
 	/// Store a value to be associated with the given key from the map.
-	fn insert<KeyArg: EncodeLike<K>, ValArg: EncodeLike<V>>(key: &KeyArg, val: &ValArg);
+	fn insert<KeyArg: EncodeLike<K>, ValArg: EncodeLike<V>>(key: KeyArg, val: ValArg);
 
 	/// Remove the value under a key.
-	fn remove<KeyArg: EncodeLike<K>>(key: &KeyArg);
+	fn remove<KeyArg: EncodeLike<K>>(key: KeyArg);
 
 	/// Mutate the value under a key.
-	fn mutate<KeyArg: EncodeLike<K>, R, F: FnOnce(&mut Self::Query) -> R>(key: &KeyArg, f: F) -> R;
+	fn mutate<KeyArg: EncodeLike<K>, R, F: FnOnce(&mut Self::Query) -> R>(key: KeyArg, f: F) -> R;
 
 	/// Take the value under a key.
-	fn take<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Self::Query;
+	fn take<KeyArg: EncodeLike<K>>(key: KeyArg) -> Self::Query;
 
 	/// Append the given items to the value in the storage.
 	///
 	/// `V` is required to implement `codec::EncodeAppend`.
-	fn append<'a, Iter, Item, EncodeLikeItem, KeyArg>(key: &KeyArg, items: Iter)
+	fn append<'a, Iter, Item, EncodeLikeItem, KeyArg>(key: KeyArg, items: Iter)
 		-> Result<(), &'static str>
 	where
 		KeyArg: EncodeLike<K>,
@@ -137,7 +137,7 @@ pub trait StorageMap<K: Codec, V: Codec> {
 	/// old (presumably corrupt) value is replaced with the given `items`.
 	///
 	/// `T` is required to implement `codec::EncodeAppend`.
-	fn append_or_put<'a, Iter, Item, EncodeLikeItem, EncodeLikeV, KeyArg>(key: &KeyArg, items: Iter)
+	fn append_or_put<'a, Iter, Item, EncodeLikeItem, EncodeLikeV, KeyArg>(key: KeyArg, items: Iter)
 	where
 		KeyArg: EncodeLike<K>,
 		Item: Encode,
@@ -154,7 +154,7 @@ pub trait StorageMap<K: Codec, V: Codec> {
 	/// Note that `0` is returned as the default value if no encoded value exists at the given key.
 	/// Therefore, this function cannot be used as a sign of _existence_. use the `::exists()`
 	/// function for this purpose.
-	fn decode_len<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Result<usize, &'static str>
+	fn decode_len<KeyArg: EncodeLike<K>>(key: KeyArg) -> Result<usize, &'static str>
 		where V: codec::DecodeLength + Len;
 }
 

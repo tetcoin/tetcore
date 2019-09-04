@@ -41,7 +41,7 @@ pub trait StorageMap<K: Codec, V: Codec> {
 	fn from_query_to_optional_value(v: Self::Query) -> Option<V>;
 
 	/// Generate the full key used in top storage.
-	fn storage_map_final_key<KeyArg>(key: &KeyArg) -> <Self::Hasher as StorageHasher>::Output
+	fn storage_map_final_key<KeyArg>(key: KeyArg) -> <Self::Hasher as StorageHasher>::Output
 	where
 		KeyArg: EncodeLike<K>,
 	{
@@ -54,11 +54,11 @@ pub trait StorageMap<K: Codec, V: Codec> {
 impl<K: Codec, V: Codec, G: StorageMap<K, V>> storage::StorageMap<K, V> for G {
 	type Query = G::Query;
 
-	fn hashed_key_for<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Vec<u8> {
+	fn hashed_key_for<KeyArg: EncodeLike<K>>(key: KeyArg) -> Vec<u8> {
 		Self::storage_map_final_key(key).as_ref().to_vec()
 	}
 
-	fn swap<KeyArg1: EncodeLike<K>, KeyArg2: EncodeLike<K>>(key1: &KeyArg1, key2: &KeyArg2) {
+	fn swap<KeyArg1: EncodeLike<K>, KeyArg2: EncodeLike<K>>(key1: KeyArg1, key2: KeyArg2) {
 		let k1 = Self::storage_map_final_key(key1);
 		let k2 = Self::storage_map_final_key(key2);
 
@@ -75,23 +75,23 @@ impl<K: Codec, V: Codec, G: StorageMap<K, V>> storage::StorageMap<K, V> for G {
 		}
 	}
 
-	fn exists<KeyArg: EncodeLike<K>>(key: &KeyArg) -> bool {
+	fn exists<KeyArg: EncodeLike<K>>(key: KeyArg) -> bool {
 		unhashed::exists(Self::storage_map_final_key(key).as_ref())
 	}
 
-	fn get<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Self::Query {
+	fn get<KeyArg: EncodeLike<K>>(key: KeyArg) -> Self::Query {
 		G::from_optional_value_to_query(unhashed::get(Self::storage_map_final_key(key).as_ref()))
 	}
 
-	fn insert<KeyArg: EncodeLike<K>, ValArg: EncodeLike<V>>(key: &KeyArg, val: &ValArg) {
+	fn insert<KeyArg: EncodeLike<K>, ValArg: EncodeLike<V>>(key: KeyArg, val: ValArg) {
 		unhashed::put(Self::storage_map_final_key(key).as_ref(), &val)
 	}
 
-	fn remove<KeyArg: EncodeLike<K>>(key: &KeyArg) {
+	fn remove<KeyArg: EncodeLike<K>>(key: KeyArg) {
 		unhashed::kill(Self::storage_map_final_key(key).as_ref())
 	}
 
-	fn mutate<KeyArg: EncodeLike<K>, R, F: FnOnce(&mut Self::Query) -> R>(key: &KeyArg, f: F) -> R {
+	fn mutate<KeyArg: EncodeLike<K>, R, F: FnOnce(&mut Self::Query) -> R>(key: KeyArg, f: F) -> R {
 		let mut val = G::get(key);
 
 		let ret = f(&mut val);
@@ -102,7 +102,7 @@ impl<K: Codec, V: Codec, G: StorageMap<K, V>> storage::StorageMap<K, V> for G {
 		ret
 	}
 
-	fn take<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Self::Query {
+	fn take<KeyArg: EncodeLike<K>>(key: KeyArg) -> Self::Query {
 		let key = Self::storage_map_final_key(key);
 		let value = unhashed::take(key.as_ref());
 		G::from_optional_value_to_query(value)
@@ -151,7 +151,7 @@ impl<K: Codec, V: Codec, G: StorageMap<K, V>> storage::StorageMap<K, V> for G {
 		});
 	}
 
-	fn decode_len<KeyArg: EncodeLike<K>>(key: &KeyArg) -> Result<usize, &'static str>
+	fn decode_len<KeyArg: EncodeLike<K>>(key: KeyArg) -> Result<usize, &'static str>
 		where V: codec::DecodeLength + Len
 	{
 		let key = Self::storage_map_final_key(key);

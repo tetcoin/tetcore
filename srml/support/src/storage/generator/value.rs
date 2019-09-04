@@ -58,7 +58,7 @@ impl<T: Codec, G: StorageValue<T>> storage::StorageValue<T> for G {
 		G::from_optional_value_to_query(value)
 	}
 
-	fn put<Arg: EncodeLike<T>>(val: &Arg) {
+	fn put<Arg: EncodeLike<T>>(val: Arg) {
 		unhashed::put(&Self::storage_value_final_key(), val)
 	}
 
