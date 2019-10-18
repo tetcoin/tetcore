@@ -8,18 +8,18 @@ use runtime_test::WASM_BINARY;
 use substrate_offchain::testing;
 use trie::{TrieConfiguration, trie_types::Layout};
 use codec::{Encode, Decode};
+use test_case::test_case;
 
 use crate::{WasmExecutionMethod, call_in_wasm};
 use crate::error::Error;
 
 type TestExternalities = CoreTestExternalities<Blake2Hasher, u64>;
 
-#[test]
-fn returning_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn returning_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 
 	let output = call_in_wasm(
 		"test_empty_return",
@@ -32,12 +32,11 @@ fn returning_should_work() {
 	assert_eq!(output, vec![0u8; 0]);
 }
 
-#[test]
-fn panicking_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn panicking_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 
 	let output = call_in_wasm(
 		"test_panic",
@@ -70,10 +69,9 @@ fn panicking_should_work() {
 	assert!(output.is_err());
 }
 
-#[test]
-fn storage_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn storage_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
-	let wasm_method = WasmExecutionMethod::Interpreted;
 
 	{
 		let mut ext = ext.ext();
@@ -100,10 +98,9 @@ fn storage_should_work() {
 	assert_eq!(ext, expected);
 }
 
-#[test]
-fn clear_prefix_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn clear_prefix_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	{
 		let mut ext = ext.ext();
 		ext.set_storage(b"aaa".to_vec(), b"1".to_vec());
@@ -134,12 +131,11 @@ fn clear_prefix_should_work() {
 	assert_eq!(expected, ext);
 }
 
-#[test]
-fn blake2_256_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn blake2_256_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	assert_eq!(
 		call_in_wasm(
 			"test_blake2_256",
@@ -164,12 +160,11 @@ fn blake2_256_should_work() {
 	);
 }
 
-#[test]
-fn blake2_128_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn blake2_128_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	assert_eq!(
 		call_in_wasm(
 			"test_blake2_128",
@@ -194,12 +189,11 @@ fn blake2_128_should_work() {
 	);
 }
 
-#[test]
-fn twox_256_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn twox_256_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	assert_eq!(
 		call_in_wasm(
 			"test_twox_256",
@@ -228,12 +222,11 @@ fn twox_256_should_work() {
 	);
 }
 
-#[test]
-fn twox_128_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn twox_128_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	assert_eq!(
 		call_in_wasm(
 			"test_twox_128",
@@ -258,12 +251,11 @@ fn twox_128_should_work() {
 	);
 }
 
-#[test]
-fn ed25519_verify_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn ed25519_verify_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	let key = ed25519::Pair::from_seed(&blake2_256(b"test"));
 	let sig = key.sign(b"all ok!");
 	let mut calldata = vec![];
@@ -300,12 +292,11 @@ fn ed25519_verify_should_work() {
 	);
 }
 
-#[test]
-fn sr25519_verify_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn sr25519_verify_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	let key = sr25519::Pair::from_seed(&blake2_256(b"test"));
 	let sig = key.sign(b"all ok!");
 	let mut calldata = vec![];
@@ -342,13 +333,12 @@ fn sr25519_verify_should_work() {
 	);
 }
 
-#[test]
-fn ordered_trie_root_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn ordered_trie_root_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let mut ext = ext.ext();
 	let trie_input = vec![b"zero".to_vec(), b"one".to_vec(), b"two".to_vec()];
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	assert_eq!(
 		call_in_wasm(
 			"test_ordered_trie_root",
@@ -362,15 +352,14 @@ fn ordered_trie_root_should_work() {
 	);
 }
 
-#[test]
-fn offchain_local_storage_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn offchain_local_storage_should_work(wasm_method: WasmExecutionMethod) {
 	use substrate_client::backend::OffchainStorage;
 
 	let mut ext = TestExternalities::default();
 	let (offchain, state) = testing::TestOffchainExt::new();
 	ext.register_extension(OffchainExt::new(offchain));
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	let mut ext = ext.ext();
 	assert_eq!(
 		call_in_wasm(
@@ -386,8 +375,8 @@ fn offchain_local_storage_should_work() {
 	assert_eq!(state.read().persistent_storage.get(b"", b"test"), Some(vec![]));
 }
 
-#[test]
-fn offchain_http_should_work() {
+#[test_case(WasmExecutionMethod::Interpreted)]
+fn offchain_http_should_work(wasm_method: WasmExecutionMethod) {
 	let mut ext = TestExternalities::default();
 	let (offchain, state) = testing::TestOffchainExt::new();
 	ext.register_extension(OffchainExt::new(offchain));
@@ -406,7 +395,6 @@ fn offchain_http_should_work() {
 	);
 
 	let test_code = WASM_BINARY;
-	let wasm_method = WasmExecutionMethod::Interpreted;
 	let mut ext = ext.ext();
 	assert_eq!(
 		call_in_wasm(
@@ -423,14 +411,14 @@ fn offchain_http_should_work() {
 
 mod sandbox {
 	use super::*;
+	use test_case::test_case;
 	use wabt;
 
-	#[test]
-	fn sandbox_should_work() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn sandbox_should_work(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -466,12 +454,11 @@ mod sandbox {
 		);
 	}
 
-	#[test]
-	fn sandbox_trap() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn sandbox_trap(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -496,12 +483,11 @@ mod sandbox {
 		);
 	}
 
-	#[test]
-	fn sandbox_should_trap_when_heap_exhausted() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn sandbox_should_trap_when_heap_exhausted(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -533,12 +519,11 @@ mod sandbox {
 		}
 	}
 
-	#[test]
-	fn start_called() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn start_called(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -580,12 +565,11 @@ mod sandbox {
 		);
 	}
 
-	#[test]
-	fn invoke_args() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn invoke_args(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -623,12 +607,11 @@ mod sandbox {
 		);
 	}
 
-	#[test]
-	fn return_val() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn return_val(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -654,12 +637,11 @@ mod sandbox {
 		);
 	}
 
-	#[test]
-	fn unlinkable_module() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn unlinkable_module(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -683,12 +665,11 @@ mod sandbox {
 		);
 	}
 
-	#[test]
-	fn corrupted_module() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn corrupted_module(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		// Corrupted wasm file
 		let code = vec![0u8, 0, 0, 0, 1, 0, 0, 0].encode();
@@ -706,12 +687,11 @@ mod sandbox {
 		);
 	}
 
-	#[test]
-	fn start_fn_ok() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn start_fn_ok(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
@@ -738,12 +718,11 @@ mod sandbox {
 		);
 	}
 
-	#[test]
-	fn start_fn_traps() {
+	#[test_case(WasmExecutionMethod::Interpreted)]
+	fn start_fn_traps(wasm_method: WasmExecutionMethod) {
 		let mut ext = TestExternalities::default();
 		let mut ext = ext.ext();
 		let test_code = WASM_BINARY;
-		let wasm_method = WasmExecutionMethod::Interpreted;
 
 		let code = wabt::wat2wasm(r#"
 		(module
