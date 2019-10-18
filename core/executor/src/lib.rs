@@ -38,6 +38,8 @@ mod sandbox;
 mod allocator;
 mod host_interface;
 mod wasm_runtime;
+#[cfg(test)]
+mod tests;
 
 pub mod error;
 pub use wasmi;
@@ -90,7 +92,7 @@ pub trait RuntimeInfo {
 }
 
 #[cfg(test)]
-mod tests {
+mod unit_tests {
 	use super::*;
 	use runtime_test::WASM_BINARY;
 	use runtime_io::TestExternalities;
