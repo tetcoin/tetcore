@@ -11,7 +11,6 @@ use codec::{Encode, Decode};
 use test_case::test_case;
 
 use crate::{WasmExecutionMethod, call_in_wasm};
-use crate::error::Error;
 
 type TestExternalities = CoreTestExternalities<Blake2Hasher, u64>;
 
@@ -507,15 +506,9 @@ mod sandbox {
 			&test_code[..],
 			8,
 		);
-		assert_eq!(res.is_err(), true);
+		assert!(res.is_err());
 		if let Err(err) = res {
-			assert_eq!(
-				format!("{}", err),
-				format!(
-					"{}",
-					wasmi::Error::Trap(Error::FunctionExecution("AllocatorOutOfSpace".into()).into()),
-				),
-			);
+			assert!(err.to_string().contains("Allocator ran out of space"));
 		}
 	}
 
