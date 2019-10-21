@@ -43,6 +43,12 @@ pub struct SubstrateExternals;
 
 impl_wasm_host_interface! {
 	impl SubstrateExternals where context {
+		ext_post_message(target: u32, data_ptr: Pointer<u8>, data_len: u32) {
+			unimplemented!("Just make wasmi happy")
+		}
+		ext_post_upward_message(origin: u32, data_ptr: Pointer<u8>, data_len: u32) {
+			unimplemented!("Just make wasmi happy")
+		}
 		ext_malloc(size: WordSize) -> Pointer<u8> {
 			let r = context.allocate_memory(size)?;
 			debug_trace!(target: "sr-io", "malloc {} bytes at {:?}", size, r);
