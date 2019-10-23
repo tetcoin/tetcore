@@ -1260,17 +1260,6 @@ macro_rules! decl_module {
 			type Call = $call_type<$trait_instance $(, $instance)?>;
 		}
 
-		impl<$trait_instance: $trait_name $(<I>, $instance: $instantiable)?> $mod_type<$trait_instance $(, $instance)?>
-			where $( $other_where_bounds )*
-		{
-			#[doc(hidden)]
-			pub fn dispatch<D: $crate::dispatch::Dispatchable<Trait = $trait_instance>>(
-				d: D,
-				origin: D::Origin
-			) -> $crate::dispatch::DispatchResult<D::Error> {
-				d.dispatch(origin)
-			}
-		}
 		$crate::__dispatch_impl_metadata! {
 			$mod_type<$trait_instance: $trait_name $(<I>, $instance: $instantiable)?>
 			{ $( $other_where_bounds )* }
