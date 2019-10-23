@@ -17,16 +17,14 @@
 //! Declaration of genesis config structure and implementation of build storage trait and
 //! functions.
 
-use proc_macro2::{TokenStream, Span};
+use proc_macro2::TokenStream;
 use quote::quote;
-use super::{DeclStorageDefExt, instance_trait::DEFAULT_INSTANTIABLE_TRAIT_NAME};
+use super::DeclStorageDefExt;
 use genesis_config_def::GenesisConfigDef;
 use builder_def::BuilderDef;
 
 mod genesis_config_def;
 mod builder_def;
-
-const DEFAULT_INSTANCE_NAME: &str = "__GeneratedInstance";
 
 fn decl_genesis_config_and_impl_default(
 	scrate: &TokenStream,
@@ -98,17 +96,8 @@ fn impl_build_storage(
 	let optional_instance_bound = &def.optional_instance_bound;
 	let where_clause = &def.where_clause;
 
-	let inherent_instance = def.optional_instance.clone().unwrap_or_else(|| {
-		let name = syn::Ident::new(DEFAULT_INSTANCE_NAME, Span::call_site());
-		quote!( #name )
-	});
-	let inherent_instance_bound = def.optional_instance_bound.clone().unwrap_or_else(|| {
-		let bound = syn::Ident::new(DEFAULT_INSTANTIABLE_TRAIT_NAME, Span::call_site());
-		quote!( #inherent_instance: #bound )
-	});
-
 	let build_storage_impl = quote!(
-		<#runtime_generic: #runtime_trait, #inherent_instance_bound>
+		<#runtime_generic: #runtime_trait, #optional_instance_bound>
 	);
 
 	let genesis_struct = &genesis_config.genesis_struct;
@@ -132,7 +121,7 @@ fn impl_build_storage(
 	let builder_blocks = &builders.blocks;
 
 	let build_storage_impl_trait = quote!(
-		#scrate::sr_primitives::BuildModuleGenesisStorage<#runtime_generic, #inherent_instance>
+		#scrate::sr_primitives::BuildModuleGenesisStorage<#runtime_generic>
 	);
 
 	quote!{

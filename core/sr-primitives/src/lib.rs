@@ -136,7 +136,7 @@ pub trait BuildStorage: Sized {
 
 /// Something that can build the genesis storage of a module.
 #[cfg(feature = "std")]
-pub trait BuildModuleGenesisStorage<T, I>: Sized {
+pub trait BuildModuleGenesisStorage<T>: Sized {
 	/// Create the module genesis storage into the given `storage` and `child_storage`.
 	fn build_module_genesis_storage(
 		self,
@@ -511,7 +511,7 @@ macro_rules! impl_outer_config {
 		$extra:ident;
 		$storage:ident;
 	) => {
-		$crate::BuildModuleGenesisStorage::<$runtime, $module::$instance>::build_module_genesis_storage(
+		$crate::BuildModuleGenesisStorage::<$runtime>::build_module_genesis_storage(
 			$extra,
 			$storage,
 		)?;
@@ -523,7 +523,7 @@ macro_rules! impl_outer_config {
 		$extra:ident;
 		$storage:ident;
 	) => {
-		$crate::BuildModuleGenesisStorage::<$runtime, $module::__InherentHiddenInstance>::build_module_genesis_storage(
+		$crate::BuildModuleGenesisStorage::<$runtime>::build_module_genesis_storage(
 			$extra,
 			$storage,
 		)?;

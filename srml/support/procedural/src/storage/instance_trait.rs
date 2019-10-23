@@ -15,15 +15,13 @@
 // along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
 
 //! Implementation of the trait instance and the instance structures implementing it.
-//! (For not instantiable traits there is still the inherent instance implemented).
+//! (For not instantiable modules nothing is generated).
 
-use proc_macro2::{TokenStream, Span};
+use proc_macro2::TokenStream;
 use quote::quote;
 use super::{DeclStorageDefExt, StorageLineTypeDef};
 
 const NUMBER_OF_INSTANCE: usize = 16;
-const INHERENT_INSTANCE_NAME: &str = "__InherentHiddenInstance";
-pub(crate) const DEFAULT_INSTANTIABLE_TRAIT_NAME: &str = "__GeneratedInstantiable";
 
 // prefix for consts in trait Instance
 pub(crate) const PREFIX_FOR: &str = "PREFIX_FOR_";
@@ -45,6 +43,10 @@ struct InstanceDef {
 }
 
 pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStream {
+	if def.module_instance.is_none() {
+		return TokenStream::new();
+	}
+
 	let mut impls = TokenStream::new();
 
 	let mut const_defs = vec![];
@@ -99,26 +101,6 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 		}
 	}
 
-	// The name of the inherently available instance.
-	let inherent_instance = syn::Ident::new(INHERENT_INSTANCE_NAME, Span::call_site());
-
-	// Implementation of inherent instance.
-	if let Some(default_instance) = def.module_instance.as_ref()
-		.and_then(|i| i.instance_default.as_ref())
-	{
-		impls.extend(quote! {
-			#[doc(hidden)]
-			pub type #inherent_instance = #default_instance;
-		});
-	} else {
-		let instance_def = InstanceDef {
-			prefix: String::new(),
-			instance_struct: inherent_instance,
-			doc: quote!(#[doc(hidden)]),
-		};
-		impls.extend(create_and_impl_instance_struct(scrate, &instance_def, &const_defs, def));
-	}
-
 	impls
 }
 
@@ -126,8 +108,11 @@ fn create_instance_trait(
 	const_defs: &[InstanceConstDef],
 	def: &DeclStorageDefExt,
 ) -> TokenStream {
-	let instance_trait = def.module_instance.as_ref().map(|i| i.instance_trait.clone())
-		.unwrap_or_else(|| syn::Ident::new(DEFAULT_INSTANTIABLE_TRAIT_NAME, Span::call_site()));
+	let instance_trait = if let Some(i) = def.module_instance.as_ref() {
+		&i.instance_trait
+	} else {
+		return TokenStream::new()
+	};
 
 	let mut const_impls = TokenStream::new();
 	for const_def in const_defs {
@@ -162,6 +147,12 @@ fn create_and_impl_instance_struct(
 	const_defs: &[InstanceConstDef],
 	def: &DeclStorageDefExt,
 ) -> TokenStream {
+	let instance_trait = if let Some(i) = def.module_instance.as_ref() {
+		&i.instance_trait
+	} else {
+		return TokenStream::new()
+	};
+
 	let mut const_impls = TokenStream::new();
 
 	for const_def in const_defs {
@@ -174,9 +165,6 @@ fn create_and_impl_instance_struct(
 			const #const_name: &'static str = #const_value;
 		});
 	}
-
-	let instance_trait = def.module_instance.as_ref().map(|i| i.instance_trait.clone())
-		.unwrap_or_else(|| syn::Ident::new(DEFAULT_INSTANTIABLE_TRAIT_NAME, Span::call_site()));
 
 	let instance_struct = &instance_def.instance_struct;
 	let prefix = format!("{}{}", instance_def.prefix, def.crate_name.to_string());
