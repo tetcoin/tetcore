@@ -43,7 +43,7 @@ state_machine = { package = "substrate-state-machine", path = "../state-machine"
 test-case = "0.3.3"
 
 [features]
-default = []
+default = ["wasmtime"]
 wasm-extern-trace = []
 wasmtime = [
     "cranelift-codegen",
