@@ -169,13 +169,7 @@ pub fn create_wasm_runtime_with_code<E: Externalities>(
 	heap_pages: u64,
 	code: &[u8],
 ) -> Result<Box<dyn WasmRuntime>, WasmError> {
-	// Use wasmtime unconditionally if wasmtime flag is enabled.
-
-	#[cfg(not(feature = "wasmtime"))]
-	wasmi_execution::create_instance(ext, code, heap_pages)
-		.map(|runtime| -> Box<dyn WasmRuntime> { Box::new(runtime) })
-
-	#[cfg(feature = "wasmtime")]
+	// HACK: Use wasmtime unconditionally if wasmtime flag is enabled.
 	wasmtime::create_instance(ext, code, heap_pages)
 		.map(|runtime| -> Box<dyn WasmRuntime> { Box::new(runtime) })
 }
