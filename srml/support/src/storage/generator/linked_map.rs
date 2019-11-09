@@ -75,6 +75,15 @@ pub trait StorageLinkedMap<K: FullCodec, V: FullCodec> {
 	}
 }
 
+fn linked_map_final_key<Key: FullCodec, Hasher: StorageHasher>(
+	key: &Key,
+	prefix: &'static [u8],
+) -> Hasher::Output {
+	let mut final_key = prefix.to_vec();
+	key.encode_to(&mut final_key);
+	Hasher::hash(&final_key)
+}
+
 /// Linkage data of an element (it's successor and predecessor)
 #[derive(Encode, Decode)]
 pub struct Linkage<Key> {
@@ -359,5 +368,53 @@ where
 
 			Ok(len)
 		}
+	}
+
+
+	fn translate<K2, V2, TK, TV>(translate_key: TK, translate_val: TV) -> Result<(), ()>
+		where K2: FullCodec + Clone, V2: Decode, TK: Fn(K2) -> K, TV: Fn(V2) -> V
+	{
+		let old_head_key = G::storage_linked_map_final_head_key();
+		let first_key: K2 = unhashed::get(old_head_key.as_ref()).ok_or(())?;
+		let prefix = G::prefix();
+
+		let mut current_key = first_key.clone();
+
+		let translate_linkage = |old: Linkage<K2>| -> Linkage<K> {
+			Linkage {
+				previous: old.previous.map(&translate_key),
+				next: old.next.map(&translate_key),
+			}
+		};
+
+		loop {
+			let old_raw_key = linked_map_final_key::<K2, G::Hasher>(&current_key, prefix);
+			let (val, linkage): (V2, Linkage<K2>) = unhashed::get(old_raw_key.as_ref()).ok_or(())?;
+			let next = linkage.next.clone();
+
+			let val = translate_val(val);
+			let linkage = translate_linkage(linkage);
+
+			// now that we've successfully migrated the storage, kill the old key.
+			unhashed::kill(old_raw_key.as_ref());
+
+			// and write in the value and linkage under the new key.
+			let new_raw_key = G::storage_linked_map_final_key(&translate_key(current_key.clone()));
+			unhashed::put(new_raw_key.as_ref(), &(&val, &linkage));
+
+			match next {
+				None => break,
+				Some(next) => { current_key = next },
+			}
+		}
+
+		// update head at end, since it means that we made it through the entire
+		// list. this allows us to early-exit on the first `Linkage` we cannot decode,
+		// and it's impossible that we would ever decode the first successfully but
+		// fail on subsequent ones as long as storage was not already in a degenerate state.
+		// that means the error return indicates no underlying change in storage validity.
+		write_head::<&K, _, _, G>(Some(&translate_key(first_key)));
+
+		Ok(())
 	}
 }
