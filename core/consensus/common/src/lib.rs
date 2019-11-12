@@ -39,6 +39,7 @@ pub mod block_validation;
 pub mod offline_tracker;
 pub mod error;
 pub mod block_import;
+pub mod block_announce;
 mod select_chain;
 pub mod import_queue;
 pub mod evaluation;
@@ -51,6 +52,7 @@ pub use block_import::{
 	BlockImport, BlockOrigin, ForkChoiceStrategy, ImportedAux, BlockImportParams, BlockCheckParams, ImportResult,
 	JustificationImport, FinalityProofImport,
 };
+pub use block_announce::BlockAnnounce;
 pub use select_chain::SelectChain;
 
 /// Block status.
