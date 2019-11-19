@@ -52,7 +52,7 @@ trait ChainBackend<B, E, Block: BlockT, RA>: Send + Sync + 'static
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: client::CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+		E: client::CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 {
 	/// Get client reference.
 	fn client(&self) -> &Arc<Client<B, E, Block, RA>>;
@@ -157,7 +157,7 @@ pub fn new_full<B, E, Block: BlockT, RA>(
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: client::CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: client::CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 		RA: Send + Sync + 'static,
 {
 	Chain {
@@ -175,7 +175,7 @@ pub fn new_light<B, E, Block: BlockT, RA, F: Fetcher<Block>>(
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: client::CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: client::CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 		RA: Send + Sync + 'static,
 		F: Send + Sync + 'static,
 {
@@ -197,7 +197,7 @@ pub struct Chain<B, E, Block: BlockT, RA> {
 impl<B, E, Block, RA> ChainApi<NumberFor<Block>, Block::Hash, Block::Header, SignedBlock<Block>> for Chain<B, E, Block, RA> where
 	Block: BlockT<Hash=H256> + 'static,
 	B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-	E: client::CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: client::CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	RA: Send + Sync + 'static
 {
 	type Metadata = crate::metadata::Metadata;
@@ -246,7 +246,7 @@ fn subscribe_headers<B, E, Block, RA, F, G, S, ERR>(
 ) where
 	Block: BlockT<Hash=H256> + 'static,
 	B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-	E: client::CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: client::CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	F: FnOnce() -> S,
 	G: FnOnce() -> Block::Hash,
 	ERR: ::std::fmt::Debug,

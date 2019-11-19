@@ -81,7 +81,7 @@ impl<B, E, Block: BlockT<Hash=H256>, RA, SC> JustificationImport<Block>
 	for GrandpaBlockImport<B, E, Block, RA, SC> where
 		NumberFor<Block>: grandpa::BlockNumberOps,
 		B: Backend<Block, Blake2Hasher> + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+		E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 		DigestFor<Block>: Encode,
 		RA: Send + Sync,
 		SC: SelectChain<Block>,
@@ -209,7 +209,7 @@ impl<B, E, Block: BlockT<Hash=H256>, RA, SC>
 where
 	NumberFor<Block>: grandpa::BlockNumberOps,
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 	DigestFor<Block>: Encode,
 	RA: Send + Sync,
 {
@@ -386,7 +386,7 @@ impl<B, E, Block: BlockT<Hash=H256>, RA, SC> BlockImport<Block>
 	for GrandpaBlockImport<B, E, Block, RA, SC> where
 		NumberFor<Block>: grandpa::BlockNumberOps,
 		B: Backend<Block, Blake2Hasher> + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+		E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 		DigestFor<Block>: Encode,
 		RA: Send + Sync,
 {
@@ -537,7 +537,7 @@ impl<B, E, Block: BlockT<Hash=H256>, RA, SC>
 where
 	NumberFor<Block>: grandpa::BlockNumberOps,
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 	RA: Send + Sync,
 {
 

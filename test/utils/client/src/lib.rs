@@ -34,7 +34,6 @@ pub use primitives::{Blake2Hasher, traits::BareCryptoStorePtr};
 pub use sr_primitives::{StorageOverlay, ChildrenStorageOverlay};
 pub use state_machine::ExecutionStrategy;
 
-use std::sync::Arc;
 use std::collections::HashMap;
 use hash_db::Hasher;
 use primitives::storage::well_known_keys;
@@ -64,7 +63,7 @@ pub struct TestClientBuilder<Executor, Backend, G: GenesisInit> {
 	execution_strategies: ExecutionStrategies,
 	genesis_init: G,
 	child_storage_extension: HashMap<Vec<u8>, Vec<(Vec<u8>, Vec<u8>)>>,
-	backend: Arc<Backend>,
+	backend: Backend,
 	_executor: std::marker::PhantomData<Executor>,
 	keystore: Option<BareCryptoStorePtr>,
 }
@@ -90,25 +89,25 @@ impl<Block, Executor, G: GenesisInit> TestClientBuilder<
 {
 	/// Create new `TestClientBuilder` with default backend.
 	pub fn with_default_backend() -> Self {
-		let backend = Arc::new(Backend::new_test(std::u32::MAX, std::u64::MAX));
+		let backend = Backend::new_test(std::u32::MAX, std::u64::MAX);
 		Self::with_backend(backend)
 	}
 
 	/// Give access to the underlying backend of these clients
-	pub fn backend(&self) -> Arc<Backend<Block>> {
-		self.backend.clone()
+	pub fn backend(&self) -> &Backend<Block> {
+		&self.backend
 	}
 
 	/// Create new `TestClientBuilder` with default backend and pruning window size
 	pub fn with_pruning_window(keep_blocks: u32) -> Self {
-		let backend = Arc::new(Backend::new_test(keep_blocks, 0));
+		let backend = Backend::new_test(keep_blocks, 0);
 		Self::with_backend(backend)
 	}
 }
 
 impl<Executor, Backend, G: GenesisInit> TestClientBuilder<Executor, Backend, G> {
 	/// Create a new instance of the test client builder.
-	pub fn with_backend(backend: Arc<Backend>) -> Self {
+	pub fn with_backend(backend: Backend) -> Self {
 		TestClientBuilder {
 			backend,
 			execution_strategies: ExecutionStrategies::default(),
@@ -161,20 +160,12 @@ impl<Executor, Backend, G: GenesisInit> TestClientBuilder<Executor, Backend, G> 
 	pub fn build_with_executor<Block, RuntimeApi>(
 		self,
 		executor: Executor,
-	) -> (
-		client::Client<
-			Backend,
-			Executor,
-			Block,
-			RuntimeApi,
-		>,
-		client::LongestChain<Backend, Block>,
-	) where
-		Executor: client::CallExecutor<Block, Blake2Hasher>,
+	) -> client::Client<Backend, Executor, Block, RuntimeApi>
+	where
+		Executor: client::CallExecutor<Block, Blake2Hasher, Backend>,
 		Backend: client_api::backend::Backend<Block, Blake2Hasher>,
 		Block: BlockT<Hash=<Blake2Hasher as Hasher>::Out>,
 	{
-
 		let storage = {
 			let mut storage = self.genesis_init.genesis_storage();
 
@@ -189,22 +180,18 @@ impl<Executor, Backend, G: GenesisInit> TestClientBuilder<Executor, Backend, G> 
 			storage
 		};
 
-		let client = client::Client::new(
-			self.backend.clone(),
+		client::Client::new(
+			self.backend,
 			executor,
 			storage,
 			Default::default(),
 			self.execution_strategies,
-		).expect("Creates new client");
-
-		let longest_chain = client::LongestChain::new(self.backend);
-
-		(client, longest_chain)
+		).expect("Creates new client")
 	}
 }
 
 impl<E, Backend, G: GenesisInit> TestClientBuilder<
-	client::LocalCallExecutor<Backend, NativeExecutor<E>>,
+	client::LocalCallExecutor<NativeExecutor<E>>,
 	Backend,
 	G,
 > {
@@ -212,15 +199,14 @@ impl<E, Backend, G: GenesisInit> TestClientBuilder<
 	pub fn build_with_native_executor<Block, RuntimeApi, I>(
 		mut self,
 		executor: I,
-	) -> (
+	) ->
 		client::Client<
 			Backend,
-			client::LocalCallExecutor<Backend, NativeExecutor<E>>,
+			client::LocalCallExecutor<NativeExecutor<E>>,
 			Block,
 			RuntimeApi
-		>,
-		client::LongestChain<Backend, Block>,
-	) where
+		>
+	 where
 		I: Into<Option<NativeExecutor<E>>>,
 		E: executor::NativeExecutionDispatch,
 		Backend: client_api::backend::Backend<Block, Blake2Hasher>,
@@ -229,8 +215,7 @@ impl<E, Backend, G: GenesisInit> TestClientBuilder<
 		let executor = executor.into().unwrap_or_else(||
 			NativeExecutor::new(WasmExecutionMethod::Interpreted, None)
 		);
-		let executor = LocalCallExecutor::new(self.backend.clone(), executor, self.keystore.take());
-
+		let executor = LocalCallExecutor::new(executor, self.keystore.take());
 		self.build_with_executor(executor)
 	}
 }

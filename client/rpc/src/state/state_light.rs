@@ -41,7 +41,7 @@ use rpc::{
 use api::Subscriptions;
 use client_api::backend::Backend;
 use client::{
-	BlockchainEvents, Client, CallExecutor, 
+	BlockchainEvents, Client, CallExecutor,
 	error::Error as ClientError,
 	light::{
 		blockchain::{future_header, RemoteBlockchain},
@@ -142,7 +142,7 @@ impl<Block: BlockT, F: Fetcher<Block> + 'static, B, E, RA> LightState<Block, F, 
 	where
 		Block: BlockT<Hash=H256>,
 		B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 		RA: Send + Sync + 'static,
 {
 	/// Create new state API backend for light nodes.
@@ -176,7 +176,7 @@ impl<Block, F, B, E, RA> StateBackend<B, E, Block, RA> for LightState<Block, F, 
 	where
 		Block: BlockT<Hash=H256>,
 		B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 		RA: Send + Sync + 'static,
 		F: Fetcher<Block> + 'static
 {
@@ -696,7 +696,7 @@ fn ignore_error<F, T>(future: F) -> impl std::future::Future<Output=Result<Optio
 	future.then(|result| ready(match result {
 		Ok(result) => Ok(Some(result)),
 		Err(()) => Ok(None),
-	}))	
+	}))
 }
 
 #[cfg(test)]

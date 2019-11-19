@@ -59,7 +59,7 @@ use block_builder::BlockBuilderApi;
 pub use client_api::{
 	backend::{
 		self, BlockImportOperation, PrunableStateChangesTrieStorage,
-		ClientImportOperation, Finalizer, ImportSummary, NewBlockState,
+		ClientImportOperation, Finalizer, ImportSummary, NewBlockState, GetBackend,
 	},
 	blockchain::{
 		self, Backend as ChainBackend,
@@ -92,7 +92,7 @@ type ChangesUpdate<Block> = ChangesTrieTransaction<Blake2Hasher, NumberFor<Block
 
 /// Substrate Client
 pub struct Client<B, E, Block, RA> where Block: BlockT {
-	backend: Arc<B>,
+	backend: B,
 	executor: E,
 	storage_notifications: Mutex<StorageNotifications<Block>>,
 	import_notification_sinks: Mutex<Vec<mpsc::UnboundedSender<BlockImportNotification<Block>>>>,
@@ -146,7 +146,7 @@ pub fn new_in_mem<E, Block, S, RA>(
 	keystore: Option<primitives::traits::BareCryptoStorePtr>,
 ) -> error::Result<Client<
 	in_mem::Backend<Block, Blake2Hasher>,
-	LocalCallExecutor<in_mem::Backend<Block, Blake2Hasher>, E>,
+	LocalCallExecutor<E>,
 	Block,
 	RA
 >> where
@@ -154,30 +154,30 @@ pub fn new_in_mem<E, Block, S, RA>(
 	S: BuildStorage,
 	Block: BlockT<Hash=H256>,
 {
-	new_with_backend(Arc::new(in_mem::Backend::new()), executor, genesis_storage, keystore)
+	new_with_backend(in_mem::Backend::new(), executor, genesis_storage, keystore)
 }
 
 /// Create a client with the explicitly provided backend.
 /// This is useful for testing backend implementations.
 pub fn new_with_backend<B, E, Block, S, RA>(
-	backend: Arc<B>,
+	backend: B,
 	executor: E,
 	build_genesis_storage: S,
 	keystore: Option<primitives::traits::BareCryptoStorePtr>,
-) -> error::Result<Client<B, LocalCallExecutor<B, E>, Block, RA>>
+) -> error::Result<Client<B, LocalCallExecutor<E>, Block, RA>>
 	where
 		E: CodeExecutor + RuntimeInfo,
 		S: BuildStorage,
 		Block: BlockT<Hash=H256>,
 		B: backend::LocalBackend<Block, Blake2Hasher>
 {
-	let call_executor = LocalCallExecutor::new(backend.clone(), executor, keystore);
+	let call_executor = LocalCallExecutor::new(executor, keystore);
 	Client::new(backend, call_executor, build_genesis_storage, Default::default(), Default::default())
 }
 
 impl<B, E, Block, RA> BlockOf for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, B>,
 	Block: BlockT<Hash=H256>,
 {
 	type Type = Block;
@@ -185,12 +185,12 @@ impl<B, E, Block, RA> BlockOf for Client<B, E, Block, RA> where
 
 impl<B, E, Block, RA> Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, B>,
 	Block: BlockT<Hash=H256>,
 {
 	/// Creates new Substrate Client with given blockchain and code executor.
 	pub fn new<S: BuildStorage>(
-		backend: Arc<B>,
+		backend: B,
 		executor: E,
 		build_genesis_storage: S,
 		fork_blocks: ForkBlocks<Block>,
@@ -226,6 +226,11 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 			execution_strategies,
 			_phantom: Default::default(),
 		})
+	}
+
+	/// Get a reference to the backend
+	pub fn backend(&self) -> &B {
+		&self.backend
 	}
 
 	/// Get a reference to the execution strategies.
@@ -308,7 +313,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 
 	/// Get the RuntimeVersion at a given block.
 	pub fn runtime_version_at(&self, id: &BlockId<Block>) -> error::Result<RuntimeVersion> {
-		self.executor.runtime_version(id)
+		self.executor.runtime_version(&self.backend, id)
 	}
 
 	/// Get call executor reference.
@@ -742,7 +747,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 		import_block: BlockImportParams<Block>,
 		new_cache: HashMap<CacheKeyId, Vec<u8>>,
 	) -> error::Result<ImportResult> where
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + Clone,
 	{
 		let BlockImportParams {
 			origin,
@@ -827,7 +832,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 		fork_choice: ForkChoiceStrategy,
 		enact_state: bool,
 	) -> error::Result<ImportResult> where
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + Clone,
 	{
 		let parent_hash = import_headers.post().parent_hash().clone();
 		match self.backend.blockchain().status(BlockId::Hash(hash))? {
@@ -954,7 +959,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 		)>
 	)>
 		where
-			E: CallExecutor<Block, Blake2Hasher> + Send + Sync + Clone,
+			E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + Clone,
 	{
 		match transaction.state()? {
 			Some(transaction_state) => {
@@ -987,6 +992,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 
 				let (_, storage_update, changes_update) = self.executor
 					.call_at_state::<_, _, NeverNativeValue, fn() -> _>(
+						self.backend(),
 						transaction_state,
 						&mut overlay,
 						"Core_execute_block",
@@ -1246,7 +1252,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 
 impl<B, E, Block, RA> HeaderMetadata<Block> for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, B>,
 	Block: BlockT<Hash=H256>,
 {
 	type Error = error::Error;
@@ -1266,7 +1272,7 @@ impl<B, E, Block, RA> HeaderMetadata<Block> for Client<B, E, Block, RA> where
 
 impl<B, E, Block, RA> ProvideUncles<Block> for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, B>,
 	Block: BlockT<Hash=H256>,
 {
 	fn uncles(&self, target_hash: Block::Hash, max_generation: NumberFor<Block>) -> error::Result<Vec<Block::Header>> {
@@ -1280,7 +1286,7 @@ impl<B, E, Block, RA> ProvideUncles<Block> for Client<B, E, Block, RA> where
 
 impl<B, E, Block, RA> ChainHeaderBackend<Block> for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	Block: BlockT<Hash=H256>,
 	RA: Send + Sync,
 {
@@ -1307,7 +1313,7 @@ impl<B, E, Block, RA> ChainHeaderBackend<Block> for Client<B, E, Block, RA> wher
 
 impl<B, E, Block, RA> sr_primitives::traits::BlockIdTo<Block> for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	Block: BlockT<Hash=H256>,
 	RA: Send + Sync,
 {
@@ -1324,7 +1330,7 @@ impl<B, E, Block, RA> sr_primitives::traits::BlockIdTo<Block> for Client<B, E, B
 
 impl<B, E, Block, RA> ChainHeaderBackend<Block> for &Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	Block: BlockT<Hash=H256>,
 	RA: Send + Sync,
 {
@@ -1360,7 +1366,7 @@ impl<B, E, Block, RA> ProvideCache<Block> for Client<B, E, Block, RA> where
 
 impl<B, E, Block, RA> ProvideRuntimeApi for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Clone + Send + Sync,
 	Block: BlockT<Hash=H256>,
 	RA: ConstructRuntimeApi<Block, Self>
 {
@@ -1373,7 +1379,7 @@ impl<B, E, Block, RA> ProvideRuntimeApi for Client<B, E, Block, RA> where
 
 impl<B, E, Block, RA> CallRuntimeAt<Block> for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Clone + Send + Sync,
 	Block: BlockT<Hash=H256>,
 {
 	type Error = Error;
@@ -1416,6 +1422,7 @@ impl<B, E, Block, RA> CallRuntimeAt<Block> for Client<B, E, Block, RA> where
 		};
 
 		self.executor.contextual_call::<_, fn(_,_) -> _,_,_>(
+			self.backend(),
 			|| core_api.initialize_block(at, &self.prepare_environment_block(at)?),
 			at,
 			function,
@@ -1440,7 +1447,7 @@ impl<B, E, Block, RA> CallRuntimeAt<Block> for Client<B, E, Block, RA> where
 /// important verification work.
 impl<'a, B, E, Block, RA> consensus::BlockImport<Block> for &'a Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Clone + Send + Sync,
 	Block: BlockT<Hash=H256>,
 {
 	type Error = ConsensusError;
@@ -1514,7 +1521,7 @@ impl<'a, B, E, Block, RA> consensus::BlockImport<Block> for &'a Client<B, E, Blo
 
 impl<B, E, Block, RA> consensus::BlockImport<Block> for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Clone + Send + Sync,
 	Block: BlockT<Hash=H256>,
 {
 	type Error = ConsensusError;
@@ -1537,7 +1544,7 @@ impl<B, E, Block, RA> consensus::BlockImport<Block> for Client<B, E, Block, RA> 
 
 impl<B, E, Block, RA> Finalizer<Block, Blake2Hasher, B> for Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, B>,
 	Block: BlockT<Hash=H256>,
 {
 	fn apply_finality(
@@ -1561,7 +1568,7 @@ impl<B, E, Block, RA> Finalizer<Block, Blake2Hasher, B> for Client<B, E, Block, 
 
 impl<B, E, Block, RA> Finalizer<Block, Blake2Hasher, B> for &Client<B, E, Block, RA> where
 	B: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, B>,
 	Block: BlockT<Hash=H256>,
 {
 	fn apply_finality(
@@ -1581,7 +1588,7 @@ impl<B, E, Block, RA> Finalizer<Block, Blake2Hasher, B> for &Client<B, E, Block,
 
 impl<B, E, Block, RA> BlockchainEvents<Block> for Client<B, E, Block, RA>
 where
-	E: CallExecutor<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, B>,
 	Block: BlockT<Hash=H256>,
 {
 	/// Get block import event stream.
@@ -1607,55 +1614,72 @@ where
 	}
 }
 
-/// Implement Longest Chain Select implementation
-/// where 'longest' is defined as the highest number of blocks
-pub struct LongestChain<B, Block> {
-	backend: Arc<B>,
-	_phantom: PhantomData<Block>
+impl<BE, E, Block, R> GetBackend<BE, Block, Blake2Hasher> for Client<BE, E, Block, R>
+where
+	BE: backend::Backend<Block, Blake2Hasher>,
+	Block: BlockT<Hash=H256>,
+{
+	fn get_backend(&self) -> &BE {
+		&self.backend
+	}
 }
 
-impl<B, Block> Clone for LongestChain<B, Block> {
+/// Implement Longest Chain Select implementation
+/// where 'longest' is defined as the highest number of blocks
+pub struct LongestChain<BE, E, Block, R>
+where
+	Block: BlockT<Hash=H256>,
+{
+	// TODO: replace concrete type Client with type param(s)
+	client: Arc<Client<BE, E, Block, R>>,
+}
+
+impl<BE, E, Block, R> Clone for LongestChain<BE, E, Block, R>
+where
+	Block: BlockT<Hash=H256>,
+{
 	fn clone(&self) -> Self {
-		let backend = self.backend.clone();
 		LongestChain {
-			backend,
-			_phantom: Default::default()
+			client: self.client.clone(),
 		}
 	}
 }
 
-impl<B, Block> LongestChain<B, Block>
+impl<BE, E, Block, R> LongestChain<BE, E, Block, R>
 where
-	B: backend::Backend<Block, Blake2Hasher>,
+	BE: backend::Backend<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, BE>,
 	Block: BlockT<Hash=H256>,
 {
 	/// Instantiate a new LongestChain for Backend B
-	pub fn new(backend: Arc<B>) -> Self {
+	pub fn new(client: Arc<Client<BE, E, Block, R>>) -> Self {
 		LongestChain {
-			backend,
-			_phantom: Default::default()
+			client,
 		}
 	}
 
 	fn best_block_header(&self) -> error::Result<<Block as BlockT>::Header> {
-		let info = self.backend.blockchain().info();
-		let import_lock = self.backend.get_import_lock();
-		let best_hash = self.backend.blockchain().best_containing(info.best_hash, None, import_lock)?
+		let backend = self.client.backend();
+		let info = backend.blockchain().info();
+		let import_lock = backend.get_import_lock();
+		let best_hash = backend.blockchain().best_containing(info.best_hash, None, import_lock)?
 			.unwrap_or(info.best_hash);
 
-		Ok(self.backend.blockchain().header(BlockId::Hash(best_hash))?
+		Ok(backend.blockchain().header(BlockId::Hash(best_hash))?
 			.expect("given block hash was fetched from block in db; qed"))
 	}
 
 	fn leaves(&self) -> Result<Vec<<Block as BlockT>::Hash>, error::Error> {
-		self.backend.blockchain().leaves()
+		self.client.backend().blockchain().leaves()
 	}
 }
 
-impl<B, Block> SelectChain<Block> for LongestChain<B, Block>
+impl<BE, E, Block, R> SelectChain<Block> for LongestChain<BE, E, Block, R>
 where
-	B: backend::Backend<Block, Blake2Hasher>,
+	BE: backend::Backend<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, BE> + Send + Sync,
 	Block: BlockT<Hash=H256>,
+	R: Send + Sync,
 {
 
 	fn leaves(&self) -> Result<Vec<<Block as BlockT>::Hash>, ConsensusError> {
@@ -1675,8 +1699,8 @@ where
 		target_hash: Block::Hash,
 		maybe_max_number: Option<NumberFor<Block>>
 	) -> Result<Option<Block::Hash>, ConsensusError> {
-		let import_lock = self.backend.get_import_lock();
-		self.backend.blockchain().best_containing(target_hash, maybe_max_number, import_lock)
+		let import_lock = self.client.backend().get_import_lock();
+		self.client.backend().blockchain().best_containing(target_hash, maybe_max_number, import_lock)
 			.map_err(|e| ConsensusError::ChainLookup(e.to_string()).into())
 	}
 }
@@ -1684,7 +1708,7 @@ where
 impl<B, E, Block, RA> BlockBody<Block> for Client<B, E, Block, RA>
 	where
 		B: backend::Backend<Block, Blake2Hasher>,
-		E: CallExecutor<Block, Blake2Hasher>,
+		E: CallExecutor<Block, Blake2Hasher, B>,
 		Block: BlockT<Hash=H256>,
 {
 	fn block_body(&self, id: &BlockId<Block>) -> error::Result<Option<Vec<<Block as BlockT>::Extrinsic>>> {
@@ -1695,7 +1719,7 @@ impl<B, E, Block, RA> BlockBody<Block> for Client<B, E, Block, RA>
 impl<B, E, Block, RA> backend::AuxStore for Client<B, E, Block, RA>
 	where
 		B: backend::Backend<Block, Blake2Hasher>,
-		E: CallExecutor<Block, Blake2Hasher>,
+		E: CallExecutor<Block, Blake2Hasher, B>,
 		Block: BlockT<Hash=H256>,
 {
 	/// Insert auxiliary data into key-value store.
@@ -1716,7 +1740,7 @@ impl<B, E, Block, RA> backend::AuxStore for Client<B, E, Block, RA>
 	}
 	/// Query auxiliary data from key-value store.
 	fn get_aux(&self, key: &[u8]) -> error::Result<Option<Vec<u8>>> {
-		backend::AuxStore::get_aux(&*self.backend, key)
+		backend::AuxStore::get_aux(&self.backend, key)
 	}
 }
 
@@ -1724,7 +1748,7 @@ impl<B, E, Block, RA> backend::AuxStore for Client<B, E, Block, RA>
 impl<B, E, Block, RA> backend::AuxStore for &Client<B, E, Block, RA>
 	where
 		B: backend::Backend<Block, Blake2Hasher>,
-		E: CallExecutor<Block, Blake2Hasher>,
+		E: CallExecutor<Block, Blake2Hasher, B>,
 		Block: BlockT<Hash=H256>,
 {
 
@@ -1765,7 +1789,7 @@ where
 
 impl<BE, E, B, RA> consensus::block_validation::Chain<B> for Client<BE, E, B, RA>
 	where BE: backend::Backend<B, Blake2Hasher>,
-		  E: CallExecutor<B, Blake2Hasher>,
+		  E: CallExecutor<B, Blake2Hasher, BE>,
 		  B: BlockT<Hash = H256>
 {
 	fn block_status(&self, id: &BlockId<B>) -> Result<BlockStatus, Box<dyn std::error::Error + Send>> {
@@ -2566,7 +2590,7 @@ pub(crate) mod tests {
 
 		// we finalize block B1 which is on a different branch from current best
 		// which should trigger a re-org.
-		ClientExt::finalize_block(&client, BlockId::Hash(b1.hash()), None).unwrap();
+		ClientExt::finalize_block(&*client, BlockId::Hash(b1.hash()), None).unwrap();
 
 		// B1 should now be the latest finalized
 		assert_eq!(
@@ -2665,7 +2689,7 @@ pub(crate) mod tests {
 
 		// we need to run with archive pruning to avoid pruning non-canonical
 		// states
-		let backend = Arc::new(Backend::new(
+		let backend = Backend::new(
 			DatabaseSettings {
 				state_cache_size: 1 << 20,
 				state_cache_child_ratio: None,
@@ -2676,7 +2700,7 @@ pub(crate) mod tests {
 				}
 			},
 			u64::max_value(),
-		).unwrap());
+		).unwrap();
 
 		let client = TestClientBuilder::with_backend(backend).build();
 
@@ -2758,7 +2782,7 @@ pub(crate) mod tests {
 
 		// set to prune after 1 block
 		// states
-		let backend = Arc::new(Backend::new(
+		let backend = Backend::new(
 				DatabaseSettings {
 					state_cache_size: 1 << 20,
 					state_cache_child_ratio: None,
@@ -2769,7 +2793,7 @@ pub(crate) mod tests {
 					}
 				},
 				u64::max_value(),
-		).unwrap());
+		).unwrap();
 
 		let mut client = TestClientBuilder::with_backend(backend).build();
 

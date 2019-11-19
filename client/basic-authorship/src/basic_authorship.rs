@@ -50,7 +50,7 @@ ProposerFactory<SubstrateClient<B, E, Block, RA>, A>
 where
 	A: txpool::ChainApi<Block=Block>,
 	B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + Clone + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + Clone + 'static,
 	Block: BlockT<Hash=H256>,
 	RA: Send + Sync + 'static,
 	SubstrateClient<B, E, Block, RA>: ProvideRuntimeApi,
@@ -98,7 +98,7 @@ Proposer<Block, SubstrateClient<B, E, Block, RA>, A>
 where
 	A: txpool::ChainApi<Block=Block>,
 	B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + Clone + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + Clone + 'static,
 	Block: BlockT<Hash=H256>,
 	RA: Send + Sync + 'static,
 	SubstrateClient<B, E, Block, RA>: ProvideRuntimeApi,
@@ -123,7 +123,7 @@ where
 impl<Block, B, E, RA, A> Proposer<Block, SubstrateClient<B, E, Block, RA>, A>	where
 	A: txpool::ChainApi<Block=Block>,
 	B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + Clone + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + Clone + 'static,
 	Block: BlockT<Hash=H256>,
 	RA: Send + Sync + 'static,
 	SubstrateClient<B, E, Block, RA>: ProvideRuntimeApi,

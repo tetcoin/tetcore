@@ -19,8 +19,6 @@
 
 #![allow(missing_docs)]
 
-use std::sync::Arc;
-
 use client_api::backend::LocalBackend;
 use crate::block_builder_ext::BlockBuilderExt;
 use client_api::blockchain::{Backend as BlockChainBackendT, HeaderBackend};
@@ -32,7 +30,7 @@ use sr_primitives::generic::BlockId;
 use sr_primitives::traits::Block as BlockT;
 
 /// helper to test the `leaves` implementation for various backends
-pub fn test_leaves_for_backend<B: 'static>(backend: Arc<B>) where
+pub fn test_leaves_for_backend<B: 'static>(backend: B) where
 	B: LocalBackend<runtime::Block, Blake2Hasher>,
 {
 	// block tree:
@@ -41,8 +39,8 @@ pub fn test_leaves_for_backend<B: 'static>(backend: Arc<B>) where
 	//			  B2 -> C3
 	//		A1 -> D2
 
-	let client = TestClientBuilder::with_backend(backend.clone()).build();
-	let blockchain = backend.blockchain();
+	let client = TestClientBuilder::with_backend(backend).build();
+	let blockchain = client.backend().blockchain();
 
 	let genesis_hash = client.info().chain.genesis_hash;
 
@@ -148,7 +146,7 @@ pub fn test_leaves_for_backend<B: 'static>(backend: Arc<B>) where
 }
 
 /// helper to test the `children` implementation for various backends
-pub fn test_children_for_backend<B: 'static>(backend: Arc<B>) where
+pub fn test_children_for_backend<B: 'static>(backend: B) where
 	B: LocalBackend<runtime::Block, Blake2Hasher>,
 {
 	// block tree:
@@ -157,8 +155,8 @@ pub fn test_children_for_backend<B: 'static>(backend: Arc<B>) where
 	//			  B2 -> C3
 	//		A1 -> D2
 
-	let client = TestClientBuilder::with_backend(backend.clone()).build();
-	let blockchain = backend.blockchain();
+	let client = TestClientBuilder::with_backend(backend).build();
+	let blockchain = client.backend().blockchain();
 
 	// G -> A1
 	let a1 = client.new_block(Default::default()).unwrap().bake().unwrap();
@@ -239,7 +237,7 @@ pub fn test_children_for_backend<B: 'static>(backend: Arc<B>) where
 	assert_eq!(vec![b3.hash(), c3.hash()], children4);
 }
 
-pub fn test_blockchain_query_by_number_gets_canonical<B: 'static>(backend: Arc<B>) where
+pub fn test_blockchain_query_by_number_gets_canonical<B: 'static>(backend: B) where
 	B: LocalBackend<runtime::Block, Blake2Hasher>,
 {
 	// block tree:
@@ -247,8 +245,8 @@ pub fn test_blockchain_query_by_number_gets_canonical<B: 'static>(backend: Arc<B
 	//		A1 -> B2 -> B3 -> B4
 	//			  B2 -> C3
 	//		A1 -> D2
-	let client = TestClientBuilder::with_backend(backend.clone()).build();
-	let blockchain = backend.blockchain();
+	let client = TestClientBuilder::with_backend(backend).build();
+	let blockchain = client.backend().blockchain();
 
 	// G -> A1
 	let a1 = client.new_block(Default::default()).unwrap().bake().unwrap();

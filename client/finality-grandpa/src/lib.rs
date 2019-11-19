@@ -257,7 +257,7 @@ pub(crate) trait BlockStatus<Block: BlockT> {
 
 impl<B, E, Block: BlockT<Hash=H256>, RA> BlockStatus<Block> for Arc<Client<B, E, Block, RA>> where
 	B: Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	RA: Send + Sync,
 	NumberFor<Block>: BlockNumberOps,
 {
@@ -374,7 +374,7 @@ pub trait GenesisAuthoritySetProvider<Block: BlockT> {
 impl<B, E, Block: BlockT<Hash=H256>, RA> GenesisAuthoritySetProvider<Block> for Client<B, E, Block, RA>
 	where
 		B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+		E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 		RA: Send + Sync,
 {
 	fn get(&self) -> Result<AuthorityList, ClientError> {
@@ -383,6 +383,7 @@ impl<B, E, Block: BlockT<Hash=H256>, RA> GenesisAuthoritySetProvider<Block> for 
 		// the chain, whereas the runtime API is backwards compatible.
 		self.executor()
 			.call(
+				self.backend(),
 				&BlockId::Number(Zero::zero()),
 				"GrandpaApi_grandpa_authorities",
 				&[],
@@ -410,7 +411,7 @@ pub fn block_import<B, E, Block: BlockT<Hash=H256>, RA, SC>(
 	), ClientError>
 where
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 	RA: Send + Sync,
 	SC: SelectChain<Block>,
 {
@@ -466,7 +467,7 @@ fn global_communication<Block: BlockT<Hash=H256>, B, E, N, RA>(
 	>,
 ) where
 	B: Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	N: Network<Block>,
 	RA: Send + Sync,
 	NumberFor<Block>: BlockNumberOps,
@@ -502,7 +503,7 @@ fn register_finality_tracker_inherent_data_provider<B, E, Block: BlockT<Hash=H25
 	inherent_data_providers: &InherentDataProviders,
 ) -> Result<(), consensus_common::Error> where
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	RA: Send + Sync + 'static,
 {
 	if !inherent_data_providers.has_provider(&paint_finality_tracker::INHERENT_IDENTIFIER) {
@@ -549,7 +550,7 @@ pub fn run_grandpa_voter<B, E, Block: BlockT<Hash=H256>, N, RA, SC, VR, X>(
 ) -> client_api::error::Result<impl Future<Item=(),Error=()> + Send + 'static> where
 	Block::Hash: Ord,
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	N: Network<Block> + Send + Sync + 'static,
 	N::In: Send + 'static,
 	SC: SelectChain<Block> + 'static,
@@ -654,7 +655,7 @@ where
 	N::In: Send + 'static,
 	NumberFor<Block>: BlockNumberOps,
 	RA: 'static + Send + Sync,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	B: Backend<Block, Blake2Hasher> + 'static,
 	SC: SelectChain<Block> + 'static,
 	VR: VotingRule<Block, Client<B, E, Block, RA>> + Clone + 'static,
@@ -829,7 +830,7 @@ where
 	N::In: Send + 'static,
 	NumberFor<Block>: BlockNumberOps,
 	RA: 'static + Send + Sync,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	B: Backend<Block, Blake2Hasher> + 'static,
 	SC: SelectChain<Block> + 'static,
 	VR: VotingRule<Block, Client<B, E, Block, RA>> + Clone + 'static,
@@ -882,7 +883,7 @@ pub fn run_grandpa<B, E, Block: BlockT<Hash=H256>, N, RA, SC, VR, X>(
 ) -> ::client_api::error::Result<impl Future<Item=(),Error=()> + Send + 'static> where
 	Block::Hash: Ord,
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	N: Network<Block> + Send + Sync + 'static,
 	N::In: Send + 'static,
 	SC: SelectChain<Block> + 'static,
@@ -907,7 +908,7 @@ pub fn setup_disabled_grandpa<B, E, Block: BlockT<Hash=H256>, RA, N>(
 	network: N,
 ) -> Result<(), consensus_common::Error> where
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	RA: Send + Sync + 'static,
 	N: Network<Block> + Send + Sync + 'static,
 	N::In: Send + 'static,

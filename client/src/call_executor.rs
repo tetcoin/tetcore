@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
 
-use std::{sync::Arc, panic::UnwindSafe, result, cell::RefCell};
+use std::{panic::UnwindSafe, result, cell::RefCell};
 use codec::{Encode, Decode};
 use sr_primitives::{
 	generic::BlockId, traits::Block as BlockT, traits::NumberFor,
@@ -37,47 +37,47 @@ use client_api::{
 
 /// Call executor that executes methods locally, querying all required
 /// data from local backend.
-pub struct LocalCallExecutor<B, E> {
-	backend: Arc<B>,
+pub struct LocalCallExecutor<E> {
 	executor: E,
 	keystore: Option<primitives::traits::BareCryptoStorePtr>,
 }
 
-impl<B, E> LocalCallExecutor<B, E> {
+impl<E> LocalCallExecutor<E> {
 	/// Creates new instance of local call executor.
 	pub fn new(
-		backend: Arc<B>,
 		executor: E,
 		keystore: Option<primitives::traits::BareCryptoStorePtr>,
 	) -> Self {
 		LocalCallExecutor {
-			backend,
 			executor,
 			keystore,
 		}
 	}
 }
 
-impl<B, E> Clone for LocalCallExecutor<B, E> where E: Clone {
+impl<E> Clone for LocalCallExecutor<E>
+where
+	E: Clone,
+{
 	fn clone(&self) -> Self {
 		LocalCallExecutor {
-			backend: self.backend.clone(),
 			executor: self.executor.clone(),
 			keystore: self.keystore.clone(),
 		}
 	}
 }
 
-impl<B, E, Block> CallExecutor<Block, Blake2Hasher> for LocalCallExecutor<B, E>
+impl<E, Block, BE> CallExecutor<Block, Blake2Hasher, BE> for LocalCallExecutor<E>
 where
-	B: backend::Backend<Block, Blake2Hasher>,
 	E: CodeExecutor + RuntimeInfo,
 	Block: BlockT<Hash=H256>,
+	BE: backend::Backend<Block, Blake2Hasher>,
 {
 	type Error = E::Error;
 
 	fn call(
 		&self,
+		backend: &BE,
 		id: &BlockId<Block>,
 		method: &str,
 		call_data: &[u8],
@@ -85,10 +85,10 @@ where
 		side_effects_handler: Option<OffchainExt>,
 	) -> error::Result<Vec<u8>> {
 		let mut changes = OverlayedChanges::default();
-		let state = self.backend.state_at(*id)?;
+		let state = backend.state_at(*id)?;
 		let return_data = StateMachine::new(
 			&state,
-			self.backend.changes_trie_storage(),
+			backend.changes_trie_storage(),
 			side_effects_handler,
 			&mut changes,
 			&self.executor,
@@ -101,7 +101,7 @@ where
 			None,
 		)
 		.map(|(result, _, _)| result)?;
-		self.backend.destroy_state(state)?;
+		backend.destroy_state(state)?;
 		Ok(return_data.into_encoded())
 	}
 
@@ -116,6 +116,7 @@ where
 		NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 	>(
 		&self,
+		backend: &BE,
 		initialize_block_fn: IB,
 		at: &BlockId<Block>,
 		method: &str,
@@ -143,7 +144,7 @@ where
 			None
 		};
 
-		let mut state = self.backend.state_at(*at)?;
+		let mut state = backend.state_at(*at)?;
 
 		let result = match recorder {
 			Some(recorder) => {
@@ -153,14 +154,14 @@ where
 							as Box<dyn state_machine::Error>
 					)?;
 
-				let backend = state_machine::ProvingBackend::new_with_recorder(
+				let b = state_machine::ProvingBackend::new_with_recorder(
 					trie_state,
 					recorder.clone()
 				);
 
 				StateMachine::new(
-					&backend,
-					self.backend.changes_trie_storage(),
+					&b,
+					backend.changes_trie_storage(),
 					side_effects_handler,
 					&mut *changes.borrow_mut(),
 					&self.executor,
@@ -178,7 +179,7 @@ where
 			}
 			None => StateMachine::new(
 				&state,
-				self.backend.changes_trie_storage(),
+				backend.changes_trie_storage(),
 				side_effects_handler,
 				&mut *changes.borrow_mut(),
 				&self.executor,
@@ -193,22 +194,26 @@ where
 			)
 			.map(|(result, _, _)| result)
 		}?;
-		self.backend.destroy_state(state)?;
+		backend.destroy_state(state)?;
 		Ok(result)
 	}
 
-	fn runtime_version(&self, id: &BlockId<Block>) -> error::Result<RuntimeVersion> {
+	fn runtime_version(
+		&self,
+		backend: &BE,
+		id: &BlockId<Block>
+	) -> error::Result<RuntimeVersion> {
 		let mut overlay = OverlayedChanges::default();
-		let state = self.backend.state_at(*id)?;
+		let state = backend.state_at(*id)?;
 
 		let mut ext = Ext::new(
 			&mut overlay,
 			&state,
-			self.backend.changes_trie_storage(),
+			backend.changes_trie_storage(),
 			None,
 		);
 		let version = self.executor.runtime_version(&mut ext);
-		self.backend.destroy_state(state)?;
+		backend.destroy_state(state)?;
 		version.ok_or(error::Error::VersionInvalid.into())
 	}
 
@@ -221,6 +226,7 @@ where
 		R: Encode + Decode + PartialEq,
 		NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 	>(&self,
+		backend: &BE,
 		state: &S,
 		changes: &mut OverlayedChanges,
 		method: &str,
@@ -235,7 +241,7 @@ where
 	)> {
 		StateMachine::new(
 			state,
-			self.backend.changes_trie_storage(),
+			backend.changes_trie_storage(),
 			side_effects_handler,
 			changes,
 			&self.executor,

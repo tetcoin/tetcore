@@ -72,7 +72,7 @@ pub trait AuthoritySetForFinalityProver<Block: BlockT>: Send + Sync {
 impl<B, E, Block: BlockT<Hash=H256>, RA> AuthoritySetForFinalityProver<Block> for Client<B, E, Block, RA>
 	where
 		B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+		E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 		RA: Send + Sync,
 {
 	fn authorities(&self, block: &BlockId<Block>) -> ClientResult<AuthorityList> {
@@ -135,31 +135,38 @@ impl<Block: BlockT> AuthoritySetForFinalityChecker<Block> for Arc<dyn FetchCheck
 }
 
 /// Finality proof provider for serving network requests.
-pub struct FinalityProofProvider<B,  Block: BlockT<Hash=H256>> {
-	backend: Arc<B>,
+pub struct FinalityProofProvider<B, E, Block, RA>
+where
+	Block: BlockT<Hash=H256>,
+{
+	client: Arc<Client<B, E, Block, RA>>,
 	authority_provider: Arc<dyn AuthoritySetForFinalityProver<Block>>,
+	_phantom: std::marker::PhantomData<(E, RA)>,
 }
 
-impl<B, Block: BlockT<Hash=H256>> FinalityProofProvider<B, Block>
-	where B: Backend<Block, Blake2Hasher> + Send + Sync + 'static
+impl<B, E, Block, RA> FinalityProofProvider<B, E, Block, RA>
+where
+	Block: BlockT<Hash=H256>,
 {
 	/// Create new finality proof provider using:
 	///
 	/// - backend for accessing blockchain data;
 	/// - authority_provider for calling and proving runtime methods.
 	pub fn new(
-		backend: Arc<B>,
+		client: Arc<Client<B, E, Block, RA>>,
 		authority_provider: Arc<dyn AuthoritySetForFinalityProver<Block>>,
 	) -> Self {
-		FinalityProofProvider { backend, authority_provider }
+		FinalityProofProvider { client, authority_provider, _phantom: Default::default() }
 	}
 }
 
-impl<B, Block> network::FinalityProofProvider<Block> for FinalityProofProvider<B, Block>
-	where
-		Block: BlockT<Hash=H256>,
-		NumberFor<Block>: BlockNumberOps,
-		B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
+impl<B, E, Block, RA> network::FinalityProofProvider<Block> for FinalityProofProvider<B, E, Block, RA>
+where
+	Block: BlockT<Hash=H256>,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
+	NumberFor<Block>: BlockNumberOps,
+	B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
+	RA: Send + Sync,
 {
 	fn prove_finality(
 		&self,
@@ -173,7 +180,7 @@ impl<B, Block> network::FinalityProofProvider<Block> for FinalityProofProvider<B
 			})?;
 		match request {
 			FinalityProofRequest::Original(request) => prove_finality::<_, _, GrandpaJustification<Block>>(
-				&*self.backend.blockchain(),
+				self.client.backend().blockchain(),
 				&*self.authority_provider,
 				request.authorities_set_id,
 				request.last_finalized,

@@ -31,7 +31,7 @@ use sr_api::{ProofRecorder, InitializeBlock};
 use crate::error;
 
 /// Method call executor.
-pub trait CallExecutor<B, H>
+pub trait CallExecutor<B, H, BE>
 where
 	B: BlockT,
 	H: Hasher<Out=B::Hash>,
@@ -45,6 +45,7 @@ where
 	/// No changes are made.
 	fn call(
 		&self,
+		backend: &BE,
 		id: &BlockId<B>,
 		method: &str,
 		call_data: &[u8],
@@ -68,6 +69,7 @@ where
 		NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 	>(
 		&self,
+		backend: &BE,
 		initialize_block_fn: IB,
 		at: &BlockId<B>,
 		method: &str,
@@ -84,7 +86,11 @@ where
 	/// Extract RuntimeVersion of given block
 	///
 	/// No changes are made.
-	fn runtime_version(&self, id: &BlockId<B>) -> Result<RuntimeVersion, error::Error>;
+	fn runtime_version(
+		&self,
+		backend: &BE,
+		id: &BlockId<B>
+	) -> Result<RuntimeVersion, error::Error>;
 
 	/// Execute a call to a contract on top of given state.
 	///
@@ -98,6 +104,7 @@ where
 		R: Encode + Decode + PartialEq,
 		NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 	>(&self,
+		backend: &BE,
 		state: &S,
 		overlay: &mut OverlayedChanges,
 		method: &str,

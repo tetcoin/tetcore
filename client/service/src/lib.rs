@@ -138,7 +138,7 @@ pub trait AbstractService: 'static + Future<Item = (), Error = Error> +
 	/// Backend storage for the client.
 	type Backend: 'static + client_api::backend::Backend<Self::Block, Blake2Hasher>;
 	/// How to execute calls towards the runtime.
-	type CallExecutor: 'static + client::CallExecutor<Self::Block, Blake2Hasher> + Send + Sync + Clone;
+	type CallExecutor: 'static + client::CallExecutor<Self::Block, Blake2Hasher, Self::Backend> + Send + Sync + Clone;
 	/// API that the runtime provides.
 	type RuntimeApi: Send + Sync;
 	/// Chain selection algorithm.
@@ -204,7 +204,7 @@ impl<TBl, TBackend, TExec, TRtApi, TSc, TNetSpec, TExPoolApi, TOc> AbstractServi
 where
 	TBl: BlockT<Hash = H256>,
 	TBackend: 'static + client_api::backend::Backend<TBl, Blake2Hasher>,
-	TExec: 'static + client::CallExecutor<TBl, Blake2Hasher> + Send + Sync + Clone,
+	TExec: 'static + client::CallExecutor<TBl, Blake2Hasher, TBackend> + Send + Sync + Clone,
 	TRtApi: 'static + Send + Sync,
 	TSc: consensus_common::SelectChain<TBl> + 'static + Clone + Send,
 	TExPoolApi: 'static + ChainApi<Block = TBl>,

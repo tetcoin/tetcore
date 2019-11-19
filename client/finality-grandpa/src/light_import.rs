@@ -56,13 +56,12 @@ const LIGHT_CONSENSUS_CHANGES_KEY: &[u8] = b"grandpa_consensus_changes";
 /// Create light block importer.
 pub fn light_block_import<B, E, Block: BlockT<Hash=H256>, RA>(
 	client: Arc<Client<B, E, Block, RA>>,
-	backend: Arc<B>,
 	genesis_authorities_provider: &dyn GenesisAuthoritySetProvider<Block>,
 	authority_set_provider: Arc<dyn AuthoritySetForFinalityChecker<Block>>,
 ) -> Result<GrandpaLightBlockImport<B, E, Block, RA>, ClientError>
 	where
 		B: Backend<Block, Blake2Hasher> + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+		E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 		RA: Send + Sync,
 {
 	let info = client.info();
@@ -73,7 +72,6 @@ pub fn light_block_import<B, E, Block: BlockT<Hash=H256>, RA>(
 	)?;
 	Ok(GrandpaLightBlockImport {
 		client,
-		backend,
 		authority_set_provider,
 		data: Arc::new(RwLock::new(import_data)),
 	})
@@ -86,7 +84,6 @@ pub fn light_block_import<B, E, Block: BlockT<Hash=H256>, RA>(
 /// - fetching finality proofs for blocks that are enacting consensus changes.
 pub struct GrandpaLightBlockImport<B, E, Block: BlockT<Hash=H256>, RA> {
 	client: Arc<Client<B, E, Block, RA>>,
-	backend: Arc<B>,
 	authority_set_provider: Arc<dyn AuthoritySetForFinalityChecker<Block>>,
 	data: Arc<RwLock<LightImportData<Block>>>,
 }
@@ -95,7 +92,6 @@ impl<B, E, Block: BlockT<Hash=H256>, RA> Clone for GrandpaLightBlockImport<B, E,
 	fn clone(&self) -> Self {
 		GrandpaLightBlockImport {
 			client: self.client.clone(),
-			backend: self.backend.clone(),
 			authority_set_provider: self.authority_set_provider.clone(),
 			data: self.data.clone(),
 		}
@@ -127,7 +123,7 @@ impl<B, E, Block: BlockT<Hash=H256>, RA> BlockImport<Block>
 	for GrandpaLightBlockImport<B, E, Block, RA> where
 		NumberFor<Block>: grandpa::BlockNumberOps,
 		B: Backend<Block, Blake2Hasher> + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+		E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 		DigestFor<Block>: Encode,
 		RA: Send + Sync,
 {
@@ -155,7 +151,7 @@ impl<B, E, Block: BlockT<Hash=H256>, RA> FinalityProofImport<Block>
 	for GrandpaLightBlockImport<B, E, Block, RA> where
 		NumberFor<Block>: grandpa::BlockNumberOps,
 		B: Backend<Block, Blake2Hasher> + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+		E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 		DigestFor<Block>: Encode,
 		RA: Send + Sync,
 {
@@ -184,7 +180,7 @@ impl<B, E, Block: BlockT<Hash=H256>, RA> FinalityProofImport<Block>
 	) -> Result<(Block::Hash, NumberFor<Block>), Self::Error> {
 		do_import_finality_proof::<_, _, _, GrandpaJustification<Block>>(
 			&*self.client,
-			self.backend.clone(),
+			self.client.backend(),
 			&*self.authority_set_provider,
 			&mut *self.data.write(),
 			hash,
@@ -295,7 +291,7 @@ fn do_import_block<B, C, Block: BlockT<Hash=H256>, J>(
 /// Try to import finality proof.
 fn do_import_finality_proof<B, C, Block: BlockT<Hash=H256>, J>(
 	client: C,
-	backend: Arc<B>,
+	backend: &B,
 	authority_set_provider: &dyn AuthoritySetForFinalityChecker<Block>,
 	data: &mut LightImportData<Block>,
 	_hash: Block::Hash,
@@ -574,7 +570,7 @@ pub mod tests {
 		for NoJustificationsImport<B, E, Block, RA> where
 			NumberFor<Block>: grandpa::BlockNumberOps,
 			B: Backend<Block, Blake2Hasher> + 'static,
-			E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+			E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 			DigestFor<Block>: Encode,
 			RA: Send + Sync,
 	{
@@ -601,7 +597,7 @@ pub mod tests {
 		for NoJustificationsImport<B, E, Block, RA> where
 			NumberFor<Block>: grandpa::BlockNumberOps,
 			B: Backend<Block, Blake2Hasher> + 'static,
-			E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+			E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 			DigestFor<Block>: Encode,
 			RA: Send + Sync,
 	{
@@ -631,7 +627,7 @@ pub mod tests {
 	) -> Result<NoJustificationsImport<B, E, Block, RA>, ClientError>
 		where
 			B: Backend<Block, Blake2Hasher> + 'static,
-			E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+			E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 			RA: Send + Sync,
 	{
 		light_block_import(client, backend, genesis_authorities_provider, authority_set_provider)

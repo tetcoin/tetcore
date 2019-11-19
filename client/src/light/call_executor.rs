@@ -17,7 +17,7 @@
 //! Methods that light client could use to execute runtime calls.
 
 use std::{
-	sync::Arc, panic::UnwindSafe, result, cell::RefCell,
+	panic::UnwindSafe, result, cell::RefCell,
 };
 
 use codec::{Encode, Decode};
@@ -48,46 +48,45 @@ use executor::{RuntimeVersion, NativeVersion};
 /// Call executor that is able to execute calls only on genesis state.
 ///
 /// Trying to execute call on non-genesis state leads to error.
-pub struct GenesisCallExecutor<B, L> {
-	backend: Arc<B>,
+pub struct GenesisCallExecutor<L> {
 	local: L,
 }
 
-impl<B, L> GenesisCallExecutor<B, L> {
+impl<L> GenesisCallExecutor<L> {
 	/// Create new genesis call executor.
-	pub fn new(backend: Arc<B>, local: L) -> Self {
-		Self { backend, local }
+	pub fn new(local: L) -> Self {
+		Self { local }
 	}
 }
 
-impl<B, L: Clone> Clone for GenesisCallExecutor<B, L> {
+impl<L: Clone> Clone for GenesisCallExecutor<L> {
 	fn clone(&self) -> Self {
 		GenesisCallExecutor {
-			backend: self.backend.clone(),
 			local: self.local.clone(),
 		}
 	}
 }
 
-impl<Block, B, Local> CallExecutor<Block, Blake2Hasher> for
-	GenesisCallExecutor<B, Local>
-	where
-		Block: BlockT<Hash=H256>,
-		B: RemoteBackend<Block, Blake2Hasher>,
-		Local: CallExecutor<Block, Blake2Hasher>,
+impl<Block, Local, BE> CallExecutor<Block, Blake2Hasher, BE> for GenesisCallExecutor<Local>
+where
+	Block: BlockT<Hash=H256>,
+	Local: CallExecutor<Block, Blake2Hasher, BE>,
+	BE: RemoteBackend<Block, Blake2Hasher>,
 {
+
 	type Error = ClientError;
 
 	fn call(
 		&self,
+		backend: &BE,
 		id: &BlockId<Block>,
 		method: &str,
 		call_data: &[u8],
 		strategy: ExecutionStrategy,
 		side_effects_handler: Option<OffchainExt>,
 	) -> ClientResult<Vec<u8>> {
-		match self.backend.is_local_state_available(id) {
-			true => self.local.call(id, method, call_data, strategy, side_effects_handler),
+		match backend.is_local_state_available(id) {
+			true => self.local.call(backend, id, method, call_data, strategy, side_effects_handler),
 			false => Err(ClientError::NotAvailableOnLightClient),
 		}
 	}
@@ -103,6 +102,7 @@ impl<Block, B, Local> CallExecutor<Block, Blake2Hasher> for
 		NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 	>(
 		&self,
+		backend: &BE,
 		initialize_block_fn: IB,
 		at: &BlockId<Block>,
 		method: &str,
@@ -112,14 +112,14 @@ impl<Block, B, Local> CallExecutor<Block, Blake2Hasher> for
 		_manager: ExecutionManager<EM>,
 		native_call: Option<NC>,
 		side_effects_handler: Option<OffchainExt>,
-		recorder: &Option<ProofRecorder<Block>>,
+		proof_recorder: &Option<ProofRecorder<Block>>,
 		enable_keystore: bool,
 	) -> ClientResult<NativeOrEncoded<R>> where ExecutionManager<EM>: Clone {
 		// there's no actual way/need to specify native/wasm execution strategy on light node
 		// => we can safely ignore passed values
 
-		match self.backend.is_local_state_available(at) {
-			true => CallExecutor::contextual_call::<
+		match backend.is_local_state_available(at) {
+			true => self.local.contextual_call::<
 				_,
 				fn(
 					Result<NativeOrEncoded<R>, Local::Error>,
@@ -128,7 +128,7 @@ impl<Block, B, Local> CallExecutor<Block, Blake2Hasher> for
 				_,
 				NC
 			>(
-				&self.local,
+				backend,
 				initialize_block_fn,
 				at,
 				method,
@@ -138,16 +138,20 @@ impl<Block, B, Local> CallExecutor<Block, Blake2Hasher> for
 				ExecutionManager::NativeWhenPossible,
 				native_call,
 				side_effects_handler,
-				recorder,
+				proof_recorder,
 				enable_keystore,
 			).map_err(|e| ClientError::Execution(Box::new(e.to_string()))),
 			false => Err(ClientError::NotAvailableOnLightClient),
 		}
 	}
 
-	fn runtime_version(&self, id: &BlockId<Block>) -> ClientResult<RuntimeVersion> {
-		match self.backend.is_local_state_available(id) {
-			true => self.local.runtime_version(id),
+	fn runtime_version(
+		&self,
+		backend: &BE,
+		id: &BlockId<Block>
+	) -> ClientResult<RuntimeVersion> {
+		match backend.is_local_state_available(id) {
+			true => self.local.runtime_version(backend, id),
 			false => Err(ClientError::NotAvailableOnLightClient),
 		}
 	}
@@ -161,6 +165,7 @@ impl<Block, B, Local> CallExecutor<Block, Blake2Hasher> for
 		R: Encode + Decode + PartialEq,
 		NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 	>(&self,
+		_backend: &BE,
 		_state: &S,
 		_changes: &mut OverlayedChanges,
 		_method: &str,
@@ -178,14 +183,15 @@ impl<Block, B, Local> CallExecutor<Block, Blake2Hasher> for
 
 	fn prove_at_trie_state<S: state_machine::TrieBackendStorage<Blake2Hasher>>(
 		&self,
-		_state: &state_machine::TrieBackend<S, Blake2Hasher>,
-		_changes: &mut OverlayedChanges,
+		_trie_state: &state_machine::TrieBackend<S, Blake2Hasher>,
+		_overlay: &mut OverlayedChanges,
 		_method: &str,
 		_call_data: &[u8]
-	) -> ClientResult<(Vec<u8>, StorageProof)> {
+	) -> Result<(Vec<u8>, StorageProof), ClientError> {
 		Err(ClientError::NotAvailableOnLightClient)
 	}
 
+	/// Get runtime version if supported.
 	fn native_runtime_version(&self) -> Option<&NativeVersion> {
 		None
 	}
@@ -195,7 +201,7 @@ impl<Block, B, Local> CallExecutor<Block, Blake2Hasher> for
 ///
 /// Method is executed using passed header as environment' current block.
 /// Proof includes both environment preparation proof and method execution proof.
-pub fn prove_execution<Block, S, E>(
+pub fn prove_execution<Block, S, E, BE>(
 	mut state: S,
 	header: Block::Header,
 	executor: &E,
@@ -205,7 +211,7 @@ pub fn prove_execution<Block, S, E>(
 	where
 		Block: BlockT<Hash=H256>,
 		S: StateBackend<Blake2Hasher>,
-		E: CallExecutor<Block, Blake2Hasher>,
+		E: CallExecutor<Block, Blake2Hasher, BE>,
 {
 	let trie_state = state.as_trie_backend()
 		.ok_or_else(|| Box::new(state_machine::ExecutionError::UnableToGenerateProof) as Box<dyn state_machine::Error>)?;
@@ -304,11 +310,12 @@ mod tests {
 
 	struct DummyCallExecutor;
 
-	impl CallExecutor<Block, Blake2Hasher> for DummyCallExecutor {
+	impl CallExecutor<Block, Blake2Hasher, InMemBackend<Block, Blake2Hasher>> for DummyCallExecutor {
 		type Error = ClientError;
 
 		fn call(
 			&self,
+			_backend: &InMemBackend<Block, Blake2Hasher>,
 			_id: &BlockId<Block>,
 			_method: &str,
 			_call_data: &[u8],
@@ -329,6 +336,7 @@ mod tests {
 			NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 		>(
 			&self,
+			_backend: &InMemBackend<Block, Blake2Hasher>,
 			_initialize_block_fn: IB,
 			_at: &BlockId<Block>,
 			_method: &str,
@@ -344,7 +352,11 @@ mod tests {
 			unreachable!()
 		}
 
-		fn runtime_version(&self, _id: &BlockId<Block>) -> Result<RuntimeVersion, ClientError> {
+		fn runtime_version(
+			&self,
+			_backend: &InMemBackend<Block, Blake2Hasher>,
+			_id: &BlockId<Block>
+		) -> Result<RuntimeVersion, ClientError> {
 			unreachable!()
 		}
 
@@ -357,6 +369,7 @@ mod tests {
 			R: Encode + Decode + PartialEq,
 			NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 		>(&self,
+			_backend: &InMemBackend<Block, Blake2Hasher>,
 			_state: &S,
 			_overlay: &mut OverlayedChanges,
 			_method: &str,
@@ -497,7 +510,7 @@ mod tests {
 
 	#[test]
 	fn code_is_executed_at_genesis_only() {
-		let backend = Arc::new(InMemBackend::<Block, Blake2Hasher>::new());
+		let backend = InMemBackend::<Block, Blake2Hasher>::new();
 		let def = H256::default();
 		let header0 = test_client::runtime::Header::new(0, def, def, def, Default::default());
 		let hash0 = header0.hash();
@@ -506,9 +519,10 @@ mod tests {
 		backend.blockchain().insert(hash0, header0, None, None, NewBlockState::Final).unwrap();
 		backend.blockchain().insert(hash1, header1, None, None, NewBlockState::Final).unwrap();
 
-		let genesis_executor = GenesisCallExecutor::new(backend, DummyCallExecutor);
+		let genesis_executor = GenesisCallExecutor::new(DummyCallExecutor);
 		assert_eq!(
 			genesis_executor.call(
+				&backend,
 				&BlockId::Number(0),
 				"test_method",
 				&[],
@@ -519,6 +533,7 @@ mod tests {
 		);
 
 		let call_on_unavailable = genesis_executor.call(
+			&backend,
 			&BlockId::Number(1),
 			"test_method",
 			&[],

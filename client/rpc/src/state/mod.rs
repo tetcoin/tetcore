@@ -48,7 +48,7 @@ pub trait StateBackend<B, E, Block: BlockT, RA>: Send + Sync + 'static
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: client::CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+		E: client::CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 		RA: Send + Sync + 'static,
 {
 	/// Call runtime method at given block.
@@ -180,7 +180,7 @@ pub fn new_full<B, E, Block: BlockT, RA>(
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 		RA: Send + Sync + 'static,
 		Client<B, E, Block, RA>: ProvideRuntimeApi,
 		<Client<B, E, Block, RA> as ProvideRuntimeApi>::Api:
@@ -201,7 +201,7 @@ pub fn new_light<B, E, Block: BlockT, RA, F: Fetcher<Block>>(
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 		RA: Send + Sync + 'static,
 		F: Send + Sync + 'static,
 {
@@ -224,7 +224,7 @@ impl<B, E, Block, RA> StateApi<Block::Hash> for State<B, E, Block, RA>
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: client_api::backend::Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 		RA: Send + Sync + 'static,
 {
 	type Metadata = crate::metadata::Metadata;

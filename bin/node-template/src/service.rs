@@ -38,8 +38,8 @@ macro_rules! new_full_start {
 		let builder = substrate_service::ServiceBuilder::new_full::<
 			runtime::opaque::Block, runtime::RuntimeApi, crate::service::Executor
 		>($config)?
-			.with_select_chain(|_config, backend| {
-				Ok(substrate_client::LongestChain::new(backend.clone()))
+			.with_select_chain(|_config, client| {
+				Ok(substrate_client::LongestChain::new(client.clone()))
 			})?
 			.with_transaction_pool(|config, client|
 				Ok(transaction_pool::txpool::Pool::new(config, transaction_pool::FullChainApi::new(client)))
@@ -93,8 +93,8 @@ pub fn new_full<C: Send + Default + 'static>(config: Configuration<C, GenesisCon
 			.expect("Link Half and Block Import are present for Full Services or setup failed before. qed");
 
 	let service = builder.with_network_protocol(|_| Ok(NodeProtocol::new()))?
-		.with_finality_proof_provider(|client, backend|
-			Ok(Arc::new(GrandpaFinalityProofProvider::new(backend, client)) as _)
+		.with_finality_proof_provider(|client|
+			Ok(Arc::new(GrandpaFinalityProofProvider::new(client.clone(), client)) as _)
 		)?
 		.build()?;
 
@@ -188,18 +188,18 @@ pub fn new_light<C: Send + Default + 'static>(config: Configuration<C, GenesisCo
 	let inherent_data_providers = InherentDataProviders::new();
 
 	ServiceBuilder::new_light::<Block, RuntimeApi, Executor>(config)?
-		.with_select_chain(|_config, backend| {
-			Ok(LongestChain::new(backend.clone()))
+		.with_select_chain(|_config, client| {
+			Ok(LongestChain::new(client.clone()))
 		})?
 		.with_transaction_pool(|config, client|
 			Ok(TransactionPool::new(config, transaction_pool::FullChainApi::new(client)))
 		)?
-		.with_import_queue_and_fprb(|_config, client, backend, fetcher, _select_chain, _tx_pool| {
+		.with_import_queue_and_fprb(|_config, client, fetcher, _select_chain, _tx_pool| {
 			let fetch_checker = fetcher
 				.map(|fetcher| fetcher.checker().clone())
 				.ok_or_else(|| "Trying to start light import queue without active fetch checker")?;
 			let grandpa_block_import = grandpa::light_block_import::<_, _, _, RuntimeApi>(
-				client.clone(), backend, &*client.clone(), Arc::new(fetch_checker),
+				client.clone(), &*client.clone(), Arc::new(fetch_checker),
 			)?;
 			let finality_proof_import = grandpa_block_import.clone();
 			let finality_proof_request_builder =
@@ -218,8 +218,8 @@ pub fn new_light<C: Send + Default + 'static>(config: Configuration<C, GenesisCo
 			Ok((import_queue, finality_proof_request_builder))
 		})?
 		.with_network_protocol(|_| Ok(NodeProtocol::new()))?
-		.with_finality_proof_provider(|client, backend|
-			Ok(Arc::new(GrandpaFinalityProofProvider::new(backend, client)) as _)
+		.with_finality_proof_provider(|client|
+			Ok(Arc::new(GrandpaFinalityProofProvider::new(client.clone(), client)) as _)
 		)?
 		.build()
 }

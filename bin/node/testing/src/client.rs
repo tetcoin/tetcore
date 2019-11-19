@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
 
-//! Utilites to build a `TestClient` for `node-runtime`.
+//! Utilities to build a `TestClient` for `node-runtime`.
 
 use sr_primitives::BuildStorage;
 
@@ -30,7 +30,7 @@ pub type Backend = client_db::Backend<node_primitives::Block>;
 /// Test client type.
 pub type Client = client::Client<
 	Backend,
-	client::LocalCallExecutor<Backend, Executor>,
+	client::LocalCallExecutor<Executor>,
 	node_primitives::Block,
 	node_runtime::RuntimeApi,
 >;
@@ -57,7 +57,7 @@ pub trait TestClientBuilderExt: Sized {
 }
 
 impl TestClientBuilderExt for test_client::TestClientBuilder<
-	client::LocalCallExecutor<Backend, Executor>,
+	client::LocalCallExecutor<Executor>,
 	Backend,
 	GenesisParameters,
 > {
@@ -66,8 +66,6 @@ impl TestClientBuilderExt for test_client::TestClientBuilder<
 	}
 
 	fn build(self) -> Client {
-		self.build_with_native_executor(None).0
+		self.build_with_native_executor(None)
 	}
 }
-
-

@@ -60,8 +60,8 @@ macro_rules! new_full_start {
 		let builder = substrate_service::ServiceBuilder::new_full::<
 			node_primitives::Block, node_runtime::RuntimeApi, node_executor::Executor
 		>($config)?
-			.with_select_chain(|_config, backend| {
-				Ok(client::LongestChain::new(backend.clone()))
+			.with_select_chain(|_config, client| {
+				Ok(client::LongestChain::new(client.clone()))
 			})?
 			.with_transaction_pool(|config, client|
 				Ok(transaction_pool::txpool::Pool::new(config, transaction_pool::FullChainApi::new(client)))
@@ -96,7 +96,7 @@ macro_rules! new_full_start {
 				import_setup = Some((block_import, grandpa_link, babe_link));
 				Ok(import_queue)
 			})?
-			.with_rpc_extensions(|client, pool, _backend| -> RpcExtension {
+			.with_rpc_extensions(|client, pool| -> RpcExtension {
 				node_rpc::create(client, pool)
 			})?;
 
@@ -145,8 +145,8 @@ macro_rules! new_full {
 			mpsc::channel::<DhtEvent>(10_000);
 
 		let service = builder.with_network_protocol(|_| Ok(crate::service::NodeProtocol::new()))?
-			.with_finality_proof_provider(|client, backend|
-				Ok(Arc::new(grandpa::FinalityProofProvider::new(backend, client)) as _)
+			.with_finality_proof_provider(|client|
+				Ok(Arc::new(grandpa::FinalityProofProvider::new(client.clone(), client)) as _)
 			)?
 			.with_dht_event_tx(dht_event_tx)?
 			.build()?;
@@ -260,13 +260,19 @@ type ConcreteBlock = node_primitives::Block;
 type ConcreteClient =
 	Client<
 		Backend<ConcreteBlock>,
-		LocalCallExecutor<Backend<ConcreteBlock>,
-		NativeExecutor<node_executor::Executor>>,
+		LocalCallExecutor<NativeExecutor<node_executor::Executor>>,
 		ConcreteBlock,
 		node_runtime::RuntimeApi
 	>;
 #[allow(dead_code)]
 type ConcreteBackend = Backend<ConcreteBlock>;
+
+type ConcreteLongestChain = LongestChain<
+	Backend<ConcreteBlock>,
+	LocalCallExecutor<NativeExecutor<node_executor::Executor>>,
+	ConcreteBlock,
+	node_runtime::RuntimeApi
+>;
 
 /// A specialized configuration object for setting up the node..
 pub type NodeConfiguration<C> = Configuration<C, GenesisConfig, crate::chain_spec::Extensions>;
@@ -277,7 +283,7 @@ pub fn new_full<C: Send + Default + 'static>(config: NodeConfiguration<C>)
 	Service<
 		ConcreteBlock,
 		ConcreteClient,
-		LongestChain<ConcreteBackend, ConcreteBlock>,
+		ConcreteLongestChain,
 		NetworkStatus<ConcreteBlock>,
 		NetworkService<ConcreteBlock, crate::service::NodeProtocol, <ConcreteBlock as BlockT>::Hash>,
 		TransactionPool<transaction_pool::FullChainApi<ConcreteClient, ConcreteBlock>>,
@@ -306,13 +312,12 @@ pub fn new_light<C: Send + Default + 'static>(config: NodeConfiguration<C>)
 		.with_transaction_pool(|config, client|
 			Ok(TransactionPool::new(config, transaction_pool::FullChainApi::new(client)))
 		)?
-		.with_import_queue_and_fprb(|_config, client, backend, fetcher, _select_chain, _tx_pool| {
+		.with_import_queue_and_fprb(|_config, client, fetcher, _select_chain, _tx_pool| {
 			let fetch_checker = fetcher
 				.map(|fetcher| fetcher.checker().clone())
 				.ok_or_else(|| "Trying to start light import queue without active fetch checker")?;
 			let grandpa_block_import = grandpa::light_block_import::<_, _, _, RuntimeApi>(
 				client.clone(),
-				backend,
 				&*client,
 				Arc::new(fetch_checker),
 			)?;
@@ -341,10 +346,10 @@ pub fn new_light<C: Send + Default + 'static>(config: NodeConfiguration<C>)
 			Ok((import_queue, finality_proof_request_builder))
 		})?
 		.with_network_protocol(|_| Ok(NodeProtocol::new()))?
-		.with_finality_proof_provider(|client, backend|
-			Ok(Arc::new(GrandpaFinalityProofProvider::new(backend, client)) as _)
+		.with_finality_proof_provider(|client|
+			Ok(Arc::new(GrandpaFinalityProofProvider::new(client.clone(), client)) as _)
 		)?
-		.with_rpc_extensions(|client, pool, _backend| -> RpcExtension {
+		.with_rpc_extensions(|client, pool| -> RpcExtension {
 			node_rpc::create(client, pool)
 		})?
 		.build()?;

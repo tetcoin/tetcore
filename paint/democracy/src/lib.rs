@@ -269,7 +269,7 @@ decl_storage! {
 		pub NextTally get(fn next_tally) build(|_| 0 as ReferendumIndex): ReferendumIndex;
 		/// Information concerning any given referendum.
 		pub ReferendumInfoOf get(fn referendum_info):
-			map ReferendumIndex => Option<(ReferendumInfo<T::BlockNumber, T::Proposal>)>;
+			map ReferendumIndex => Option<ReferendumInfo<T::BlockNumber, T::Proposal>>;
 		/// Queue of successful referenda to be dispatched.
 		pub DispatchQueue get(fn dispatch_queue):
 			map T::BlockNumber => Vec<Option<(T::Proposal, ReferendumIndex)>>;

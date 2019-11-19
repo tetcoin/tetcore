@@ -34,7 +34,7 @@ use client_api::{
 	utils::is_descendent_of,
 };
 use client::{
-	apply_aux, Client, 
+	apply_aux, Client,
 };
 use grandpa::{
 	BlockNumberOps, Equivocation, Error as GrandpaError, round::State as RoundState,
@@ -410,7 +410,7 @@ for Environment<B, E, Block, N, RA, SC, VR>
 where
 	Block: 'static,
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	N: Network<Block> + 'static,
 	N::In: 'static,
 	SC: SelectChain<Block> + 'static,
@@ -520,7 +520,7 @@ pub(crate) fn ancestry<B, Block: BlockT<Hash=H256>, E, RA>(
 	block: Block::Hash,
 ) -> Result<Vec<Block::Hash>, GrandpaError> where
 	B: Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher>,
+	E: CallExecutor<Block, Blake2Hasher, B>,
 {
 	if base == block { return Err(GrandpaError::NotDescendent) }
 
@@ -551,7 +551,7 @@ for Environment<B, E, Block, N, RA, SC, VR>
 where
 	Block: 'static,
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + 'static + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + 'static + Send + Sync,
 	N: Network<Block> + 'static + Send,
 	N::In: 'static + Send,
 	RA: 'static + Send + Sync,
@@ -893,7 +893,7 @@ pub(crate) fn finalize_block<B, Block: BlockT<Hash=H256>, E, RA>(
 	justification_or_commit: JustificationOrCommit<Block>,
 ) -> Result<(), CommandOrError<Block::Hash, NumberFor<Block>>> where
 	B: Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	RA: Send + Sync,
 {
 	// NOTE: lock must be held through writing to DB to avoid race. this lock

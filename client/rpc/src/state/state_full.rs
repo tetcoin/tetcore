@@ -30,7 +30,7 @@ use rpc::{
 use api::Subscriptions;
 use client_api::{backend::Backend, error::Result as ClientResult};
 use client::{
-	Client, CallExecutor, BlockchainEvents, 
+	Client, CallExecutor, BlockchainEvents,
 };
 use primitives::{
 	H256, Blake2Hasher, Bytes, storage::{well_known_keys, StorageKey, StorageData, StorageChangeSet},
@@ -70,7 +70,7 @@ impl<B, E, Block: BlockT, RA> FullState<B, E, Block, RA>
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 {
 	/// Create new state API backend for full nodes.
 	pub fn new(client: Arc<Client<B, E, Block, RA>>, subscriptions: Subscriptions) -> Self {
@@ -228,7 +228,7 @@ impl<B, E, Block, RA> StateBackend<B, E, Block, RA> for FullState<B, E, Block, R
 	where
 		Block: BlockT<Hash=H256> + 'static,
 		B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static + Clone,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static + Clone,
 		RA: Send + Sync + 'static,
 		Client<B, E, Block, RA>: ProvideRuntimeApi,
 		<Client<B, E, Block, RA> as ProvideRuntimeApi>::Api:
@@ -247,6 +247,7 @@ impl<B, E, Block, RA> StateBackend<B, E, Block, RA> for FullState<B, E, Block, R
 					.client
 					.executor()
 					.call(
+						self.client.backend(),
 						&BlockId::Hash(block),
 						&method,
 						&*call_data,

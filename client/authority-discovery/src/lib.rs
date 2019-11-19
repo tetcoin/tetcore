@@ -541,7 +541,7 @@ mod tests {
 			&self,
 			_: &BlockId<Block>,
 			_: ExecutionContext,
-			_: Option<(Block)>,
+			_: Option<Block>,
 			_: Vec<u8>,
 		) -> std::result::Result<NativeOrEncoded<()>, client_api::error::Error> {
 			unimplemented!("Not required for testing!")

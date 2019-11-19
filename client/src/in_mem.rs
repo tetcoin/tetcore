@@ -812,7 +812,6 @@ pub fn check_genesis_storage(top: &StorageOverlay, children: &ChildrenStorageOve
 #[cfg(test)]
 mod tests {
 	use client_api::offchain::{OffchainStorage, InMemOffchainStorage};
-	use std::sync::Arc;
 	use test_client;
 	use primitives::Blake2Hasher;
 
@@ -820,15 +819,13 @@ mod tests {
 
 	#[test]
 	fn test_leaves_with_complex_block_tree() {
-		let backend = Arc::new(TestBackend::new());
-
+		let backend = TestBackend::new();
 		test_client::trait_tests::test_leaves_for_backend(backend);
 	}
 
 	#[test]
 	fn test_blockchain_query_by_number_gets_canonical() {
-		let backend = Arc::new(TestBackend::new());
-
+		let backend = TestBackend::new();
 		test_client::trait_tests::test_blockchain_query_by_number_gets_canonical(backend);
 	}
 

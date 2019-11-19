@@ -65,7 +65,6 @@ pub type Backend = generic_test_client::Backend<runtime::Block>;
 
 /// Test client executor.
 pub type Executor = client::LocalCallExecutor<
-	Backend,
 	NativeExecutor<LocalExecutor>,
 >;
 
@@ -74,14 +73,7 @@ pub type LightBackend = generic_test_client::LightBackend<runtime::Block>;
 
 /// Test client light executor.
 pub type LightExecutor = client::light::call_executor::GenesisCallExecutor<
-	LightBackend,
-	client::LocalCallExecutor<
-		client::light::backend::Backend<
-			client_db::light::LightStorage<runtime::Block>,
-			Blake2Hasher,
-		>,
-		NativeExecutor<LocalExecutor>
-	>
+	client::LocalCallExecutor<NativeExecutor<LocalExecutor>>
 >;
 
 /// Parameters of test-client builder with test-runtime.
@@ -142,7 +134,15 @@ pub type TestClientBuilder<E, B> = generic_test_client::TestClientBuilder<E, B, 
 /// Test client type with `LocalExecutor` and generic Backend.
 pub type Client<B> = client::Client<
 	B,
-	client::LocalCallExecutor<B, executor::NativeExecutor<LocalExecutor>>,
+	client::LocalCallExecutor<executor::NativeExecutor<LocalExecutor>>,
+	runtime::Block,
+	runtime::RuntimeApi,
+>;
+
+/// `LongestChain` for testing
+pub type LongestChain<B> = client::LongestChain<
+	B,
+	client::LocalCallExecutor<executor::NativeExecutor<LocalExecutor>>,
 	runtime::Block,
 	runtime::RuntimeApi,
 >;
@@ -166,7 +166,7 @@ impl DefaultTestClientBuilderExt for TestClientBuilder<
 }
 
 /// A `test-runtime` extensions to `TestClientBuilder`.
-pub trait TestClientBuilderExt<B>: Sized {
+pub trait TestClientBuilderExt<B: 'static>: Sized {
 	/// Enable or disable support for changes trie in genesis.
 	fn set_support_changes_trie(self, support_changes_trie: bool) -> Self;
 
@@ -192,20 +192,18 @@ pub trait TestClientBuilderExt<B>: Sized {
 	/// Panics if the key is empty.
 	fn add_extra_storage<K: Into<Vec<u8>>, V: Into<Vec<u8>>>(self, key: K, value: V) -> Self;
 
-	/// Build the test client.
-	fn build(self) -> Client<B> {
-		self.build_with_longest_chain().0
-	}
+	/// Build the test client without longest chain selector.
+	fn build(self) -> Client<B>;
 
 	/// Build the test client and longest chain selector.
-	fn build_with_longest_chain(self) -> (Client<B>, client::LongestChain<B, runtime::Block>);
+	fn build_with_longest_chain(self) -> (Arc<Client<B>>, LongestChain<B>);
 }
 
 impl<B> TestClientBuilderExt<B> for TestClientBuilder<
-	client::LocalCallExecutor<B, executor::NativeExecutor<LocalExecutor>>,
+	client::LocalCallExecutor<executor::NativeExecutor<LocalExecutor>>,
 	B
 > where
-	B: client_api::backend::Backend<runtime::Block, Blake2Hasher>,
+	B: client_api::backend::Backend<runtime::Block, Blake2Hasher> + 'static,
 {
 	fn set_heap_pages(mut self, heap_pages: u64) -> Self {
 		self.genesis_init_mut().heap_pages_override = Some(heap_pages);
@@ -241,9 +239,13 @@ impl<B> TestClientBuilderExt<B> for TestClientBuilder<
 		self
 	}
 
+	fn build(self) -> Client<B> {
+		unimplemented!();
+	}
 
-	fn build_with_longest_chain(self) -> (Client<B>, client::LongestChain<B, runtime::Block>) {
-		self.build_with_native_executor(None)
+	fn build_with_longest_chain(self) -> (Arc<Client<B>>, LongestChain<B>) {
+		unimplemented!();
+		// self.build_with_native_executor(None)
 	}
 }
 
@@ -253,25 +255,16 @@ pub fn new() -> Client<Backend> {
 }
 
 /// Creates new light client instance used for tests.
-pub fn new_light() -> (
-	client::Client<LightBackend, LightExecutor, runtime::Block, runtime::RuntimeApi>,
-	Arc<LightBackend>,
-) {
-
+pub fn new_light() -> client::Client<LightBackend, LightExecutor, runtime::Block, runtime::RuntimeApi>
+{
 	let storage = client_db::light::LightStorage::new_test();
 	let blockchain = Arc::new(client::light::blockchain::Blockchain::new(storage));
-	let backend = Arc::new(LightBackend::new(blockchain.clone()));
+	let backend = LightBackend::new(blockchain);
 	let executor = NativeExecutor::new(WasmExecutionMethod::Interpreted, None);
-	let local_call_executor = client::LocalCallExecutor::new(backend.clone(), executor, None);
+	let local_call_executor = client::LocalCallExecutor::new(executor, None);
 	let call_executor = LightExecutor::new(
-		backend.clone(),
 		local_call_executor,
 	);
 
-	(
-		TestClientBuilder::with_backend(backend.clone())
-			.build_with_executor(call_executor)
-			.0,
-		backend,
-	)
+	TestClientBuilder::with_backend(backend).build_with_executor(call_executor)
 }

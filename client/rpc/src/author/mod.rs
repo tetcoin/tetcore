@@ -83,7 +83,7 @@ impl<B, E, P, RA> Author<B, E, P, RA> where P: PoolChainApi + Sync + Send + 'sta
 
 impl<B, E, P, RA> AuthorApi<ExHash<P>, BlockHash<P>> for Author<B, E, P, RA> where
 	B: client_api::backend::Backend<<P as PoolChainApi>::Block, Blake2Hasher> + Send + Sync + 'static,
-	E: client_api::CallExecutor<<P as PoolChainApi>::Block, Blake2Hasher> + Send + Sync + 'static,
+	E: client_api::CallExecutor<<P as PoolChainApi>::Block, Blake2Hasher, B> + Send + Sync + 'static,
 	P: PoolChainApi + Sync + Send + 'static,
 	P::Block: traits::Block<Hash=H256>,
 	P::Error: 'static,

@@ -44,7 +44,7 @@ struct ObserverChain<'a, Block: BlockT, B, E, RA>(&'a Client<B, E, Block, RA>);
 impl<'a, Block: BlockT<Hash=H256>, B, E, RA> grandpa::Chain<Block::Hash, NumberFor<Block>>
 	for ObserverChain<'a, Block, B, E, RA> where
 		B: Backend<Block, Blake2Hasher>,
-		E: CallExecutor<Block, Blake2Hasher>,
+		E: CallExecutor<Block, Blake2Hasher, B>,
 		NumberFor<Block>: BlockNumberOps,
 {
 	fn ancestry(&self, base: Block::Hash, block: Block::Hash) -> Result<Vec<Block::Hash>, GrandpaError> {
@@ -68,7 +68,7 @@ fn grandpa_observer<B, E, Block: BlockT<Hash=H256>, RA, S, F>(
 ) -> impl Future<Item=(), Error=CommandOrError<H256, NumberFor<Block>>> where
 	NumberFor<Block>: BlockNumberOps,
 	B: Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	RA: Send + Sync,
 	S: Stream<
 		Item = CommunicationIn<Block>,
@@ -158,7 +158,7 @@ pub fn run_grandpa_observer<B, E, Block: BlockT<Hash=H256>, N, RA, SC>(
 	on_exit: impl Future<Item=(),Error=()> + Clone + Send + 'static,
 ) -> ::client_api::error::Result<impl Future<Item=(),Error=()> + Send + 'static> where
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	N: Network<Block> + Send + Sync + 'static,
 	N::In: Send + 'static,
 	SC: SelectChain<Block> + 'static,
@@ -194,7 +194,6 @@ pub fn run_grandpa_observer<B, E, Block: BlockT<Hash=H256>, N, RA, SC>(
 		});
 
 	let observer_work = network_startup.and_then(move |()| observer_work);
-
 	Ok(observer_work.select(on_exit).map(|_| ()).map_err(|_| ()))
 }
 
@@ -216,7 +215,7 @@ where
 	N::In: Send + 'static,
 	NumberFor<B>: BlockNumberOps,
 	RA: 'static + Send + Sync,
-	E: CallExecutor<B, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<B, Blake2Hasher, Bk> + Send + Sync + 'static,
 	Bk: Backend<B, Blake2Hasher> + 'static,
 {
 	fn new(
@@ -226,7 +225,6 @@ where
 		keystore: Option<keystore::KeyStorePtr>,
 		voter_commands_rx: mpsc::UnboundedReceiver<VoterCommand<B::Hash, NumberFor<B>>>,
 	) -> Self {
-
 		let mut work = ObserverWork {
 			// `observer` is set to a temporary value and replaced below when
 			// calling `rebuild_observer`.
@@ -332,7 +330,7 @@ where
 	N::In: Send + 'static,
 	NumberFor<B>: BlockNumberOps,
 	RA: 'static + Send + Sync,
-	E: CallExecutor<B, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<B, Blake2Hasher, Bk> + Send + Sync + 'static,
 	Bk: Backend<B, Blake2Hasher> + 'static,
 {
 	type Item = ();

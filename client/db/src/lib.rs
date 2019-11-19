@@ -226,28 +226,26 @@ pub fn new_client<E, S, Block, RA>(
 	fork_blocks: ForkBlocks<Block>,
 	execution_strategies: ExecutionStrategies,
 	keystore: Option<primitives::traits::BareCryptoStorePtr>,
-) -> Result<(
-		client::Client<
-			Backend<Block>,
-			client::LocalCallExecutor<Backend<Block>, E>,
-			Block,
-			RA,
-		>,
-		Arc<Backend<Block>>,
-	),
-	client::error::Error,
->
+) -> Result<
+		client::Client<Backend<Block>, client::LocalCallExecutor<E>, Block, RA>,
+		client::error::Error,
+	>
 	where
 		Block: BlockT<Hash=H256>,
 		E: CodeExecutor + RuntimeInfo,
 		S: BuildStorage,
 {
-	let backend = Arc::new(Backend::new(settings, CANONICALIZATION_DELAY)?);
-	let executor = client::LocalCallExecutor::new(backend.clone(), executor, keystore);
-	Ok((
-		client::Client::new(backend.clone(), executor, genesis_storage, fork_blocks, execution_strategies)?,
+	let backend = Backend::new(settings, CANONICALIZATION_DELAY)?;
+	let executor = client::LocalCallExecutor::new(executor, keystore);
+	let client = client::Client::new(
 		backend,
-	))
+		executor,
+		genesis_storage,
+		fork_blocks,
+		execution_strategies
+	)?;
+
+	Ok(client)
 }
 
 pub(crate) mod columns {
@@ -2290,19 +2288,19 @@ mod tests {
 
 	#[test]
 	fn test_leaves_with_complex_block_tree() {
-		let backend: Arc<Backend<test_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
+		let backend: Backend<test_client::runtime::Block> = Backend::new_test(20, 20);
 		test_client::trait_tests::test_leaves_for_backend(backend);
 	}
 
 	#[test]
 	fn test_children_with_complex_block_tree() {
-		let backend: Arc<Backend<test_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
+		let backend: Backend<test_client::runtime::Block> = Backend::new_test(20, 20);
 		test_client::trait_tests::test_children_for_backend(backend);
 	}
 
 	#[test]
 	fn test_blockchain_query_by_number_gets_canonical() {
-		let backend: Arc<Backend<test_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
+		let backend: Backend<test_client::runtime::Block> = Backend::new_test(20, 20);
 		test_client::trait_tests::test_blockchain_query_by_number_gets_canonical(backend);
 	}
 

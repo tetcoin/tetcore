@@ -623,7 +623,7 @@ fn median_algorithm(
 impl<B, E, Block, RA, PRA> Verifier<Block> for BabeVerifier<B, E, Block, RA, PRA> where
 	Block: BlockT<Hash=H256>,
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 	RA: Send + Sync,
 	PRA: ProvideRuntimeApi + Send + Sync + AuxStore + ProvideCache<Block>,
 	PRA::Api: BlockBuilderApi<Block, Error = client_api::error::Error>
@@ -832,7 +832,7 @@ impl<B, E, Block, I, RA, PRA> BlockImport<Block> for BabeBlockImport<B, E, Block
 	I: BlockImport<Block> + Send + Sync,
 	I::Error: Into<ConsensusError>,
 	B: Backend<Block, Blake2Hasher> + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 	RA: Send + Sync,
 	PRA: ProvideRuntimeApi + ProvideCache<Block>,
 	PRA::Api: BabeApi<Block>,
@@ -1053,7 +1053,7 @@ fn prune_finalized<B, E, Block, RA>(
 	epoch_changes: &mut EpochChangesFor<Block>,
 ) -> Result<(), ConsensusError> where
 	Block: BlockT<Hash=H256>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	B: Backend<Block, Blake2Hasher>,
 	RA: Send + Sync,
 {
@@ -1093,7 +1093,7 @@ pub fn block_import<B, E, Block: BlockT<Hash=H256>, I, RA, PRA>(
 	api: Arc<PRA>,
 ) -> ClientResult<(BabeBlockImport<B, E, Block, I, RA, PRA>, BabeLink<Block>)> where
 	B: Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	RA: Send + Sync,
 {
 	let epoch_changes = aux_schema::load_epoch_changes(&*client)?;
@@ -1142,7 +1142,7 @@ pub fn import_queue<B, E, Block: BlockT<Hash=H256>, I, RA, PRA>(
 ) -> ClientResult<BabeImportQueue<Block>> where
 	B: Backend<Block, Blake2Hasher> + 'static,
 	I: BlockImport<Block,Error=ConsensusError> + Send + Sync + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Clone + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Clone + Send + Sync + 'static,
 	RA: Send + Sync + 'static,
 	PRA: ProvideRuntimeApi + ProvideCache<Block> + Send + Sync + AuxStore + 'static,
 	PRA::Api: BlockBuilderApi<Block> + BabeApi<Block> + ApiExt<Block, Error = client_api::error::Error>,

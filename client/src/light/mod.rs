@@ -45,22 +45,21 @@ pub fn new_light_blockchain<B: BlockT, S: BlockchainStorage<B>>(storage: S) -> A
 }
 
 /// Create an instance of light client backend.
-pub fn new_light_backend<B, S>(blockchain: Arc<Blockchain<S>>) -> Arc<Backend<S, Blake2Hasher>>
+pub fn new_light_backend<B, S>(blockchain: Arc<Blockchain<S>>) -> Backend<S, Blake2Hasher>
 	where
 		B: BlockT,
 		S: BlockchainStorage<B>,
 {
-	Arc::new(Backend::new(blockchain))
+	Backend::new(blockchain)
 }
 
 /// Create an instance of light client.
 pub fn new_light<B, S, GS, RA, E>(
-	backend: Arc<Backend<S, Blake2Hasher>>,
+	backend: Backend<S, Blake2Hasher>,
 	genesis_storage: GS,
 	code_executor: E,
 ) -> ClientResult<Client<Backend<S, Blake2Hasher>, GenesisCallExecutor<
-	Backend<S, Blake2Hasher>,
-	LocalCallExecutor<Backend<S, Blake2Hasher>, E>
+	LocalCallExecutor<E>
 >, B, RA>>
 	where
 		B: BlockT<Hash=H256>,
@@ -68,8 +67,8 @@ pub fn new_light<B, S, GS, RA, E>(
 		GS: BuildStorage,
 		E: CodeExecutor + RuntimeInfo,
 {
-	let local_executor = LocalCallExecutor::new(backend.clone(), code_executor, None);
-	let executor = GenesisCallExecutor::new(backend.clone(), local_executor);
+	let local_executor = LocalCallExecutor::new(code_executor, None);
+	let executor = GenesisCallExecutor::new(local_executor);
 	Client::new(backend, executor, genesis_storage, Default::default(), Default::default())
 }
 

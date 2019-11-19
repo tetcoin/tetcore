@@ -53,7 +53,7 @@ impl<Block: BlockT<Hash=H256>> GrandpaJustification<Block> {
 		commit: Commit<Block>,
 	) -> Result<GrandpaJustification<Block>, Error> where
 		B: Backend<Block, Blake2Hasher>,
-		E: CallExecutor<Block, Blake2Hasher> + Send + Sync,
+		E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 		RA: Send + Sync,
 	{
 		let mut votes_ancestries_hashes = HashSet::new();

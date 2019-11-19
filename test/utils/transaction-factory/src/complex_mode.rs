@@ -60,7 +60,7 @@ pub fn next<RA, Backend, Exec, Block, RtApi>(
 ) -> Option<Block>
 where
 	Block: BlockT<Hash = <Blake2Hasher as Hasher>::Out>,
-	Exec: client::CallExecutor<Block, Blake2Hasher> + Send + Sync + Clone,
+	Exec: client::CallExecutor<Block, Blake2Hasher, Backend> + Send + Sync + Clone,
 	Backend: client_api::backend::Backend<Block, Blake2Hasher> + Send,
 	Client<Backend, Exec, Block, RtApi>: ProvideRuntimeApi,
 	<Client<Backend, Exec, Block, RtApi> as ProvideRuntimeApi>::Api:

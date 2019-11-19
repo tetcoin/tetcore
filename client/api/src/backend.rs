@@ -334,3 +334,15 @@ where
 	/// locally, or prepares request to fetch that data from remote node.
 	fn remote_blockchain(&self) -> Arc<dyn RemoteBlockchain<Block>>;
 }
+
+/// Trait for fetching the backend
+pub trait GetBackend<BE, Block, H>
+where
+	Block: BlockT,
+	H: Hasher<Out=Block::Hash>,
+	BE: Backend<Block, H>,
+
+{
+	/// Return reference to the backend
+	fn get_backend(&self) -> &BE;
+}

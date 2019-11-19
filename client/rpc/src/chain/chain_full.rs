@@ -51,7 +51,7 @@ impl<B, E, Block: BlockT, RA> FullChain<B, E, Block, RA> {
 impl<B, E, Block, RA> ChainBackend<B, E, Block, RA> for FullChain<B, E, Block, RA> where
 	Block: BlockT<Hash=H256> + 'static,
 	B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
+	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync + 'static,
 	RA: Send + Sync + 'static,
 {
 	fn client(&self) -> &Arc<Client<B, E, Block, RA>> {
