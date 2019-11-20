@@ -23,8 +23,22 @@ use codec::{FullCodec, Codec, Encode, Decode};
 use primitives::u32_trait::Value as U32;
 use sr_primitives::{
 	ConsensusEngineId,
-	traits::{MaybeSerializeDeserialize, SimpleArithmetic, Saturating},
+	traits::{MaybeSerializeDeserialize, SimpleArithmetic, Saturating, Bounded},
 };
+
+/// Something that can predict at which block number the next era change will happen.
+// TODO: Era is staking term, Epoch is babe term, ideally use a neutral term.
+pub trait PredictNextAuthoritySetChange<BlockNumber> {
+	/// Return the block number at which the next era change will happen.
+	fn predict_next_authority_set_change(now: BlockNumber) -> BlockNumber;
+}
+
+impl<BlockNumber: Bounded> PredictNextAuthoritySetChange<BlockNumber> for () {
+	fn predict_next_authority_set_change(_: BlockNumber) -> BlockNumber {
+		// practically never
+		Bounded::max_value()
+	}
+}
 
 /// Anything that can have a `::len()` method.
 pub trait Len {

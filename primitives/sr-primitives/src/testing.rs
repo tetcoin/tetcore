@@ -47,18 +47,6 @@ impl From<UintAuthorityId> for u64 {
 	}
 }
 
-impl UintAuthorityId {
-	/// Convert this authority id into a public key.
-	pub fn to_public_key<T: Public>(&self) -> T {
-		let bytes: [u8; 32] = U256::from(self.0).into();
-		T::from_slice(&bytes)
-	}
-}
-
-impl CryptoType for UintAuthorityId {
-	type Pair = Dummy;
-}
-
 impl AsRef<[u8]> for UintAuthorityId {
 	fn as_ref(&self) -> &[u8] {
 		// Unsafe, i know, but it's test code and it's just there because it's really convenient to
@@ -68,6 +56,16 @@ impl AsRef<[u8]> for UintAuthorityId {
 		}
 	}
 }
+
+impl AsMut<[u8]> for UintAuthorityId {
+	fn as_mut(&mut self) -> &mut [u8] {
+		unsafe {
+			std::slice::from_raw_parts_mut(&mut self.0 as *mut u64 as *mut _, std::mem::size_of::<u64>())
+		}
+	}
+}
+
+
 
 thread_local! {
 	/// A list of all UintAuthorityId keys returned to the runtime.
@@ -79,12 +77,18 @@ impl UintAuthorityId {
 	pub fn set_all_keys<T: Into<UintAuthorityId>>(keys: impl IntoIterator<Item=T>) {
 		ALL_KEYS.with(|l| *l.borrow_mut() = keys.into_iter().map(Into::into).collect())
 	}
+
+	/// Convert this authority id into a public key.
+	pub fn to_public_key<T: Public>(&self) -> T {
+		let bytes: [u8; 32] = U256::from(self.0).into();
+		T::from_slice(&bytes)
+	}
 }
 
 impl app_crypto::RuntimeAppPublic for UintAuthorityId {
 	const ID: KeyTypeId = key_types::DUMMY;
 
-	type Signature = u64;
+	type Signature = Self;
 
 	fn all() -> Vec<Self> {
 		ALL_KEYS.with(|l| l.borrow().clone())
@@ -103,7 +107,7 @@ impl app_crypto::RuntimeAppPublic for UintAuthorityId {
 			.enumerate()
 			.for_each(|(i, v)| { signature[i] = *v; });
 
-		Some(u64::from_le_bytes(signature))
+		Some(Self(u64::from_le_bytes(signature)))
 	}
 
 	fn verify<M: AsRef<[u8]>>(&self, msg: &M, signature: &Self::Signature) -> bool {
@@ -114,7 +118,7 @@ impl app_crypto::RuntimeAppPublic for UintAuthorityId {
 			.enumerate()
 			.for_each(|(i, v)| { msg_signature[i] = *v; });
 
-		u64::from_le_bytes(msg_signature) == *signature
+		u64::from_le_bytes(msg_signature) == signature.0
 	}
 }
 
@@ -137,6 +141,106 @@ impl OpaqueKeys for UintAuthorityId {
 impl crate::BoundToRuntimeAppPublic for UintAuthorityId {
 	type Public = Self;
 }
+
+impl app_crypto::AppPublic for UintAuthorityId {
+	type Generic = Self;
+}
+
+impl app_crypto::AppKey for UintAuthorityId {
+	/// An identifier for this application-specific key type.
+	const ID: KeyTypeId = primitives::crypto::key_types::DUMMY;
+
+	/// The corresponding type as a generic crypto type.
+	type UntypedGeneric = Self;
+
+	/// The corresponding public key type in this application scheme.
+	type Public = Self;
+
+	/// The corresponding key pair type in this application scheme.
+	// #[cfg(feature = "full_crypto")]
+	type Pair = Self;
+
+	/// The corresponding signature type in this application scheme.
+	type Signature = Self;
+}
+
+impl app_crypto::AppPair for UintAuthorityId {
+	type Generic = Self;
+}
+
+impl app_crypto::AppSignature for UintAuthorityId {
+	type Generic = Self;
+}
+
+impl From<Dummy> for UintAuthorityId {
+	fn from(_: Dummy) -> Self {
+		Self(11)
+	}
+}
+
+impl AsRef<Self> for UintAuthorityId {
+	fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl AsMut<Self> for UintAuthorityId {
+	fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
+impl primitives::crypto::Public for UintAuthorityId {
+	fn from_slice(data: &[u8]) -> Self {
+		// TODO make better
+		Self(data[0] as u64)
+	}
+}
+
+impl primitives::crypto::Derive for UintAuthorityId {}
+
+impl CryptoType for UintAuthorityId {
+	type Pair = Dummy;
+}
+
+impl crate::traits::IdentifyAccount for UintAuthorityId {
+	type AccountId = u64;
+	fn into_account(self) -> Self::AccountId {
+		self.0
+	}
+}
+
+impl crate::traits::IdentifyAccount for Dummy {
+	type AccountId = u64;
+	fn into_account(self) -> Self::AccountId {
+		11
+	}
+}
+
+impl primitives::crypto::Pair for UintAuthorityId {
+		type Public = Self;
+		type Seed = Self;
+		type Signature = Self;
+		type DeriveError = ();
+		#[cfg(feature = "std")]
+		fn generate_with_phrase(_: Option<&str>) -> (Self, String, Self::Seed) { Default::default() }
+		#[cfg(feature = "std")]
+		fn from_phrase(_: &str, _: Option<&str>)
+			-> Result<(Self, Self::Seed), primitives::crypto::SecretStringError>
+		{
+			Ok(Default::default())
+		}
+		fn derive<
+			Iter: Iterator<Item=primitives::crypto::DeriveJunction>,
+		>(&self, _: Iter, _: Option<Self>) -> Result<(Self, Option<Self>), Self::DeriveError> { Err(()) }
+		fn from_seed(_: &Self::Seed) -> Self { Self(11) }
+		fn from_seed_slice(_: &[u8]) -> Result<Self, primitives::crypto::SecretStringError> { Ok(Self(11)) }
+		fn sign(&self, _: &[u8]) -> Self::Signature { Self(self.0) }
+		fn verify<M: AsRef<[u8]>>(_: &Self::Signature, _: M, _: &Self::Public) -> bool { true }
+		fn verify_weak<P: AsRef<[u8]>, M: AsRef<[u8]>>(_: &[u8], _: M, _: P) -> bool { true }
+		fn public(&self) -> Self::Public { Self::Public::from(self.0) }
+		fn to_raw_vec(&self) -> Vec<u8> { vec![self.0 as u8] }
+	}
 
 /// Digest item
 pub type DigestItem = generic::DigestItem<H256>;

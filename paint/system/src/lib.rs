@@ -161,7 +161,7 @@ pub trait Trait: 'static + Eq + Clone {
 		Into<Result<RawOrigin<Self::AccountId>, Self::Origin>> + From<RawOrigin<Self::AccountId>>;
 
 	/// The aggregated `Call` type.
-	type Call: Debug;
+	type Call: Debug + codec::Encode + codec::Decode;
 
 	/// Account index (aka nonce) type. This stores the number of previous transactions associated
 	/// with a sender account.

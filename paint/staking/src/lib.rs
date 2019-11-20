@@ -256,14 +256,13 @@ use codec::{HasCompact, Encode, Decode};
 use support::{
 	decl_module, decl_event, decl_storage, ensure,
 	traits::{
-		Currency, OnFreeBalanceZero, LockIdentifier, LockableCurrency,
-		WithdrawReasons, OnUnbalanced, Imbalance, Get, Time
+		Currency, OnFreeBalanceZero, LockIdentifier, LockableCurrency, PredictNextAuthoritySetChange,
+		WithdrawReasons, OnUnbalanced, Imbalance, Get, Time,
 	}
 };
-use session::{historical::OnSessionEnding, SelectInitialValidators};
+use session::{historical, SelectInitialValidators};
 use sr_primitives::{
-	Perbill,
-	RuntimeDebug,
+	Perbill, RuntimeDebug, print, RuntimeAppPublic,
 	curve::PiecewiseLinear,
 	weights::SimpleDispatchInfo,
 	traits::{
@@ -276,7 +275,7 @@ use sr_staking_primitives::{
 };
 #[cfg(feature = "std")]
 use sr_primitives::{Serialize, Deserialize};
-use system::{ensure_signed, ensure_root};
+use system::{ensure_signed, ensure_root, offchain::SubmitSignedTransaction};
 
 use phragmen::{elect, equalize, build_support_map, ExtendedBalance, PhragmenStakedAssignment};
 
@@ -284,12 +283,45 @@ const DEFAULT_MINIMUM_VALIDATOR_COUNT: u32 = 4;
 const MAX_NOMINATIONS: usize = 16;
 const MAX_UNLOCKING_CHUNKS: usize = 32;
 const STAKING_ID: LockIdentifier = *b"staking ";
+const ELECTION_ITERATIONS: usize = 2;
+const ELECTION_TOLERANCE: ExtendedBalance = 0;
 
 /// Counter for the number of eras that have passed.
 pub type EraIndex = u32;
 
 /// Counter for the number of "reward" points earned by a given validator.
 pub type Points = u32;
+
+/// The result of an election round.
+#[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug)]
+pub struct ElectionResult<AccountId, Balance: HasCompact> {
+	/// Era at which this election has happened.
+	era: EraIndex,
+	/// The new computed slot stake.
+	slot_stake: Balance,
+	/// Flat list of validators who have been elected.
+	elected_stashes: Vec<AccountId>,
+	/// Flat list of new exposures, to be updated in the [`Exposure`] storage.
+	exposures: Vec<(AccountId, Exposure<AccountId, Balance>)>,
+}
+
+/// The status of the upcoming (offchain) election.
+#[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug)]
+pub enum OffchainElectionStatus<BlockNumber> {
+	/// Nothing has happened yet. An offchain worker might be triggered now.
+	None,
+	/// An offchain worker as been triggered but no result has been observed yet. No further
+	/// offchain workers shall be dispatched now.
+	Triggered(BlockNumber),
+	/// A result has been returned and should be used in the upcoming era.
+	Received,
+}
+
+impl<BlockNumber> Default for OffchainElectionStatus<BlockNumber> {
+	fn default() -> Self {
+		Self::None
+	}
+}
 
 /// Reward points of an era. Used to split era total payout between validators.
 #[derive(Encode, Decode, Default)]
@@ -524,6 +556,22 @@ pub trait Trait: system::Trait {
 
 	/// The NPoS reward curve to use.
 	type RewardCurve: Get<&'static PiecewiseLinear<'static>>;
+
+	/// Something that can predict the next era change.
+	type PredictNextAuthoritySetChange: support::traits::PredictNextAuthoritySetChange<Self::BlockNumber>;
+
+	/// How many blocks ahead of the epoch do we try to run the phragmen offchain?
+	type ElectionLookahead: Get<Self::BlockNumber>;
+
+	/// A (potentially unknown) key type used to sign the transactions.
+	type SigningKeyType: RuntimeAppPublic + From<Self::AccountId> + Into<Self::AccountId> + Clone; // TODO maybe all are not needed.
+
+	/// The overarching call type.
+	// TODO: This is needed just to bound it to `From<Call<Self>>`. Otherwise could have `Self as system`
+	type Call: From<Call<Self>>;
+
+	/// A transaction submitter.
+	type SubmitTransaction: SubmitSignedTransaction<Self, <Self as Trait>::Call>;
 }
 
 /// Mode of era-forcing.
@@ -582,6 +630,14 @@ decl_storage! {
 		/// The currently elected validator set keyed by stash account ID.
 		pub CurrentElected get(fn current_elected): Vec<T::AccountId>;
 
+		/// The next validator set. At the end of an era, if this is available (potentially from the
+		/// result of an offchain worker), it is immediately used. Otherwise, the on-chain election
+		/// is executed.
+		pub QueuedElected get(fn queued_elected): Option<ElectionResult<T::AccountId, BalanceOf<T>>>;
+
+		/// Flag to control the execution of the offchain election.
+		pub ElectionStatus get(fn election_status): OffchainElectionStatus<T::BlockNumber>;
+
 		/// The current era index.
 		pub CurrentEra get(fn current_era) config(): EraIndex;
 
@@ -601,7 +657,7 @@ decl_storage! {
 			config.stakers.iter().map(|&(_, _, value, _)| value).min().unwrap_or_default()
 		}): BalanceOf<T>;
 
-		/// True if the next session change will be a new era regardless of index.
+		/// Mode of era forcing.
 		pub ForceEra get(fn force_era) config(): Forcing;
 
 		/// The percentage of the slash that is distributed to reporters.
@@ -678,6 +734,69 @@ decl_module! {
 			if !<CurrentEraStart<T>>::exists() {
 				<CurrentEraStart<T>>::put(T::Time::now());
 			}
+		}
+
+		fn on_initialize(now: T::BlockNumber) {
+			// Only check the next era prediction if we don't have any ongoing offchain compute.
+			if Self::election_status() == OffchainElectionStatus::None {
+				// NOTE: we compute this per block. This is much more accurate than what im-online
+				// is doing.
+				let next_era_change =
+					T::PredictNextAuthoritySetChange::predict_next_authority_set_change(now);
+				if let Some(remaining) = next_era_change.checked_sub(&now) {
+					if remaining < T::ElectionLookahead::get() {
+						// Set the flag to make sure we don't waste any compute here in the same era
+						// after we have triggered the offline compute.
+						<ElectionStatus<T>>::put(
+							OffchainElectionStatus::<T::BlockNumber>::Triggered(now)
+						);
+						print("detected a good block to trigger offchain worker.");
+					}
+				} else {
+					print("predicted next authority set change to be in the future.");
+				}
+			}
+		}
+
+		fn offchain_worker(now: T::BlockNumber) {
+			// TODO: add runtime logging.
+			if runtime_io::offchain::is_validator() {
+				if Self::election_status() == OffchainElectionStatus::<T::BlockNumber>::Triggered(now) {
+					let era = CurrentEra::get();
+					if let Some(election_result) = Self::do_phragmen() {
+						if let Some(key) = Self::signing_key() {
+							let call: <T as Trait>::Call = Call::submit_election_result(election_result).into();
+							use system::offchain::SubmitSignedTransaction;
+							T::SubmitTransaction::sign_and_submit(call, key.into());
+						} else {
+							print("validator with not signing key...");
+						}
+					}
+				} else {
+					print("validator did not start offchain election.");
+				}
+			}
+		}
+
+		#[weight = SimpleDispatchInfo::FixedNormal(10_000_000)] // 1/100 of a block's max.
+		fn submit_election_result(
+			origin,
+			// TODO: maybe we can make this more compact?
+			election_result: ElectionResult<T::AccountId, BalanceOf<T>>,
+		) {
+			let who = ensure_signed(origin)?;
+
+			ensure!(
+				Self::current_era() == election_result.era,
+				"incorrect era for election result",
+			);
+			ensure!(
+				Self::is_current_validator(&who),
+				"election result only allowed from active validators",
+			);
+
+			<ElectionStatus<T>>::put(OffchainElectionStatus::Received);
+			<QueuedElected<T>>::put(election_result);
 		}
 
 		/// Take the origin account as a stash and lock up `value` of its balance. `controller` will
@@ -1030,10 +1149,35 @@ impl<T: Trait> Module<T> {
 		Self::bonded(stash).and_then(Self::ledger).map(|l| l.active).unwrap_or_default()
 	}
 
+	/// Make sure that the account corresponding with the given account-id is a validator.
+	// TODO: needs a storage item to keep the most recent validators. ATM this is WRONG.
+	pub fn is_current_validator(who: &T::AccountId) -> bool {
+		Self::current_elected().contains(who)
+	}
+
+	/// Find a local `AccountId` we can sign with.
+	fn signing_key() -> Option<T::AccountId> {
+		// Find all local keys accessible to this app through the localised KeyType.
+		// Then go through all keys currently stored on chain and check them against
+		// the list of local keys until a match is found, otherwise return `None`.
+		let local_keys = T::SigningKeyType::all().iter().map(|i|
+			(*i).clone().into()
+		).collect::<Vec<T::AccountId>>();
+
+		// TODO: this is WRONG. current elected is not accurate.
+		Self::current_elected().into_iter().find_map(|v| {
+			if local_keys.contains(&v) {
+				Some(v)
+			} else {
+				None
+			}
+		})
+	}
+
 	// MUTABLES (DANGEROUS)
 
-	/// Update the ledger for a controller. This will also update the stash lock. The lock will
-	/// will lock the entire funds except paying for further transactions.
+	/// Update the ledger for a controller. This will also update the stash lock. The lock applies
+	/// to all withdraw types.
 	fn update_ledger(
 		controller: &T::AccountId,
 		ledger: &StakingLedger<T::AccountId, BalanceOf<T>>
@@ -1050,8 +1194,8 @@ impl<T: Trait> Module<T> {
 
 	/// Slash a given validator by a specific amount with given (historical) exposure.
 	///
-	/// Removes the slash from the validator's balance by preference,
-	/// and reduces the nominators' balance if needed.
+	/// Removes the slash from the validator's balance by preference, and reduces the nominators'
+	/// balance if needed.
 	///
 	/// Returns the resulting `NegativeImbalance` to allow distributing the slashed amount and
 	/// pushes an entry onto the slash journal.
@@ -1097,6 +1241,7 @@ impl<T: Trait> Module<T> {
 			}
 		}
 
+		// update the slash history journal.
 		journal.push(SlashJournalEntry {
 			who: stash.clone(),
 			own_slash: own_slash.clone(),
@@ -1111,8 +1256,7 @@ impl<T: Trait> Module<T> {
 		imbalance
 	}
 
-	/// Actually make a payment to a staker. This uses the currency's reward function
-	/// to pay the right payee for the given staker account.
+	/// Actually make a payment to a staker.
 	fn make_payout(stash: &T::AccountId, amount: BalanceOf<T>) -> Option<PositiveImbalanceOf<T>> {
 		let dest = Self::payee(stash);
 		match dest {
@@ -1137,6 +1281,8 @@ impl<T: Trait> Module<T> {
 	/// Reward a given validator by a specific amount. Add the reward to the validator's, and its
 	/// nominators' balance, pro-rata based on their exposure, after having removed the validator's
 	/// pre-payout cut.
+	///
+	/// This further calls into [`make_payout`] to abstract the payment implementation.
 	fn reward_validator(stash: &T::AccountId, reward: BalanceOf<T>) -> PositiveImbalanceOf<T> {
 		let off_the_table = reward.min(Self::validators(stash).validator_payment);
 		let reward = reward - off_the_table;
@@ -1181,12 +1327,10 @@ impl<T: Trait> Module<T> {
 		Self::new_era(session_index).map(move |new| (new, prior))
 	}
 
-	/// The era has changed - enact new staking set.
+	/// Calculate the reward points of an era, and pay them immediately.
 	///
-	/// NOTE: This always happens immediately before a session change to ensure that new validators
-	/// get a chance to set their session keys.
-	fn new_era(start_session_index: SessionIndex) -> Option<Vec<T::AccountId>> {
-		// Payout
+	/// This makes an internal call into [`reward_validator`] to abstract the payment logic.
+	fn calculate_and_pay_era_rewards() {
 		let points = CurrentEraPointsEarned::take();
 		let now = T::Time::now();
 		let previous_era_start = <CurrentEraStart<T>>::mutate(|v| {
@@ -1225,6 +1369,15 @@ impl<T: Trait> Module<T> {
 			T::Reward::on_unbalanced(total_imbalance);
 			T::RewardRemainder::on_unbalanced(T::Currency::issue(rest));
 		}
+	}
+
+	/// The era has changed - enact new staking set.
+	///
+	/// NOTE: This always happens immediately before a session change to ensure that new validators
+	/// get a chance to set their session keys.
+	fn new_era(start_session_index: SessionIndex) -> Option<Vec<T::AccountId>> {
+		// Payout
+		Self::calculate_and_pay_era_rewards();
 
 		// Increment current era.
 		let current_era = CurrentEra::mutate(|s| { *s += 1; *s });
@@ -1232,9 +1385,8 @@ impl<T: Trait> Module<T> {
 		// prune journal for last era.
 		<EraSlashJournal<T>>::remove(current_era - 1);
 
-		CurrentEraStartSessionIndex::mutate(|v| {
-			*v = start_session_index;
-		});
+		CurrentEraStartSessionIndex::put(start_session_index);
+
 		let bonding_duration = T::BondingDuration::get();
 
 		if current_era > bonding_duration {
@@ -1255,16 +1407,14 @@ impl<T: Trait> Module<T> {
 			})
 		}
 
-		// Reassign all Stakers.
-		let (_slot_stake, maybe_new_validators) = Self::select_validators();
+		let maybe_new_validators = Self::select_and_update_validators();
 
+		// return the new set.
 		maybe_new_validators
 	}
 
-	/// Select a new validator set from the assembled stakers and their role preferences.
-	///
-	/// Returns the new `SlotStake` value and a set of newly selected _stash_ IDs.
-	fn select_validators() -> (BalanceOf<T>, Option<Vec<T::AccountId>>) {
+	fn do_phragmen() -> Option<ElectionResult<T::AccountId, BalanceOf<T>>> {
+		let era = Self::current_era();
 		let mut all_nominators: Vec<(T::AccountId, Vec<T::AccountId>)> = Vec::new();
 		let all_validator_candidates_iter = <Validators<T>>::enumerate();
 		let all_validators = all_validator_candidates_iter.map(|(who, _pref)| {
@@ -1290,8 +1440,6 @@ impl<T: Trait> Module<T> {
 
 			let to_votes = |b: BalanceOf<T>|
 				<T::CurrencyToVote as Convert<BalanceOf<T>, u64>>::convert(b) as ExtendedBalance;
-			let to_balance = |e: ExtendedBalance|
-				<T::CurrencyToVote as Convert<ExtendedBalance, BalanceOf<T>>>::convert(e);
 
 			let mut supports = build_support_map::<_, _, _, T::CurrencyToVote>(
 				&elected_stashes,
@@ -1322,63 +1470,122 @@ impl<T: Trait> Module<T> {
 					staked_assignments.push((n.clone(), staked_assignment));
 				}
 
-				let tolerance = 0_u128;
-				let iterations = 2_usize;
 				equalize::<_, _, T::CurrencyToVote, _>(
 					staked_assignments,
 					&mut supports,
-					tolerance,
-					iterations,
+					ELECTION_TOLERANCE,
+					ELECTION_ITERATIONS,
 					Self::slashable_balance_of,
 				);
 			}
 
+			let to_balance = |e: ExtendedBalance|
+				<T::CurrencyToVote as Convert<ExtendedBalance, BalanceOf<T>>>::convert(e);
+			let mut slot_stake = BalanceOf::<T>::max_value();
+			let exposures = supports.into_iter().map(|(staker, support)|{
+				let expo = Exposure {
+					own: to_balance(support.own),
+					total: to_balance(support.total),
+					others: support.others
+						.into_iter()
+						.map(|(who, value)| IndividualExposure { who, value: to_balance(value) })
+						.collect::<Vec<IndividualExposure<_, _>>>(),
+				};
+				if expo.total < slot_stake {
+					slot_stake = expo.total;
+				}
+				(staker, expo)
+			}).collect::<Vec<(T::AccountId, Exposure<_, _>)>>();
+
+			Some(ElectionResult::<T::AccountId, BalanceOf<T>> {
+				elected_stashes,
+				slot_stake,
+				exposures,
+				era,
+			})
+		} else {
+			None
+		}
+	}
+
+	/// Select a new validator set from the assembled stakers and their role preferences. It tries
+	/// first to peek into [`QueuedElected`]. Otherwise, it runs a new phragmen.
+	///
+	/// No storage item is updated.
+	fn select_validators() -> Option<(
+		BalanceOf<T>,
+		Vec<T::AccountId>,
+		Vec<(T::AccountId, Exposure<T::AccountId, BalanceOf<T>>)>,
+	)> {
+		let maybe_phragmen_results = <QueuedElected<T>>::take().map(|offchain_result| {
+			debug_assert!(
+				Self::election_status() == OffchainElectionStatus::Received,
+				"offchain result exist but should not.",
+			);
+			debug_assert!(
+				Self::current_era() == offchain_result.era,
+				"offchain result can only be submitted at the correct era."
+			);
+
+			// Kill the flag.
+			<ElectionStatus<T>>::kill();
+
+			offchain_result
+		}).or_else(|| Self::do_phragmen());
+
+		// on-chain or off-chain, if we have had _some_ new set of validators, Update Stakers and
+		// return the results.
+		if let Some(ElectionResult::<T::AccountId, BalanceOf<T>>{
+			elected_stashes,
+			exposures,
+			era,
+			slot_stake,
+		}) = maybe_phragmen_results {
+			// In order to keep the property required by `n_session_ending` that we must return the
+			// new validator set even if it's the same as the old, as long as any underlying
+			// economic conditions have changed, we don't attempt to do any optimization where we
+			// compare against the prior set.
+			Some((
+				slot_stake,
+				elected_stashes,
+				exposures,
+			))
+		} else {
+			// There were not enough candidates for even our minimal level of functionality. This is
+			// bad. We should probably disable all functionality except for block production and let
+			// the chain keep producing blocks until we can decide on a sufficiently substantial
+			// set. TODO: #2494
+			None
+		}
+	}
+
+	/// Runs [`select_validators`] and updates the following storage items:
+	/// - [`Stakers`]
+	/// - [`Exposures`]
+	/// - [`SlotStake`]
+	///
+	/// If the election has been successful. It passes the new set upwards.
+	fn select_and_update_validators() -> Option<Vec<T::AccountId>> {
+		if let Some((slot_stake, elected_stashes, exposures)) = Self::select_validators() {
 			// Clear Stakers.
 			for v in Self::current_elected().iter() {
 				<Stakers<T>>::remove(v);
 			}
 
-			// Populate Stakers and figure out the minimum stake behind a slot.
-			let mut slot_stake = BalanceOf::<T>::max_value();
-			for (c, s) in supports.into_iter() {
-				// build `struct exposure` from `support`
-				let exposure = Exposure {
-					own: to_balance(s.own),
-					// This might reasonably saturate and we cannot do much about it. The sum of
-					// someone's stake might exceed the balance type if they have the maximum amount
-					// of balance and receive some support. This is super unlikely to happen, yet
-					// we simulate it in some tests.
-					total: to_balance(s.total),
-					others: s.others
-						.into_iter()
-						.map(|(who, value)| IndividualExposure { who, value: to_balance(value) })
-						.collect::<Vec<IndividualExposure<_, _>>>(),
-				};
-				if exposure.total < slot_stake {
-					slot_stake = exposure.total;
-				}
-				<Stakers<T>>::insert(&c, exposure.clone());
-			}
+			// Populate Stakers and write slot stake.
+			exposures.into_iter().for_each(|(s, e)| {
+				<Stakers<T>>::insert(s, e);
+			});
 
 			// Update slot stake.
 			<SlotStake<T>>::put(&slot_stake);
 
-			// Set the new validator set in sessions.
+			// Update current elected.
 			<CurrentElected<T>>::put(&elected_stashes);
 
-			// In order to keep the property required by `n_session_ending`
-			// that we must return the new validator set even if it's the same as the old,
-			// as long as any underlying economic conditions have changed, we don't attempt
-			// to do any optimization where we compare against the prior set.
-			(slot_stake, Some(elected_stashes))
+			Some(elected_stashes)
 		} else {
-			// There were not enough candidates for even our minimal level of functionality.
-			// This is bad.
-			// We should probably disable all functionality except for block production
-			// and let the chain keep producing blocks until we can decide on a sufficiently
-			// substantial set.
-			// TODO: #2494
-			(Self::slot_stake(), None)
+			None
 		}
 	}
 
@@ -1426,9 +1633,7 @@ impl<T: Trait> Module<T> {
 	/// For each element in the iterator the given number of points in u32 is added to the
 	/// validator, thus duplicates are handled.
 	pub fn reward_by_indices(validators_points: impl IntoIterator<Item = (u32, u32)>) {
-		// TODO: This can be optimised once #3302 is implemented.
-		let current_elected_len = <Module<T>>::current_elected().len() as u32;
-
+		let current_elected_len = <CurrentElected<T>>::decode_len().unwrap_or(0) as u32;
 		CurrentEraPointsEarned::mutate(|rewards| {
 			for (validator_index, points) in validators_points.into_iter() {
 				if validator_index < current_elected_len {
@@ -1453,7 +1658,7 @@ impl<T: Trait> session::OnSessionEnding<T::AccountId> for Module<T> {
 	}
 }
 
-impl<T: Trait> OnSessionEnding<T::AccountId, Exposure<T::AccountId, BalanceOf<T>>> for Module<T> {
+impl<T: Trait> historical::OnSessionEnding<T::AccountId, Exposure<T::AccountId, BalanceOf<T>>> for Module<T> {
 	fn on_session_ending(_ending: SessionIndex, start_session: SessionIndex)
 		-> Option<(Vec<T::AccountId>, Vec<(T::AccountId, Exposure<T::AccountId, BalanceOf<T>>)>)>
 	{
@@ -1507,7 +1712,7 @@ impl<T: Trait> Convert<T::AccountId, Option<Exposure<T::AccountId, BalanceOf<T>>
 
 impl<T: Trait> SelectInitialValidators<T::AccountId> for Module<T> {
 	fn select_initial_validators() -> Option<Vec<T::AccountId>> {
-		<Module<T>>::select_validators().1
+		<Module<T>>::select_and_update_validators()
 	}
 }
 

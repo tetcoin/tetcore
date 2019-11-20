@@ -26,7 +26,7 @@ use rstd::{result, prelude::*};
 use support::{decl_storage, decl_module, traits::FindAuthor, traits::Get};
 use timestamp::OnTimestampSet;
 use sr_primitives::{generic::DigestItem, ConsensusEngineId, Perbill};
-use sr_primitives::traits::{IsMember, SaturatedConversion, Saturating, RandomnessBeacon};
+use sr_primitives::traits::{IsMember, SaturatedConversion, Saturating, RandomnessBeacon, One};
 use sr_staking_primitives::{
 	SessionIndex,
 	offence::{Offence, Kind},
@@ -309,7 +309,6 @@ impl<T: Trait> session::ShouldEndSession<T::BlockNumber> for Module<T> {
 		// => because session on_initialize() is called earlier than ours, let's ensure
 		// that we have synced with digest before checking if session should be ended.
 		Self::do_initialize(now);
-
 		Self::should_epoch_change(now)
 	}
 }
@@ -380,10 +379,27 @@ impl<T: Trait> Module<T> {
 		// epoch 0 as having started at the slot of block 1. We want to use
 		// the same randomness and validator set as signalled in the genesis,
 		// so we don't rotate the epoch.
-		now != sr_primitives::traits::One::one() && {
+		now != One::one() && {
 			let diff = CurrentSlot::get().saturating_sub(Self::current_epoch_start());
 			diff >= T::EpochDuration::get()
 		}
+	}
+
+	/// Return the _best guess_ block number, at which the next epoch change is predicted to happen.
+	///
+	/// In other word, this is only accurate if no slots are missed. Given missed slots, the slot
+	/// number will grow while the block number will not. Hence, the result can be interpreted as an
+	/// upper bound.
+	///
+	/// -------------- IMPORTANT NOTE --------------
+	/// This implementation is linked to how [`should_epoch_change`] is working. This might need to
+	/// be updated accordingly, if the underlying mechanics of slot and epochs change.
+	pub fn next_epoch_change(now: T::BlockNumber) -> T::BlockNumber {
+		let next_slot = Self::current_epoch_start().saturating_add(T::EpochDuration::get());
+		let slots_remaining = next_slot - CurrentSlot::get();
+		// This is a best effort guess. Drifts in the slot/block ratio will cause errors here.
+		let blocks_remaining: T::BlockNumber = slots_remaining.saturated_into();
+		now.saturating_add(blocks_remaining)
 	}
 
 	/// DANGEROUS: Enact an epoch change. Should be done on every block where `should_epoch_change` has returned `true`,
@@ -397,10 +413,7 @@ impl<T: Trait> Module<T> {
 	) {
 		// PRECONDITION: caller has done initialization and is guaranteed
 		// by the session module to be called before this.
-		#[cfg(debug_assertions)]
-		{
-			assert!(Self::initialized().is_some())
-		}
+		debug_assert!(Self::initialized().is_some());
 
 		// Update epoch index
 		let epoch_index = EpochIndex::get()
@@ -539,6 +552,12 @@ impl<T: Trait> Module<T> {
 			assert!(Authorities::get().is_empty(), "Authorities are already initialized!");
 			Authorities::put(authorities);
 		}
+	}
+}
+
+impl<T: Trait> support::traits::PredictNextAuthoritySetChange<T::BlockNumber> for Module<T> {
+	fn predict_next_authority_set_change(now: T::BlockNumber) -> T::BlockNumber {
+		Self::next_epoch_change(now)
 	}
 }
 

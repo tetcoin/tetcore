@@ -19,22 +19,25 @@
 use std::{collections::HashSet, cell::RefCell};
 use sr_primitives::{Perbill, KeyTypeId};
 use sr_primitives::curve::PiecewiseLinear;
-use sr_primitives::traits::{IdentityLookup, Convert, OpaqueKeys, OnInitialize, SaturatedConversion};
-use sr_primitives::testing::{Header, UintAuthorityId};
+use sr_primitives::traits::{
+	IdentityLookup, Convert, OpaqueKeys, OnInitialize, SaturatedConversion, Extrinsic as ExtrinsicT,
+};
+use sr_primitives::testing::{Header, UintAuthorityId, TestXt};
 use sr_staking_primitives::SessionIndex;
 use primitives::{H256, crypto::key_types};
 use runtime_io;
-use support::{assert_ok, impl_outer_origin, parameter_types, StorageLinkedMap};
+use support::{assert_ok, impl_outer_origin, impl_outer_dispatch, parameter_types, StorageLinkedMap};
 use support::traits::{Currency, Get, FindAuthor};
 use crate::{
 	EraIndex, GenesisConfig, Module, Trait, StakerStatus, ValidatorPrefs, RewardDestination,
-	Nominators, inflation
+	Nominators, inflation,
 };
 
 /// The AccountId alias in this test module.
-pub type AccountId = u64;
-pub type BlockNumber = u64;
-pub type Balance = u64;
+type AccountId = u64;
+type AccountIndex = u64;
+type BlockNumber = u64;
+type Balance = u64;
 
 /// Simple structure that exposes how u64 currency can be represented as... u64.
 pub struct CurrencyToVoteHandler;
@@ -91,6 +94,12 @@ impl_outer_origin!{
 	pub enum Origin for Test {}
 }
 
+impl_outer_dispatch! {
+	pub enum Call for Test where origin: Origin {
+		staking::Staking,
+	}
+}
+
 /// Author of block is always 11
 pub struct Author11;
 impl FindAuthor<u64> for Author11 {
@@ -101,7 +110,6 @@ impl FindAuthor<u64> for Author11 {
 	}
 }
 
-// Workaround for https://github.com/rust-lang/rust/issues/26925 . Remove when sorted.
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Test;
 parameter_types! {
@@ -112,9 +120,9 @@ parameter_types! {
 }
 impl system::Trait for Test {
 	type Origin = Origin;
-	type Index = u64;
+	type Index = AccountIndex;
 	type BlockNumber = BlockNumber;
-	type Call = ();
+	type Call = Call;
 	type Hash = H256;
 	type Hashing = ::sr_primitives::traits::BlakeTwo256;
 	type AccountId = AccountId;
@@ -192,6 +200,7 @@ parameter_types! {
 	pub const SessionsPerEra: SessionIndex = 3;
 	pub const BondingDuration: EraIndex = 3;
 	pub const RewardCurve: &'static PiecewiseLinear<'static> = &I_NPOS;
+	pub const ElectionLookahead: u64 = 10;
 }
 impl Trait for Test {
 	type Currency = balances::Module<Self>;
@@ -205,6 +214,11 @@ impl Trait for Test {
 	type BondingDuration = BondingDuration;
 	type SessionInterface = Self;
 	type RewardCurve = RewardCurve;
+	type PredictNextAuthoritySetChange = ();
+	type SigningKeyType = UintAuthorityId;
+	type ElectionLookahead = ElectionLookahead;
+	type Call = Call;
+	type SubmitTransaction = SubmitTransaction;
 }
 
 pub struct ExtBuilder {
@@ -345,6 +359,23 @@ impl ExtBuilder {
 		ext
 	}
 }
+
+impl system::offchain::CreateTransaction<Test, Extrinsic> for Test {
+	type Signature = <UintAuthorityId as sr_primitives::RuntimeAppPublic>::Signature;
+	type Public = <<UintAuthorityId as primitives::crypto::CryptoType>::Pair as primitives::crypto::Pair>::Public;
+	fn create_transaction<F: system::offchain::Signer<Self::Public, Self::Signature>>(
+		call: Call,
+		public: Self::Public,
+		account: AccountId,
+		_index: AccountIndex,
+	) -> Option<(<Extrinsic as ExtrinsicT>::Call, <Extrinsic as ExtrinsicT>::SignaturePayload)> {
+		let extra = ();
+		Some((call, (account, extra)))
+	}
+}
+
+pub type Extrinsic = TestXt<Call, ()>;
+type SubmitTransaction = system::offchain::TransactionSubmitter<UintAuthorityId, Test, Extrinsic>;
 
 pub type System = system::Module<Test>;
 pub type Balances = balances::Module<Test>;

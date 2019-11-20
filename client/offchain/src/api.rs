@@ -269,7 +269,7 @@ pub(crate) struct AsyncApi<A: ChainApi> {
 }
 
 impl<A: ChainApi> AsyncApi<A> {
-	/// Creates new Offchain extensions API implementation  an the asynchronous processing part.
+	/// Creates new Offchain extensions API implementation an the asynchronous processing part.
 	pub fn new<S: OffchainStorage>(
 		transaction_pool: Arc<Pool<A>>,
 		db: S,

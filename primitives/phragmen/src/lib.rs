@@ -34,6 +34,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use rstd::{prelude::*, collections::btree_map::BTreeMap};
+use codec::{Encode, Decode};
 use sr_primitives::RuntimeDebug;
 use sr_primitives::{helpers_128bit::multiply_by_rational, Perbill, Rational128};
 use sr_primitives::traits::{Zero, Convert, Member, SimpleArithmetic, Saturating, Bounded};
@@ -98,7 +99,7 @@ pub type PhragmenAssignment<AccountId> = (AccountId, Perbill);
 pub type PhragmenStakedAssignment<AccountId> = (AccountId, ExtendedBalance);
 
 /// Final result of the phragmen election.
-#[derive(RuntimeDebug)]
+#[derive(RuntimeDebug, Encode, Decode)]
 pub struct PhragmenResult<AccountId> {
 	/// Just winners zipped with their approval stake. Note that the approval stake is merely the
 	/// sub of their received stake and could be used for very basic sorting and approval voting.
@@ -115,7 +116,7 @@ pub struct PhragmenResult<AccountId> {
 ///
 /// This, at the current version, resembles the `Exposure` defined in the staking SRML module, yet
 /// they do not necessarily have to be the same.
-#[derive(Default, RuntimeDebug)]
+#[derive(Clone, Default, RuntimeDebug, Encode, Decode)]
 #[cfg_attr(feature = "std", derive(serde::Serialize, serde::Deserialize))]
 pub struct Support<AccountId> {
 	/// The amount of support as the effect of self-vote.

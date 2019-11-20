@@ -164,6 +164,7 @@ impl Printable for OffchainErr {
 	}
 }
 
+// Index of an authority.
 pub type AuthIndex = u32;
 
 /// Heartbeat which is sent/received.
@@ -503,8 +504,8 @@ impl<T: Trait> Module<T> {
 
 	fn initialize_keys(keys: &[T::AuthorityId]) {
 		if !keys.is_empty() {
-			assert!(Keys::<T>::get().is_empty(), "Keys are already initialized!");
-			Keys::<T>::put(keys);
+			assert!(<Keys<T>>::get().is_empty(), "Keys are already initialized!");
+			<Keys<T>>::put(keys);
 		}
 	}
 }
@@ -534,7 +535,7 @@ impl<T: Trait> session::OneSessionHandler<T::AccountId> for Module<T> {
 		<GossipAt<T>>::put(block_number + half_session);
 
 		// Remember who the authorities are for the new session.
-		Keys::<T>::put(validators.map(|x| x.1).collect::<Vec<_>>());
+		<Keys<T>>::put(validators.map(|x| x.1).collect::<Vec<_>>());
 	}
 
 	fn on_before_session_ending() {
@@ -589,7 +590,7 @@ impl<T: Trait> support::unsigned::ValidateUnsigned for Module<T> {
 			}
 
 			// verify that the incoming (unverified) pubkey is actually an authority id
-			let keys = Keys::<T>::get();
+			let keys = <Keys<T>>::get();
 			let authority_id = match keys.get(heartbeat.authority_index as usize) {
 				Some(id) => id,
 				None => return InvalidTransaction::BadProof.into(),

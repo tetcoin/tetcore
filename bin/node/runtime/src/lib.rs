@@ -92,6 +92,7 @@ pub fn native_version() -> NativeVersion {
 }
 
 type NegativeImbalance = <Balances as Currency<AccountId>>::NegativeImbalance;
+type SubmitTransactionOf<K> = TransactionSubmitter<K, Runtime, UncheckedExtrinsic>;
 
 pub type DealWithFees = SplitTwoWays<
 	Balance,
@@ -219,14 +220,14 @@ parameter_types! {
 }
 
 impl session::Trait for Runtime {
-	type OnSessionEnding = Staking;
 	type SessionHandler = <SessionKeys as OpaqueKeys>::KeyTypeIdProviders;
 	type ShouldEndSession = Babe;
 	type Event = Event;
 	type Keys = SessionKeys;
 	type ValidatorId = <Self as system::Trait>::AccountId;
-	type ValidatorIdOf = staking::StashOf<Self>;
+	type OnSessionEnding = Staking;
 	type SelectInitialValidators = Staking;
+	type ValidatorIdOf = staking::StashOf<Self>;
 	type DisabledValidatorsThreshold = DisabledValidatorsThreshold;
 }
 
@@ -250,6 +251,7 @@ parameter_types! {
 	pub const SessionsPerEra: sr_staking_primitives::SessionIndex = 6;
 	pub const BondingDuration: staking::EraIndex = 24 * 28;
 	pub const RewardCurve: &'static PiecewiseLinear<'static> = &REWARD_CURVE;
+	pub const ElectionLookahead: BlockNumber = 10;
 }
 
 impl staking::Trait for Runtime {
@@ -264,6 +266,12 @@ impl staking::Trait for Runtime {
 	type BondingDuration = BondingDuration;
 	type SessionInterface = Self;
 	type RewardCurve = RewardCurve;
+	type PredictNextAuthoritySetChange = Babe;
+	// type SigningKeyType = babe_primitives::AuthorityId;
+	type SigningKeyType = ImOnlineId;
+	type ElectionLookahead = ElectionLookahead;
+	type Call = Call;
+	type SubmitTransaction = SubmitTransactionOf<ImOnlineId>;
 }
 
 parameter_types! {
@@ -414,8 +422,6 @@ impl sudo::Trait for Runtime {
 	type Proposal = Call;
 }
 
-type SubmitTransaction = TransactionSubmitter<ImOnlineId, Runtime, UncheckedExtrinsic>;
-
 parameter_types! {
 	pub const SessionDuration: BlockNumber = EPOCH_DURATION_IN_SLOTS as _;
 }
@@ -424,7 +430,7 @@ impl im_online::Trait for Runtime {
 	type AuthorityId = ImOnlineId;
 	type Call = Call;
 	type Event = Event;
-	type SubmitTransaction = SubmitTransaction;
+	type SubmitTransaction = SubmitTransactionOf<ImOnlineId>;
 	type ReportUnresponsiveness = Offences;
 	type SessionDuration = SessionDuration;
 }
