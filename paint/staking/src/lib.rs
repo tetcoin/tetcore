@@ -275,7 +275,7 @@ use sr_staking_primitives::{
 };
 #[cfg(feature = "std")]
 use sr_primitives::{Serialize, Deserialize};
-use system::{ensure_signed, ensure_root, offchain::SubmitSignedTransaction};
+use system::{ensure_signed, ensure_root, offchain::{SubmitSignedTransaction, PublicOf}};
 
 use phragmen::{elect, equalize, build_support_map, ExtendedBalance, PhragmenStakedAssignment};
 
@@ -563,12 +563,15 @@ pub trait Trait: system::Trait {
 	/// How many blocks ahead of the epoch do we try to run the phragmen offchain?
 	type ElectionLookahead: Get<Self::BlockNumber>;
 
-	/// A (potentially unknown) key type used to sign the transactions.
-	type SigningKeyType: RuntimeAppPublic + From<Self::AccountId> + Into<Self::AccountId> + Clone; // TODO maybe all are not needed.
-
 	/// The overarching call type.
 	// TODO: This is needed just to bound it to `From<Call<Self>>`. Otherwise could have `Self as system`
 	type Call: From<Call<Self>>;
+
+	/// A (potentially unknown) key type used to sign the transactions.
+	type SigningKeyType: RuntimeAppPublic
+		+ Clone
+		+ sr_primitives::traits::IdentifyAccount<AccountId=Self::AccountId>
+		+ Into<PublicOf<Self, <Self as Trait>::Call, Self::SubmitTransaction>>;
 
 	/// A transaction submitter.
 	type SubmitTransaction: SubmitSignedTransaction<Self, <Self as Trait>::Call>;
@@ -1156,18 +1159,21 @@ impl<T: Trait> Module<T> {
 	}
 
 	/// Find a local `AccountId` we can sign with.
-	fn signing_key() -> Option<T::AccountId> {
+	fn signing_key() -> Option<T::SigningKeyType> {
+		use sr_primitives::traits::IdentifyAccount;
 		// Find all local keys accessible to this app through the localised KeyType.
 		// Then go through all keys currently stored on chain and check them against
 		// the list of local keys until a match is found, otherwise return `None`.
-		let local_keys = T::SigningKeyType::all().iter().map(|i|
-			(*i).clone().into()
+		let local_keys = T::SigningKeyType::all();
+		let mut local_accounts = local_keys.clone().into_iter().map(|i|
+			i.into_account()
 		).collect::<Vec<T::AccountId>>();
+		local_accounts.sort();
 
 		// TODO: this is WRONG. current elected is not accurate.
 		Self::current_elected().into_iter().find_map(|v| {
-			if local_keys.contains(&v) {
-				Some(v)
+			if let Ok(idx) = local_accounts.binary_search(&v) {
+				local_keys.get(idx).cloned()
 			} else {
 				None
 			}
