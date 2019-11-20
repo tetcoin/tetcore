@@ -116,6 +116,10 @@ pub trait RuntimeAppPublic: Sized  {
 	/// The signature that will be generated when signing with the corresponding private key.
 	type Signature: Codec + Debug + MaybeHash + Eq + PartialEq + Clone;
 
+	/// A wrapped generic type.
+	type Generic;
+	// TODO [ToDr] Consider RuntimePublic bound above.
+
 	/// Returns all public keys for this application in the keystore.
 	fn all() -> crate::Vec<Self>;
 

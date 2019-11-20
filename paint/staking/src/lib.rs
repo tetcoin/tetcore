@@ -569,8 +569,6 @@ pub trait Trait: system::Trait {
 
 	/// A (potentially unknown) key type used to sign the transactions.
 	type SigningKeyType: RuntimeAppPublic
-		+ Clone
-		+ sr_primitives::traits::IdentifyAccount<AccountId=Self::AccountId>
 		+ Into<PublicOf<Self, <Self as Trait>::Call, Self::SubmitTransaction>>;
 
 	/// A transaction submitter.

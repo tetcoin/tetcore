@@ -102,7 +102,7 @@ macro_rules! app_crypto_pair {
 			type Seed = <$pair as $crate::Pair>::Seed;
 			type Signature = Signature;
 			type DeriveError = <$pair as $crate::Pair>::DeriveError;
-			
+
 			#[cfg(feature = "std")]
 			fn generate_with_phrase(password: Option<&str>) -> (Self, String, Self::Seed) {
 				let r = <$pair>::generate_with_phrase(password);
@@ -281,6 +281,7 @@ macro_rules! app_crypto_public_common {
 		impl $crate::RuntimeAppPublic for Public where $public: $crate::RuntimePublic<Signature=$sig> {
 			const ID: $crate::KeyTypeId = $key_type;
 			type Signature = Signature;
+			type Generic = $public;
 
 			fn all() -> $crate::Vec<Self> {
 				<$public as $crate::RuntimePublic>::all($key_type).into_iter().map(Self).collect()
@@ -353,7 +354,7 @@ macro_rules! app_crypto_signature_not_full_crypto {
 			)]
 			pub struct Signature($sig);
 		}
-		
+
 		impl $crate::CryptoType for Signature {}
 
 		impl $crate::AppKey for Signature {

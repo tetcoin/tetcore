@@ -89,6 +89,7 @@ impl app_crypto::RuntimeAppPublic for UintAuthorityId {
 	const ID: KeyTypeId = key_types::DUMMY;
 
 	type Signature = Self;
+	type Generic = Self;
 
 	fn all() -> Vec<Self> {
 		ALL_KEYS.with(|l| l.borrow().clone())
