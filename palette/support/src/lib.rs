@@ -48,7 +48,7 @@ pub mod debug;
 #[macro_use]
 pub mod dispatch;
 pub mod storage;
-mod hash;
+pub mod hash;
 #[macro_use]
 pub mod event;
 #[macro_use]
@@ -66,7 +66,7 @@ pub mod error;
 pub mod traits;
 pub mod weights;
 
-pub use self::hash::{Twox256, Twox128, Blake2_256, Blake2_128, Twox64Concat, Hashable};
+pub use self::hash::{Twox256, Twox128, Blake2_256, Blake2_128, Twox64Concat, Hashable, StorageHasher};
 pub use self::storage::{StorageValue, StorageMap, StorageLinkedMap, StorageDoubleMap};
 pub use self::dispatch::{Parameter, Callable, IsSubType};
 pub use sr_primitives::{self, ConsensusEngineId, print, traits::Printable};
@@ -241,7 +241,7 @@ mod tests {
 	use codec::{Codec, EncodeLike};
 	use palette_metadata::{
 		DecodeDifferent, StorageEntryMetadata, StorageMetadata, StorageEntryType,
-		StorageEntryModifier, DefaultByteGetter, StorageHasher,
+		StorageEntryModifier, DefaultByteGetter, StorageHasher, StorageMapType,
 	};
 	use rstd::marker::PhantomData;
 
@@ -272,6 +272,7 @@ mod tests {
 				linked_map T::BlockNumber => Option<T::BlockNumber>;
 			pub GetterNoFnKeyword get(no_fn): Option<u32>;
 
+			pub OptionPrefixedMap: map prefixed() u32 => Option<u32>;
 			pub DataDM config(test_config) build(|_| vec![(15u32, 16u32, 42u64)]):
 				double_map hasher(twox_64_concat) u32, blake2_256(u32) => u64;
 			pub GenericDataDM:
@@ -476,7 +477,7 @@ mod tests {
 						hasher: StorageHasher::Twox64Concat,
 						key: DecodeDifferent::Encode("u32"),
 						value: DecodeDifferent::Encode("u64"),
-						is_linked: true,
+						kind: StorageMapType::LinkedMap,
 					},
 					default: DecodeDifferent::Encode(
 						DefaultByteGetter(&__GetByteStructData(PhantomData::<Test>))
@@ -490,7 +491,7 @@ mod tests {
 						hasher: StorageHasher::Blake2_256,
 						key: DecodeDifferent::Encode("u32"),
 						value: DecodeDifferent::Encode("u32"),
-						is_linked: true,
+						kind: StorageMapType::LinkedMap,
 					},
 					default: DecodeDifferent::Encode(
 						DefaultByteGetter(&__GetByteStructOptionLinkedMap(PhantomData::<Test>))
@@ -504,7 +505,7 @@ mod tests {
 						hasher: StorageHasher::Twox128,
 						key: DecodeDifferent::Encode("T::BlockNumber"),
 						value: DecodeDifferent::Encode("T::BlockNumber"),
-						is_linked: true
+						kind: StorageMapType::LinkedMap
 					},
 					default: DecodeDifferent::Encode(
 						DefaultByteGetter(&__GetByteStructGenericData(PhantomData::<Test>))
@@ -518,7 +519,7 @@ mod tests {
 						hasher: StorageHasher::Blake2_256,
 						key: DecodeDifferent::Encode("T::BlockNumber"),
 						value: DecodeDifferent::Encode("T::BlockNumber"),
-						is_linked: true
+						kind: StorageMapType::LinkedMap
 					},
 					default: DecodeDifferent::Encode(
 						DefaultByteGetter(&__GetByteStructGenericData2(PhantomData::<Test>))
@@ -531,6 +532,20 @@ mod tests {
 					ty: StorageEntryType::Plain(DecodeDifferent::Encode("u32")),
 					default: DecodeDifferent::Encode(
 						DefaultByteGetter(&__GetByteStructGetterNoFnKeyword(PhantomData::<Test>))
+					),
+					documentation: DecodeDifferent::Encode(&[]),
+				},
+				StorageEntryMetadata {
+					name: DecodeDifferent::Encode("OptionPrefixedMap"),
+					modifier: StorageEntryModifier::Optional,
+					ty: StorageEntryType::Map {
+						hasher: StorageHasher::Blake2_256,
+						key: DecodeDifferent::Encode("u32"),
+						value: DecodeDifferent::Encode("u32"),
+						kind: StorageMapType::PrefixedMap,
+					},
+					default: DecodeDifferent::Encode(
+						DefaultByteGetter(&__GetByteStructOptionPrefixedMap(PhantomData::<Test>))
 					),
 					documentation: DecodeDifferent::Encode(&[]),
 				},

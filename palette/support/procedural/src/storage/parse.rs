@@ -27,6 +27,7 @@ mod keyword {
 	syn::custom_keyword!(build);
 	syn::custom_keyword!(get);
 	syn::custom_keyword!(map);
+	syn::custom_keyword!(prefixed);
 	syn::custom_keyword!(linked_map);
 	syn::custom_keyword!(double_map);
 	syn::custom_keyword!(blake2_256);
@@ -148,6 +149,7 @@ enum DeclStorageType {
 #[derive(Parse, ToTokens, Debug)]
 struct DeclStorageMap {
 	pub map_keyword: keyword::map,
+	pub prefixed: ext::Opt<SetPrefixed>,
 	pub hasher: ext::Opt<SetHasher>,
 	pub key: syn::Type,
 	pub ass_keyword: Token![=>],
@@ -188,6 +190,12 @@ enum Hasher {
 struct DeclStorageDefault {
 	pub equal_token: Token![=],
 	pub expr: syn::Expr,
+}
+
+#[derive(Parse, ToTokens, Debug)]
+struct SetPrefixed {
+	pub hasher_keyword: keyword::prefixed,
+	pub inner: ext::Parens<ext::NoToken>,
 }
 
 #[derive(Parse, ToTokens, Debug)]
@@ -365,14 +373,19 @@ fn parse_storage_line_defs(
 						.unwrap_or(super::HasherKind::Blake2_256),
 					key: map.key,
 					value: map.value,
+					kind: match map.prefixed.inner.is_some() {
+						true => super::MapKind::PrefixedMap,
+						false => super::MapKind::Map,
+					},
 				}
 			),
-			DeclStorageType::LinkedMap(map) => super::StorageLineTypeDef::LinkedMap(
+			DeclStorageType::LinkedMap(map) => super::StorageLineTypeDef::Map(
 				super::MapDef {
 					hasher: map.hasher.inner.map(Into::into)
 						.unwrap_or(super::HasherKind::Blake2_256),
 					key: map.key,
 					value: map.value,
+					kind: super::MapKind::LinkedMap,
 				}
 			),
 			DeclStorageType::DoubleMap(map) => super::StorageLineTypeDef::DoubleMap(
