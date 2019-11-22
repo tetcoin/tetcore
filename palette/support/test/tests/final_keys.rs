@@ -38,8 +38,8 @@ mod no_instance {
 			pub Map: map u32 => u32;
 			pub Map2: map hasher(twox_128) u32 => u32;
 
-			pub PrefixedMap: map prefixed() u32 => u32;
-			pub PrefixedMap2: map prefixed() hasher(twox_128) u32 => u32;
+			pub PrefixedMap: prefixed_map u32 => u32;
+			pub PrefixedMap2: prefixed_map hasher(twox_128) u32 => u32;
 
 			pub LinkedMap: linked_map u32 => u32;
 			pub LinkedMap2: linked_map hasher(twox_128) u32 => u32;
@@ -71,8 +71,8 @@ mod instance {
 			pub Map: map u32 => u32;
 			pub Map2: map hasher(twox_128) u32 => u32;
 
-			pub PrefixedMap: map prefixed() u32 => u32;
-			pub PrefixedMap2: map prefixed() hasher(twox_128) u32 => u32;
+			pub PrefixedMap: prefixed_map u32 => u32;
+			pub PrefixedMap2: prefixed_map hasher(twox_128) u32 => u32;
 
 			pub LinkedMap: linked_map u32 => u32;
 			pub LinkedMap2: linked_map hasher(twox_128) u32 => u32;

@@ -272,7 +272,7 @@ mod tests {
 				linked_map T::BlockNumber => Option<T::BlockNumber>;
 			pub GetterNoFnKeyword get(no_fn): Option<u32>;
 
-			pub OptionPrefixedMap: map prefixed() u32 => Option<u32>;
+			pub OptionPrefixedMap: prefixed_map u32 => Option<u32>;
 			pub DataDM config(test_config) build(|_| vec![(15u32, 16u32, 42u64)]):
 				double_map hasher(twox_64_concat) u32, blake2_256(u32) => u64;
 			pub GenericDataDM:
