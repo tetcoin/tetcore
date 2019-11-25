@@ -305,6 +305,16 @@ pub struct BalanceLock<Balance, BlockNumber> {
 
 decl_storage! {
 	trait Store for Module<T: Trait<I>, I: Instance=DefaultInstance> as Balances {
+		pub UnusedTestingStorage get(fn unused_testing_storage) build(|_| {
+			vec![
+				(2, 3),
+				(12, 13),
+				(45, 46),
+				(46, 47),
+				(47, 48),
+				(50, 51),
+			]
+		}): prefixed_map u16 => u64;
 		/// The total units issued in the system.
 		pub TotalIssuance get(fn total_issuance) build(|config: &GenesisConfig<T, I>| {
 			config.balances.iter().fold(Zero::zero(), |acc: T::Balance, &(_, n)| acc + n)
@@ -395,6 +405,15 @@ decl_module! {
 		const CreationFee: T::Balance = T::CreationFee::get();
 
 		fn deposit_event() = default;
+
+		fn assert_unused_testing_storage(origin) {
+			assert_eq!(Self::unused_testing_storage(2), 3);
+			assert_eq!(Self::unused_testing_storage(12), 13);
+			assert_eq!(Self::unused_testing_storage(45), 46);
+			assert_eq!(Self::unused_testing_storage(46), 47);
+			assert_eq!(Self::unused_testing_storage(47), 48);
+			assert_eq!(Self::unused_testing_storage(50), 51);
+		}
 
 		/// Transfer some liquid free balance to another account.
 		///
