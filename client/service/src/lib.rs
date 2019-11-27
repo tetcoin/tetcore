@@ -684,7 +684,6 @@ mod tests {
 	fn should_not_propagate_transactions_that_are_marked_as_such() {
 		// given
 		let (client, longest_chain) = TestClientBuilder::new().build_with_longest_chain();
-		let client = Arc::new(client);
 		let pool = Arc::new(TransactionPool::new(
 			Default::default(),
 			transaction_pool::FullChainApi::new(client.clone())

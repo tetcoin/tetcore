@@ -1232,7 +1232,6 @@ mod tests {
 	#[test]
 	fn should_remove_transactions_from_the_pool() {
 		let (client, longest_chain) = TestClientBuilder::new().build_with_longest_chain();
-		let client = Arc::new(client);
 		let pool = TransactionPool::new(Default::default(), ::transaction_pool::FullChainApi::new(client.clone()));
 		let transaction = Transfer {
 			amount: 5,
@@ -1269,7 +1268,6 @@ mod tests {
 	#[test]
 	fn should_add_reverted_transactions_to_the_pool() {
 		let (client, longest_chain) = TestClientBuilder::new().build_with_longest_chain();
-		let client = Arc::new(client);
 		let pool = TransactionPool::new(Default::default(), ::transaction_pool::FullChainApi::new(client.clone()));
 		let transaction = Transfer {
 			amount: 5,

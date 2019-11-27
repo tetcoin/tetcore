@@ -240,12 +240,13 @@ impl<B> TestClientBuilderExt<B> for TestClientBuilder<
 	}
 
 	fn build(self) -> Client<B> {
-		unimplemented!();
+		self.build_with_native_executor(None)
 	}
 
 	fn build_with_longest_chain(self) -> (Arc<Client<B>>, LongestChain<B>) {
-		unimplemented!();
-		// self.build_with_native_executor(None)
+		let client = Arc::new(self.build_with_native_executor(None));
+		let longest_chain = LongestChain::new(client.clone());
+		(client, longest_chain)
 	}
 }
 

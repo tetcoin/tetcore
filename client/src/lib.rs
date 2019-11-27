@@ -57,11 +57,10 @@
 //! // from your runtime.
 //! use test_client::{LocalExecutor, runtime::Block, runtime::RuntimeApi};
 //!
-//! let backend = Arc::new(Backend::<Block, Blake2Hasher>::new());
+//! let backend = Backend::<Block, Blake2Hasher>::new();
 //! let client = Client::<_, _, _, RuntimeApi>::new(
-//! 	backend.clone(),
+//! 	backend,
 //! 	LocalCallExecutor::new(
-//! 		backend.clone(),
 //! 		NativeExecutor::<LocalExecutor>::new(WasmExecutionMethod::Interpreted, None),
 //!		),
 //! 	// This parameter provides the storage for the chain genesis.

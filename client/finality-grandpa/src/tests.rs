@@ -52,7 +52,12 @@ type PeerData =
 				test_client::Executor,
 				Block,
 				test_client::runtime::RuntimeApi,
-				LongestChain<test_client::Backend, Block>
+				LongestChain<
+					test_client::Backend,
+					test_client::Executor,
+					Block,
+					test_client::runtime::RuntimeApi
+				>
 			>
 		>
 	>;
@@ -116,17 +121,17 @@ impl TestNetFactory for GrandpaTestNet {
 		)
 	{
 		match client {
-			PeersClient::Full(ref client, ref backend) => {
+			PeersClient::Full(ref client) => {
 				let (import, link) = block_import(
 					client.clone(),
 					&self.test_config,
-					LongestChain::new(backend.clone()),
+					LongestChain::new(client.clone()),
 				).expect("Could not create block import for fresh peer.");
 				let justification_import = Box::new(import.clone());
 				let block_import = Box::new(import);
 				(block_import, Some(justification_import), None, None, Mutex::new(Some(link)))
 			},
-			PeersClient::Light(ref client, ref backend) => {
+			PeersClient::Light(ref client) => {
 				use crate::light_import::tests::light_block_import_without_justifications;
 
 				let authorities_provider = Arc::new(self.test_config.clone());
@@ -134,7 +139,6 @@ impl TestNetFactory for GrandpaTestNet {
 				// => light clients will try to fetch finality proofs
 				let import = light_block_import_without_justifications(
 					client.clone(),
-					backend.clone(),
 					&self.test_config,
 					authorities_provider,
 				).expect("Could not create block import for fresh peer.");
@@ -151,11 +155,11 @@ impl TestNetFactory for GrandpaTestNet {
 		client: PeersClient
 	) -> Option<Arc<dyn network::FinalityProofProvider<Block>>> {
 		match client {
-			PeersClient::Full(_, ref backend)  => {
+			PeersClient::Full(ref client)  => {
 				let authorities_provider = Arc::new(self.test_config.clone());
-				Some(Arc::new(FinalityProofProvider::new(backend.clone(), authorities_provider)))
+				Some(Arc::new(FinalityProofProvider::new(client.clone(), authorities_provider)))
 			},
-			PeersClient::Light(_, _) => None,
+			PeersClient::Light(_) => None,
 		}
 	}
 
@@ -224,7 +228,7 @@ impl Core<Block> for RuntimeApi {
 		&self,
 		_: &BlockId<Block>,
 		_: ExecutionContext,
-		_: Option<(Block)>,
+		_: Option<Block>,
 		_: Vec<u8>,
 	) -> Result<NativeOrEncoded<()>> {
 		unimplemented!("Not required for testing!")

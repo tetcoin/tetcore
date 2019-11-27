@@ -134,6 +134,7 @@ pub type PeersFullClient =
 pub type PeersLightClient =
 	client::Client<test_client::LightBackend, test_client::LightExecutor, Block, test_client::runtime::RuntimeApi>;
 
+#[derive(Clone)]
 pub enum PeersClient {
 	Full(Arc<PeersFullClient>),
 	Light(Arc<PeersLightClient>),

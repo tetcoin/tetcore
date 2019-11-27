@@ -552,7 +552,7 @@ pub mod tests {
 		for NoJustificationsImport<B, E, Block, RA> where
 			NumberFor<Block>: grandpa::BlockNumberOps,
 			B: Backend<Block, Blake2Hasher> + 'static,
-			E: CallExecutor<Block, Blake2Hasher> + 'static + Clone + Send + Sync,
+			E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 			DigestFor<Block>: Encode,
 			RA: Send + Sync,
 	{
@@ -616,7 +616,6 @@ pub mod tests {
 	/// Creates light block import that ignores justifications that came outside of finality proofs.
 	pub fn light_block_import_without_justifications<B, E, Block: BlockT<Hash=H256>, RA>(
 		client: Arc<Client<B, E, Block, RA>>,
-		backend: Arc<B>,
 		genesis_authorities_provider: &dyn GenesisAuthoritySetProvider<Block>,
 		authority_set_provider: Arc<dyn AuthoritySetForFinalityChecker<Block>>,
 	) -> Result<NoJustificationsImport<B, E, Block, RA>, ClientError>
@@ -625,7 +624,7 @@ pub mod tests {
 			E: CallExecutor<Block, Blake2Hasher, B> + 'static + Clone + Send + Sync,
 			RA: Send + Sync,
 	{
-		light_block_import(client, backend, genesis_authorities_provider, authority_set_provider)
+		light_block_import(client, genesis_authorities_provider, authority_set_provider)
 			.map(NoJustificationsImport)
 	}
 
@@ -633,7 +632,7 @@ pub mod tests {
 		new_cache: HashMap<well_known_cache_keys::Id, Vec<u8>>,
 		justification: Option<Justification>,
 	) -> ImportResult {
-		let (client, _backend) = test_client::new_light();
+		let client = test_client::new_light();
 		let mut import_data = LightImportData {
 			last_finalized: Default::default(),
 			authority_set: LightAuthoritySet::genesis(vec![(AuthorityId::from_slice(&[1; 32]), 1)]),
