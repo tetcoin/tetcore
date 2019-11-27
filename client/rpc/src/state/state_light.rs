@@ -21,7 +21,7 @@ use std::{
 	collections::{HashSet, HashMap, hash_map::Entry},
 };
 use codec::Decode;
-use futures03::{
+use futures::{
 	future::{ready, Either},
 	channel::oneshot::{channel, Sender},
 	FutureExt, TryFutureExt,
@@ -40,9 +40,9 @@ use rpc::{
 
 use api::Subscriptions;
 use client_api::backend::Backend;
+use sp_blockchain::Error as ClientError;
 use client::{
 	BlockchainEvents, Client, CallExecutor,
-	error::Error as ClientError,
 	light::{
 		blockchain::{future_header, RemoteBlockchain},
 		fetcher::{Fetcher, RemoteCallRequest, RemoteReadRequest, RemoteReadChildRequest},
@@ -753,7 +753,7 @@ mod tests {
 
 	#[test]
 	fn maybe_share_remote_request_shares_request() {
-		type UnreachableFuture = futures03::future::Ready<Result<u32, Error>>;
+		type UnreachableFuture = futures::future::Ready<Result<u32, Error>>;
 
 		let shared_requests = SimpleSubscriptions::default();
 

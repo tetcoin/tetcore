@@ -26,7 +26,7 @@ mod execution_strategy;
 pub mod error;
 pub mod informant;
 
-use client_api::ExecutionStrategies;
+use client_api::execution_extensions::ExecutionStrategies;
 use service::{
 	config::{Configuration, DatabaseConfig},
 	ServiceBuilderExport, ServiceBuilderImport, ServiceBuilderRevert,
@@ -61,8 +61,8 @@ pub use traits::{GetLogFilter, AugmentClap};
 use app_dirs::{AppInfo, AppDataType};
 use log::info;
 use lazy_static::lazy_static;
-
-use futures::Future;
+use futures::{Future, FutureExt, TryFutureExt};
+use futures01::{Async, Future as _};
 use substrate_telemetry::TelemetryEndpoints;
 
 /// default sub directory to store network config
@@ -102,7 +102,7 @@ pub struct VersionInfo {
 /// Something that can be converted into an exit signal.
 pub trait IntoExit {
 	/// Exit signal type.
-	type Exit: Future<Item=(),Error=()> + Send + 'static;
+	type Exit: Future<Output=()> + Unpin + Send + 'static;
 	/// Convert into exit signal.
 	fn into_exit(self) -> Self::Exit;
 }
@@ -205,7 +205,6 @@ where
 	);
 
 	panic_handler::set(version.support_url, &full_version);
-
 	let matches = CoreParams::<CC, RP>::clap()
 		.name(version.executable_name)
 		.author(version.author)
@@ -216,7 +215,6 @@ where
 		.setting(AppSettings::SubcommandsNegateReqs)
 		.get_matches_from(args);
 	let cli_args = CoreParams::<CC, RP>::from_clap(&matches);
-
 	init_logger(cli_args.get_log_filter().as_ref().map(|v| v.as_ref()).unwrap_or(""));
 	fdlimit::raise_fd_limit();
 
@@ -388,7 +386,27 @@ impl<'a> ParseAndPrepareExport<'a> {
 			None => Box::new(stdout()),
 		};
 
-		builder(config)?.export_blocks(exit.into_exit(), file, from.into(), to.map(Into::into), json)?;
+		// Note: while we would like the user to handle the exit themselves, we handle it here
+		// for backwards compatibility reasons.
+		let (exit_send, exit_recv) = std::sync::mpsc::channel();
+		let exit = exit.into_exit()
+			.map(|_| Ok::<_, ()>(()))
+			.compat();
+		std::thread::spawn(move || {
+			let _ = exit.wait();
+			let _ = exit_send.send(());
+		});
+
+		let mut export_fut = builder(config)?.export_blocks(file, from.into(), to.map(Into::into), json);
+		let fut = futures01::future::poll_fn(|| {
+			if exit_recv.try_recv().is_ok() {
+				return Ok(Async::Ready(()));
+			}
+			export_fut.poll()
+		});
+
+		let mut runtime = tokio::runtime::current_thread::Runtime::new().unwrap();
+		runtime.block_on(fut)?;
 		Ok(())
 	}
 }
@@ -423,7 +441,7 @@ impl<'a> ParseAndPrepareImport<'a> {
 			..Default::default()
 		};
 
-		let file: Box<dyn ReadPlusSeek> = match self.params.input {
+		let file: Box<dyn ReadPlusSeek + Send> = match self.params.input {
 			Some(filename) => Box::new(File::open(filename)?),
 			None => {
 				let mut buffer = Vec::new();
@@ -432,8 +450,27 @@ impl<'a> ParseAndPrepareImport<'a> {
 			},
 		};
 
-		let fut = builder(config)?.import_blocks(exit.into_exit(), file)?;
-		tokio::run(fut);
+		// Note: while we would like the user to handle the exit themselves, we handle it here
+		// for backwards compatibility reasons.
+		let (exit_send, exit_recv) = std::sync::mpsc::channel();
+		let exit = exit.into_exit()
+			.map(|_| Ok::<_, ()>(()))
+			.compat();
+		std::thread::spawn(move || {
+			let _ = exit.wait();
+			let _ = exit_send.send(());
+		});
+
+		let mut import_fut = builder(config)?.import_blocks(file);
+		let fut = futures01::future::poll_fn(|| {
+			if exit_recv.try_recv().is_ok() {
+				return Ok(Async::Ready(()));
+			}
+			import_fut.poll()
+		});
+
+		let mut runtime = tokio::runtime::current_thread::Runtime::new().unwrap();
+		runtime.block_on(fut)?;
 		Ok(())
 	}
 }
@@ -696,7 +733,7 @@ where
 
 	config.database = DatabaseConfig::Path {
 		path: config.in_chain_config_dir(DEFAULT_DB_CONFIG_PATH).expect("We provided a base_path."),
-		cache_size: cli.database_cache_size,
+		cache_size: Some(cli.database_cache_size),
 	};
 	config.state_cache_size = cli.state_cache_size;
 
@@ -781,9 +818,13 @@ where
 
 	let rpc_interface: &str = if cli.rpc_external { "0.0.0.0" } else { "127.0.0.1" };
 	let ws_interface: &str = if cli.ws_external { "0.0.0.0" } else { "127.0.0.1" };
+	let grafana_interface: &str = if cli.grafana_external { "0.0.0.0" } else { "127.0.0.1" };
 
 	config.rpc_http = Some(parse_address(&format!("{}:{}", rpc_interface, 9933), cli.rpc_port)?);
 	config.rpc_ws = Some(parse_address(&format!("{}:{}", ws_interface, 9944), cli.ws_port)?);
+	config.grafana_port = Some(
+		parse_address(&format!("{}:{}", grafana_interface, 9955), cli.grafana_port)?
+	);
 
 	config.rpc_ws_max_connections = cli.ws_max_connections;
 	config.rpc_cors = cli.rpc_cors.unwrap_or_else(|| if is_dev {
@@ -806,6 +847,9 @@ where
 	} else if !cli.telemetry_endpoints.is_empty() {
 		config.telemetry_endpoints = Some(TelemetryEndpoints::new(cli.telemetry_endpoints));
 	}
+
+	config.tracing_targets = cli.tracing_targets.into();
+	config.tracing_receiver = cli.tracing_receiver.into();
 
 	// Imply forced authoring on --dev
 	config.force_authoring = cli.shared_params.dev || cli.force_authoring;
@@ -862,6 +906,8 @@ fn init_logger(pattern: &str) {
 	builder.filter(Some("ws"), log::LevelFilter::Off);
 	builder.filter(Some("hyper"), log::LevelFilter::Warn);
 	builder.filter(Some("cranelift_wasm"), log::LevelFilter::Warn);
+	// Always log the special target `substrate_tracing`, overrides global level
+	builder.filter(Some("substrate_tracing"), log::LevelFilter::Info);
 	// Enable info for others.
 	builder.filter(None, log::LevelFilter::Info);
 

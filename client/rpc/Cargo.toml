@@ -5,12 +5,12 @@ authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 
 [dependencies]
-api = { package = "substrate-rpc-api", path = "./api" }
+api = { package = "sc-rpc-api", path = "./api" }
 client-api = { package = "substrate-client-api", path = "../api" }
 client = { package = "substrate-client", path = "../" }
 sr-api = { path = "../../primitives/sr-api" }
 codec = { package = "parity-scale-codec", version = "1.0.0" }
-futures03 = { package = "futures-preview", version = "0.3.0-alpha.19", features = ["compat"] }
+futures = { version = "0.3.1", features = ["compat"] }
 jsonrpc-pubsub = "14.0.3"
 log = "0.4.8"
 primitives = { package = "substrate-primitives", path = "../../primitives/core" }
@@ -23,13 +23,14 @@ rpc-primitives = { package = "substrate-rpc-primitives", path = "../../primitive
 state_machine = { package = "substrate-state-machine", path = "../../primitives/state-machine" }
 substrate-executor = { path = "../executor" }
 substrate-keystore = { path = "../keystore" }
-transaction_pool = { package = "substrate-transaction-pool", path = "../transaction-pool" }
+transaction_pool = { package = "sc-transaction-pool", path = "../../client/transaction-pool" }
+sp-blockchain = { path = "../../primitives/blockchain" }
 hash-db = { version = "0.15.2", default-features = false }
 parking_lot = { version = "0.9.0" }
 
 [dev-dependencies]
 assert_matches = "1.3.0"
-futures = "0.1.29"
+futures01 = { package = "futures", version = "0.1.29" }
 network = { package = "substrate-network", path = "../network" }
 rustc-hex = "2.0.1"
 sr-io = { path = "../../primitives/sr-io" }

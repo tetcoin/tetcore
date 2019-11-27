@@ -29,13 +29,14 @@ use codec::{Decode, Encode, IoReader};
 use consensus_common::import_queue::ImportQueue;
 use futures::{prelude::*, sync::mpsc};
 use futures03::{
-	compat::Compat,
+	compat::{Compat, Future01CompatExt},
 	future::ready,
 	FutureExt as _, TryFutureExt as _,
 	StreamExt as _, TryStreamExt as _,
+	future::{select, Either}
 };
 use keystore::{Store as Keystore};
-use log::{info, warn};
+use log::{info, warn, error};
 use network::{FinalityProofProvider, OnDemand, NetworkService, NetworkStateInfo, DhtEvent};
 use network::{config::BoxFinalityProofRequestBuilder, specialization::NetworkSpecialization};
 use parking_lot::{Mutex, RwLock};
@@ -48,11 +49,13 @@ use sr_primitives::traits::{
 use substrate_executor::{NativeExecutor, NativeExecutionDispatch};
 use std::{
 	io::{Read, Write, Seek},
-	marker::PhantomData, sync::Arc, sync::atomic::AtomicBool, time::SystemTime
+	marker::PhantomData, sync::Arc, time::SystemTime
 };
 use sysinfo::{get_current_pid, ProcessExt, System, SystemExt};
 use tel::{telemetry, SUBSTRATE_INFO};
 use transaction_pool::txpool::{self, ChainApi, Pool as TransactionPool};
+use sp_blockchain;
+use grafana_data_source::{self, record_metrics};
 
 /// Aggregator for the components required to build a service.
 ///
@@ -182,13 +185,17 @@ where TGen: RuntimeGenesis, TCSExt: Extension {
 				},
 			};
 
+			let extensions = client_api::execution_extensions::ExecutionExtensions::new(
+				config.execution_strategies.clone(),
+				Some(keystore.clone()),
+			);
+
 			client_db::new_client(
 				db_config,
 				executor,
 				&config.chain_spec,
 				fork_blocks,
-				config.execution_strategies.clone(),
-				Some(keystore.clone()),
+				extensions,
 			)?
 		};
 
@@ -604,9 +611,8 @@ pub trait ServiceBuilderImport {
 	/// Starts the process of importing blocks.
 	fn import_blocks(
 		self,
-		exit: impl Future<Item=(),Error=()> + Send + 'static,
-		input: impl Read + Seek,
-	) -> Result<Box<dyn Future<Item = (), Error = ()> + Send>, Error>;
+		input: impl Read + Seek + Send + 'static,
+	) -> Box<dyn Future<Item = (), Error = Error> + Send>;
 }
 
 /// Implemented on `ServiceBuilder`. Allows exporting blocks once you have given all the required
@@ -617,13 +623,12 @@ pub trait ServiceBuilderExport {
 
 	/// Performs the blocks export.
 	fn export_blocks(
-		&self,
-		exit: impl Future<Item=(),Error=()> + Send + 'static,
-		output: impl Write,
+		self,
+		output: impl Write + 'static,
 		from: NumberFor<Self::Block>,
 		to: Option<NumberFor<Self::Block>>,
 		json: bool
-	) -> Result<(), Error>;
+	) -> Box<dyn Future<Item = (), Error = Error>>;
 }
 
 /// Implemented on `ServiceBuilder`. Allows reverting the chain once you have given all the
@@ -655,13 +660,11 @@ impl<
 {
 	fn import_blocks(
 		self,
-		exit: impl Future<Item=(),Error=()> + Send + 'static,
-		input: impl Read + Seek,
-	) -> Result<Box<dyn Future<Item = (), Error = ()> + Send>, Error> {
+		input: impl Read + Seek + Send + 'static,
+	) -> Box<dyn Future<Item = (), Error = Error> + Send> {
 		let client = self.client;
 		let mut queue = self.import_queue;
-		import_blocks!(TBl, client, queue, exit, input)
-			.map(|f| Box::new(f) as Box<_>)
+		Box::new(import_blocks!(TBl, client, queue, input).compat())
 	}
 }
 
@@ -671,20 +674,20 @@ impl<TBl, TRtApi, TCfg, TGen, TCSExt, TBackend, TExec, TFchr, TSc, TImpQu, TFprb
 where
 	TBl: BlockT<Hash = <Blake2Hasher as Hasher>::Out>,
 	TBackend: 'static + client_api::backend::Backend<TBl, Blake2Hasher> + Send,
-	TExec: 'static + client::CallExecutor<TBl, Blake2Hasher, TBackend> + Send + Sync + Clone
+	TExec: 'static + client::CallExecutor<TBl, Blake2Hasher, TBackend> + Send + Sync + Clone,
+	TRtApi: 'static,
 {
 	type Block = TBl;
 
 	fn export_blocks(
-		&self,
-		exit: impl Future<Item=(),Error=()> + Send + 'static,
-		mut output: impl Write,
+		self,
+		mut output: impl Write + 'static,
 		from: NumberFor<TBl>,
 		to: Option<NumberFor<TBl>>,
 		json: bool
-	) -> Result<(), Error> {
-		let client = &self.client;
-		export_blocks!(client, exit, output, from, to, json)
+	) -> Box<dyn Future<Item = (), Error = Error>> {
+		let client = self.client;
+		Box::new(export_blocks!(client, output, from, to, json).compat())
 	}
 }
 
@@ -730,7 +733,7 @@ ServiceBuilder<
 		offchain::OffchainWorkerApi<TBl> +
 		tx_pool_api::TaggedTransactionQueue<TBl> +
 		session::SessionKeys<TBl> +
-		sr_api::ApiExt<TBl, Error = client::error::Error>,
+		sr_api::ApiExt<TBl, Error = sp_blockchain::Error>,
 	TBl: BlockT<Hash = <Blake2Hasher as Hasher>::Out>,
 	TRtApi: 'static + Send + Sync,
 	TCfg: Default,
@@ -787,6 +790,9 @@ ServiceBuilder<
 		let (to_spawn_tx, to_spawn_rx) =
 			mpsc::unbounded::<Box<dyn Future<Item = (), Error = ()> + Send>>();
 
+		// A side-channel for essential tasks to communicate shutdown.
+		let (essential_failed_tx, essential_failed_rx) = mpsc::unbounded();
+
 		let import_queue = Box::new(import_queue);
 		let chain_info = client.info().chain;
 
@@ -798,6 +804,10 @@ ServiceBuilder<
 			"height" => chain_info.best_number.saturated_into::<u64>(),
 			"best" => ?chain_info.best_hash
 		);
+
+		// make transaction pool available for off-chain runtime calls.
+		client.execution_extensions()
+			.register_transaction_pool(Arc::downgrade(&transaction_pool) as _);
 
 		let transaction_pool_adapter = Arc::new(TransactionPoolAdapter {
 			imports_external_transactions: !config.roles.is_light(),
@@ -879,8 +889,8 @@ ServiceBuilder<
 					}
 
 					let offchain = offchain.as_ref().and_then(|o| o.upgrade());
-					if let (Some(txpool), Some(offchain)) = (txpool, offchain) {
-						let future = offchain.on_block_imported(&number, &txpool, network_state_info.clone(), is_validator)
+					if let Some(offchain) = offchain {
+						let future = offchain.on_block_imported(&number, network_state_info.clone(), is_validator)
 							.map(|()| Ok(()));
 						let _ = to_spawn_tx_.unbounded_send(Box::new(Compat::new(future)));
 					}
@@ -960,6 +970,17 @@ ServiceBuilder<
 				"bandwidth_download" => bandwidth_download,
 				"bandwidth_upload" => bandwidth_upload,
 				"used_state_cache_size" => used_state_cache_size,
+			);
+			record_metrics!(
+				"peers".to_owned() => num_peers,
+				"height".to_owned() => best_number,
+				"txcount".to_owned() => txpool_status.ready,
+				"cpu".to_owned() => cpu_usage,
+				"memory".to_owned() => memory,
+				"finalized_height".to_owned() => finalized_number,
+				"bandwidth_download".to_owned() => bandwidth_download,
+				"bandwidth_upload".to_owned() => bandwidth_upload,
+				"used_state_cache_size".to_owned() => used_state_cache_size
 			);
 
 			Ok(())
@@ -1100,6 +1121,30 @@ ServiceBuilder<
 			telemetry
 		});
 
+		// Grafana data source
+		if let Some(port) = config.grafana_port {
+			let future = select(
+				grafana_data_source::run_server(port).boxed(),
+				exit.clone().compat()
+			).map(|either| match either {
+				Either::Left((result, _)) => result.map_err(|_| ()),
+				Either::Right(_) => Ok(())
+			}).compat();
+
+			let _ = to_spawn_tx.unbounded_send(Box::new(future));
+    }
+
+		// Instrumentation
+		if let Some(tracing_targets) = config.tracing_targets.as_ref() {
+			let subscriber = substrate_tracing::ProfilingSubscriber::new(
+				config.tracing_receiver, tracing_targets
+			);
+			match tracing::subscriber::set_global_default(subscriber) {
+				Ok(_) => (),
+				Err(e) => error!(target: "tracing", "Unable to set global default subscriber {}", e),
+			}
+		}
+
 		Ok(Service {
 			client,
 			network,
@@ -1108,7 +1153,8 @@ ServiceBuilder<
 			transaction_pool,
 			exit,
 			signal: Some(signal),
-			essential_failed: Arc::new(AtomicBool::new(false)),
+			essential_failed_tx,
+			essential_failed_rx,
 			to_spawn_tx,
 			to_spawn_rx,
 			to_poll: Vec::new(),

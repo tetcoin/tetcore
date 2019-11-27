@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
 
+//! A method call executor interface.
+
 use std::{cmp::Ord, panic::UnwindSafe, result, cell::RefCell};
 use codec::{Encode, Decode};
 use sr_primitives::{
@@ -24,11 +26,12 @@ use state_machine::{
 	ChangesTrieTransaction, StorageProof,
 };
 use executor::{RuntimeVersion, NativeVersion};
+use externalities::Extensions;
 use hash_db::Hasher;
-use primitives::{offchain::OffchainExt, Blake2Hasher, NativeOrEncoded};
+use primitives::{Blake2Hasher, NativeOrEncoded};
 
 use sr_api::{ProofRecorder, InitializeBlock};
-use crate::error;
+use sp_blockchain;
 
 /// Method call executor.
 pub trait CallExecutor<B, H, BE>
@@ -50,8 +53,8 @@ where
 		method: &str,
 		call_data: &[u8],
 		strategy: ExecutionStrategy,
-		side_effects_handler: Option<OffchainExt>,
-	) -> Result<Vec<u8>, error::Error>;
+		extensions: Option<Extensions>,
+	) -> Result<Vec<u8>, sp_blockchain::Error>;
 
 	/// Execute a contextual call on top of state in a block of a given hash.
 	///
@@ -60,7 +63,7 @@ where
 	/// of the execution context.
 	fn contextual_call<
 		'a,
-		IB: Fn() -> error::Result<()>,
+		IB: Fn() -> sp_blockchain::Result<()>,
 		EM: Fn(
 			Result<NativeOrEncoded<R>, Self::Error>,
 			Result<NativeOrEncoded<R>, Self::Error>
@@ -78,10 +81,9 @@ where
 		initialize_block: InitializeBlock<'a, B>,
 		execution_manager: ExecutionManager<EM>,
 		native_call: Option<NC>,
-		side_effects_handler: Option<OffchainExt>,
 		proof_recorder: &Option<ProofRecorder<B>>,
-		enable_keystore: bool,
-	) -> error::Result<NativeOrEncoded<R>> where ExecutionManager<EM>: Clone;
+		extensions: Option<Extensions>,
+	) -> sp_blockchain::Result<NativeOrEncoded<R>> where ExecutionManager<EM>: Clone;
 
 	/// Extract RuntimeVersion of given block
 	///
@@ -90,7 +92,7 @@ where
 		&self,
 		backend: &BE,
 		id: &BlockId<B>
-	) -> Result<RuntimeVersion, error::Error>;
+	) -> Result<RuntimeVersion, sp_blockchain::Error>;
 
 	/// Execute a call to a contract on top of given state.
 	///
@@ -111,14 +113,14 @@ where
 		call_data: &[u8],
 		manager: ExecutionManager<F>,
 		native_call: Option<NC>,
-		side_effects_handler: Option<OffchainExt>,
+		extensions: Option<Extensions>,
 	) -> Result<
 		(
 			NativeOrEncoded<R>,
 			(S::Transaction, H::Out),
 			Option<ChangesTrieTransaction<Blake2Hasher, NumberFor<B>>>
 		),
-		error::Error,
+		sp_blockchain::Error,
 	>;
 
 	/// Execute a call to a contract on top of given state, gathering execution proof.
@@ -130,7 +132,7 @@ where
 		overlay: &mut OverlayedChanges,
 		method: &str,
 		call_data: &[u8]
-	) -> Result<(Vec<u8>, StorageProof), error::Error> {
+	) -> Result<(Vec<u8>, StorageProof), sp_blockchain::Error> {
 		let trie_state = state.as_trie_backend()
 			.ok_or_else(||
 				Box::new(state_machine::ExecutionError::UnableToGenerateProof)
@@ -148,7 +150,7 @@ where
 		overlay: &mut OverlayedChanges,
 		method: &str,
 		call_data: &[u8]
-	) -> Result<(Vec<u8>, StorageProof), error::Error>;
+	) -> Result<(Vec<u8>, StorageProof), sp_blockchain::Error>;
 
 	/// Get runtime version if supported.
 	fn native_runtime_version(&self) -> Option<&NativeVersion>;

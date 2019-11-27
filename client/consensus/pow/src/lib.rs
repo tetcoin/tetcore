@@ -32,15 +32,13 @@
 use std::sync::Arc;
 use std::thread;
 use std::collections::HashMap;
-use client_api::{
-	BlockOf, blockchain::{HeaderBackend, ProvideCache}, backend::AuxStore,
-	well_known_cache_keys::Id as CacheKeyId,
-};
+use client_api::{BlockOf, backend::AuxStore};
+use sp_blockchain::{HeaderBackend, ProvideCache, well_known_cache_keys::Id as CacheKeyId};
 use block_builder_api::BlockBuilder as BlockBuilderApi;
 use sr_primitives::{Justification, RuntimeString};
 use sr_primitives::generic::{BlockId, Digest, DigestItem};
 use sr_primitives::traits::{Block as BlockT, Header as HeaderT, ProvideRuntimeApi};
-use paint_timestamp::{TimestampInherentData, InherentError as TIError};
+use sp_timestamp::{TimestampInherentData, InherentError as TIError};
 use pow_primitives::{Seal, TotalDifficulty, POW_ENGINE_ID};
 use primitives::H256;
 use inherents::{InherentDataProviders, InherentData};
@@ -66,7 +64,7 @@ pub enum Error<B: BlockT> {
 	#[display(fmt = "Fetching best header failed using select chain: {:?}", _0)]
 	BestHeaderSelectChain(ConsensusError),
 	#[display(fmt = "Fetching best header failed: {:?}", _0)]
-	BestHeader(client_api::error::Error),
+	BestHeader(sp_blockchain::Error),
 	#[display(fmt = "Best header does not exist")]
 	NoBestHeader,
 	#[display(fmt = "Block proposing error: {:?}", _0)]
@@ -79,7 +77,7 @@ pub enum Error<B: BlockT> {
 	CreateInherents(inherents::Error),
 	#[display(fmt = "Checking inherents failed: {}", _0)]
 	CheckInherents(String),
-	Client(client_api::error::Error),
+	Client(sp_blockchain::Error),
 	Codec(codec::Error),
 	Environment(String),
 	Runtime(RuntimeString)
@@ -211,7 +209,7 @@ impl<B: BlockT<Hash=H256>, C, S, Algorithm> PowVerifier<B, C, S, Algorithm> {
 		inherent_data: InherentData,
 		timestamp_now: u64,
 	) -> Result<(), Error<B>> where
-		C: ProvideRuntimeApi, C::Api: BlockBuilderApi<B, Error = client_api::error::Error>
+		C: ProvideRuntimeApi, C::Api: BlockBuilderApi<B, Error = sp_blockchain::Error>
 	{
 		const MAX_TIMESTAMP_DRIFT_SECS: u64 = 60;
 
@@ -249,7 +247,7 @@ impl<B: BlockT<Hash=H256>, C, S, Algorithm> PowVerifier<B, C, S, Algorithm> {
 
 impl<B: BlockT<Hash=H256>, C, S, Algorithm> Verifier<B> for PowVerifier<B, C, S, Algorithm> where
 	C: ProvideRuntimeApi + Send + Sync + HeaderBackend<B> + AuxStore + ProvideCache<B> + BlockOf,
-	C::Api: BlockBuilderApi<B, Error = client_api::error::Error>,
+	C::Api: BlockBuilderApi<B, Error = sp_blockchain::Error>,
 	S: SelectChain<B>,
 	Algorithm: PowAlgorithm<B> + Send + Sync,
 {
@@ -316,9 +314,9 @@ impl<B: BlockT<Hash=H256>, C, S, Algorithm> Verifier<B> for PowVerifier<B, C, S,
 pub fn register_pow_inherent_data_provider(
 	inherent_data_providers: &InherentDataProviders,
 ) -> Result<(), consensus_common::Error> {
-	if !inherent_data_providers.has_provider(&paint_timestamp::INHERENT_IDENTIFIER) {
+	if !inherent_data_providers.has_provider(&sp_timestamp::INHERENT_IDENTIFIER) {
 		inherent_data_providers
-			.register_provider(paint_timestamp::InherentDataProvider)
+			.register_provider(sp_timestamp::InherentDataProvider)
 			.map_err(Into::into)
 			.map_err(consensus_common::Error::InherentData)
 	} else {
@@ -341,7 +339,7 @@ pub fn import_queue<B, C, S, Algorithm>(
 	B: BlockT<Hash=H256>,
 	C: ProvideRuntimeApi + HeaderBackend<B> + BlockOf + ProvideCache<B> + AuxStore,
 	C: Send + Sync + AuxStore + 'static,
-	C::Api: BlockBuilderApi<B, Error = client_api::error::Error>,
+	C::Api: BlockBuilderApi<B, Error = sp_blockchain::Error>,
 	Algorithm: PowAlgorithm<B> + Send + Sync + 'static,
 	S: SelectChain<B> + 'static,
 {

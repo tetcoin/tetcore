@@ -20,17 +20,17 @@
 mod tests;
 
 use std::{sync::Arc, convert::TryInto};
-use futures03::future::{FutureExt, TryFutureExt};
+use futures::future::{FutureExt, TryFutureExt};
 use log::warn;
 
 use client::Client;
-use client_api::error::Error as ClientError;
+use sp_blockchain::Error as ClientError;
 
 use rpc::futures::{
 	Sink, Future,
 	future::result,
 };
-use futures03::{StreamExt as _, compat::Compat, future::ready};
+use futures::{StreamExt as _, compat::Compat, future::ready};
 use api::Subscriptions;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
 use codec::{Encode, Decode};

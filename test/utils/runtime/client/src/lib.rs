@@ -255,13 +255,12 @@ pub fn new() -> Client<Backend> {
 }
 
 /// Creates new light client instance used for tests.
-pub fn new_light() -> client::Client<LightBackend, LightExecutor, runtime::Block, runtime::RuntimeApi>
-{
+pub fn new_light() -> client::Client<LightBackend, LightExecutor, runtime::Block, runtime::RuntimeApi> {
 	let storage = client_db::light::LightStorage::new_test();
 	let blockchain = Arc::new(client::light::blockchain::Blockchain::new(storage));
 	let backend = LightBackend::new(blockchain);
 	let executor = NativeExecutor::new(WasmExecutionMethod::Interpreted, None);
-	let local_call_executor = client::LocalCallExecutor::new(executor, None);
+	let local_call_executor = client::LocalCallExecutor::new(executor);
 	let call_executor = LightExecutor::new(
 		local_call_executor,
 	);
