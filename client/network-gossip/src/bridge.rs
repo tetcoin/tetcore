@@ -21,7 +21,7 @@ use network::Context;
 use network::message::generic::ConsensusMessage;
 use network::{Event, config::Roles};
 
-use futures::{prelude::*, channel::mpsc, compat::Compat01As03};
+use futures03::{prelude::*, channel::mpsc, compat::Compat01As03};
 use libp2p::PeerId;
 use parking_lot::Mutex;
 use sr_primitives::{traits::{Block as BlockT, NumberFor}, ConsensusEngineId};
