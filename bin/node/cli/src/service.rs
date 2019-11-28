@@ -29,7 +29,6 @@ use node_runtime::{GenesisConfig, RuntimeApi};
 use substrate_service::{
 	AbstractService, ServiceBuilder, config::Configuration, error::{Error as ServiceError},
 };
-use transaction_pool::{self, txpool::{Pool as TransactionPool}};
 use inherents::InherentDataProviders;
 use network::construct_simple_protocol;
 
@@ -63,9 +62,13 @@ macro_rules! new_full_start {
 			.with_select_chain(|_config, client| {
 				Ok(client::LongestChain::new(client.clone()))
 			})?
-			.with_transaction_pool(|config, client|
-				Ok(transaction_pool::txpool::Pool::new(config, transaction_pool::FullChainApi::new(client)))
-			)?
+			.with_transaction_pool(|config, client, _fetcher| {
+				let pool_api = txpool::FullChainApi::new(client.clone());
+				let pool = txpool::BasicPool::new(config, pool_api);
+				let maintainer = txpool::FullBasicPoolMaintainer::new(pool.pool().clone(), client);
+				let maintainable_pool = txpool_api::MaintainableTransactionPool::new(pool, maintainer);
+				Ok(maintainable_pool)
+			})?
 			.with_import_queue(|_config, client, mut select_chain, _transaction_pool| {
 				let select_chain = select_chain.take()
 					.ok_or_else(|| substrate_service::Error::SelectChainRequired)?;
@@ -96,8 +99,8 @@ macro_rules! new_full_start {
 				import_setup = Some((block_import, grandpa_link, babe_link));
 				Ok(import_queue)
 			})?
-			.with_rpc_extensions(|client, pool| -> RpcExtension {
-				node_rpc::create(client, pool)
+			.with_rpc_extensions(|client, pool, fetcher, _remote_blockchain| -> Result<RpcExtension, _> {
+				Ok(node_rpc::create(client, pool, node_rpc::LightDeps::none(fetcher)))
 			})?;
 
 		(builder, import_setup, inherent_data_providers)
@@ -269,6 +272,17 @@ type ConcreteClient =
 	>;
 #[allow(dead_code)]
 type ConcreteBackend = Backend<ConcreteBlock>;
+#[allow(dead_code)]
+type ConcreteTransactionPool = txpool_api::MaintainableTransactionPool<
+	txpool::BasicPool<
+		txpool::FullChainApi<ConcreteClient, ConcreteBlock>,
+		ConcreteBlock
+	>,
+	txpool::FullBasicPoolMaintainer<
+		ConcreteClient,
+		txpool::FullChainApi<ConcreteClient, Block>
+	>
+>;
 
 type ConcreteLongestChain = LongestChain<
 	Backend<ConcreteBlock>,
@@ -287,7 +301,7 @@ pub fn new_full<C: Send + Default + 'static>(config: NodeConfiguration<C>)
 		ConcreteLongestChain,
 		NetworkStatus<ConcreteBlock>,
 		NetworkService<ConcreteBlock, crate::service::NodeProtocol, <ConcreteBlock as BlockT>::Hash>,
-		TransactionPool<transaction_pool::FullChainApi<ConcreteClient, ConcreteBlock>>,
+		ConcreteTransactionPool,
 		OffchainWorkers<
 			ConcreteClient,
 			<ConcreteBackend as client_api::backend::Backend<Block, Blake2Hasher>>::OffchainStorage,
@@ -307,12 +321,18 @@ pub fn new_light<C: Send + Default + 'static>(config: NodeConfiguration<C>)
 	let inherent_data_providers = InherentDataProviders::new();
 
 	let service = ServiceBuilder::new_light::<Block, RuntimeApi, node_executor::Executor>(config)?
-		.with_select_chain(|_config, backend| {
-			Ok(LongestChain::new(backend.clone()))
+		.with_select_chain(|_config, client| {
+			Ok(LongestChain::new(client.clone()))
 		})?
-		.with_transaction_pool(|config, client|
-			Ok(TransactionPool::new(config, transaction_pool::FullChainApi::new(client)))
-		)?
+		.with_transaction_pool(|config, client, fetcher| {
+			let fetcher = fetcher
+				.ok_or_else(|| "Trying to start light transaction pool without active fetcher")?;
+			let pool_api = txpool::LightChainApi::new(client.clone(), fetcher.clone());
+			let pool = txpool::BasicPool::new(config, pool_api);
+			let maintainer = txpool::LightBasicPoolMaintainer::with_defaults(pool.pool().clone(), client, fetcher);
+			let maintainable_pool = txpool_api::MaintainableTransactionPool::new(pool, maintainer);
+			Ok(maintainable_pool)
+		})?
 		.with_import_queue_and_fprb(|_config, client, fetcher, _select_chain, _tx_pool| {
 			let fetch_checker = fetcher
 				.map(|fetcher| fetcher.checker().clone())
@@ -350,8 +370,14 @@ pub fn new_light<C: Send + Default + 'static>(config: NodeConfiguration<C>)
 		.with_finality_proof_provider(|client|
 			Ok(Arc::new(GrandpaFinalityProofProvider::new(client.clone(), client)) as _)
 		)?
-		.with_rpc_extensions(|client, pool| -> RpcExtension {
-			node_rpc::create(client, pool)
+		.with_rpc_extensions(|client, pool, fetcher, remote_blockchain| -> Result<RpcExtension, _> {
+			let fetcher = fetcher
+				.ok_or_else(|| "Trying to start node RPC without active fetcher")?;
+			let remote_blockchain = remote_blockchain
+				.ok_or_else(|| "Trying to start node RPC without active remote blockchain")?;
+
+			let light_deps = node_rpc::LightDeps { remote_blockchain, fetcher };
+			Ok(node_rpc::create(client, pool, Some(light_deps)))
 		})?
 		.build()?;
 
@@ -548,6 +574,7 @@ mod tests {
 					auxiliary: Vec::new(),
 					fork_choice: ForkChoiceStrategy::LongestChain,
 					allow_missing_state: false,
+					import_existing: false,
 				};
 
 				block_import.import_block(params, Default::default())

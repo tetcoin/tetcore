@@ -52,10 +52,7 @@ type PeerData =
 				test_client::Executor,
 				Block,
 				test_client::runtime::RuntimeApi,
-				LongestChain<
-					test_client::Backend,
-					Block,
-				>
+				LongestChain<test_client::Backend, Block>
 			>
 		>
 	>;
@@ -977,6 +974,7 @@ fn allows_reimporting_change_blocks() {
 			auxiliary: Vec::new(),
 			fork_choice: ForkChoiceStrategy::LongestChain,
 			allow_missing_state: false,
+			import_existing: false,
 		}
 	};
 
@@ -1030,6 +1028,7 @@ fn test_bad_justification() {
 			auxiliary: Vec::new(),
 			fork_choice: ForkChoiceStrategy::LongestChain,
 			allow_missing_state: false,
+			import_existing: false,
 		}
 	};
 
@@ -1740,6 +1739,7 @@ fn imports_justification_for_regular_blocks_on_import() {
 		auxiliary: Vec::new(),
 		fork_choice: ForkChoiceStrategy::LongestChain,
 		allow_missing_state: false,
+		import_existing: false,
 	};
 
 	assert_eq!(
