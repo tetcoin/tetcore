@@ -146,6 +146,9 @@ macro_rules! new_full {
 
 		let service = builder.with_network_protocol(|_| Ok(crate::service::NodeProtocol::new()))?
 			.with_finality_proof_provider(|client|
+				// NOTE(niklasad1): nasty workaround because trait objects only
+				// works for one trait, https://github.com/rust-lang/rfcs/issues/2035
+				//
 				Ok(Arc::new(grandpa::FinalityProofProvider::new(client.clone(), client)) as _)
 			)?
 			.with_dht_event_tx(dht_event_tx)?
@@ -269,9 +272,7 @@ type ConcreteBackend = Backend<ConcreteBlock>;
 
 type ConcreteLongestChain = LongestChain<
 	Backend<ConcreteBlock>,
-	LocalCallExecutor<NativeExecutor<node_executor::Executor>>,
 	ConcreteBlock,
-	node_runtime::RuntimeApi
 >;
 
 /// A specialized configuration object for setting up the node..

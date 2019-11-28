@@ -1608,40 +1608,38 @@ where
 
 /// Implement Longest Chain Select implementation
 /// where 'longest' is defined as the highest number of blocks
-pub struct LongestChain<BE, E, Block, R>
+pub struct LongestChain<BE, Block>
 where
 	Block: BlockT<Hash=H256>,
 {
-	// TODO: replace concrete type Client with type param(s)
-	client: Arc<Client<BE, E, Block, R>>,
+	backend: Arc<dyn GetBackend<BE, Block, Blake2Hasher> + Send + Sync>,
 }
 
-impl<BE, E, Block, R> Clone for LongestChain<BE, E, Block, R>
+impl<BE, Block> Clone for LongestChain<BE, Block>
 where
 	Block: BlockT<Hash=H256>,
 {
 	fn clone(&self) -> Self {
 		LongestChain {
-			client: self.client.clone(),
+			backend: self.backend.clone(),
 		}
 	}
 }
 
-impl<BE, E, Block, R> LongestChain<BE, E, Block, R>
+impl<BE, Block> LongestChain<BE, Block>
 where
 	BE: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher, BE>,
 	Block: BlockT<Hash=H256>,
 {
 	/// Instantiate a new LongestChain for Backend B
-	pub fn new(client: Arc<Client<BE, E, Block, R>>) -> Self {
+	pub fn new(backend: Arc<dyn GetBackend<BE, Block, Blake2Hasher> + Send + Sync>) -> Self {
 		LongestChain {
-			client,
+			backend,
 		}
 	}
 
 	fn best_block_header(&self) -> sp_blockchain::Result<<Block as BlockT>::Header> {
-		let backend = self.client.backend();
+		let backend = self.backend.get_backend();
 		let info = backend.blockchain().info();
 		let import_lock = backend.get_import_lock();
 		let best_hash = backend.blockchain().best_containing(info.best_hash, None, import_lock)?
@@ -1652,16 +1650,14 @@ where
 	}
 
 	fn leaves(&self) -> Result<Vec<<Block as BlockT>::Hash>, sp_blockchain::Error> {
-		self.client.backend().blockchain().leaves()
+		self.backend.get_backend().blockchain().leaves()
 	}
 }
 
-impl<BE, E, Block, R> SelectChain<Block> for LongestChain<BE, E, Block, R>
+impl<BE, Block> SelectChain<Block> for LongestChain<BE, Block>
 where
 	BE: backend::Backend<Block, Blake2Hasher>,
-	E: CallExecutor<Block, Blake2Hasher, BE> + Send + Sync,
 	Block: BlockT<Hash=H256>,
-	R: Send + Sync,
 {
 
 	fn leaves(&self) -> Result<Vec<<Block as BlockT>::Hash>, ConsensusError> {
@@ -1681,8 +1677,9 @@ where
 		target_hash: Block::Hash,
 		maybe_max_number: Option<NumberFor<Block>>
 	) -> Result<Option<Block::Hash>, ConsensusError> {
-		let import_lock = self.client.backend().get_import_lock();
-		self.client.backend().blockchain().best_containing(target_hash, maybe_max_number, import_lock)
+		let backend = self.backend.get_backend();
+		let import_lock = backend.get_import_lock();
+		backend.blockchain().best_containing(target_hash, maybe_max_number, import_lock)
 			.map_err(|e| ConsensusError::ChainLookup(e.to_string()).into())
 	}
 }

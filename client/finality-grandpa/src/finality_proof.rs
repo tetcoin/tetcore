@@ -40,8 +40,9 @@ use log::{trace, warn};
 
 use sp_blockchain::{Backend as BlockchainBackend, Error as ClientError, Result as ClientResult};
 use client_api::{
-	backend::Backend, CallExecutor, StorageProof,
+	backend::{GetBackend, Backend},
 	light::{FetchChecker, RemoteReadRequest},
+	CallExecutor, StorageProof,
 };
 use client::Client;
 use codec::{Encode, Decode};
@@ -134,16 +135,15 @@ impl<Block: BlockT> AuthoritySetForFinalityChecker<Block> for Arc<dyn FetchCheck
 }
 
 /// Finality proof provider for serving network requests.
-pub struct FinalityProofProvider<B, E, Block, RA>
+pub struct FinalityProofProvider<B, Block>
 where
 	Block: BlockT<Hash=H256>,
 {
-	client: Arc<Client<B, E, Block, RA>>,
+	backend: Arc<dyn GetBackend<B, Block, Blake2Hasher> + Send + Sync>,
 	authority_provider: Arc<dyn AuthoritySetForFinalityProver<Block>>,
-	_phantom: std::marker::PhantomData<(E, RA)>,
 }
 
-impl<B, E, Block, RA> FinalityProofProvider<B, E, Block, RA>
+impl<B, Block> FinalityProofProvider<B, Block>
 where
 	Block: BlockT<Hash=H256>,
 {
@@ -152,20 +152,18 @@ where
 	/// - backend for accessing blockchain data;
 	/// - authority_provider for calling and proving runtime methods.
 	pub fn new(
-		client: Arc<Client<B, E, Block, RA>>,
+		backend: Arc<dyn GetBackend<B, Block, Blake2Hasher> + Send + Sync>,
 		authority_provider: Arc<dyn AuthoritySetForFinalityProver<Block>>,
 	) -> Self {
-		FinalityProofProvider { client, authority_provider, _phantom: Default::default() }
+		FinalityProofProvider { backend, authority_provider }
 	}
 }
 
-impl<B, E, Block, RA> network::FinalityProofProvider<Block> for FinalityProofProvider<B, E, Block, RA>
+impl<B, Block> network::FinalityProofProvider<Block> for FinalityProofProvider<B, Block>
 where
 	Block: BlockT<Hash=H256>,
-	E: CallExecutor<Block, Blake2Hasher, B> + Send + Sync,
 	NumberFor<Block>: BlockNumberOps,
 	B: Backend<Block, Blake2Hasher> + Send + Sync + 'static,
-	RA: Send + Sync,
 {
 	fn prove_finality(
 		&self,
@@ -179,7 +177,7 @@ where
 			})?;
 		match request {
 			FinalityProofRequest::Original(request) => prove_finality::<_, _, GrandpaJustification<Block>>(
-				self.client.backend().blockchain(),
+				self.backend.get_backend().blockchain(),
 				&*self.authority_provider,
 				request.authorities_set_id,
 				request.last_finalized,

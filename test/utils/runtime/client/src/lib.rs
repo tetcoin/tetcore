@@ -142,9 +142,7 @@ pub type Client<B> = client::Client<
 /// `LongestChain` for testing
 pub type LongestChain<B> = client::LongestChain<
 	B,
-	client::LocalCallExecutor<executor::NativeExecutor<LocalExecutor>>,
 	runtime::Block,
-	runtime::RuntimeApi,
 >;
 
 /// A test client with default backend.
@@ -245,7 +243,7 @@ impl<B> TestClientBuilderExt<B> for TestClientBuilder<
 
 	fn build_with_longest_chain(self) -> (Arc<Client<B>>, LongestChain<B>) {
 		let client = Arc::new(self.build_with_native_executor(None));
-		let longest_chain = LongestChain::new(client.clone());
+		let longest_chain = LongestChain::new(client.clone() as _);
 		(client, longest_chain)
 	}
 }

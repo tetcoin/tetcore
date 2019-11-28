@@ -54,9 +54,7 @@ type PeerData =
 				test_client::runtime::RuntimeApi,
 				LongestChain<
 					test_client::Backend,
-					test_client::Executor,
 					Block,
-					test_client::runtime::RuntimeApi
 				>
 			>
 		>

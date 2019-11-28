@@ -219,7 +219,7 @@ pub struct Peer<D, S: NetworkSpecialization<Block>> {
 	/// We keep a copy of the block_import so that we can invoke it for locally-generated blocks,
 	/// instead of going through the import queue.
 	block_import: Box<dyn BlockImport<Block, Error = ConsensusError>>,
-	select_chain: Option<LongestChain<test_client::Backend, test_client::Executor, Block, test_client::runtime::RuntimeApi>>,
+	select_chain: Option<LongestChain<test_client::Backend, Block>>,
 	network: NetworkWorker<Block, S, <Block as BlockT>::Hash>,
 	imported_blocks_stream: Box<dyn Stream<Item = BlockImportNotification<Block>, Error = ()> + Send>,
 	finality_notification_stream: Box<dyn Stream<Item = FinalityNotification<Block>, Error = ()> + Send>,
@@ -237,7 +237,7 @@ impl<D, S: NetworkSpecialization<Block>> Peer<D, S> {
 	}
 
 	// Returns a clone of the local SelectChain, only available on full nodes
-	pub fn select_chain(&self) -> Option<LongestChain<test_client::Backend, test_client::Executor, Block, test_client::runtime::RuntimeApi>> {
+	pub fn select_chain(&self) -> Option<LongestChain<test_client::Backend, Block>> {
 		self.select_chain.clone()
 	}
 
