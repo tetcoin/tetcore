@@ -354,7 +354,6 @@ where
 	Block: BlockT,
 	H: Hasher<Out=Block::Hash>,
 	BE: Backend<Block, H>,
-
 {
 	/// Return reference to the backend
 	fn get_backend(&self) -> &BE;

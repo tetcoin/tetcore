@@ -97,11 +97,7 @@ pub fn new_full<C: Send + Default + 'static>(config: Configuration<C, GenesisCon
 
 	let service = builder.with_network_protocol(|_| Ok(NodeProtocol::new()))?
 		.with_finality_proof_provider(|client|
-			// NOTE(niklasad1): nasty workaround because trait objects only
-			// works for one trait, https://github.com/rust-lang/rfcs/issues/2035
-			//
-			// pass concrete type instead?!
-			Ok(Arc::new(GrandpaFinalityProofProvider::new(client.clone(), client)) as _)
+			Ok(Arc::new(GrandpaFinalityProofProvider::new(client)) as _)
 		)?
 		.build()?;
 
@@ -232,11 +228,7 @@ pub fn new_light<C: Send + Default + 'static>(config: Configuration<C, GenesisCo
 		})?
 		.with_network_protocol(|_| Ok(NodeProtocol::new()))?
 		.with_finality_proof_provider(|client|
-			// NOTE(niklasad1): nasty workaround because trait objects only
-			// works for one trait, https://github.com/rust-lang/rfcs/issues/2035
-			//
-			// pass concrete type instead?!
-			Ok(Arc::new(GrandpaFinalityProofProvider::new(client.clone(), client)) as _)
+			Ok(Arc::new(GrandpaFinalityProofProvider::new(client)) as _)
 		)?
 		.build()
 }

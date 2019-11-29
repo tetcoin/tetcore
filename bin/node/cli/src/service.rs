@@ -149,10 +149,7 @@ macro_rules! new_full {
 
 		let service = builder.with_network_protocol(|_| Ok(crate::service::NodeProtocol::new()))?
 			.with_finality_proof_provider(|client|
-				// NOTE(niklasad1): nasty workaround because trait objects only
-				// works for one trait, https://github.com/rust-lang/rfcs/issues/2035
-				//
-				Ok(Arc::new(grandpa::FinalityProofProvider::new(client.clone(), client)) as _)
+				Ok(Arc::new(grandpa::FinalityProofProvider::new(client)) as _)
 			)?
 			.with_dht_event_tx(dht_event_tx)?
 			.build()?;
@@ -368,7 +365,7 @@ pub fn new_light<C: Send + Default + 'static>(config: NodeConfiguration<C>)
 		})?
 		.with_network_protocol(|_| Ok(NodeProtocol::new()))?
 		.with_finality_proof_provider(|client|
-			Ok(Arc::new(GrandpaFinalityProofProvider::new(client.clone(), client)) as _)
+			Ok(Arc::new(GrandpaFinalityProofProvider::new(client)) as _)
 		)?
 		.with_rpc_extensions(|client, pool, fetcher, remote_blockchain| -> Result<RpcExtension, _> {
 			let fetcher = fetcher

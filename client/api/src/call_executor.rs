@@ -34,11 +34,11 @@ use sr_api::{ProofRecorder, InitializeBlock};
 use sp_blockchain;
 
 /// Method call executor.
-// NOTE(niklasad1): a quite inelegent fix, backend is introduced as parameter here because
-// the `CallExecutor` implementer can't have reference to the client because the client depends on
-// the `CallExecutor` implementer to be constructed.
+// NOTE(niklasad1): `backend` is introduced as parameter to workaround the way the `Client` is
+// is constructed when `backend` is not an `Arc` which breaks the abstraction.
 //
-// Thus, this destroys the abstraction (leaky API).
+// Technically, it might be possible to move the `backend` to the execuctor and decouple it from
+// the client....
 pub trait CallExecutor<B, H, BE>
 where
 	B: BlockT,
