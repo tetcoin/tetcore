@@ -35,43 +35,44 @@ use client_api::{backend, call_executor::CallExecutor};
 
 /// Call executor that executes methods locally, querying all required
 /// data from local backend.
-pub struct LocalCallExecutor<E> {
+pub struct LocalCallExecutor<E, B> {
 	executor: E,
+	_marker: std::marker::PhantomData<B>,
 }
 
-impl<E> LocalCallExecutor<E> {
+impl<E, B> LocalCallExecutor<E, B> {
 	/// Creates new instance of local call executor.
-	pub fn new(
-		executor: E,
-	) -> Self {
-		LocalCallExecutor {
+	pub fn new(executor: E) -> Self {
+		Self {
 			executor,
+			_marker: Default::default()
 		}
 	}
 }
 
-impl<E> Clone for LocalCallExecutor<E>
+impl<E, B> Clone for LocalCallExecutor<E, B>
 where
 	E: Clone,
 {
 	fn clone(&self) -> Self {
 		LocalCallExecutor {
 			executor: self.executor.clone(),
+			_marker: self._marker,
 		}
 	}
 }
 
-impl<E, Block, BE> CallExecutor<Block, Blake2Hasher, BE> for LocalCallExecutor<E>
+impl<B, E, Block> CallExecutor<Block, Blake2Hasher, B> for LocalCallExecutor<E, B>
 where
+	B: backend::Backend<Block, Blake2Hasher>,
 	E: CodeExecutor + RuntimeInfo,
 	Block: BlockT<Hash=H256>,
-	BE: backend::Backend<Block, Blake2Hasher>,
 {
 	type Error = E::Error;
 
 	fn call(
 		&self,
-		backend: &BE,
+		backend: &B,
 		id: &BlockId<Block>,
 		method: &str,
 		call_data: &[u8],
@@ -110,7 +111,7 @@ where
 		NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 	>(
 		&self,
-		backend: &BE,
+		backend: &B,
 		initialize_block_fn: IB,
 		at: &BlockId<Block>,
 		method: &str,
@@ -186,7 +187,7 @@ where
 
 	fn runtime_version(
 		&self,
-		backend: &BE,
+		backend: &B,
 		id: &BlockId<Block>
 	) -> sp_blockchain::Result<RuntimeVersion> {
 		let mut overlay = OverlayedChanges::default();
@@ -203,7 +204,7 @@ where
 			let _lock = backend.get_import_lock().read();
 			backend.destroy_state(state)?;
 		}
-		version.ok_or(sp_blockchain::Error::VersionInvalid.into())
+		version.map_err(|e| sp_blockchain::Error::VersionInvalid(format!("{:?}", e)).into())
 	}
 
 	fn call_at_state<
@@ -215,7 +216,7 @@ where
 		R: Encode + Decode + PartialEq,
 		NC: FnOnce() -> result::Result<R, String> + UnwindSafe,
 	>(&self,
-		backend: &BE,
+		backend: &B,
 		state: &S,
 		changes: &mut OverlayedChanges,
 		method: &str,
@@ -268,5 +269,24 @@ where
 
 	fn native_runtime_version(&self) -> Option<&NativeVersion> {
 		Some(self.executor.native_version())
+	}
+}
+
+impl<B, E, Block> runtime_version::GetRuntimeVersion<Block> for LocalCallExecutor<E, B>
+	where
+		B: backend::Backend<Block, Blake2Hasher>,
+		E: CodeExecutor + RuntimeInfo,
+		Block: BlockT<Hash=H256>,
+{
+	fn native_version(&self) -> &runtime_version::NativeVersion {
+		self.executor.native_version()
+	}
+
+	fn runtime_version(
+		&self,
+		backend: &B,
+		at: &BlockId<Block>,
+	) -> Result<runtime_version::RuntimeVersion, String> {
+		CallExecutor::runtime_version(self, backend, at).map_err(|e| format!("{:?}", e))
 	}
 }

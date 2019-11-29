@@ -59,7 +59,7 @@ pub fn new_light<B, S, GS, RA, E>(
 	genesis_storage: GS,
 	code_executor: E,
 ) -> ClientResult<Client<Backend<S, Blake2Hasher>, GenesisCallExecutor<
-	LocalCallExecutor<E>
+	LocalCallExecutor<E, Backend<S, Blake2Hasher>>
 >, B, RA>>
 	where
 		B: BlockT<Hash=H256>,

@@ -547,7 +547,8 @@ fn runtime_version<Block: BlockT, F: Fetcher<Block>>(
 		Bytes(Vec::new()),
 	)
 	.then(|version| ready(version.and_then(|version|
-		Decode::decode(&mut &version.0[..]).map_err(|_| client_err(ClientError::VersionInvalid))
+		Decode::decode(&mut &version.0[..])
+			.map_err(|e| client_err(ClientError::VersionInvalid(e.what().into())))
 	)))
 }
 

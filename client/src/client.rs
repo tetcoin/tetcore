@@ -147,7 +147,7 @@ pub fn new_in_mem<E, Block, S, RA>(
 	keystore: Option<primitives::traits::BareCryptoStorePtr>,
 ) -> sp_blockchain::Result<Client<
 	in_mem::Backend<Block, Blake2Hasher>,
-	LocalCallExecutor<E>,
+	LocalCallExecutor<E, in_mem::Backend<Block, Blake2Hasher>>,
 	Block,
 	RA
 >> where
@@ -165,7 +165,7 @@ pub fn new_with_backend<B, E, Block, S, RA>(
 	executor: E,
 	build_genesis_storage: S,
 	keystore: Option<primitives::traits::BareCryptoStorePtr>,
-) -> sp_blockchain::Result<Client<B, LocalCallExecutor<E>, Block, RA>>
+) -> sp_blockchain::Result<Client<B, LocalCallExecutor<E, B>, Block, RA>>
 	where
 		E: CodeExecutor + RuntimeInfo,
 		S: BuildStorage,
@@ -1772,9 +1772,10 @@ where
 }
 
 impl<BE, E, B, RA> consensus::block_validation::Chain<B> for Client<BE, E, B, RA>
-	where BE: backend::Backend<B, Blake2Hasher>,
-		  E: CallExecutor<B, Blake2Hasher, BE>,
-		  B: BlockT<Hash = H256>
+where
+	BE: backend::Backend<B, Blake2Hasher>,
+	E: CallExecutor<B, Blake2Hasher, BE>,
+	B: BlockT<Hash = H256>
 {
 	fn block_status(&self, id: &BlockId<B>) -> Result<BlockStatus, Box<dyn std::error::Error + Send>> {
 		Client::block_status(self, id).map_err(|e| Box::new(e) as Box<_>)
