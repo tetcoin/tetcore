@@ -103,12 +103,15 @@ pub trait StateApi<Hash> {
 	///
 	/// NOTE This first returned result contains the initial state of storage for all keys.
 	/// Subsequent values in the vector represent changes to the previous state (diffs).
+	///
+	/// The `step_by` parameter allows you to return aggregated changes from multiple blocks.
 	#[rpc(name = "state_queryStorage")]
 	fn query_storage(
 		&self,
 		keys: Vec<StorageKey>,
-		block: Hash,
-		hash: Option<Hash>
+		from: Hash,
+		to: Option<Hash>,
+		step_by: Option<usize>,
 	) -> FutureResult<Vec<StorageChangeSet<Hash>>>;
 
 	/// New runtime version subscription
