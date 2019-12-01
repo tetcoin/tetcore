@@ -170,12 +170,12 @@ impl NativeVersion {
 
 /// Something that can provide the runtime version at a given block and the native runtime version.
 #[cfg(feature = "std")]
-pub trait GetRuntimeVersion<Block: BlockT, B> {
+pub trait GetRuntimeVersion<Block: BlockT> {
 	/// Returns the version of the native runtime.
 	fn native_version(&self) -> &NativeVersion;
 
 	/// Returns the version of runtime at the given block.
-	fn runtime_version(&self, backend: &B, at: &BlockId<Block>) -> Result<RuntimeVersion, String>;
+	fn runtime_version(&self, at: &BlockId<Block>) -> Result<RuntimeVersion, String>;
 }
 
 #[cfg(feature = "std")]

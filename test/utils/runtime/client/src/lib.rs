@@ -74,6 +74,7 @@ pub type Backend = generic_test_client::Backend<runtime::Block>;
 /// Test client executor.
 pub type Executor = client::LocalCallExecutor<
 	NativeExecutor<LocalExecutor>,
+	Backend
 >;
 
 /// Test client light database backend.
@@ -81,7 +82,7 @@ pub type LightBackend = generic_test_client::LightBackend<runtime::Block>;
 
 /// Test client light executor.
 pub type LightExecutor = client::light::call_executor::GenesisCallExecutor<
-	client::LocalCallExecutor<NativeExecutor<LocalExecutor>>
+	client::LocalCallExecutor<NativeExecutor<LocalExecutor>, LightBackend>,
 >;
 
 /// Parameters of test-client builder with test-runtime.
@@ -142,7 +143,7 @@ pub type TestClientBuilder<E, B> = generic_test_client::TestClientBuilder<E, B, 
 /// Test client type with `LocalExecutor` and generic Backend.
 pub type Client<B> = client::Client<
 	B,
-	client::LocalCallExecutor<executor::NativeExecutor<LocalExecutor>>,
+	client::LocalCallExecutor<executor::NativeExecutor<LocalExecutor>, B>,
 	runtime::Block,
 	runtime::RuntimeApi,
 >;
@@ -206,7 +207,7 @@ pub trait TestClientBuilderExt<B>: Sized {
 }
 
 impl<B> TestClientBuilderExt<B> for TestClientBuilder<
-	client::LocalCallExecutor<executor::NativeExecutor<LocalExecutor>>,
+	client::LocalCallExecutor<executor::NativeExecutor<LocalExecutor>, B>,
 	B
 > where
 	B: client_api::backend::Backend<runtime::Block, Blake2Hasher> + 'static,

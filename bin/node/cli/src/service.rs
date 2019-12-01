@@ -266,8 +266,8 @@ type ConcreteBlock = node_primitives::Block;
 #[allow(dead_code)]
 type ConcreteClient =
 	Client<
-		Backend<ConcreteBlock>,
-		LocalCallExecutor<NativeExecutor<node_executor::Executor>>,
+		ConcreteBackend,
+		LocalCallExecutor<NativeExecutor<node_executor::Executor>, ConcreteBackend>,
 		ConcreteBlock,
 		node_runtime::RuntimeApi
 	>;

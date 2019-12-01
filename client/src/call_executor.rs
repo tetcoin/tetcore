@@ -284,9 +284,8 @@ impl<B, E, Block> runtime_version::GetRuntimeVersion<Block> for LocalCallExecuto
 
 	fn runtime_version(
 		&self,
-		backend: &B,
 		at: &BlockId<Block>,
 	) -> Result<runtime_version::RuntimeVersion, String> {
-		CallExecutor::runtime_version(self, backend, at).map_err(|e| format!("{:?}", e))
+		CallExecutor::runtime_version(self, todo!(), at).map_err(|e| format!("{:?}", e))
 	}
 }

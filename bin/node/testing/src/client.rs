@@ -30,7 +30,7 @@ pub type Backend = client_db::Backend<node_primitives::Block>;
 /// Test client type.
 pub type Client = client::Client<
 	Backend,
-	client::LocalCallExecutor<Executor>,
+	client::LocalCallExecutor<Executor, Backend>,
 	node_primitives::Block,
 	node_runtime::RuntimeApi,
 >;
@@ -57,7 +57,7 @@ pub trait TestClientBuilderExt: Sized {
 }
 
 impl TestClientBuilderExt for test_client::TestClientBuilder<
-	client::LocalCallExecutor<Executor>,
+	client::LocalCallExecutor<Executor, Backend>,
 	Backend,
 	GenesisParameters,
 > {

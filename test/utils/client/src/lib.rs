@@ -195,7 +195,7 @@ impl<Executor, Backend, G: GenesisInit> TestClientBuilder<Executor, Backend, G> 
 }
 
 impl<E, Backend, G: GenesisInit> TestClientBuilder<
-	client::LocalCallExecutor<NativeExecutor<E>>,
+	client::LocalCallExecutor<NativeExecutor<E>, Backend>,
 	Backend,
 	G,
 > {
@@ -206,7 +206,7 @@ impl<E, Backend, G: GenesisInit> TestClientBuilder<
 	) ->
 		client::Client<
 			Backend,
-			client::LocalCallExecutor<NativeExecutor<E>>,
+			client::LocalCallExecutor<NativeExecutor<E>, Backend>,
 			Block,
 			RuntimeApi
 		>

@@ -234,7 +234,7 @@ pub fn new_client<E, S, Block, RA>(
 	fork_blocks: ForkBlocks<Block>,
 	execution_extensions: ExecutionExtensions<Block>,
 ) -> Result<
-		client::Client<Backend<Block>, client::LocalCallExecutor<E>, Block, RA>,
+		client::Client<Backend<Block>, client::LocalCallExecutor<E, Backend<Block>>, Block, RA>,
 		sp_blockchain::Error,
 	>
 	where

@@ -96,7 +96,7 @@ pub struct ServiceBuilder<TBl, TRtApi, TCfg, TGen, TCSExt, TCl, TFchr, TSc, TImp
 /// Full client type.
 type TFullClient<TBl, TRtApi, TExecDisp> = Client<
 	TFullBackend<TBl>,
-	TFullCallExecutor<TExecDisp>,
+	TFullCallExecutor<TExecDisp, TBl>,
 	TBl,
 	TRtApi,
 >;
@@ -105,14 +105,14 @@ type TFullClient<TBl, TRtApi, TExecDisp> = Client<
 type TFullBackend<TBl> = client_db::Backend<TBl>;
 
 /// Full client call executor type.
-type TFullCallExecutor<TExecDisp> = client::LocalCallExecutor<
-	NativeExecutor<TExecDisp>,
+type TFullCallExecutor<TExecDisp, TBl> = client::LocalCallExecutor<
+	NativeExecutor<TExecDisp>, TFullBackend<TBl>
 >;
 
 /// Light client type.
 type TLightClient<TBl, TRtApi, TExecDisp> = Client<
 	TLightBackend<TBl>,
-	TLightCallExecutor<TExecDisp>,
+	TLightCallExecutor<TExecDisp, TBl>,
 	TBl,
 	TRtApi,
 >;
@@ -124,9 +124,9 @@ type TLightBackend<TBl> = client::light::backend::Backend<
 >;
 
 /// Light call executor type.
-type TLightCallExecutor<TExecDisp> = client::light::call_executor::GenesisCallExecutor<
+type TLightCallExecutor<TExecDisp, TBl> = client::light::call_executor::GenesisCallExecutor<
 	client::LocalCallExecutor<
-		NativeExecutor<TExecDisp>
+		NativeExecutor<TExecDisp>, TLightBackend<TBl>
 	>,
 >;
 
