@@ -32,13 +32,13 @@ pub use keyring::{
 	sr25519::Keyring as Sr25519Keyring,
 };
 pub use primitives::{Blake2Hasher, traits::BareCryptoStorePtr};
-pub use sr_primitives::{StorageOverlay, ChildrenStorageOverlay};
+pub use sp_runtime::{StorageOverlay, ChildrenStorageOverlay};
 pub use state_machine::ExecutionStrategy;
 
 use std::collections::HashMap;
 use hash_db::Hasher;
 use primitives::storage::well_known_keys;
-use sr_primitives::traits::Block as BlockT;
+use sp_runtime::traits::Block as BlockT;
 use client::LocalCallExecutor;
 
 /// Test client light database backend.
