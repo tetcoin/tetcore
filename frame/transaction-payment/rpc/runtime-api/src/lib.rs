@@ -18,9 +18,9 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use rstd::prelude::*;
-use support::weights::{Weight, DispatchClass};
-use codec::{Encode, Codec, Decode};
+use sp_std::prelude::*;
+use frame_support::weights::{Weight, DispatchClass};
+use parity_scale_codec::{Encode, Codec, Decode};
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize};
 use sp_runtime::traits::{UniqueSaturatedInto, SaturatedConversion};

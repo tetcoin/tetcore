@@ -69,7 +69,7 @@ impl BuilderDef {
 					StorageLineTypeDef::Map(map) | StorageLineTypeDef::LinkedMap(map) => {
 						let key = &map.key;
 						quote!{{
-							let data: &#scrate::rstd::vec::Vec<(#key, #value_type)> = #data;
+							let data: &#scrate::sp_std::vec::Vec<(#key, #value_type)> = #data;
 							data.iter().for_each(|(k, v)| {
 								<#storage_struct as #scrate::#storage_trait>::insert::<
 									&#key, &#value_type
@@ -81,7 +81,7 @@ impl BuilderDef {
 						let key1 = &map.key1;
 						let key2 = &map.key2;
 						quote!{{
-							let data: &#scrate::rstd::vec::Vec<(#key1, #key2, #value_type)> = #data;
+							let data: &#scrate::sp_std::vec::Vec<(#key1, #key2, #value_type)> = #data;
 							data.iter().for_each(|(k1, k2, v)| {
 								<#storage_struct as #scrate::#storage_trait>::insert::<
 									&#key1, &#key2, &#value_type

@@ -29,9 +29,9 @@ pub extern crate tracing;
 #[cfg(feature = "std")]
 pub use serde;
 #[doc(hidden)]
-pub use rstd;
+pub use sp_std;
 #[doc(hidden)]
-pub use codec;
+pub use parity_scale_codec;
 #[cfg(feature = "std")]
 #[doc(hidden)]
 pub use once_cell;
@@ -39,9 +39,9 @@ pub use once_cell;
 pub use paste;
 #[cfg(feature = "std")]
 #[doc(hidden)]
-pub use state_machine::BasicExternalities;
+pub use sp_state_machine::BasicExternalities;
 #[doc(hidden)]
-pub use runtime_io::storage::root as storage_root;
+pub use sp_io::storage::root as storage_root;
 #[doc(hidden)]
 pub use sp_runtime::RuntimeDebug;
 
@@ -197,12 +197,12 @@ pub use serde::{Serialize, Deserialize};
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use codec::{Codec, EncodeLike};
+	use parity_scale_codec::{Codec, EncodeLike};
 	use frame_metadata::{
 		DecodeDifferent, StorageEntryMetadata, StorageMetadata, StorageEntryType,
 		StorageEntryModifier, DefaultByteGetter, StorageHasher,
 	};
-	use rstd::marker::PhantomData;
+	use sp_std::marker::PhantomData;
 
 	pub trait Trait {
 		type BlockNumber: Codec + EncodeLike + Default;
@@ -247,7 +247,7 @@ mod tests {
 		type Origin = u32;
 	}
 
-	fn new_test_ext() -> runtime_io::TestExternalities {
+	fn new_test_ext() -> sp_io::TestExternalities {
 		GenesisConfig::default().build_storage().unwrap().into()
 	}
 

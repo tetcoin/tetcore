@@ -7,10 +7,10 @@ edition = "2018"
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 sp-api = { path = "../../../../primitives/sr-api", default-features = false }
-codec = { package = "parity-scale-codec", version = "1.0.6", default-features = false, features = ["derive"] }
-rstd = { package = "sp-std", path = "../../../../primitives/sr-std", default-features = false }
+parity-scale-codec = { version = "1.0.6", default-features = false, features = ["derive"] }
+sp-std = { path = "../../../../primitives/sr-std", default-features = false }
 sp-runtime = { path = "../../../../primitives/sr-primitives", default-features = false }
-support = { package = "frame-support", path = "../../../support", default-features = false }
+frame-support = { path = "../../../support", default-features = false }
 
 [dev-dependencies]
 serde_json = "1.0.41"
@@ -20,8 +20,8 @@ default = ["std"]
 std = [
 	"serde",
 	"sp-api/std",
-	"codec/std",
-	"rstd/std",
+	"parity-scale-codec/std",
+	"sp-std/std",
 	"sp-runtime/std",
-	"support/std",
+	"frame-support/std",
 ]

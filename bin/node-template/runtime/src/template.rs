@@ -9,7 +9,7 @@
 /// https://github.com/paritytech/substrate/blob/master/frame/example/src/lib.rs
 
 use support::{decl_module, decl_storage, decl_event, dispatch::Result};
-use system::ensure_signed;
+use system::{self as frame_system, ensure_signed};
 
 /// The module's configuration trait.
 pub trait Trait: system::Trait {

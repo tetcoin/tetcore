@@ -18,9 +18,9 @@
 
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize};
-use codec::{Encode, Decode};
+use parity_scale_codec::{Encode, Decode};
 use sp_runtime::traits::{Zero, IntegerSquareRoot};
-use rstd::ops::{Add, Mul, Div, Rem};
+use sp_std::ops::{Add, Mul, Div, Rem};
 
 /// A means of determining if a vote is past pass threshold.
 #[derive(Clone, Copy, PartialEq, Eq, Encode, Decode, sp_runtime::RuntimeDebug)]

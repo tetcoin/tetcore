@@ -16,7 +16,7 @@
 
 //! Module helpers for offchain calls.
 
-use codec::Encode;
+use parity_scale_codec::Encode;
 use sp_runtime::app_crypto::{self, RuntimeAppPublic};
 use sp_runtime::traits::{Extrinsic as ExtrinsicT, IdentifyAccount};
 
@@ -41,7 +41,7 @@ impl<Public, Signature, AppPublic> Signer<Public, Signature> for AppPublic where
 	Signature: From<
 		<<AppPublic as RuntimeAppPublic>::Signature as app_crypto::AppSignature>::Generic
 	>,
-	Public: rstd::convert::TryInto<<AppPublic as app_crypto::AppPublic>::Generic>
+	Public: sp_std::convert::TryInto<<AppPublic as app_crypto::AppPublic>::Generic>
 {
 	fn sign<Payload: Encode>(public: Public, raw_payload: &Payload) -> Option<Signature> {
 		raw_payload.using_encoded(|payload| {
@@ -87,7 +87,7 @@ type PublicOf<T, Call, X> = <
 /// A trait to sign and submit transactions in offchain calls.
 pub trait SubmitSignedTransaction<T: crate::Trait, Call> {
 	/// Unchecked extrinsic type.
-	type Extrinsic: ExtrinsicT<Call=Call> + codec::Encode;
+	type Extrinsic: ExtrinsicT<Call=Call> + parity_scale_codec::Encode;
 
 	/// A runtime-specific type to produce signed data for the extrinsic.
 	type CreateTransaction: CreateTransaction<T, Self::Extrinsic>;
@@ -111,14 +111,14 @@ pub trait SubmitSignedTransaction<T: crate::Trait, Call> {
 			::create_transaction::<Self::Signer>(call, public, id, expected)
 			.ok_or(())?;
 		let xt = Self::Extrinsic::new(call, Some(signature_data)).ok_or(())?;
-		runtime_io::offchain::submit_transaction(xt.encode())
+		sp_io::offchain::submit_transaction(xt.encode())
 	}
 }
 
 /// A trait to submit unsigned transactions in offchain calls.
 pub trait SubmitUnsignedTransaction<T: crate::Trait, Call> {
 	/// Unchecked extrinsic type.
-	type Extrinsic: ExtrinsicT<Call=Call> + codec::Encode;
+	type Extrinsic: ExtrinsicT<Call=Call> + parity_scale_codec::Encode;
 
 	/// Submit given call to the transaction pool as unsigned transaction.
 	///
@@ -126,13 +126,13 @@ pub trait SubmitUnsignedTransaction<T: crate::Trait, Call> {
 	/// and `Err` if transaction was rejected from the pool.
 	fn submit_unsigned(call: impl Into<Call>) -> Result<(), ()> {
 		let xt = Self::Extrinsic::new(call.into(), None).ok_or(())?;
-		runtime_io::offchain::submit_transaction(xt.encode())
+		sp_io::offchain::submit_transaction(xt.encode())
 	}
 }
 
 /// A default type used to submit transactions to the pool.
 pub struct TransactionSubmitter<S, C, E> {
-	_signer: rstd::marker::PhantomData<(S, C, E)>,
+	_signer: sp_std::marker::PhantomData<(S, C, E)>,
 }
 
 impl<S, C, E> Default for TransactionSubmitter<S, C, E> {
@@ -148,7 +148,7 @@ impl<T, E, S, C, Call> SubmitSignedTransaction<T, Call> for TransactionSubmitter
 	T: crate::Trait,
 	C: CreateTransaction<T, E>,
 	S: Signer<<C as CreateTransaction<T, E>>::Public, <C as CreateTransaction<T, E>>::Signature>,
-	E: ExtrinsicT<Call=Call> + codec::Encode,
+	E: ExtrinsicT<Call=Call> + parity_scale_codec::Encode,
 {
 	type Extrinsic = E;
 	type CreateTransaction = C;
@@ -158,7 +158,7 @@ impl<T, E, S, C, Call> SubmitSignedTransaction<T, Call> for TransactionSubmitter
 /// A blanket impl to use the same submitter for usigned transactions as well.
 impl<T, E, S, C, Call> SubmitUnsignedTransaction<T, Call> for TransactionSubmitter<S, C, E> where
 	T: crate::Trait,
-	E: ExtrinsicT<Call=Call> + codec::Encode,
+	E: ExtrinsicT<Call=Call> + parity_scale_codec::Encode,
 {
 	type Extrinsic = E;
 }

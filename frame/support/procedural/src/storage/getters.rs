@@ -45,7 +45,7 @@ pub fn impl_getters(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStrea
 				let value = &map.value;
 				quote!{
 					#( #[ #attrs ] )*
-					pub fn #get_fn<K: #scrate::codec::EncodeLike<#key>>(key: K) -> #value {
+					pub fn #get_fn<K: #scrate::parity_scale_codec::EncodeLike<#key>>(key: K) -> #value {
 						<#storage_struct as #scrate::#storage_trait>::get(key)
 					}
 				}
@@ -57,8 +57,8 @@ pub fn impl_getters(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStrea
 				quote!{
 					pub fn #get_fn<KArg1, KArg2>(k1: KArg1, k2: KArg2) -> #value
 					where
-						KArg1: #scrate::codec::EncodeLike<#key1>,
-						KArg2: #scrate::codec::EncodeLike<#key2>,
+						KArg1: #scrate::parity_scale_codec::EncodeLike<#key1>,
+						KArg2: #scrate::parity_scale_codec::EncodeLike<#key2>,
 					{
 						<#storage_struct as #scrate::#storage_trait>::get(k1, k2)
 					}

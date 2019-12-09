@@ -16,7 +16,7 @@
 
 use support::sp_runtime::generic;
 use support::sp_runtime::traits::{BlakeTwo256, Block as _, Verify};
-use support::codec::{Encode, Decode};
+use support::parity_scale_codec::{Encode, Decode};
 use primitives::{H256, sr25519};
 use serde::{Serialize, Deserialize};
 

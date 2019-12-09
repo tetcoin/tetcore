@@ -123,8 +123,8 @@ macro_rules! decl_event {
 		// Workaround for https://github.com/rust-lang/rust/issues/26925 . Remove when sorted.
 		#[derive(
 			Clone, PartialEq, Eq,
-			$crate::codec::Encode,
-			$crate::codec::Decode,
+			$crate::parity_scale_codec::Encode,
+			$crate::parity_scale_codec::Decode,
 			$crate::RuntimeDebug,
 		)]
 		/// Events for this module.
@@ -266,8 +266,8 @@ macro_rules! __decl_generic_event {
 
 		#[derive(
 			Clone, PartialEq, Eq,
-			$crate::codec::Encode,
-			$crate::codec::Decode,
+			$crate::parity_scale_codec::Encode,
+			$crate::parity_scale_codec::Decode,
 			$crate::RuntimeDebug,
 		)]
 		/// Events for this module.
@@ -280,7 +280,7 @@ macro_rules! __decl_generic_event {
 			$(
 				#[doc(hidden)]
 				#[codec(skip)]
-				PhantomData($crate::rstd::marker::PhantomData<$instance>),
+				PhantomData($crate::sp_std::marker::PhantomData<$instance>),
 			)?
 		}
 		impl<$( $generic_param ),* $(, $instance)? > From<RawEvent<$( $generic_param ),* $(, $instance)?>> for () {
@@ -461,8 +461,8 @@ macro_rules! impl_outer_event {
 		$crate::paste::item! {
 			#[derive(
 				Clone, PartialEq, Eq,
-				$crate::codec::Encode,
-				$crate::codec::Decode,
+				$crate::parity_scale_codec::Encode,
+				$crate::parity_scale_codec::Decode,
 				$crate::RuntimeDebug,
 			)]
 			$(#[$attr])*
@@ -486,12 +486,12 @@ macro_rules! impl_outer_event {
 						$name::[< $module_name $(_ $generic_instance )? >](x)
 					}
 				}
-				impl $crate::rstd::convert::TryInto<
+				impl $crate::sp_std::convert::TryInto<
 					$module_name::Event < $( $generic_param, )? $( $module_name::$generic_instance )? >
 				> for $name {
 					type Error = ();
 
-					fn try_into(self) -> $crate::rstd::result::Result<
+					fn try_into(self) -> $crate::sp_std::result::Result<
 						$module_name::Event < $( $generic_param, )? $( $module_name::$generic_instance )? >, Self::Error
 					> {
 						match self {
@@ -566,7 +566,7 @@ macro_rules! __impl_outer_event_json_metadata {
 mod tests {
 	use super::*;
 	use serde::Serialize;
-	use codec::{Encode, Decode};
+	use parity_scale_codec::{Encode, Decode};
 
 	mod system {
 		pub trait Trait {

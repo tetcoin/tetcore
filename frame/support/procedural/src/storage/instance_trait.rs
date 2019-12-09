@@ -124,8 +124,8 @@ fn create_and_impl_instance_struct(
 		// Those trait are derived because of wrong bounds for generics
 		#[derive(
 			Clone, Eq, PartialEq,
-			#scrate::codec::Encode,
-			#scrate::codec::Decode,
+			#scrate::parity_scale_codec::Encode,
+			#scrate::parity_scale_codec::Decode,
 			#scrate::RuntimeDebug,
 		)]
 		#doc

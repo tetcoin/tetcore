@@ -6,11 +6,11 @@ edition = "2018"
 
 [dependencies]
 sp-api = { path = "../../../../primitives/sr-api", default-features = false }
-codec = { package = "parity-scale-codec", version = "1.0.0", default-features = false  }
+parity-scale-codec = { version = "1.0.0", default-features = false  }
 
 [features]
 default = ["std"]
 std = [
 	"sp-api/std",
-	"codec/std",
+	"parity-scale-codec/std",
 ]
