@@ -125,7 +125,7 @@ impl<Client, Storage, Block> OffchainWorkers<
 				let api = Box::new(api);
 				debug!("Running offchain workers at {:?}", at);
 				let context = ExecutionContext::OffchainCall(Some(
-					(api, offchain::Capabilities::all())
+					(Some(api), offchain::Capabilities::all())
 				));
 				let run = if version == 2 {
 					runtime.offchain_worker_with_context(&at, context, &header)

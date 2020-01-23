@@ -187,9 +187,9 @@ impl<Block: traits::Block> ExecutionExtensions<Block> {
 			}
 		}
 
-		if let ExecutionContext::OffchainCall(Some(ext)) = context {
+		if let ExecutionContext::OffchainCall(Some((Some(ext), _))) = context {
 			extensions.register(
-				OffchainWorkerExt::new(offchain::LimitedExternalities::new(capabilities, ext.0))
+				OffchainWorkerExt::new(offchain::LimitedExternalities::new(capabilities, ext))
 			)
 		}
 

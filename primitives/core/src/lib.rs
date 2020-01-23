@@ -100,7 +100,10 @@ pub enum ExecutionContext {
 	/// Context used for offchain calls.
 	///
 	/// This allows passing offchain extension and customizing available capabilities.
-	OffchainCall(Option<(Box<dyn offchain::Externalities>, offchain::Capabilities)>),
+	OffchainCall(Option<(
+			Option<Box<dyn offchain::Externalities>>,
+			offchain::Capabilities
+	)>),
 }
 
 impl ExecutionContext {
