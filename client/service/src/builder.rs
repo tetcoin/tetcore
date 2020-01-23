@@ -51,6 +51,7 @@ use sysinfo::{get_current_pid, ProcessExt, System, SystemExt};
 use sc_telemetry::{telemetry, SUBSTRATE_INFO};
 use sp_transaction_pool::{TransactionPool, TransactionPoolMaintainer};
 use sp_blockchain;
+use sp_core::offchain;
 use grafana_data_source::{self, record_metrics};
 
 /// Aggregator for the components required to build a service.
@@ -208,6 +209,9 @@ fn new_full_parts<TBl, TRtApi, TExecDisp, TCfg, TGen, TCSExt>(
 		let extensions = sc_client_api::execution_extensions::ExecutionExtensions::new(
 			config.execution_strategies.clone(),
 			Some(keystore.clone()),
+			Some(Box::new(|cap| offchain::OffchainCallExt::new(
+				offchain::LimitedExternalities::new(cap, sc_offchain::CallApi)
+			))),
 		);
 
 		sc_client_db::new_client(

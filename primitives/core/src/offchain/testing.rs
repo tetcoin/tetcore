@@ -154,18 +154,6 @@ impl offchain::Externalities for TestOffchainExt {
 		})
 	}
 
-	fn timestamp(&mut self) -> Timestamp {
-		unimplemented!("not needed in tests so far")
-	}
-
-	fn sleep_until(&mut self, _deadline: Timestamp) {
-		unimplemented!("not needed in tests so far")
-	}
-
-	fn random_seed(&mut self) -> [u8; 32] {
-		unimplemented!("not needed in tests so far")
-	}
-
 	fn local_storage_set(&mut self, kind: StorageKind, key: &[u8], value: &[u8]) {
 		let mut state = self.0.write();
 		match kind {

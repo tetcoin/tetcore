@@ -24,7 +24,7 @@ use std::sync::{Weak, Arc};
 use codec::Decode;
 use sp_core::{
 	ExecutionContext,
-	offchain::{self, OffchainExt, TransactionPoolExt},
+	offchain::{self, OffchainWorkerExt, OffchainCallExt, TransactionPoolExt, Capabilities},
 	traits::{BareCryptoStorePtr, KeystoreExt},
 };
 use sp_runtime::{
@@ -65,14 +65,17 @@ impl Default for ExecutionStrategies {
 /// Generate the starting set of ExternalitiesExtensions based upon the given capabilities
 pub trait ExtensionsFactory: Send + Sync {
 	/// Make `Extensions` for given Capapbilities
-	fn extensions_for(&self, capabilities: offchain::Capabilities) -> Extensions;
+	fn extensions_for(&self, capabilities: Capabilities) -> Extensions;
 }
 
 impl ExtensionsFactory for () {
-	fn extensions_for(&self, _capabilities: offchain::Capabilities) -> Extensions {
+	fn extensions_for(&self, _capabilities: Capabilities) -> Extensions {
 		Extensions::new()
 	}
 }
+
+/// A Offchain Call extension factory.
+pub type OffchainCallExtFactory = Box<dyn Fn(Capabilities) -> OffchainCallExt + Send + Sync>;
 
 /// A producer of execution extensions for offchain calls.
 ///
@@ -82,6 +85,7 @@ impl ExtensionsFactory for () {
 pub struct ExecutionExtensions<Block: traits::Block> {
 	strategies: ExecutionStrategies,
 	keystore: Option<BareCryptoStorePtr>,
+	offchain_call: Option<OffchainCallExtFactory>,
 	// FIXME: these two are only RwLock because of https://github.com/paritytech/substrate/issues/4587
 	//        remove when fixed.
 	transaction_pool: RwLock<Option<Weak<dyn sp_transaction_pool::OffchainSubmitTransaction<Block>>>>,
@@ -90,12 +94,7 @@ pub struct ExecutionExtensions<Block: traits::Block> {
 
 impl<Block: traits::Block> Default for ExecutionExtensions<Block> {
 	fn default() -> Self {
-		Self {
-			strategies: Default::default(),
-			keystore: None,
-			transaction_pool: RwLock::new(None),
-			extensions_factory: RwLock::new(Box::new(())),
-		}
+		Self::new(Default::default(), None, None)
 	}
 }
 
@@ -104,10 +103,17 @@ impl<Block: traits::Block> ExecutionExtensions<Block> {
 	pub fn new(
 		strategies: ExecutionStrategies,
 		keystore: Option<BareCryptoStorePtr>,
+		offchain_call: Option<OffchainCallExtFactory>,
 	) -> Self {
 		let transaction_pool = RwLock::new(None);
-		let extensions_factory = Box::new(());
-		Self { strategies, keystore, extensions_factory: RwLock::new(extensions_factory), transaction_pool }
+		let extensions_factory = RwLock::new(Box::new(()) as _);
+		Self {
+			strategies,
+			keystore,
+			offchain_call,
+			extensions_factory,
+			transaction_pool,
+		}
 	}
 
 	/// Get a reference to the execution strategies.
@@ -174,9 +180,16 @@ impl<Block: traits::Block> ExecutionExtensions<Block> {
 			}
 		}
 
+		if capabilities.has(offchain::Capability::Timestamp)
+			|| capabilities.has(offchain::Capability::Randomness) {
+			if let Some(ext) = self.offchain_call.as_ref() {
+				extensions.register((ext)(capabilities));
+			}
+		}
+
 		if let ExecutionContext::OffchainCall(Some(ext)) = context {
 			extensions.register(
-				OffchainExt::new(offchain::LimitedExternalities::new(capabilities, ext.0))
+				OffchainWorkerExt::new(offchain::LimitedExternalities::new(capabilities, ext.0))
 			)
 		}
 

@@ -47,6 +47,7 @@ use sp_runtime::{generic::BlockId, traits::{self, Header}};
 mod api;
 
 pub use sp_offchain::{OffchainWorkerApi, STORAGE_PREFIX};
+pub use self::api::CallApi;
 
 /// An offchain workers manager.
 pub struct OffchainWorkers<Client, Storage, Block: traits::Block> {

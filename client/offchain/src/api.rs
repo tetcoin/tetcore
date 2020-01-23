@@ -27,7 +27,7 @@ use log::error;
 use sc_network::{PeerId, Multiaddr, NetworkStateInfo};
 use codec::{Encode, Decode};
 use sp_core::offchain::{
-	Externalities as OffchainExt, HttpRequestId, Timestamp, HttpRequestStatus, HttpError,
+	self, HttpRequestId, Timestamp, HttpRequestStatus, HttpError,
 	OpaqueNetworkState, OpaquePeerId, OpaqueMultiaddr, StorageKind,
 };
 pub use sp_offchain::STORAGE_PREFIX;
@@ -41,6 +41,24 @@ use http_dummy as http;
 mod http_dummy;
 
 mod timestamp;
+
+/// API implementation for Offchain Calls.
+#[derive(Debug, Clone)]
+pub struct CallApi;
+
+impl offchain::CallExternalities for CallApi {
+	fn timestamp(&mut self) -> Timestamp {
+		timestamp::now()
+	}
+
+	fn sleep_until(&mut self, deadline: Timestamp) {
+		sleep(timestamp::timestamp_from_now(deadline));
+	}
+
+	fn random_seed(&mut self) -> [u8; 32] {
+		rand::random()
+	}
+}
 
 /// Asynchronous offchain API.
 ///
@@ -66,7 +84,7 @@ fn unavailable_yet<R: Default>(name: &str) -> R {
 
 const LOCAL_DB: &str = "LOCAL (fork-aware) DB";
 
-impl<Storage: OffchainStorage> OffchainExt for Api<Storage> {
+impl<Storage: OffchainStorage> offchain::Externalities for Api<Storage> {
 	fn is_validator(&self) -> bool {
 		self.is_validator
 	}
@@ -79,18 +97,6 @@ impl<Storage: OffchainStorage> OffchainExt for Api<Storage> {
 			external_addresses,
 		);
 		Ok(OpaqueNetworkState::from(state))
-	}
-
-	fn timestamp(&mut self) -> Timestamp {
-		timestamp::now()
-	}
-
-	fn sleep_until(&mut self, deadline: Timestamp) {
-		sleep(timestamp::timestamp_from_now(deadline));
-	}
-
-	fn random_seed(&mut self) -> [u8; 32] {
-		rand::random()
 	}
 
 	fn local_storage_set(&mut self, kind: StorageKind, key: &[u8], value: &[u8]) {
