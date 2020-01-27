@@ -85,7 +85,10 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 			Ident::new(INHERENT_INSTANCE_NAME, Span::call_site())
 		};
 
-		let storage_name_str = syn::LitStr::new(&line.name.to_string(), line.name.span());
+		let storage_name_twox_128 = syn::LitByteStr::new(
+			&super::twox_128(line.name.to_string().as_bytes()),
+			line.name.span(),
+		);
 
 		let storage_generator_trait = &line.storage_generator_trait;
 		let storage_struct = &line.storage_struct;
@@ -101,13 +104,11 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 					{
 						type Query = #query_type;
 
-						fn module_prefix() -> &'static [u8] {
-							#instance_or_inherent::PREFIX.as_bytes()
-						}
-
-						fn storage_prefix() -> &'static [u8] {
-							#storage_name_str.as_bytes()
-						}
+						type StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie;
+						const STORAGE_SPACE: Self::StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie {
+							prefix0: #instance_or_inherent::PREFIX_TWOX_128,
+							prefix1: #storage_name_twox_128,
+						};
 
 						fn from_optional_value_to_query(v: Option<#value_type>) -> Self::Query {
 							#from_optional_value_to_query
@@ -125,28 +126,25 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 					impl<#impl_trait> #scrate::storage::StoragePrefixedMap<#value_type>
 						for #storage_struct #optional_storage_where_clause
 					{
-						fn module_prefix() -> &'static [u8] {
-							#instance_or_inherent::PREFIX.as_bytes()
-						}
-
-						fn storage_prefix() -> &'static [u8] {
-							#storage_name_str.as_bytes()
-						}
+						type StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie;
+						const STORAGE_SPACE: Self::StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie {
+							prefix0: #instance_or_inherent::PREFIX_TWOX_128,
+							prefix1: #storage_name_twox_128,
+						};
 					}
 
 					impl<#impl_trait> #scrate::#storage_generator_trait for #storage_struct
 					#optional_storage_where_clause
 					{
+						type StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie;
+						const STORAGE_SPACE: Self::StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie {
+							prefix0: #instance_or_inherent::PREFIX_TWOX_128,
+							prefix1: #storage_name_twox_128,
+						};
+
 						type Query = #query_type;
+
 						type Hasher = #scrate::#hasher;
-
-						fn module_prefix() -> &'static [u8] {
-							#instance_or_inherent::PREFIX.as_bytes()
-						}
-
-						fn storage_prefix() -> &'static [u8] {
-							#storage_name_str.as_bytes()
-						}
 
 						fn from_optional_value_to_query(v: Option<#value_type>) -> Self::Query {
 							#from_optional_value_to_query
@@ -161,8 +159,8 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 			StorageLineTypeDef::LinkedMap(map) => {
 				let hasher = map.hasher.to_storage_hasher_struct();
 
-				let head_prefix_str = syn::LitStr::new(
-					&format!("HeadOf{}", line.name.to_string()),
+				let storage_name_twox_128 = syn::LitByteStr::new(
+					&super::twox_128(format!("HeadOf{}", line.name.to_string()).as_bytes()),
 					line.name.span(),
 				);
 
@@ -170,13 +168,11 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 					impl<#impl_trait> #scrate::storage::StoragePrefixedMap<#value_type>
 						for #storage_struct #optional_storage_where_clause
 					{
-						fn module_prefix() -> &'static [u8] {
-							#instance_or_inherent::PREFIX.as_bytes()
-						}
-
-						fn storage_prefix() -> &'static [u8] {
-							#storage_name_str.as_bytes()
-						}
+						type StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie;
+						const STORAGE_SPACE: Self::StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie {
+							prefix0: #instance_or_inherent::PREFIX_TWOX_128,
+							prefix1: #storage_name_twox_128,
+						};
 					}
 
 					impl<#impl_trait> #scrate::#storage_generator_trait for #storage_struct
@@ -197,17 +193,15 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 					impl<#impl_trait> #scrate::storage::generator::LinkedMapKeyFormat for #storage_struct {
 						type Hasher = #scrate::#hasher;
 
-						fn module_prefix() -> &'static [u8] {
-							#instance_or_inherent::PREFIX.as_bytes()
-						}
-
-						fn storage_prefix() -> &'static [u8] {
-							#storage_name_str.as_bytes()
-						}
-
-						fn head_prefix() -> &'static [u8] {
-							#head_prefix_str.as_bytes()
-						}
+						type StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie;
+						const STORAGE_SPACE: Self::StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie {
+							prefix0: #instance_or_inherent::PREFIX_TWOX_128,
+							prefix1: #storage_name_twox_128,
+						};
+						const STORAGE_SPACE_HEAD: Self::StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie {
+							prefix0: #instance_or_inherent::PREFIX_TWOX_128,
+							prefix1: #storage_name_twox_128,
+						};
 					}
 				)
 			},
@@ -218,13 +212,11 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 					impl<#impl_trait> #scrate::storage::StoragePrefixedMap<#value_type>
 						for #storage_struct #optional_storage_where_clause
 					{
-						fn module_prefix() -> &'static [u8] {
-							#instance_or_inherent::PREFIX.as_bytes()
-						}
-
-						fn storage_prefix() -> &'static [u8] {
-							#storage_name_str.as_bytes()
-						}
+						type StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie;
+						const STORAGE_SPACE: Self::StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie {
+							prefix0: #instance_or_inherent::PREFIX_TWOX_128,
+							prefix1: #storage_name_twox_128,
+						};
 					}
 
 					impl<#impl_trait> #scrate::#storage_generator_trait for #storage_struct
@@ -236,13 +228,11 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 
 						type Hasher2 = #scrate::#hasher2;
 
-						fn module_prefix() -> &'static [u8] {
-							#instance_or_inherent::PREFIX.as_bytes()
-						}
-
-						fn storage_prefix() -> &'static [u8] {
-							#storage_name_str.as_bytes()
-						}
+						type StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie;
+						const STORAGE_SPACE: Self::StorageSpace = #scrate::storage::storage_space::PrefixedTopTrie {
+							prefix0: #instance_or_inherent::PREFIX_TWOX_128,
+							prefix1: #storage_name_twox_128,
+						};
 
 						fn from_optional_value_to_query(v: Option<#value_type>) -> Self::Query {
 							#from_optional_value_to_query

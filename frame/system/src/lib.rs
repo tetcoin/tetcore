@@ -791,14 +791,13 @@ impl<T: Trait> Module<T> {
 	/// Get the basic externalities for this module, useful for tests.
 	#[cfg(any(feature = "std", test))]
 	pub fn externalities() -> TestExternalities {
-		TestExternalities::new(sp_core::storage::Storage {
-			top: map![
-				<BlockHash<T>>::hashed_key_for(T::BlockNumber::zero()) => [69u8; 32].encode(),
-				<Number<T>>::hashed_key().to_vec() => T::BlockNumber::one().encode(),
-				<ParentHash<T>>::hashed_key().to_vec() => [69u8; 32].encode()
-			],
-			children: map![],
-		})
+		let mut ext = TestExternalities::new(sp_core::storage::Storage::default());
+		ext.execute_with(|| {
+			<BlockHash<T>>::insert(T::BlockNumber::zero(), hash69::<T::Hash>());
+			<Number<T>>::put(T::BlockNumber::one());
+			<ParentHash<T>>::put(hash69::<T::Hash>());
+		});
+		ext
 	}
 
 	/// Set the block number to something in particular. Can be used as an alternative to

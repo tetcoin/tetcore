@@ -18,13 +18,14 @@
 
 use sp_std::{prelude::*, marker::PhantomData};
 use codec::{FullCodec, FullEncode, Encode, EncodeAppend, EncodeLike, Decode};
-use crate::{traits::Len, hash::{Twox128, StorageHasher}};
+use crate::traits::Len;
+use storage_space::StorageSpace;
 
 pub mod unhashed;
 pub mod hashed;
 pub mod child;
-#[doc(hidden)]
 pub mod generator;
+pub mod storage_space;
 
 /// A trait for working with macro-generated storage values under the substrate storage API.
 ///
@@ -33,9 +34,6 @@ pub mod generator;
 pub trait StorageValue<T: FullCodec> {
 	/// The type that get/take return.
 	type Query;
-
-	/// Get the storage key.
-	fn hashed_key() -> [u8; 32];
 
 	/// Does the value (explicitly) exist in storage?
 	fn exists() -> bool;
@@ -306,7 +304,9 @@ pub trait StorageDoubleMap<K1: FullEncode, K2: FullEncode, V: FullCodec> {
 
 	fn remove_prefix<KArg1>(k1: KArg1) where KArg1: ?Sized + EncodeLike<K1>;
 
-	fn iter_prefix<KArg1>(k1: KArg1) -> PrefixIterator<V>
+	type IterPrefix: Iterator<Item=V>;
+
+	fn iter_prefix<KArg1>(k1: KArg1) -> Self::IterPrefix
 		where KArg1: ?Sized + EncodeLike<K1>;
 
 	fn mutate<KArg1, KArg2, R, F>(k1: KArg1, k2: KArg2, f: F) -> R
@@ -390,39 +390,55 @@ impl<Value: Decode> Iterator for PrefixIterator<Value> {
 	}
 }
 
-/// Trait for maps that store all its value after a unique prefix.
-///
-/// By default the final prefix is:
-/// ```nocompile
-/// Twox128(module_prefix) ++ Twox128(storage_prefix)
-/// ```
-pub trait StoragePrefixedMap<Value: FullCodec> {
+/// Iterator for prefixed map.
+pub struct StorageSpaceIteratorDecode<StorageSpaceIterator, Value> {
+	storage_space_iterator: StorageSpaceIterator,
+	phantom_data: PhantomData<(StorageSpaceIterator, Value)>,
+}
 
-	/// Module prefix. Used for generating final key.
-	fn module_prefix() -> &'static [u8];
+impl<StorageSpaceIterator, Value> Iterator
+for StorageSpaceIteratorDecode<StorageSpaceIterator, Value>
+where
+	StorageSpaceIterator: Iterator<Item=(Vec<u8>, Vec<u8>)>,
+	Value: Decode,
+{
+	type Item = Value;
 
-	/// Storage prefix. Used for generating final key.
-	fn storage_prefix() -> &'static [u8];
-
-	/// Final full prefix that prefixes all keys.
-	fn final_prefix() -> [u8; 32] {
-		let mut final_key = [0u8; 32];
-		final_key[0..16].copy_from_slice(&Twox128::hash(Self::module_prefix()));
-		final_key[16..32].copy_from_slice(&Twox128::hash(Self::storage_prefix()));
-		final_key
+	fn next(&mut self) -> Option<Self::Item> {
+		while let Some((key, value)) = self.storage_space_iterator.next() {
+			match Value::decode(&mut &*value) {
+				Ok(value) => {
+					return Some(value)
+				},
+				Err(_) => {
+					runtime_print!("ERROR: Corrupted state at {:?}", key);
+				},
+			}
+		}
+		None
 	}
+}
+
+/// Trait for maps that store all its value in a storage space.
+pub trait StoragePrefixedMap<Value: FullCodec> {
+	/// The space used in the trie to store its information. This space must not collide with any
+	/// other storage space.
+	const STORAGE_SPACE: Self::StorageSpace;
+
+	/// The type of the storage space used.
+	type StorageSpace: storage_space::StorageSpace;
 
 	/// Remove all value of the storage.
 	fn remove_all() {
-		sp_io::storage::clear_prefix(&Self::final_prefix())
+		Self::STORAGE_SPACE.kill_prefix(&[0; 0])
 	}
 
 	/// Iter over all value of the storage.
-	fn iter() -> PrefixIterator<Value> {
-		let prefix = Self::final_prefix();
-		PrefixIterator {
-			prefix: prefix.to_vec(),
-			previous_key: prefix.to_vec(),
+	fn iter() -> StorageSpaceIteratorDecode<
+		<Self::StorageSpace as StorageSpace>::StorageSpaceIterator, Value
+	> {
+		StorageSpaceIteratorDecode {
+			storage_space_iterator: Self::STORAGE_SPACE.iter_prefix(&[0; 0]),
 			phantom_data: Default::default(),
 		}
 	}
@@ -448,21 +464,21 @@ pub trait StoragePrefixedMap<Value: FullCodec> {
 	fn translate_values<OldValue, TV>(translate_val: TV) -> Result<(), u32>
 		where OldValue: Decode, TV: Fn(OldValue) -> Value
 	{
-		let prefix = Self::final_prefix();
-		let mut previous_key = prefix.to_vec();
 		let mut errors = 0;
-		while let Some(next_key) = sp_io::storage::next_key(&previous_key)
-			.filter(|n| n.starts_with(&prefix[..]))
-		{
-			if let Some(value) = unhashed::get(&next_key) {
-				unhashed::put(&next_key[..], &translate_val(value));
-			} else {
-				// We failed to read the value. Remove the key and increment errors.
-				unhashed::kill(&next_key[..]);
-				errors += 1;
+		for (key, value) in Self::STORAGE_SPACE.iter_prefix(&[0; 0]) {
+			match OldValue::decode(&mut &*value) {
+				Ok(value) => {
+					// Translate value and insert it.
+					translate_val(value).using_encoded(|new_value| {
+						Self::STORAGE_SPACE.put(&key, new_value)
+					});
+				}
+				Err(_) => {
+					// We failed to read the value. Remove the key and increment errors.
+					Self::STORAGE_SPACE.kill(&key);
+					errors += 1;
+				},
 			}
-
-			previous_key = next_key;
 		}
 
 		if errors == 0 {
@@ -477,30 +493,35 @@ pub trait StoragePrefixedMap<Value: FullCodec> {
 mod test {
 	use sp_core::hashing::twox_128;
 	use sp_io::TestExternalities;
-	use crate::storage::{unhashed, StoragePrefixedMap};
+	use crate::storage::{unhashed, StoragePrefixedMap, storage_space};
 
 	#[test]
 	fn prefixed_map_works() {
 		TestExternalities::default().execute_with(|| {
 			struct MyStorage;
 			impl StoragePrefixedMap<u64> for MyStorage {
-				fn module_prefix() -> &'static [u8] {
-					b"MyModule"
-				}
+				const STORAGE_SPACE: Self::StorageSpace = storage_space::PrefixedTopTrie {
+					prefix0: &[49, 231, 135, 44, 86, 252, 191, 89, 93, 98, 118, 2, 239, 90, 126, 194],
+					prefix1: &[1, 117, 91, 77, 227, 34, 193, 250, 189, 173, 243, 195, 23, 6, 109, 19],
+				};
 
-				fn storage_prefix() -> &'static [u8] {
-					b"MyStorage"
-				}
+				type StorageSpace = storage_space::PrefixedTopTrie;
 			}
 
+			let full_prefix = [twox_128(b"MyModule"), twox_128(b"MyStorage")].concat();
+			assert_eq!(
+				[MyStorage::STORAGE_SPACE.prefix0, MyStorage::STORAGE_SPACE.prefix1].concat(),
+				full_prefix,
+			);
+
 			let key_before = {
-				let mut k = MyStorage::final_prefix();
+				let mut k = full_prefix.clone();
 				let last = k.iter_mut().last().unwrap();
 				*last = last.checked_sub(1).unwrap();
 				k
 			};
 			let key_after = {
-				let mut k = MyStorage::final_prefix();
+				let mut k = full_prefix.clone();
 				let last = k.iter_mut().last().unwrap();
 				*last = last.checked_add(1).unwrap();
 				k
@@ -509,16 +530,13 @@ mod test {
 			unhashed::put(&key_before[..], &32u64);
 			unhashed::put(&key_after[..], &33u64);
 
-			let k = [twox_128(b"MyModule"), twox_128(b"MyStorage")].concat();
-			assert_eq!(MyStorage::final_prefix().to_vec(), k);
-
 			// test iteration
 			assert_eq!(MyStorage::iter().collect::<Vec<_>>(), vec![]);
 
-			unhashed::put(&[&k[..], &vec![1][..]].concat(), &1u64);
-			unhashed::put(&[&k[..], &vec![1, 1][..]].concat(), &2u64);
-			unhashed::put(&[&k[..], &vec![8][..]].concat(), &3u64);
-			unhashed::put(&[&k[..], &vec![10][..]].concat(), &4u64);
+			unhashed::put(&[&full_prefix[..], &vec![1][..]].concat(), &1u64);
+			unhashed::put(&[&full_prefix[..], &vec![1, 1][..]].concat(), &2u64);
+			unhashed::put(&[&full_prefix[..], &vec![8][..]].concat(), &3u64);
+			unhashed::put(&[&full_prefix[..], &vec![10][..]].concat(), &4u64);
 
 			assert_eq!(MyStorage::iter().collect::<Vec<_>>(), vec![1, 2, 3, 4]);
 
@@ -527,8 +545,8 @@ mod test {
 			assert_eq!(MyStorage::iter().collect::<Vec<_>>(), vec![]);
 
 			// test migration
-			unhashed::put(&[&k[..], &vec![1][..]].concat(), &1u32);
-			unhashed::put(&[&k[..], &vec![8][..]].concat(), &2u32);
+			unhashed::put(&[&full_prefix[..], &vec![1][..]].concat(), &1u32);
+			unhashed::put(&[&full_prefix[..], &vec![8][..]].concat(), &2u32);
 
 			assert_eq!(MyStorage::iter().collect::<Vec<_>>(), vec![]);
 			MyStorage::translate_values(|v: u32| v as u64).unwrap();
@@ -536,10 +554,10 @@ mod test {
 			MyStorage::remove_all();
 
 			// test migration 2
-			unhashed::put(&[&k[..], &vec![1][..]].concat(), &1u128);
-			unhashed::put(&[&k[..], &vec![1, 1][..]].concat(), &2u64);
-			unhashed::put(&[&k[..], &vec![8][..]].concat(), &3u128);
-			unhashed::put(&[&k[..], &vec![10][..]].concat(), &4u32);
+			unhashed::put(&[&full_prefix[..], &vec![1][..]].concat(), &1u128);
+			unhashed::put(&[&full_prefix[..], &vec![1, 1][..]].concat(), &2u64);
+			unhashed::put(&[&full_prefix[..], &vec![8][..]].concat(), &3u128);
+			unhashed::put(&[&full_prefix[..], &vec![10][..]].concat(), &4u32);
 
 			// (contains some value that successfully decoded to u64)
 			assert_eq!(MyStorage::iter().collect::<Vec<_>>(), vec![1, 2, 3]);

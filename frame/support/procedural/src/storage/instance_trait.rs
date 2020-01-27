@@ -104,6 +104,9 @@ fn create_instance_trait(
 		pub trait #instance_trait: 'static {
 			/// The prefix used by any storage entry of an instance.
 			const PREFIX: &'static str;
+
+			/// The prefix hashed using twox_128 hasher.
+			const PREFIX_TWOX_128: &'static [u8];
 		}
 	}
 }
@@ -119,6 +122,10 @@ fn create_and_impl_instance_struct(
 	let instance_struct = &instance_def.instance_struct;
 	let prefix = format!("{}{}", instance_def.prefix, def.crate_name.to_string());
 	let doc = &instance_def.doc;
+	let prefix_twox_128 = syn::LitByteStr::new(
+		&super::twox_128(prefix.as_bytes()),
+		Span::call_site()
+	);
 
 	quote! {
 		// Those trait are derived because of wrong bounds for generics
@@ -132,6 +139,8 @@ fn create_and_impl_instance_struct(
 		pub struct #instance_struct;
 		impl #instance_trait for #instance_struct {
 			const PREFIX: &'static str = #prefix;
+
+			const PREFIX_TWOX_128: &'static [u8] = #prefix_twox_128;
 		}
 	}
 }

@@ -37,7 +37,7 @@ pub use value::StorageValue;
 #[cfg(test)]
 #[allow(dead_code)]
 mod tests {
-	use sp_io::TestExternalities;
+	use sp_io::{TestExternalities, hashing::twox_128};
 	use codec::{Encode, Decode};
 	use crate::storage::{unhashed, generator::{StorageValue, StorageLinkedMap}};
 
@@ -74,7 +74,7 @@ mod tests {
 		let t = GenesisConfig::default().build_storage().unwrap();
 		TestExternalities::new(t).execute_with(|| {
 			// put the old value `1111u32` in the storage.
-			let key = Value::storage_value_final_key();
+			let key = [twox_128(b"Runtime"), twox_128(b"Value")].concat();
 			unhashed::put_raw(&key, &1111u32.encode());
 
 			// translate

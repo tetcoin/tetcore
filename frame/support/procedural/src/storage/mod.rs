@@ -434,3 +434,27 @@ pub fn decl_storage_impl(input: proc_macro::TokenStream) -> proc_macro::TokenStr
 		#storage_struct
 	).into()
 }
+
+// TODO TODO put it elsewhere and test is correct with primitives!!!!
+/// Do a XX 128-bit hash and place result in `dest`.
+pub fn twox_128_into(data: &[u8], dest: &mut [u8; 16]) {
+	use ::core::hash::Hasher;
+	let mut h0 = twox_hash::XxHash::with_seed(0);
+	let mut h1 = twox_hash::XxHash::with_seed(1);
+	h0.write(data);
+	h1.write(data);
+	let r0 = h0.finish();
+	let r1 = h1.finish();
+	use byteorder::{ByteOrder, LittleEndian};
+	LittleEndian::write_u64(&mut dest[0..8], r0);
+	LittleEndian::write_u64(&mut dest[8..16], r1);
+}
+
+// TODO TODO put it elsewhere and test is correct with primitives!!!!
+/// Do a XX 128-bit hash and return result.
+pub fn twox_128(data: &[u8]) -> [u8; 16] {
+	let mut r: [u8; 16] = [0; 16];
+	twox_128_into(data, &mut r);
+	r
+}
+

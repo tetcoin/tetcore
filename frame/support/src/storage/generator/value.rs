@@ -17,7 +17,7 @@
 #[cfg(not(feature = "std"))]
 use sp_std::prelude::*;
 use codec::{FullCodec, Encode, EncodeAppend, EncodeLike, Decode};
-use crate::{storage::{self, unhashed}, hash::{Twox128, StorageHasher}, traits::Len};
+use crate::{storage::{self, storage_space::StorageSpace}, traits::Len};
 
 /// Generator for `StorageValue` used by `decl_storage`.
 ///
@@ -29,66 +29,52 @@ pub trait StorageValue<T: FullCodec> {
 	/// The type that get/take returns.
 	type Query;
 
-	/// Module prefix. Used for generating final key.
-	fn module_prefix() -> &'static [u8];
+	/// The space used in the trie to store its information. This space must not collide with any
+	/// other storage space.
+	const STORAGE_SPACE: Self::StorageSpace;
 
-	/// Storage prefix. Used for generating final key.
-	fn storage_prefix() -> &'static [u8];
+	/// The type of the storage space used.
+	type StorageSpace: StorageSpace;
 
 	/// Convert an optional value retrieved from storage to the type queried.
 	fn from_optional_value_to_query(v: Option<T>) -> Self::Query;
 
 	/// Convert a query to an optional value into storage.
 	fn from_query_to_optional_value(v: Self::Query) -> Option<T>;
-
-	/// Generate the full key used in top storage.
-	fn storage_value_final_key() -> [u8; 32] {
-		let mut final_key = [0u8; 32];
-		final_key[0..16].copy_from_slice(&Twox128::hash(Self::module_prefix()));
-		final_key[16..32].copy_from_slice(&Twox128::hash(Self::storage_prefix()));
-		final_key
-	}
 }
 
 impl<T: FullCodec, G: StorageValue<T>> storage::StorageValue<T> for G {
 	type Query = G::Query;
 
-	fn hashed_key() -> [u8; 32] {
-		Self::storage_value_final_key()
-	}
-
 	fn exists() -> bool {
-		unhashed::exists(&Self::storage_value_final_key())
+		Self::STORAGE_SPACE.exists(&[0; 0])
 	}
 
 	fn get() -> Self::Query {
-		let value = unhashed::get(&Self::storage_value_final_key());
-		G::from_optional_value_to_query(value)
+		G::from_optional_value_to_query(Self::STORAGE_SPACE.get_decode_and_warn(&[0; 0]))
 	}
 
 	fn translate<O: Decode, F: FnOnce(Option<O>) -> Option<T>>(f: F) -> Result<Option<T>, ()> {
-		let key = Self::storage_value_final_key();
-
 		// attempt to get the length directly.
-		let maybe_old = match unhashed::get_raw(&key) {
+		let maybe_old = match Self::STORAGE_SPACE.get(&[0; 0]) {
 			Some(old_data) => Some(O::decode(&mut &old_data[..]).map_err(|_| ())?),
 			None => None,
 		};
 		let maybe_new = f(maybe_old);
 		if let Some(new) = maybe_new.as_ref() {
-			new.using_encoded(|d| unhashed::put_raw(&key, d));
+			G::put(new)
 		} else {
-			unhashed::kill(&key);
+			G::kill()
 		}
 		Ok(maybe_new)
 	}
 
 	fn put<Arg: EncodeLike<T>>(val: Arg) {
-		unhashed::put(&Self::storage_value_final_key(), &val)
+		val.using_encoded(|val| Self::STORAGE_SPACE.put(&[0; 0], &val))
 	}
 
 	fn kill() {
-		unhashed::kill(&Self::storage_value_final_key())
+		Self::STORAGE_SPACE.kill(&[0; 0])
 	}
 
 	fn mutate<R, F: FnOnce(&mut G::Query) -> R>(f: F) -> R {
@@ -103,10 +89,9 @@ impl<T: FullCodec, G: StorageValue<T>> storage::StorageValue<T> for G {
 	}
 
 	fn take() -> G::Query {
-		let key = Self::storage_value_final_key();
-		let value = unhashed::get(&key);
+		let value = Self::STORAGE_SPACE.get_decode_and_warn(&[0; 0]);
 		if value.is_some() {
-			unhashed::kill(&key)
+			G::kill()
 		}
 		G::from_optional_value_to_query(value)
 	}
@@ -122,8 +107,7 @@ impl<T: FullCodec, G: StorageValue<T>> storage::StorageValue<T> for G {
 		Items: IntoIterator<Item=EncodeLikeItem>,
 		Items::IntoIter: ExactSizeIterator,
 	{
-		let key = Self::storage_value_final_key();
-		let encoded_value = unhashed::get_raw(&key)
+		let encoded_value = Self::STORAGE_SPACE.get(&[0; 0])
 			.unwrap_or_else(|| {
 				match G::from_query_to_optional_value(G::from_optional_value_to_query(None)) {
 					Some(value) => value.encode(),
@@ -135,7 +119,7 @@ impl<T: FullCodec, G: StorageValue<T>> storage::StorageValue<T> for G {
 			encoded_value,
 			items,
 		).map_err(|_| "Could not append given item")?;
-		unhashed::put_raw(&key, &new_val);
+		Self::STORAGE_SPACE.put(&[0; 0], &new_val);
 		Ok(())
 	}
 
@@ -161,10 +145,8 @@ impl<T: FullCodec, G: StorageValue<T>> storage::StorageValue<T> for G {
 	/// Therefore, this function cannot be used as a sign of _existence_. use the `::exists()`
 	/// function for this purpose.
 	fn decode_len() -> Result<usize, &'static str> where T: codec::DecodeLength, T: Len {
-		let key = Self::storage_value_final_key();
-
 		// attempt to get the length directly.
-		if let Some(k) = unhashed::get_raw(&key) {
+		if let Some(k) = Self::STORAGE_SPACE.get(&[0; 0]) {
 			<T as codec::DecodeLength>::len(&k).map_err(|e| e.what())
 		} else {
 			let len = G::from_query_to_optional_value(G::from_optional_value_to_query(None))

@@ -26,6 +26,7 @@ pub const CURRENT_VERSION: VersionNumber = 2;
 #[cfg(any(test, feature = "migrate"))]
 pub mod inner {
 	use crate::{Store, Module, Trait};
+	use sp_io::hashing::twox_128;
 	use frame_support::{StorageLinkedMap, StoragePrefixedMap, StorageValue};
 	use codec::{Encode, Decode};
 	use sp_std::vec::Vec;
@@ -84,8 +85,8 @@ pub mod inner {
 		if *version != 1 { return }
 		*version += 1;
 
-		let prefix = <Module<T> as Store>::SlashingSpans::final_prefix();
-		let mut current_key = prefix.to_vec();
+		let prefix = [twox_128(b"Staking"), twox_128(b"SlashingSpans")].concat();
+		let mut current_key = prefix.clone();
 		loop {
 			let maybe_next_key = sp_io::storage::next_key(&current_key[..])
 				.filter(|v| v.starts_with(&prefix[..]));
