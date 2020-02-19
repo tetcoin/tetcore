@@ -20,8 +20,6 @@
 //! implementation of StorageValue for this type).
 //!
 //! They are used by `decl_storage`.
-//!
-//! This is internal api and is subject to change.
 
 mod linked_map;
 mod map;
