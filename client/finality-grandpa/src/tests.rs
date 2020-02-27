@@ -19,7 +19,7 @@
 use super::*;
 use environment::HasVoted;
 use sc_network_test::{
-	Block, Hash, TestNetFactory, BlockImportAdapter, Peer,
+	Block, DummySpecialization, Hash, TestNetFactory, BlockImportAdapter, Peer,
 	PeersClient, PassThroughVerifier,
 };
 use sc_network::config::{ProtocolConfig, Roles, BoxFinalityProofRequestBuilder};
@@ -68,7 +68,7 @@ type PeerData =
 			>
 		>
 	>;
-type GrandpaPeer = Peer<PeerData>;
+type GrandpaPeer = Peer<PeerData, DummySpecialization>;
 
 struct GrandpaTestNet {
 	peers: Vec<GrandpaPeer>,
@@ -90,6 +90,7 @@ impl GrandpaTestNet {
 }
 
 impl TestNetFactory for GrandpaTestNet {
+	type Specialization = DummySpecialization;
 	type Verifier = PassThroughVerifier;
 	type PeerData = PeerData;
 

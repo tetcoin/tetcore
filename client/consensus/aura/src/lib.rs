@@ -886,10 +886,11 @@ mod tests {
 	const SLOT_DURATION: u64 = 1000;
 
 	pub struct AuraTestNet {
-		peers: Vec<Peer<()>>,
+		peers: Vec<Peer<(), DummySpecialization>>,
 	}
 
 	impl TestNetFactory for AuraTestNet {
+		type Specialization = DummySpecialization;
 		type Verifier = AuraVerifier<PeersFullClient, AuthorityPair>;
 		type PeerData = ();
 
@@ -923,15 +924,15 @@ mod tests {
 			}
 		}
 
-		fn peer(&mut self, i: usize) -> &mut Peer<Self::PeerData> {
+		fn peer(&mut self, i: usize) -> &mut Peer<Self::PeerData, DummySpecialization> {
 			&mut self.peers[i]
 		}
 
-		fn peers(&self) -> &Vec<Peer<Self::PeerData>> {
+		fn peers(&self) -> &Vec<Peer<Self::PeerData, DummySpecialization>> {
 			&self.peers
 		}
 
-		fn mut_peers<F: FnOnce(&mut Vec<Peer<Self::PeerData>>)>(&mut self, closure: F) {
+		fn mut_peers<F: FnOnce(&mut Vec<Peer<Self::PeerData, DummySpecialization>>)>(&mut self, closure: F) {
 			closure(&mut self.peers);
 		}
 	}

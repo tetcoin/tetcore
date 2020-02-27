@@ -45,7 +45,10 @@ use futures::{
 	sink::SinkExt,
 	task::{Spawn, FutureObj, SpawnError},
 };
-use sc_network::{NetworkService, network_state::NetworkState, PeerId, ReportHandle};
+use sc_network::{
+	NetworkService, network_state::NetworkState, specialization::NetworkSpecialization,
+	PeerId, ReportHandle,
+};
 use log::{log, warn, debug, error, Level};
 use codec::{Encode, Decode};
 use sp_runtime::generic::BlockId;
@@ -173,6 +176,8 @@ pub trait AbstractService: 'static + Future<Output = Result<(), Error>> +
 	type SelectChain: sp_consensus::SelectChain<Self::Block>;
 	/// Transaction pool.
 	type TransactionPool: TransactionPool<Block = Self::Block> + MallocSizeOfWasm;
+	/// Network specialization.
+	type NetworkSpecialization: NetworkSpecialization<Self::Block>;
 
 	/// Get event stream for telemetry connection established events.
 	fn telemetry_on_connect_stream(&self) -> futures::channel::mpsc::UnboundedReceiver<()>;
@@ -213,7 +218,7 @@ pub trait AbstractService: 'static + Future<Output = Result<(), Error>> +
 
 	/// Get shared network instance.
 	fn network(&self)
-		-> Arc<NetworkService<Self::Block, <Self::Block as BlockT>::Hash>>;
+		-> Arc<NetworkService<Self::Block, Self::NetworkSpecialization, <Self::Block as BlockT>::Hash>>;
 
 	/// Returns a receiver that periodically receives a status of the network.
 	fn network_status(&self, interval: Duration) -> mpsc::UnboundedReceiver<(NetworkStatus<Self::Block>, NetworkState)>;
@@ -225,9 +230,9 @@ pub trait AbstractService: 'static + Future<Output = Result<(), Error>> +
 	fn on_exit(&self) -> ::exit_future::Exit;
 }
 
-impl<TBl, TBackend, TExec, TRtApi, TSc, TExPool, TOc> AbstractService for
+impl<TBl, TBackend, TExec, TRtApi, TSc, TNetSpec, TExPool, TOc> AbstractService for
 	Service<TBl, Client<TBackend, TExec, TBl, TRtApi>, TSc, NetworkStatus<TBl>,
-		NetworkService<TBl, TBl::Hash>, TExPool, TOc>
+		NetworkService<TBl, TNetSpec, TBl::Hash>, TExPool, TOc>
 where
 	TBl: BlockT + Unpin,
 	TBackend: 'static + sc_client_api::backend::Backend<TBl>,
@@ -236,6 +241,7 @@ where
 	TSc: sp_consensus::SelectChain<TBl> + 'static + Clone + Send + Unpin,
 	TExPool: 'static + TransactionPool<Block = TBl> + MallocSizeOfWasm,
 	TOc: 'static + Send + Sync,
+	TNetSpec: NetworkSpecialization<TBl>,
 {
 	type Block = TBl;
 	type Backend = TBackend;
@@ -243,6 +249,7 @@ where
 	type RuntimeApi = TRtApi;
 	type SelectChain = TSc;
 	type TransactionPool = TExPool;
+	type NetworkSpecialization = TNetSpec;
 
 	fn telemetry_on_connect_stream(&self) -> futures::channel::mpsc::UnboundedReceiver<()> {
 		let (sink, stream) = futures::channel::mpsc::unbounded();
@@ -308,7 +315,7 @@ where
 	}
 
 	fn network(&self)
-		-> Arc<NetworkService<Self::Block, <Self::Block as BlockT>::Hash>>
+		-> Arc<NetworkService<Self::Block, Self::NetworkSpecialization, <Self::Block as BlockT>::Hash>>
 	{
 		self.network.clone()
 	}
@@ -372,10 +379,11 @@ impl<TBl, TCl, TSc, TNetStatus, TNet, TTxPool, TOc> Spawn for
 fn build_network_future<
 	B: BlockT,
 	C: sc_client::BlockchainEvents<B>,
+	S: sc_network::specialization::NetworkSpecialization<B>,
 	H: sc_network::ExHashT
 > (
 	roles: Roles,
-	mut network: sc_network::NetworkWorker<B, H>,
+	mut network: sc_network::NetworkWorker<B, S, H>,
 	client: Arc<C>,
 	status_sinks: Arc<Mutex<status_sinks::StatusSinks<(NetworkStatus<B>, NetworkState)>>>,
 	mut rpc_rx: mpsc::UnboundedReceiver<sc_rpc::system::Request<B>>,
@@ -389,7 +397,7 @@ fn build_network_future<
 
 		// We poll `imported_blocks_stream`.
 		while let Poll::Ready(Some(notification)) = Pin::new(&mut imported_blocks_stream).poll_next(cx) {
-			network.on_block_imported(notification.header, Vec::new(), notification.is_new_best);
+			network.on_block_imported(notification.hash, notification.header, Vec::new(), notification.is_new_best);
 		}
 
 		// We poll `finality_notification_stream`, but we only take the last event.

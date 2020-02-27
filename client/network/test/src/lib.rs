@@ -52,14 +52,17 @@ use sc_network::config::{NetworkConfiguration, TransportConfig, BoxFinalityProof
 use libp2p::PeerId;
 use parking_lot::Mutex;
 use sp_core::H256;
-use sc_network::config::{ProtocolConfig, TransactionPool};
+use sc_network::config::ProtocolConfig;
 use sp_runtime::generic::{BlockId, OpaqueDigestItemId};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 use sp_runtime::Justification;
+use sc_network::config::TransactionPool;
+use sc_network::specialization::NetworkSpecialization;
 use substrate_test_runtime_client::{self, AccountKeyring};
 
 pub use substrate_test_runtime_client::runtime::{Block, Extrinsic, Hash, Transfer};
 pub use substrate_test_runtime_client::{TestClient, TestClientBuilder, TestClientBuilderExt};
+pub use sc_network::specialization::DummySpecialization;
 
 type AuthorityId = sp_consensus_babe::AuthorityId;
 
@@ -175,7 +178,7 @@ impl PeersClient {
 	}
 }
 
-pub struct Peer<D> {
+pub struct Peer<D, S: NetworkSpecialization<Block>> {
 	pub data: D,
 	client: PeersClient,
 	/// We keep a copy of the verifier so that we can invoke it for locally-generated blocks,
@@ -186,12 +189,12 @@ pub struct Peer<D> {
 	block_import: BlockImportAdapter<()>,
 	select_chain: Option<LongestChain<substrate_test_runtime_client::Backend, Block>>,
 	backend: Option<Arc<substrate_test_runtime_client::Backend>>,
-	network: NetworkWorker<Block, <Block as BlockT>::Hash>,
+	network: NetworkWorker<Block, S, <Block as BlockT>::Hash>,
 	imported_blocks_stream: Box<dyn Stream<Item = BlockImportNotification<Block>, Error = ()> + Send>,
 	finality_notification_stream: Box<dyn Stream<Item = FinalityNotification<Block>, Error = ()> + Send>,
 }
 
-impl<D> Peer<D> {
+impl<D, S: NetworkSpecialization<Block>> Peer<D, S> {
 	/// Get this peer ID.
 	pub fn id(&self) -> PeerId {
 		self.network.service().local_peer_id()
@@ -281,7 +284,7 @@ impl<D> Peer<D> {
 				Default::default()
 			};
 			self.block_import.import_block(import_block, cache).expect("block_import failed");
-			self.network.on_block_imported(header, Vec::new(), true);
+			self.network.on_block_imported(hash, header, Vec::new(), true);
 			at = hash;
 		}
 
@@ -352,7 +355,7 @@ impl<D> Peer<D> {
 	}
 
 	/// Get a reference to the network service.
-	pub fn network_service(&self) -> &Arc<NetworkService<Block, <Block as BlockT>::Hash>> {
+	pub fn network_service(&self) -> &Arc<NetworkService<Block, S, <Block as BlockT>::Hash>> {
 		&self.network.service()
 	}
 
@@ -406,6 +409,16 @@ impl TransactionPool<Hash, Block> for EmptyTransactionPool {
 	fn on_broadcasted(&self, _: HashMap<Hash, Vec<String>>) {}
 
 	fn transaction(&self, _h: &Hash) -> Option<Extrinsic> { None }
+}
+
+pub trait SpecializationFactory {
+	fn create() -> Self;
+}
+
+impl SpecializationFactory for DummySpecialization {
+	fn create() -> DummySpecialization {
+		DummySpecialization
+	}
 }
 
 /// Implements `BlockImport` for any `Transaction`. Internally the transaction is
@@ -528,6 +541,7 @@ impl<B: BlockT> VerifierAdapter<B> {
 }
 
 pub trait TestNetFactory: Sized {
+	type Specialization: NetworkSpecialization<Block> + SpecializationFactory;
 	type Verifier: 'static + Verifier<Block>;
 	type PeerData: Default;
 
@@ -541,9 +555,9 @@ pub trait TestNetFactory: Sized {
 	) -> Self::Verifier;
 
 	/// Get reference to peer.
-	fn peer(&mut self, i: usize) -> &mut Peer<Self::PeerData>;
-	fn peers(&self) -> &Vec<Peer<Self::PeerData>>;
-	fn mut_peers<F: FnOnce(&mut Vec<Peer<Self::PeerData>>)>(
+	fn peer(&mut self, i: usize) -> &mut Peer<Self::PeerData, Self::Specialization>;
+	fn peers(&self) -> &Vec<Peer<Self::PeerData, Self::Specialization>>;
+	fn mut_peers<F: FnOnce(&mut Vec<Peer<Self::PeerData, Self::Specialization>>)>(
 		&mut self,
 		closure: F,
 	);
@@ -641,6 +655,7 @@ pub trait TestNetFactory: Sized {
 			transaction_pool: Arc::new(EmptyTransactionPool),
 			protocol_id: ProtocolId::from(&b"test-protocol-name"[..]),
 			import_queue,
+			specialization: self::SpecializationFactory::create(),
 			block_announce_validator: Box::new(DefaultBlockAnnounceValidator::new(client.clone()))
 		}).unwrap();
 
@@ -716,6 +731,7 @@ pub trait TestNetFactory: Sized {
 			transaction_pool: Arc::new(EmptyTransactionPool),
 			protocol_id: ProtocolId::from(&b"test-protocol-name"[..]),
 			import_queue,
+			specialization: self::SpecializationFactory::create(),
 			block_announce_validator: Box::new(DefaultBlockAnnounceValidator::new(client.clone()))
 		}).unwrap();
 
@@ -811,6 +827,7 @@ pub trait TestNetFactory: Sized {
 				// We poll `imported_blocks_stream`.
 				while let Ok(Async::Ready(Some(notification))) = peer.imported_blocks_stream.poll() {
 					peer.network.on_block_imported(
+						notification.hash,
 						notification.header,
 						Vec::new(),
 						true,
@@ -831,10 +848,11 @@ pub trait TestNetFactory: Sized {
 }
 
 pub struct TestNet {
-	peers: Vec<Peer<()>>,
+	peers: Vec<Peer<(), DummySpecialization>>,
 }
 
 impl TestNetFactory for TestNet {
+	type Specialization = DummySpecialization;
 	type Verifier = PassThroughVerifier;
 	type PeerData = ();
 
@@ -851,15 +869,15 @@ impl TestNetFactory for TestNet {
 		PassThroughVerifier(false)
 	}
 
-	fn peer(&mut self, i: usize) -> &mut Peer<()> {
+	fn peer(&mut self, i: usize) -> &mut Peer<(), Self::Specialization> {
 		&mut self.peers[i]
 	}
 
-	fn peers(&self) -> &Vec<Peer<()>> {
+	fn peers(&self) -> &Vec<Peer<(), Self::Specialization>> {
 		&self.peers
 	}
 
-	fn mut_peers<F: FnOnce(&mut Vec<Peer<()>>)>(&mut self, closure: F) {
+	fn mut_peers<F: FnOnce(&mut Vec<Peer<(), Self::Specialization>>)>(&mut self, closure: F) {
 		closure(&mut self.peers);
 	}
 }
@@ -883,6 +901,7 @@ impl JustificationImport<Block> for ForceFinalized {
 pub struct JustificationTestNet(TestNet);
 
 impl TestNetFactory for JustificationTestNet {
+	type Specialization = DummySpecialization;
 	type Verifier = PassThroughVerifier;
 	type PeerData = ();
 
@@ -894,16 +913,17 @@ impl TestNetFactory for JustificationTestNet {
 		self.0.make_verifier(client, config, peer_data)
 	}
 
-	fn peer(&mut self, i: usize) -> &mut Peer<Self::PeerData> {
+	fn peer(&mut self, i: usize) -> &mut Peer<Self::PeerData, Self::Specialization> {
 		self.0.peer(i)
 	}
 
-	fn peers(&self) -> &Vec<Peer<Self::PeerData>> {
+	fn peers(&self) -> &Vec<Peer<Self::PeerData, Self::Specialization>> {
 		self.0.peers()
 	}
 
 	fn mut_peers<F: FnOnce(
-		&mut Vec<Peer<Self::PeerData>>,
+		&mut Vec<Peer<Self::PeerData,
+		Self::Specialization>>,
 	)>(&mut self, closure: F) {
 		self.0.mut_peers(closure)
 	}
