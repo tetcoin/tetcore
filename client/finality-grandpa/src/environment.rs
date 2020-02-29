@@ -1067,7 +1067,7 @@ pub(crate) fn finalize_block<B, Block: BlockT, E, RA>(
 		let new_authorities = if let Some((canon_hash, canon_number)) = status.new_set_block {
 			// the authority set has changed.
 			let (new_id, set_ref) = authority_set.current();
-
+println!("=== TEST");
 			if set_ref.len() > 16 {
 				info!("Applying GRANDPA set change to new set with {} authorities", set_ref.len());
 			} else {

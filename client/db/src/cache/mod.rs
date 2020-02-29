@@ -139,6 +139,7 @@ impl<Block: BlockT> DbCache<Block> {
 	/// Run post-commit cache operations.
 	pub fn commit(&mut self, ops: DbCacheTransactionOps<Block>) -> ClientResult<()> {
 		for (name, ops) in ops.cache_at_ops.into_iter() {
+println!("=== DbCache::commit({:?}): {:?}", name, ops);
 			self.get_cache(name)?.on_transaction_commit(ops);
 		}
 		if let Some(best_finalized_block) = ops.best_finalized_block {

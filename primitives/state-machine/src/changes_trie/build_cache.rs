@@ -113,6 +113,7 @@ impl<H, N> BuildCache<H, N>
 	pub fn perform(&mut self, action: CacheAction<H, N>) {
 		match action {
 			CacheAction::CacheBuildData(data) => {
+println!("=== BuildCache::perform(CacheAction::CacheBuildData)");
 				self.roots_by_number.insert(data.block, data.trie_root.clone());
 				self.changed_keys.insert(data.trie_root, data.changed_keys);
 
