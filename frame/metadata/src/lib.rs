@@ -115,7 +115,7 @@ impl<B, O> serde::Serialize for DecodeDifferent<B, O>
 
 pub type DecodeDifferentArray<B, O=B> = DecodeDifferent<&'static [B], Vec<O>>;
 
-type DecodeDifferentStr = DecodeDifferent<&'static str, StringBuf>;
+pub type DecodeDifferentStr = DecodeDifferent<&'static str, StringBuf>;
 
 /// All the metadata about a function.
 #[derive(Clone, PartialEq, Eq, Encode, RuntimeDebug)]
