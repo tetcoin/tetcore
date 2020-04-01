@@ -18,7 +18,7 @@
 use serde::{Serialize, Deserialize};
 
 use sp_std::{ops, fmt, prelude::*, convert::TryInto};
-use codec::{Encode, CompactAs};
+use codec::Encode;
 use crate::traits::{
 	SaturatedConversion, UniqueSaturatedInto, Saturating, BaseArithmetic, Bounded, Zero,
 };
@@ -311,8 +311,7 @@ macro_rules! implement_per_thing {
 		///
 		#[doc = $title]
 		#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
-		#[derive(Encode, Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord,
-				 RuntimeDebug, CompactAs)]
+		#[derive(Encode, Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, RuntimeDebug)]
 		pub struct $name($type);
 
 		impl PerThing for $name {
@@ -546,6 +545,29 @@ macro_rules! implement_per_thing {
 			}
 		}
 
+		impl codec::CompactAs for $name {
+			type As = $type;
+
+			fn encode_as(&self) -> &Self::As {
+				&self.0
+			}
+
+			fn decode_from(inner: Self::As) -> Result<Self, codec::Error> {
+				if inner <= <Self as PerThing>::ACCURACY {
+					Ok(Self(inner))
+				} else {
+					Err("Value is greater than allowed maximum!".into())
+				}
+			}
+		}
+
+		impl From<codec::Compact<$name>> for $name {
+			fn from(x: codec::Compact<$name>) -> Self {
+				x.0
+			}
+		}
+
+
 		impl crate::traits::Bounded for $name {
 			fn min_value() -> Self {
 				<Self as PerThing>::zero()
@@ -646,11 +668,17 @@ macro_rules! implement_per_thing {
 				let value = <$upper_type>::from($max) * 2;
 				let casted = value as $type;
 				let encoded = casted.encode();
+				let compact_encoded = codec::Compact(casted).encode();
 
 				// For types where `$max == $type::maximum()` we can not
 				if <$upper_type>::from(casted) == value {
 					assert_eq!(
 						$name::decode(&mut &encoded[..]),
+						Err("Value is greater than allowed maximum!".into()),
+					);
+
+					assert_eq!(
+						<codec::Compact<$name>>::decode(&mut &compact_encoded[..]),
 						Err("Value is greater than allowed maximum!".into()),
 					);
 				}
