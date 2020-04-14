@@ -251,10 +251,16 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		block: Option<Block::Hash>,
 		prefix: StorageKey,
 	) -> FutureResult<Vec<StorageKey>> {
+		let time = std::time::Instant::now();
 		Box::new(result(
 			self.block_or_best(block)
 				.and_then(|block| self.client.storage_keys(&BlockId::Hash(block), &prefix))
-				.map_err(client_err)))
+				.map(|keys| {
+					log::info!("Retrieved {} (key, values) in {:?}ns", keys.len(), time.elapsed().as_nanos());
+					keys
+				})
+				.map_err(client_err)
+		))
 	}
 
 	fn storage_pairs(
@@ -262,10 +268,16 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		block: Option<Block::Hash>,
 		prefix: StorageKey,
 	) -> FutureResult<Vec<(StorageKey, StorageData)>> {
+		let time = std::time::Instant::now();
 		Box::new(result(
 			self.block_or_best(block)
 				.and_then(|block| self.client.storage_pairs(&BlockId::Hash(block), &prefix))
-				.map_err(client_err)))
+				.map(|keys| {
+					log::info!("Retrieved {} (key, values) in {:?}ns", keys.len(), time.elapsed().as_nanos());
+					keys
+				})
+				.map_err(client_err)
+		))
 	}
 
 	fn storage_keys_paged(
@@ -275,6 +287,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		count: u32,
 		start_key: Option<StorageKey>,
 	) -> FutureResult<Vec<StorageKey>> {
+		let time = std::time::Instant::now();
 		Box::new(result(
 			self.block_or_best(block)
 				.and_then(|block|
@@ -283,6 +296,10 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 					)
 				)
 				.map(|v| v.take(count as usize).collect())
+				.map(|keys: Vec<_>| {
+					log::info!("Retrieved {} (key, values) in {:?}ns", keys.len(), time.elapsed().as_nanos());
+					keys
+				})
 				.map_err(client_err)))
 	}
 
@@ -391,11 +408,17 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		keys: Vec<StorageKey>,
 	) -> FutureResult<Vec<StorageChangeSet<Block::Hash>>> {
 		let call_fn = move || {
+			let time = std::time::Instant::now();
 			let range = self.split_query_storage_range(from, to)?;
 			let mut changes = Vec::new();
 			let mut last_values = HashMap::new();
 			self.query_storage_unfiltered(&range, &keys, &mut last_values, &mut changes)?;
 			self.query_storage_filtered(&range, &keys, &last_values, &mut changes)?;
+			log::info!(
+				"Retrieved {} changes in {:?}ns",
+				changes.iter().map(|set| set.changes.len()).sum::<usize>(),
+				time.elapsed().as_nanos()
+			);
 			Ok(changes)
 		};
 		Box::new(result(call_fn()))
