@@ -51,7 +51,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use futures::task::{Context, Poll};
-use futures::{Future, FutureExt, Stream, StreamExt};
+use futures::{Future, FutureExt, ready, Stream, StreamExt};
 use futures_timer::Delay;
 
 use codec::{Decode, Encode};
@@ -80,59 +80,14 @@ mod schema {
 
 type Interval = Box<dyn Stream<Item = ()> + Unpin + Send + Sync>;
 
+const LOG_TARGET: &'static str = "sub-authority-discovery";
+
 /// Upper bound estimation on how long one should wait before accessing the Kademlia DHT.
 const LIBP2P_KADEMLIA_BOOTSTRAP_TIME: Duration = Duration::from_secs(30);
 
 /// Name of the Substrate peerset priority group for authorities discovered through the authority
 /// discovery module.
 const AUTHORITIES_PRIORITY_GROUP_NAME: &'static str = "authorities";
-
-/// Prometheus metrics for an `AuthorityDiscovery`.
-#[derive(Clone)]
-pub(crate) struct Metrics {
-	publish: Counter<U64>,
-	amount_last_published: Gauge<U64>,
-	request: Counter<U64>,
-	dht_event_received: CounterVec<U64>,
-}
-
-impl Metrics {
-	pub(crate) fn register(registry: &prometheus_endpoint::Registry) -> Result<Self> {
-		Ok(Self {
-			publish: register(
-				Counter::new(
-					"authority_discovery_times_published_total",
-					"Number of times authority discovery has published external addresses."
-				)?,
-				registry,
-			)?,
-			amount_last_published: register(
-				Gauge::new(
-					"authority_discovery_amount_external_addresses_last_published",
-					"Number of external addresses published when authority discovery last published addresses ."
-				)?,
-				registry,
-			)?,
-			request: register(
-				Counter::new(
-					"authority_discovery_times_requested_total",
-					"Number of times authority discovery has requested external addresses."
-				)?,
-				registry,
-			)?,
-			dht_event_received: register(
-				CounterVec::new(
-					Opts::new(
-						"authority_discovery_dht_event_received",
-						"Number of dht events received by authority discovery."
-					),
-					&["name"],
-				)?,
-				registry,
-			)?,
-		})
-	}
-}
 
 /// An `AuthorityDiscovery` makes a given authority discoverable and discovers other authorities.
 pub struct AuthorityDiscovery<Client, Network, Block>
@@ -221,7 +176,7 @@ where
 				match Metrics::register(&registry) {
 					Ok(metrics) => Some(metrics),
 					Err(e) => {
-						error!(target: "sub-authority-discovery", "Failed to register metrics: {:?}", e);
+						error!(target: LOG_TARGET, "Failed to register metrics: {:?}", e);
 						None
 					},
 				}
@@ -309,10 +264,6 @@ where
 	}
 
 	fn request_addresses_of_others(&mut self) -> Result<()> {
-		if let Some(metrics) = &self.metrics {
-			metrics.request.inc();
-		}
-
 		let id = BlockId::hash(self.client.info().best_hash);
 
 		let authorities = self
@@ -322,6 +273,10 @@ where
 			.map_err(Error::CallingRuntime)?;
 
 		for authority_id in authorities.iter() {
+			if let Some(metrics) = &self.metrics {
+				metrics.request.inc();
+			}
+
 			self.network
 				.get_value(&hash_authority_id(authority_id.as_ref()));
 		}
@@ -329,10 +284,15 @@ where
 		Ok(())
 	}
 
-	fn handle_dht_events(&mut self, cx: &mut Context) -> Result<()> {
+	/// Handle incoming Dht events.
+	///
+	/// Returns either:
+	///   - Poll::Pending when there are no more events to handle or
+	///   - Poll::Ready(()) when the dht event stream terminated.
+	fn handle_dht_events(&mut self, cx: &mut Context) -> Poll<()>{
 		loop {
-			match self.dht_event_rx.poll_next_unpin(cx) {
-				Poll::Ready(Some(DhtEvent::ValueFound(v))) => {
+			match ready!(self.dht_event_rx.poll_next_unpin(cx)) {
+				Some(DhtEvent::ValueFound(v)) => {
 					if let Some(metrics) = &self.metrics {
 						metrics.dht_event_received.with_label_values(&["value_found"]).inc();
 					}
@@ -340,47 +300,52 @@ where
 					if log_enabled!(log::Level::Debug) {
 						let hashes = v.iter().map(|(hash, _value)| hash.clone());
 						debug!(
-							target: "sub-authority-discovery",
+							target: LOG_TARGET,
 							"Value for hash '{:?}' found on Dht.", hashes,
 						);
 					}
 
-					self.handle_dht_value_found_event(v)?;
+					if let Err(e) = self.handle_dht_value_found_event(v) {
+						error!(
+							target: LOG_TARGET,
+							"Failed to handle Dht value found event: {:?}", e,
+						);
+					}
 				}
-				Poll::Ready(Some(DhtEvent::ValueNotFound(hash))) => {
+				Some(DhtEvent::ValueNotFound(hash)) => {
 					if let Some(metrics) = &self.metrics {
 						metrics.dht_event_received.with_label_values(&["value_not_found"]).inc();
 					}
 
 					debug!(
-						target: "sub-authority-discovery",
+						target: LOG_TARGET,
 						"Value for hash '{:?}' not found on Dht.", hash
 					)
 				},
-				Poll::Ready(Some(DhtEvent::ValuePut(hash))) => {
+				Some(DhtEvent::ValuePut(hash)) => {
 					if let Some(metrics) = &self.metrics {
 						metrics.dht_event_received.with_label_values(&["value_put"]).inc();
 					}
 
 					debug!(
-						target: "sub-authority-discovery",
+						target: LOG_TARGET,
 						"Successfully put hash '{:?}' on Dht.", hash,
 					)
 				},
-				Poll::Ready(Some(DhtEvent::ValuePutFailed(hash))) => {
+				Some(DhtEvent::ValuePutFailed(hash)) => {
 					if let Some(metrics) = &self.metrics {
 						metrics.dht_event_received.with_label_values(&["value_put_failed"]).inc();
 					}
 
 					warn!(
-						target: "sub-authority-discovery",
+						target: LOG_TARGET,
 						"Failed to put hash '{:?}' on Dht.", hash
 					)
 				},
-				// The sender side of the dht event stream has been closed, likely due to the
-				// network terminating.
-				Poll::Ready(None) => return Err(Error::DhtEventStreamTerminated),
-				Poll::Pending => return Ok(()),
+				None => {
+					debug!(target: LOG_TARGET, "Dht event stream terminated.");
+					return Poll::Ready(());
+				},
 			}
 		}
 	}
@@ -489,7 +454,7 @@ where
 		let addresses = self.addr_cache.get_subset();
 
 		debug!(
-			target: "sub-authority-discovery",
+			target: LOG_TARGET,
 			"Applying priority group {:?} to peerset.", addresses,
 		);
 		self.network
@@ -511,46 +476,42 @@ where
 	type Output = ();
 
 	fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
-		let mut inner = || -> Result<()> {
-			// Process incoming events before triggering new ones.
-			self.handle_dht_events(cx)?;
-
-			if let Poll::Ready(_) = self.publish_interval.poll_next_unpin(cx) {
-				// Make sure to call interval.poll until it returns Async::NotReady once. Otherwise,
-				// in case one of the function calls within this block do a `return`, we don't call
-				// `interval.poll` again and thereby the underlying Tokio task is never registered
-				// with Tokio's Reactor to be woken up on the next interval tick.
-				while let Poll::Ready(_) = self.publish_interval.poll_next_unpin(cx) {}
-
-				self.publish_ext_addresses()?;
-			}
-
-			if let Poll::Ready(_) = self.query_interval.poll_next_unpin(cx) {
-				// Make sure to call interval.poll until it returns Async::NotReady once. Otherwise,
-				// in case one of the function calls within this block do a `return`, we don't call
-				// `interval.poll` again and thereby the underlying Tokio task is never registered
-				// with Tokio's Reactor to be woken up on the next interval tick.
-				while let Poll::Ready(_) = self.query_interval.poll_next_unpin(cx) {}
-
-				self.request_addresses_of_others()?;
-			}
-
-			Ok(())
-		};
-
-		loop {
-			match inner() {
-				Ok(()) => return Poll::Pending,
-
-				// Handle fatal errors.
-				//
-				// Given that the network likely terminated authority discovery should do the same.
-				Err(Error::DhtEventStreamTerminated) => return Poll::Ready(()),
-
-				// Handle non-fatal errors.
-				Err(e) => error!(target: "sub-authority-discovery", "Poll failure: {:?}", e),
-			};
+		// Process incoming events.
+		if let Poll::Ready(()) = self.handle_dht_events(cx) {
+			// `handle_dht_events` returns `Poll::Ready(())` when the Dht event stream terminated.
+			// Termination of the Dht event stream implies that the underlying network terminated,
+			// thus authority discovery should terminate as well.
+			return Poll::Ready(());
 		}
+
+
+		// Publish own addresses.
+		if let Poll::Ready(_) = self.publish_interval.poll_next_unpin(cx) {
+			// Register waker of underlying task for next interval.
+			while let Poll::Ready(_) = self.publish_interval.poll_next_unpin(cx) {}
+
+			if let Err(e) = self.publish_ext_addresses() {
+				error!(
+					target: LOG_TARGET,
+					"Failed to publish external addresses: {:?}", e,
+				);
+			}
+		}
+
+		// Request addresses of authorities.
+		if let Poll::Ready(_) = self.query_interval.poll_next_unpin(cx) {
+			// Register waker of underlying task for next interval.
+			while let Poll::Ready(_) = self.query_interval.poll_next_unpin(cx) {}
+
+			if let Err(e) = self.request_addresses_of_others() {
+				error!(
+					target: LOG_TARGET,
+					"Failed to request addresses of authorities: {:?}", e,
+				);
+			}
+		}
+
+		Poll::Pending
 	}
 }
 
@@ -604,4 +565,53 @@ fn interval_at(start: Instant, duration: Duration) -> Interval {
 	});
 
 	Box::new(stream)
+}
+
+/// Prometheus metrics for an `AuthorityDiscovery`.
+#[derive(Clone)]
+pub(crate) struct Metrics {
+	publish: Counter<U64>,
+	amount_last_published: Gauge<U64>,
+	request: Counter<U64>,
+	dht_event_received: CounterVec<U64>,
+}
+
+impl Metrics {
+	pub(crate) fn register(registry: &prometheus_endpoint::Registry) -> Result<Self> {
+		Ok(Self {
+			publish: register(
+				Counter::new(
+					"authority_discovery_times_published_total",
+					"Number of times authority discovery has published external addresses."
+				)?,
+				registry,
+			)?,
+			amount_last_published: register(
+				Gauge::new(
+					"authority_discovery_amount_external_addresses_last_published",
+					"Number of external addresses published when authority discovery last \
+					 published addresses."
+				)?,
+				registry,
+			)?,
+			request: register(
+				Counter::new(
+					"authority_discovery_authority_addresses_requested_total",
+					"Number of times authority discovery has requested external addresses of a \
+					 single authority."
+				)?,
+				registry,
+			)?,
+			dht_event_received: register(
+				CounterVec::new(
+					Opts::new(
+						"authority_discovery_dht_event_received",
+						"Number of dht events received by authority discovery."
+					),
+					&["name"],
+				)?,
+				registry,
+			)?,
+		})
+	}
 }

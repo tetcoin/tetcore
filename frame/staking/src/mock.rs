@@ -203,6 +203,7 @@ impl frame_system::Trait for Test {
 	type Event = MetaEvent;
 	type BlockHashCount = BlockHashCount;
 	type MaximumBlockWeight = MaximumBlockWeight;
+	type DbWeight = ();
 	type AvailableBlockRatio = AvailableBlockRatio;
 	type MaximumBlockLength = MaximumBlockLength;
 	type Version = ();
@@ -506,6 +507,10 @@ pub type Session = pallet_session::Module<Test>;
 pub type Timestamp = pallet_timestamp::Module<Test>;
 pub type Staking = Module<Test>;
 
+pub(crate) fn current_era() -> EraIndex {
+	Staking::current_era().unwrap()
+}
+
 fn post_conditions() {
 	check_nominators();
 	check_exposures();
@@ -524,7 +529,7 @@ fn check_ledgers() {
 fn check_exposures() {
 	// a check per validator to ensure the exposure struct is always sane.
 	let era = active_era();
-	ErasStakers::<Test>::iter_prefix(era).for_each(|expo| {
+	ErasStakers::<Test>::iter_prefix_values(era).for_each(|expo| {
 		assert_eq!(
 			expo.total as u128,
 			expo.own as u128 + expo.others.iter().map(|e| e.value as u128).sum::<u128>(),
@@ -649,9 +654,13 @@ pub(crate) fn start_session(session_index: SessionIndex) {
 	assert_eq!(Session::current_index(), session_index);
 }
 
+// This start and activate the era given.
+// Because the mock use pallet-session which delays session by one, this will be one session after
+// the election happened, not the first session after the election has happened.
 pub(crate) fn start_era(era_index: EraIndex) {
 	start_session((era_index * <SessionsPerEra as Get<u32>>::get()).into());
 	assert_eq!(Staking::current_era().unwrap(), era_index);
+	assert_eq!(Staking::active_era().unwrap().index, era_index);
 }
 
 pub(crate) fn current_total_payout_for_duration(duration: u64) -> Balance {
