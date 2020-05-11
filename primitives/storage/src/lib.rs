@@ -333,6 +333,30 @@ impl ChildTrieParentKeyId {
 	}
 }
 
+// TODO [ToDr] Docs
+#[derive(Default, RuntimeDebug)]
+pub struct StorageCounters {
+	reads: core::cell::Cell<u32>,
+	writes: core::cell::Cell<u32>,
+}
+
+impl StorageCounters {
+	pub fn note_read(&self) {
+		self.reads.set(self.reads.get() + 1);
+	}
+
+	pub fn note_write(&self) {
+		self.writes.set(self.writes.get() + 1);
+	}
+
+	pub fn reads_writes(&self) -> (u32, u32) {
+		(
+			self.reads.get(),
+			self.writes.get(),
+		)
+	}
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;

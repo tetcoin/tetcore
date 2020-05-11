@@ -55,7 +55,7 @@ use sp_runtime_interface::{runtime_interface, Pointer};
 use codec::{Encode, Decode};
 
 #[cfg(feature = "std")]
-use sp_externalities::{ExternalitiesExt, Externalities};
+use sp_externalities::{ExternalitiesExt, Externalities, StorageCountersExt};
 
 #[cfg(feature = "std")]
 mod batch_verifier;
@@ -79,6 +79,7 @@ pub enum EcdsaVerifyError {
 pub trait Storage {
 	/// Returns the data for `key` in the storage or `None` if the key can not be found.
 	fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
+		self.note_storage_read();
 		self.storage(key).map(|s| s.to_vec())
 	}
 
@@ -88,6 +89,7 @@ pub trait Storage {
 	/// If `value_out` length is smaller than the returned length, only `value_out` length bytes
 	/// are copied into `value_out`.
 	fn read(&self, key: &[u8], value_out: &mut [u8], value_offset: u32) -> Option<u32> {
+		self.note_storage_read();
 		self.storage(key).map(|value| {
 			let value_offset = value_offset as usize;
 			let data = &value[value_offset.min(value.len())..];
@@ -99,21 +101,25 @@ pub trait Storage {
 
 	/// Set `key` to `value` in the storage.
 	fn set(&mut self, key: &[u8], value: &[u8]) {
+		self.note_storage_write();
 		self.set_storage(key.to_vec(), value.to_vec());
 	}
 
 	/// Clear the storage of the given `key` and its value.
 	fn clear(&mut self, key: &[u8]) {
+		self.note_storage_write();
 		self.clear_storage(key)
 	}
 
 	/// Check whether the given `key` exists in storage.
 	fn exists(&self, key: &[u8]) -> bool {
+		self.note_storage_read();
 		self.exists_storage(key)
 	}
 
 	/// Clear the storage of each key-value pair where the key starts with the given `prefix`.
 	fn clear_prefix(&mut self, prefix: &[u8]) {
+		self.note_storage_write();
 		Externalities::clear_prefix(*self, prefix)
 	}
 
@@ -126,6 +132,7 @@ pub trait Storage {
 	/// If the storage item does not support [`EncodeAppend`](codec::EncodeAppend) or
 	/// something else fails at appending, the storage item will be set to `[value]`.
 	fn append(&mut self, key: &[u8], value: Vec<u8>) {
+		self.note_storage_write();
 		self.storage_append(key.to_vec(), value);
 	}
 
@@ -135,6 +142,7 @@ pub trait Storage {
 	///
 	/// Returns the SCALE encoded hash.
 	fn root(&mut self) -> Vec<u8> {
+		self.note_storage_read();
 		self.storage_root()
 	}
 
@@ -146,12 +154,14 @@ pub trait Storage {
 	/// Returns an `Some(_)` which holds the SCALE encoded hash or `None` when
 	/// changes trie is disabled.
 	fn changes_root(&mut self, parent_hash: &[u8]) -> Option<Vec<u8>> {
+		self.note_storage_read();
 		self.storage_changes_root(parent_hash)
 			.expect("Invalid `parent_hash` given to `changes_root`.")
 	}
 
 	/// Get the next key in storage after the given one in lexicographic order.
 	fn next_key(&mut self, key: &[u8]) -> Option<Vec<u8>> {
+		self.note_storage_read();
 		self.next_storage_key(&key)
 	}
 }
@@ -170,6 +180,7 @@ pub trait DefaultChildStorage {
 		storage_key: &[u8],
 		key: &[u8],
 	) -> Option<Vec<u8>> {
+		self.note_storage_read();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.child_storage(&child_info, key).map(|s| s.to_vec())
 	}
@@ -188,6 +199,7 @@ pub trait DefaultChildStorage {
 		value_out: &mut [u8],
 		value_offset: u32,
 	) -> Option<u32> {
+		self.note_storage_read();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.child_storage(&child_info, key)
 			.map(|value| {
@@ -208,6 +220,7 @@ pub trait DefaultChildStorage {
 		key: &[u8],
 		value: &[u8],
 	) {
+		self.note_storage_write();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.set_child_storage(&child_info, key.to_vec(), value.to_vec());
 	}
@@ -220,6 +233,7 @@ pub trait DefaultChildStorage {
 		storage_key: &[u8],
 		key: &[u8],
 	) {
+		self.note_storage_write();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.clear_child_storage(&child_info, key);
 	}
@@ -232,6 +246,7 @@ pub trait DefaultChildStorage {
 		&mut self,
 		storage_key: &[u8],
 	) {
+		self.note_storage_write();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.kill_child_storage(&child_info);
 	}
@@ -244,6 +259,7 @@ pub trait DefaultChildStorage {
 		storage_key: &[u8],
 		key: &[u8],
 	) -> bool {
+		self.note_storage_read();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.exists_child_storage(&child_info, key)
 	}
@@ -256,6 +272,7 @@ pub trait DefaultChildStorage {
 		storage_key: &[u8],
 		prefix: &[u8],
 	) {
+		self.note_storage_write();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.clear_child_prefix(&child_info, prefix);
 	}
@@ -270,6 +287,7 @@ pub trait DefaultChildStorage {
 		&mut self,
 		storage_key: &[u8],
 	) -> Vec<u8> {
+		self.note_storage_read();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.child_storage_root(&child_info)
 	}
@@ -282,6 +300,7 @@ pub trait DefaultChildStorage {
 		storage_key: &[u8],
 		key: &[u8],
 	) -> Option<Vec<u8>> {
+		self.note_storage_read();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.next_child_storage_key(&child_info, key)
 	}

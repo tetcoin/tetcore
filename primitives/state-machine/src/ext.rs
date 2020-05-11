@@ -25,7 +25,7 @@ use crate::{
 use hash_db::Hasher;
 use sp_core::{
 	offchain::storage::OffchainOverlayedChanges,
-	storage::{well_known_keys::is_child_storage_key, ChildInfo},
+	storage::{well_known_keys::is_child_storage_key, ChildInfo, StorageCounters},
 	traits::Externalities, hexdisplay::HexDisplay,
 };
 use sp_trie::{trie_types::Layout, empty_child_trie_root};
@@ -89,6 +89,8 @@ pub struct Ext<'a, H, N, B>
 	_phantom: std::marker::PhantomData<N>,
 	/// Extensions registered with this instance.
 	extensions: Option<&'a mut Extensions>,
+	/// Storage read/write operation counters.
+	storage_counters: StorageCounters,
 }
 
 impl<'a, H, N, B> Ext<'a, H, N, B>
@@ -117,6 +119,7 @@ where
 			id: rand::random(),
 			_phantom: Default::default(),
 			extensions,
+			storage_counters: Default::default(),
 		}
 	}
 
@@ -162,6 +165,9 @@ where
 	B: 'a + Backend<H>,
 	N: crate::changes_trie::BlockNumber,
 {
+	fn storage_counters(&self) -> &StorageCounters {
+		&self.storage_counters
+	}
 
 	fn set_offchain_storage(&mut self, key: &[u8], value: Option<&[u8]>) {
 		use ::sp_core::offchain::STORAGE_PREFIX;

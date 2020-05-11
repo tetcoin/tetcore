@@ -24,7 +24,7 @@
 
 use std::any::{Any, TypeId};
 
-use sp_storage::ChildInfo;
+use sp_storage::{ChildInfo, StorageCounters};
 
 pub use scope_limited::{set_and_run_with_externalities, with_externalities};
 pub use extensions::{Extension, Extensions, ExtensionStore};
@@ -209,6 +209,11 @@ pub trait Externalities: ExtensionStore {
 	///
 	/// Commits all changes to the database and clears all caches.
 	fn commit(&mut self);
+
+	/// Retrieve a mutable reference to storage operation counters.
+	///
+	/// This meant to rather be used via `StorageCountersExt`, not directly.
+	fn storage_counters(&self) -> &StorageCounters;
 }
 
 /// Extension for the [`Externalities`] trait.
@@ -239,5 +244,28 @@ impl ExternalitiesExt for &mut dyn Externalities {
 
 	fn deregister_extension<T: Extension>(&mut self) -> Result<(), Error> {
 		self.deregister_extension_by_type_id(TypeId::of::<T>())
+	}
+}
+// TODO [ToDr] Docs
+
+pub trait StorageCountersExt {
+	fn note_storage_read(&self);
+
+	fn note_storage_write(&self);
+
+	fn storage_reads_writes(&self) -> (u32, u32);
+}
+
+impl StorageCountersExt for &mut dyn Externalities {
+	fn note_storage_read(&self) {
+		self.storage_counters().note_read()
+	}
+
+	fn note_storage_write(&self) {
+		self.storage_counters().note_write()
+	}
+
+	fn storage_reads_writes(&self) -> (u32, u32) {
+		self.storage_counters().reads_writes()
 	}
 }

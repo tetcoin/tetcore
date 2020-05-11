@@ -26,7 +26,7 @@ use sp_trie::trie_types::Layout;
 use sp_core::{
 	storage::{
 		well_known_keys::is_child_storage_key, Storage,
-		ChildInfo, StorageChild,
+		ChildInfo, StorageChild, StorageCounters,
 	},
 	traits::Externalities, Blake2Hasher,
 };
@@ -35,16 +35,20 @@ use codec::Encode;
 use sp_externalities::Extensions;
 
 /// Simple Map-based Externalities impl.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct BasicExternalities {
 	inner: Storage,
 	extensions: Extensions,
+	storage_counters: StorageCounters,
 }
 
 impl BasicExternalities {
 	/// Create a new instance of `BasicExternalities`
 	pub fn new(inner: Storage) -> Self {
-		BasicExternalities { inner, extensions: Default::default() }
+		Self {
+			inner,
+			..Default::default()
+		}
 	}
 
 	/// New basic externalities with empty storage.
@@ -58,8 +62,8 @@ impl BasicExternalities {
 		extensions.register(sp_core::traits::TaskExecutorExt(sp_core::tasks::executor()));
 
 		Self {
-			inner: Storage::default(),
 			extensions,
+			..Default::default()
 		}
 	}
 
@@ -85,7 +89,7 @@ impl BasicExternalities {
 				top: std::mem::take(&mut storage.top),
 				children_default: std::mem::take(&mut storage.children_default),
 			},
-			extensions: Default::default(),
+			..Default::default()
 		};
 
 		let r = ext.execute_with(f);
@@ -123,23 +127,23 @@ impl FromIterator<(StorageKey, StorageValue)> for BasicExternalities {
 	}
 }
 
-impl Default for BasicExternalities {
-	fn default() -> Self { Self::new(Default::default()) }
-}
-
 impl From<BTreeMap<StorageKey, StorageValue>> for BasicExternalities {
 	fn from(hashmap: BTreeMap<StorageKey, StorageValue>) -> Self {
-		BasicExternalities {
+		Self {
 			inner: Storage {
 				top: hashmap,
 				children_default: Default::default(),
 			},
-			extensions: Default::default(),
+			..Default::default()
 		}
 	}
 }
 
 impl Externalities for BasicExternalities {
+	fn storage_counters(&self) -> &StorageCounters {
+		&self.storage_counters
+	}
+
 	fn set_offchain_storage(&mut self, _key: &[u8], _value: Option<&[u8]>) {}
 
 	fn storage(&self, key: &[u8]) -> Option<StorageValue> {
