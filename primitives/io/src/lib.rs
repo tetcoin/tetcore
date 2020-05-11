@@ -304,6 +304,16 @@ pub trait DefaultChildStorage {
 		let child_info = ChildInfo::new_default(storage_key);
 		self.next_child_storage_key(&child_info, key)
 	}
+
+	/// Get the number of storage reads and writes made so far during the execution.
+	///
+	/// Note that this metric should not be confused with underyling DB read & write operations,
+	/// which might be affected by underlying data structures or caches.
+	/// This is simply meant to count the number of times storage-related host functions were
+	/// called.
+	fn storage_reads_writes(&self) -> (u32, u32) {
+		self.storage_reads_writes()
+	}
 }
 
 /// Interface that provides trie related functionality.

@@ -356,6 +356,79 @@ impl_traits_for_arrays! {
 	75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96,
 }
 
+/// Implement the traits for two-element numeric tuples that can be passed as a single number.
+macro_rules! impl_traits_for_tuples {
+	(
+		$(
+			($a:ty : $shift:expr, $b:ty) => $fty:ty
+		),*
+		$(,)?
+	) => {
+		$(
+			/// The type is passed as `$ft`.
+			///
+			/// The `$fty` is the pointer to the array.
+			impl RIType for ($a, $b) {
+				type FFIType = $fty;
+			}
+
+			#[cfg(not(feature = "std"))]
+			impl IntoFFIValue for ($a, $b)  {
+				type Owned = ();
+
+				fn into_ffi_value(&self) -> WrappedFFIValue<$fty> {
+					let mut res = self.1 as $fty;
+					res <<= $shift;
+					res += self.0 as $fty;
+					res.into()
+				}
+			}
+
+			#[cfg(feature = "std")]
+			impl IntoFFIValue for ($a, $b)  {
+
+				fn into_ffi_value(self, _: &mut dyn FunctionContext) -> Result<$fty> {
+					let mut res = self.1 as $fty;
+					res <<= $shift;
+					res += self.0 as $fty;
+					Ok(res)
+				}
+			}
+
+			#[cfg(feature = "std")]
+			impl FromFFIValue for ($a, $b) {
+				type SelfInstance = ($a, $b);
+
+				fn from_ffi_value(_: &mut dyn FunctionContext, mut arg: $fty) -> Result<($a, $b)> {
+					let a = arg as $a;
+					arg >>= $shift;
+					let b = arg as $b;
+					Ok((a, b))
+				}
+			}
+
+			#[cfg(not(feature = "std"))]
+			impl FromFFIValue for ($a, $b) {
+				fn from_ffi_value(mut arg: $fty) -> ($a, $b) {
+					let a = arg as $a;
+					arg >>= $shift;
+					let b = arg as $b;
+					(a, b)
+				}
+			}
+		)*
+	}
+}
+
+impl_traits_for_tuples! {
+	(u32:32, u32) => u64,
+	(u32:32, u16) => u64,
+	(u32:32, u8) => u64,
+	(u16:16, u16) => u32,
+	(u16:16, u8) => u32,
+	(u8:8, u8) => u16,
+}
+
 impl<T: codec::Codec, E: codec::Codec> PassBy for sp_std::result::Result<T, E> {
 	type PassBy = Codec<Self>;
 }
@@ -531,4 +604,30 @@ impl PassBy for sp_wasm_interface::ValueType {
 
 impl PassBy for sp_wasm_interface::Value {
 	type PassBy = Codec<sp_wasm_interface::Value>;
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn should_pass_tuples() {
+		let dummy_context = || {
+			let x = std::mem::MaybeUninit::uninit();
+			unsafe { x.assume_init() }
+		};
+
+		let x = (0xffffff_u32, 0xdddddd_u32);
+		assert_eq!(x.into_ffi_value(dummy_context()), Ok(0xdddddd00ffffff_u64));
+
+		let x = (0xffff_u16, 0xdddd_u16);
+		assert_eq!(x.into_ffi_value(dummy_context()), Ok(0xddddffff_u32));
+
+		let x = (0xffff_u16, 0xdd_u8);
+		assert_eq!(x.into_ffi_value(dummy_context()), Ok(0xddffff_u32));
+
+		let x = (0xff_u8, 0xdd_u8);
+		assert_eq!(x.into_ffi_value(dummy_context()), Ok(0xddff_u16));
+
+	}
 }
