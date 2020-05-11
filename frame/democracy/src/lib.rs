@@ -664,6 +664,15 @@ decl_module! {
 			Self::deposit_event(RawEvent::Proposed(index, value));
 		}
 
+		#[weight = 0]
+		fn propose_light(origin,
+			proposal_hash: T::Hash,
+			#[compact] value: BalanceOf<T>,
+			#[compact] proposals_upper_bound: u32,
+		) {
+			<PublicProps<T>>::append((PropIndex::max_value(), proposal_hash, T::AccountId::default()));
+		}
+
 		/// Signals agreement with a particular proposal.
 		///
 		/// The dispatch origin of this call must be _Signed_ and the sender

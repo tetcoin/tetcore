@@ -129,6 +129,36 @@ benchmarks! {
 		assert_eq!(Democracy::<T>::public_props().len(), (p + 1) as usize, "Proposals not created.");
 	}
 
+	propose_light {
+		let p in 1 .. MAX_PROPOSALS;
+
+		// Add p proposals
+		for i in 0 .. p {
+			add_proposal::<T>(i)?;
+		}
+
+		assert_eq!(Democracy::<T>::public_props().len(), p as usize, "Proposals not created.");
+
+		let caller = funded_account::<T>("caller", 0);
+		let proposal_hash: T::Hash = T::Hashing::hash_of(&p);
+		let value = T::MinimumDeposit::get();
+	}: _(RawOrigin::Signed(caller), proposal_hash, value.into(), u32::max_value())
+	verify {
+		assert_eq!(Democracy::<T>::public_props().len(), (p + 1) as usize, "Proposals not created.");
+	}
+
+	propose_light_different_init {
+		let p in 1 .. MAX_PROPOSALS;
+		for i in 0..p {
+			<PublicProps<T>>::append((i, T::Hashing::hash_of(&i), account::<T::AccountId>("caller", i, SEED)));
+		}
+		let v = (p, T::Hashing::hash_of(&p), account::<T::AccountId>("caller", p, SEED));
+	}: propose_light(RawOrigin::Signed(v.2), v.1, 0.into(), 0)
+	verify {
+		assert_eq!(Democracy::<T>::public_props().len(), (p + 1) as usize, "Proposals not created.");
+	}
+
+
 	second {
 		let s in 0 .. MAX_SECONDERS;
 
@@ -1010,6 +1040,8 @@ mod tests {
 	fn test_benchmarks() {
 		new_test_ext().execute_with(|| {
 			assert_ok!(test_benchmark_propose::<Test>());
+			assert_ok!(test_benchmark_propose_light::<Test>());
+			assert_ok!(test_benchmark_propose_light_different_init::<Test>());
 			assert_ok!(test_benchmark_second::<Test>());
 			assert_ok!(test_benchmark_vote_new::<Test>());
 			assert_ok!(test_benchmark_vote_existing::<Test>());
