@@ -216,7 +216,6 @@ decl_module! {
 		/// # </weight>
 		fn on_initialize(now: T::BlockNumber) -> Weight {
 			let limit = T::MaximumWeight::get();
-			let counter = frame_system::storage_weight::count::<T>();
 			let mut queued = Agenda::<T>::take(now).into_iter()
 				.enumerate()
 				.filter_map(|(index, s)| s.map(|inner| (index as u32, inner)))
@@ -288,9 +287,6 @@ decl_module! {
 					let next = now + One::one();
 					Agenda::<T>::append(next, unused);
 				});
-
-			total_weight2 += counter.weight();
-			// println!("Old vs New: {:?} vs {:?}", total_weight, total_weight2);
 
 			total_weight
 		}
@@ -672,20 +668,29 @@ mod tests {
 	}
 
 	macro_rules! check_weight_declaration {
-		($call:expr) => {{
+		($call:expr) => {
+			check_weight_declaration!(stringify!($call) => $call, 0)
+		};
+		($call:expr, $consumed_mod:expr) => {
+			check_weight_declaration!(stringify!($call) => $call, $consumed_mod)
+		};
+		($str:expr => $call:expr, $consumed_mod:expr) => {{
 			let counter = frame_system::storage_weight::count::<Test>();
 			let declared_weight = $call;
-			let consumed = counter.weight();
+			// don't count internal event count reads.
+			let consumed = counter.weight()
+				.saturating_sub(<Test as frame_system::Trait>::DbWeight::get().reads(2))
+				+ $consumed_mod;
 
 			assert!(
 				declared_weight >= consumed,
-				"The call consumed ({:?}) more weight than it declared ({:?})",
-				consumed, declared_weight
+				"{:?} consumed ({:?}) more weight than it declared ({:?})",
+				$str, consumed, declared_weight
 			);
-			if declared_weight > 10 * consumed {
+			if declared_weight > 10 * consumed  && consumed != 0 {
 				println!(
-					"Warning: The call declared ({:?}) over 10x more than it consumed ({:?})",
-					declared_weight, consumed,
+					"Warning: {:?} declared ({:?}) over 10x more than it consumed ({:?})",
+					$str, declared_weight, consumed,
 				);
 			}
 			declared_weight
@@ -696,20 +701,21 @@ mod tests {
 		($call:expr) => {
 			let call = $call;
 			let declared_weight = call.get_dispatch_info().weight;
-			check_weight_declaration!({
+			check_weight_declaration!(stringify!($call) => {
 				assert_ok!(call.dispatch(Origin::ROOT));
 				declared_weight
-			});
+			}, 0);
 		}
 	}
 
 	#[test]
 	fn on_initialize_weight_is_correct() {
 		new_test_ext().execute_with(|| {
-			let base_weight: Weight = <Test as frame_system::Trait>::DbWeight::get().reads_writes(1, 2) + 10_000_000;
+			let db_weight = <Test as frame_system::Trait>::DbWeight::get();
+			let base_weight: Weight = db_weight.reads_writes(1, 2) + 10_000_000;
 			let base_multiplier = 25_000_000;
-			let named_multiplier = <Test as frame_system::Trait>::DbWeight::get().writes(1);
-			let periodic_multiplier = <Test as frame_system::Trait>::DbWeight::get().reads_writes(1, 1);
+			let named_multiplier = db_weight.writes(1);
+			let periodic_multiplier = db_weight.reads_writes(1, 1);
 
 			// Named
 			assert_ok!(Scheduler::do_schedule_named(1u32.encode(), 1, None, 255, Call::Logger(logger::Call::log(3, MaximumSchedulerWeight::get() / 3))));
@@ -721,26 +727,34 @@ mod tests {
 			assert_ok!(Scheduler::do_schedule_named(2u32.encode(), 1, Some((1000, 3)), 126, Call::Logger(logger::Call::log(2600, MaximumSchedulerWeight::get() / 2))));
 
 			// Will include the named periodic only
-			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(1));
+			let extra_agenda_writes = db_weight.writes(3);
 			let call_weight = MaximumSchedulerWeight::get() / 2;
+			let actual_weight = check_weight_declaration!(
+				Scheduler::on_initialize(1),
+				call_weight - extra_agenda_writes
+			);
 			assert_eq!(actual_weight, call_weight + base_weight + base_multiplier + named_multiplier + periodic_multiplier);
 			assert_eq!(logger::log(), vec![2600u32]);
 
 			// Will include anon and anon periodic
-			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(2));
+			let extra_agenda_writes = db_weight.writes(1);
 			let call_weight = MaximumSchedulerWeight::get() / 2 + MaximumSchedulerWeight::get() / 3;
+			let actual_weight = check_weight_declaration!(
+				Scheduler::on_initialize(2),
+				call_weight - extra_agenda_writes
+			);
 			assert_eq!(actual_weight, call_weight + base_weight + base_multiplier * 2 + periodic_multiplier);
 			assert_eq!(logger::log(), vec![2600u32, 69u32, 42u32]);
 
 			// Will include named only
-			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(3));
 			let call_weight = MaximumSchedulerWeight::get() / 3;
+			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(3), call_weight);
 			assert_eq!(actual_weight, call_weight + base_weight + base_multiplier + named_multiplier);
 			assert_eq!(logger::log(), vec![2600u32, 69u32, 42u32, 3u32]);
 
 			// Will contain none
 			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(4));
-			assert_eq!(actual_weight, <Test as frame_system::Trait>::DbWeight::get().reads_writes(1, 1));
+			assert_eq!(actual_weight, db_weight.reads_writes(1, 1));
 		});
 	}
 

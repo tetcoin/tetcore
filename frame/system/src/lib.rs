@@ -1811,6 +1811,8 @@ pub mod storage_weight {
 	}
 
 	impl<T: Trait> StorageWeightCounter<T> {
+		/// We consume the counter here, cause multiple calls affect the DB counter, due to
+		/// reading event_count.
 		pub fn reads_writes(self) -> (u32, u32) {
 			let (initial_reads, initial_writes) = self.initial_state;
 			let (reads, writes) = sp_io::storage::reads_writes();
