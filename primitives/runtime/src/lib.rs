@@ -787,7 +787,6 @@ impl Drop for SignatureBatching {
 	}
 }
 
-
 #[cfg(test)]
 mod tests {
 	use super::*;

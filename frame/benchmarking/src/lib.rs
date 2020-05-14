@@ -922,14 +922,15 @@ macro_rules! impl_benchmark_tests {
 					let components = <SelectedBenchmark as $crate::BenchmarkingSetup<T>>::components(&selected_benchmark);
 
 					for (_, (name, low, high)) in components.iter().enumerate() {
+						// TODO [ToDr] Revert
 						// Test only the low and high value, assuming values in the middle won't break
-						for component_value in vec![low, high] {
+						for component_value in low.to_owned()..=high.to_owned() {
 							// Select the max value for all the other components.
 							let c: Vec<($crate::BenchmarkParameter, u32)> = components.iter()
 								.enumerate()
 								.map(|(_, (n, _, h))|
 									if n == name {
-										(*n, *component_value)
+										(*n, component_value)
 									} else {
 										(*n, *h)
 									}

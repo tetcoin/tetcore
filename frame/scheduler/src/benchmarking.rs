@@ -128,7 +128,7 @@ benchmarks! {
 		let s in 0 .. MAX_SCHEDULED;
 		let when = T::BlockNumber::one();
 		fill_schedule::<T>(when, s)?;
-	}: { Scheduler::<T>::on_initialize(T::BlockNumber::one()); }
+	}: { Scheduler::<T>::on_initialize(T::BlockNumber::one()) }
 	verify {
 		assert_eq!(System::<T>::event_count(), s);
 		// Next block should have all the schedules again

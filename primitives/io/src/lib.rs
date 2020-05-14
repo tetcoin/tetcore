@@ -77,6 +77,16 @@ pub enum EcdsaVerifyError {
 /// Interface for accessing the storage from within the runtime.
 #[runtime_interface]
 pub trait Storage {
+	/// Get the number of storage reads and writes made so far during the execution.
+	///
+	/// Note that this metric should not be confused with underyling DB read & write operations,
+	/// which might be affected by underlying data structures or caches.
+	/// This is simply meant to count the number of times storage-related host functions were
+	/// called.
+	fn reads_writes(&self) -> (u32, u32) {
+		self.storage_reads_writes()
+	}
+
 	/// Returns the data for `key` in the storage or `None` if the key can not be found.
 	fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
 		self.note_storage_read();
@@ -303,16 +313,6 @@ pub trait DefaultChildStorage {
 		self.note_storage_read();
 		let child_info = ChildInfo::new_default(storage_key);
 		self.next_child_storage_key(&child_info, key)
-	}
-
-	/// Get the number of storage reads and writes made so far during the execution.
-	///
-	/// Note that this metric should not be confused with underyling DB read & write operations,
-	/// which might be affected by underlying data structures or caches.
-	/// This is simply meant to count the number of times storage-related host functions were
-	/// called.
-	fn storage_reads_writes(&self) -> (u32, u32) {
-		self.storage_reads_writes()
 	}
 }
 

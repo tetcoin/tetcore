@@ -216,14 +216,18 @@ decl_module! {
 		/// # </weight>
 		fn on_initialize(now: T::BlockNumber) -> Weight {
 			let limit = T::MaximumWeight::get();
+			let counter = frame_system::storage_weight::count::<T>();
 			let mut queued = Agenda::<T>::take(now).into_iter()
 				.enumerate()
 				.filter_map(|(index, s)| s.map(|inner| (index as u32, inner)))
 				.collect::<Vec<_>>();
 			queued.sort_by_key(|(_, s)| s.priority);
-			let base_weight: Weight = T::DbWeight::get().reads_writes(1, 2) // Agenda + Agenda(next)
+			let start_weight: Weight = T::DbWeight::get().reads_writes(1, 1); // Agenda
+			let base_weight: Weight = start_weight
+				.saturating_add(T::DbWeight::get().writes(1)) // Agenda(next)
 				.saturating_add(10_000_000); // Base Weight
-			let mut total_weight: Weight = 0;
+			let mut total_weight2: Weight = 10_000_00;
+			let mut total_weight: Weight = start_weight;
 			queued.into_iter()
 				.enumerate()
 				.scan(base_weight, |cumulative_weight, (order, (index, s))| {
@@ -274,6 +278,7 @@ decl_module! {
 							r.map(|_| ()).map_err(|e| e.error)
 						));
 						total_weight = cumulative_weight;
+						total_weight2 += 25_000_000;
 						None
 					} else {
 						Some(Some(s))
@@ -283,6 +288,9 @@ decl_module! {
 					let next = now + One::one();
 					Agenda::<T>::append(next, unused);
 				});
+
+			total_weight2 += counter.weight();
+			// println!("Old vs New: {:?} vs {:?}", total_weight, total_weight2);
 
 			total_weight
 		}
@@ -474,6 +482,9 @@ mod tests {
 			scheduler<T>,
 		}
 	}
+
+	type SchedulerCall = super::Call<Test>;
+
 	// For testing the pallet, we construct most of a mock runtime. This means
 	// first constructing a configuration type (`Test`) which `impl`s each of the
 	// configuration traits of pallets we want to use.
@@ -660,6 +671,38 @@ mod tests {
 		});
 	}
 
+	macro_rules! check_weight_declaration {
+		($call:expr) => {{
+			let counter = frame_system::storage_weight::count::<Test>();
+			let declared_weight = $call;
+			let consumed = counter.weight();
+
+			assert!(
+				declared_weight >= consumed,
+				"The call consumed ({:?}) more weight than it declared ({:?})",
+				consumed, declared_weight
+			);
+			if declared_weight > 10 * consumed {
+				println!(
+					"Warning: The call declared ({:?}) over 10x more than it consumed ({:?})",
+					declared_weight, consumed,
+				);
+			}
+			declared_weight
+		}}
+	}
+
+	macro_rules! check_consumed_weight {
+		($call:expr) => {
+			let call = $call;
+			let declared_weight = call.get_dispatch_info().weight;
+			check_weight_declaration!({
+				assert_ok!(call.dispatch(Origin::ROOT));
+				declared_weight
+			});
+		}
+	}
+
 	#[test]
 	fn on_initialize_weight_is_correct() {
 		new_test_ext().execute_with(|| {
@@ -678,26 +721,26 @@ mod tests {
 			assert_ok!(Scheduler::do_schedule_named(2u32.encode(), 1, Some((1000, 3)), 126, Call::Logger(logger::Call::log(2600, MaximumSchedulerWeight::get() / 2))));
 
 			// Will include the named periodic only
-			let actual_weight = Scheduler::on_initialize(1);
+			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(1));
 			let call_weight = MaximumSchedulerWeight::get() / 2;
 			assert_eq!(actual_weight, call_weight + base_weight + base_multiplier + named_multiplier + periodic_multiplier);
 			assert_eq!(logger::log(), vec![2600u32]);
 
 			// Will include anon and anon periodic
-			let actual_weight = Scheduler::on_initialize(2);
+			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(2));
 			let call_weight = MaximumSchedulerWeight::get() / 2 + MaximumSchedulerWeight::get() / 3;
 			assert_eq!(actual_weight, call_weight + base_weight + base_multiplier * 2 + periodic_multiplier);
 			assert_eq!(logger::log(), vec![2600u32, 69u32, 42u32]);
 
 			// Will include named only
-			let actual_weight = Scheduler::on_initialize(3);
+			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(3));
 			let call_weight = MaximumSchedulerWeight::get() / 3;
 			assert_eq!(actual_weight, call_weight + base_weight + base_multiplier + named_multiplier);
 			assert_eq!(logger::log(), vec![2600u32, 69u32, 42u32, 3u32]);
 
 			// Will contain none
-			let actual_weight = Scheduler::on_initialize(4);
-			assert_eq!(actual_weight, 0);
+			let actual_weight = check_weight_declaration!(Scheduler::on_initialize(4));
+			assert_eq!(actual_weight, <Test as frame_system::Trait>::DbWeight::get().reads_writes(1, 1));
 		});
 	}
 
@@ -706,14 +749,16 @@ mod tests {
 		new_test_ext().execute_with(|| {
 			let call = Box::new(Call::Logger(logger::Call::log(69, 1000)));
 			let call2 = Box::new(Call::Logger(logger::Call::log(42, 1000)));
-			assert_ok!(Scheduler::schedule_named(Origin::ROOT, 1u32.encode(), 4, None, 127, call));
-			assert_ok!(Scheduler::schedule(Origin::ROOT, 4, None, 127, call2));
+			check_consumed_weight!(
+				SchedulerCall::schedule_named(1_u32.encode(), 4, None, 127, call)
+			);
+			check_consumed_weight!(SchedulerCall::schedule(4, None, 127, call2));
 			run_to_block(3);
 			// Scheduled calls are in the agenda.
 			assert_eq!(Agenda::<Test>::get(4).len(), 2);
 			assert!(logger::log().is_empty());
-			assert_ok!(Scheduler::cancel_named(Origin::ROOT, 1u32.encode()));
-			assert_ok!(Scheduler::cancel(Origin::ROOT, 4, 1));
+			check_consumed_weight!(SchedulerCall::cancel_named(1u32.encode()));
+			check_consumed_weight!(SchedulerCall::cancel(4, 1));
 			// Scheduled calls are made NONE, so should not effect state
 			run_to_block(100);
 			assert!(logger::log().is_empty());

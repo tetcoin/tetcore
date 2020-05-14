@@ -1786,6 +1786,53 @@ impl<T: Trait> Lookup for ChainContext<T> {
 	}
 }
 
+/// TODO separate module, add tests
+pub mod storage_weight {
+	use super::*;
+
+	pub fn count<T: Trait>() -> StorageWeightCounter<T> {
+		Default::default()
+	}
+
+	pub struct StorageWeightCounter<T> {
+		initial_state: (u32, u32),
+		initial_events: u32,
+		_module: PhantomData<T>,
+	}
+
+	impl<T: Trait> Default for StorageWeightCounter<T> {
+		fn default() -> Self {
+			Self {
+				initial_events: Module::<T>::event_count(),
+				initial_state: sp_io::storage::reads_writes(),
+				_module: Default::default(),
+			}
+		}
+	}
+
+	impl<T: Trait> StorageWeightCounter<T> {
+		pub fn reads_writes(self) -> (u32, u32) {
+			let (initial_reads, initial_writes) = self.initial_state;
+			let (reads, writes) = sp_io::storage::reads_writes();
+
+			let events = Module::<T>::event_count() - self.initial_events;
+			let event_cost = (3, 2);
+
+			let diff = (
+				reads - initial_reads - events * event_cost.0,
+				writes - initial_writes - events * event_cost.1,
+			);
+			// println!("Reads writes: {:?} (events: {:?})", diff, events);
+			diff
+		}
+
+		pub fn weight(self) -> Weight {
+			let (reads, writes) = self.reads_writes();
+			T::DbWeight::get().reads_writes(reads as u64, writes as u64)
+		}
+	}
+}
+
 #[cfg(test)]
 pub(crate) mod tests {
 	use super::*;
