@@ -120,12 +120,14 @@ pub trait Storage {
 
 	/// Append the encoded `value` to the storage item at `key`.
 	///
-	/// The storage item needs to implement [`EncodeAppend`](codec::EncodeAppend).
+	/// The storage item is append using `Vec` implementation of
+	/// [`EncodeAppend`](codec::EncodeAppend) (i.e. the prefixed len: `Compact<u32>` is increased
+	/// and the value is pushed at the end)
 	///
 	/// # Warning
 	///
-	/// If the storage item does not support [`EncodeAppend`](codec::EncodeAppend) or
-	/// something else fails at appending, the storage item will be set to `[value]`.
+	/// If the storage item fails at appending, a vec with one value is set (i.e.
+	/// `[Compact(1).encode() ++ value]`).
 	fn append(&mut self, key: &[u8], value: Vec<u8>) {
 		self.storage_append(key.to_vec(), value);
 	}
