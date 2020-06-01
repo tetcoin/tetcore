@@ -15,6 +15,7 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 //! Basic implementation of block-authoring logic.
 //!
 //! # Example
@@ -29,7 +30,7 @@
 //! # let client = Arc::new(substrate_test_runtime_client::new());
 //! # let txpool = Arc::new(BasicPool::new(Default::default(), Arc::new(FullChainApi::new(client.clone())), None).0);
 //! // The first step is to create a `ProposerFactory`.
-//! let mut proposer_factory = ProposerFactory::new(client.clone(), txpool.clone());
+//! let mut proposer_factory = ProposerFactory::new(client.clone(), txpool.clone(), None);
 //!
 //! // From this factory, we create a `Proposer`.
 //! let proposer = proposer_factory.init(
@@ -37,7 +38,7 @@
 //! );
 //!
 //! // The proposer is created asynchronously.
-//! let mut proposer = futures::executor::block_on(proposer).unwrap();
+//! let proposer = futures::executor::block_on(proposer).unwrap();
 //!
 //! // This `Proposer` allows us to create a block proposition.
 //! // The proposer will grab transactions from the transaction pool, and put them into the block.
