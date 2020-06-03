@@ -234,6 +234,57 @@ impl<C: SubstrateCli> Runner<C> {
 		Ok(())
 	}
 
+	/// Build & run the service on internal runtime until stop signal is received.
+	///
+	/// This method is meant to be used for integration tests and it does not spawn the informant.
+	pub fn run_node_until<FNL, FNF, SL, SF>(
+		self,
+		new_light: FNL,
+		new_full: FNF,
+		stop_signal: impl Future<Output=()>,
+	) -> Result<()> where
+		FNL: FnOnce(Configuration) -> sc_service::error::Result<SL>,
+		FNF: FnOnce(Configuration) -> sc_service::error::Result<SF>,
+		SL: AbstractService + Unpin,
+		SF: AbstractService + Unpin,
+	{
+		match self.config.role {
+			Role::Light => self.run_service_until(new_light, stop_signal),
+			_ => self.run_service_until(new_full, stop_signal),
+		}
+	}
+
+	fn run_service_until<T, F>(
+		mut self,
+		service_builder: F,
+		stop_signal: impl Future<Output=()>,
+	) -> Result<()> where
+		F: FnOnce(Configuration) -> std::result::Result<T, sc_service::error::Error>,
+		T: AbstractService + Unpin,
+	{
+		let service = service_builder(self.config)?;
+
+		{
+			let mut service = service.fuse();
+			let stop_signal = stop_signal.fuse();
+
+			self.tokio_runtime
+				.block_on(async move {
+					pin_mut!(stop_signal);
+					select! {
+						_ = stop_signal => Ok(()),
+						res = service => res,
+					}
+				})
+				.map_err(|e| e.to_string())?;
+		}
+		// The `service` **must** have been destroyed here for the shutdown signal to propagate
+		// to all the tasks. Dropping `tokio_runtime` will block the thread until all tasks have
+		// shut down.
+		drop(self.tokio_runtime);
+		Ok(())
+	}
+
 	/// A helper function that runs a command with the configuration of this node
 	pub fn sync_run(self, runner: impl FnOnce(Configuration) -> Result<()>) -> Result<()> {
 		runner(self.config)
