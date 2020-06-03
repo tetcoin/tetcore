@@ -3576,7 +3576,7 @@ dependencies = [
  "jsonrpc-core-client",
  "log",
  "node-primitives",
- "sc-rpc",
+ "sc-rpc-api",
 ]
 
 [[package]]

@@ -32,6 +32,10 @@
 
 pub mod chain_spec;
 
+#[cfg(feature = "service")]
+#[macro_use]
+pub mod service;
+#[cfg(not(feature = "service"))]
 #[macro_use]
 mod service;
 #[cfg(feature = "browser")]
@@ -47,5 +51,3 @@ pub use browser::*;
 pub use cli::*;
 #[cfg(feature = "cli")]
 pub use command::*;
-#[cfg(feature = "service")]
-pub use service;
