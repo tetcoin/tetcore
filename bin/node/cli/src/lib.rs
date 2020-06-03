@@ -47,3 +47,5 @@ pub use browser::*;
 pub use cli::*;
 #[cfg(feature = "cli")]
 pub use command::*;
+#[cfg(feature = "service")]
+pub use service;
