@@ -39,7 +39,7 @@ sc-consensus-slots = { version = "0.8.0-rc2", path = "../slots" }
 sp-runtime = { version = "2.0.0-rc2", path = "../../../primitives/runtime" }
 fork-tree = { version = "2.0.0-rc2", path = "../../../utils/fork-tree" }
 prometheus-endpoint = { package = "substrate-prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.0-rc2"}
-futures = "0.3.4"
+futures = "0.3.5"
 futures-timer = "3.0.1"
 parking_lot = "0.10.0"
 log = "0.4.8"

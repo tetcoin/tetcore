@@ -1209,22 +1209,6 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 		}
 	}
 
-	/// Propagate one extrinsic.
-	pub fn propagate_extrinsic(
-		&mut self,
-		hash: &H,
-	) {
-		debug!(target: "sync", "Propagating extrinsic [{:?}]", hash);
-		// Accept transactions only when fully synced
-		if self.sync.status().state != SyncState::Idle {
-			return;
-		}
-		if let Some(extrinsic) = self.transaction_pool.transaction(hash) {
-			let propagated_to = self.do_propagate_extrinsics(&[(hash.clone(), extrinsic)]);
-			self.transaction_pool.on_broadcasted(propagated_to);
-		}
-	}
-
 	fn do_propagate_extrinsics(
 		&mut self,
 		extrinsics: &[(H, B::Extrinsic)],
@@ -1264,14 +1248,27 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 		propagated_to
 	}
 
-	/// Call when we must propagate ready extrinsics to peers.
-	pub fn propagate_extrinsics(&mut self) {
-		debug!(target: "sync", "Propagating extrinsics");
+	/// Called when we must propagate ready extrinsics to peers.
+	/// `None` indicates that all extrinsics must be sent out
+	pub fn propagate_extrinsics(&mut self, hashes: Option<Vec<H>>) {
 		// Accept transactions only when fully synced
 		if self.sync.status().state != SyncState::Idle {
 			return;
 		}
-		let extrinsics = self.transaction_pool.transactions();
+		debug!(target: "sync", "Propagating extrinsics ({})",
+			match &hashes {
+				Some(h) => h.len().to_string(),
+				None => "all".into(),
+			}
+		);
+		let extrinsics = match hashes {
+			None => self.transaction_pool.transactions(),
+			Some(hashes) => {
+				hashes.into_iter().filter_map(|hash|
+					self.transaction_pool.transaction(&hash).map(|ex| (hash, ex))
+				).collect()
+			},
+		};
 		let propagated_to = self.do_propagate_extrinsics(&extrinsics);
 		self.transaction_pool.on_broadcasted(propagated_to);
 	}
@@ -2033,7 +2030,7 @@ impl<B: BlockT, H: ExHashT> NetworkBehaviour for Protocol<B, H> {
 		}
 
 		while let Poll::Ready(Some(())) = self.propagate_timeout.poll_next_unpin(cx) {
-			self.propagate_extrinsics();
+			self.propagate_extrinsics(None);
 		}
 
 		for (id, mut r) in self.sync.block_requests() {
