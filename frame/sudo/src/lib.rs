@@ -92,9 +92,12 @@ use sp_runtime::{DispatchResult, traits::StaticLookup};
 
 use frame_support::{
 	Parameter, decl_module, decl_event, decl_storage, decl_error, ensure,
+	decl_construct_runtime_args,
 };
 use frame_support::{weights::{Weight, GetDispatchInfo}, traits::UnfilteredDispatchable};
 use frame_system::ensure_signed;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
 
 #[cfg(test)]
 mod mock;

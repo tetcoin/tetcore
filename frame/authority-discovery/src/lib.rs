@@ -24,8 +24,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use sp_std::prelude::*;
-use frame_support::{decl_module, decl_storage};
+use frame_support::{decl_module, decl_storage, decl_construct_runtime_args};
 use sp_authority_discovery::AuthorityId;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config);
 
 /// The module's config trait.
 pub trait Trait: frame_system::Trait + pallet_session::Trait {}
@@ -92,6 +94,7 @@ impl<T: Trait> pallet_session::OneSessionHandler<T::AccountId> for Module<T> {
 
 #[cfg(test)]
 mod tests {
+	use crate as pallet_authority_discovery;
 	use super::*;
 	use sp_authority_discovery::{AuthorityPair};
 	use sp_application_crypto::Pair;
@@ -101,12 +104,23 @@ mod tests {
 		testing::{Header, UintAuthorityId}, traits::{ConvertInto, IdentityLookup, OpaqueKeys},
 		Perbill, KeyTypeId,
 	};
-	use frame_support::{impl_outer_origin, parameter_types, weights::Weight};
+	use frame_support::{construct_runtime, parameter_types, weights::Weight};
 
-	type AuthorityDiscovery = Module<Test>;
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			Session: pallet_session,
+			AuthorityDiscovery: pallet_authority_discovery,
+		}
+	);
+
 	impl Trait for Test {}
 
 	parameter_types! {
@@ -148,7 +162,7 @@ mod tests {
 		type Origin = Origin;
 		type Index = u64;
 		type BlockNumber = BlockNumber;
-		type Call = ();
+		type Call = Call;
 		type Hash = H256;
 		type Hashing = ::sp_runtime::traits::BlakeTwo256;
 		type AccountId = AuthorityId;
@@ -169,10 +183,6 @@ mod tests {
 		type OnNewAccount = ();
 		type OnKilledAccount = ();
 		type SystemWeightInfo = ();
-	}
-
-	impl_outer_origin! {
-		pub enum Origin for Test  where system = frame_system {}
 	}
 
 	pub struct TestSessionHandler;
@@ -218,7 +228,7 @@ mod tests {
 			.build_storage::<Test>()
 			.unwrap();
 
-		GenesisConfig {
+		pallet_authority_discovery::GenesisConfig {
 			keys: vec![],
 		}
 		.assimilate_storage::<Test>(&mut t)

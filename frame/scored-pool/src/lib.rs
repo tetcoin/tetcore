@@ -84,6 +84,8 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
+
 #[cfg(test)]
 mod mock;
 
@@ -96,7 +98,7 @@ use sp_std::{
 	prelude::*,
 };
 use frame_support::{
-	decl_module, decl_storage, decl_event, ensure, decl_error,
+	decl_module, decl_storage, decl_event, ensure, decl_error, decl_construct_runtime_args,
 	traits::{EnsureOrigin, ChangeMembers, InitializeMembers, Currency, Get, ReservableCurrency},
 	weights::Weight,
 };

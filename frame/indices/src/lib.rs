@@ -25,12 +25,17 @@ use codec::Codec;
 use sp_runtime::traits::{
 	StaticLookup, Member, LookupError, Zero, Saturating, AtLeast32Bit
 };
-use frame_support::{Parameter, decl_module, decl_error, decl_event, decl_storage, ensure};
+use frame_support::{
+	Parameter, decl_module, decl_error, decl_event, decl_storage, ensure,
+	decl_construct_runtime_args,
+};
 use frame_support::dispatch::DispatchResult;
 use frame_support::traits::{Currency, ReservableCurrency, Get, BalanceStatus::Reserved};
 use frame_support::weights::{Weight, constants::WEIGHT_PER_MICROS};
 use frame_system::{ensure_signed, ensure_root};
 use self::address::Address as RawAddress;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
 
 mod mock;
 pub mod address;

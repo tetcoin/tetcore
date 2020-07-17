@@ -53,7 +53,8 @@ fn authorities_change_logged() {
 		assert_eq!(System::events(), vec![
 			EventRecord {
 				phase: Phase::Finalization,
-				event: Event::NewAuthorities(to_authorities(vec![(4, 1), (5, 1), (6, 1)])).into(),
+				event: crate::Event::NewAuthorities(to_authorities(vec![(4, 1), (5, 1), (6, 1)]))
+					.into(),
 				topics: vec![],
 			},
 		]);
@@ -86,7 +87,8 @@ fn authorities_change_logged_after_delay() {
 		assert_eq!(System::events(), vec![
 			EventRecord {
 				phase: Phase::Finalization,
-				event: Event::NewAuthorities(to_authorities(vec![(4, 1), (5, 1), (6, 1)])).into(),
+				event: crate::Event::NewAuthorities(to_authorities(vec![(4, 1), (5, 1), (6, 1)]))
+					.into(),
 				topics: vec![],
 			},
 		]);

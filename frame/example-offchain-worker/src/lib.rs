@@ -51,7 +51,7 @@ use frame_system::{
 	}
 };
 use frame_support::{
-	debug,
+	debug, decl_construct_runtime_args,
 	dispatch::DispatchResult, decl_module, decl_storage, decl_event,
 	traits::Get,
 };
@@ -68,6 +68,8 @@ use sp_runtime::{
 use codec::{Encode, Decode};
 use sp_std::vec::Vec;
 use lite_json::json::JsonValue;
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>, ValidateUnsigned);
 
 #[cfg(test)]
 mod tests;

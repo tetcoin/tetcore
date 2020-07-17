@@ -22,12 +22,14 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
+decl_construct_runtime_args!(Module, Call, Storage, Event);
+
 mod mock;
 mod tests;
 
 use sp_std::vec::Vec;
 use frame_support::{
-	decl_module, decl_event, decl_storage, Parameter, debug,
+	decl_module, decl_event, decl_storage, Parameter, debug, decl_construct_runtime_args,
 	traits::Get,
 	weights::Weight,
 };

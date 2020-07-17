@@ -160,6 +160,7 @@ use sp_runtime::{
 use codec::{Encode, Decode, Input};
 use frame_support::{
 	decl_module, decl_storage, decl_event, decl_error, ensure, Parameter,
+	decl_construct_runtime_args,
 	weights::{Weight, DispatchClass},
 	traits::{
 		Currency, ReservableCurrency, LockableCurrency, WithdrawReason, LockIdentifier, Get,
@@ -177,6 +178,8 @@ pub use vote_threshold::{Approved, VoteThreshold};
 pub use vote::{Vote, AccountVote, Voting};
 pub use conviction::Conviction;
 pub use types::{ReferendumInfo, ReferendumStatus, Tally, UnvoteScope, Delegations};
+
+decl_construct_runtime_args!(Module, Call, Storage, Config, Event<T>);
 
 #[cfg(test)]
 mod tests;

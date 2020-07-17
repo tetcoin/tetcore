@@ -1,22 +1,31 @@
 // Creating mock runtime here
 
-use crate::{Module, Trait};
+use crate::Trait;
 use sp_core::H256;
-use frame_support::{impl_outer_origin, parameter_types, weights::Weight};
+use frame_support::{construct_runtime, parameter_types, weights::Weight};
 use sp_runtime::{
-	traits::{BlakeTwo256, IdentityLookup}, testing::Header, Perbill,
+	traits::{BlakeTwo256, IdentityLookup}, testing::Header, Perbill, BuildStorage,
 };
 use frame_system as system;
+use crate as template;
 
-impl_outer_origin! {
-	pub enum Origin for Test {}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
 
 // For testing the pallet, we construct most of a mock runtime. This means
 // first constructing a configuration type (`Test`) which `impl`s each of the
 // configuration traits of pallets we want to use.
-#[derive(Clone, Eq, PartialEq)]
-pub struct Test;
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: system,
+		TemplateModule: template,
+	}
+);
+
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const MaximumBlockWeight: Weight = 1024;
@@ -26,7 +35,7 @@ parameter_types! {
 impl system::Trait for Test {
 	type BaseCallFilter = ();
 	type Origin = Origin;
-	type Call = ();
+	type Call = Call;
 	type Index = u64;
 	type BlockNumber = u64;
 	type Hash = H256;
@@ -34,7 +43,7 @@ impl system::Trait for Test {
 	type AccountId = u64;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
-	type Event = ();
+	type Event = Event;
 	type BlockHashCount = BlockHashCount;
 	type MaximumBlockWeight = MaximumBlockWeight;
 	type DbWeight = ();
@@ -51,12 +60,14 @@ impl system::Trait for Test {
 	type SystemWeightInfo = ();
 }
 impl Trait for Test {
-	type Event = ();
+	type Event = Event;
 }
-pub type TemplateModule = Module<Test>;
 
 // This function basically just builds a genesis storage key/value store according to
 // our desired mockup.
 pub fn new_test_ext() -> sp_io::TestExternalities {
-	system::GenesisConfig::default().build_storage::<Test>().unwrap().into()
+	GenesisConfig {
+		system: None,
+		template: None,
+	}.build_storage().unwrap().into()
 }

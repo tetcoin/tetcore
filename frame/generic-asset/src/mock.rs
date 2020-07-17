@@ -26,16 +26,25 @@ use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup},
 };
 use sp_core::H256;
-use frame_support::{parameter_types, impl_outer_event, impl_outer_origin, weights::Weight};
+use frame_support::{parameter_types, construct_runtime, weights::Weight};
 
 use super::*;
+use crate as generic_asset;
 
-impl_outer_origin! {
-	pub enum Origin for Test where system = frame_system {}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
 
-#[derive(Clone, Eq, PartialEq)]
-pub struct Test;
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: frame_system,
+		GenericAsset: generic_asset,
+	}
+);
+
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const MaximumBlockWeight: Weight = 1024;
@@ -47,13 +56,13 @@ impl frame_system::Trait for Test {
 	type Origin = Origin;
 	type Index = u64;
 	type BlockNumber = u64;
-	type Call = ();
+	type Call = Call;
 	type Hash = H256;
 	type Hashing = BlakeTwo256;
 	type AccountId = u64;
 	type Lookup = IdentityLookup<u64>;
 	type Header = Header;
-	type Event = TestEvent;
+	type Event = Event;
 	type MaximumBlockWeight = MaximumBlockWeight;
 	type DbWeight = ();
 	type BlockExecutionWeight = ();
@@ -73,24 +82,8 @@ impl frame_system::Trait for Test {
 impl Trait for Test {
 	type Balance = u64;
 	type AssetId = u32;
-	type Event = TestEvent;
+	type Event = Event;
 }
-
-mod generic_asset {
-	pub use crate::Event;
-}
-
-use frame_system as system;
-impl_outer_event! {
-	pub enum TestEvent for Test {
-		system<T>,
-		generic_asset<T>,
-	}
-}
-
-pub type GenericAsset = Module<Test>;
-
-pub type System = frame_system::Module<Test>;
 
 pub struct ExtBuilder {
 	asset_id: u32,
@@ -129,7 +122,7 @@ impl ExtBuilder {
 	pub fn build(self) -> sp_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 
-		GenesisConfig::<Test> {
+		generic_asset::GenesisConfig::<Test> {
 			assets: vec![self.asset_id],
 			endowed_accounts: self.accounts,
 			initial_balance: self.initial_balance,

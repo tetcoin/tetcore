@@ -120,5 +120,8 @@ fn testnet_genesis(initial_authorities: Vec<(AuraId, GrandpaId)>,
 		sudo: Some(SudoConfig {
 			key: root_key,
 		}),
+		template: Some(Default::default()),
+		timestamp: Some(Default::default()),
+		transaction_payment: Some(Default::default()),
 	}
 }

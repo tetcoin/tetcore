@@ -69,6 +69,8 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>, ValidateUnsigned);
+
 mod mock;
 mod tests;
 mod benchmarking;
@@ -94,6 +96,7 @@ use sp_staking::{
 };
 use frame_support::{
 	decl_module, decl_event, decl_storage, Parameter, debug, decl_error,
+	decl_construct_runtime_args,
 	traits::Get,
 	weights::Weight,
 };

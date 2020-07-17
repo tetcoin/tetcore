@@ -23,7 +23,9 @@
 
 use sp_std::{result, prelude::*};
 use sp_std::collections::btree_set::BTreeSet;
-use frame_support::{decl_module, decl_storage, decl_error, dispatch, ensure};
+use frame_support::{
+	decl_module, decl_storage, decl_error, dispatch, ensure, decl_construct_runtime_args
+};
 use frame_support::traits::{FindAuthor, VerifySeal, Get};
 use codec::{Encode, Decode};
 use frame_system::ensure_none;
@@ -33,6 +35,8 @@ use sp_inherents::{InherentIdentifier, ProvideInherent, InherentData};
 use sp_authorship::{INHERENT_IDENTIFIER, UnclesInherentData, InherentError};
 
 const MAX_UNCLES: usize = 10;
+
+decl_construct_runtime_args!(Module, Call, Storage, Inherent);
 
 pub trait Trait: frame_system::Trait {
 	/// Find the author of a block.
@@ -396,19 +400,27 @@ impl<T: Trait> ProvideInherent for Module<T> {
 
 #[cfg(test)]
 mod tests {
+	use crate as pallet_authorship;
 	use super::*;
 	use sp_core::H256;
 	use sp_runtime::{
 		traits::{BlakeTwo256, IdentityLookup}, testing::Header, generic::DigestItem, Perbill,
 	};
-	use frame_support::{parameter_types, impl_outer_origin, ConsensusEngineId, weights::Weight};
+	use frame_support::{parameter_types, construct_runtime, ConsensusEngineId, weights::Weight};
 
-	impl_outer_origin!{
-		pub enum Origin for Test  where system = frame_system {}
-	}
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			Authorship: pallet_authorship,
+		}
+	);
 
 	parameter_types! {
 		pub const BlockHashCount: u64 = 250;
@@ -422,7 +434,7 @@ mod tests {
 		type Origin = Origin;
 		type Index = u64;
 		type BlockNumber = u64;
-		type Call = ();
+		type Call = Call;
 		type Hash = H256;
 		type Hashing = BlakeTwo256;
 		type AccountId = u64;
@@ -455,9 +467,6 @@ mod tests {
 		type FilterUncle = SealVerify<VerifyBlock>;
 		type EventHandler = ();
 	}
-
-	type System = frame_system::Module<Test>;
-	type Authorship = Module<Test>;
 
 	const TEST_ID: ConsensusEngineId = [1, 2, 3, 4];
 

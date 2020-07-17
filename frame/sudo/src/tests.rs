@@ -19,7 +19,7 @@
 
 use super::*;
 use mock::{ 
-	Sudo, SudoCall, Origin, Call, Test, new_test_ext, LoggerCall, Logger, System, TestEvent,
+	Sudo, SudoCall, Origin, Call, Test, new_test_ext, LoggerCall, Logger, System, Event,
 }; 
 use frame_support::{assert_ok, assert_noop};
 
@@ -57,7 +57,7 @@ fn sudo_emits_events_correctly() {
 		// Should emit event to indicate success when called with the root `key` and `call` is `Ok`.
 		let call = Box::new(Call::Logger(LoggerCall::privileged_i32_log(42, 1)));
 		assert_ok!(Sudo::sudo(Origin::signed(1), call));
-		let expected_event = TestEvent::sudo(RawEvent::Sudid(Ok(())));
+		let expected_event = Event::sudo(RawEvent::Sudid(Ok(())));
 		assert!(System::events().iter().any(|a| a.event == expected_event)); 
 	})
 }
@@ -96,7 +96,7 @@ fn sudo_unchecked_weight_emits_events_correctly() {
 		// Should emit event to indicate success when called with the root `key` and `call` is `Ok`.
 		let call = Box::new(Call::Logger(LoggerCall::privileged_i32_log(42, 1)));
 		assert_ok!(Sudo::sudo_unchecked_weight(Origin::signed(1), call, 1_000));
-		let expected_event = TestEvent::sudo(RawEvent::Sudid(Ok(())));
+		let expected_event = Event::sudo(RawEvent::Sudid(Ok(())));
 		assert!(System::events().iter().any(|a| a.event == expected_event));
 	})
 }
@@ -123,11 +123,11 @@ fn set_key_emits_events_correctly() {
 
 		// A root `key` can change the root `key`.
 		assert_ok!(Sudo::set_key(Origin::signed(1), 2));
-		let expected_event = TestEvent::sudo(RawEvent::KeyChanged(1));
+		let expected_event = Event::sudo(RawEvent::KeyChanged(1));
 		assert!(System::events().iter().any(|a| a.event == expected_event));
 		// Double check.
 		assert_ok!(Sudo::set_key(Origin::signed(2), 4));
-		let expected_event = TestEvent::sudo(RawEvent::KeyChanged(2));
+		let expected_event = Event::sudo(RawEvent::KeyChanged(2));
 		assert!(System::events().iter().any(|a| a.event == expected_event));
 	});
 }
@@ -163,7 +163,7 @@ fn sudo_as_emits_events_correctly() {
 		// A non-privileged function will work when passed to `sudo_as` with the root `key`.
 		let call = Box::new(Call::Logger(LoggerCall::non_privileged_log(42, 1)));
 		assert_ok!(Sudo::sudo_as(Origin::signed(1), 2, call));
-		let expected_event = TestEvent::sudo(RawEvent::SudoAsDone(true));
+		let expected_event = Event::sudo(RawEvent::SudoAsDone(true));
 		assert!(System::events().iter().any(|a| a.event == expected_event));
 	});
 }

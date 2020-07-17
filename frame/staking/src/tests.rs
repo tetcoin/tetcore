@@ -2724,6 +2724,7 @@ mod offchain_phragmen {
 	};
 	use sp_runtime::transaction_validity::TransactionSource;
 	use mock::*;
+	use mock::Event as MetaEvent;
 	use parking_lot::RwLock;
 	use sp_core::offchain::{
 		testing::{PoolState, TestOffchainExt, TestTransactionPoolExt},
@@ -3269,6 +3270,7 @@ mod offchain_phragmen {
 			let call = extrinsic.call;
 			let inner = match call {
 				mock::Call::Staking(inner) => inner,
+				_ => panic!("unexpected call variant"),
 			};
 
 			assert_eq!(
@@ -3312,6 +3314,7 @@ mod offchain_phragmen {
 			let call = extrinsic.call;
 			let inner = match call {
 				mock::Call::Staking(inner) => inner,
+				_ => panic!("unexpected call variant"),
 			};
 
 			assert_eq!(
@@ -3359,6 +3362,7 @@ mod offchain_phragmen {
 			let call = extrinsic.call;
 			let inner = match call {
 				mock::Call::Staking(inner) => inner,
+				_ => panic!("unexpected call variant"),
 			};
 
 			// pass this call to ValidateUnsigned

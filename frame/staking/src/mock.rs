@@ -25,7 +25,7 @@ use sp_runtime::testing::{Header, UintAuthorityId, TestXt};
 use sp_staking::{SessionIndex, offence::{OffenceDetails, OnOffenceHandler}};
 use sp_core::H256;
 use frame_support::{
-	assert_ok, impl_outer_origin, parameter_types, impl_outer_dispatch, impl_outer_event,
+	assert_ok, parameter_types, construct_runtime,
 	StorageValue, StorageMap, StorageDoubleMap, IterableStorageMap,
 	traits::{Currency, Get, FindAuthor, OnFinalize, OnInitialize},
 	weights::{Weight, constants::RocksDbWeight},
@@ -152,33 +152,6 @@ impl Get<u32> for MaxIterations {
 	}
 }
 
-impl_outer_origin! {
-	pub enum Origin for Test  where system = frame_system {}
-}
-
-impl_outer_dispatch! {
-	pub enum Call for Test where origin: Origin {
-		staking::Staking,
-	}
-}
-
-mod staking {
-	// Re-export needed for `impl_outer_event!`.
-	pub use super::super::*;
-}
-use frame_system as system;
-use pallet_balances as balances;
-use pallet_session as session;
-
-impl_outer_event! {
-	pub enum MetaEvent for Test {
-		system<T>,
-		balances<T>,
-		session,
-		staking<T>,
-	}
-}
-
 /// Author of block is always 11
 pub struct Author11;
 impl FindAuthor<AccountId> for Author11 {
@@ -189,9 +162,27 @@ impl FindAuthor<AccountId> for Author11 {
 	}
 }
 
-// Workaround for https://github.com/rust-lang/rust/issues/26925 . Remove when sorted.
-#[derive(Clone, Eq, PartialEq, Debug)]
-pub struct Test;
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
+
+use crate as staking;
+use pallet_balances as balances;
+use pallet_session as session;
+use frame_system as system;
+
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: system,
+		Balances: balances,
+		Session: session,
+		Timestamp: pallet_timestamp,
+		Staking: staking,
+	}
+);
 
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
@@ -210,7 +201,7 @@ impl frame_system::Trait for Test {
 	type AccountId = AccountId;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
-	type Event = MetaEvent;
+	type Event = Event;
 	type BlockHashCount = BlockHashCount;
 	type MaximumBlockWeight = MaximumBlockWeight;
 	type DbWeight = RocksDbWeight;
@@ -228,7 +219,7 @@ impl frame_system::Trait for Test {
 }
 impl pallet_balances::Trait for Test {
 	type Balance = Balance;
-	type Event = MetaEvent;
+	type Event = Event;
 	type DustRemoval = ();
 	type ExistentialDeposit = ExistentialDeposit;
 	type AccountStore = System;
@@ -249,7 +240,7 @@ impl pallet_session::Trait for Test {
 	type Keys = SessionKeys;
 	type ShouldEndSession = pallet_session::PeriodicSessions<Period, Offset>;
 	type SessionHandler = (OtherSessionHandler,);
-	type Event = MetaEvent;
+	type Event = Event;
 	type ValidatorId = AccountId;
 	type ValidatorIdOf = crate::StashOf<Test>;
 	type DisabledValidatorsThreshold = DisabledValidatorsThreshold;
@@ -314,7 +305,7 @@ impl Trait for Test {
 	type UnixTime = Timestamp;
 	type CurrencyToVote = CurrencyToVoteHandler;
 	type RewardRemainder = RewardRemainderMock;
-	type Event = MetaEvent;
+	type Event = Event;
 	type Slash = ();
 	type Reward = ();
 	type SessionsPerEra = SessionsPerEra;
@@ -508,7 +499,7 @@ impl ExtBuilder {
 				(101, 100, balance_factor * 500, StakerStatus::<AccountId>::Nominator(nominated))
 			];
 		}
-		let _ = GenesisConfig::<Test>{
+		let _ = staking::GenesisConfig::<Test>{
 			stakers: stakers,
 			validator_count: self.validator_count,
 			minimum_validator_count: self.minimum_validator_count,
@@ -548,12 +539,6 @@ impl ExtBuilder {
 		ext.execute_with(post_conditions);
 	}
 }
-
-pub type System = frame_system::Module<Test>;
-pub type Balances = pallet_balances::Module<Test>;
-pub type Session = pallet_session::Module<Test>;
-pub type Timestamp = pallet_timestamp::Module<Test>;
-pub type Staking = Module<Test>;
 
 pub(crate) fn current_era() -> EraIndex {
 	Staking::current_era().unwrap()
@@ -1020,9 +1005,9 @@ macro_rules! assert_session_era {
 	};
 }
 
-pub(crate) fn staking_events() -> Vec<Event<Test>> {
+pub(crate) fn staking_events() -> Vec<staking::Event<Test>> {
 	System::events().into_iter().map(|r| r.event).filter_map(|e| {
-		if let MetaEvent::staking(inner) = e {
+		if let Event::staking(inner) = e {
 			Some(inner)
 		} else {
 			None

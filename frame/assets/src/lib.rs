@@ -133,10 +133,15 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use frame_support::{Parameter, decl_module, decl_event, decl_storage, decl_error, ensure};
+use frame_support::{
+	Parameter, decl_module, decl_event, decl_storage, decl_error, ensure,
+	decl_construct_runtime_args
+};
 use sp_runtime::traits::{Member, AtLeast32Bit, AtLeast32BitUnsigned, Zero, StaticLookup};
 use frame_system::ensure_signed;
 use sp_runtime::traits::One;
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>);
 
 /// The module configuration trait.
 pub trait Trait: frame_system::Trait {
@@ -280,18 +285,27 @@ impl<T: Trait> Module<T> {
 
 #[cfg(test)]
 mod tests {
+	use crate as pallet_assets;
 	use super::*;
 
-	use frame_support::{impl_outer_origin, assert_ok, assert_noop, parameter_types, weights::Weight};
+	use frame_support::{construct_runtime, assert_ok, assert_noop, parameter_types, weights::Weight};
 	use sp_core::H256;
 	use sp_runtime::{Perbill, traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 
-	impl_outer_origin! {
-		pub enum Origin for Test  where system = frame_system {}
-	}
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			Asset: pallet_assets,
+		}
+	);
+
 	parameter_types! {
 		pub const BlockHashCount: u64 = 250;
 		pub const MaximumBlockWeight: Weight = 1024;
@@ -302,7 +316,7 @@ mod tests {
 		type BaseCallFilter = ();
 		type Origin = Origin;
 		type Index = u64;
-		type Call = ();
+		type Call = Call;
 		type BlockNumber = u64;
 		type Hash = H256;
 		type Hashing = BlakeTwo256;

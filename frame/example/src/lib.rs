@@ -258,6 +258,7 @@ use sp_std::marker::PhantomData;
 use frame_support::{
 	dispatch::{DispatchResult, IsSubType}, decl_module, decl_storage, decl_event,
 	weights::{DispatchClass, ClassifyDispatch, WeighData, Weight, PaysFee, Pays},
+	decl_construct_runtime_args,
 };
 use sp_std::prelude::*;
 use frame_system::{ensure_signed, ensure_root};
@@ -310,6 +311,11 @@ impl<T: pallet_balances::Trait> PaysFee<(&BalanceOf<T>,)> for WeightForSetDummy<
 		Pays::Yes
 	}
 }
+
+// Declare pallet args to be used in construct_runtime, those parts are defined in
+// `construct_runtime!`.
+// User must declare if they have a module, call, storage, config, events, orign, and inherent.
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
 
 /// A type alias for the balance type from this pallet's point of view.
 type BalanceOf<T> = <T as pallet_balances::Trait>::Balance;
@@ -708,35 +714,39 @@ mod benchmarking {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate as pallet_example; // Reexport crate to use it in `construct_runtime!`.
 
 	use frame_support::{
-		assert_ok, impl_outer_origin, parameter_types, impl_outer_dispatch,
+		assert_ok, parameter_types, construct_runtime,
 		weights::{DispatchInfo, GetDispatchInfo}, traits::{OnInitialize, OnFinalize}
 	};
 	use sp_core::H256;
 	// The testing primitives are very useful for avoiding having to work with signatures
 	// or public keys. `u64` is used as the `AccountId` and no `Signature`s are required.
 	use sp_runtime::{
-		Perbill,
+		Perbill, BuildStorage,
 		testing::Header,
 		traits::{BlakeTwo256, IdentityLookup},
 	};
 
-	impl_outer_origin! {
-		pub enum Origin for Test  where system = frame_system {}
-	}
-
-	impl_outer_dispatch! {
-		pub enum OuterCall for Test where origin: Origin {
-			self::Example,
-		}
-	}
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
 	// For testing the pallet, we construct most of a mock runtime. This means
 	// first constructing a configuration type (`Test`) which `impl`s each of the
 	// configuration traits of pallets we want to use.
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			Balances: pallet_balances,
+			Example: pallet_example,
+		}
+	);
+
 	parameter_types! {
 		pub const BlockHashCount: u64 = 250;
 		pub const MaximumBlockWeight: Weight = 1024;
@@ -749,7 +759,7 @@ mod tests {
 		type Index = u64;
 		type BlockNumber = u64;
 		type Hash = H256;
-		type Call = OuterCall;
+		type Call = Call;
 		type Hashing = BlakeTwo256;
 		type AccountId = u64;
 		type Lookup = IdentityLookup<Self::AccountId>;
@@ -784,22 +794,20 @@ mod tests {
 	impl Trait for Test {
 		type Event = ();
 	}
-	type System = frame_system::Module<Test>;
-	type Example = Module<Test>;
 
 	// This function basically just builds a genesis storage key/value store according to
 	// our desired mockup.
 	pub fn new_test_ext() -> sp_io::TestExternalities {
-		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
-		// We use default for brevity, but you can configure as desired if needed.
-		pallet_balances::GenesisConfig::<Test>::default().assimilate_storage(&mut t).unwrap();
-		GenesisConfig::<Test>{
-			dummy: 42,
-			// we configure the map with (key, value) pairs.
-			bar: vec![(1, 2), (2, 3)],
-			foo: 24,
-		}.assimilate_storage(&mut t).unwrap();
-		t.into()
+		GenesisConfig {
+			frame_system: None,
+			pallet_balances: None,
+			pallet_example: Some(pallet_example::GenesisConfig {
+				dummy: 42,
+				// we configure the map with (key, value) pairs.
+				bar: vec![(1, 2), (2, 3)],
+				foo: 24,
+			})
+		}.build_storage().unwrap().into()
 	}
 
 	#[test]
@@ -835,7 +843,7 @@ mod tests {
 	#[test]
 	fn signed_ext_watch_dummy_works() {
 		new_test_ext().execute_with(|| {
-			let call = <Call<Test>>::set_dummy(10).into();
+			let call = pallet_example::Call::set_dummy(10).into();
 			let info = DispatchInfo::default();
 
 			assert_eq!(
@@ -854,13 +862,13 @@ mod tests {
 	#[test]
 	fn weights_work() {
 		// must have a defined weight.
-		let default_call = <Call<Test>>::accumulate_dummy(10);
+		let default_call = pallet_example::Call::<Test>::accumulate_dummy(10);
 		let info = default_call.get_dispatch_info();
 		// aka. `let info = <Call<Test> as GetDispatchInfo>::get_dispatch_info(&default_call);`
 		assert_eq!(info.weight, 0);
 
 		// must have a custom weight of `100 * arg = 2000`
-		let custom_call = <Call<Test>>::set_dummy(20);
+		let custom_call = pallet_example::Call::<Test>::set_dummy(20);
 		let info = custom_call.get_dispatch_info();
 		assert_eq!(info.weight, 2000);
 	}

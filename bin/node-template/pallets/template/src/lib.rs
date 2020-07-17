@@ -9,8 +9,15 @@
 /// For more guidance on Substrate FRAME, see the example pallet
 /// https://github.com/paritytech/substrate/blob/master/frame/example/src/lib.rs
 
-use frame_support::{decl_module, decl_storage, decl_event, decl_error, dispatch, traits::Get};
+use frame_support::{
+	decl_module, decl_storage, decl_event, decl_error, dispatch, traits::Get,
+	decl_construct_runtime_args,
+};
 use frame_system::ensure_signed;
+
+// Declare the pallet parts to be used in `construct_ runtime`.
+// Must be in scope before its usage in construct_runtime (in mock).
+decl_construct_runtime_args!(Module, Call, Storage, Config, Event<T>);
 
 #[cfg(test)]
 mod mock;
@@ -35,7 +42,7 @@ decl_storage! {
 		// Just a dummy storage item.
 		// Here we are declaring a StorageValue, `Something` as a Option<u32>
 		// `get(fn something)` is the default getter which returns either the stored `u32` or `None` if nothing stored
-		Something get(fn something): Option<u32>;
+		Something get(fn something) build(|_| Some(0)): Option<u32>;
 	}
 }
 

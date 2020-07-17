@@ -59,13 +59,15 @@ use sp_std::prelude::*;
 use codec::{Encode, Decode};
 use sp_core::TypeId;
 use sp_io::hashing::blake2_256;
-use frame_support::{decl_module, decl_event, decl_storage, Parameter};
+use frame_support::{decl_module, decl_event, decl_storage, Parameter, decl_construct_runtime_args};
 use frame_support::{
 	traits::{OriginTrait, UnfilteredDispatchable},
 	weights::{Weight, GetDispatchInfo, DispatchClass}, dispatch::PostDispatchInfo,
 };
 use frame_system::{ensure_signed, ensure_root};
 use sp_runtime::{DispatchError, DispatchResult, traits::Dispatchable};
+
+decl_construct_runtime_args!(Module, Call, Event);
 
 mod tests;
 mod benchmarking;

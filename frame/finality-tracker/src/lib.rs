@@ -22,7 +22,7 @@
 use sp_inherents::{InherentIdentifier, ProvideInherent, InherentData, MakeFatalError};
 use sp_runtime::traits::{One, Zero, SaturatedConversion};
 use sp_std::{prelude::*, result, cmp, vec};
-use frame_support::{decl_module, decl_storage, decl_error, ensure};
+use frame_support::{decl_module, decl_storage, decl_error, ensure, decl_construct_runtime_args};
 use frame_support::traits::Get;
 use frame_support::weights::{DispatchClass};
 use frame_system::{ensure_none, Trait as SystemTrait};
@@ -30,6 +30,8 @@ use sp_finality_tracker::{INHERENT_IDENTIFIER, FinalizedInherentData};
 
 pub const DEFAULT_WINDOW_SIZE: u32 = 101;
 pub const DEFAULT_REPORT_LATENCY: u32 = 1000;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config, Inherent);
 
 pub trait Trait: SystemTrait {
 	/// Something which can be notified when the timestamp is set. Set this to `()`
@@ -205,6 +207,7 @@ impl<T: Trait> ProvideInherent for Module<T> {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate as pallet_finality_tracker;
 
 	use sp_io::TestExternalities;
 	use sp_core::H256;
@@ -214,7 +217,7 @@ mod tests {
 		Perbill,
 	};
 	use frame_support::{
-		assert_ok, impl_outer_origin, parameter_types,
+		assert_ok, parameter_types, construct_runtime,
 		weights::Weight,
 		traits::OnFinalize,
 	};
@@ -227,12 +230,19 @@ mod tests {
 		further_wait: u64,
 	}
 
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	impl_outer_origin! {
-		pub enum Origin for Test  where system = frame_system {}
-	}
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			FinalityTracker: pallet_finality_tracker,
+		}
+	);
 
 	thread_local! {
 		static NOTIFICATIONS: RefCell<Vec<StallEvent>> = Default::default();
@@ -257,7 +267,7 @@ mod tests {
 		type Origin = Origin;
 		type Index = u64;
 		type BlockNumber = u64;
-		type Call = ();
+		type Call = Call;
 		type Hash = H256;
 		type Hashing = BlakeTwo256;
 		type AccountId = u64;
@@ -288,9 +298,6 @@ mod tests {
 		type WindowSize = WindowSize;
 		type ReportLatency = ReportLatency;
 	}
-
-	type System = system::Module<Test>;
-	type FinalityTracker = Module<Test>;
 
 	#[test]
 	fn median_works() {

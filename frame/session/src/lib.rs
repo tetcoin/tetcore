@@ -107,6 +107,7 @@ use sp_runtime::traits::{Convert, Zero, Member, OpaqueKeys, Saturating};
 use sp_staking::SessionIndex;
 use frame_support::{
 	ensure, decl_module, decl_event, decl_storage, decl_error, ConsensusEngineId, Parameter,
+	decl_construct_runtime_args,
 	traits::{
 		Get, FindAuthor, ValidatorRegistration, EstimateNextSessionRotation, EstimateNextNewSession,
 	},
@@ -114,6 +115,8 @@ use frame_support::{
 	weights::Weight,
 };
 use frame_system::ensure_signed;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event);
 
 #[cfg(test)]
 mod mock;

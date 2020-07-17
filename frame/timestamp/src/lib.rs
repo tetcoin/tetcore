@@ -99,7 +99,7 @@ use sp_inherents::{ProvideInherent, InherentData, InherentIdentifier};
 #[cfg(feature = "std")]
 use frame_support::debug;
 use frame_support::{
-	Parameter, decl_storage, decl_module,
+	Parameter, decl_storage, decl_module, decl_construct_runtime_args,
 	traits::{Time, UnixTime, Get},
 	weights::{DispatchClass, Weight},
 };
@@ -124,6 +124,8 @@ impl WeightInfo for () {
 	fn set(_t: u32, ) -> Weight { 1_000_000_000 }
 	fn on_finalize(_t: u32, ) -> Weight { 1_000_000_000 }
 }
+
+decl_construct_runtime_args!(Module, Call, Storage, Config, Inherent);
 
 /// The module configuration trait
 pub trait Trait: frame_system::Trait {
@@ -303,8 +305,9 @@ impl<T: Trait> UnixTime for Module<T> {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate as pallet_timestamp;
 
-	use frame_support::{impl_outer_origin, assert_ok, parameter_types, weights::Weight};
+	use frame_support::{construct_runtime, assert_ok, parameter_types, weights::Weight};
 	use sp_io::TestExternalities;
 	use sp_core::H256;
 	use sp_runtime::{Perbill, traits::{BlakeTwo256, IdentityLookup}, testing::Header};
@@ -314,12 +317,20 @@ mod tests {
 		TestExternalities::new(t)
 	}
 
-	impl_outer_origin! {
-		pub enum Origin for Test  where system = frame_system {}
-	}
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			Timestamp: pallet_timestamp,
+		}
+	);
+
 	parameter_types! {
 		pub const BlockHashCount: u64 = 250;
 		pub const MaximumBlockWeight: Weight = 1024;
@@ -331,7 +342,7 @@ mod tests {
 		type Origin = Origin;
 		type Index = u64;
 		type BlockNumber = u64;
-		type Call = ();
+		type Call = Call;
 		type Hash = H256;
 		type Hashing = BlakeTwo256;
 		type AccountId = u64;
@@ -362,7 +373,6 @@ mod tests {
 		type MinimumPeriod = MinimumPeriod;
 		type WeightInfo = ();
 	}
-	type Timestamp = Module<Test>;
 
 	#[test]
 	fn timestamp_works() {

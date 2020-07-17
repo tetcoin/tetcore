@@ -20,7 +20,7 @@
 use super::*;
 
 use frame_support::{
-	impl_outer_origin, parameter_types, ord_parameter_types, traits::{OnInitialize, OnFinalize}
+	construct_runtime, parameter_types, ord_parameter_types, traits::{OnInitialize, OnFinalize}
 };
 use sp_core::H256;
 use sp_runtime::{
@@ -29,13 +29,23 @@ use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup},
 };
 use frame_system::EnsureSignedBy;
+use crate as pallet_society;
 
-impl_outer_origin! {
-	pub enum Origin for Test {}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
 
-#[derive(Clone, Eq, PartialEq)]
-pub struct Test;
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: frame_system,
+		Balances: pallet_balances,
+		Society: pallet_society,
+	}
+);
+
 parameter_types! {
 	pub const CandidateDeposit: u64 = 25;
 	pub const WrongSideDeduction: u64 = 2;
@@ -65,7 +75,7 @@ impl frame_system::Trait for Test {
 	type Index = u64;
 	type BlockNumber = u64;
 	type Hash = H256;
-	type Call = ();
+	type Call = Call;
 	type Hashing = BlakeTwo256;
 	type AccountId = u128;
 	type Lookup = IdentityLookup<Self::AccountId>;
@@ -113,10 +123,6 @@ impl Trait for Test {
 	type ModuleId = SocietyModuleId;
 }
 
-pub type Society = Module<Test>;
-pub type System = frame_system::Module<Test>;
-pub type Balances = pallet_balances::Module<Test>;
-
 pub struct EnvBuilder {
 	members: Vec<u128>,
 	balance: u64,
@@ -152,7 +158,7 @@ impl EnvBuilder {
 		pallet_balances::GenesisConfig::<Test> {
 			balances: self.balances,
 		}.assimilate_storage(&mut t).unwrap();
-		GenesisConfig::<Test>{
+		pallet_society::GenesisConfig::<Test>{
 			members: self.members,
 			pot: self.pot,
 			max_members: self.max_members,

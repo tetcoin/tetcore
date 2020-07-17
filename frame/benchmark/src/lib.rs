@@ -21,11 +21,13 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use frame_support::{decl_module, decl_storage, decl_event, decl_error};
+use frame_support::{decl_module, decl_storage, decl_event, decl_error, decl_construct_runtime_args};
 use frame_support::traits::Currency;
 use frame_system::{self as system, ensure_signed};
 use codec::{Encode, Decode};
 use sp_std::prelude::Vec;
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>);
 
 mod benchmarking;
 

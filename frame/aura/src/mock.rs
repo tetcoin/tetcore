@@ -19,23 +19,31 @@
 
 #![cfg(test)]
 
-use crate::{Trait, Module, GenesisConfig};
+use crate as pallet_aura;
+use crate::Trait;
 use sp_consensus_aura::ed25519::AuthorityId;
 use sp_runtime::{
 	traits::IdentityLookup, Perbill,
 	testing::{Header, UintAuthorityId},
 };
-use frame_support::{impl_outer_origin, parameter_types, weights::Weight};
+use frame_support::{construct_runtime, parameter_types, weights::Weight};
 use sp_io;
 use sp_core::H256;
 
-impl_outer_origin!{
-	pub enum Origin for Test  where system = frame_system {}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
 
-// Workaround for https://github.com/rust-lang/rust/issues/26925 . Remove when sorted.
-#[derive(Clone, PartialEq, Eq, Debug)]
-pub struct Test;
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: frame_system,
+		Aura: pallet_aura::{Module, Storage, Config<T>, Inherent},
+		Timestamp: pallet_timestamp,
+	}
+);
 
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
@@ -50,7 +58,7 @@ impl frame_system::Trait for Test {
 	type Origin = Origin;
 	type Index = u64;
 	type BlockNumber = u64;
-	type Call = ();
+	type Call = Call;
 	type Hash = H256;
 	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = u64;
@@ -86,10 +94,8 @@ impl Trait for Test {
 
 pub fn new_test_ext(authorities: Vec<u64>) -> sp_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
-	GenesisConfig::<Test>{
+	pallet_aura::GenesisConfig::<Test>{
 		authorities: authorities.into_iter().map(|a| UintAuthorityId(a).to_public_key()).collect(),
 	}.assimilate_storage(&mut t).unwrap();
 	t.into()
 }
-
-pub type Aura = Module<Test>;

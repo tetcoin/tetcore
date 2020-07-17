@@ -31,7 +31,7 @@ use codec::{Encode, Decode};
 use sp_runtime::KeyTypeId;
 use sp_runtime::traits::{Convert, OpaqueKeys};
 use sp_session::{MembershipProof, ValidatorCount};
-use frame_support::{decl_module, decl_storage};
+use frame_support::{decl_module, decl_storage, decl_construct_runtime_args};
 use frame_support::{Parameter, print};
 use sp_trie::{MemoryDB, Trie, TrieMut, Recorder, EMPTY_PREFIX};
 use sp_trie::trie_types::{TrieDBMut, TrieDB};
@@ -40,6 +40,8 @@ use super::{SessionIndex, Module as SessionModule};
 mod shared;
 pub mod offchain;
 pub mod onchain;
+
+decl_construct_runtime_args!(#[unique_id = historical] Module, Storage);
 
 /// Trait necessary for the historical module.
 pub trait Trait: super::Trait {

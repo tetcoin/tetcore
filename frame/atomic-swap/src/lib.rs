@@ -46,6 +46,7 @@ use sp_std::{prelude::*, marker::PhantomData, ops::{Deref, DerefMut}};
 use sp_io::hashing::blake2_256;
 use frame_support::{
 	Parameter, decl_module, decl_storage, decl_event, decl_error, ensure,
+	decl_construct_runtime_args,
 	traits::{Get, Currency, ReservableCurrency, BalanceStatus},
 	weights::Weight,
 	dispatch::DispatchResult,
@@ -53,6 +54,8 @@ use frame_support::{
 use frame_system::{self as system, ensure_signed};
 use codec::{Encode, Decode};
 use sp_runtime::RuntimeDebug;
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>);
 
 /// Pending atomic swap operation.
 #[derive(Clone, Eq, PartialEq, RuntimeDebug, Encode, Decode)]

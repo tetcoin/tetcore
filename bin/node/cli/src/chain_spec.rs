@@ -321,6 +321,9 @@ pub fn testnet_genesis(
 			max_members: 999,
 		}),
 		pallet_vesting: Some(Default::default()),
+		pallet_finality_tracker: Some(Default::default()),
+		pallet_timestamp: Some(Default::default()),
+		pallet_transaction_payment: Some(Default::default()),
 	}
 }
 

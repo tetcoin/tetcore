@@ -21,7 +21,7 @@
 #![cfg(test)]
 
 use super::*;
-use crate::mock::{new_test_ext, ExtBuilder, GenericAsset, Origin, System, Test, TestEvent};
+use crate::mock::{new_test_ext, ExtBuilder, GenericAsset, Origin, System, Test, Event};
 use frame_support::{assert_noop, assert_ok};
 
 #[test]
@@ -1128,7 +1128,7 @@ fn update_permission_should_raise_event() {
 				permissions.clone()
 			));
 
-			let expected_event = TestEvent::generic_asset(
+			let expected_event = Event::generic_asset(
 				RawEvent::PermissionUpdated(asset_id, permissions.clone()),
 			);
 			// Assert
@@ -1168,7 +1168,7 @@ fn mint_should_raise_event() {
 			// Act
 			assert_ok!(GenericAsset::mint(Origin::signed(origin), asset_id, to, amount));
 
-			let expected_event = TestEvent::generic_asset(RawEvent::Minted(asset_id, to, amount));
+			let expected_event = Event::generic_asset(RawEvent::Minted(asset_id, to, amount));
 
 			// Assert
 			assert!(System::events().iter().any(|record| record.event == expected_event));
@@ -1206,7 +1206,7 @@ fn burn_should_raise_event() {
 			// Act
 			assert_ok!(GenericAsset::burn(Origin::signed(origin), asset_id, origin, amount));
 
-			let expected_event = TestEvent::generic_asset(RawEvent::Burned(asset_id, origin, amount));
+			let expected_event = Event::generic_asset(RawEvent::Burned(asset_id, origin, amount));
 
 			// Assert
 			assert!(System::events().iter().any(|record| record.event == expected_event));

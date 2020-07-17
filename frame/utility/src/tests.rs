@@ -22,36 +22,28 @@
 use super::*;
 
 use frame_support::{
-	assert_ok, assert_noop, impl_outer_origin, parameter_types, impl_outer_dispatch,
-	weights::Weight, impl_outer_event, dispatch::DispatchError, traits::Filter, storage,
+	assert_ok, assert_noop, parameter_types, construct_runtime,
+	weights::Weight, dispatch::DispatchError, traits::Filter, storage,
 };
 use sp_core::H256;
 use sp_runtime::{Perbill, traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 use crate as utility;
 
-impl_outer_origin! {
-	pub enum Origin for Test where system = frame_system {}
-}
-impl_outer_event! {
-	pub enum TestEvent for Test {
-		frame_system<T>,
-		pallet_balances<T>,
-		utility,
-	}
-}
-impl_outer_dispatch! {
-	pub enum Call for Test where origin: Origin {
-		frame_system::System,
-		pallet_balances::Balances,
-		utility::Utility,
-	}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
 
-// For testing the pallet, we construct most of a mock runtime. This means
-// first constructing a configuration type (`Test`) which `impl`s each of the
-// configuration traits of pallets we want to use.
-#[derive(Clone, Eq, PartialEq)]
-pub struct Test;
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: frame_system,
+		Balances: pallet_balances,
+		Utility: utility,
+	}
+);
+
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const MaximumBlockWeight: Weight = 1024;
@@ -69,7 +61,7 @@ impl frame_system::Trait for Test {
 	type AccountId = u64;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
-	type Event = TestEvent;
+	type Event = Event;
 	type BlockHashCount = BlockHashCount;
 	type MaximumBlockWeight = MaximumBlockWeight;
 	type DbWeight = ();
@@ -91,7 +83,7 @@ parameter_types! {
 impl pallet_balances::Trait for Test {
 	type Balance = u64;
 	type DustRemoval = ();
-	type Event = TestEvent;
+	type Event = Event;
 	type ExistentialDeposit = ExistentialDeposit;
 	type AccountStore = System;
 	type WeightInfo = ();
@@ -113,13 +105,10 @@ impl Filter<Call> for TestBaseCallFilter {
 	}
 }
 impl Trait for Test {
-	type Event = TestEvent;
+	type Event = Event;
 	type Call = Call;
 	type WeightInfo = ();
 }
-type System = frame_system::Module<Test>;
-type Balances = pallet_balances::Module<Test>;
-type Utility = Module<Test>;
 
 use pallet_balances::Call as BalancesCall;
 use pallet_balances::Error as BalancesError;
@@ -134,11 +123,11 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	ext
 }
 
-fn last_event() -> TestEvent {
+fn last_event() -> Event {
 	frame_system::Module::<Test>::events().pop().map(|e| e.event).expect("Event expected")
 }
 
-fn expect_event<E: Into<TestEvent>>(e: E) {
+fn expect_event<E: Into<Event>>(e: E) {
 	assert_eq!(last_event(), e.into());
 }
 
@@ -216,7 +205,7 @@ fn batch_with_signed_filters() {
 				Call::System(frame_system::Call::suicide())
 			]),
 		);
-		expect_event(Event::BatchInterrupted(0, DispatchError::BadOrigin));
+		expect_event(utility::Event::BatchInterrupted(0, DispatchError::BadOrigin));
 	});
 }
 

@@ -30,7 +30,9 @@ use sp_std::{vec::Vec, marker::PhantomData};
 use codec::{Encode, Decode};
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize};
-use frame_support::{ensure, decl_module, decl_storage, decl_event, decl_error};
+use frame_support::{
+	ensure, decl_module, decl_storage, decl_event, decl_error, decl_construct_runtime_args
+};
 use frame_support::weights::Weight;
 use frame_support::traits::{Currency, WithdrawReason, ExistenceRequirement, Get};
 use frame_system::ensure_signed;
@@ -44,6 +46,8 @@ pub use evm::{ExitReason, ExitSucceed, ExitError, ExitRevert, ExitFatal};
 use evm::Config;
 use evm::executor::StackExecutor;
 use evm::backend::ApplyBackend;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
 
 /// Type alias for currency balance.
 pub type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::Balance;

@@ -40,13 +40,17 @@ use sp_io::hashing::blake2_256;
 use sp_runtime::{DispatchResult, traits::{Dispatchable, Zero}};
 use sp_runtime::traits::Member;
 use frame_support::{
-	decl_module, decl_event, decl_error, decl_storage, Parameter, ensure, traits::{
+	decl_module, decl_event, decl_error, decl_storage, Parameter, ensure,
+	decl_construct_runtime_args,
+	traits::{
 		Get, ReservableCurrency, Currency, InstanceFilter,
 		OriginTrait, IsType,
 	}, weights::{Weight, GetDispatchInfo, constants::{WEIGHT_PER_MICROS, WEIGHT_PER_NANOS}},
 	dispatch::{PostDispatchInfo, IsSubType},
 };
 use frame_system::{self as system, ensure_signed};
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>);
 
 mod tests;
 mod benchmarking;

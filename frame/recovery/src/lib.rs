@@ -159,12 +159,14 @@ use sp_runtime::{
 use codec::{Encode, Decode};
 
 use frame_support::{
-	decl_module, decl_event, decl_storage, decl_error, ensure,
+	decl_module, decl_event, decl_storage, decl_error, ensure, decl_construct_runtime_args,
 	Parameter, RuntimeDebug, weights::GetDispatchInfo,
 	traits::{Currency, ReservableCurrency, Get, BalanceStatus},
 	dispatch::PostDispatchInfo,
 };
 use frame_system::{self as system, ensure_signed, ensure_root};
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>);
 
 #[cfg(test)]
 mod mock;

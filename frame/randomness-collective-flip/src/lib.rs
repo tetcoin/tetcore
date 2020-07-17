@@ -58,12 +58,14 @@
 use sp_std::{prelude::*, convert::TryInto};
 use sp_runtime::traits::Hash;
 use frame_support::{
-	decl_module, decl_storage, traits::Randomness,
+	decl_module, decl_storage, traits::Randomness, decl_construct_runtime_args,
 	weights::Weight
 };
 use safe_mix::TripletMix;
 use codec::Encode;
 use frame_system::Trait;
+
+decl_construct_runtime_args!(Module, Call, Storage);
 
 const RANDOM_MATERIAL_LEN: u32 = 81;
 
@@ -133,6 +135,7 @@ impl<T: Trait> Randomness<T::Hash> for Module<T> {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate as randomness_collective_flip;
 	use sp_core::H256;
 	use sp_runtime::{
 		Perbill,
@@ -140,15 +143,22 @@ mod tests {
 		traits::{BlakeTwo256, Header as _, IdentityLookup},
 	};
 	use frame_support::{
-		impl_outer_origin, parameter_types, weights::Weight, traits::{Randomness, OnInitialize},
+		construct_runtime, parameter_types, weights::Weight, traits::{Randomness, OnInitialize},
 	};
 
-	#[derive(Clone, PartialEq, Eq)]
-	pub struct Test;
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	impl_outer_origin! {
-		pub enum Origin for Test  where system = frame_system {}
-	}
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			CollectiveFlip: randomness_collective_flip,
+		}
+	);
 
 	parameter_types! {
 		pub const BlockHashCount: u64 = 250;
@@ -162,7 +172,7 @@ mod tests {
 		type Origin = Origin;
 		type Index = u64;
 		type BlockNumber = u64;
-		type Call = ();
+		type Call = Call;
 		type Hash = H256;
 		type Hashing = BlakeTwo256;
 		type AccountId = u64;
@@ -184,9 +194,6 @@ mod tests {
 		type OnKilledAccount = ();
 		type SystemWeightInfo = ();
 	}
-
-	type System = frame_system::Module<Test>;
-	type CollectiveFlip = Module<Test>;
 
 	fn new_test_ext() -> sp_io::TestExternalities {
 		let t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();

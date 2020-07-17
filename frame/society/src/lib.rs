@@ -245,6 +245,8 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
+
 #[cfg(test)]
 mod mock;
 
@@ -260,7 +262,10 @@ use sp_runtime::{Percent, ModuleId, RuntimeDebug,
 		TrailingZeroInput, CheckedSub
 	}
 };
-use frame_support::{decl_error, decl_module, decl_storage, decl_event, ensure, dispatch::DispatchResult};
+use frame_support::{
+	decl_error, decl_module, decl_storage, decl_event, ensure, dispatch::DispatchResult,
+	decl_construct_runtime_args,
+};
 use frame_support::weights::Weight;
 use frame_support::traits::{
 	Currency, ReservableCurrency, Randomness, Get, ChangeMembers, BalanceStatus,

@@ -44,10 +44,12 @@ use sp_runtime::{
 	traits::{StaticLookup, Zero}
 };
 use frame_support::{
-	decl_module, decl_event, decl_storage, ensure, decl_error,
+	decl_module, decl_event, decl_storage, ensure, decl_error, decl_construct_runtime_args,
 	traits::{Currency, EnsureOrigin, ReservableCurrency, OnUnbalanced, Get},
 };
 use frame_system::ensure_signed;
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>);
 
 type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::Balance;
 type NegativeImbalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::NegativeImbalance;
@@ -237,9 +239,10 @@ decl_module! {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate as pallet_nicks;
 
 	use frame_support::{
-		assert_ok, assert_noop, impl_outer_origin, parameter_types, weights::Weight,
+		assert_ok, assert_noop, construct_runtime, parameter_types, weights::Weight,
 		ord_parameter_types
 	};
 	use sp_core::H256;
@@ -248,12 +251,21 @@ mod tests {
 		Perbill, testing::Header, traits::{BlakeTwo256, IdentityLookup, BadOrigin},
 	};
 
-	impl_outer_origin! {
-		pub enum Origin for Test  where system = frame_system {}
-	}
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			Balances: pallet_balances,
+			Nicks: pallet_nicks,
+		}
+	);
+
 	parameter_types! {
 		pub const BlockHashCount: u64 = 250;
 		pub const MaximumBlockWeight: Weight = 1024;
@@ -266,7 +278,7 @@ mod tests {
 		type Index = u64;
 		type BlockNumber = u64;
 		type Hash = H256;
-		type Call = ();
+		type Call = Call;
 		type Hashing = BlakeTwo256;
 		type AccountId = u64;
 		type Lookup = IdentityLookup<Self::AccountId>;
@@ -315,9 +327,6 @@ mod tests {
 		type MinLength = MinLength;
 		type MaxLength = MaxLength;
 	}
-	type System = frame_system::Module<Test>;
-	type Balances = pallet_balances::Module<Test>;
-	type Nicks = Module<Test>;
 
 	fn new_test_ext() -> sp_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();

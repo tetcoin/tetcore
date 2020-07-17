@@ -22,7 +22,7 @@
 use super::*;
 use std::cell::RefCell;
 use frame_support::{
-	assert_noop, assert_ok, impl_outer_origin, impl_outer_event, parameter_types, weights::Weight,
+	assert_noop, assert_ok, construct_runtime, parameter_types, weights::Weight,
 	traits::{Contains, OnInitialize}
 };
 use sp_core::H256;
@@ -31,28 +31,23 @@ use sp_runtime::{
 	testing::Header,
 	traits::{BlakeTwo256, IdentityLookup, BadOrigin},
 };
+use crate as treasury;
 
-impl_outer_origin! {
-	pub enum Origin for Test  where system = frame_system {}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
 
-
-mod treasury {
-	// Re-export needed for `impl_outer_event!`.
-	pub use super::super::*;
-}
-
-impl_outer_event! {
-	pub enum Event for Test {
-		system<T>,
-		pallet_balances<T>,
-		treasury<T>,
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: system,
+		Balances: pallet_balances,
+		Treasury: treasury,
 	}
-}
+);
 
-
-#[derive(Clone, Eq, PartialEq)]
-pub struct Test;
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const MaximumBlockWeight: Weight = 1024;
@@ -64,7 +59,7 @@ impl frame_system::Trait for Test {
 	type Origin = Origin;
 	type Index = u64;
 	type BlockNumber = u64;
-	type Call = ();
+	type Call = Call;
 	type Hash = H256;
 	type Hashing = BlakeTwo256;
 	type AccountId = u64;
@@ -151,9 +146,6 @@ impl Trait for Test {
 	type Burn = Burn;
 	type WeightInfo = ();
 }
-type System = frame_system::Module<Test>;
-type Balances = pallet_balances::Module<Test>;
-type Treasury = Module<Test>;
 
 pub fn new_test_ext() -> sp_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
@@ -161,7 +153,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 		// Total issuance will be 200 with treasury account initialized at ED.
 		balances: vec![(0, 100), (1, 98), (2, 1)],
 	}.assimilate_storage(&mut t).unwrap();
-	GenesisConfig::default().assimilate_storage::<Test>(&mut t).unwrap();
+	treasury::GenesisConfig::default().assimilate_storage::<Test>(&mut t).unwrap();
 	t.into()
 }
 

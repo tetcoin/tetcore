@@ -30,7 +30,7 @@ use sp_runtime::{
 	traits::{Zero, One, StaticLookup, Saturating},
 };
 use frame_support::{
-	decl_storage, decl_event, ensure, decl_module, decl_error,
+	decl_storage, decl_event, ensure, decl_module, decl_error, decl_construct_runtime_args,
 	weights::{Weight, DispatchClass},
 	traits::{
 		Currency, ExistenceRequirement, Get, LockableCurrency, LockIdentifier, BalanceStatus,
@@ -39,6 +39,8 @@ use frame_support::{
 };
 use codec::{Encode, Decode};
 use frame_system::{ensure_signed, ensure_root};
+
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
 
 mod mock;
 mod tests;

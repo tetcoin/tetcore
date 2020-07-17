@@ -58,6 +58,7 @@ use codec::{Encode, Decode, Codec};
 use sp_runtime::{RuntimeDebug, traits::{Zero, One, BadOrigin, Saturating}};
 use frame_support::{
 	decl_module, decl_storage, decl_event, decl_error, IterableStorageMap,
+	decl_construct_runtime_args,
 	dispatch::{Dispatchable, DispatchError, DispatchResult, Parameter},
 	traits::{Get, schedule::{self, DispatchTime}, OriginTrait, EnsureOrigin, IsType},
 	weights::{GetDispatchInfo, Weight},
@@ -79,6 +80,8 @@ impl WeightInfo for () {
 	fn cancel_named(_s: u32, ) -> Weight { 1_000_000_000 }
 	fn on_initialize(_s: u32, ) -> Weight { 1_000_000_000 }
 }
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>);
 
 /// Our pallet's configuration trait. All our types and constants go in here. If the
 /// pallet is dependent on specific other pallets, then their configuration traits
@@ -605,7 +608,7 @@ mod tests {
 	use super::*;
 
 	use frame_support::{
-		impl_outer_event, impl_outer_origin, impl_outer_dispatch, parameter_types, assert_ok, ord_parameter_types,
+		parameter_types, assert_ok, ord_parameter_types, construct_runtime,
 		assert_noop, assert_err, Hashable,
 		traits::{OnInitialize, OnFinalize, Filter},
 		weights::constants::RocksDbWeight,
@@ -664,25 +667,20 @@ mod tests {
 		}
 	}
 
-	impl_outer_origin! {
-		pub enum Origin for Test where system = frame_system {}
-	}
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	impl_outer_dispatch! {
-		pub enum Call for Test where origin: Origin {
-			system::System,
-			logger::Logger,
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: system,
+			Logger: logger::{Module, Call, Event},
+			Scheduler: scheduler,
 		}
-	}
-
-	impl_outer_event! {
-		pub enum Event for Test {
-			system<T>,
-			logger,
-			scheduler<T>,
-		}
-	}
-
+	);
 	// Scheduler must dispatch with root and no filter, this tests base filter is indeed not used.
 	pub struct BaseFilter;
 	impl Filter<Call> for BaseFilter {
@@ -691,8 +689,6 @@ mod tests {
 		}
 	}
 
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
 	parameter_types! {
 		pub const BlockHashCount: u64 = 250;
 		pub const MaximumBlockWeight: Weight = 2_000_000_000_000;
@@ -745,9 +741,6 @@ mod tests {
 		type ScheduleOrigin = EnsureOneOf<u64, EnsureRoot<u64>, EnsureSignedBy<One, u64>>;
 		type WeightInfo = ();
 	}
-	type System = system::Module<Test>;
-	type Logger = logger::Module<Test>;
-	type Scheduler = Module<Test>;
 
 	pub fn new_test_ext() -> sp_io::TestExternalities {
 		let t = system::GenesisConfig::default().build_storage::<Test>().unwrap();

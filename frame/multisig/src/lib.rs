@@ -49,13 +49,18 @@
 use sp_std::prelude::*;
 use codec::{Encode, Decode};
 use sp_io::hashing::blake2_256;
-use frame_support::{decl_module, decl_event, decl_error, decl_storage, Parameter, ensure, RuntimeDebug};
+use frame_support::{
+	decl_module, decl_event, decl_error, decl_storage, Parameter, ensure, RuntimeDebug,
+	decl_construct_runtime_args,
+};
 use frame_support::{traits::{Get, ReservableCurrency, Currency},
 	weights::{Weight, GetDispatchInfo, constants::{WEIGHT_PER_NANOS, WEIGHT_PER_MICROS}},
 	dispatch::{DispatchResultWithPostInfo, DispatchErrorWithPostInfo, PostDispatchInfo},
 };
 use frame_system::{self as system, ensure_signed, RawOrigin};
 use sp_runtime::{DispatchError, DispatchResult, traits::{Dispatchable, Zero}};
+
+decl_construct_runtime_args!(Module, Call, Storage, Event<T>);
 
 mod tests;
 mod benchmarking;

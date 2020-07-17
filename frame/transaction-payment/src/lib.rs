@@ -35,7 +35,7 @@
 use sp_std::prelude::*;
 use codec::{Encode, Decode};
 use frame_support::{
-	decl_storage, decl_module,
+	decl_storage, decl_module, decl_construct_runtime_args,
 	traits::{Currency, Get, OnUnbalanced, ExistenceRequirement, WithdrawReason, Imbalance},
 	weights::{
 		Weight, DispatchInfo, PostDispatchInfo, GetDispatchInfo, Pays, WeightToFeePolynomial,
@@ -55,6 +55,8 @@ use sp_runtime::{
 	},
 };
 use pallet_transaction_payment_rpc_runtime_api::RuntimeDispatchInfo;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config);
 
 /// Fee multiplier.
 pub type Multiplier = FixedU128;
@@ -498,7 +500,7 @@ mod tests {
 	use super::*;
 	use codec::Encode;
 	use frame_support::{
-		impl_outer_dispatch, impl_outer_origin, impl_outer_event, parameter_types,
+		construct_runtime, parameter_types,
 		weights::{
 			DispatchClass, DispatchInfo, PostDispatchInfo, GetDispatchInfo, Weight,
 			WeightToFeePolynomial, WeightToFeeCoefficients, WeightToFeeCoefficient,
@@ -514,31 +516,27 @@ mod tests {
 	};
 	use std::cell::RefCell;
 	use smallvec::smallvec;
+	use crate as pallet_transaction_payment;
+	use frame_system as system;
+
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Runtime>;
+	type Block = frame_system::MockBlock<Runtime>;
+
+	construct_runtime!(
+		pub enum Runtime where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: system,
+			Balances: pallet_balances,
+			TransactionPayment: pallet_transaction_payment,
+		}
+	);
 
 	const CALL: &<Runtime as frame_system::Trait>::Call =
 		&Call::Balances(BalancesCall::transfer(2, 69));
 
-	impl_outer_dispatch! {
-		pub enum Call for Runtime where origin: Origin {
-			pallet_balances::Balances,
-			frame_system::System,
-		}
-	}
-
-	impl_outer_event! {
-		pub enum Event for Runtime {
-			system<T>,
-			pallet_balances<T>,
-		}
-	}
-
-	#[derive(Clone, PartialEq, Eq, Debug)]
-	pub struct Runtime;
-
-	use frame_system as system;
-	impl_outer_origin!{
-		pub enum Origin for Runtime {}
-	}
 
 	thread_local! {
 		static EXTRINSIC_BASE_WEIGHT: RefCell<u64> = RefCell::new(0);
@@ -627,10 +625,6 @@ mod tests {
 		type WeightToFee = WeightToFee;
 		type FeeMultiplierUpdate = ();
 	}
-
-	type Balances = pallet_balances::Module<Runtime>;
-	type System = frame_system::Module<Runtime>;
-	type TransactionPayment = Module<Runtime>;
 
 	pub struct ExtBuilder {
 		balance_factor: u64,

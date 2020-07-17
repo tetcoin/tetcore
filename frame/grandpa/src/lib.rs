@@ -41,7 +41,7 @@ use fg_primitives::{
 };
 use frame_support::{
 	decl_error, decl_event, decl_module, decl_storage, storage, traits::KeyOwnerProofSystem,
-	Parameter,
+	Parameter, decl_construct_runtime_args,
 };
 use frame_system::{ensure_signed, DigestOf};
 use sp_runtime::{
@@ -51,6 +51,8 @@ use sp_runtime::{
 };
 use sp_session::{GetSessionNumber, GetValidatorCount};
 use sp_staking::SessionIndex;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config, Event);
 
 mod equivocation;
 #[cfg(all(feature = "std", test))]

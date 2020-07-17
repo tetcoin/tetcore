@@ -19,7 +19,7 @@
 
 use super::*;
 use std::cell::RefCell;
-use frame_support::{impl_outer_origin, parameter_types, weights::Weight};
+use frame_support::{construct_runtime, parameter_types, weights::Weight};
 use sp_core::{crypto::key_types::DUMMY, H256};
 use sp_runtime::{
 	Perbill, impl_opaque_keys,
@@ -27,6 +27,7 @@ use sp_runtime::{
 	testing::{Header, UintAuthorityId},
 };
 use sp_staking::SessionIndex;
+use crate as pallet_session;
 
 impl_opaque_keys! {
 	pub struct MockSessionKeys {
@@ -40,9 +41,19 @@ impl From<UintAuthorityId> for MockSessionKeys {
 	}
 }
 
-impl_outer_origin! {
-	pub enum Origin for Test  where system = frame_system {}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
+
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: frame_system,
+		Session: pallet_session,
+	}
+);
 
 thread_local! {
 	pub static VALIDATORS: RefCell<Vec<u64>> = RefCell::new(vec![1, 2, 3]);
@@ -153,16 +164,13 @@ pub fn reset_before_session_end_called() {
 
 pub fn new_test_ext() -> sp_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
-	GenesisConfig::<Test> {
+	pallet_session::GenesisConfig::<Test> {
 		keys: NEXT_VALIDATORS.with(|l|
 			l.borrow().iter().cloned().map(|i| (i, i, UintAuthorityId(i).into())).collect()
 		),
 	}.assimilate_storage(&mut t).unwrap();
 	sp_io::TestExternalities::new(t)
 }
-
-#[derive(Clone, Eq, PartialEq)]
-pub struct Test;
 
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
@@ -177,7 +185,7 @@ impl frame_system::Trait for Test {
 	type Origin = Origin;
 	type Index = u64;
 	type BlockNumber = u64;
-	type Call = ();
+	type Call = Call;
 	type Hash = H256;
 	type Hashing = BlakeTwo256;
 	type AccountId = u64;
@@ -232,6 +240,3 @@ impl crate::historical::Trait for Test {
 	type FullIdentification = u64;
 	type FullIdentificationOf = sp_runtime::traits::ConvertInto;
 }
-
-pub type System = frame_system::Module<Test>;
-pub type Session = Module<Test>;

@@ -163,7 +163,7 @@ use sp_runtime::traits::{
 use sp_std::prelude::*;
 use sp_std::{cmp, result, fmt::Debug};
 use frame_support::{
-	decl_event, decl_module, decl_storage, ensure, decl_error,
+	decl_event, decl_module, decl_storage, ensure, decl_error, decl_construct_runtime_args,
 	traits::{
 		Currency, ExistenceRequirement, Imbalance, LockIdentifier, LockableCurrency,
 		ReservableCurrency, SignedImbalance, WithdrawReason, WithdrawReasons, TryDrop,
@@ -172,6 +172,8 @@ use frame_support::{
 	Parameter, StorageMap,
 };
 use frame_system::{ensure_signed, ensure_root};
+
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
 
 mod mock;
 mod tests;

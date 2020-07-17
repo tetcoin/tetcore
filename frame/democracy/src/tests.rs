@@ -21,9 +21,8 @@ use super::*;
 use std::cell::RefCell;
 use codec::Encode;
 use frame_support::{
-	impl_outer_origin, impl_outer_dispatch, assert_noop, assert_ok, parameter_types,
-	impl_outer_event, ord_parameter_types, traits::{Contains, OnInitialize, Filter},
-	weights::Weight,
+	assert_noop, assert_ok, parameter_types, ord_parameter_types, weights::Weight,
+	construct_runtime, traits::{Contains, OnInitialize, Filter},
 };
 use sp_core::H256;
 use sp_runtime::{
@@ -32,6 +31,7 @@ use sp_runtime::{
 };
 use pallet_balances::{BalanceLock, Error as BalancesError};
 use frame_system::{EnsureSignedBy, EnsureRoot};
+use crate as pallet_democracy;
 
 mod cancellation;
 mod delegation;
@@ -49,30 +49,21 @@ const NAY: Vote = Vote { aye: false, conviction: Conviction::None };
 const BIG_AYE: Vote = Vote { aye: true, conviction: Conviction::Locked1x };
 const BIG_NAY: Vote = Vote { aye: false, conviction: Conviction::Locked1x };
 
-impl_outer_origin! {
-	pub enum Origin for Test  where system = frame_system {}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
 
-impl_outer_dispatch! {
-	pub enum Call for Test where origin: Origin {
-		frame_system::System,
-		pallet_balances::Balances,
-		democracy::Democracy,
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: frame_system,
+		Balances: pallet_balances,
+		Scheduler: pallet_scheduler,
+		Democracy: pallet_democracy,
 	}
-}
-
-mod democracy {
-	pub use crate::Event;
-}
-
-impl_outer_event! {
-	pub enum Event for Test {
-		system<T>,
-		pallet_balances<T>,
-		pallet_scheduler<T>,
-		democracy<T>,
-	}
-}
+);
 
 // Test that a fitlered call can be dispatched.
 pub struct BaseFilter;
@@ -82,9 +73,6 @@ impl Filter<Call> for BaseFilter {
 	}
 }
 
-// Workaround for https://github.com/rust-lang/rust/issues/26925 . Remove when sorted.
-#[derive(Clone, Eq, PartialEq, Debug)]
-pub struct Test;
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const MaximumBlockWeight: Weight = 1_000_000;
@@ -210,7 +198,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	pallet_balances::GenesisConfig::<Test>{
 		balances: vec![(1, 10), (2, 20), (3, 30), (4, 40), (5, 50), (6, 60)],
 	}.assimilate_storage(&mut t).unwrap();
-	GenesisConfig::default().assimilate_storage(&mut t).unwrap();
+	pallet_democracy::GenesisConfig::default().assimilate_storage(&mut t).unwrap();
 	let mut ext = sp_io::TestExternalities::new(t);
 	ext.execute_with(|| System::set_block_number(1));
 	ext
@@ -221,11 +209,6 @@ pub fn new_test_ext_execute_with_cond(execute: impl FnOnce(bool) -> () + Clone) 
 	new_test_ext().execute_with(|| (execute.clone())(false));
 	new_test_ext().execute_with(|| execute(true));
 }
-
-type System = frame_system::Module<Test>;
-type Balances = pallet_balances::Module<Test>;
-type Scheduler = pallet_scheduler::Module<Test>;
-type Democracy = Module<Test>;
 
 #[test]
 fn params_should_work() {

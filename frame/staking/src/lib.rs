@@ -267,6 +267,8 @@
 #![recursion_limit = "128"]
 #![cfg_attr(not(feature = "std"), no_std)]
 
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>, ValidateUnsigned);
+
 #[cfg(test)]
 mod mock;
 #[cfg(test)]
@@ -289,7 +291,7 @@ use sp_std::{
 };
 use codec::{HasCompact, Encode, Decode};
 use frame_support::{
-	decl_module, decl_event, decl_storage, ensure, decl_error,
+	decl_module, decl_event, decl_storage, ensure, decl_error, decl_construct_runtime_args,
 	weights::{Weight, constants::{WEIGHT_PER_MICROS, WEIGHT_PER_NANOS}},
 	storage::IterableStorageMap,
 	dispatch::{

@@ -86,9 +86,6 @@ mod exec;
 mod wasm;
 mod rent;
 
-#[cfg(test)]
-mod tests;
-
 use crate::exec::ExecutionContext;
 use crate::wasm::{WasmLoader, WasmVm};
 
@@ -107,7 +104,7 @@ use sp_runtime::{
 	RuntimeDebug,
 };
 use frame_support::{
-	decl_module, decl_event, decl_storage, decl_error,
+	decl_module, decl_event, decl_storage, decl_error, decl_construct_runtime_args,
 	parameter_types, storage::child::ChildInfo,
 	dispatch::{DispatchResult, DispatchResultWithPostInfo},
 	traits::{OnUnbalanced, Currency, Get, Time, Randomness},
@@ -115,6 +112,11 @@ use frame_support::{
 use frame_system::{ensure_signed, ensure_root};
 use pallet_contracts_primitives::{RentProjection, ContractAccessError};
 use frame_support::weights::Weight;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config, Event<T>);
+
+#[cfg(test)]
+mod tests;
 
 pub type CodeHash<T> = <T as frame_system::Trait>::Hash;
 pub type TrieId = Vec<u8>;

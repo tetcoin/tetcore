@@ -160,7 +160,7 @@ use sp_std::{cmp, result, mem, fmt::Debug, ops::BitOr, convert::Infallible};
 use codec::{Codec, Encode, Decode};
 use frame_support::{
 	StorageValue, Parameter, decl_event, decl_storage, decl_module, decl_error, ensure,
-	weights::Weight,
+	weights::Weight, decl_construct_runtime_args,
 	traits::{
 		Currency, OnKilledAccount, OnUnbalanced, TryDrop, StoredMap,
 		WithdrawReason, WithdrawReasons, LockIdentifier, LockableCurrency, ExistenceRequirement,
@@ -194,6 +194,8 @@ impl WeightInfo for () {
 	fn set_balance(_u: u32, _e: u32, ) -> Weight { 1_000_000_000 }
 	fn set_balance_killing(_u: u32, _e: u32, ) -> Weight { 1_000_000_000 }
 }
+
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
 
 pub trait Subtrait<I: Instance = DefaultInstance>: frame_system::Trait {
 	/// The balance of an account.

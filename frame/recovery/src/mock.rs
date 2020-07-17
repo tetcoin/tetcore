@@ -20,7 +20,7 @@
 use super::*;
 
 use frame_support::{
-	impl_outer_origin, impl_outer_dispatch, impl_outer_event, parameter_types,
+	construct_runtime, parameter_types,
 	weights::Weight,
 	traits::{OnInitialize, OnFinalize},
 };
@@ -30,26 +30,20 @@ use sp_runtime::{
 };
 use crate as recovery;
 
-impl_outer_origin! {
-	pub enum Origin for Test where system = frame_system {}
-}
+type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::MockBlock<Test>;
 
-impl_outer_event! {
-	pub enum TestEvent for Test {
-		system<T>,
-		pallet_balances<T>,
-		recovery<T>,
+construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic,
+	{
+		System: system,
+		Balances: pallet_balances,
+		Recovery: recovery,
 	}
-}
-impl_outer_dispatch! {
-	pub enum Call for Test where origin: Origin {
-		pallet_balances::Balances,
-		recovery::Recovery,
-	}
-}
-
-#[derive(Clone, Eq, PartialEq)]
-pub struct Test;
+);
 
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
@@ -69,7 +63,7 @@ impl frame_system::Trait for Test {
 	type AccountId = u64;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
-	type Event = TestEvent;
+	type Event = Event;
 	type BlockHashCount = BlockHashCount;
 	type MaximumBlockWeight = MaximumBlockWeight;
 	type DbWeight = ();
@@ -93,7 +87,7 @@ parameter_types! {
 impl pallet_balances::Trait for Test {
 	type Balance = u128;
 	type DustRemoval = ();
-	type Event = TestEvent;
+	type Event = Event;
 	type ExistentialDeposit = ExistentialDeposit;
 	type AccountStore = System;
 	type WeightInfo = ();
@@ -107,7 +101,7 @@ parameter_types! {
 }
 
 impl Trait for Test {
-	type Event = TestEvent;
+	type Event = Event;
 	type Call = Call;
 	type Currency = Balances;
 	type ConfigDepositBase = ConfigDepositBase;
@@ -115,10 +109,6 @@ impl Trait for Test {
 	type MaxFriends = MaxFriends;
 	type RecoveryDeposit = RecoveryDeposit;
 }
-
-pub type Recovery = Module<Test>;
-pub type System = frame_system::Module<Test>;
-pub type Balances = pallet_balances::Module<Test>;
 
 pub type BalancesCall = pallet_balances::Call<Test>;
 pub type RecoveryCall = super::Call<Test>;

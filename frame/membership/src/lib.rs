@@ -25,10 +25,12 @@
 
 use sp_std::prelude::*;
 use frame_support::{
-	decl_module, decl_storage, decl_event, decl_error,
+	decl_module, decl_storage, decl_event, decl_error, decl_construct_runtime_args,
 	traits::{ChangeMembers, InitializeMembers, EnsureOrigin, Contains},
 };
 use frame_system::ensure_signed;
+
+decl_construct_runtime_args!(Module, Call, Storage, Config<T>, Event<T>);
 
 pub trait Trait<I=DefaultInstance>: frame_system::Trait {
 	/// The overarching event type.
@@ -277,22 +279,31 @@ impl<T: Trait<I>, I: Instance> Contains<T::AccountId> for Module<T, I> {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate as pallet_membership;
 
 	use std::cell::RefCell;
 	use frame_support::{
-		assert_ok, assert_noop, impl_outer_origin, parameter_types, weights::Weight,
+		assert_ok, assert_noop, construct_runtime, parameter_types, weights::Weight,
 		ord_parameter_types
 	};
 	use sp_core::H256;
 	use sp_runtime::{Perbill, traits::{BlakeTwo256, IdentityLookup, BadOrigin}, testing::Header};
 	use frame_system::EnsureSignedBy;
 
-	impl_outer_origin! {
-		pub enum Origin for Test  where system = frame_system {}
-	}
+	type UncheckedExtrinsic = frame_system::MockUncheckedExtrinsic<Test>;
+	type Block = frame_system::MockBlock<Test>;
 
-	#[derive(Clone, Eq, PartialEq)]
-	pub struct Test;
+	construct_runtime!(
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			Membership: pallet_membership,
+		}
+	);
+
 	parameter_types! {
 		pub const BlockHashCount: u64 = 250;
 		pub const MaximumBlockWeight: Weight = 1024;
@@ -305,7 +316,7 @@ mod tests {
 		type Index = u64;
 		type BlockNumber = u64;
 		type Hash = H256;
-		type Call = ();
+		type Call = Call;
 		type Hashing = BlakeTwo256;
 		type AccountId = u64;
 		type Lookup = IdentityLookup<Self::AccountId>;
@@ -374,12 +385,10 @@ mod tests {
 		type MembershipChanged = TestChangeMembers;
 	}
 
-	type Membership = Module<Test>;
-
 	fn new_test_ext() -> sp_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 		// We use default for brevity, but you can configure as desired if needed.
-		GenesisConfig::<Test>{
+		pallet_membership::GenesisConfig::<Test>{
 			members: vec![10, 20, 30],
 			.. Default::default()
 		}.assimilate_storage(&mut t).unwrap();
