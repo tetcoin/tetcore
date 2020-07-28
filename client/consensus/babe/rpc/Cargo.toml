@@ -14,9 +14,9 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 sc-consensus-babe = { version = "0.8.0-rc5", path = "../" }
 sc-rpc-api = { version = "0.8.0-rc5", path = "../../../rpc-api" }
-jsonrpc-core = "14.2.0"
-jsonrpc-core-client = "14.2.0"
-jsonrpc-derive = "14.2.1"
+jsonrpc-core = { version = "15.0.0", git = "https://github.com/paritytech/jsonrpc.git" }
+jsonrpc-core-client = { version = "15.0.0", git = "https://github.com/paritytech/jsonrpc.git" }
+jsonrpc-derive = { version = "15.0.0", git = "https://github.com/paritytech/jsonrpc.git" }
 sp-consensus-babe = { version = "0.8.0-rc5", path = "../../../../primitives/consensus/babe" }
 serde = { version = "1.0.104", features=["derive"] }
 sp-blockchain = { version = "2.0.0-rc5", path = "../../../../primitives/blockchain" }
