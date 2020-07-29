@@ -26,7 +26,7 @@ mod tests;
 
 use std::sync::Arc;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
-use rpc::{Result as RpcResult, futures::{Future, future::result}};
+use rpc::{Result as RpcResult, futures::{FutureExt, future}};
 
 use sc_rpc_api::state::ReadProof;
 use sc_client_api::light::{RemoteBlockchain, Fetcher};
@@ -102,7 +102,7 @@ pub trait StateBackend<Block: BlockT, Client>: Send + Sync + 'static
 		block: Option<Block::Hash>,
 		key: StorageKey,
 	) -> FutureResult<Option<u64>> {
-		Box::new(self.storage(block, key)
+		Box::pin(self.storage(block, key)
 			.map(|x| x.map(|x| x.0.len() as u64)))
 	}
 
@@ -260,7 +260,7 @@ impl<Block, Client> StateApi<Block::Hash> for State<Block, Client>
 		block: Option<Block::Hash>,
 	) -> FutureResult<Vec<StorageKey>> {
 		if count > STORAGE_KEYS_PAGED_MAX_COUNT {
-			return Box::new(result(Err(
+			return Box::pin(future::ready(Err(
 				Error::InvalidCount {
 					value: count,
 					max: STORAGE_KEYS_PAGED_MAX_COUNT,
@@ -375,7 +375,7 @@ pub trait ChildStateBackend<Block: BlockT, Client>: Send + Sync + 'static
 		storage_key: PrefixedStorageKey,
 		key: StorageKey,
 	) -> FutureResult<Option<u64>> {
-		Box::new(self.storage(block, storage_key, key)
+		Box::pin(self.storage(block, storage_key, key)
 			.map(|x| x.map(|x| x.0.len() as u64)))
 	}
 }

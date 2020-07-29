@@ -22,8 +22,7 @@
 
 #![warn(missing_docs)]
 
-use futures::{compat::Future01CompatExt, FutureExt};
-use rpc::futures::future::{Executor, ExecuteError, Future};
+use rpc::futures::Future;
 use sp_core::traits::SpawnNamed;
 use std::sync::Arc;
 
@@ -52,12 +51,12 @@ impl SubscriptionTaskExecutor {
 	}
 }
 
-impl Executor<Box<dyn Future<Item = (), Error = ()> + Send>> for SubscriptionTaskExecutor {
-	fn execute(
+impl SubscriptionTaskExecutor {
+	fn spawn(
 		&self,
-		future: Box<dyn Future<Item = (), Error = ()> + Send>,
-	) -> Result<(), ExecuteError<Box<dyn Future<Item = (), Error = ()> + Send>>> {
-		self.0.spawn("substrate_rpc_subscription", future.compat().map(drop).boxed());
-		Ok(())
+		name: &'static str,
+		future: impl Future<Output = ()> + Send,
+	) {
+		self.0.spawn(name, future);
 	}
 }

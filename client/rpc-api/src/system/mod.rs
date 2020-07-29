@@ -21,9 +21,8 @@
 pub mod error;
 pub mod helpers;
 
-use crate::helpers::Receiver;
+use jsonrpc_core::{BoxFuture, Result as RpcResult};
 use jsonrpc_derive::rpc;
-use futures::{future::BoxFuture, compat::Compat};
 
 use self::error::Result as SystemResult;
 
@@ -58,49 +57,45 @@ pub trait SystemApi<Hash, Number> {
 	/// Node is considered healthy if it is:
 	/// - connected to some peers (unless running in dev mode)
 	/// - not performing a major sync
-	#[rpc(name = "system_health", returns = "Health")]
-	fn system_health(&self) -> Receiver<Health>;
+	#[rpc(name = "system_health")]
+	fn system_health(&self) -> BoxFuture<SystemResult<Health>>;
 
 	/// Returns the base58-encoded PeerId of the node.
-	#[rpc(name = "system_localPeerId", returns = "String")]
-	fn system_local_peer_id(&self) -> Receiver<String>;
+	#[rpc(name = "system_localPeerId")]
+	fn system_local_peer_id(&self) -> BoxFuture<SystemResult<String>>;
 
 	/// Returns the multiaddresses that the local node is listening on
 	///
 	/// The addresses include a trailing `/p2p/` with the local PeerId, and are thus suitable to
 	/// be passed to `system_addReservedPeer` or as a bootnode address for example.
-	#[rpc(name = "system_localListenAddresses", returns = "Vec<String>")]
-	fn system_local_listen_addresses(&self) -> Receiver<Vec<String>>;
+	#[rpc(name = "system_localListenAddresses")]
+	fn system_local_listen_addresses(&self) -> BoxFuture<SystemResult<Vec<String>>>;
 
 	/// Returns currently connected peers
-	#[rpc(name = "system_peers", returns = "Vec<PeerInfo<Hash, Number>>")]
-	fn system_peers(&self)
-		-> Compat<BoxFuture<'static, jsonrpc_core::Result<Vec<PeerInfo<Hash, Number>>>>>;
+	#[rpc(name = "system_peers")]
+	fn system_peers(&self) -> BoxFuture<RpcResult<Vec<PeerInfo<Hash, Number>>>>;
 
 	/// Returns current state of the network.
 	///
 	/// **Warning**: This API is not stable.
 	// TODO: make this stable and move structs https://github.com/paritytech/substrate/issues/1890
-	#[rpc(name = "system_networkState", returns = "jsonrpc_core::Value")]
-	fn system_network_state(&self)
-		-> Compat<BoxFuture<'static, jsonrpc_core::Result<jsonrpc_core::Value>>>;
+	#[rpc(name = "system_networkState")]
+	fn system_network_state(&self) -> BoxFuture<RpcResult<jsonrpc_core::Value>>;
 
 	/// Adds a reserved peer. Returns the empty string or an error. The string
 	/// parameter should encode a `p2p` multiaddr.
 	///
 	/// `/ip4/198.51.100.19/tcp/30333/p2p/QmSk5HQbn6LhUwDiNMseVUjuRYhEtYj4aUZ6WfWoGURpdV`
 	/// is an example of a valid, passing multiaddr with PeerId attached.
-	#[rpc(name = "system_addReservedPeer", returns = "()")]
-	fn system_add_reserved_peer(&self, peer: String)
-		-> Compat<BoxFuture<'static, Result<(), jsonrpc_core::Error>>>;
+	#[rpc(name = "system_addReservedPeer")]
+	fn system_add_reserved_peer(&self, peer: String) -> BoxFuture<RpcResult<()>>;
 
 	/// Remove a reserved peer. Returns the empty string or an error. The string
 	/// should encode only the PeerId e.g. `QmSk5HQbn6LhUwDiNMseVUjuRYhEtYj4aUZ6WfWoGURpdV`.
-	#[rpc(name = "system_removeReservedPeer", returns = "()")]
-	fn system_remove_reserved_peer(&self, peer_id: String)
-		-> Compat<BoxFuture<'static, Result<(), jsonrpc_core::Error>>>;
+	#[rpc(name = "system_removeReservedPeer")]
+	fn system_remove_reserved_peer(&self, peer_id: String) -> BoxFuture<RpcResult<()>>;
 
 	/// Returns the roles the node is running as.
-	#[rpc(name = "system_nodeRoles", returns = "Vec<NodeRole>")]
-	fn system_node_roles(&self) -> Receiver<Vec<NodeRole>>;
+	#[rpc(name = "system_nodeRoles")]
+	fn system_node_roles(&self) -> BoxFuture<SystemResult<Vec<NodeRole>>>;
 }

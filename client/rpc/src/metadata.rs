@@ -20,7 +20,7 @@
 use std::sync::Arc;
 
 use jsonrpc_pubsub::{Session, PubSubMetadata};
-use rpc::futures::sync::mpsc;
+use rpc::futures::channel::mpsc;
 
 /// RPC Metadata.
 ///

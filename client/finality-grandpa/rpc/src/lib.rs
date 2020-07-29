@@ -30,8 +30,7 @@ use report::{ReportAuthoritySet, ReportVoterState, ReportedRoundStates};
 /// Returned when Grandpa RPC endpoint is not ready.
 pub const NOT_READY_ERROR_CODE: i64 = 1;
 
-type FutureResult<T> =
-	Box<dyn jsonrpc_core::futures::Future<Item = T, Error = jsonrpc_core::Error> + Send>;
+type FutureResult<T> = jsonrpc_core::BoxFuture<jsonrpc_core::Result<T>>;
 
 /// Provides RPC methods for interacting with GRANDPA.
 #[rpc]
@@ -66,7 +65,7 @@ where
 	fn round_state(&self) -> FutureResult<ReportedRoundStates> {
 		let round_states = ReportedRoundStates::from(&self.authority_set, &self.voter_state);
 		let future = async move { round_states }.boxed();
-		Box::new(future.map_err(jsonrpc_core::Error::from).compat())
+		Box::pin(future.map_err(jsonrpc_core::Error::from))
 	}
 }
 

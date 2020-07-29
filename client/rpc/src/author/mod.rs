@@ -27,11 +27,8 @@ use log::warn;
 use sp_blockchain::{Error as ClientError, HeaderBackend};
 
 use rpc::futures::{
-	Sink, Future,
-	future::result,
+	StreamExt, FutureExt, TryFutureExt, future, task,
 };
-use futures::{StreamExt as _, compat::Compat};
-use futures::future::{ready, FutureExt, TryFutureExt};
 use sc_rpc_api::DenyUnsafe;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use codec::{Encode, Decode};
@@ -144,12 +141,11 @@ impl<P, Client> AuthorApi<TxHash<P>, BlockHash<P>> for Author<P, Client>
 	fn submit_extrinsic(&self, ext: Bytes) -> FutureResult<TxHash<P>> {
 		let xt = match Decode::decode(&mut &ext[..]) {
 			Ok(xt) => xt,
-			Err(err) => return Box::new(result(Err(err.into()))),
+			Err(err) => return Box::pin(future::ready(Err(err.into()))),
 		};
 		let best_block_hash = self.client.info().best_hash;
-		Box::new(self.pool
+		Box::pin(self.pool
 			.submit_one(&generic::BlockId::hash(best_block_hash), TX_SOURCE, xt)
-			.compat()
 			.map_err(|e| e.into_pool_error()
 				.map(Into::into)
 				.unwrap_or_else(|e| error::Error::Verification(Box::new(e)).into()))
@@ -205,7 +201,7 @@ impl<P, Client> AuthorApi<TxHash<P>, BlockHash<P>> for Author<P, Client>
 		};
 
 		let subscriptions = self.subscriptions.clone();
-		let future = ready(submit())
+		let future = future::ready(submit())
 			.and_then(|res| res)
 			// convert the watcher into a `Stream`
 			.map(|res| res.map(|stream| stream.map(|v| Ok::<_, ()>(Ok(v)))))
@@ -216,7 +212,7 @@ impl<P, Client> AuthorApi<TxHash<P>, BlockHash<P>> for Author<P, Client>
 					subscriptions.add(subscriber, move |sink| {
 						sink
 							.sink_map_err(|_| unimplemented!())
-							.send_all(Compat::new(watcher))
+							.send_all(watcher)
 							.map(|_| ())
 					});
 				},
@@ -228,7 +224,7 @@ impl<P, Client> AuthorApi<TxHash<P>, BlockHash<P>> for Author<P, Client>
 			});
 
 		let res = self.subscriptions.executor()
-			.execute(Box::new(Compat::new(future.map(|_| Ok(())))));
+			.spawn_obj(task::FutureObj::new(Box::pin(future.map(|_| Ok(())))));
 		if res.is_err() {
 			warn!("Error spawning subscription RPC task.");
 		}

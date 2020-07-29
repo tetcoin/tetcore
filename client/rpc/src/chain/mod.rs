@@ -25,11 +25,10 @@ mod chain_light;
 mod tests;
 
 use std::sync::Arc;
-use futures::{future, StreamExt, TryStreamExt};
 use log::warn;
 use rpc::{
 	Result as RpcResult,
-	futures::{stream, Future, Sink, Stream},
+	futures::{stream, future, Future, Sink, Stream, StreamExt, TryStreamExt},
 };
 
 use sc_client_api::{BlockchainEvents, light::{Fetcher, RemoteBlockchain}};
@@ -297,8 +296,8 @@ fn subscribe_headers<Block, Client, F, G, S, ERR>(
 	Client: HeaderBackend<Block> + 'static,
 	F: FnOnce() -> S,
 	G: FnOnce() -> Block::Hash,
-	ERR: ::std::fmt::Debug,
-	S: Stream<Item=Block::Header, Error=ERR> + Send + 'static,
+	ERR: std::fmt::Debug,
+	S: Stream<Item = std::result::Result<Block::Header, ERR>> + Send + 'static,
 {
 	subscriptions.add(subscriber, |sink| {
 		// send current head right at the start.
@@ -317,7 +316,7 @@ fn subscribe_headers<Block, Client, F, G, S, ERR>(
 		sink
 			.sink_map_err(|e| warn!("Error sending notifications: {:?}", e))
 			.send_all(
-				stream::iter_result(vec![Ok(header)])
+				stream::once(header)
 					.chain(stream)
 			)
 			// we ignore the resulting Stream (if the first stream is over we are unsubscribed)

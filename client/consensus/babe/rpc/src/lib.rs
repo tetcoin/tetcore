@@ -19,10 +19,11 @@
 //! RPC api for babe.
 
 use sc_consensus_babe::{Epoch, authorship, Config};
-use futures::{FutureExt as _, TryFutureExt as _};
 use jsonrpc_core::{
 	Error as RpcError,
-	futures::future as rpc_future,
+	Result as RpcResult,
+	BoxFuture,
+	futures::{future, FutureExt, TryFutureExt},
 };
 use jsonrpc_derive::rpc;
 use sc_consensus_epochs::{descendent_query, Epoch as EpochT, SharedEpochChanges};
@@ -45,7 +46,7 @@ use sp_consensus::{SelectChain, Error as ConsensusError};
 use sp_blockchain::{HeaderBackend, HeaderMetadata, Error as BlockChainError};
 use std::{collections::HashMap, sync::Arc};
 
-type FutureResult<T> = Box<dyn rpc_future::Future<Item = T, Error = RpcError> + Send>;
+type FutureResult<T> = BoxFuture<RpcResult<T>>;
 
 /// Provides rpc methods for interacting with Babe.
 #[rpc]
@@ -102,7 +103,7 @@ impl<B, C, SC> BabeApi for BabeRpcHandler<B, C, SC>
 {
 	fn epoch_authorship(&self) -> FutureResult<HashMap<AuthorityId, EpochAuthorship>> {
 		if let Err(err) = self.deny_unsafe.check_if_safe() {
-			return Box::new(rpc_future::err(err.into()));
+			return Box::pin(future::ready(Err(err.into())));
 		}
 
 		let (
@@ -163,9 +164,9 @@ impl<B, C, SC> BabeApi for BabeRpcHandler<B, C, SC>
 			}
 
 			Ok(claims)
-		}.boxed();
+		};
 
-		Box::new(future.compat())
+		Box::pin(future)
 	}
 }
 

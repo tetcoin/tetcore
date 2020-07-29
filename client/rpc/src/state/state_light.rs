@@ -21,9 +21,10 @@ use std::{
 	collections::{HashSet, HashMap, hash_map::Entry},
 };
 use codec::Decode;
-use futures::{
-	future::{ready, Either},
+use rpc::futures::{
+	future::{self, Either},
 	channel::oneshot::{channel, Sender},
+	Stream,
 	FutureExt, TryFutureExt,
 	StreamExt as _, TryStreamExt as _,
 };
@@ -31,12 +32,7 @@ use hash_db::Hasher;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use log::warn;
 use parking_lot::Mutex;
-use rpc::{
-	Result as RpcResult,
-	futures::Sink,
-	futures::future::{result, Future},
-	futures::stream::Stream,
-};
+use rpc::Result as RpcResult;
 
 use sc_rpc_api::state::ReadProof;
 use sp_blockchain::{Error as ClientError, HeaderBackend};
@@ -179,13 +175,13 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		method: String,
 		call_data: Bytes,
 	) -> FutureResult<Bytes> {
-		Box::new(call(
+		Box::pin(call(
 			&*self.remote_blockchain,
 			self.fetcher.clone(),
 			self.block_or_best(block),
 			method,
 			call_data,
-		).boxed().compat())
+		))
 	}
 
 	fn storage_keys(
@@ -193,7 +189,7 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		_block: Option<Block::Hash>,
 		_prefix: StorageKey,
 	) -> FutureResult<Vec<StorageKey>> {
-		Box::new(result(Err(client_err(ClientError::NotAvailableOnLightClient))))
+		Box::pin(future::ready(Err(client_err(ClientError::NotAvailableOnLightClient))))
 	}
 
 	fn storage_pairs(
@@ -201,7 +197,7 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		_block: Option<Block::Hash>,
 		_prefix: StorageKey,
 	) -> FutureResult<Vec<(StorageKey, StorageData)>> {
-		Box::new(result(Err(client_err(ClientError::NotAvailableOnLightClient))))
+		Box::pin(future::ready(Err(client_err(ClientError::NotAvailableOnLightClient))))
 	}
 
 	fn storage_keys_paged(
@@ -211,7 +207,7 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		_count: u32,
 		_start_key: Option<StorageKey>,
 	) -> FutureResult<Vec<StorageKey>> {
-		Box::new(result(Err(client_err(ClientError::NotAvailableOnLightClient))))
+		Box::pin(future::ready(Err(client_err(ClientError::NotAvailableOnLightClient))))
 	}
 
 	fn storage(
@@ -219,12 +215,12 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		block: Option<Block::Hash>,
 		key: StorageKey,
 	) -> FutureResult<Option<StorageData>> {
-		Box::new(storage(
+		Box::pin(storage(
 			&*self.remote_blockchain,
 			self.fetcher.clone(),
 			self.block_or_best(block),
 			vec![key.0.clone()],
-		).boxed().compat().map(move |mut values| values
+		).map(move |mut values| values
 			.remove(&key)
 			.expect("successful request has entries for all requested keys; qed")
 		))
@@ -235,9 +231,9 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		block: Option<Block::Hash>,
 		key: StorageKey,
 	) -> FutureResult<Option<Block::Hash>> {
-		Box::new(StateBackend::storage(self, block, key)
+		Box::pin(StateBackend::storage(self, block, key)
 			.and_then(|maybe_storage|
-				result(Ok(maybe_storage.map(|storage| HashFor::<Block>::hash(&storage.0))))
+				future::ready(Ok(maybe_storage.map(|storage| HashFor::<Block>::hash(&storage.0))))
 			)
 		)
 	}
@@ -251,15 +247,15 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 					decode_err,
 				))));
 
-		Box::new(metadata)
+		Box::pin(metadata)
 	}
 
 	fn runtime_version(&self, block: Option<Block::Hash>) -> FutureResult<RuntimeVersion> {
-		Box::new(runtime_version(
+		Box::pin(runtime_version(
 			&*self.remote_blockchain,
 			self.fetcher.clone(),
 			self.block_or_best(block),
-		).boxed().compat())
+		))
 	}
 
 	fn query_storage(
@@ -268,7 +264,7 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		_to: Option<Block::Hash>,
 		_keys: Vec<StorageKey>,
 	) -> FutureResult<Vec<StorageChangeSet<Block::Hash>>> {
-		Box::new(result(Err(client_err(ClientError::NotAvailableOnLightClient))))
+		Box::pin(future::ready(Err(client_err(ClientError::NotAvailableOnLightClient))))
 	}
 
 	fn query_storage_at(
@@ -276,7 +272,7 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		_keys: Vec<StorageKey>,
 		_at: Option<Block::Hash>
 	) -> FutureResult<Vec<StorageChangeSet<Block::Hash>>> {
-		Box::new(result(Err(client_err(ClientError::NotAvailableOnLightClient))))
+		Box::pin(future::ready(Err(client_err(ClientError::NotAvailableOnLightClient))))
 	}
 
 	fn read_proof(
@@ -284,7 +280,7 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 		_block: Option<Block::Hash>,
 		_keys: Vec<StorageKey>,
 	) -> FutureResult<ReadProof<Block::Hash>> {
-		Box::new(result(Err(client_err(ClientError::NotAvailableOnLightClient))))
+		Box::pin(future::ready(Err(client_err(ClientError::NotAvailableOnLightClient))))
 	}
 
 	fn subscribe_storage(
@@ -314,8 +310,7 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 				storage_subscriptions.clone(),
 				self.client
 					.import_notification_stream()
-					.map(|notification| Ok::<_, ()>(notification.hash))
-					.compat(),
+					.map(|notification| Ok::<_, ()>(notification.hash)),
 				display_error(storage(
 					&*remote_blockchain,
 					fetcher.clone(),
@@ -425,8 +420,7 @@ impl<Block, F, Client> StateBackend<Block, Client> for LightState<Block, F, Clie
 				version_subscriptions,
 				self.client
 					.import_notification_stream()
-					.map(|notification| Ok::<_, ()>(notification.hash))
-					.compat(),
+					.map(|notification| Ok::<_, ()>(notification.hash)),
 				display_error(runtime_version(
 					&*remote_blockchain,
 					fetcher.clone(),
@@ -478,7 +472,7 @@ impl<Block, F, Client> ChildStateBackend<Block, Client> for LightState<Block, F,
 		_storage_key: PrefixedStorageKey,
 		_prefix: StorageKey,
 	) -> FutureResult<Vec<StorageKey>> {
-		Box::new(result(Err(client_err(ClientError::NotAvailableOnLightClient))))
+		Box::pin(future::ready(Err(client_err(ClientError::NotAvailableOnLightClient))))
 	}
 
 	fn storage(
@@ -497,7 +491,7 @@ impl<Block, F, Client> ChildStateBackend<Block, Client> for LightState<Block, F,
 					storage_key,
 					keys: vec![key.0.clone()],
 					retry_count: Default::default(),
-				}).then(move |result| ready(result
+				}).then(move |result| future::ready(result
 					.map(|mut data| data
 						.remove(&key.0)
 						.expect("successful result has entry for all keys; qed")
@@ -505,10 +499,10 @@ impl<Block, F, Client> ChildStateBackend<Block, Client> for LightState<Block, F,
 					)
 					.map_err(client_err)
 				))),
-				Err(error) => Either::Right(ready(Err(error))),
+				Err(error) => Either::Right(future::ready(Err(error))),
 			});
 
-		Box::new(child_storage.boxed().compat())
+		Box::pin(child_storage)
 	}
 
 	fn storage_hash(
@@ -517,9 +511,9 @@ impl<Block, F, Client> ChildStateBackend<Block, Client> for LightState<Block, F,
 		storage_key: PrefixedStorageKey,
 		key: StorageKey,
 	) -> FutureResult<Option<Block::Hash>> {
-		Box::new(ChildStateBackend::storage(self, block, storage_key, key)
+		Box::pin(ChildStateBackend::storage(self, block, storage_key, key)
 			.and_then(|maybe_storage|
-				result(Ok(maybe_storage.map(|storage| HashFor::<Block>::hash(&storage.0))))
+				future::ready(Ok(maybe_storage.map(|storage| HashFor::<Block>::hash(&storage.0))))
 			)
 		)
 	}
@@ -538,7 +532,7 @@ fn resolve_header<Block: BlockT, F: Fetcher<Block>>(
 	);
 
 	maybe_header.then(move |result|
-		ready(result.and_then(|maybe_header|
+		future::ready(result.and_then(|maybe_header|
 			maybe_header.ok_or_else(|| ClientError::UnknownBlock(format!("{}", block)))
 		).map_err(client_err)),
 	)
@@ -560,8 +554,8 @@ fn call<Block: BlockT, F: Fetcher<Block>>(
 				method,
 				call_data: call_data.0,
 				retry_count: Default::default(),
-			}).then(|result| ready(result.map(Bytes).map_err(client_err)))),
-			Err(error) => Either::Right(ready(Err(error))),
+			}).then(|result| future::ready(result.map(Bytes).map_err(client_err)))),
+			Err(error) => Either::Right(future::ready(Err(error))),
 		})
 }
 
@@ -578,7 +572,7 @@ fn runtime_version<Block: BlockT, F: Fetcher<Block>>(
 		"Core_version".into(),
 		Bytes(Vec::new()),
 	)
-	.then(|version| ready(version.and_then(|version|
+	.then(|version| future::ready(version.and_then(|version|
 		Decode::decode(&mut &version.0[..])
 			.map_err(|e| client_err(ClientError::VersionInvalid(e.what().into())))
 	)))
@@ -598,14 +592,14 @@ fn storage<Block: BlockT, F: Fetcher<Block>>(
 				header,
 				keys,
 				retry_count: Default::default(),
-			}).then(|result| ready(result
+			}).then(|result| future::ready(result
 				.map(|result| result
 					.into_iter()
 					.map(|(key, value)| (StorageKey(key), value.map(StorageData)))
 					.collect()
 				).map_err(client_err)
 			))),
-			Err(error) => Either::Right(ready(Err(error))),
+			Err(error) => Either::Right(future::ready(Err(error))),
 		})
 }
 
@@ -625,10 +619,10 @@ fn subscription_stream<
 	initial_request: InitialRequestFuture,
 	issue_request: IssueRequest,
 	compare_values: CompareValues,
-) -> impl Stream<Item=N, Error=()> where
+) -> impl Stream<Item = N> where
 	Block: BlockT,
 	Requests: 'static + SharedRequests<Block::Hash, V>,
-	FutureBlocksStream: Stream<Item=Block::Hash, Error=()>,
+	FutureBlocksStream: Stream<Item = Block::Hash>,
 	V: Send + 'static + Clone,
 	InitialRequestFuture: std::future::Future<Output = Result<(Block::Hash, V), ()>> + Send + 'static,
 	IssueRequest: 'static + Fn(Block::Hash) -> IssueRequestFuture,
@@ -640,8 +634,6 @@ fn subscription_stream<
 
 	// prepare 'stream' of initial values
 	let initial_value_stream = ignore_error(initial_request)
-		.boxed()
-		.compat()
 		.into_stream();
 
 	// prepare stream of future values
@@ -653,7 +645,7 @@ fn subscription_stream<
 			shared_requests.clone(),
 			block,
 			&issue_request,
-		).map(move |r| r.map(|v| (block, v)))).boxed().compat());
+		).map(move |r| r.map(|v| (block, v)))));
 
 	// now let's return changed values for selected blocks
 	initial_value_stream
@@ -686,7 +678,7 @@ fn maybe_share_remote_request<Block: BlockT, Requests, V, IssueRequest, IssueReq
 
 	// if that isn't the first request - just listen for existing request' response
 	if !need_issue_request {
-		return Either::Right(receiver.then(|r| ready(r.unwrap_or(Err(())))));
+		return Either::Right(receiver.then(|r| future::ready(r.unwrap_or(Err(())))));
 	}
 
 	// that is the first request - issue remote request + notify all listeners on
@@ -702,7 +694,7 @@ fn maybe_share_remote_request<Block: BlockT, Requests, V, IssueRequest, IssueReq
 					}
 				}
 
-				ready(remote_result)
+				future::ready(remote_result)
 			})
 	)
 }
@@ -712,7 +704,7 @@ fn maybe_share_remote_request<Block: BlockT, Requests, V, IssueRequest, IssueReq
 fn display_error<F, T>(future: F) -> impl std::future::Future<Output=Result<T, ()>> where
 	F: std::future::Future<Output=Result<T, Error>>
 {
-	future.then(|result| ready(match result {
+	future.then(|result| future::ready(match result {
 		Ok(result) => Ok(result),
 		Err(err) => {
 			warn!("Remote request for subscription data has failed with: {:?}", err);
@@ -726,7 +718,7 @@ fn display_error<F, T>(future: F) -> impl std::future::Future<Output=Result<T, (
 fn ignore_error<F, T>(future: F) -> impl std::future::Future<Output=Result<Option<T>, ()>> where
 	F: std::future::Future<Output=Result<T, ()>>
 {
-	future.then(|result| ready(match result {
+	future.then(|result| future::ready(match result {
 		Ok(result) => Ok(Some(result)),
 		Err(()) => Ok(None),
 	}))
@@ -743,11 +735,11 @@ mod tests {
 	fn subscription_stream_works() {
 		let stream = subscription_stream::<Block, _, _, _, _, _, _, _, _>(
 			SimpleSubscriptions::default(),
-			futures_ordered(vec![result(Ok(H256::from([2; 32]))), result(Ok(H256::from([3; 32])))]),
-			ready(Ok((H256::from([1; 32]), 100))),
+			futures_ordered(vec![future::ready(Ok(H256::from([2; 32]))), future::ready(Ok(H256::from([3; 32])))]),
+			future::ready(Ok((H256::from([1; 32]), 100))),
 			|block| match block[0] {
-				2 => ready(Ok(100)),
-				3 => ready(Ok(200)),
+				2 => future::ready(Ok(100)),
+				3 => future::ready(Ok(200)),
 				_ => unreachable!("should not issue additional requests"),
 			},
 			|_, old_value, new_value| match old_value == Some(new_value) {
@@ -766,11 +758,11 @@ mod tests {
 	fn subscription_stream_ignores_failed_requests() {
 		let stream = subscription_stream::<Block, _, _, _, _, _, _, _, _>(
 			SimpleSubscriptions::default(),
-			futures_ordered(vec![result(Ok(H256::from([2; 32]))), result(Ok(H256::from([3; 32])))]),
-			ready(Ok((H256::from([1; 32]), 100))),
+			futures_ordered(vec![future::ready(Ok(H256::from([2; 32]))), future::ready(Ok(H256::from([3; 32])))]),
+			future::ready(Ok((H256::from([1; 32]), 100))),
 			|block| match block[0] {
-				2 => ready(Err(client_err(ClientError::NotAvailableOnLightClient))),
-				3 => ready(Ok(200)),
+				2 => future::ready(Err(client_err(ClientError::NotAvailableOnLightClient))),
+				3 => future::ready(Ok(200)),
 				_ => unreachable!("should not issue additional requests"),
 			},
 			|_, old_value, new_value| match old_value == Some(new_value) {
@@ -811,7 +803,7 @@ mod tests {
 			H256::from([2; 32]),
 			&|_| {
 				*request_issued.lock() = true;
-				ready(Ok(Default::default()))
+				future::ready(Ok(Default::default()))
 			},
 		);
 		assert!(*request_issued.lock());

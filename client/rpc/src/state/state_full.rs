@@ -22,7 +22,7 @@ use std::ops::Range;
 use futures::{future, StreamExt as _, TryStreamExt as _};
 use log::warn;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
-use rpc::{Result as RpcResult, futures::{stream, Future, Sink, Stream, future::result}};
+use rpc::{Result as RpcResult, futures::{stream, Future, Sink, Stream}};
 
 use sc_rpc_api::state::ReadProof;
 use sc_client_api::backend::Backend;
@@ -244,7 +244,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 				)
 				.map(Into::into)
 			).map_err(client_err);
-		Box::new(result(r))
+		Box::pin(future::ready(r))
 	}
 
 	fn storage_keys(
@@ -252,7 +252,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		block: Option<Block::Hash>,
 		prefix: StorageKey,
 	) -> FutureResult<Vec<StorageKey>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| self.client.storage_keys(&BlockId::Hash(block), &prefix))
 				.map_err(client_err)))
@@ -263,7 +263,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		block: Option<Block::Hash>,
 		prefix: StorageKey,
 	) -> FutureResult<Vec<(StorageKey, StorageData)>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| self.client.storage_pairs(&BlockId::Hash(block), &prefix))
 				.map_err(client_err)))
@@ -276,7 +276,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		count: u32,
 		start_key: Option<StorageKey>,
 	) -> FutureResult<Vec<StorageKey>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block|
 					self.client.storage_keys_iter(
@@ -292,7 +292,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		block: Option<Block::Hash>,
 		key: StorageKey,
 	) -> FutureResult<Option<StorageData>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| self.client.storage(&BlockId::Hash(block), &key))
 				.map_err(client_err)))
@@ -303,14 +303,14 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		block: Option<Block::Hash>,
 		key: StorageKey,
 	) -> FutureResult<Option<Block::Hash>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| self.client.storage_hash(&BlockId::Hash(block), &key))
 				.map_err(client_err)))
 	}
 
 	fn metadata(&self, block: Option<Block::Hash>) -> FutureResult<Bytes> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block|
 					self.client.runtime_api().metadata(&BlockId::Hash(block)).map(Into::into)
@@ -319,7 +319,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 	}
 
 	fn runtime_version(&self, block: Option<Block::Hash>) -> FutureResult<RuntimeVersion> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| self.client.runtime_version_at(&BlockId::Hash(block)))
 				.map_err(client_err)))
@@ -339,7 +339,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 			self.query_storage_filtered(&range, &keys, &last_values, &mut changes)?;
 			Ok(changes)
 		};
-		Box::new(result(call_fn()))
+		Box::pin(future::ready(call_fn()))
 	}
 
 	fn query_storage_at(
@@ -356,7 +356,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		block: Option<Block::Hash>,
 		keys: Vec<StorageKey>,
 	) -> FutureResult<ReadProof<Block::Hash>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| {
 					self.client
@@ -414,7 +414,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 			sink
 				.sink_map_err(|e| warn!("Error sending notifications: {:?}", e))
 				.send_all(
-					stream::iter_result(vec![Ok(version)])
+					stream::once(version)
 					.chain(stream)
 				)
 				// we ignore the resulting Stream (if the first stream is over we are unsubscribed)
@@ -449,7 +449,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 		};
 
 		// initial values
-		let initial = stream::iter_result(keys
+		let initial = stream::iter(keys
 			.map(|keys| {
 				let block = self.client.info().best_hash;
 				let changes = keys
@@ -506,7 +506,7 @@ impl<BE, Block, Client> ChildStateBackend<Block, Client> for FullState<BE, Block
 		storage_key: PrefixedStorageKey,
 		prefix: StorageKey,
 	) -> FutureResult<Vec<StorageKey>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| {
 					let child_info = match ChildType::from_prefixed_key(&storage_key) {
@@ -528,7 +528,7 @@ impl<BE, Block, Client> ChildStateBackend<Block, Client> for FullState<BE, Block
 		storage_key: PrefixedStorageKey,
 		key: StorageKey,
 	) -> FutureResult<Option<StorageData>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| {
 					let child_info = match ChildType::from_prefixed_key(&storage_key) {
@@ -550,7 +550,7 @@ impl<BE, Block, Client> ChildStateBackend<Block, Client> for FullState<BE, Block
 		storage_key: PrefixedStorageKey,
 		key: StorageKey,
 	) -> FutureResult<Option<Block::Hash>> {
-		Box::new(result(
+		Box::pin(future::ready(
 			self.block_or_best(block)
 				.and_then(|block| {
 					let child_info = match ChildType::from_prefixed_key(&storage_key) {

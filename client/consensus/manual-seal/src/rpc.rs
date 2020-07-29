@@ -16,7 +16,7 @@
 
 //! RPC interface for the ManualSeal Engine.
 use sp_consensus::ImportedAux;
-use jsonrpc_core::Error;
+use jsonrpc_core::{Result as RpcResult, BoxFuture, Error as RpcError};
 use jsonrpc_derive::rpc;
 use futures::{
 	channel::{mpsc, oneshot},
@@ -29,9 +29,9 @@ use sp_runtime::Justification;
 pub use self::gen_client::Client as ManualSealClient;
 
 /// Future's type for jsonrpc
-type FutureResult<T> = Box<dyn jsonrpc_core::futures::Future<Item = T, Error = Error> + Send>;
+type FutureResult<T> = BoxFuture<RpcResult<T>>;
 /// sender passed to the authorship task to report errors or successes.
-pub type Sender<T> = Option<oneshot::Sender<std::result::Result<T, crate::Error>>>;
+pub type Sender<T> = Option<oneshot::Sender<Result<T, crate::Error>>>;
 
 /// Message sent to the background authorship task, usually by RPC.
 pub enum EngineCommand<Hash> {
@@ -123,9 +123,9 @@ impl<Hash: Send + 'static> ManualSealApi<Hash> for ManualSeal<Hash> {
 			};
 			sink.send(command).await?;
 			receiver.await?
-		}.boxed();
+		};
 
-		Box::new(future.map_err(Error::from).compat())
+		Box::pin(future.map_err(RpcError::from))
 	}
 
 	fn finalize_block(&self, hash: Hash, justification: Option<Justification>) -> FutureResult<bool> {
@@ -139,7 +139,7 @@ impl<Hash: Send + 'static> ManualSealApi<Hash> for ManualSeal<Hash> {
 			receiver.await?.map(|_| true)
 		};
 
-		Box::new(future.boxed().map_err(Error::from).compat())
+		Box::pin(future.map_err(RpcError::from))
 	}
 }
 
@@ -147,7 +147,7 @@ impl<Hash: Send + 'static> ManualSealApi<Hash> for ManualSeal<Hash> {
 /// to the rpc
 pub fn send_result<T: std::fmt::Debug>(
 	sender: &mut Sender<T>,
-	result: std::result::Result<T, crate::Error>
+	result: Result<T, crate::Error>
 ) {
 	if let Some(sender) = sender.take() {
 		if let Err(err) = sender.send(result) {

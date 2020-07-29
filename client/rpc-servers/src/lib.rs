@@ -45,7 +45,7 @@ pub fn rpc_handler<M: PubSubMetadata>(
 
 	// add an endpoint to list all available methods.
 	let mut methods = io.iter().map(|x| x.0.clone()).collect::<Vec<String>>();
-	io.add_method("rpc_methods", {
+	io.add_sync_method("rpc_methods", {
 		methods.sort();
 		let methods = serde_json::to_value(&methods)
 			.expect("Serialization of Vec<String> is infallible; qed");
@@ -111,12 +111,14 @@ mod inner {
 	/// Start WS server listening on given address.
 	///
 	/// **Note**: Only available if `not(target_os = "unknown")`.
-	pub fn start_ws<M: pubsub::PubSubMetadata + From<jsonrpc_core::futures::sync::mpsc::Sender<String>>> (
+	pub fn start_ws<M: pubsub::PubSubMetadata> (
 		addr: &std::net::SocketAddr,
 		max_connections: Option<usize>,
 		cors: Option<&Vec<String>>,
 		io: RpcHandler<M>,
-	) -> io::Result<ws::Server> {
+	) -> io::Result<ws::Server> where
+		M: From<jsonrpc_core::futures::channel::mpsc::UnboundedSender<String>>,
+	{
 		ws::ServerBuilder::with_meta_extractor(io, |context: &ws::RequestContext| context.sender().into())
 			.max_payload(MAX_PAYLOAD)
 			.max_connections(max_connections.unwrap_or(WS_MAX_CONNECTIONS))
