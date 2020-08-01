@@ -3783,6 +3783,7 @@ dependencies = [
  "pallet-indices",
  "pallet-membership",
  "pallet-multisig",
+ "pallet-node-permission",
  "pallet-offences",
  "pallet-offences-benchmarking",
  "pallet-proxy",
@@ -3811,6 +3812,7 @@ dependencies = [
  "sp-inherents",
  "sp-io",
  "sp-keyring",
+ "sp-node-permission",
  "sp-offchain",
  "sp-runtime",
  "sp-session",
@@ -4599,6 +4601,7 @@ dependencies = [
  "frame-system",
  "parity-scale-codec",
  "sp-node-permission",
+ "sp-std",
 ]
 
 [[package]]
