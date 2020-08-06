@@ -27,7 +27,7 @@ use log::warn;
 use sp_blockchain::{Error as ClientError, HeaderBackend};
 
 use rpc::futures::{
-	StreamExt, FutureExt, TryFutureExt, future, task,
+	SinkExt, StreamExt, FutureExt, TryFutureExt, future, task,
 };
 use sc_rpc_api::DenyUnsafe;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
@@ -210,10 +210,7 @@ impl<P, Client> AuthorApi<TxHash<P>, BlockHash<P>> for Author<P, Client>
 			.map(move |result| match result {
 				Ok(watcher) => {
 					subscriptions.add(subscriber, move |sink| {
-						sink
-							.sink_map_err(|_| unimplemented!())
-							.send_all(watcher)
-							.map(|_| ())
+						watcher.forward(sink)
 					});
 				},
 				Err(err) => {
@@ -224,7 +221,7 @@ impl<P, Client> AuthorApi<TxHash<P>, BlockHash<P>> for Author<P, Client>
 			});
 
 		let res = self.subscriptions.executor()
-			.spawn_obj(task::FutureObj::new(Box::pin(future.map(|_| Ok(())))));
+			.spawn_obj(task::FutureObj::new(Box::pin(future)));
 		if res.is_err() {
 			warn!("Error spawning subscription RPC task.");
 		}

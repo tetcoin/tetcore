@@ -19,10 +19,10 @@
 use std::collections::{BTreeMap, HashMap};
 use std::sync::Arc;
 use std::ops::Range;
-use futures::{future, StreamExt as _, TryStreamExt as _};
 use log::warn;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
-use rpc::{Result as RpcResult, futures::{stream, Future, Sink, Stream}};
+use rpc::Result as RpcResult;
+use rpc::futures::{future, stream, Future, Sink, Stream, StreamExt, TryStreamExt, TryFutureExt, SinkExt};
 
 use sc_rpc_api::state::ReadProof;
 use sc_client_api::backend::Backend;
@@ -386,13 +386,13 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 				return;
 			}
 		};
+		let version = self.runtime_version(None.into())
+			.map_err(rpc::Error::from);
+		let client = self.client.clone();
 
-		self.subscriptions.add(subscriber, |sink| {
-			let version = self.runtime_version(None.into())
-				.map_err(Into::into)
-				.wait();
 
-			let client = self.client.clone();
+		self.subscriptions.add(subscriber, |sink| async move {
+			let version = version.await;
 			let mut previous_version = version.clone();
 
 			let stream = stream
@@ -401,24 +401,19 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 					let version = client
 						.runtime_version_at(&BlockId::hash(info.best_hash))
 						.map_err(client_err)
-						.map_err(Into::into);
+						.map_err(rpc::Error::from);
 					if previous_version != version {
 						previous_version = version.clone();
-						future::ready(Some(Ok::<_, ()>(version)))
+						future::ready(Some(version))
 					} else {
 						future::ready(None)
 					}
-				})
-				.compat();
+				});
 
-			sink
-				.sink_map_err(|e| warn!("Error sending notifications: {:?}", e))
-				.send_all(
-					stream::once(version)
-					.chain(stream)
-				)
-				// we ignore the resulting Stream (if the first stream is over we are unsubscribed)
-				.map(|_| ())
+			stream::iter(vec![version])
+				.chain(stream)
+				.forward(sink)
+				.await
 		});
 	}
 
@@ -471,8 +466,7 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 						.filter_map(|(o_sk, k, v)| if o_sk.is_none() {
 							Some((k.clone(),v.cloned()))
 						} else { None }).collect(),
-				})))
-				.compat();
+				})));
 
 			sink
 				.sink_map_err(|e| warn!("Error sending notifications: {:?}", e))

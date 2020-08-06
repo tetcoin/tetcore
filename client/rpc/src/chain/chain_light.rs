@@ -99,7 +99,7 @@ impl<Block, Client, F> ChainBackend<Client, Block> for LightChain<Block, Client,
 						header: header.clone(),
 						retry_count: Default::default(),
 					})
-					.map(move |body| Some(SignedBlock {
+					.map_ok(move |body| Some(SignedBlock {
 						block: Block::new(header, body),
 						justification: None,
 					}))

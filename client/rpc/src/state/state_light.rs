@@ -25,8 +25,9 @@ use rpc::futures::{
 	future::{self, Either},
 	channel::oneshot::{channel, Sender},
 	Stream,
+	SinkExt,
 	FutureExt, TryFutureExt,
-	StreamExt as _, TryStreamExt as _,
+	StreamExt, TryStreamExt,
 };
 use hash_db::Hasher;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
@@ -641,7 +642,7 @@ fn subscription_stream<
 	// we do not want to stop stream if single request fails
 	// (the warning should have been already issued by the request issuer)
 	let future_values_stream = future_blocks_stream
-		.and_then(move |block| ignore_error(maybe_share_remote_request::<Block, _, _, _, _>(
+		.then(move |block| ignore_error(maybe_share_remote_request::<Block, _, _, _, _>(
 			shared_requests.clone(),
 			block,
 			&issue_request,
@@ -650,15 +651,16 @@ fn subscription_stream<
 	// now let's return changed values for selected blocks
 	initial_value_stream
 		.chain(future_values_stream)
-		.filter_map(move |block_and_new_value| block_and_new_value.and_then(|(block, new_value)| {
-			let mut previous_value = previous_value.lock();
-			compare_values(block, previous_value.as_ref(), &new_value)
-				.map(|notification_value| {
-					*previous_value = Some(new_value);
-					notification_value
+		.filter_map(move |block_and_new_value| future::ready(block_and_new_value
+				.and_then(|(block, new_value)| {
+					let mut previous_value = previous_value.lock();
+					compare_values(block, previous_value.as_ref(), &new_value)
+						.map(|notification_value| {
+							*previous_value = Some(new_value);
+							notification_value
+						})
 				})
-		}))
-		.map_err(|_| ())
+		))
 }
 
 /// Request some data from remote node, probably reusing response from already
@@ -715,12 +717,12 @@ fn display_error<F, T>(future: F) -> impl std::future::Future<Output=Result<T, (
 
 /// Convert successful future result into Ok(Some(result)) and error into Ok(None),
 /// displaying warning.
-fn ignore_error<F, T>(future: F) -> impl std::future::Future<Output=Result<Option<T>, ()>> where
+fn ignore_error<F, T>(future: F) -> impl std::future::Future<Output=Option<T>> where
 	F: std::future::Future<Output=Result<T, ()>>
 {
 	future.then(|result| future::ready(match result {
-		Ok(result) => Ok(Some(result)),
-		Err(()) => Ok(None),
+		Ok(result) => Some(result),
+		Err(()) => None,
 	}))
 }
 

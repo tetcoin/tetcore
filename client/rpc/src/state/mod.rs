@@ -103,7 +103,7 @@ pub trait StateBackend<Block: BlockT, Client>: Send + Sync + 'static
 		key: StorageKey,
 	) -> FutureResult<Option<u64>> {
 		Box::pin(self.storage(block, key)
-			.map(|x| x.map(|x| x.0.len() as u64)))
+			.map_ok(|x| x.map(|x| x.0.len() as u64)))
 	}
 
 	/// Returns the runtime metadata as an opaque blob.
@@ -376,7 +376,7 @@ pub trait ChildStateBackend<Block: BlockT, Client>: Send + Sync + 'static
 		key: StorageKey,
 	) -> FutureResult<Option<u64>> {
 		Box::pin(self.storage(block, storage_key, key)
-			.map(|x| x.map(|x| x.0.len() as u64)))
+			.map_ok(|x| x.map(|x| x.0.len() as u64)))
 	}
 }
 

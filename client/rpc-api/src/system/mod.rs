@@ -58,18 +58,18 @@ pub trait SystemApi<Hash, Number> {
 	/// - connected to some peers (unless running in dev mode)
 	/// - not performing a major sync
 	#[rpc(name = "system_health")]
-	fn system_health(&self) -> BoxFuture<SystemResult<Health>>;
+	fn system_health(&self) -> BoxFuture<RpcResult<Health>>;
 
 	/// Returns the base58-encoded PeerId of the node.
 	#[rpc(name = "system_localPeerId")]
-	fn system_local_peer_id(&self) -> BoxFuture<SystemResult<String>>;
+	fn system_local_peer_id(&self) -> BoxFuture<RpcResult<String>>;
 
 	/// Returns the multiaddresses that the local node is listening on
 	///
 	/// The addresses include a trailing `/p2p/` with the local PeerId, and are thus suitable to
 	/// be passed to `system_addReservedPeer` or as a bootnode address for example.
 	#[rpc(name = "system_localListenAddresses")]
-	fn system_local_listen_addresses(&self) -> BoxFuture<SystemResult<Vec<String>>>;
+	fn system_local_listen_addresses(&self) -> BoxFuture<RpcResult<Vec<String>>>;
 
 	/// Returns currently connected peers
 	#[rpc(name = "system_peers")]
@@ -97,5 +97,5 @@ pub trait SystemApi<Hash, Number> {
 
 	/// Returns the roles the node is running as.
 	#[rpc(name = "system_nodeRoles")]
-	fn system_node_roles(&self) -> BoxFuture<SystemResult<Vec<NodeRole>>>;
+	fn system_node_roles(&self) -> BoxFuture<RpcResult<Vec<NodeRole>>>;
 }

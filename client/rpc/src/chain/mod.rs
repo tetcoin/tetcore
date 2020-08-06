@@ -114,8 +114,7 @@ trait ChainBackend<Client, Block: BlockT>: Send + Sync + 'static
 			subscriber,
 			|| self.client().info().best_hash,
 			|| self.client().import_notification_stream()
-				.map(|notification| Ok::<_, ()>(notification.header))
-				.compat(),
+				.map(|notification| notification.header),
 		)
 	}
 
@@ -141,8 +140,7 @@ trait ChainBackend<Client, Block: BlockT>: Send + Sync + 'static
 			|| self.client().info().best_hash,
 			|| self.client().import_notification_stream()
 				.filter(|notification| future::ready(notification.is_new_best))
-				.map(|notification| Ok::<_, ()>(notification.header))
-				.compat(),
+				.map(|notification| notification.header),
 		)
 	}
 
@@ -167,8 +165,7 @@ trait ChainBackend<Client, Block: BlockT>: Send + Sync + 'static
 			subscriber,
 			|| self.client().info().finalized_hash,
 			|| self.client().finality_notification_stream()
-				.map(|notification| Ok::<_, ()>(notification.header))
-				.compat(),
+				.map(|notification| notification.header),
 		)
 	}
 
@@ -285,7 +282,7 @@ impl<Block, Client> ChainApi<NumberFor<Block>, Block::Hash, Block::Header, Signe
 }
 
 /// Subscribe to new headers.
-fn subscribe_headers<Block, Client, F, G, S, ERR>(
+fn subscribe_headers<Block, Client, F, G, S>(
 	client: &Arc<Client>,
 	subscriptions: &SubscriptionManager,
 	subscriber: Subscriber<Block::Header>,
@@ -296,8 +293,7 @@ fn subscribe_headers<Block, Client, F, G, S, ERR>(
 	Client: HeaderBackend<Block> + 'static,
 	F: FnOnce() -> S,
 	G: FnOnce() -> Block::Hash,
-	ERR: std::fmt::Debug,
-	S: Stream<Item = std::result::Result<Block::Header, ERR>> + Send + 'static,
+	S: Stream<Item = Block::Header> + Send + 'static,
 {
 	subscriptions.add(subscriber, |sink| {
 		// send current head right at the start.
@@ -305,18 +301,14 @@ fn subscribe_headers<Block, Client, F, G, S, ERR>(
 			.map_err(client_err)
 			.and_then(|header| {
 				header.ok_or_else(|| "Best header missing.".to_owned().into())
-			})
-			.map_err(Into::into);
+			});
 
 		// send further subscriptions
-		let stream = stream()
-			.map(|res| Ok(res))
-			.map_err(|e| warn!("Block notification stream error: {:?}", e));
+		let stream = stream();
 
 		sink
-			.sink_map_err(|e| warn!("Error sending notifications: {:?}", e))
 			.send_all(
-				stream::once(header)
+				stream::iter(vec![header])
 					.chain(stream)
 			)
 			// we ignore the resulting Stream (if the first stream is over we are unsubscribed)

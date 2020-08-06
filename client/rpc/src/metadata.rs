@@ -27,7 +27,7 @@ use rpc::futures::channel::mpsc;
 /// Manages persistent session for transports that support it
 /// and may contain some additional info extracted from specific transports
 /// (like remote client IP address, request headers, etc)
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct Metadata {
 	session: Option<Arc<Session>>,
 }
@@ -41,7 +41,7 @@ impl PubSubMetadata for Metadata {
 
 impl Metadata {
 	/// Create new `Metadata` with session (Pub/Sub) support.
-	pub fn new(transport: mpsc::Sender<String>) -> Self {
+	pub fn new(transport: mpsc::UnboundedSender<String>) -> Self {
 		Metadata {
 			session: Some(Arc::new(Session::new(transport))),
 		}
@@ -50,13 +50,13 @@ impl Metadata {
 	/// Create new `Metadata` for tests.
 	#[cfg(test)]
 	pub fn new_test() -> (mpsc::Receiver<String>, Self) {
-		let (tx, rx) = mpsc::channel(1);
+		let (tx, rx) = mpsc::unbounded();
 		(rx, Self::new(tx))
 	}
 }
 
-impl From<mpsc::Sender<String>> for Metadata {
-	fn from(sender: mpsc::Sender<String>) -> Self {
+impl From<mpsc::UnboundedSender<String>> for Metadata {
+	fn from(sender: mpsc::UnboundedSender<String>) -> Self {
 		Self::new(sender)
 	}
 }

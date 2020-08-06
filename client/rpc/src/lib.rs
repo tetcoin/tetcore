@@ -55,8 +55,8 @@ impl SubscriptionTaskExecutor {
 	fn spawn(
 		&self,
 		name: &'static str,
-		future: impl Future<Output = ()> + Send,
+		future: impl Future<Output = ()> + Send + 'static,
 	) {
-		self.0.spawn(name, future);
+		self.0.spawn(name, Box::pin(future));
 	}
 }
