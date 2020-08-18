@@ -70,16 +70,17 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			.collect::<Vec<_>>()
 	});
 
+	// TODO TODO: maybe add span here for error message
 	quote::quote!(
+		#[cfg_attr(feature = "std", derive(#scrate::DebugNoBound))]
+		#[cfg_attr(not(feature = "std"), derive(#scrate::DebugStripped))]
 		#[derive(
-			#scrate::codec::Encode,
-			#scrate::codec::Decode,
 			#scrate::CloneNoBound,
 			#scrate::EqNoBound,
 			#scrate::PartialEqNoBound,
+			#scrate::codec::Encode,
+			#scrate::codec::Decode,
 		)]
-		#[cfg_attr(feature = "std", derive(#scrate::DebugNoBound))]
-		#[cfg_attr(not(feature = "std"), derive(#scrate::DebugStripped))]
 		#[allow(non_camel_case_types)]
 		pub enum #call_ident<#type_decl_gen> {
 			#[doc(hidden)]

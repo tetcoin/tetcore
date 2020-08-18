@@ -68,25 +68,24 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		event_item.variants.push(variant);
 	}
 
-	// This is needed because system event require Clone, FullCodec, Eq, PartialEq and Debug
-	event_item.attrs.push(syn::parse_quote!(
-		#[derive(
-			#scrate::codec::Encode,
-			#scrate::codec::Decode,
-			#scrate::CloneNoBound,
-			#scrate::EqNoBound,
-			#scrate::PartialEqNoBound,
-		)]
-	));
-
+	// derive some traits because system event require Clone, FullCodec, Eq, PartialEq and Debug
 	event_item.attrs.push(syn::parse_quote!(
 		#[cfg_attr(feature = "std", derive(#scrate::DebugNoBound))]
 	));
-
 	event_item.attrs.push(syn::parse_quote!(
 		#[cfg_attr(not(feature = "std"), derive(#scrate::DebugStripped))]
 	));
+	event_item.attrs.push(syn::parse_quote!(
+		#[derive(
+			#scrate::CloneNoBound,
+			#scrate::EqNoBound,
+			#scrate::PartialEqNoBound,
+			#scrate::codec::Encode,
+			#scrate::codec::Decode,
+		)]
+	));
 
+	// TODO TODO: maybe add span here for error message
 	quote::quote!(
 		impl<#event_impl_gen> From<#event_ident<#event_use_gen>> for () {
 			fn from(_: #event_ident<#event_use_gen>) -> () { () }
