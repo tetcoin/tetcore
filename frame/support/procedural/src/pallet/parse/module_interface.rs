@@ -25,7 +25,6 @@ pub struct ModuleInterfaceDef {
 	pub instances: Vec<helper::InstanceUsage>,
 }
 
-// TODO TODO: ensure blocknumber is frame_system blocknumber or write it in the doc
 impl ModuleInterfaceDef {
 	pub fn try_from(index: usize, item: &mut syn::Item) -> syn::Result<Self> {
 		let item = if let syn::Item::Impl(item) = item {
@@ -35,24 +34,29 @@ impl ModuleInterfaceDef {
 			return Err(syn::Error::new(item.span(), msg));
 		};
 
+		let mut instances = vec![];
+		instances.push(helper::check_module_usage(&item.self_ty)?);
+		instances.push(helper::check_impl_generics(&item.generics, item.impl_token.span())?);
+
 		let item_trait = &item.trait_.as_ref()
 			.ok_or_else(|| {
-				let msg = "Invalid pallet::module_interface, expect impl... ModuleInterface \
-					for ...";
+				let msg = "Invalid pallet::module_interface, expect impl<..> ModuleInterface \
+					for Module<..>";
 				syn::Error::new(item.span(), msg)
 			})?.1;
 
 		if item_trait.segments.len() != 1
 			|| item_trait.segments[0].ident != "ModuleInterface"
 		{
-			let msg = "Invalid pallet::module_interface, expect trait to be `ModuleInterface`";
+			let msg = format!(
+				"Invalid pallet::module_interface, expect trait to be `ModuleInterface` found `{}`\
+				, you can import from `frame_support::pallet_prelude`",
+				quote::quote!(#item_trait)
+			);
+
 			return Err(syn::Error::new(item_trait.span(), msg));
 		}
-
-		let mut instances = vec![];
-		instances.push(helper::check_module_usage(&item.self_ty)?);
 
 		Ok(Self { index, instances })
 	}
 }
-

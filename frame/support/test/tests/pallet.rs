@@ -55,6 +55,14 @@ pub mod pallet {
 			let _ = origin;
 			unimplemented!();
 		}
+
+		/// Doc comment put in metadata
+		#[pallet::weight = 0] // Defines weight for call (function parameters are in scope)
+		#[frame_support::transactional]
+		fn toto_transactional(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
+			let _ = origin;
+			Ok(().into())
+		}
 	}
 
 	// Declare pallet Error enum. (this is optional)

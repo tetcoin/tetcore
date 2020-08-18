@@ -44,14 +44,19 @@ pub struct InstanceUsage {
 ///
 /// NOTE: verbatim variants are not supported.
 pub trait MutItemAttrs {
-	fn mut_item_attrs(&mut self) -> &mut Vec<syn::Attribute>;
+	fn mut_item_attrs(&mut self) -> Option<&mut Vec<syn::Attribute>>;
 }
 
 /// Take the first pallet attribute (e.g. attribute like `#[pallet..]`) and decode it to `Attr`
 pub fn take_first_item_attr<Attr>(item: &mut impl MutItemAttrs) -> syn::Result<Option<Attr>> where
 	Attr: syn::parse::Parse,
 {
-	let attrs = item.mut_item_attrs();
+	let attrs = if let Some(attrs) = item.mut_item_attrs() {
+		attrs
+	} else {
+		return Ok(None)
+	};
+
 	if let Some(index) = attrs.iter()
 		.position(|attr|
 			attr.path.segments.first().map_or(false, |segment| segment.ident == "pallet")
@@ -78,47 +83,47 @@ pub fn take_item_attrs<Attr>(item: &mut impl MutItemAttrs) -> syn::Result<Vec<At
 }
 
 impl MutItemAttrs for syn::Item {
-	fn mut_item_attrs(&mut self) -> &mut Vec<syn::Attribute> {
+	fn mut_item_attrs(&mut self) -> Option<&mut Vec<syn::Attribute>> {
 		match self {
-			Self::Const(item) => item.attrs.as_mut(),
-			Self::Enum(item) => item.attrs.as_mut(),
-			Self::ExternCrate(item) => item.attrs.as_mut(),
-			Self::Fn(item) => item.attrs.as_mut(),
-			Self::ForeignMod(item) => item.attrs.as_mut(),
-			Self::Impl(item) => item.attrs.as_mut(),
-			Self::Macro(item) => item.attrs.as_mut(),
-			Self::Macro2(item) => item.attrs.as_mut(),
-			Self::Mod(item) => item.attrs.as_mut(),
-			Self::Static(item) => item.attrs.as_mut(),
-			Self::Struct(item) => item.attrs.as_mut(),
-			Self::Trait(item) => item.attrs.as_mut(),
-			Self::TraitAlias(item) => item.attrs.as_mut(),
-			Self::Type(item) => item.attrs.as_mut(),
-			Self::Union(item) => item.attrs.as_mut(),
-			Self::Use(item) => item.attrs.as_mut(),
-			Self::Verbatim(_) => panic!("Internal Error: Verbatim variants are not supported"),
-			Self::__Nonexhaustive => panic!("Internal Error: uncovered variant"),
+			Self::Const(item) => Some(item.attrs.as_mut()),
+			Self::Enum(item) => Some(item.attrs.as_mut()),
+			Self::ExternCrate(item) => Some(item.attrs.as_mut()),
+			Self::Fn(item) => Some(item.attrs.as_mut()),
+			Self::ForeignMod(item) => Some(item.attrs.as_mut()),
+			Self::Impl(item) => Some(item.attrs.as_mut()),
+			Self::Macro(item) => Some(item.attrs.as_mut()),
+			Self::Macro2(item) => Some(item.attrs.as_mut()),
+			Self::Mod(item) => Some(item.attrs.as_mut()),
+			Self::Static(item) => Some(item.attrs.as_mut()),
+			Self::Struct(item) => Some(item.attrs.as_mut()),
+			Self::Trait(item) => Some(item.attrs.as_mut()),
+			Self::TraitAlias(item) => Some(item.attrs.as_mut()),
+			Self::Type(item) => Some(item.attrs.as_mut()),
+			Self::Union(item) => Some(item.attrs.as_mut()),
+			Self::Use(item) => Some(item.attrs.as_mut()),
+			Self::Verbatim(_) => None,
+			Self::__Nonexhaustive => None,
 		}
 	}
 }
 
 
 impl MutItemAttrs for syn::TraitItem {
-	fn mut_item_attrs(&mut self) -> &mut Vec<syn::Attribute> {
+	fn mut_item_attrs(&mut self) -> Option<&mut Vec<syn::Attribute>> {
 		match self {
-			Self::Const(item) => item.attrs.as_mut(),
-			Self::Method(item) => item.attrs.as_mut(),
-			Self::Type(item) => item.attrs.as_mut(),
-			Self::Macro(item) => item.attrs.as_mut(),
-			Self::Verbatim(_) => panic!("Internal Error: Verbatim variants are not supported"),
-			Self::__Nonexhaustive => panic!("Internal Error: uncovered variant"),
+			Self::Const(item) => Some(item.attrs.as_mut()),
+			Self::Method(item) => Some(item.attrs.as_mut()),
+			Self::Type(item) => Some(item.attrs.as_mut()),
+			Self::Macro(item) => Some(item.attrs.as_mut()),
+			Self::Verbatim(_) => None,
+			Self::__Nonexhaustive => None,
 		}
 	}
 }
 
 impl MutItemAttrs for Vec<syn::Attribute> {
-	fn mut_item_attrs(&mut self) -> &mut Vec<syn::Attribute> {
-		self
+	fn mut_item_attrs(&mut self) -> Option<&mut Vec<syn::Attribute>> {
+		Some(self)
 	}
 }
 
@@ -377,7 +382,7 @@ pub fn check_impl_generics(
 	gen: &syn::Generics,
 	span: proc_macro2::Span
 ) -> syn::Result<InstanceUsage> {
-	let expected = "expect `T: Trait` or `T: Trait<I>, I: Instance`";
+	let expected = "expect `impl<T: Trait>` or `impl<T: Trait<I>, I: Instance>`";
 	pub struct Checker(InstanceUsage);
 	impl syn::parse::Parse for Checker {
 		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {

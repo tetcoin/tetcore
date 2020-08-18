@@ -68,6 +68,7 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		event_item.variants.push(variant);
 	}
 
+	// This is needed because system event require Clone, FullCodec, Eq, PartialEq and Debug
 	event_item.attrs.push(syn::parse_quote!(
 		#[derive(
 			#scrate::codec::Encode,

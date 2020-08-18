@@ -73,7 +73,7 @@ impl StorageDef {
 		let item = if let syn::Item::Type(item) = item {
 			item
 		} else {
-			return Err(syn::Error::new(item.span(), "Invalid pallet::error, expect item enum"));
+			return Err(syn::Error::new(item.span(), "Invalid pallet::storage, expect item type"));
 		};
 
 		let mut instances = vec![];
@@ -113,13 +113,17 @@ impl StorageDef {
 			"StorageDoubleMapType" => {
 				Metadata::DoubleMap {
 					key1:  retrieve_arg(&typ.path.segments[0], 1)?,
-					key2:  retrieve_arg(&typ.path.segments[0], 2)?, // TODO TODO: maybe use stringify instead of debug format
+					key2:  retrieve_arg(&typ.path.segments[0], 2)?,
 					value:  retrieve_arg(&typ.path.segments[0], 3)?,
 				}
 			}
-			_ => {
-				let msg = "Invalid pallet::storage, expect ident: `StorageValueType` or \
-				`StorageMapType` or `StorageDoubleMapType` in order to expand metadata"; // TODO TODO: add found
+			found @ _ => {
+				let msg = format!(
+					"Invalid pallet::storage, expect ident: `StorageValueType` or \
+					`StorageMapType` or `StorageDoubleMapType` in order to expand metadata, found \
+					`{}`",
+					found,
+				);
 				return Err(syn::Error::new(item.ty.span(), msg));
 			}
 		};

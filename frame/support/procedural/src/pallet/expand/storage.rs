@@ -146,7 +146,9 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 			#[doc(hidden)]
 			pub fn storage_metadata() -> #scrate::metadata::StorageMetadata {
 				#scrate::metadata::StorageMetadata {
-					prefix: #scrate::metadata::DecodeDifferent::Encode(#instance::PREFIX),
+					prefix: #scrate::metadata::DecodeDifferent::Encode(
+						<#instance as #scrate::traits::Instance>::PREFIX
+					),
 					entries: #scrate::metadata::DecodeDifferent::Encode(
 						&[ #( #entries, )* ]
 					),

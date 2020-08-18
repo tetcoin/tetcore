@@ -108,8 +108,9 @@ impl Def {
 
 		if genesis_config.is_some() != genesis_build.is_some() {
 			let msg = format!(
-				"pallet::genesis_config and pallet::genesis_build attributes must be either \
-				both used or both not used, instead genesis_config is {} and genesis_build is {}",
+				"`#[pallet::genesis_config]` and `#[pallet::genesis_build]` attributes must be \
+				either both used or both not used, instead genesis_config is {} and genesis_build \
+				is {}",
 				genesis_config.as_ref().map_or("unused", |_| "used"),
 				genesis_build.as_ref().map_or("unused", |_| "used"),
 			);
@@ -119,12 +120,12 @@ impl Def {
 		let def = Def {
 			name,
 			item: item,
-			trait_: trait_.ok_or_else(|| syn::Error::new(item_span, "Missing pallet::trait_"))?,
+			trait_: trait_.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::trait_]`"))?,
 			module: module
-				.ok_or_else(|| syn::Error::new(item_span, "Missing pallet::module"))?,
+				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::module]`"))?,
 			module_interface: module_interface
-				.ok_or_else(|| syn::Error::new(item_span, "Missing pallet::module_interface"))?,
-			call: call.ok_or_else(|| syn::Error::new(item_span, "Missing pallet::call"))?,
+				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::module_interface]`"))?,
+			call: call.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::call]"))?,
 			genesis_config,
 			genesis_build,
 			error,

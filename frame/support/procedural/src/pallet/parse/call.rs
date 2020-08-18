@@ -119,7 +119,7 @@ impl CallDef {
 			if let syn::ImplItem::Method(method) = impl_item {
 				if method.sig.inputs.len() == 0 {
 					let msg = "Invalid pallet::call, must have at least origin arg";
-					return Err(syn::Error::new(method.sig.inputs.span(), msg));
+					return Err(syn::Error::new(method.sig.span(), msg));
 				}
 				helper::check_dispatchable_first_arg(&method.sig.inputs[0])?;
 
@@ -136,7 +136,7 @@ impl CallDef {
 
 				if call_var_attrs.len() != 1 {
 					let msg = if call_var_attrs.len() == 0 {
-						"Invalid pallet::call, require weight attribute i.e. `#[pallet::weight]`"
+						"Invalid pallet::call, require weight attribute i.e. `#[pallet::weight = $expr]`"
 					} else {
 						"Invalid pallet::call, to many weight attribute given"
 					};
