@@ -24,6 +24,7 @@
 mod storage;
 mod construct_runtime;
 mod pallet;
+mod transactional;
 
 pub(crate) use storage::INHERENT_INSTANCE_NAME;
 use proc_macro::TokenStream;
@@ -614,4 +615,29 @@ pub fn derive_eq_no_bound(input: TokenStream) -> TokenStream {
 			impl #impl_generics core::cmp::Eq for #name #ty_generics #where_clause {}
 		};
 	).into()
+}
+
+/// Execute the annotated function in a new storage transaction.
+///
+/// The return type of the annotated function must be `Result`. All changes to storage performed
+/// by the annotated function are discarded if it returns `Err`, or committed if `Ok`.
+///
+/// #Example
+///
+/// ```nocompile
+/// #[transactional]
+/// fn value_commits(v: u32) -> result::Result<u32, &'static str> {
+/// 	Value::set(v);
+/// 	Ok(v)
+/// }
+///
+/// #[transactional]
+/// fn value_rollbacks(v: u32) -> result::Result<u32, &'static str> {
+/// 	Value::set(v);
+/// 	Err("nah")
+/// }
+/// ```
+#[proc_macro_attribute]
+pub fn transactional(attr: TokenStream, input: TokenStream) -> TokenStream {
+	transactional::transactional(attr, input)
 }
