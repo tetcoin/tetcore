@@ -1,0 +1,10 @@
+error[E0046]: not all trait items implemented, missing: `Call`, `Error`, `INHERENT_IDENTIFIER`, `create_inherent`
+  --> $DIR/inherent_002.rs:19:2
+   |
+19 |     impl<T: Trait> ProvideInherent for Module<T> {}
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `Call`, `Error`, `INHERENT_IDENTIFIER`, `create_inherent` in implementation
+   |
+   = help: implement the missing item: `type Call = Type;`
+   = help: implement the missing item: `type Error = Type;`
+   = help: implement the missing item: `const INHERENT_IDENTIFIER: [u8; 8] = value;`
+   = help: implement the missing item: `fn create_inherent(_: &pallet::sp_api_hidden_includes_pallet::hidden_include::inherent::InherentData) -> std::option::Option<<Self as pallet::sp_api_hidden_includes_pallet::hidden_include::inherent::ProvideInherent>::Call> { todo!() }`

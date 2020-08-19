@@ -1,0 +1,11 @@
+error[E0277]: the trait bound `pallet::Call<T>: pallet::_::_parity_scale_codec::Decode` is not satisfied
+  --> $DIR/call_008.rs:18:2
+   |
+18 |     impl<T: Trait> Call for Module<T> {
+   |     ^^^^^^^^^^^^^^^^^^^ the trait `pallet::_::_parity_scale_codec::Decode` is not implemented for `pallet::Call<T>`
+
+error[E0277]: the trait bound `pallet::Call<T>: pallet::_::_parity_scale_codec::Encode` is not satisfied
+  --> $DIR/call_008.rs:18:2
+   |
+18 |     impl<T: Trait> Call for Module<T> {
+   |     ^^^^^^^^^^^^^^^^^^^ the trait `pallet::_::_parity_scale_codec::Encode` is not implemented for `pallet::Call<T>`

@@ -1,0 +1,11 @@
+error: Invalid module type: expect `Module<T>` or `Module<T, I>`
+  --> $DIR/step_020.rs:15:17
+   |
+15 |     impl<T: Trait> Foo {}
+   |                    ^^^
+
+error: expected `Module`
+  --> $DIR/step_020.rs:15:17
+   |
+15 |     impl<T: Trait> Foo {}
+   |                    ^^^

@@ -1,0 +1,13 @@
+error: Invalid genesis builder: expect `GenesisBuilder<T>` or `GenesisBuilder<T, I>`
+  --> $DIR/genesis_002.rs:19:7
+   |
+19 |     impl GenesisBuilder for GenesisConfig {}
+   |          ^^^^^^^^^^^^^^
+
+error: expected `<`
+ --> $DIR/genesis_002.rs:1:1
+  |
+1 | #[frame_support::pallet(Example)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)

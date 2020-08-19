@@ -1,0 +1,12 @@
+error[E0412]: cannot find type `StorageValueType` in this scope
+  --> $DIR/storage_005.rs:19:13
+   |
+19 |     type Foo = StorageValueType<u8, u8>;
+   |                ^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing one of these items
+   |
+3  |     use frame_support::pallet_prelude::StorageValueType;
+   |
+3  |     use frame_support::storage::types::StorageValueType;
+   |

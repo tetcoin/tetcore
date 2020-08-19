@@ -1,0 +1,11 @@
+error: Invalid module type: expect `Module<T>` or `Module<T, I>`
+  --> $DIR/step_014.rs:10:7
+   |
+10 |     impl Foo {}
+   |          ^^^
+
+error: expected `Module`
+  --> $DIR/step_014.rs:10:7
+   |
+10 |     impl Foo {}
+   |          ^^^

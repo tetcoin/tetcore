@@ -1,0 +1,29 @@
+error: Invalid generic declaration, trait is defined without instance but generic use some
+  --> $DIR/inconsistent_instance_2.rs:16:7
+   |
+16 |     impl<T: Trait<I>, I: Instance> Call for Module<T, I> {}
+   |          ^
+
+error: Invalid generic declaration, trait is defined without instance but generic use some
+  --> $DIR/inconsistent_instance_2.rs:16:42
+   |
+16 |     impl<T: Trait<I>, I: Instance> Call for Module<T, I> {}
+   |                                             ^^^^^^
+
+error: Invalid generic declaration, trait is defined without instance but generic use some
+  --> $DIR/inconsistent_instance_2.rs:10:20
+   |
+10 |     pub struct Module<T, I = DefaultInstance>(core::marker::PhantomData<(T, I)>);
+   |                       ^
+
+error: Invalid generic declaration, trait is defined without instance but generic use some
+  --> $DIR/inconsistent_instance_2.rs:13:72
+   |
+13 |     impl<T: Trait<I>, I: Instance> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {}
+   |                                                                           ^^^^^^
+
+error: Invalid generic declaration, trait is defined without instance but generic use some
+  --> $DIR/inconsistent_instance_2.rs:13:7
+   |
+13 |     impl<T: Trait<I>, I: Instance> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {}
+   |          ^

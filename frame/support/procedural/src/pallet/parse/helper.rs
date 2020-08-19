@@ -566,4 +566,3 @@ pub fn check_genesis_builder_usage(type_: &syn::Path) -> syn::Result<InstanceUsa
 
 	Ok(i)
 }
-

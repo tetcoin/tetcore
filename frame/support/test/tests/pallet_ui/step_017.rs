@@ -3,7 +3,7 @@ mod pallet {
 	use frame_support::pallet_prelude::*;
 
 	#[pallet::trait_]
-	pub trait Trait {}
+	pub trait Trait: frame_system::Trait {}
 
 	#[pallet::module]
 	pub struct Module<T> {}
@@ -12,7 +12,7 @@ mod pallet {
 	impl<T: Trait> ModuleInterface for Module<T> {}
 
 	#[pallet::call]
-	impl Foo {}
+	pub enum Call {}
 }
 
 fn main() {

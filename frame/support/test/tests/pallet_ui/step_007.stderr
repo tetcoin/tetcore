@@ -1,0 +1,5 @@
+error: Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, found none.
+ --> $DIR/step_007.rs:4:2
+  |
+4 |     pub trait Trait {}
+  |     ^^^

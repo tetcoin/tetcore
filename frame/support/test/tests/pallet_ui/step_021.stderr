@@ -1,0 +1,5 @@
+error: Invalid pallet::call, expect Call ident as in `impl<..> Call for Module<..> { .. }`
+  --> $DIR/step_021.rs:15:2
+   |
+15 |     impl<T: Trait> Module<T> {}
+   |     ^^^^

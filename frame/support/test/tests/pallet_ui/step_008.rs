@@ -1,10 +1,14 @@
 #[frame_support::pallet(Example)]
 mod pallet {
-	#[pallet::trait_]
-	pub trait Trait {}
+	mod balance {
+		pub trait Trait: frame_system::Trait {}
+	}
+	mod timestamp {
+		pub trait Trait: frame_system::Trait {}
+	}
 
-	#[pallet::module]
-	pub struct Foo {}
+	#[pallet::trait_]
+	pub trait Trait: balance::Trait + timestamp::Trait {}
 }
 
 fn main() {

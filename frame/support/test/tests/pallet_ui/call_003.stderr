@@ -1,0 +1,11 @@
+error: Invalid arg: expect `origin: OriginFor<T>`
+  --> $DIR/call_003.rs:17:10
+   |
+17 |         fn foo(foo: u8) {}
+   |                ^^^
+
+error: expected `origin`
+  --> $DIR/call_003.rs:17:10
+   |
+17 |         fn foo(foo: u8) {}
+   |                ^^^

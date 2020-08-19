@@ -35,8 +35,6 @@ pub mod genesis_build;
 use syn::spanned::Spanned;
 use frame_support_procedural_tools::generate_crate_access;
 
-// TODO TODO: configure frame-system path through attribute
-
 /// Parsed definition of a pallet.
 pub struct Def {
 	pub name: syn::Ident,

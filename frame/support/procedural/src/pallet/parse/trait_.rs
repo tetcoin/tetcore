@@ -25,6 +25,7 @@ mod keyword {
 	syn::custom_keyword!(Get);
 	syn::custom_keyword!(trait_);
 	syn::custom_keyword!(const_);
+	syn::custom_keyword!(frame_system);
 }
 
 pub struct TraitDef {
@@ -148,8 +149,43 @@ impl TraitDef {
 			}
 		}
 
-		// TODO TODO: check for frame_system bound ?
+		let has_frame_system_supertrait = item.supertraits.iter().any(|s| {
+			syn::parse2::<FrameSystemTraitParse>(s.to_token_stream()).is_ok()
+		});
+
+		if !has_frame_system_supertrait {
+			let found = if item.supertraits.is_empty() {
+				"none".to_string()
+			} else {
+				let mut found = item.supertraits.iter()
+					.fold(String::new(), |acc, s| {
+						format!("{}`{}`, ", acc, quote::quote!(#s).to_string())
+					});
+				found.pop();
+				found.pop();
+				found
+			};
+
+			let msg = format!(
+				"Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, \
+				found {}.",
+				found
+			);
+			return Err(syn::Error::new(item.span(), msg));
+		}
 
 		Ok(Self { index, has_instance, consts_metadata })
+	}
+}
+
+/// Parse for `frame_system::Trait`
+pub struct FrameSystemTraitParse;
+impl syn::parse::Parse for FrameSystemTraitParse {
+	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+		input.parse::<keyword::frame_system>()?;
+		input.parse::<syn::Token![::]>()?;
+		input.parse::<keyword::Trait>()?;
+
+		Ok(Self)
 	}
 }

@@ -48,7 +48,7 @@ impl OriginDef {
 		let is_generic = generics.params.len() > 0;
 
 		let mut instances = vec![];
-		// TODO TODO: is it ok not to be generic over I ? maybe should be same as storage
+		// TODO TODO: is it ok not to be generic over I ? maybe should be same as storage, at least it doesn't seem supported by construct_runtime right now
 		if let Some(u) = helper::check_type_def_optional_generics(&generics, item.span())? {
 			instances.push(u);
 		}

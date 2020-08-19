@@ -1,0 +1,5 @@
+error: expected `Module`
+ --> $DIR/step_010.rs:7:13
+  |
+7 |     pub struct Foo {}
+  |                ^^^

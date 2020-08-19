@@ -1,0 +1,5 @@
+error: Invalid pallet::call, expect item impl
+  --> $DIR/step_017.rs:15:2
+   |
+15 |     pub enum Call {}
+   |     ^^^

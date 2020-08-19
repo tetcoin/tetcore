@@ -30,8 +30,6 @@ use crate::pallet::Def;
 use quote::ToTokens;
 use frame_support_procedural_tools::{generate_hidden_includes};
 
-// TODO TODO: double check metadata (remove stringify and print and use tools)
-
 /// Expand definition, in particular:
 /// * add some bounds and variants to type defined,
 /// * create some new types,

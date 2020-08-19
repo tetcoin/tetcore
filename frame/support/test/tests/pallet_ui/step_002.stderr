@@ -1,0 +1,15 @@
+error: Invalid pallet macro call: expect `#[frame_support::pallet($IDENT)]`
+ --> $DIR/step_002.rs:1:1
+  |
+1 | #[frame_support::pallet]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unexpected end of input, expected identifier
+ --> $DIR/step_002.rs:1:1
+  |
+1 | #[frame_support::pallet]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)

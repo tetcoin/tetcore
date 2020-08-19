@@ -146,7 +146,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 		impl<#type_impl_gen> #scrate::traits::UnfilteredDispatchable for #call_ident<#type_use_gen>
 			#where_clause
 		{
-			type Origin = frame_system::pallet_prelude::OriginFor<T>; // TODO TODO: maybe import frame_system like we do for frame_support
+			type Origin = frame_system::pallet_prelude::OriginFor<T>;
 			fn dispatch_bypass_filter(
 				self,
 				origin: Self::Origin
