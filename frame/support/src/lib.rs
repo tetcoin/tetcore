@@ -834,14 +834,17 @@ pub mod pallet_prelude {
 	pub use sp_inherents::ProvideInherent;
 	pub use sp_inherents::InherentData;
 	pub use sp_inherents::InherentIdentifier;
+	pub use crate::weights::Weight;
 	pub use crate::{
 		Twox256, Twox128, Blake2_256, Blake2_128, Identity, Twox64Concat, Blake2_128Concat,
 	};
+	pub use sp_runtime::traits::MaybeSerializeDeserialize;
 	pub use frame_support::storage::types::*;
 	pub use crate::{
 		StorageValue, StorageMap, StorageDoubleMap, StoragePrefixedMap, IterableStorageMap,
 		IterableStorageDoubleMap,
 	};
+	// TODO TODO: Maybe add a GenesisField and CallField and EventField
 }
 
 /// TODO TODO: contextual doc
@@ -901,7 +904,7 @@ pub mod pallet_prelude {
 /// 	#[pallet::call]
 /// 	impl<T: Trait> Call for Module<T> {
 /// 		/// Doc comment put in metadata
-/// 		#[pallet::weight = 0] // Defines weight for call (function parameters are in scope)
+/// 		#[pallet::weight(0)] // Defines weight for call (function parameters are in scope)
 /// 		fn toto(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
 /// 			let _ = origin;
 /// 			unimplemented!();
@@ -1039,7 +1042,7 @@ pub mod pallet_prelude {
 /// 	#[pallet::call]
 /// 	impl<T: Trait<I>, I: Instance> Call for Module<T, I> {
 /// 		/// Doc comment put in metadata
-/// 		#[pallet::weight = 0]
+/// 		#[pallet::weight(0)]
 /// 		fn toto(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
 /// 			let _ = origin;
 /// 			unimplemented!();

@@ -28,6 +28,8 @@
 mod parse;
 mod expand;
 
+// TODO TODO: generate deposit_event somehow
+
 use proc_macro2::Span;
 pub use parse::Def;
 

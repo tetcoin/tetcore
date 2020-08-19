@@ -25,7 +25,7 @@ use sp_core::u32_trait::Value as U32;
 use sp_runtime::{
 	RuntimeDebug, ConsensusEngineId, DispatchResult, DispatchError, traits::{
 		MaybeSerializeDeserialize, AtLeast32Bit, Saturating, TrailingZeroInput, Bounded, Zero,
-		BadOrigin, AtLeast32BitUnsigned
+		BadOrigin, AtLeast32BitUnsigned,
 	},
 };
 use crate::dispatch::Parameter;
@@ -1719,11 +1719,16 @@ pub trait ModuleInterface<BlockNumber> {
 	/// with results to trigger any on-chain changes.
 	/// Any state alterations are lost and are not persisted.
 	fn offchain_worker(_n: BlockNumber) {}
+
+	/// Run integrity test.
+	///
+	/// The test is not executed in a externalities provided environment.
+	fn integrity_test() {}
 }
 
 /// A trait to define the build function of a genesis config, T and I are placeholder for pallet
 /// trait and pallet instance.
-pub trait GenesisBuilder<T, I=()>: Default {
+pub trait GenesisBuilder<T, I=()>: Default + MaybeSerializeDeserialize {
 	/// The build function is called within an externalities allowing storage APIs.
 	/// Thus one can write to storage using regular pallet storages.
 	fn build(&self);

@@ -69,10 +69,11 @@ impl syn::parse::Parse for FunctionAttr {
 		content.parse::<syn::Token![::]>()?;
 
 		content.parse::<keyword::weight>()?;
-		content.parse::<syn::Token![=]>()?;
 
+		let weight_content;
+		syn::parenthesized!(weight_content in content);
 		Ok(FunctionAttr {
-			weight: content.parse::<syn::Expr>()?,
+			weight: weight_content.parse::<syn::Expr>()?,
 		})
 	}
 }

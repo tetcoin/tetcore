@@ -82,5 +82,15 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 				>::offchain_worker(n)
 			}
 		}
+
+		impl<#type_impl_gen> #scrate::traits::IntegrityTest for #module_ident<#type_use_gen> {
+			fn integrity_test() {
+				<
+					Self as #scrate::traits::ModuleInterface<
+						<T as frame_system::Trait>::BlockNumber
+					>
+				>::integrity_test()
+			}
+		}
 	)
 }

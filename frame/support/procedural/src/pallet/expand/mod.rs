@@ -25,6 +25,7 @@ mod module_interface;
 mod store_trait;
 mod instances;
 mod genesis_build;
+mod genesis_config;
 
 use crate::pallet::Def;
 use quote::ToTokens;
@@ -44,7 +45,8 @@ pub fn expand(mut def: Def) -> proc_macro2::TokenStream {
 	let instances = instances::expand_instances(&mut def);
 	let store_trait = store_trait::expand_store_trait(&mut def);
 	let module_interface = module_interface::expand_module_interface(&mut def);
-	let genesis_build = genesis_build::expand_module_interface(&mut def);
+	let genesis_build = genesis_build::expand_genesis_build(&mut def);
+	let genesis_config = genesis_config::expand_genesis_config(&mut def);
 
 	let scrate_decl = generate_hidden_includes(&def.hidden_crate_name(), "frame-support");
 
@@ -61,6 +63,7 @@ pub fn expand(mut def: Def) -> proc_macro2::TokenStream {
 		#store_trait
 		#module_interface
 		#genesis_build
+		#genesis_config
 	);
 
 	def.item.content.as_mut().expect("This is checked by parsing").1

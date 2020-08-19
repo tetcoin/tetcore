@@ -20,16 +20,15 @@ use proc_macro2::Span;
 use syn::spanned::Spanned;
 
 /// * implement the trait `sp_runtime::BuildModuleGenesisStorage` using `__InherentHiddenInstance`
-///   if needed
-pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
+///   when needed
+/// * add #[cfg(features = "std")] to GenesisBuild implementation.
+pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 	let genesis_config = if let Some(genesis_config) = &def.genesis_config {
 		genesis_config
 	} else {
 		return Default::default()
 	};
 
-	let genesis_config_item_span =
-		def.item.content.as_mut().expect("Checked by def parser").1[genesis_config.index].span();
 	let scrate = &def.scrate();
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
@@ -47,8 +46,20 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		(true, true) => quote::quote!(T, I),
 	};
 
-	quote::quote_spanned!(genesis_config_item_span =>
-		#[cfg(features = "std")]
+	let genesis_build = def.genesis_build.as_ref().expect("Checked by def parser");
+	let genesis_build_item = &mut def.item.content.as_mut()
+		.expect("Checked by def parser").1[genesis_build.index];
+
+	let genesis_build_item_impl = if let syn::Item::Impl(impl_) = genesis_build_item {
+		impl_
+	} else {
+		unreachable!("Checked by genesis_build parser")
+	};
+
+	genesis_build_item_impl.attrs.push(syn::parse_quote!( #[cfg(feature = "std")] ));
+
+	quote::quote_spanned!(genesis_build_item.span() =>
+		#[cfg(feature = "std")]
 		impl<#type_impl_gen> #scrate::sp_runtime::BuildModuleGenesisStorage<#trait_use_gen>
 			for #gen_cfg_ident<#gen_cfg_use_gen>
 		{
@@ -57,7 +68,7 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 				storage: &mut #scrate::sp_runtime::Storage,
 			) -> std::result::Result<(), std::string::String> {
 				#scrate::BasicExternalities::execute_with_storage(storage, || {
-					<Self as #scrate::traits::GenesisBuilder<#type_use_gen>>::build();
+					<Self as #scrate::traits::GenesisBuilder<#type_use_gen>>::build(self);
 					Ok(())
 				})
 			}

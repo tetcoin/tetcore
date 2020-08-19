@@ -50,7 +50,7 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 					#default_byte_getter<#type_use_gen>
 				{
 					fn default_byte(&self) -> #scrate::sp_std::vec::Vec<u8> {
-						let value = <T::#ident as #scrate::traits::Get<#type_>>::get();
+						let value = <T::#ident as #scrate::traits::Get<_>>::get();
 						#scrate::codec::Encode::encode(&value)
 					}
 				}
