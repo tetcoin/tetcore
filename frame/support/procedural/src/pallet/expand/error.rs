@@ -16,6 +16,7 @@
 // limitations under the License.
 
 use crate::pallet::Def;
+use syn::spanned::Spanned;
 
 /// * impl Debug for Error
 /// * impl as_u8 and as_str for Error
@@ -29,6 +30,8 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		return Default::default()
 	};
 
+	let error_item_span =
+		def.item.content.as_mut().expect("Checked by def parser").1[error.index].span();
 	let error_ident = &error.error;
 	let scrate = &def.scrate();
 	let type_impl_gen = &def.type_impl_generics();
@@ -74,7 +77,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 
 	error_item.variants.insert(0, phantom_variant);
 
-	quote::quote!(
+	quote::quote_spanned!(error_item_span =>
 		impl<#type_impl_gen> #scrate::sp_std::fmt::Debug for #error_ident<#type_use_gen> {
 			fn fmt(&self, f: &mut #scrate::sp_std::fmt::Formatter<'_>)
 				-> #scrate::sp_std::fmt::Result

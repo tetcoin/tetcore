@@ -16,6 +16,7 @@
 // limitations under the License.
 
 use crate::pallet::Def;
+use syn::spanned::Spanned;
 
 /// * Add __Ignore variant on Event
 /// * Add derive for codec, eq, partialeq, clone, debug on Event
@@ -43,6 +44,9 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 				},
 			)
 		});
+
+	let event_item_span =
+		def.item.content.as_mut().expect("Checked by def parser").1[event.index].span();
 
 	let event_item = {
 		let item = &mut def.item.content.as_mut().expect("Checked by def parser").1[event.index];
@@ -85,8 +89,7 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		)]
 	));
 
-	// TODO TODO: maybe add span here for error message
-	quote::quote!(
+	quote::quote_spanned!(event_item_span =>
 		impl<#event_impl_gen> From<#event_ident<#event_use_gen>> for () {
 			fn from(_: #event_ident<#event_use_gen>) -> () { () }
 		}

@@ -17,6 +17,7 @@
 
 use crate::pallet::Def;
 use proc_macro2::Span;
+use syn::spanned::Spanned;
 
 /// * implement the trait `sp_runtime::BuildModuleGenesisStorage` using `__InherentHiddenInstance`
 ///   if needed
@@ -27,6 +28,8 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		return Default::default()
 	};
 
+	let genesis_config_item_span =
+		def.item.content.as_mut().expect("Checked by def parser").1[genesis_config.index].span();
 	let scrate = &def.scrate();
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
@@ -44,7 +47,7 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		(true, true) => quote::quote!(T, I),
 	};
 
-	quote::quote!(
+	quote::quote_spanned!(genesis_config_item_span =>
 		#[cfg(features = "std")]
 		impl<#type_impl_gen> #scrate::sp_runtime::BuildModuleGenesisStorage<#trait_use_gen>
 			for #gen_cfg_ident<#gen_cfg_use_gen>

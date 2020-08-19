@@ -16,6 +16,7 @@
 // limitations under the License.
 
 use crate::pallet::Def;
+use syn::spanned::Spanned;
 
 /// * create Call enum
 /// * impl GetDispatchInfo for Call
@@ -31,6 +32,9 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	let call_ident = &def.call.call;
 	let module_ident = &def.module.module;
 	let where_clause = &def.call.where_clause;
+
+	let call_item_span =
+		def.item.content.as_mut().expect("Checked by def parser").1[def.call.index].span();
 
 	let fn_ = def.call.methods.iter().map(|method| &method.fn_).collect::<Vec<_>>();
 
@@ -70,8 +74,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			.collect::<Vec<_>>()
 	});
 
-	// TODO TODO: maybe add span here for error message
-	quote::quote!(
+	quote::quote_spanned!(call_item_span =>
 		#[cfg_attr(feature = "std", derive(#scrate::DebugNoBound))]
 		#[cfg_attr(not(feature = "std"), derive(#scrate::DebugStripped))]
 		#[derive(
@@ -86,7 +89,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			#[doc(hidden)]
 			#[codec(skip)]
 			__Ignore(
-				#scrate::sp_std::marker::PhantomData<(#type_use_gen)>,
+				#scrate::sp_std::marker::PhantomData<(#type_use_gen,)>,
 				#scrate::Never,
 			),
 			#( #fn_( #( #args_compact_attr #args_type )* ), )*

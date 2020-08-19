@@ -299,7 +299,6 @@ pub fn pallet(attr: TokenStream, item: TokenStream) -> TokenStream {
 	pallet::pallet(attr, item)
 }
 
-// TODO TODO: instead of no bound maybe we should prefer bounding same as in parity-scale-codec
 /// Derive Clone but do not bound any generic.
 #[proc_macro_derive(CloneNoBound)]
 pub fn derive_clone_no_bound(input: TokenStream) -> TokenStream {

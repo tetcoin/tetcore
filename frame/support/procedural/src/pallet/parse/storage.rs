@@ -33,7 +33,9 @@ pub enum Metadata{
 	},
 }
 
-/// TODO TODO: doc
+/// Definition of a storage, storage is a storage type like
+/// `type MyStorage = StorageValueType<MyStorageP, u32>`
+/// The keys and values types are parsed in order to get metadata
 pub struct StorageDef {
 	/// The index of error item in pallet module.
 	pub index: usize,

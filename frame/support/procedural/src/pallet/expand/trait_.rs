@@ -54,7 +54,6 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 						#scrate::codec::Encode::encode(&value)
 					}
 				}
-				// TODO TODO: maybe use the struct in frame_support::storage::type
 
 				unsafe impl<#type_impl_gen> Send for #default_byte_getter<#type_use_gen> {}
 				unsafe impl<#type_impl_gen> Sync for #default_byte_getter<#type_use_gen> {}

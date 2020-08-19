@@ -16,6 +16,7 @@
 // limitations under the License.
 
 use crate::pallet::Def;
+use syn::spanned::Spanned;
 
 /// * implement the individual traits using the ModuleInterface trait
 pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
@@ -24,7 +25,10 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 
-	quote::quote!(
+	let module_interface_item_span = def.item.content.as_mut()
+		.expect("Checked by def parser").1[def.module_interface.index].span();
+
+	quote::quote_spanned!(module_interface_item_span =>
 		impl<#type_impl_gen>
 			#scrate::traits::OnFinalize<<T as frame_system::Trait>::BlockNumber>
 			for #module_ident<#type_use_gen>

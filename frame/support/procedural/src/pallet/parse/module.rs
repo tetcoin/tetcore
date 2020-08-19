@@ -56,8 +56,6 @@ impl ModuleDef {
 		let mut instances = vec![];
 		instances.push(helper::check_type_def_generics(&item.generics, item.ident.span())?);
 
-		// TODO TODO : also check fields.
-
 		Ok(Self { index, instances, module })
 	}
 }
