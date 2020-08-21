@@ -26,6 +26,7 @@ mod keyword {
 	syn::custom_keyword!(trait_);
 	syn::custom_keyword!(const_);
 	syn::custom_keyword!(frame_system);
+	syn::custom_keyword!(disable_frame_system_supertrait_check);
 }
 
 pub struct TraitDef {
@@ -62,6 +63,22 @@ impl syn::parse::Parse for ConstMetadataDef  {
 	}
 }
 
+/// Parse for `#[pallet::disable_frame_system_supertrait_check]`
+pub struct DisableFrameSystemSupertraitCheck;
+
+impl syn::parse::Parse for DisableFrameSystemSupertraitCheck {
+	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+		input.parse::<syn::Token![#]>()?;
+		let content;
+		syn::bracketed!(content in input);
+		content.parse::<syn::Ident>()?;
+		content.parse::<syn::Token![::]>()?;
+
+		content.parse::<keyword::disable_frame_system_supertrait_check>()?;
+		Ok(Self)
+	}
+}
+
 /// Parse for `#[pallet::const_]`
 pub struct TypeAttrConst(proc_macro2::Span);
 
@@ -91,6 +108,37 @@ impl TraitDef {
 			let msg = "Invalid pallet::trait, expect Trait definition";
 			return Err(syn::Error::new(item.span(), msg));
 		};
+
+		let attr: Option<DisableFrameSystemSupertraitCheck> = helper::take_first_item_attr(
+			&mut item.attrs
+		)?;
+
+		let disable_system_supertrait_check = attr.is_some();
+
+		let has_frame_system_supertrait = item.supertraits.iter().any(|s| {
+			syn::parse2::<FrameSystemTraitParse>(s.to_token_stream()).is_ok()
+		});
+
+		if !has_frame_system_supertrait && !disable_system_supertrait_check {
+			let found = if item.supertraits.is_empty() {
+				"none".to_string()
+			} else {
+				let mut found = item.supertraits.iter()
+					.fold(String::new(), |acc, s| {
+						format!("{}`{}`, ", acc, quote::quote!(#s).to_string())
+					});
+				found.pop();
+				found.pop();
+				found
+			};
+
+			let msg = format!(
+				"Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, \
+				found {}.",
+				found
+			);
+			return Err(syn::Error::new(item.span(), msg));
+		}
 
 		if !matches!(item.vis, syn::Visibility::Public(_)) {
 			let msg = "Invalid pallet::trait_, Trait must be public";
@@ -147,31 +195,6 @@ impl TraitDef {
 					},
 				}
 			}
-		}
-
-		let has_frame_system_supertrait = item.supertraits.iter().any(|s| {
-			syn::parse2::<FrameSystemTraitParse>(s.to_token_stream()).is_ok()
-		});
-
-		if !has_frame_system_supertrait {
-			let found = if item.supertraits.is_empty() {
-				"none".to_string()
-			} else {
-				let mut found = item.supertraits.iter()
-					.fold(String::new(), |acc, s| {
-						format!("{}`{}`, ", acc, quote::quote!(#s).to_string())
-					});
-				found.pop();
-				found.pop();
-				found
-			};
-
-			let msg = format!(
-				"Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, \
-				found {}.",
-				found
-			);
-			return Err(syn::Error::new(item.span(), msg));
 		}
 
 		Ok(Self { index, has_instance, consts_metadata })
