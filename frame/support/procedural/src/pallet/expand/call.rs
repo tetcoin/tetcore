@@ -157,7 +157,10 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 							<#module_ident<#type_use_gen>>::#fn_(origin, #( #args_name, )* )
 								.map(Into::into).map_err(Into::into),
 					)*
-					Self::__Ignore(_, _) => unreachable!("__PhantomItem cannot be used."),
+					Self::__Ignore(_, _) => {
+						let _ = origin; // Use origin for empty Call enum
+						unreachable!("__PhantomItem cannot be used.");
+					},
 				}
 			}
 		}
