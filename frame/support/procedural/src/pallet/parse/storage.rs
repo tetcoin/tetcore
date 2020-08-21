@@ -108,15 +108,15 @@ impl StorageDef {
 			}
 			"StorageMapType" => {
 				Metadata::Map {
-					key:  retrieve_arg(&typ.path.segments[0], 1)?,
-					value:  retrieve_arg(&typ.path.segments[0], 2)?,
+					key:  retrieve_arg(&typ.path.segments[0], 2)?,
+					value:  retrieve_arg(&typ.path.segments[0], 3)?,
 				}
 			}
 			"StorageDoubleMapType" => {
 				Metadata::DoubleMap {
-					key1:  retrieve_arg(&typ.path.segments[0], 1)?,
-					key2:  retrieve_arg(&typ.path.segments[0], 2)?,
-					value:  retrieve_arg(&typ.path.segments[0], 3)?,
+					key1:  retrieve_arg(&typ.path.segments[0], 2)?,
+					key2:  retrieve_arg(&typ.path.segments[0], 4)?,
+					value:  retrieve_arg(&typ.path.segments[0], 5)?,
 				}
 			}
 			found @ _ => {

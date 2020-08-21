@@ -14,21 +14,24 @@ mod pallet_old {
 
 	decl_storage! {
 		trait Store for Module<T: Trait> as Example {
+			/// Some documentation
 			Dummy get(fn dummy) config(): Option<T::Balance>;
 			Bar get(fn bar) config(): map hasher(blake2_128_concat) T::AccountId => T::Balance;
 			Foo get(fn foo) config(): T::Balance = 3.into();
+			Double get(fn double): double_map hasher(blake2_128_concat) u32, hasher(twox_64_concat) u64 => u16;
 		}
 	}
 
 	decl_event!(
-		pub enum Event<T> where B = <T as Trait>::Balance {
+		pub enum Event<T> where Balance = <T as Trait>::Balance {
 			/// Dummy event, just here so there's a generic type that's used.
-			Dummy(B),
+			Dummy(Balance),
 		}
 	);
 
 	decl_module! {
 		pub struct Module<T: Trait> for enum Call where origin: T::Origin {
+			type Error = Error<T>;
 			fn deposit_event() = default;
 			const SomeConst: T::Balance = T::SomeConst::get();
 
@@ -111,10 +114,12 @@ pub mod pallet {
 
 	#[pallet::event]
 	pub enum Event<T: Trait> {
+		/// Dummy event, just here so there's a generic type that's used.
 		Dummy(T::Balance),
 	}
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
+	/// Some documentation
 	type Dummy<T: Trait> = StorageValueType<DummyP, T::Balance, OptionQuery>;
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
@@ -128,6 +133,11 @@ pub mod pallet {
 	}
 	#[pallet::storage] #[allow(type_alias_bounds)]
 	type Foo<T: Trait> = StorageValueType<FooP, T::Balance, ValueQuery, OnFooEmpty<T>>;
+
+	#[pallet::storage] #[allow(type_alias_bounds)]
+	type Double = StorageDoubleMapType<
+		DoubleP, Blake2_128Concat, u32, Twox64Concat, u64, u16, ValueQuery
+	>;
 
 	#[pallet::genesis_config]
 	pub struct GenesisConfig<T: Trait> {
@@ -224,4 +234,40 @@ frame_support::construct_runtime!(
 
 #[cfg(test)]
 mod test {
+	use super::Runtime;
+	use super::pallet;
+	use super::pallet_old;
+	use codec::{Decode, Encode};
+
+	#[test]
+	fn metadata() {
+		let metadata = Runtime::metadata();
+		let modules = match metadata.1 {
+			frame_metadata::RuntimeMetadata::V11(frame_metadata::RuntimeMetadataV11 {
+				modules: frame_metadata::DecodeDifferent::Encode(m),
+				..
+			}) => m,
+			_ => unreachable!(),
+		};
+		pretty_assertions::assert_eq!(modules[1].storage, modules[2].storage);
+		pretty_assertions::assert_eq!(modules[1].calls, modules[2].calls);
+		pretty_assertions::assert_eq!(modules[1].event, modules[2].event);
+		pretty_assertions::assert_eq!(modules[1].constants, modules[2].constants);
+		pretty_assertions::assert_eq!(modules[1].errors, modules[2].errors);
+	}
+
+	#[test]
+	fn types() {
+		assert_eq!(
+			pallet_old::Event::<Runtime>::decode(&mut &pallet::Event::<Runtime>::Dummy(10).encode()[..]).unwrap(),
+			pallet_old::Event::<Runtime>::Dummy(10),
+		);
+
+		assert_eq!(
+			pallet_old::Call::<Runtime>::decode(&mut &pallet::Call::<Runtime>::set_dummy(10).encode()[..]).unwrap(),
+			pallet_old::Call::<Runtime>::set_dummy(10),
+		);
+	}
+
+	// TODO TODO: add some test for execution
 }

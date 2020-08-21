@@ -17,6 +17,25 @@
 
 use crate::pallet::Def;
 use frame_support_procedural_tools::clean_type_string;
+use core::iter::FromIterator;
+use quote::ToTokens;
+
+/// Replace ident `Self` by `T`
+fn replace_self_by_t(input: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
+	let output = input.into_iter()
+		.map(|token_tree| match token_tree {
+			proc_macro2::TokenTree::Group(group) =>
+				proc_macro2::Group::new(
+					group.delimiter(),
+					replace_self_by_t(group.stream())
+				).into(),
+			proc_macro2::TokenTree::Ident(ident) if ident == "Self" =>
+				proc_macro2::Ident::new("T", ident.span()).into(),
+			other @ _ => other
+		});
+
+	proc_macro2::TokenStream::from_iter(output)
+}
 
 /// * Impl fn module_constant_metadata for module.
 pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
@@ -29,8 +48,8 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 
 	let consts = def.trait_.consts_metadata.iter()
 		.map(|const_| {
-			let type_ = &const_.type_;
-			let type_str = clean_type_string(&quote::quote!(#type_).to_string());
+			let const_type = replace_self_by_t(const_.type_.to_token_stream());
+			let const_type_str = clean_type_string(&const_type.to_string());
 			let ident = &const_.ident;
 			let ident_str = format!("{}", ident);
 			let doc = const_.doc.clone().into_iter();
@@ -50,7 +69,7 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 					#default_byte_getter<#type_use_gen>
 				{
 					fn default_byte(&self) -> #scrate::sp_std::vec::Vec<u8> {
-						let value = <T::#ident as #scrate::traits::Get<_>>::get();
+						let value = <T::#ident as #scrate::traits::Get<#const_type>>::get();
 						#scrate::codec::Encode::encode(&value)
 					}
 				}
@@ -60,7 +79,7 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 
 				#scrate::dispatch::ModuleConstantMetadata {
 					name: #scrate::dispatch::DecodeDifferent::Encode(#ident_str),
-					ty: #scrate::dispatch::DecodeDifferent::Encode(#type_str),
+					ty: #scrate::dispatch::DecodeDifferent::Encode(#const_type_str),
 					value: #scrate::dispatch::DecodeDifferent::Encode(
 						#scrate::dispatch::DefaultByteGetter(
 							&#default_byte_getter::<#type_use_gen>(

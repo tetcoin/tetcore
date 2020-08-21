@@ -17,6 +17,7 @@
 
 use crate::pallet::Def;
 use syn::spanned::Spanned;
+use frame_support_procedural_tools::clean_type_string;
 
 /// * create Call enum
 /// * impl GetDispatchInfo for Call
@@ -65,11 +66,12 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	let args_metadata_type = def.call.methods.iter().map(|method| {
 		method.args.iter()
 			.map(|(is_compact, _, type_)| {
-				if *is_compact {
-					format!("Compact<{:?}>", type_)
+				let final_type = if *is_compact {
+					quote::quote!(Compact<#type_>)
 				} else {
-					format!("{:?}", type_)
-				}
+					quote::quote!(#type_)
+				};
+				clean_type_string(&final_type.to_string())
 			})
 			.collect::<Vec<_>>()
 	});
