@@ -238,6 +238,7 @@ mod test {
 	use super::pallet;
 	use super::pallet_old;
 	use codec::{Decode, Encode};
+	use sp_runtime::BuildStorage as _;
 
 	#[test]
 	fn metadata() {
@@ -249,6 +250,7 @@ mod test {
 			}) => m,
 			_ => unreachable!(),
 		};
+		pretty_assertions::assert_eq!(modules[1].name, modules[2].name);
 		pretty_assertions::assert_eq!(modules[1].storage, modules[2].storage);
 		pretty_assertions::assert_eq!(modules[1].calls, modules[2].calls);
 		pretty_assertions::assert_eq!(modules[1].event, modules[2].event);
@@ -269,5 +271,15 @@ mod test {
 		);
 	}
 
-	// TODO TODO: add some test for execution
+	#[test]
+	fn execution() {
+		let storage = super::GenesisConfig {
+			pallet: Default::default(),
+			pallet_old: Default::default(),
+		}.build_storage().unwrap();
+
+		// storage.execute_with(|| {
+		// 	// TODO TODO
+		// })
+	}
 }
