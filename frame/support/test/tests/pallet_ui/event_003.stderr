@@ -1,33 +1,7 @@
-error[E0369]: binary operation `==` cannot be applied to type `&<T as pallet::Trait>::Bar`
-  --> $DIR/event_003.rs:1:1
-   |
-1  | #[frame_support::pallet(Example)]
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ &<T as pallet::Trait>::Bar
-...
-22 |         B { b: T::Bar },
-   |             - &<T as pallet::Trait>::Bar
-   |
-   = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0308]: mismatched types
+error: Invalid usage of Event, trait `Trait` contains no associated type `Event`, but enum `Event` is declared (in use of `#[pallet::event]`). An Event associated type must be declare on trait `Trait`.
  --> $DIR/event_003.rs:1:1
   |
 1 | #[frame_support::pallet(Example)]
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected associated type, found reference
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   |
-  = note: expected associated type `<T as pallet::Trait>::Bar`
-                   found reference `&<T as pallet::Trait>::Bar`
-  = help: consider constraining the associated type `<T as pallet::Trait>::Bar` to `&<T as pallet::Trait>::Bar` or calling a method that returns `<T as pallet::Trait>::Bar`
-  = note: for more information, visit https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
-  = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: `<T as pallet::Trait>::Bar` doesn't implement `std::fmt::Debug`
- --> $DIR/event_003.rs:1:1
-  |
-1 | #[frame_support::pallet(Example)]
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `<T as pallet::Trait>::Bar` cannot be formatted using `{:?}` because it doesn't implement `std::fmt::Debug`
-  |
-  = help: the trait `std::fmt::Debug` is not implemented for `<T as pallet::Trait>::Bar`
-  = note: required because of the requirements on the impl of `std::fmt::Debug` for `&<T as pallet::Trait>::Bar`
-  = note: required for the cast to the object type `dyn std::fmt::Debug`
-  = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)

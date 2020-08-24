@@ -16,7 +16,7 @@ mod pallet {
 
 	#[pallet::call]
 	impl<T: Trait> Call for Module<T> {
-		#[pallet::weight = 0]
+		#[pallet::weight(0)]
 		fn foo(origin: OriginFor<T>, bar: T::Bar) -> DispatchResultWithPostInfo {
 			Ok(().into())
 		}

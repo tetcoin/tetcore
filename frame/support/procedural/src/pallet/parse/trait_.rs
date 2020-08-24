@@ -239,37 +239,6 @@ impl TraitDef {
 			return Err(syn::Error::new(item.span(), msg));
 		};
 
-		let attr: Option<DisableFrameSystemSupertraitCheck> = helper::take_first_item_attr(
-			&mut item.attrs
-		)?;
-
-		let disable_system_supertrait_check = attr.is_some();
-
-		let has_frame_system_supertrait = item.supertraits.iter().any(|s| {
-			syn::parse2::<FrameSystemTraitParse>(s.to_token_stream()).is_ok()
-		});
-
-		if !has_frame_system_supertrait && !disable_system_supertrait_check {
-			let found = if item.supertraits.is_empty() {
-				"none".to_string()
-			} else {
-				let mut found = item.supertraits.iter()
-					.fold(String::new(), |acc, s| {
-						format!("{}`{}`, ", acc, quote::quote!(#s).to_string())
-					});
-				found.pop();
-				found.pop();
-				found
-			};
-
-			let msg = format!(
-				"Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, \
-				found {}.",
-				found
-			);
-			return Err(syn::Error::new(item.span(), msg));
-		}
-
 		if !matches!(item.vis, syn::Visibility::Public(_)) {
 			let msg = "Invalid pallet::trait_, Trait must be public";
 			return Err(syn::Error::new(item.span(), msg));
@@ -331,6 +300,37 @@ impl TraitDef {
 					},
 				}
 			}
+		}
+
+		let attr: Option<DisableFrameSystemSupertraitCheck> = helper::take_first_item_attr(
+			&mut item.attrs
+		)?;
+
+		let disable_system_supertrait_check = attr.is_some();
+
+		let has_frame_system_supertrait = item.supertraits.iter().any(|s| {
+			syn::parse2::<FrameSystemTraitParse>(s.to_token_stream()).is_ok()
+		});
+
+		if !has_frame_system_supertrait && !disable_system_supertrait_check {
+			let found = if item.supertraits.is_empty() {
+				"none".to_string()
+			} else {
+				let mut found = item.supertraits.iter()
+					.fold(String::new(), |acc, s| {
+						format!("{}`{}`, ", acc, quote::quote!(#s).to_string())
+					});
+				found.pop();
+				found.pop();
+				found
+			};
+
+			let msg = format!(
+				"Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, \
+				found {}.",
+				found
+			);
+			return Err(syn::Error::new(item.span(), msg));
 		}
 
 		Ok(Self { index, has_instance, consts_metadata, has_event_type })

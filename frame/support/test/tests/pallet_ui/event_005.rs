@@ -1,0 +1,28 @@
+#[frame_support::pallet(Example)]
+mod pallet {
+	use frame_support::pallet_prelude::{ModuleInterface, IsType};
+	use frame_system::pallet_prelude::BlockNumberFor;
+
+	#[pallet::trait_]
+	pub trait Trait: frame_system::Trait {
+		type Bar;
+		type Event: IsType<<Self as frame_system::Trait>::Event>;
+	}
+
+	#[pallet::module]
+	pub struct Module<T>(core::marker::PhantomData<T>);
+
+	#[pallet::module_interface]
+	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {}
+
+	#[pallet::call]
+	impl<T: Trait> Call for Module<T> {}
+
+	#[pallet::event]
+	pub enum Event<T: Trait> {
+		B { b: T::Bar },
+	}
+}
+
+fn main() {
+}
