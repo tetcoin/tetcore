@@ -22,13 +22,19 @@ use quote::ToTokens;
 /// List of additional token to be used for parsing.
 mod keyword {
 	syn::custom_keyword!(Trait);
+	syn::custom_keyword!(From);
+	syn::custom_keyword!(T);
+	syn::custom_keyword!(I);
 	syn::custom_keyword!(Get);
 	syn::custom_keyword!(trait_);
+	syn::custom_keyword!(IsType);
+	syn::custom_keyword!(Event);
 	syn::custom_keyword!(const_);
 	syn::custom_keyword!(frame_system);
 	syn::custom_keyword!(disable_frame_system_supertrait_check);
 }
 
+/// Input definition for the pallet trait.
 pub struct TraitDef {
 	/// The index of error item in pallet module.
 	pub index: usize,
@@ -36,8 +42,13 @@ pub struct TraitDef {
 	pub has_instance: bool,
 	/// Const associated type.
 	pub consts_metadata: Vec<ConstMetadataDef>,
+	/// Wether the trait has the associated type `Event`, note that those bounds are checked:
+	/// * `IsType<Self as frame_system::Trait>::Event`
+	/// * `From<Event>` or `From<Event<T>>` or `From<Event<T, I>>`
+	pub has_event_type: bool,
 }
 
+/// Input definition for a constant in pallet trait.
 pub struct ConstMetadataDef {
 	/// Name of the associated type.
 	pub ident: syn::Ident,
@@ -97,6 +108,125 @@ impl syn::parse::Parse for TypeAttrConst {
 		content.parse::<syn::Token![::]>()?;
 
 		Ok(TypeAttrConst(content.parse::<keyword::const_>()?.span()))
+	}
+}
+
+/// Parse for `frame_system::Trait`
+pub struct FrameSystemTraitParse;
+
+impl syn::parse::Parse for FrameSystemTraitParse {
+	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+		input.parse::<keyword::frame_system>()?;
+		input.parse::<syn::Token![::]>()?;
+		input.parse::<keyword::Trait>()?;
+
+		Ok(Self)
+	}
+}
+
+/// Parse for `IsType<<Sef as frame_system::Trait>::Event>`
+pub struct IsTypeFrameSystemEventParse;
+
+impl syn::parse::Parse for IsTypeFrameSystemEventParse {
+	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+		input.parse::<keyword::IsType>()?;
+		input.parse::<syn::Token![<]>()?;
+		input.parse::<syn::Token![<]>()?;
+		input.parse::<syn::Token![Self]>()?;
+		input.parse::<syn::Token![as]>()?;
+		input.parse::<keyword::frame_system>()?;
+		input.parse::<syn::Token![::]>()?;
+		input.parse::<keyword::Trait>()?;
+		input.parse::<syn::Token![>]>()?;
+		input.parse::<syn::Token![::]>()?;
+		input.parse::<keyword::Event>()?;
+		input.parse::<syn::Token![>]>()?;
+
+		Ok(Self)
+	}
+}
+
+/// Parse for `From<Event>` or `From<Event<Self>>` or `From<Event<Self, I>>`
+pub struct FromEventParse {
+	is_generic: bool,
+	has_instance: bool,
+}
+
+impl syn::parse::Parse for FromEventParse {
+	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+		let mut is_generic = false;
+		let mut has_instance = false;
+
+		input.parse::<keyword::From>()?;
+		input.parse::<syn::Token![<]>()?;
+		input.parse::<keyword::Event>()?;
+		if input.peek(syn::Token![<]) {
+			is_generic = true;
+			input.parse::<syn::Token![<]>()?;
+			input.parse::<syn::Token![Self]>()?;
+			if input.peek(syn::Token![,]) {
+				input.parse::<syn::Token![,]>()?;
+				input.parse::<keyword::I>()?;
+				has_instance = true;
+			}
+			input.parse::<syn::Token![>]>()?;
+		}
+		input.parse::<syn::Token![>]>()?;
+
+		Ok(Self { is_generic, has_instance })
+	}
+}
+
+/// Check if trait_item is `type Event`, if so checks its bounds are those expected.
+/// (Event type is reserved type)
+fn check_event_type(trait_item: &syn::TraitItem, trait_has_instance: bool)  -> syn::Result<bool> {
+	if let syn::TraitItem::Type(type_) = trait_item {
+		if type_.ident == "Event" {
+			// Check event has no generics
+			if !type_.generics.params.is_empty() || type_.generics.where_clause.is_some() {
+				let msg = "Invalid `type Event`, associated type `Event` is reserved and must have\
+					no generics nor where_clause";
+				return Err(syn::Error::new(trait_item.span(), msg));
+			}
+			// Check bound contains IsType and From
+
+			let has_is_type_bound = type_.bounds.iter().any(|s| {
+				syn::parse2::<IsTypeFrameSystemEventParse>(s.to_token_stream()).is_ok()
+			});
+
+			if !has_is_type_bound {
+				let msg = "Invalid `type Event`, associated type `Event` is reserved and must \
+					bound: `IsType<<Self as frame_system::Trait>::Event>`";
+				return Err(syn::Error::new(type_.span(), msg));
+			}
+
+			let from_event_bound = type_.bounds.iter().find_map(|s| {
+				syn::parse2::<FromEventParse>(s.to_token_stream()).ok()
+			});
+
+			let from_event_bound = if let Some(b) = from_event_bound {
+				b
+			} else {
+				let msg = "Invalid `type Event`, associated type `Event` is reserved and must \
+					bound: `From<Event>` or `From<Event<Self>>` or `From<Event<Self, I>>`";
+				return Err(syn::Error::new(type_.span(), msg));
+			};
+
+			if from_event_bound.is_generic
+				&& (from_event_bound.has_instance != trait_has_instance)
+			{
+				let msg = "Invalid `type Event`, associated type `Event` bounds inconsistent \
+					`From<Event..>`. Trait and generic Event must be both with instance or \
+					without instance";
+				return Err(syn::Error::new(type_.span(), msg));
+			}
+
+			Ok(true)
+		} else {
+			Ok(false)
+		}
+	} else {
+		Ok(false)
 	}
 }
 
@@ -165,8 +295,14 @@ impl TraitDef {
 			has_instance = false;
 		}
 
+		let mut has_event_type = false;
 		let mut consts_metadata = vec![];
 		for trait_item in &mut item.items {
+			// Parse for event
+			has_event_type = has_event_type || check_event_type(trait_item, has_instance)?;
+
+
+			// Parse for const_
 			let type_attrs_const: Vec<TypeAttrConst> = helper::take_item_attrs(trait_item)?;
 
 			if type_attrs_const.len() > 1 {
@@ -197,18 +333,6 @@ impl TraitDef {
 			}
 		}
 
-		Ok(Self { index, has_instance, consts_metadata })
-	}
-}
-
-/// Parse for `frame_system::Trait`
-pub struct FrameSystemTraitParse;
-impl syn::parse::Parse for FrameSystemTraitParse {
-	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-		input.parse::<keyword::frame_system>()?;
-		input.parse::<syn::Token![::]>()?;
-		input.parse::<keyword::Trait>()?;
-
-		Ok(Self)
+		Ok(Self { index, has_instance, consts_metadata, has_event_type })
 	}
 }

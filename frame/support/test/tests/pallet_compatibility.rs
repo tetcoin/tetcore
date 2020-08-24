@@ -74,10 +74,11 @@ pub mod pallet {
 			+ MaybeSerializeDeserialize;
 		#[pallet::const_]
 		type SomeConst: Get<Self::Balance>;
-		type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
 	}
 
 	#[pallet::module]
+	#[pallet::generate(fn deposit_event)]
 	pub struct Module<T>(PhantomData<T>);
 
 	#[pallet::module_interface]
@@ -99,8 +100,9 @@ pub mod pallet {
 			ensure_root(origin)?;
 
 			<Dummy<T>>::put(&new_value);
-			frame_system::Module::<T>::deposit_event(<<T as Trait>::Event as From<_>>::from(Event::<T>::Dummy(new_value))); // TODO TODO: better way to deposit event 
-			// frame_system::Module::<T>::deposit_event(<T as Trait>::Event::from(Event::<T>::Dummy(new_value))); // TODO TODO: span for this error ?
+			Self::deposit_event(Event::Dummy(new_value));
+
+			// frame_system::Module::<T>::deposit_event(<T as Trait>::Event::from(Event::<T>::Dummy(new_value))); // TODO TODO: fix the span for this error ?
 
 			Ok(().into())
 		}
@@ -125,14 +127,10 @@ pub mod pallet {
 	#[pallet::storage] #[allow(type_alias_bounds)]
 	type Bar<T: Trait> = StorageMapType<BarP, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
-	pub struct OnFooEmpty<T: Trait>(PhantomData<T>); // TODO TODO: maybe allow faster declaration with parameter_types
-	impl<T: Trait> Get<T::Balance> for OnFooEmpty<T> {
-		fn get() -> T::Balance {
-			3.into()
-		}
-	}
 	#[pallet::storage] #[allow(type_alias_bounds)]
 	type Foo<T: Trait> = StorageValueType<FooP, T::Balance, ValueQuery, OnFooEmpty<T>>;
+	pub struct OnFooEmpty<T: Trait>(PhantomData<T>); // TODO TODO: maybe allow faster declaration with parameter_types
+	impl<T: Trait> Get<T::Balance> for OnFooEmpty<T> { fn get() -> T::Balance { 3.into() } }
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
 	type Double = StorageDoubleMapType<
@@ -250,7 +248,6 @@ mod test {
 			}) => m,
 			_ => unreachable!(),
 		};
-		pretty_assertions::assert_eq!(modules[1].name, modules[2].name);
 		pretty_assertions::assert_eq!(modules[1].storage, modules[2].storage);
 		pretty_assertions::assert_eq!(modules[1].calls, modules[2].calls);
 		pretty_assertions::assert_eq!(modules[1].event, modules[2].event);

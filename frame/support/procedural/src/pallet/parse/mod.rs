@@ -134,10 +134,39 @@ impl Def {
 		};
 
 		def.check_instance_usage()?;
+		def.check_event_usage()?;
 
 		Ok(def)
 	}
 
+	/// Check that usage of trait `Event` is consistent with the definition, i.e. it is declared
+	/// and trait defines type Event, or not declared and no trait associated type.
+	fn check_event_usage(&self) -> syn::Result<()> {
+		match (
+			self.trait_.has_event_type,
+			self.event.is_some(),
+			self.module.generate_fn_deposit_event,
+		) {
+			(true, false, _) => {
+				let msg = "Invalid usage of Event, trait `Trait` contains associated type `Event`, \
+					but enum `Event` is not declared (i.e. no use of `#[pallet::event]`). \
+					Note that type `Event` in trait is reserved to work alongside pallet event.";
+				Err(syn::Error::new(proc_macro2::Span::call_site(), msg))
+			},
+			(false, true, _) => {
+				let msg = "Invalid usage of Event, trait `Trait` contains no associated type \
+					`Event`, but enum `Event` is declared (in use of `#[pallet::event]`). \
+					An Event associated type must be declare on trait `Trait`.";
+				Err(syn::Error::new(proc_macro2::Span::call_site(), msg))
+			},
+			(false, false, Some(span)) => {
+				let msg = "Invalid usage of Event, deposit_event can't be generated for pallet \
+					without `Event`, please use `#[pallet::event]` to declare it";
+				Err(syn::Error::new(span, msg))
+			},
+			_ => Ok(())
+		}
+	}
 	/// Check that usage of trait `Trait` is consistent with the definition, i.e. it is used with
 	/// instance iff it is defined with instance.
 	fn check_instance_usage(&self) -> syn::Result<()> {
@@ -216,6 +245,17 @@ impl Def {
 			quote::quote!(T: Trait<I>, I: Instance = DefaultInstance)
 		} else {
 			quote::quote!(T: Trait)
+		}
+	}
+
+	/// * either ``
+	/// * or `<I>`
+	/// to be used when using pallet trait `Trait`
+	pub fn trait_use_generics(&self) -> proc_macro2::TokenStream {
+		if self.trait_.has_instance {
+			quote::quote!(<I>)
+		} else {
+			quote::quote!()
 		}
 	}
 

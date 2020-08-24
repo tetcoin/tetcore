@@ -18,6 +18,7 @@
 use crate::pallet::Def;
 
 /// * Add derive Eq, PartialEq, Debug and Clone on Module
+/// * if event is defined, implement deposit_event on module.
 pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
 
@@ -39,5 +40,31 @@ pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
 		)]
 	));
 
-	Default::default()
+	if let Some(fn_deposit_event_span) = def.module.generate_fn_deposit_event {
+		let event = def.event.as_ref().expect("Checked by parser");
+		let event_use_gen = &event.event_use_gen();
+		let trait_use_gen = &def.trait_use_generics();
+		let type_impl_gen = &def.type_impl_generics();
+		let type_use_gen = &def.type_use_generics();
+
+		quote::quote_spanned!(fn_deposit_event_span =>
+			impl<#type_impl_gen> Module<#type_use_gen> {
+				fn deposit_event(event: Event<#event_use_gen>) {
+					let event = <
+						<T as Trait#trait_use_gen>::Event as
+						From<Event<#event_use_gen>>
+					>::from(event);
+
+					let event = <
+						<T as Trait#trait_use_gen>::Event as
+						Into<<T as frame_system::Trait>::Event>
+					>::into(event);
+
+					<frame_system::Module<T>>::deposit_event(event)
+				}
+			}
+		)
+	} else {
+		Default::default()
+	}
 }

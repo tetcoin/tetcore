@@ -829,7 +829,7 @@ mod tests {
 /// prelude to be used alongside pallet macro, for ease of use.
 pub mod pallet_prelude {
 	pub use sp_std::marker::PhantomData;
-	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuilder};
+	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuilder, IsType};
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
 	pub use sp_inherents::ProvideInherent;
 	pub use sp_inherents::InherentData;
@@ -869,6 +869,7 @@ pub mod pallet_prelude {
 /// 		#[pallet::const_] // put the constant in metadata
 /// 		type MyGetParam: Get<u32>;
 /// 		type Balance: Parameter + Default;
+/// 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
 /// 	}
 /// 
 /// 	// Define the module struct placeholder, various pallet function are implemented on it.
@@ -1030,9 +1031,11 @@ pub mod pallet_prelude {
 /// 		#[pallet::const_]
 /// 		type MyGetParam: Get<u32>;
 /// 		type Balance: Parameter + Default;
+/// 		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Trait>::Event>;
 /// 	}
 /// 
 /// 	#[pallet::module]
+/// 	#[pallet::generate(fn deposit_event)]
 /// 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 /// 
 /// 	#[pallet::module_interface]
