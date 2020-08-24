@@ -15,6 +15,7 @@ pub mod pallet {
 		#[pallet::const_] // put the constant in metadata
 		type MyGetParam: Get<u32>;
 		type Balance: Parameter + Default;
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
 	}
 
 	// Define the module struct placeholder, various pallet function are implemented on it.
@@ -50,14 +51,14 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T: Trait> Call for Module<T> {
 		/// Doc comment put in metadata
-		#[pallet::weight = 0] // Defines weight for call (function parameters are in scope)
+		#[pallet::weight(0)] // Defines weight for call (function parameters are in scope)
 		fn toto(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
 			let _ = origin;
 			unimplemented!();
 		}
 
 		/// Doc comment put in metadata
-		#[pallet::weight = 0] // Defines weight for call (function parameters are in scope)
+		#[pallet::weight(0)] // Defines weight for call (function parameters are in scope)
 		#[frame_support::transactional]
 		fn toto_transactional(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
 			let _ = origin;

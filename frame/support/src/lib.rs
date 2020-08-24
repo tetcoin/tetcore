@@ -844,7 +844,6 @@ pub mod pallet_prelude {
 		StorageValue, StorageMap, StorageDoubleMap, StoragePrefixedMap, IterableStorageMap,
 		IterableStorageDoubleMap,
 	};
-	// TODO TODO: Maybe add a GenesisField and CallField and EventField
 }
 
 /// TODO TODO: contextual doc
