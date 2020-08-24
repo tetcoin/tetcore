@@ -18,6 +18,7 @@
 use syn::spanned::Spanned;
 use super::helper;
 
+/// The definition of the pallet inherent implementation.
 pub struct InherentDef {
 	/// The index of inherent item in pallet module.
 	pub index: usize,

@@ -26,6 +26,7 @@ mod keyword {
 	syn::custom_keyword!(deposit_event);
 }
 
+/// Definition of the pallet module.
 pub struct ModuleDef {
 	/// The index of error item in pallet module.
 	pub index: usize,

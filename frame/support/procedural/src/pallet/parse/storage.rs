@@ -23,6 +23,7 @@ mod keyword {
 	syn::custom_keyword!(Error);
 }
 
+/// The value and key types used by storages. Needed to expand metadata.
 pub enum Metadata{
 	Value { value: syn::GenericArgument },
 	Map { value: syn::GenericArgument, key: syn::GenericArgument },
@@ -39,18 +40,23 @@ pub enum Metadata{
 pub struct StorageDef {
 	/// The index of error item in pallet module.
 	pub index: usize,
+	/// Visibility of the storage type.
 	pub vis: syn::Visibility,
 	/// The type ident, to generate the StoragePrefix for.
 	pub ident: syn::Ident,
-	/// If event is declared with instance.
+	/// If storage is declared with instance.
 	pub has_instance: bool,
+	/// If storage is generic over trait.
 	pub has_trait: bool,
+	/// The keys and value metadata of the storage.
 	pub metadata: Metadata,
+	/// The doc associated to the storage.
 	pub docs: Vec<syn::Lit>,
 	/// A set of usage of instance, must be check for consistency with trait.
 	pub instances: Vec<helper::InstanceUsage>,
 }
 
+/// In `Foo<A, B, C>` retrieve the argument at given position, i.e. A is argument at position 0.
 fn retrieve_arg(
 	segment: &syn::PathSegment,
 	arg_pos: usize,

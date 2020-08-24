@@ -200,4 +200,3 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 	)
 }
-

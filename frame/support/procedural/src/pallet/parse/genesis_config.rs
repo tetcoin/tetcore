@@ -18,6 +18,8 @@
 use syn::spanned::Spanned;
 use super::helper;
 
+/// Definition for pallet genesis config type.
+///
 /// Either:
 /// * `type GenesisConfig`
 /// * `struct GenesisConfig`
@@ -25,10 +27,13 @@ use super::helper;
 pub struct GenesisConfigDef {
 	/// The index of error item in pallet module.
 	pub index: usize,
+	/// Weither type has instance generic.
 	pub has_instance: bool,
+	/// Weither type has trait generic.
 	pub has_trait: bool,
 	/// A set of usage of instance, must be check for consistency with trait.
 	pub instances: Vec<helper::InstanceUsage>,
+	/// The ident of genesis_config, can be used for span.
 	pub genesis_config: syn::Ident,
 }
 

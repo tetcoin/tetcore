@@ -37,7 +37,10 @@ use frame_support_procedural_tools::generate_crate_access;
 
 /// Parsed definition of a pallet.
 pub struct Def {
+	/// The name of the pallet in `#[pallet(MyExample)]`.
 	pub name: syn::Ident,
+	/// The module items.
+	/// (their order must not be modified because they are registered in individual definitions).
 	pub item: syn::ItemMod,
 	pub trait_: trait_::TraitDef,
 	pub module: module::ModuleDef,

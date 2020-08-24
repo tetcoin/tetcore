@@ -18,6 +18,7 @@
 use syn::spanned::Spanned;
 use super::helper;
 
+/// Implementation of the pallet module interface.
 pub struct ModuleInterfaceDef {
 	/// The index of error item in pallet module.
 	pub index: usize,

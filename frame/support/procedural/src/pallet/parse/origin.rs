@@ -18,6 +18,8 @@
 use syn::spanned::Spanned;
 use super::helper;
 
+/// Definition of the pallet origin type.
+///
 /// Either:
 /// * `type Origin`
 /// * `struct Origin`

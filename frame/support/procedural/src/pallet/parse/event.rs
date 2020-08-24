@@ -25,6 +25,7 @@ mod keyword {
 	syn::custom_keyword!(Event);
 }
 
+/// Definition for pallet event enum.
 pub struct EventDef {
 	/// The index of event item in pallet module.
 	pub index: usize,
@@ -36,6 +37,7 @@ pub struct EventDef {
 	pub instances: Vec<helper::InstanceUsage>,
 	/// If event is declared with instance.
 	pub has_instance: bool,
+	/// If event is declared with genericity.
 	pub is_generic: bool,
 }
 

@@ -18,6 +18,7 @@
 use syn::spanned::Spanned;
 use super::helper;
 
+/// Definition for pallet genesis build implementation.
 pub struct GenesisBuildDef {
 	/// The index of error item in pallet module.
 	pub index: usize,
