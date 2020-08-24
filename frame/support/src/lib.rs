@@ -930,7 +930,31 @@ pub mod pallet_prelude {
 ///
 /// ### `#[pallet::call]`
 ///
-/// TODO TODO
+/// The dispatchables of the pallet. Define as:
+/// ```nocompile
+/// #[pallet::call]
+/// impl<T: Trait> Call for Module<T> {
+/// 	/// Doc comment put in metadata
+/// 	#[pallet::weight($ExpressionResultingInWeight)]
+/// 	fn foo(
+/// 		origin: OriginFor<T>,
+/// 		#[pallet::compact] foo: u32,
+/// 		bar: u32
+/// 	) -> DispatchResultWithPostInfo {
+/// 		let _ = origin;
+/// 		Ok(().into())
+/// 	}
+///
+/// 	#[pallet::weight(0)]
+/// 	fn ....
+/// }
+/// ```
+///
+/// TODO TODO: Warn about what need to be implemented by parameter
+///
+/// Each dispatchable needs to define a weight with `#[pallet::weight($expr)]`, the first argument
+/// must be `origin: OriginFor<T>`, compact encoding for argument can be used using
+/// `#[pallet::compact]`, function must return DispatchResultWithPostInfo.
 ///
 /// WARNING: modifying dispatchables, changing their order, removing some must be done with care.
 /// Indeed this will change the outer runtime call type (which is an enum with one variant per
@@ -939,11 +963,23 @@ pub mod pallet_prelude {
 ///
 /// ### `#[pallet::error]` optional
 ///
-/// TODO TODO
+/// Allow to define an error to return from dispatchable. This error type is put into metadata.
+///
+/// ```nocompile
+/// #[pallet::error]
+/// pub enum Error<T> {
+/// 	/// doc comment put into metadata
+/// 	SomeError,
+/// 	/// other description
+/// 	SomeOtherError,
+/// }
+/// ```
 ///
 /// ### `#[pallet::event]` optional
 ///
 /// TODO TODO
+/// ```nocompile
+/// ```
 ///
 /// WARNING: modifying event, changing its variant order, removing some must be done with care.
 /// Indeed this will change the outer runtime event type, this type might be used by third parties.
