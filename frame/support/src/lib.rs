@@ -846,7 +846,131 @@ pub mod pallet_prelude {
 	};
 }
 
-/// TODO TODO: contextual doc
+/// `pallet` attribute macro allows to define a pallet to be used in `construct_runtime!`.
+///
+/// It is define by a module item:
+/// ```nocompile
+/// #[pallet(MyPalletName)]
+/// mod {
+/// ...
+/// }
+/// ```
+///
+/// Here `MyPalletName` is used as pallet unique identifier for storages. Storages will use keys
+/// prefixed with `twox128(MyPalletName)`.
+///
+/// Inside the module the macro will parse item with the attribute: `#[pallet::*]`, some attributes
+/// are mandatory, some other optional.
+///
+/// The attribute are explained with the syntax of non instantiable pallets, to see how pallet with
+/// instance work see below example.
+///
+/// Note various type can be automatically imported using pallet_prelude and :
+/// ```nocompile
+/// #[pallet(MyPalletName)]
+/// mod {
+///		use frame_support::pallet_prelude::*;
+///		use frame_system::pallet_prelude::*;
+///		...
+/// }
+/// ```
+///
+/// ### `#[pallet::trait_]`
+///
+/// Item must be defined as
+/// ```nocompile
+/// #[pallet::trait_]
+/// pub trait Trait: frame_system::Trait {
+/// ...
+/// }
+/// ```
+///
+/// Optional the check for the supertrait `frame_system::Trait` can be bypassed with attribute
+/// `#[pallet::disable_frame_system_supertrait_check]` as:
+/// ```nocompile
+/// #[pallet::trait_]
+/// #[pallet::disable_frame_system_supertrait_check]
+/// pub trait Trait: pallet_timestamp::Trait {}
+/// ```
+///
+/// Also trait assocaited constant can be put into metadata using `#[pallet::const_]` attribute:
+/// ```nocompile
+/// #[pallet::trait_]
+/// pub trait Trait: frame_system::Trait {
+///		#[pallet::const_]
+///		type Foo: Get<u32>;
+/// }
+/// ```
+///
+/// ### `#[pallet::module]`
+///
+/// The placeholder module struct must be defined as followed:
+/// ```nocompile
+/// #[pallet::module]
+/// pub struct Module<T>(PhantomData<T>);
+/// ```
+///
+/// an optional attribute `#[pallet::generate(fn deposit_event)]` can be used to generate a handy
+/// function to deposit event defined by `#[pallet::event]` (see later).
+///
+/// ```nocompile
+/// #[pallet::module]
+/// #[pallet::generate(fn deposit_event)]
+/// pub struct Module<T>(PhantomData<T>);
+/// ```
+///
+/// ### `#[pallet::module_interface]`
+///
+/// Above defined module needs to implement trait Module interface as:
+/// ```nocompile
+/// #[pallet::module_interface]
+/// impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
+/// }
+/// ```
+///
+/// ### `#[pallet::call]`
+///
+/// TODO TODO
+///
+/// WARNING: modifying dispatchables, changing their order, removing some must be done with care.
+/// Indeed this will change the outer runtime call type (which is an enum with one variant per
+/// pallet), this outer runtime call is likely to be stored on chain by scheduler or other pallet.
+/// Thus migration might be needed.
+///
+/// ### `#[pallet::error]` optional
+///
+/// TODO TODO
+///
+/// ### `#[pallet::event]` optional
+///
+/// TODO TODO
+///
+/// WARNING: modifying event, changing its variant order, removing some must be done with care.
+/// Indeed this will change the outer runtime event type, this type might be used by third parties.
+///
+/// ### `#[pallet::storage]` optional
+///
+/// TODO TODO
+///
+/// ### `#[pallet::genesis_config]` optional
+///
+/// TODO TODO
+///
+/// ### `#[pallet::genesis_build]` optional
+///
+/// TODO TODO
+///
+/// ### `#[pallet::inherent]` optional
+///
+/// TODO TODO
+///
+/// ### `#[pallet::origin]` optional
+///
+/// TODO TODO
+///
+/// WARNING: modifying origin changes the outer runtime origin. This outer runtime origin is likely
+/// to be stored on chain e.g. by scheduler, thus any change must be taken with care as it might
+/// require some migration.
 ///
 /// ### Example for pallet without instance.
 ///
