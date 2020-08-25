@@ -294,3 +294,7 @@ impl<Prefix, Hasher1, Hasher2, Key1, Key2, Value, QueryKind, OnEmpty> StorageDou
 	const DEFAULT: DefaultByteGetter =
 		DefaultByteGetter(&OnEmptyGetter::<QueryKind::Query, OnEmpty>(core::marker::PhantomData));
 }
+
+pub trait Trait {
+	type Balance: From<u32>;
+}

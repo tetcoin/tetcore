@@ -31,6 +31,7 @@ pub mod event;
 pub mod helper;
 pub mod genesis_config;
 pub mod genesis_build;
+pub mod validate_unsigned;
 
 use syn::spanned::Spanned;
 use frame_support_procedural_tools::generate_crate_access;
@@ -53,6 +54,7 @@ pub struct Def {
 	pub inherent: Option<inherent::InherentDef>,
 	pub genesis_config: Option<genesis_config::GenesisConfigDef>,
 	pub genesis_build: Option<genesis_build::GenesisBuildDef>,
+	pub validate_unsigned: Option<validate_unsigned::ValidateUnsignedDef>,
 }
 
 impl Def {
@@ -74,6 +76,7 @@ impl Def {
 		let mut inherent = None;
 		let mut genesis_config = None;
 		let mut genesis_build = None;
+		let mut validate_unsigned = None;
 		let mut storages = vec![];
 
 		for (index, item) in items.iter_mut().enumerate() {
@@ -103,6 +106,10 @@ impl Def {
 					inherent = Some(inherent::InherentDef::try_from(index, item)?),
 				Some(PalletAttr::Storage) =>
 					storages.push(storage::StorageDef::try_from(index, item)?),
+				Some(PalletAttr::ValidateUnsigned) => {
+					let v = validate_unsigned::ValidateUnsignedDef::try_from(index, item)?;
+					validate_unsigned = Some(v);
+				},
 				None => (),
 			}
 		}
@@ -129,6 +136,7 @@ impl Def {
 			call: call.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::call]"))?,
 			genesis_config,
 			genesis_build,
+			validate_unsigned,
 			error,
 			event,
 			origin,
@@ -296,6 +304,7 @@ mod keyword {
 	syn::custom_keyword!(storage);
 	syn::custom_keyword!(genesis_build);
 	syn::custom_keyword!(genesis_config);
+	syn::custom_keyword!(validate_unsigned);
 }
 
 /// Parse attributes for item in pallet module
@@ -312,6 +321,7 @@ pub enum PalletAttr {
 	Storage,
 	GenesisConfig,
 	GenesisBuild,
+	ValidateUnsigned,
 }
 
 impl syn::parse::Parse for PalletAttr {
@@ -356,6 +366,9 @@ impl syn::parse::Parse for PalletAttr {
 		} else if lookahead.peek(keyword::genesis_build) {
 			content.parse::<keyword::genesis_build>()?;
 			Ok(PalletAttr::GenesisBuild)
+		} else if lookahead.peek(keyword::validate_unsigned) {
+			content.parse::<keyword::validate_unsigned>()?;
+			Ok(PalletAttr::ValidateUnsigned)
 		} else {
 			Err(lookahead.error())
 		}

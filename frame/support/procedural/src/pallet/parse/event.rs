@@ -149,6 +149,12 @@ impl EventDef {
 			item.ident.span()
 		)? {
 			instances.push(u);
+		} else {
+			// construct_runtime only allow generic event for instantiable pallet.
+			instances.push(helper::InstanceUsage {
+				has_instance: false,
+				span: item.ident.span(),
+			})
 		}
 
 		let event = syn::parse2::<keyword::Event>(item.ident.to_token_stream())?;
