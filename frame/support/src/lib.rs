@@ -1114,11 +1114,11 @@ pub mod pallet_prelude {
 /// 	// NOTE: for storage hasher, the type is not copied because storage hasher trait already
 /// 	// implements metadata. Thus generic storage hasher is supported.
 /// 	#[pallet::storage] #[allow(type_alias_bounds)]
-/// 	type MyStorageValue<T: Trait> = StorageValueType<MyStorageValueP, T::Balance, ValueQuery>;
+/// 	type MyStorageValue<T: Trait> = StorageValueType<_, T::Balance, ValueQuery>;
 /// 
 /// 	// Another declaration
 /// 	#[pallet::storage]
-/// 	type MyStorage = StorageMapType<MyStorageP, Blake2_128Concat, u32, u32>;
+/// 	type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
 /// 
 /// 	// Declare genesis config. (This is optional)
 /// 	//
@@ -1229,11 +1229,11 @@ pub mod pallet_prelude {
 /// 
 /// 	#[pallet::storage] #[allow(type_alias_bounds)]
 /// 	type MyStorageValue<T: Trait<I>, I: Instance = DefaultInstance> =
-/// 		StorageValueType<MyStorageValueP<I>, T::Balance, ValueQuery>;
+/// 		StorageValueType<_, T::Balance, ValueQuery>;
 /// 
 /// 	#[pallet::storage]
 /// 	type MyStorage<I = DefaultInstance> =
-/// 		StorageMapType<MyStorageP<I>, Blake2_128Concat, u32, u32>;
+/// 		StorageMapType<_, Blake2_128Concat, u32, u32>;
 /// 
 /// 	#[pallet::genesis_config]
 /// 	#[derive(Default)]

@@ -17,6 +17,7 @@
 
 use super::helper;
 use syn::spanned::Spanned;
+use quote::ToTokens;
 
 /// List of additional token to be used for parsing.
 mod keyword {
@@ -114,15 +115,15 @@ impl StorageDef {
 			}
 			"StorageMapType" => {
 				Metadata::Map {
-					key:  retrieve_arg(&typ.path.segments[0], 2)?,
-					value:  retrieve_arg(&typ.path.segments[0], 3)?,
+					key: retrieve_arg(&typ.path.segments[0], 2)?,
+					value: retrieve_arg(&typ.path.segments[0], 3)?,
 				}
 			}
 			"StorageDoubleMapType" => {
 				Metadata::DoubleMap {
-					key1:  retrieve_arg(&typ.path.segments[0], 2)?,
-					key2:  retrieve_arg(&typ.path.segments[0], 4)?,
-					value:  retrieve_arg(&typ.path.segments[0], 5)?,
+					key1: retrieve_arg(&typ.path.segments[0], 2)?,
+					key2: retrieve_arg(&typ.path.segments[0], 4)?,
+					value: retrieve_arg(&typ.path.segments[0], 5)?,
 				}
 			}
 			found @ _ => {
@@ -135,6 +136,16 @@ impl StorageDef {
 				return Err(syn::Error::new(item.ty.span(), msg));
 			}
 		};
+
+		let prefix_arg = retrieve_arg(&typ.path.segments[0], 0)?;
+		syn::parse2::<syn::Token![_]>(prefix_arg.to_token_stream())
+			.map_err(|e| {
+				let msg = "Invalid use of `#[pallet::storage]`, the type first generic argument \
+					must be `_`, the final argument is automatically set by macro.";
+				let mut err = syn::Error::new(prefix_arg.span(), msg);
+				err.combine(e);
+				err
+			})?;
 
 		let has_instance = item.generics.type_params().any(|t| t.ident == "I");
 		let has_trait = item.generics.type_params().any(|t| t.ident == "T");

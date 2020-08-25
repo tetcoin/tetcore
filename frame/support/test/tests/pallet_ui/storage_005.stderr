@@ -1,12 +1,11 @@
-error[E0412]: cannot find type `StorageValueType` in this scope
-  --> $DIR/storage_005.rs:19:13
+error: Invalid use of `#[pallet::storage]`, the type first generic argument must be `_`, the final argument is automatically set by macro.
+  --> $DIR/storage_005.rs:19:30
    |
 19 |     type Foo = StorageValueType<u8, u8>;
-   |                ^^^^^^^^^^^^^^^^ not found in this scope
+   |                                 ^^
+
+error: expected `_`
+  --> $DIR/storage_005.rs:19:30
    |
-help: consider importing one of these items
-   |
-3  |     use frame_support::pallet_prelude::StorageValueType;
-   |
-3  |     use frame_support::storage::types::StorageValueType;
-   |
+19 |     type Foo = StorageValueType<u8, u8>;
+   |                                 ^^

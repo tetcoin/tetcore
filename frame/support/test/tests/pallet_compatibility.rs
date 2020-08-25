@@ -122,19 +122,19 @@ pub mod pallet {
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
 	/// Some documentation
-	type Dummy<T: Trait> = StorageValueType<DummyP, T::Balance, OptionQuery>;
+	type Dummy<T: Trait> = StorageValueType<_, T::Balance, OptionQuery>;
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
-	type Bar<T: Trait> = StorageMapType<BarP, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
+	type Bar<T: Trait> = StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
-	type Foo<T: Trait> = StorageValueType<FooP, T::Balance, ValueQuery, OnFooEmpty<T>>;
+	type Foo<T: Trait> = StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T>>;
 	pub struct OnFooEmpty<T: Trait>(PhantomData<T>); // TODO TODO: maybe allow faster declaration with parameter_types
 	impl<T: Trait> Get<T::Balance> for OnFooEmpty<T> { fn get() -> T::Balance { 3.into() } }
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
 	type Double = StorageDoubleMapType<
-		DoubleP, Blake2_128Concat, u32, Twox64Concat, u64, u16, ValueQuery
+		_, Blake2_128Concat, u32, Twox64Concat, u64, u16, ValueQuery
 	>;
 
 	#[pallet::genesis_config]

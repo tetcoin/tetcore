@@ -1,8 +1,0 @@
-error[E0277]: the trait bound `u8: pallet::sp_api_hidden_includes_pallet::hidden_include::traits::StorageInstance` is not satisfied
-  --> $DIR/storage_006.rs:19:7
-   |
-19 |     type Foo = StorageValueType<u8, u8>;
-   |          ^^^ the trait `pallet::sp_api_hidden_includes_pallet::hidden_include::traits::StorageInstance` is not implemented for `u8`
-   |
-   = note: required because of the requirements on the impl of `pallet::sp_api_hidden_includes_pallet::hidden_include::pallet_prelude::StorageValueMetadata` for `pallet::sp_api_hidden_includes_pallet::hidden_include::pallet_prelude::StorageValueType<u8, u8>`
-   = note: required by `pallet::sp_api_hidden_includes_pallet::hidden_include::pallet_prelude::StorageValueMetadata::NAME`

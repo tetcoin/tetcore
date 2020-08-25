@@ -24,20 +24,56 @@ use frame_support_procedural_tools::clean_type_string;
 ///   `MyStorageP` is generated and implements StorageInstance trait.
 /// * generate metadatas
 /// * TODO TODO: maybe assert that storages are correclty written, i.e. they implement their respective
-/// trait correctly
+///   trait correctly
+/// * replace the first generic `_` by the genereted prefix structure
 pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
 	let type_impl_static_gen = &def.type_impl_static_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 
+	let prefix_struct_ident = def.storages.iter()
+		.map(|storage_def|
+			syn::Ident::new(&format!("_{}Prefix", storage_def.ident), storage_def.ident.span())
+		)
+		.collect::<Vec<_>>();
+
+	// Replace first arg `_` by the generated prefix structure.
+	for (i, def_storage) in def.storages.iter_mut().enumerate() {
+		let item = &mut def.item.content.as_mut().expect("Checked by def").1[def_storage.index];
+
+		let typ_item = if let syn::Item::Type(t) = item {
+			t
+		} else {
+			unreachable!("Checked by def");
+		};
+
+		let typ_path = if let syn::Type::Path(p) = &mut *typ_item.ty {
+			p
+		} else {
+			unreachable!("Checked by def");
+		};
+
+		let args = if let syn::PathArguments::AngleBracketed(args) =
+			&mut typ_path.path.segments[0].arguments
+		{
+			args
+		} else {
+			unreachable!("Checked by def");
+		};
+
+		let ident = prefix_struct_ident[i].clone();
+		let generic = if def_storage.has_instance {
+			quote::quote!(<I>)
+		} else {
+			Default::default()
+		};
+		args.args[0] = syn::parse_quote!(#ident #generic);
+	}
+
 	let prefix_struct_vis = def.storages.iter()
 		.map(|storage_def| storage_def.vis.clone());
 
-	let prefix_struct_ident = def.storages.iter()
-		.map(|storage_def|
-			syn::Ident::new(&format!("{}P", storage_def.ident), storage_def.ident.span())
-		);
 	let prefix_struct_const = def.storages.iter()
 		.map(|storage_def| storage_def.ident.to_string());
 
