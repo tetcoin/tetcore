@@ -829,7 +829,7 @@ mod tests {
 /// prelude to be used alongside pallet macro, for ease of use.
 pub mod pallet_prelude {
 	pub use sp_std::marker::PhantomData;
-	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuilder, IsType};
+	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuilder, IsType, Member};
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
 	pub use sp_inherents::ProvideInherent;
 	pub use sp_inherents::InherentData;
@@ -950,11 +950,12 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
-/// TODO TODO: Warn about what need to be implemented by parameter
-///
 /// Each dispatchable needs to define a weight with `#[pallet::weight($expr)]`, the first argument
 /// must be `origin: OriginFor<T>`, compact encoding for argument can be used using
 /// `#[pallet::compact]`, function must return DispatchResultWithPostInfo.
+///
+/// All arguments must implement `Debug`, `PartialEq`, `Eq`, `Decode`, `Encode`, `Clone`. For ease
+/// of use just bound trait `Member` available in frame_support::pallet_prelude.
 ///
 /// WARNING: modifying dispatchables, changing their order, removing some must be done with care.
 /// Indeed this will change the outer runtime call type (which is an enum with one variant per
@@ -990,19 +991,60 @@ pub mod pallet_prelude {
 ///
 /// ### `#[pallet::genesis_config]` optional
 ///
-/// TODO TODO
+/// Either a type alias or an enum or a struct. It needs to be public and implement GenesisBuild
+/// with `#[pallet::genesis_build]`.
+///
+/// Macro will add the following attribute on it:
+/// * `#[cfg(feature = "std")]`
+/// * `#[derive(Serialize, Deserialize)]`
+/// * `#[serde(rename_all = "camelCase")]`
+/// * `#[serde(deny_unknown_fields)]`
+/// * `#[serde(bound(serialize = ""))]`
+/// * `#[serde(bound(deserialize = ""))]`
+///
+/// ```nocompile
+/// #[pallet::genesis_config]
+/// #[derive(Default)]
+/// pub struct GenesisConfig {
+/// 	_myfield: u32,
+/// }
+/// ```
 ///
 /// ### `#[pallet::genesis_build]` optional
 ///
-/// TODO TODO
+/// Implementation of trait `GenesisBuild` on `GenesisConfig`.
+///
+/// Macro will add the following attribute on it:
+/// * `#[cfg(feature = "std")]`
+///
+/// ```nocompile
+/// #[pallet::genesis_build]
+/// impl<T: Trait> GenesisBuilder<T> for GenesisConfig {
+/// 	fn build(&self) {}
+/// }
+/// ```
 ///
 /// ### `#[pallet::inherent]` optional
 ///
-/// TODO TODO
+/// Allow the pallet to provide inherent:
+///
+/// ```nocompile
+/// #[pallet::inherent]
+/// impl<T: Trait> ProvideInherent for Module<T> {
+/// 	// ... regular trait implementation
+/// }
+/// ```
 ///
 /// ### `#[pallet::origin]` optional
 ///
-/// TODO TODO
+/// Either a type alias or an enum or a struct. It needs to be public.
+///
+/// ```nocompile
+/// #[pallet::origin]
+/// pub struct Origin<T>(PhantomData<(T)>);
+/// ```
+/// TODO TODO: how about genericity, does it need to be generic over I, I think construct_runtime
+/// requires it somehow.
 ///
 /// WARNING: modifying origin changes the outer runtime origin. This outer runtime origin is likely
 /// to be stored on chain e.g. by scheduler, thus any change must be taken with care as it might
@@ -1203,6 +1245,14 @@ pub mod pallet_prelude {
 /// 
 /// 	#[pallet::call]
 /// 	impl<T: Trait<I>, I: Instance> Call for Module<T, I> {
+/// 	type Call = Call<T>;
+/// 	type Error = InherentError;
+///
+/// 	const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
+///
+/// 	fn create_inherent(_data: &InherentData) -> Option<Self::Call> {
+/// 		unimplemented!();
+/// 	}
 /// 		/// Doc comment put in metadata
 /// 		#[pallet::weight(0)]
 /// 		fn toto(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {

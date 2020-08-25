@@ -19,7 +19,12 @@ use crate::pallet::Def;
 use syn::spanned::Spanned;
 use frame_support_procedural_tools::clean_type_string;
 
-/// * create Call enum
+/// * create Call enum, add derives on it:
+///   * frame_support::CloneNoBound,
+///   * frame_support::EqNoBound,
+///   * frame_support::PartialEqNoBound,
+///   * codec::Encode,
+///   * codec::Decode,
 /// * impl GetDispatchInfo for Call
 /// * impl GetCallName for Call
 /// * impl UnfilteredDispatchable for Call
