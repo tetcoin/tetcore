@@ -829,7 +829,7 @@ mod tests {
 /// prelude to be used alongside pallet macro, for ease of use.
 pub mod pallet_prelude {
 	pub use sp_std::marker::PhantomData;
-	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuilder, IsType, Member};
+	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuilder, IsType};
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
 	pub use sp_inherents::ProvideInherent;
 	pub use sp_inherents::InherentData;
@@ -838,7 +838,7 @@ pub mod pallet_prelude {
 	pub use crate::{
 		Twox256, Twox128, Blake2_256, Blake2_128, Identity, Twox64Concat, Blake2_128Concat,
 	};
-	pub use sp_runtime::traits::MaybeSerializeDeserialize;
+	pub use sp_runtime::traits::{MaybeSerializeDeserialize, Member};
 	pub use frame_support::storage::types::*;
 	pub use crate::{
 		StorageValue, StorageMap, StorageDoubleMap, StoragePrefixedMap, IterableStorageMap,

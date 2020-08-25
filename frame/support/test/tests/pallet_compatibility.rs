@@ -102,7 +102,7 @@ pub mod pallet {
 			<Dummy<T>>::put(&new_value);
 			Self::deposit_event(Event::Dummy(new_value));
 
-			// frame_system::Module::<T>::deposit_event(<T as Trait>::Event::from(Event::<T>::Dummy(new_value))); // TODO TODO: fix the span for this error ?
+			// frame_system::Module::<T>::deposit_event(<T as Trait>::Event::from(Event::<T>::Dummy(new_value))); // TODO TODO: fix the span for this error
 
 			Ok(().into())
 		}
@@ -129,8 +129,10 @@ pub mod pallet {
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
 	type Foo<T: Trait> = StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T>>;
-	pub struct OnFooEmpty<T: Trait>(PhantomData<T>); // TODO TODO: maybe allow faster declaration with parameter_types
+	pub struct OnFooEmpty<T: Trait>(PhantomData<T>); // TODO TODO: allow faster declaration with parameter_types
 	impl<T: Trait> Get<T::Balance> for OnFooEmpty<T> { fn get() -> T::Balance { 3.into() } }
+	// #[pallet::type_value] pub type BalanceDefault: Balance = 0;
+	// #[pallet::type_value] pub type BalanceDefault<T: Trait>: T::Balance = 0.into();
 
 	#[pallet::storage] #[allow(type_alias_bounds)]
 	type Double = StorageDoubleMapType<
