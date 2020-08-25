@@ -957,7 +957,7 @@ pub mod pallet_prelude {
 /// All arguments must implement `Debug`, `PartialEq`, `Eq`, `Decode`, `Encode`, `Clone`. For ease
 /// of use just bound trait `Member` available in frame_support::pallet_prelude.
 ///
-/// WARNING: modifying dispatchables, changing their order, removing some must be done with care.
+/// **WARNING**: modifying dispatchables, changing their order, removing some must be done with care.
 /// Indeed this will change the outer runtime call type (which is an enum with one variant per
 /// pallet), this outer runtime call is likely to be stored on chain by scheduler or other pallet.
 /// Thus migration might be needed.
@@ -978,16 +978,64 @@ pub mod pallet_prelude {
 ///
 /// ### `#[pallet::event]` optional
 ///
-/// TODO TODO
+/// Allow to define pallet events, pallet events are stored in the block when they deposited (and
+/// removed in next block).
+///
+/// It is defined as an enum (with named or unnamed fields variant), each variant documentations
+/// and field types are put into metadata. `#[pallet::metadata(..)]` allows to specify the metadata
+/// to associated with some type. E.g:
+/// ```
+/// #[pallet::metadata(SomeType = Metadata, SomeOtherType = Metadata2, ...)]
+/// ```
+/// will set for types matching `SomeType` the metadata `Metadata` and same for `SomeOtherType`.
+///
+/// The macro will add the attribute:
+/// * `#[derive(frame_support::CloneNoBound)]`,
+/// * `#[derive(frame_support::EqNoBound)]`,
+/// * `#[derive(frame_support::PartialEqNoBound)]`,
+/// * `#[derive(codec::Encode)]`,
+/// * `#[derive(codec::Decode)]`,
+/// * `#[cfg_attr(not(feature = "std"), derive(frame_support::DebugStripped))]`
+/// * `#[cfg_attr(feature = "std", derive(frame_support::DebugStripped))]`
+///
+/// Thus each fields must implement `Clone`, `Eq`, `PartialEq`, `Encode`, `Decode`, and `Debug`
+/// (on std).
+/// For ease of use just bound trait `Member` available in frame_support::pallet_prelude.
+///
 /// ```nocompile
+/// #[pallet::event]
+/// // Additional argument to specify the metadata to use for given type.
+/// #[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
+/// pub enum Event<T: Trait> {
+/// 	/// doc comment put in metadata
+/// 	// `<T as frame_system::Trait>::AccountId` is not defined in metadata list, the last
+/// 	// segment is put into metadata, i.e. `AccountId`
+/// 	Proposed(<T as frame_system::Trait>::AccountId),
+/// 	/// doc
+/// 	// here metadata will be `Balance` as define in metadata list
+/// 	Spending { balance: BalanceOf<T> },
+/// 	// here metadata will be `Other` as define in metadata list
+/// 	Something(u32),
+/// }
 /// ```
 ///
-/// WARNING: modifying event, changing its variant order, removing some must be done with care.
+/// **WARNING**: modifying event, changing its variant order, removing some must be done with care.
 /// Indeed this will change the outer runtime event type, this type might be used by third parties.
 ///
 /// ### `#[pallet::storage]` optional
 ///
-/// TODO TODO
+/// Allow to define some abstract storage inside runtime storage and also set its metadata.
+/// It must be a type alias that aliases one of type in
+/// `frame_support::pallet_prelude::{StorageValueType, StorageMapType, StorageDoubleMapType}`
+/// The macro parse the type alias to get the metadata for keys and value types. And automatically
+/// expand the first generic argument `Prefix`, which must be written `_`.
+///
+/// ```nocompile
+/// #[pallet::storage]
+/// type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// ```
+///
+/// TODO TODO: a way how to set default value easily
 ///
 /// ### `#[pallet::genesis_config]` optional
 ///
@@ -1046,7 +1094,7 @@ pub mod pallet_prelude {
 /// TODO TODO: how about genericity, does it need to be generic over I, I think construct_runtime
 /// requires it somehow.
 ///
-/// WARNING: modifying origin changes the outer runtime origin. This outer runtime origin is likely
+/// **WARNING**: modifying origin changes the outer runtime origin. This outer runtime origin is likely
 /// to be stored on chain e.g. by scheduler, thus any change must be taken with care as it might
 /// require some migration.
 ///
