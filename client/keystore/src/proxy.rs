@@ -54,8 +54,8 @@ pub enum RequestMethod {
 }
 
 pub struct KeystoreRequest {
-	sender: oneshot::Sender<KeystoreResponse>,
-	method: RequestMethod,
+	pub sender: oneshot::Sender<KeystoreResponse>,
+	pub method: RequestMethod,
 }
 
 pub enum KeystoreResponse {

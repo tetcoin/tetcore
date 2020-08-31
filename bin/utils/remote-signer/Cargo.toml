@@ -11,6 +11,7 @@ jsonrpc-derive = "14.2.1"
 jsonrpc-core = "14.2.0"
 jsonrpc-core-client = "14.0"
 sp-core = { version = "2.0.0-rc5", path="../../../primitives/core" }
+sp-application-crypto = { version = "2.0.0-rc5", path="../../../primitives/application-crypto" }
 sc-keystore = { version = "2.0.0-rc5", path="../../../client/keystore" }
 futures = { version = "0.3.1", features = ["compat"] }
 parking_lot = "0.11"

@@ -5912,6 +5912,7 @@ dependencies = [
  "jsonrpc-derive",
  "parking_lot 0.11.0",
  "sc-keystore",
+ "sp-application-crypto",
  "sp-core",
 ]
 
