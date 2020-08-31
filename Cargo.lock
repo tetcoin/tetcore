@@ -5853,6 +5853,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "remote-signer"
+version = "0.1.0"
+dependencies = [
+ "futures 0.3.5",
+ "jsonrpc-core",
+ "jsonrpc-core-client",
+ "jsonrpc-derive",
+ "sp-core",
+]
+
+[[package]]
 name = "remove_dir_all"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"

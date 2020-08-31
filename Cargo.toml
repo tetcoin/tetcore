@@ -14,6 +14,7 @@ members = [
 	"bin/node/testing",
 	"bin/utils/subkey",
 	"bin/utils/chain-spec-builder",
+	"bin/utils/remote-signer",
 	"client/api",
 	"client/authority-discovery",
 	"client/basic-authorship",
