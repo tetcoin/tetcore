@@ -1,8 +1,23 @@
 
 use jsonrpc_derive::rpc;
-use jsonrpc_core::{IoHandler, Result, BoxFuture};
+use jsonrpc_core::{IoHandler, BoxFuture, Error as RpcError};
 use jsonrpc_core::futures::future::{self, FutureResult};
 
+use core::{
+	task::{Context, Poll},
+	pin::Pin
+};
+use sc_keystore::proxy::{KeystoreRequest, KeystoreResponse, RequestMethod};
+use futures::{
+	channel::{
+		oneshot,
+		mpsc::{UnboundedSender, UnboundedReceiver, channel},
+	},
+	compat::Future01CompatExt,
+	future::{Future, FutureExt, TryFutureExt},
+	stream::Stream,
+	sink::SinkExt,
+};
 use sp_core::{
 	crypto::{KeyTypeId, CryptoTypePublicPair},
 	vrf::{VRFTranscriptData, VRFSignature},
@@ -16,11 +31,11 @@ pub trait RemoteSignerApi {
 
 	/// Returns all sr25519 public keys for the given key type.
 	fn sr25519_public_keys(&self, id: KeyTypeId) -> BoxFuture<Vec<sr25519::Public>>;
-	/// Generate a new sr25519 key pair for the given key type and an optional seed.
-	///
-	/// If the given seed is `Some(_)`, the key pair will only be stored in memory.
-	///
-	/// Returns the public key of the generated key pair.
+	// /// Generate a new sr25519 key pair for the given key type and an optional seed.
+	// ///
+	// /// If the given seed is `Some(_)`, the key pair will only be stored in memory.
+	// ///
+	// /// Returns the public key of the generated key pair.
 	// fn sr25519_generate_new(
 	// 	&mut self,
 	// 	id: KeyTypeId,
@@ -142,16 +157,63 @@ pub trait RemoteSignerApi {
 }
 
 
-pub struct GenericRemoteSignerServer(Box<dyn BareCryptoStore>);
+pub struct GenericRemoteSignerServer{
+	sender: UnboundedSender<KeystoreRequest>,
+}
+
 impl GenericRemoteSignerServer {
-	pub fn new(store: Box<dyn BareCryptoStore>) -> Self  {
-		GenericRemoteSignerServer(store)
+	pub fn new(sender: UnboundedSender<KeystoreRequest>) -> Self  {
+		GenericRemoteSignerServer { sender }
+	}
+
+	fn send_request(
+		&self,
+		request: RequestMethod
+	) -> RemoteResponse<KeystoreResponse> {
+		let (request_sender, receiver) = oneshot::channel::<KeystoreResponse>();
+
+		let request = KeystoreRequest {
+			sender: request_sender,
+			method: request,
+		};
+		self.sender.unbounded_send(request);
+
+		RemoteResponse { receiver }
+	}
+}
+
+/// Future for an on-demand remote call response.
+pub struct RemoteResponse<T> {
+	receiver: oneshot::Receiver<T>,
+}
+
+impl<T> Future for RemoteResponse<T> {
+	type Output = Result<T, RpcError>;
+
+	fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
+		match self.receiver.poll_unpin(cx) {
+			Poll::Ready(Ok(res)) => Poll::Ready(Ok(res)),
+			Poll::Ready(Err(_)) => Poll::Ready(Err(RpcError::internal_error())),
+			Poll::Pending => Poll::Pending,
+		}
 	}
 }
 
 impl RemoteSignerApi for GenericRemoteSignerServer {
 
 	fn sr25519_public_keys(&self, id: KeyTypeId) -> BoxFuture<Vec<sr25519::Public>> {
-		self.0.sr25519_public_keys(id).boxed().compat()
+		let receiver = self.send_request(RequestMethod::Sr25519PublicKeys(id));
+		Box::new(receiver.map(|e| match e {
+				Ok(KeystoreResponse::Sr25519PublicKeys(keys)) => keys,
+				_ => vec![],
+			}).boxed_local().compat())
+		// }).compat()
+		// Box::pin(async move {
+		// 	let response = receiver.await;
+		// 	match response {
+		// 		Ok(KeystoreResponse::Sr25519PublicKeys(keys)) => keys,
+		// 		_ => vec![],
+		// 	}
+		// }.compat()).boxed()
 	}
 }
