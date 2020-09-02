@@ -84,6 +84,7 @@ pub trait RemoteSignerApi {
 		id: KeyTypeId,
 		keys: Vec<CryptoTypePublicPair>
 	) -> BoxFuture<Vec<CryptoTypePublicPair>>;
+
 	/// List all supported keys
 	///
 	/// Returns a set of public keys the signer supports.

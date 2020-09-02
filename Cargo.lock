@@ -6060,13 +6060,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "remote-sign-server"
-version = "0.1.0"
-dependencies = [
- "sc-json-rpc-remote-signer",
-]
-
-[[package]]
 name = "remove_dir_all"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8785,6 +8778,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "substrate-remote-sign-server"
+version = "0.1.0"
+dependencies = [
+ "jsonrpc-http-server",
+ "sc-cli",
+ "sc-json-rpc-remote-signer",
+ "sc-keystore",
+ "sc-service",
+ "structopt",
+ "tokio 0.2.21",
+]
+
+[[package]]
 name = "substrate-test-client"
 version = "2.0.0-rc6"
 dependencies = [
@@ -9169,6 +9175,7 @@ dependencies = [
  "libc",
  "memchr",
  "mio",
+ "mio-named-pipes",
  "mio-uds",
  "num_cpus",
  "pin-project-lite",

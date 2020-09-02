@@ -1,5 +1,5 @@
 [package]
-name = "remote-sign-server"
+name = "substrate-remote-sign-server"
 version = "0.1.0"
 authors = ["Benjamin Kampmann <ben@parity.io>"]
 edition = "2018"
@@ -8,3 +8,9 @@ edition = "2018"
 
 [dependencies]
 sc-remote-signer = { package = "sc-json-rpc-remote-signer", version = "2.0.0-rc6", path = "../../../client/json-rpc-remote-signer" }
+structopt = { version = "0.3", default-features = false }
+sc-cli = { version = "0.8.0-rc6", path = "../../../client/cli" }
+sc-keystore = { version = "2.0.0-rc6", path = "../../../client/keystore" }
+sc-service = { version = "0.8.0-rc6", path = "../../../client/service" }
+jsonrpc-http-server = { version = "14.2.0" }
+tokio = { version = "0.2", features = ["full"] }
