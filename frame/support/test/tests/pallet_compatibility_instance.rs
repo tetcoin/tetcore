@@ -118,21 +118,21 @@ pub mod pallet {
 		Dummy(T::Balance),
 	}
 
-	#[pallet::storage] #[allow(type_alias_bounds)]
+	#[pallet::storage]
 	/// Some documentation
 	type Dummy<T: Trait<I>, I: Instance = DefaultInstance> = StorageValueType<_, T::Balance, OptionQuery>;
 
-	#[pallet::storage] #[allow(type_alias_bounds)]
+	#[pallet::storage]
 	type Bar<T: Trait<I>, I: Instance = DefaultInstance> =
 		StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
-	#[pallet::storage] #[allow(type_alias_bounds)]
+	#[pallet::storage]
 	type Foo<T: Trait<I>, I: Instance = DefaultInstance> =
 		StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T, I>>;
 	pub struct OnFooEmpty<T: Trait<I>, I: Instance>(PhantomData<(T, I)>);
 	impl<T: Trait<I>, I: Instance> Get<T::Balance> for OnFooEmpty<T, I> { fn get() -> T::Balance { 3.into() } }
 
-	#[pallet::storage] #[allow(type_alias_bounds)]
+	#[pallet::storage]
 	type Double<I: Instance = DefaultInstance> = StorageDoubleMapType<
 		_, Blake2_128Concat, u32, Twox64Concat, u64, u16, ValueQuery
 	>;

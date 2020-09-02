@@ -39,6 +39,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 		.collect::<Vec<_>>();
 
 	// Replace first arg `_` by the generated prefix structure.
+	// Add `#[allow(type_alias_bounds)]`
 	for (i, def_storage) in def.storages.iter_mut().enumerate() {
 		let item = &mut def.item.content.as_mut().expect("Checked by def").1[def_storage.index];
 
@@ -47,6 +48,8 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 		} else {
 			unreachable!("Checked by def");
 		};
+
+		typ_item.attrs.push(syn::parse_quote!(#[allow(type_alias_bounds)]));
 
 		let typ_path = if let syn::Type::Path(p) = &mut *typ_item.ty {
 			p

@@ -1225,7 +1225,7 @@ pub mod pallet_prelude {
 /// 	//
 /// 	// NOTE: for storage hasher, the type is not copied because storage hasher trait already
 /// 	// implements metadata. Thus generic storage hasher is supported.
-/// 	#[pallet::storage] #[allow(type_alias_bounds)]
+/// 	#[pallet::storage]
 /// 	type MyStorageValue<T: Trait> = StorageValueType<_, T::Balance, ValueQuery>;
 ///
 /// 	// Another declaration
@@ -1351,7 +1351,7 @@ pub mod pallet_prelude {
 /// 		Something(u32),
 /// 	}
 ///
-/// 	#[pallet::storage] #[allow(type_alias_bounds)]
+/// 	#[pallet::storage]
 /// 	type MyStorageValue<T: Trait<I>, I: Instance = DefaultInstance> =
 /// 		StorageValueType<_, T::Balance, ValueQuery>;
 ///

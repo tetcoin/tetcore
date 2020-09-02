@@ -95,52 +95,26 @@ pub mod pallet {
 		Something(u32),
 	}
 
-	// Declare a storage, any amount of storage can be declared.
-	//
-	// Is expected either `StorageValueType`, `StorageMapType` or `StorageDoubleMapType`.
-	// The macro generates for struct `$identP` (for storage of name `$ident`) and implement
-	// storage instance on it.
-	// The macro macro expand the metadata for the storage with the type used:
-	// * For storage value the type for value will be copied into metadata
-	// * For storage map the type for value and the type for key will be copied into metadata
-	// * For storage double map the type for value, key1, and key2 will be copied into
-	//   metadata.
-	//
-	// NOTE: for storage hasher, the type is not copied because storage hasher trait already
-	// implements metadata. Thus generic storage hasher is supported.
-	#[pallet::storage] #[allow(type_alias_bounds)]
-	type MyStorageValue<T: Trait> = StorageValueType<MyStorageValueP, T::Balance, ValueQuery>;
-
-	// Another declaration
 	#[pallet::storage]
-	type MyStorage = StorageMapType<MyStorageP, Blake2_128Concat, u32, u32>;
+	type MyStorageValue<T: Trait> = StorageValueType<_, T::Balance, ValueQuery>;
 
-	// Declare genesis config. (This is optional)
-	//
-	// The macro accept either type alias or struct or enum, it checks generics are consistent.
-	//
-	// Type must implement `Default` traits
+	#[pallet::storage]
+	type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+
 	#[pallet::genesis_config]
 	#[derive(Default)]
 	pub struct GenesisConfig {
 		_myfield: u32,
 	}
 
-	// Declare genesis builder. (This is need only if GenesisConfig is declared)
 	#[pallet::genesis_build]
 	impl<T: Trait> GenesisBuilder<T> for GenesisConfig {
 		fn build(&self) {}
 	}
 
-	// Declare a pallet origin. (this is optional)
-	//
-	// The macro accept type alias or struct or enum, it checks generics are consistent.
 	#[pallet::origin]
 	pub struct Origin<T>(PhantomData<T>);
 
-	// Declare inherent provider for module. (this is optional)
-	//
-	// The macro checks module is `Module<T>` or `Module<T, I>` and trait is `ProvideInherent`
 	#[pallet::inherent]
 	impl<T: Trait> ProvideInherent for Module<T> {
 		type Call = Call<T>;
@@ -152,8 +126,6 @@ pub mod pallet {
 			unimplemented!();
 		}
 	}
-
-	// Regular rust code needed for implementing ProvideInherent trait
 
 	#[derive(codec::Encode, sp_runtime::RuntimeDebug)]
 	#[cfg_attr(feature = "std", derive(codec::Decode))]
