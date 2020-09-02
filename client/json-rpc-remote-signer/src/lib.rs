@@ -13,7 +13,7 @@ use futures::{
 		mpsc::{UnboundedSender, UnboundedReceiver, channel},
 	},
 	compat::Future01CompatExt,
-	future::{Future, FutureExt, TryFutureExt},
+	future::{Future as Future03, FutureExt, TryFutureExt},
 	stream::Stream,
 	sink::SinkExt,
 };
