@@ -1255,6 +1255,18 @@ pub mod pallet_prelude {
 /// 	#[pallet::origin]
 /// 	pub struct Origin<T>(PhantomData<T>);
 ///
+/// 	// Declare validate_unsigned implementation.
+/// 	#[pallet::validate_unsigned]
+/// 	impl<T: Trait> ValidateUnsigned for Module<T> {
+/// 		type Call = Call<T>;
+/// 		fn validate_unsigned(
+/// 			source: TransactionSource,
+/// 			call: &Self::Call
+/// 		) -> TransactionValidity {
+/// 			Err(TransactionValidityError::Invalid(InvalidTransaction::Call))
+/// 		}
+/// 	}
+///
 /// 	// Declare inherent provider for module. (this is optional)
 /// 	//
 /// 	// The macro checks module is `Module<T>` or `Module<T, I>` and trait is `ProvideInherent`
@@ -1284,17 +1296,6 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	pub const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"testpall";
-///
-/// 	#[pallet::validate_unsigned]
-/// 	impl<T: Trait> ValidateUnsigned for Module<T> {
-/// 		type Call = Call<T>;
-/// 		fn validate_unsigned(
-/// 			source: TransactionSource,
-/// 			call: &Self::Call
-/// 		) -> TransactionValidity {
-/// 			Err(TransactionValidityError::Invalid(InvalidTransaction::Call))
-/// 		}
-/// 	}
 /// }
 /// ```
 ///
@@ -1372,6 +1373,17 @@ pub mod pallet_prelude {
 /// 	#[pallet::origin]
 /// 	pub struct Origin<T, I = DefaultInstance>(PhantomData<(T, I)>);
 ///
+/// 	#[pallet::validate_unsigned]
+/// 	impl<T: Trait<I>, I: Instance> ValidateUnsigned for Module<T, I> {
+/// 		type Call = Call<T, I>;
+/// 		fn validate_unsigned(
+/// 			source: TransactionSource,
+/// 			call: &Self::Call
+/// 		) -> TransactionValidity {
+/// 			Err(TransactionValidityError::Invalid(InvalidTransaction::Call))
+/// 		}
+/// 	}
+///
 /// 	#[pallet::inherent]
 /// 	impl<T: Trait<I>, I: Instance> ProvideInherent for Module<T, I> {
 /// 		type Call = Call<T, I>;
@@ -1398,18 +1410,6 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	pub const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"testpall";
-/// 	// TODO TODO: add validate unsigned
-///
-/// 	#[pallet::validate_unsigned]
-/// 	impl<T: Trait<I>, I: Instance> ValidateUnsigned for Module<T, I> {
-/// 		type Call = Call<T, I>;
-/// 		fn validate_unsigned(
-/// 			source: TransactionSource,
-/// 			call: &Self::Call
-/// 		) -> TransactionValidity {
-/// 			Err(TransactionValidityError::Invalid(InvalidTransaction::Call))
-/// 		}
-/// 	}
 /// }
 /// ```
 pub use frame_support_procedural::pallet;
