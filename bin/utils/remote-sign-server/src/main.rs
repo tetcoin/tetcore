@@ -34,7 +34,7 @@ async fn main() {
     let (remote_server, receiver) = GenericRemoteSignerServer::proxy(keystore);
 
     let mut io = IoHandler::new();
-    io.extend_with(remote_server.to_delegate());
+    io.extend_with(RemoteSignerApi::to_delegate(remote_server));
 
 	let server = ServerBuilder::new(io)
         .threads(3)

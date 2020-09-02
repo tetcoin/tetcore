@@ -88,6 +88,7 @@ pub trait RemoteSignerApi {
 	/// List all supported keys
 	///
 	/// Returns a set of public keys the signer supports.
+	#[rpc(name="keys", returns = "Vec<CryptoTypePublicPair>")]
 	fn keys(&self, id: KeyTypeId) -> BoxFuture<Vec<CryptoTypePublicPair>>;
 
 	/// Checks if the private keys for the given public key and key type combinations exist.
