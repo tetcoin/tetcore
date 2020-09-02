@@ -6060,17 +6060,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "remote-signer"
+name = "remote-sign-server"
 version = "0.1.0"
 dependencies = [
- "futures 0.3.5",
- "jsonrpc-core",
- "jsonrpc-core-client",
- "jsonrpc-derive",
- "parking_lot 0.11.0",
- "sc-keystore",
- "sp-application-crypto",
- "sp-core",
+ "sc-json-rpc-remote-signer",
 ]
 
 [[package]]
@@ -6921,6 +6914,20 @@ dependencies = [
  "sp-transaction-pool",
  "sp-utils",
  "wasm-timer",
+]
+
+[[package]]
+name = "sc-json-rpc-remote-signer"
+version = "2.0.0-rc6"
+dependencies = [
+ "futures 0.3.5",
+ "jsonrpc-core",
+ "jsonrpc-core-client",
+ "jsonrpc-derive",
+ "parking_lot 0.11.0",
+ "sc-keystore",
+ "sp-application-crypto",
+ "sp-core",
 ]
 
 [[package]]

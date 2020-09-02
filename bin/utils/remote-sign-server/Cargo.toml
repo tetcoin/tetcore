@@ -1,0 +1,10 @@
+[package]
+name = "remote-sign-server"
+version = "0.1.0"
+authors = ["Benjamin Kampmann <ben@parity.io>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+sc-remote-signer = { package = "sc-json-rpc-remote-signer", version = "2.0.0-rc6", path = "../../../client/json-rpc-remote-signer" }
