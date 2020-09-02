@@ -420,7 +420,7 @@ pub fn check_impl_generics(
 }
 
 /// Check the syntax:
-/// * either `` (no generics
+/// * either `` (no generics)
 /// * or `T`
 /// * or `T: Trait`
 /// * or `T, I = DefaultInstance`
@@ -560,6 +560,63 @@ pub fn check_genesis_builder_usage(type_: &syn::Path) -> syn::Result<InstanceUsa
 		.map_err(|e| {
 			let msg = format!("Invalid genesis builder: {}", expected);
 			let mut err = syn::Error::new(type_.span(), msg);
+			err.combine(e);
+			err
+		})?.0;
+
+	Ok(i)
+}
+
+/// Check the syntax:
+/// * either `` (no generics)
+/// * or `T: Trait`
+/// * or `T: Trait<I>, I: Instance`
+///
+/// `span` is used in case generics is empty (empty generics has span == call_site).
+///
+/// return the instance if found.
+pub fn check_type_value_gen(
+	gen: &syn::Generics,
+	span: proc_macro2::Span,
+) -> syn::Result<Option<InstanceUsage>> {
+	let expected = "expect `` or `T: Trait` or `T: Trait<I>, I: Instance`";
+	pub struct Checker(Option<InstanceUsage>);
+	impl syn::parse::Parse for Checker {
+		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+			if input.is_empty() {
+				return Ok(Self(None))
+			}
+
+			input.parse::<keyword::T>()?;
+			input.parse::<syn::Token![:]>()?;
+			input.parse::<keyword::Trait>()?;
+
+			let mut instance_usage = InstanceUsage {
+				span: input.span(),
+				has_instance: false,
+			};
+
+			if input.is_empty() {
+				return Ok(Self(Some(instance_usage)))
+			}
+
+			instance_usage.has_instance = true;
+			input.parse::<syn::Token![<]>()?;
+			input.parse::<keyword::I>()?;
+			input.parse::<syn::Token![>]>()?;
+			input.parse::<syn::Token![,]>()?;
+			input.parse::<keyword::I>()?;
+			input.parse::<syn::Token![:]>()?;
+			input.parse::<keyword::Instance>()?;
+
+			Ok(Self(Some(instance_usage)))
+		}
+	}
+
+	let i = syn::parse2::<Checker>(gen.params.to_token_stream())
+		.map_err(|e| {
+			let msg = format!("Invalid type def generics: {}", expected);
+			let mut err = syn::Error::new(span, msg);
 			err.combine(e);
 			err
 		})?.0;

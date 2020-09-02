@@ -1,4 +1,3 @@
-// TODO TODO: do test with instance
 use frame_support::{
 	weights::{DispatchInfo, DispatchClass, Pays, GetDispatchInfo},
 	traits::{GetCallName, Instance, OnInitialize, OnFinalize, OnRuntimeUpgrade},

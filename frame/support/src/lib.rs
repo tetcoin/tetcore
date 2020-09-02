@@ -1046,7 +1046,18 @@ pub mod pallet_prelude {
 /// type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
 /// ```
 ///
-/// TODO TODO: a way how to set default value easily
+/// ### `#[pallet::type_value]` optional
+///
+/// Helper to define a struct implementing `Get` trait. To ease use of storage types.
+///
+/// syntax:
+/// ```nocompile
+/// #[pallet::type_value]
+/// fn MyDefault<T: Trait>() -> T::Balance { 3.into() }
+/// ```
+///
+/// It expand to a struct with the name of the function and its generic, and implement
+/// `Get<$ReturnType>` on it using the provided function block.
 ///
 /// ### `#[pallet::genesis_config]` optional
 ///
@@ -1141,7 +1152,7 @@ pub mod pallet_prelude {
 /// 	pub trait Trait: frame_system::Trait {
 /// 		#[pallet::const_] // put the constant in metadata
 /// 		type MyGetParam: Get<u32>;
-/// 		type Balance: Parameter + Default;
+/// 		type Balance: Parameter + From<u8>;
 /// 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
 /// 	}
 ///
@@ -1215,6 +1226,10 @@ pub mod pallet_prelude {
 /// 		Something(u32),
 /// 	}
 ///
+/// 	// Define a struct which implements `frame_support::traits::Get<T::Balance>`
+/// 	#[pallet::type_value]
+/// 	fn MyDefault<T: Trait>() -> T::Balance { 3.into() }
+///
 /// 	// Declare a storage, any amount of storage can be declared.
 /// 	//
 /// 	// Is expected either `StorageValueType`, `StorageMapType` or `StorageDoubleMapType`.
@@ -1229,7 +1244,7 @@ pub mod pallet_prelude {
 /// 	// NOTE: for storage hasher, the type is not copied because storage hasher trait already
 /// 	// implements metadata. Thus generic storage hasher is supported.
 /// 	#[pallet::storage]
-/// 	type MyStorageValue<T: Trait> = StorageValueType<_, T::Balance, ValueQuery>;
+/// 	type MyStorageValue<T: Trait> = StorageValueType<_, T::Balance, ValueQuery, MyDefault<T>>;
 ///
 /// 	// Another declaration
 /// 	#[pallet::storage]
@@ -1316,7 +1331,7 @@ pub mod pallet_prelude {
 /// 	pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
 /// 		#[pallet::const_]
 /// 		type MyGetParam: Get<u32>;
-/// 		type Balance: Parameter + Default;
+/// 		type Balance: Parameter + From<u8>;
 /// 		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Trait>::Event>;
 /// 	}
 ///
@@ -1354,9 +1369,12 @@ pub mod pallet_prelude {
 /// 		Something(u32),
 /// 	}
 ///
+/// 	#[pallet::type_value]
+/// 	fn MyDefault<T: Trait<I>, I: Instance>() -> T::Balance { 3.into() }
+///
 /// 	#[pallet::storage]
 /// 	type MyStorageValue<T: Trait<I>, I: Instance = DefaultInstance> =
-/// 		StorageValueType<_, T::Balance, ValueQuery>;
+/// 		StorageValueType<_, T::Balance, ValueQuery, MyDefault<T, I>>;
 ///
 /// 	#[pallet::storage]
 /// 	type MyStorage<I = DefaultInstance> =

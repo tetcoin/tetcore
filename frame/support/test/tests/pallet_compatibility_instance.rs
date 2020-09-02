@@ -1,3 +1,5 @@
+use sp_runtime::traits::Block as _;
+
 mod pallet_old {
 	use frame_support::{
 		decl_storage, decl_error, decl_event, decl_module, weights::Weight, traits::Get, Parameter
@@ -127,8 +129,7 @@ pub mod pallet {
 	#[pallet::storage]
 	type Foo<T: Trait<I>, I: Instance = DefaultInstance> =
 		StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T, I>>;
-	pub struct OnFooEmpty<T: Trait<I>, I: Instance>(PhantomData<(T, I)>);
-	impl<T: Trait<I>, I: Instance> Get<T::Balance> for OnFooEmpty<T, I> { fn get() -> T::Balance { 3.into() } }
+	#[pallet::type_value] pub fn OnFooEmpty<T: Trait<I>, I: Instance>() -> T::Balance { 3.into() }
 
 	#[pallet::storage]
 	type Double<I: Instance = DefaultInstance> = StorageDoubleMapType<
@@ -258,7 +259,6 @@ mod test {
 	use super::pallet;
 	use super::pallet_old;
 	use codec::{Decode, Encode};
-	use sp_runtime::BuildStorage as _;
 
 	#[test]
 	fn metadata() {

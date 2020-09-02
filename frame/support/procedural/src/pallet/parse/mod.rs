@@ -32,6 +32,7 @@ pub mod helper;
 pub mod genesis_config;
 pub mod genesis_build;
 pub mod validate_unsigned;
+pub mod type_value;
 
 use syn::spanned::Spanned;
 use frame_support_procedural_tools::generate_crate_access;
@@ -55,6 +56,7 @@ pub struct Def {
 	pub genesis_config: Option<genesis_config::GenesisConfigDef>,
 	pub genesis_build: Option<genesis_build::GenesisBuildDef>,
 	pub validate_unsigned: Option<validate_unsigned::ValidateUnsignedDef>,
+	pub type_values: Vec<type_value::TypeValueDef>,
 }
 
 impl Def {
@@ -78,6 +80,7 @@ impl Def {
 		let mut genesis_build = None;
 		let mut validate_unsigned = None;
 		let mut storages = vec![];
+		let mut type_values = vec![];
 
 		for (index, item) in items.iter_mut().enumerate() {
 			let pallet_attr: Option<PalletAttr> = helper::take_first_item_attr(item)?;
@@ -110,6 +113,8 @@ impl Def {
 					let v = validate_unsigned::ValidateUnsignedDef::try_from(index, item)?;
 					validate_unsigned = Some(v);
 				},
+				Some(PalletAttr::TypeValue) =>
+					type_values.push(type_value::TypeValueDef::try_from(index, item)?),
 				None => (),
 			}
 		}
@@ -142,6 +147,7 @@ impl Def {
 			origin,
 			inherent,
 			storages,
+			type_values,
 		};
 
 		def.check_instance_usage()?;
@@ -305,6 +311,7 @@ mod keyword {
 	syn::custom_keyword!(genesis_build);
 	syn::custom_keyword!(genesis_config);
 	syn::custom_keyword!(validate_unsigned);
+	syn::custom_keyword!(type_value);
 }
 
 /// Parse attributes for item in pallet module
@@ -322,6 +329,7 @@ pub enum PalletAttr {
 	GenesisConfig,
 	GenesisBuild,
 	ValidateUnsigned,
+	TypeValue,
 }
 
 impl syn::parse::Parse for PalletAttr {
@@ -369,6 +377,9 @@ impl syn::parse::Parse for PalletAttr {
 		} else if lookahead.peek(keyword::validate_unsigned) {
 			content.parse::<keyword::validate_unsigned>()?;
 			Ok(PalletAttr::ValidateUnsigned)
+		} else if lookahead.peek(keyword::type_value) {
+			content.parse::<keyword::type_value>()?;
+			Ok(PalletAttr::TypeValue)
 		} else {
 			Err(lookahead.error())
 		}
