@@ -831,6 +831,9 @@ pub mod pallet_prelude {
 	pub use sp_std::marker::PhantomData;
 	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuilder, IsType};
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
+	pub use frame_support::storage::types::*;
+	pub use frame_support::{EqNoBound, PartialEqNoBound, DebugStripped, DebugNoBound, CloneNoBound};
+	pub use codec::{Encode, Decode};
 	pub use sp_inherents::ProvideInherent;
 	pub use sp_inherents::InherentData;
 	pub use sp_inherents::InherentIdentifier;
@@ -846,7 +849,6 @@ pub mod pallet_prelude {
 			UnknownTransaction,
 		},
 	};
-	pub use frame_support::storage::types::*;
 	pub use crate::{
 		StorageValue, StorageMap, StorageDoubleMap, StoragePrefixedMap, IterableStorageMap,
 		IterableStorageDoubleMap,
@@ -1146,6 +1148,7 @@ pub mod pallet_prelude {
 /// 	// Define the module struct placeholder, various pallet function are implemented on it.
 /// 	// The macro checks struct generics: is expected `T` or `T, I = DefaultInstance`
 /// 	#[pallet::module]
+/// 	#[pallet::generate(fn deposit_event)]
 /// 	pub struct Module<T>(PhantomData<T>);
 ///
 /// 	// Implement on the module interface on module.

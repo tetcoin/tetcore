@@ -49,7 +49,7 @@ pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
 
 		quote::quote_spanned!(fn_deposit_event_span =>
 			impl<#type_impl_gen> Module<#type_use_gen> {
-				fn deposit_event(event: Event<#event_use_gen>) {
+				pub fn deposit_event(event: Event<#event_use_gen>) {
 					let event = <
 						<T as Trait#trait_use_gen>::Event as
 						From<Event<#event_use_gen>>

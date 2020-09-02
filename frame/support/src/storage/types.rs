@@ -160,6 +160,24 @@ where
 	}
 }
 
+impl<Prefix, Hasher, Key, Value, QueryKind, OnEmpty> super::StoragePrefixedMap<Value> for
+	StorageMapType<Prefix, Hasher, Key, Value, QueryKind, OnEmpty>
+where
+	Prefix: StorageInstance,
+	Hasher: crate::hash::StorageHasher,
+	Key: FullEncode,
+	Value: FullCodec,
+	QueryKind: QueryKindTrait<Value>,
+	OnEmpty: crate::traits::Get<QueryKind::Query> + 'static,
+{
+	fn module_prefix() -> &'static [u8] {
+		<Self as super::generator::StorageMap<Key, Value>>::module_prefix()
+	}
+	fn storage_prefix() -> &'static [u8] {
+		<Self as super::generator::StorageMap<Key, Value>>::storage_prefix()
+	}
+}
+
 /// A type that implements StorageDoubleMap when generics are correctly set:
 /// * Prefix must implement StorageInstance, when used inside pallet macro with
 ///   `#[pallet::storage]` just write `_` the macro will expand with an automatically generated
@@ -207,6 +225,27 @@ where
 	}
 	fn from_query_to_optional_value(v: Self::Query) -> Option<Value> {
 		QueryKind::from_query_to_optional_value(v)
+	}
+}
+
+impl<Prefix, Hasher1, Key1, Hasher2, Key2, Value, QueryKind, OnEmpty>
+	super::StoragePrefixedMap<Value> for
+	StorageDoubleMapType<Prefix, Hasher1, Key1, Hasher2, Key2, Value, QueryKind, OnEmpty>
+where
+	Prefix: StorageInstance,
+	Hasher1: crate::hash::StorageHasher,
+	Hasher2: crate::hash::StorageHasher,
+	Key1: FullEncode,
+	Key2: FullEncode,
+	Value: FullCodec,
+	QueryKind: QueryKindTrait<Value>,
+	OnEmpty: crate::traits::Get<QueryKind::Query> + 'static
+{
+	fn module_prefix() -> &'static [u8] {
+		<Self as super::generator::StorageDoubleMap<Key1, Key2, Value>>::module_prefix()
+	}
+	fn storage_prefix() -> &'static [u8] {
+		<Self as super::generator::StorageDoubleMap<Key1, Key2, Value>>::storage_prefix()
 	}
 }
 

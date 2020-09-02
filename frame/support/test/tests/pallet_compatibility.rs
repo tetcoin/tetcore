@@ -1,5 +1,3 @@
-use sp_runtime::traits::Block as _;
-
 mod pallet_old {
 	use frame_support::{
 		decl_storage, decl_error, decl_event, decl_module, weights::Weight, traits::Get, Parameter
@@ -269,17 +267,5 @@ mod test {
 			pallet_old::Call::<Runtime>::decode(&mut &pallet::Call::<Runtime>::set_dummy(10).encode()[..]).unwrap(),
 			pallet_old::Call::<Runtime>::set_dummy(10),
 		);
-	}
-
-	#[test]
-	fn execution() {
-		let storage = super::GenesisConfig {
-			pallet: Default::default(),
-			pallet_old: Default::default(),
-		}.build_storage().unwrap();
-
-		// storage.execute_with(|| {
-		// 	// TODO TODO: some storage tests
-		// })
 	}
 }

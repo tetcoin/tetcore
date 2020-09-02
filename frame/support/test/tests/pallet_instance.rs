@@ -1,50 +1,65 @@
+// TODO TODO: do test with instance
 use frame_support::{
 	weights::{DispatchInfo, DispatchClass, Pays, GetDispatchInfo},
 	traits::{GetCallName, Instance, OnInitialize, OnFinalize, OnRuntimeUpgrade},
 	dispatch::UnfilteredDispatchable,
-	storage::unhashed,
 };
 use sp_runtime::{traits::Block as _, DispatchError};
 use sp_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
+use frame_support::storage::unhashed;
 
 #[frame_support::pallet(Example)]
 pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
 
-	type BalanceOf<T> = <T as Trait>::Balance;
+	type BalanceOf<T, I> = <T as Trait<I>>::Balance;
 
 	#[pallet::trait_]
-	pub trait Trait: frame_system::Trait {
+	pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
 		#[pallet::const_]
 		type MyGetParam: Get<u32>;
 		type Balance: Parameter + Default;
-		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Trait>::Event>;
 	}
 
 	#[pallet::module]
 	#[pallet::generate(fn deposit_event)]
-	pub struct Module<T>(PhantomData<T>);
+	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 
 	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
+	impl<T: Trait<I>, I: Instance> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {
 		fn on_initialize(_: BlockNumberFor<T>) -> Weight {
-			Self::deposit_event(Event::Something(10));
-			10
+			if I::PREFIX == "Example" {
+				Self::deposit_event(Event::Something(10));
+				10
+			} else {
+				Self::deposit_event(Event::Something(11));
+				11
+			}
 		}
 		fn on_finalize(_: BlockNumberFor<T>) {
-			Self::deposit_event(Event::Something(20));
+			if I::PREFIX == "Example" {
+				Self::deposit_event(Event::Something(20));
+			} else {
+				Self::deposit_event(Event::Something(21));
+			}
 		}
 		fn on_runtime_upgrade() -> Weight {
-			Self::deposit_event(Event::Something(30));
-			30
+			if I::PREFIX == "Example" {
+				Self::deposit_event(Event::Something(30));
+				30
+			} else {
+				Self::deposit_event(Event::Something(31));
+				31
+			}
 		}
 		fn integrity_test() {
 		}
 	}
 
 	#[pallet::call]
-	impl<T: Trait> Call for Module<T> {
+	impl<T: Trait<I>, I: Instance> Call for Module<T, I> {
 		/// Doc comment put in metadata
 		#[pallet::weight(Weight::from(*_foo))]
 		fn foo(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
@@ -64,35 +79,37 @@ pub mod pallet {
 
 
 	#[pallet::error]
-	pub enum Error<T> {
+	pub enum Error<T, I = DefaultInstance> {
 		/// doc comment put into metadata
 		InsufficientProposersBalance,
 	}
 
 	#[pallet::event]
-	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
-	pub enum Event<T: Trait> {
+	#[pallet::metadata(BalanceOf<T, I> = Balance, u32 = Other)]
+	pub enum Event<T: Trait<I>, I: Instance = DefaultInstance> {
 		/// doc comment put in metadata
 		Proposed(<T as frame_system::Trait>::AccountId),
 		/// doc
-		Spending(BalanceOf<T>),
+		Spending(BalanceOf<T, I>),
 		Something(u32),
 	}
 
 	#[pallet::storage]
-	pub type Value = StorageValueType<_, u32>;
+	pub type Value<I = DefaultInstance> = StorageValueType<_, u32>;
 
 	#[pallet::storage]
-	pub type Map = StorageMapType<_, Blake2_128Concat, u8, u16>;
+	pub type Map<I = DefaultInstance> = StorageMapType<_, Blake2_128Concat, u8, u16>;
 
 	#[pallet::storage]
-	pub type Map2 = StorageMapType<_, Twox64Concat, u16, u32>;
+	pub type Map2<I = DefaultInstance> = StorageMapType<_, Twox64Concat, u16, u32>;
 
 	#[pallet::storage]
-	pub type DoubleMap = StorageDoubleMapType<_, Blake2_128Concat, u8, Twox64Concat, u16, u32>;
+	pub type DoubleMap<I = DefaultInstance> =
+		StorageDoubleMapType<_, Blake2_128Concat, u8, Twox64Concat, u16, u32>;
 
 	#[pallet::storage]
-	pub type DoubleMap2 = StorageDoubleMapType<_, Twox64Concat, u16, Blake2_128Concat, u32, u64>;
+	pub type DoubleMap2<I = DefaultInstance> =
+		StorageDoubleMapType<_, Twox64Concat, u16, Blake2_128Concat, u32, u64>;
 
 	#[pallet::genesis_config]
 	#[derive(Default)]
@@ -101,17 +118,17 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuilder<T> for GenesisConfig {
+	impl<T: Trait<I>, I:Instance> GenesisBuilder<T, I> for GenesisConfig {
 		fn build(&self) {}
 	}
 
 	#[pallet::origin]
 	#[derive(EqNoBound, DebugStripped, CloneNoBound, PartialEqNoBound, Encode, Decode)]
-	pub struct Origin<T>(PhantomData<T>);
+	pub struct Origin<T, I = DefaultInstance>(PhantomData<(T, I)>);
 
 	#[pallet::validate_unsigned]
-	impl<T: Trait> ValidateUnsigned for Module<T> {
-		type Call = Call<T>;
+	impl<T: Trait<I>, I: Instance> ValidateUnsigned for Module<T, I> {
+		type Call = Call<T, I>;
 		fn validate_unsigned(
 			_source: TransactionSource,
 			_call: &Self::Call
@@ -121,8 +138,8 @@ pub mod pallet {
 	}
 
 	#[pallet::inherent]
-	impl<T: Trait> ProvideInherent for Module<T> {
-		type Call = Call<T>;
+	impl<T: Trait<I>, I: Instance> ProvideInherent for Module<T, I> {
+		type Call = Call<T, I>;
 		type Error = InherentError;
 
 		const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
@@ -186,6 +203,11 @@ impl pallet::Trait for Runtime {
 	type MyGetParam= MyGetParam;
 	type Balance = u64;
 }
+impl pallet::Trait<pallet::Instance1> for Runtime {
+	type Event = Event;
+	type MyGetParam= MyGetParam;
+	type Balance = u64;
+}
 
 pub type Header = sp_runtime::generic::Header<u32, sp_runtime::traits::BlakeTwo256>;
 pub type Block = sp_runtime::generic::Block<Header, UncheckedExtrinsic>;
@@ -199,6 +221,7 @@ frame_support::construct_runtime!(
 	{
 		System: frame_system::{Module, Call, Event<T>},
 		Pallet: pallet::{Module, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
+		Pallet1: pallet::<Instance1>::{Module, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
 	}
 );
 
@@ -216,6 +239,21 @@ fn call_expand() {
 	assert_eq!(call_foo.get_call_name(), "foo");
 	assert_eq!(
 		pallet::Call::<Runtime>::get_call_names(),
+		&["foo", "foo_transactional"],
+	);
+
+	let call_foo = pallet::Call::<Runtime, pallet::Instance1>::foo(3);
+	assert_eq!(
+		call_foo.get_dispatch_info(),
+		DispatchInfo {
+			weight: 3,
+			class: DispatchClass::Normal,
+			pays_fee: Pays::Yes,
+		}
+	);
+	assert_eq!(call_foo.get_call_name(), "foo");
+	assert_eq!(
+		pallet::Call::<Runtime, pallet::Instance1>::get_call_names(),
 		&["foo", "foo_transactional"],
 	);
 }
@@ -238,11 +276,31 @@ fn error_expand() {
 			message: Some("InsufficientProposersBalance"),
 		},
 	);
+
+	assert_eq!(
+		format!("{:?}", pallet::Error::<Runtime, pallet::Instance1>::InsufficientProposersBalance),
+		String::from("InsufficientProposersBalance"),
+	);
+	assert_eq!(
+		<&'static str>::from(pallet::Error::<Runtime, pallet::Instance1>::InsufficientProposersBalance),
+		"InsufficientProposersBalance",
+	);
+	assert_eq!(
+		DispatchError::from(pallet::Error::<Runtime, pallet::Instance1>::InsufficientProposersBalance),
+		DispatchError::Module {
+			index: 2,
+			error: 0,
+			message: Some("InsufficientProposersBalance"),
+		},
+	);
 }
 
 #[test]
 fn instance_expand() {
 	assert_eq!(pallet::__InherentHiddenInstance::PREFIX, "Example");
+	assert_eq!(pallet::DefaultInstance::PREFIX, "Example");
+	assert_eq!(pallet::Instance1::PREFIX, "Instance1Example");
+	assert_eq!(pallet::Instance2::PREFIX, "Instance2Example");
 }
 
 #[test]
@@ -254,7 +312,16 @@ fn module_expand_deposit_event() {
 			frame_system::Module::<Runtime>::events()[0].event,
 			Event::pallet(pallet::Event::Something(3)),
 		);
-	})
+	});
+
+	TestExternalities::default().execute_with(|| {
+		frame_system::Module::<Runtime>::set_block_number(1);
+		pallet::Call::<Runtime, pallet::Instance1>::foo(3).dispatch_bypass_filter(None.into()).unwrap();
+		assert_eq!(
+			frame_system::Module::<Runtime>::events()[0].event,
+			Event::pallet_Instance1(pallet::Event::Something(3)),
+		);
+	});
 }
 
 #[test]
@@ -274,36 +341,68 @@ fn storage_expand() {
 	}
 
 	TestExternalities::default().execute_with(|| {
-		pallet::Value::put(1);
+		<pallet::Value>::put(1);
 		let k = [twox_128(b"Example"), twox_128(b"Value")].concat();
 		assert_eq!(unhashed::get::<u32>(&k), Some(1u32));
 
-		pallet::Map::insert(1, 2);
+		<pallet::Map>::insert(1, 2);
 		let mut k = [twox_128(b"Example"), twox_128(b"Map")].concat();
 		k.extend(1u8.using_encoded(blake2_128_concat));
 		assert_eq!(unhashed::get::<u16>(&k), Some(2u16));
 		assert_eq!(&k[..32], &<pallet::Map>::final_prefix());
 
-		pallet::Map2::insert(1, 2);
+		<pallet::Map2>::insert(1, 2);
 		let mut k = [twox_128(b"Example"), twox_128(b"Map2")].concat();
 		k.extend(1u16.using_encoded(twox_64_concat));
 		assert_eq!(unhashed::get::<u32>(&k), Some(2u32));
 		assert_eq!(&k[..32], &<pallet::Map2>::final_prefix());
 
-		pallet::DoubleMap::insert(&1, &2, &3);
+		<pallet::DoubleMap>::insert(&1, &2, &3);
 		let mut k = [twox_128(b"Example"), twox_128(b"DoubleMap")].concat();
 		k.extend(1u8.using_encoded(blake2_128_concat));
 		k.extend(2u16.using_encoded(twox_64_concat));
 		assert_eq!(unhashed::get::<u32>(&k), Some(3u32));
 		assert_eq!(&k[..32], &<pallet::DoubleMap>::final_prefix());
 
-		pallet::DoubleMap2::insert(&1, &2, &3);
+		<pallet::DoubleMap2>::insert(&1, &2, &3);
 		let mut k = [twox_128(b"Example"), twox_128(b"DoubleMap2")].concat();
 		k.extend(1u16.using_encoded(twox_64_concat));
 		k.extend(2u32.using_encoded(blake2_128_concat));
 		assert_eq!(unhashed::get::<u64>(&k), Some(3u64));
 		assert_eq!(&k[..32], &<pallet::DoubleMap2>::final_prefix());
-	})
+	});
+
+	TestExternalities::default().execute_with(|| {
+		<pallet::Value<pallet::Instance1>>::put(1);
+		let k = [twox_128(b"Instance1Example"), twox_128(b"Value")].concat();
+		assert_eq!(unhashed::get::<u32>(&k), Some(1u32));
+
+		<pallet::Map<pallet::Instance1>>::insert(1, 2);
+		let mut k = [twox_128(b"Instance1Example"), twox_128(b"Map")].concat();
+		k.extend(1u8.using_encoded(blake2_128_concat));
+		assert_eq!(unhashed::get::<u16>(&k), Some(2u16));
+		assert_eq!(&k[..32], &<pallet::Map<pallet::Instance1>>::final_prefix());
+
+		<pallet::Map2<pallet::Instance1>>::insert(1, 2);
+		let mut k = [twox_128(b"Instance1Example"), twox_128(b"Map2")].concat();
+		k.extend(1u16.using_encoded(twox_64_concat));
+		assert_eq!(unhashed::get::<u32>(&k), Some(2u32));
+		assert_eq!(&k[..32], &<pallet::Map2<pallet::Instance1>>::final_prefix());
+
+		<pallet::DoubleMap<pallet::Instance1>>::insert(&1, &2, &3);
+		let mut k = [twox_128(b"Instance1Example"), twox_128(b"DoubleMap")].concat();
+		k.extend(1u8.using_encoded(blake2_128_concat));
+		k.extend(2u16.using_encoded(twox_64_concat));
+		assert_eq!(unhashed::get::<u32>(&k), Some(3u32));
+		assert_eq!(&k[..32], &<pallet::DoubleMap<pallet::Instance1>>::final_prefix());
+
+		<pallet::DoubleMap2<pallet::Instance1>>::insert(&1, &2, &3);
+		let mut k = [twox_128(b"Instance1Example"), twox_128(b"DoubleMap2")].concat();
+		k.extend(1u16.using_encoded(twox_64_concat));
+		k.extend(2u32.using_encoded(blake2_128_concat));
+		assert_eq!(unhashed::get::<u64>(&k), Some(3u64));
+		assert_eq!(&k[..32], &<pallet::DoubleMap2<pallet::Instance1>>::final_prefix());
+	});
 }
 
 #[test]
@@ -311,20 +410,33 @@ fn module_interface_expand() {
 	TestExternalities::default().execute_with(|| {
 		frame_system::Module::<Runtime>::set_block_number(1);
 
-		assert_eq!(AllModules::on_initialize(1), 10);
+		assert_eq!(AllModules::on_initialize(1), 21);
 		AllModules::on_finalize(1);
-		assert_eq!(AllModules::on_runtime_upgrade(), 30);
+		assert_eq!(AllModules::on_runtime_upgrade(), 61);
 
+		// The order is indeed reversed due to https://github.com/paritytech/substrate/issues/6280
 		assert_eq!(
 			frame_system::Module::<Runtime>::events()[0].event,
-			Event::pallet(pallet::Event::Something(10)),
+			Event::pallet_Instance1(pallet::Event::Something(11)),
 		);
 		assert_eq!(
 			frame_system::Module::<Runtime>::events()[1].event,
-			Event::pallet(pallet::Event::Something(20)),
+			Event::pallet(pallet::Event::Something(10)),
 		);
 		assert_eq!(
 			frame_system::Module::<Runtime>::events()[2].event,
+			Event::pallet_Instance1(pallet::Event::Something(21)),
+		);
+		assert_eq!(
+			frame_system::Module::<Runtime>::events()[3].event,
+			Event::pallet(pallet::Event::Something(20)),
+		);
+		assert_eq!(
+			frame_system::Module::<Runtime>::events()[4].event,
+			Event::pallet_Instance1(pallet::Event::Something(31)),
+		);
+		assert_eq!(
+			frame_system::Module::<Runtime>::events()[5].event,
 			Event::pallet(pallet::Event::Something(30)),
 		);
 	})
@@ -464,6 +576,16 @@ fn metadata() {
 		]),
 	};
 
+	let mut expected_pallet_instance1_metadata = expected_pallet_metadata.clone();
+	expected_pallet_instance1_metadata.name = DecodeDifferent::Decoded("Pallet1".to_string());
+	match expected_pallet_instance1_metadata.storage {
+		Some(DecodeDifferent::Decoded(ref mut storage_meta)) => {
+			storage_meta.prefix = DecodeDifferent::Decoded("Instance1Example".to_string());
+		},
+		_ => unreachable!(),
+	}
+
+
 	let metadata = match Runtime::metadata().1 {
 		RuntimeMetadata::V11(metadata) => metadata,
 		_ => panic!("metadata has been bump, test needs to be updated"),
@@ -475,6 +597,9 @@ fn metadata() {
 	};
 
 	let pallet_metadata = ModuleMetadata::decode(&mut &modules_metadata[1].encode()[..]).unwrap();
+	let pallet_instance1_metadata =
+		ModuleMetadata::decode(&mut &modules_metadata[2].encode()[..]).unwrap();
 
 	pretty_assertions::assert_eq!(pallet_metadata, expected_pallet_metadata);
+	pretty_assertions::assert_eq!(pallet_instance1_metadata, expected_pallet_instance1_metadata);
 }
