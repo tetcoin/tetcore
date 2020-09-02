@@ -48,7 +48,10 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 	sp_consensus::DefaultImportQueue<Block, FullClient>,
 	sc_transaction_pool::FullPool<Block, FullClient>,
 	(
-		impl Fn(node_rpc::DenyUnsafe) -> node_rpc::IoHandler,
+		impl Fn(
+			node_rpc::DenyUnsafe,
+			jsonrpc_pubsub::manager::SubscriptionManager
+		) -> node_rpc::IoHandler,
 		(
 			sc_consensus_babe::BabeBlockImport<Block, FullClient, FullGrandpaBlockImport>,
 			grandpa::LinkHalf<Block, FullClient, FullSelectChain>,
@@ -57,7 +60,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		grandpa::SharedVoterState,
 	)
 >, ServiceError> {
-	let (client, backend, keystore_params, keystore_receiver, task_manager) =
+	let (client, backend, keystore_params, task_manager) =
 		sc_service::new_full_parts::<Block, RuntimeApi, Executor>(&config)?;
 	let client = Arc::new(client);
 
@@ -93,6 +96,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		inherent_data_providers.clone(),
 		&task_manager.spawn_handle(),
 		config.prometheus_registry(),
+		sp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone()),
 	)?;
 
 	let import_setup = (block_import, grandpa_link, babe_link);
@@ -100,6 +104,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 	let (rpc_extensions_builder, rpc_setup) = {
 		let (_, grandpa_link, babe_link) = &import_setup;
 
+		let justification_stream = grandpa_link.justification_stream();
 		let shared_authority_set = grandpa_link.shared_authority_set().clone();
 		let shared_voter_state = grandpa::SharedVoterState::empty();
 
@@ -113,7 +118,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		let select_chain = select_chain.clone();
 		let keystore = keystore_params.sync_keystore();
 
-		let rpc_extensions_builder = move |deny_unsafe| {
+		let rpc_extensions_builder = move |deny_unsafe, subscriptions| {
 			let deps = node_rpc::FullDeps {
 				client: client.clone(),
 				pool: pool.clone(),
@@ -127,6 +132,8 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 				grandpa: node_rpc::GrandpaDeps {
 					shared_voter_state: shared_voter_state.clone(),
 					shared_authority_set: shared_authority_set.clone(),
+					justification_stream: justification_stream.clone(),
+					subscriptions,
 				},
 			};
 
@@ -137,7 +144,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 	};
 
 	Ok(sc_service::PartialComponents {
-		client, backend, task_manager, keystore_params, keystore_receiver,
+		client, backend, task_manager, keystore_params,
 		select_chain, import_queue, transaction_pool, inherent_data_providers,
 		other: (rpc_extensions_builder, import_setup, rpc_setup)
 	})
@@ -156,12 +163,10 @@ pub fn new_full_base(
 	Arc<sc_transaction_pool::FullPool<Block, FullClient>>,
 ), ServiceError> {
 	let sc_service::PartialComponents {
-		client, backend, mut task_manager, import_queue, keystore_params, keystore_receiver,
+		client, backend, mut task_manager, import_queue, keystore_params,
 		select_chain, transaction_pool, inherent_data_providers,
 		other: (rpc_extensions_builder, import_setup, rpc_setup),
 	} = new_partial(&config)?;
-
-	task_manager.spawn_essential_handle().spawn("keystore", keystore_receiver);
 
 	let finality_proof_provider =
 		GrandpaFinalityProofProvider::new_for_service(backend.clone(), client.clone());
@@ -246,7 +251,7 @@ pub fn new_full_base(
 			sc_service::config::Role::Authority { ref sentry_nodes } => (
 				sentry_nodes.clone(),
 				sc_authority_discovery::Role::Authority (
-					keystore_params.sync_keystore(),
+					keystore_params.keystore(),
 				),
 			),
 			sc_service::config::Role::Sentry {..} => (
@@ -261,7 +266,7 @@ pub fn new_full_base(
 				Event::Dht(e) => Some(e),
 				_ => None,
 			}}).boxed();
-		let authority_discovery = sc_authority_discovery::AuthorityDiscovery::new(
+		let (authority_discovery_worker, _service) = sc_authority_discovery::new_worker_and_service(
 			client.clone(),
 			network.clone(),
 			sentries,
@@ -270,7 +275,7 @@ pub fn new_full_base(
 			prometheus_registry.clone(),
 		);
 
-		task_manager.spawn_handle().spawn("authority-discovery", authority_discovery.run());
+		task_manager.spawn_handle().spawn("authority-discovery-worker", authority_discovery_worker.run());
 	}
 
 	// if the node isn't actively participating in consensus then it doesn't
@@ -336,14 +341,12 @@ pub fn new_full(config: Configuration)
 }
 
 pub fn new_light_base(config: Configuration) -> Result<(
-	TaskManager, Arc<RpcHandlers>, Arc<LightClient>,
+	TaskManager, RpcHandlers, Arc<LightClient>,
 	Arc<NetworkService<Block, <Block as BlockT>::Hash>>,
 	Arc<sc_transaction_pool::LightPool<Block, LightClient, sc_network::config::OnDemand<Block>>>
 ), ServiceError> {
-	let (client, backend, keystore_params, keystore_receiver, mut task_manager, on_demand) =
+	let (client, backend, keystore_params, mut task_manager, on_demand) =
 		sc_service::new_light_parts::<Block, RuntimeApi, Executor>(&config)?;
-
-	task_manager.spawn_essential_handle().spawn("keystore", keystore_receiver);
 
 	let select_chain = sc_consensus::LongestChain::new(backend.clone());
 
@@ -382,6 +385,7 @@ pub fn new_light_base(config: Configuration) -> Result<(
 		inherent_data_providers.clone(),
 		&task_manager.spawn_handle(),
 		config.prometheus_registry(),
+		sp_consensus::NeverCanAuthor,
 	)?;
 
 	let finality_proof_provider =
@@ -464,9 +468,10 @@ mod tests {
 	use sp_keyring::AccountKeyring;
 	use sc_service_test::TestNetNode;
 	use crate::service::{new_full_base, new_light_base};
-	use sp_runtime::traits::IdentifyAccount;
+	use sp_runtime::{key_types::BABE, traits::IdentifyAccount, RuntimeAppPublic};
 	use sp_transaction_pool::{MaintainedTransactionPool, ChainEvent};
 	use sc_client_api::BlockBackend;
+	use sc_keystore::LocalKeystore;
 
 	type AccountPublic = <Signature as Verify>::Signer;
 
@@ -476,10 +481,11 @@ mod tests {
 	#[ignore]
 	fn test_sync() {
 		let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-		let mut keystore = sc_keystore::Store::open(keystore_path.path(), None)
-			.expect("Creates keystore");
-		let alice = keystore.insert_ephemeral_from_seed::<sc_consensus_babe::AuthorityPair>("//Alice")
-			.expect("Creates authority pair");
+		let keystore: Arc<SyncCryptoStore> = Arc::new(LocalKeystore::open(keystore_path.path(), None)
+			.expect("Creates keystore")
+			.into());
+		let alice: sp_consensus_babe::AuthorityId = keystore.sr25519_generate_new(BABE, Some("//Alice"))
+			.expect("Creates authority pair").into();
 
 		let chain_spec = crate::chain_spec::tests::integration_test_config_with_single_authority();
 
@@ -491,7 +497,6 @@ mod tests {
 		let charlie = Arc::new(AccountKeyring::Charlie.pair());
 		let mut index = 0;
 
-		let keystore: Arc<SyncCryptoStore> = keystore.into();
 		sc_service_test::sync(
 			chain_spec,
 			|config| {
@@ -528,11 +533,9 @@ mod tests {
 
 				futures::executor::block_on(
 					service.transaction_pool().maintain(
-						ChainEvent::NewBlock {
-							is_new_best: true,
+						ChainEvent::NewBestBlock {
 							hash: parent_header.hash(),
 							tree_route: None,
-							header: parent_header.clone(),
 						},
 					)
 				);
@@ -586,9 +589,9 @@ mod tests {
 				// sign the pre-sealed hash of the block and then
 				// add it to a digest item.
 				let to_sign = pre_hash.encode();
-				let signature = alice.sign(&to_sign[..]);
+				let signature = alice.sign(&to_sign).unwrap();
 				let item = <DigestItem as CompatibleDigestItem>::babe_seal(
-					signature.into(),
+					signature,
 				);
 				slot_num += 1;
 

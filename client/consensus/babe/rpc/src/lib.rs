@@ -235,21 +235,21 @@ mod tests {
 	};
 	use sp_application_crypto::AppPair;
 	use sp_keyring::Ed25519Keyring;
-	use sc_keystore::{Store, KeyStorePtr};
+	use sp_core::{crypto::key_types::BABE, traits::SyncCryptoStore};
+	use sc_keystore::LocalKeystore;
 
 	use std::sync::Arc;
-	use parking_lot::RwLock;
 	use sc_consensus_babe::{Config, block_import, AuthorityPair};
 	use jsonrpc_core::IoHandler;
 
 	/// creates keystore backed by a temp file
-	fn create_temp_keystore<P: AppPair>(authority: Ed25519Keyring) -> (KeyStorePtr, tempfile::TempDir) {
+	fn create_temp_keystore<P: AppPair>(authority: Ed25519Keyring) -> (Arc<SyncCryptoStore>, tempfile::TempDir) {
 		let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-		let mut keystore = Store::open(keystore_path.path(), None).expect("Creates keystore");
-		keystore.insert_ephemeral_from_seed::<P>(&authority.to_seed())
+		let keystore: SyncCryptoStore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore").into();
+		keystore.ed25519_generate_new(BABE, Some(&authority.to_seed()))
 			.expect("Creates authority key");
 
-		(Arc::new(RwLock::new(keystore)), keystore_path)
+		(Arc::new(keystore), keystore_path)
 	}
 
 	fn test_babe_rpc_handler(
@@ -271,7 +271,7 @@ mod tests {
 		BabeRpcHandler::new(
 			client.clone(),
 			epoch_changes,
-			Arc::new(SyncCryptoStore::new(keystore)),
+			keystore,
 			config,
 			longest_chain,
 			deny_unsafe,

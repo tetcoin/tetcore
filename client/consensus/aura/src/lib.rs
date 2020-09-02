@@ -496,14 +496,16 @@ fn check_header<C, B: BlockT, P: Pair>(
 }
 
 /// A verifier for Aura blocks.
-pub struct AuraVerifier<C, P> {
+pub struct AuraVerifier<C, P, CAW> {
 	client: Arc<C>,
 	phantom: PhantomData<P>,
 	inherent_data_providers: sp_inherents::InherentDataProviders,
+	can_author_with: CAW,
 }
 
-impl<C, P> AuraVerifier<C, P>
-	where P: Send + Sync + 'static
+impl<C, P, CAW> AuraVerifier<C, P, CAW> where
+	P: Send + Sync + 'static,
+	CAW: Send + Sync + 'static,
 {
 	fn check_inherents<B: BlockT>(
 		&self,
@@ -511,10 +513,21 @@ impl<C, P> AuraVerifier<C, P>
 		block_id: BlockId<B>,
 		inherent_data: InherentData,
 		timestamp_now: u64,
-	) -> Result<(), Error<B>>
-		where C: ProvideRuntimeApi<B>, C::Api: BlockBuilderApi<B, Error = sp_blockchain::Error>
+	) -> Result<(), Error<B>> where
+		C: ProvideRuntimeApi<B>, C::Api: BlockBuilderApi<B, Error = sp_blockchain::Error>,
+		CAW: CanAuthorWith<B>,
 	{
 		const MAX_TIMESTAMP_DRIFT_SECS: u64 = 60;
+
+		if let Err(e) = self.can_author_with.can_author_with(&block_id) {
+			debug!(
+				target: "aura",
+				"Skipping `check_inherents` as authoring version is not compatible: {}",
+				e,
+			);
+
+			return Ok(())
+		}
 
 		let inherent_res = self.client.runtime_api().check_inherents(
 			&block_id,
@@ -557,7 +570,7 @@ impl<C, P> AuraVerifier<C, P>
 }
 
 #[forbid(deprecated)]
-impl<B: BlockT, C, P> Verifier<B> for AuraVerifier<C, P> where
+impl<B: BlockT, C, P, CAW> Verifier<B> for AuraVerifier<C, P, CAW> where
 	C: ProvideRuntimeApi<B> +
 		Send +
 		Sync +
@@ -569,6 +582,7 @@ impl<B: BlockT, C, P> Verifier<B> for AuraVerifier<C, P> where
 	P: Pair + Send + Sync + 'static,
 	P::Public: Send + Sync + Hash + Eq + Clone + Decode + Encode + Debug + 'static,
 	P::Signature: Encode + Decode,
+	CAW: CanAuthorWith<B> + Send + Sync + 'static,
 {
 	fn verify(
 		&mut self,
@@ -816,7 +830,7 @@ impl<Block: BlockT, C, I, P> BlockImport<Block> for AuraBlockImport<Block, C, I,
 }
 
 /// Start an import queue for the Aura consensus algorithm.
-pub fn import_queue<B, I, C, P, S>(
+pub fn import_queue<B, I, C, P, S, CAW>(
 	slot_duration: SlotDuration,
 	block_import: I,
 	justification_import: Option<BoxJustificationImport<B>>,
@@ -825,6 +839,7 @@ pub fn import_queue<B, I, C, P, S>(
 	inherent_data_providers: InherentDataProviders,
 	spawner: &S,
 	registry: Option<&Registry>,
+	can_author_with: CAW,
 ) -> Result<DefaultImportQueue<B, C>, sp_consensus::Error> where
 	B: BlockT,
 	C::Api: BlockBuilderApi<B> + AuraApi<B, AuthorityId<P>> + ApiExt<B, Error = sp_blockchain::Error>,
@@ -835,6 +850,7 @@ pub fn import_queue<B, I, C, P, S>(
 	P::Public: Clone + Eq + Send + Sync + Hash + Debug + Encode + Decode,
 	P::Signature: Encode + Decode,
 	S: sp_core::traits::SpawnNamed,
+	CAW: CanAuthorWith<B> + Send + Sync + 'static,
 {
 	register_aura_inherent_data_provider(&inherent_data_providers, slot_duration.get())?;
 	initialize_authorities_cache(&*client)?;
@@ -843,6 +859,7 @@ pub fn import_queue<B, I, C, P, S>(
 		client,
 		inherent_data_providers,
 		phantom: PhantomData,
+		can_author_with,
 	};
 
 	Ok(BasicQueue::new(
@@ -858,7 +875,7 @@ pub fn import_queue<B, I, C, P, S>(
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_consensus::{NoNetwork as DummyOracle, Proposal, RecordProof};
+	use sp_consensus::{NoNetwork as DummyOracle, Proposal, RecordProof, AlwaysCanAuthor};
 	use sc_network_test::{Block as TestBlock, *};
 	use sp_runtime::traits::{Block as BlockT, DigestFor};
 	use sc_network::config::ProtocolConfig;
@@ -871,6 +888,8 @@ mod tests {
 	use sc_block_builder::BlockBuilderProvider;
 	use sp_runtime::traits::Header as _;
 	use substrate_test_runtime_client::runtime::{Header, H256};
+	use sc_keystore::LocalKeystore;
+	use sp_application_crypto::key_types::AURA;
 
 	type Error = sp_blockchain::Error;
 
@@ -928,7 +947,7 @@ mod tests {
 	}
 
 	impl TestNetFactory for AuraTestNet {
-		type Verifier = AuraVerifier<PeersFullClient, AuthorityPair>;
+		type Verifier = AuraVerifier<PeersFullClient, AuthorityPair, AlwaysCanAuthor>;
 		type PeerData = ();
 
 		/// Create new test network with peers and given config.
@@ -955,6 +974,7 @@ mod tests {
 						client,
 						inherent_data_providers,
 						phantom: Default::default(),
+						can_author_with: AlwaysCanAuthor,
 					}
 				},
 				PeersClient::Light(_, _) => unreachable!("No (yet) tests for light client + Aura"),
@@ -997,9 +1017,10 @@ mod tests {
 			let client = peer.client().as_full().expect("full clients are created").clone();
 			let select_chain = peer.select_chain().expect("full client has a select chain");
 			let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-			let mut keystore = sc_keystore::Store::open(keystore_path.path(), None).expect("Creates keystore.");
+			let keystore: SyncCryptoStore= LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore.").into();
 
-			keystore.insert_ephemeral_from_seed::<AuthorityPair>(&key.to_seed())
+
+			keystore.sr25519_generate_new(AURA, Some(&key.to_seed()))
 				.expect("Creates authority key");
 			keystore_paths.push(keystore_path);
 
@@ -1026,7 +1047,7 @@ mod tests {
 				DummyOracle,
 				inherent_data_providers,
 				false,
-				keystore.into(),
+				Arc::new(keystore.into()),
 				sp_consensus::AlwaysCanAuthor,
 			).expect("Starts aura"));
 		}
@@ -1066,11 +1087,10 @@ mod tests {
 		];
 
 		let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-		let keystore = sc_keystore::Store::open(keystore_path.path(), None).expect("Creates keystore.");
-		let my_key = keystore
-			.generate_by_type::<AuthorityPair>(AuthorityPair::ID)
+		let keystore: SyncCryptoStore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore.").into();
+		let public = keystore.sr25519_generate_new(AuthorityPair::ID, None)
 			.expect("Key should be created");
-		authorities.push(my_key.public());
+		authorities.push(public.into());
 
 		let net = Arc::new(Mutex::new(net));
 

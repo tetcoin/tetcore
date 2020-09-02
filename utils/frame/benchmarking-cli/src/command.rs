@@ -58,7 +58,7 @@ impl BenchmarkCmd {
 		);
 
 		let mut extensions = Extensions::default();
-		extensions.register(KeystoreExt(Arc::new(SyncCryptoStore::new(KeyStore::new()))));
+		extensions.register(KeystoreExt(Arc::new(SyncCryptoStore::new(KeyStore::new().into()))));
 		let (offchain, _) = TestOffchainExt::new();
 		extensions.register(OffchainExt::new(offchain));
 
@@ -76,6 +76,7 @@ impl BenchmarkCmd {
 				self.highest_range_values.clone(),
 				self.steps.clone(),
 				self.repeat,
+				!self.no_verify,
 				self.extra,
 			).encode(),
 			extensions,

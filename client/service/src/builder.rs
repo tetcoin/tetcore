@@ -15,7 +15,6 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-
 use crate::{
 	NetworkStatus, NetworkState, error::Error, DEFAULT_PROTOCOL_ID, MallocSizeOfWasm,
 	TelemetryConnectionSinks, RpcHandlers, NetworkStatusSinks,
@@ -39,18 +38,10 @@ use futures::{
 	future::ready,
 	channel::oneshot,
 };
-use sc_keystore::{
-	Store as Keystore,
-	proxy::{
-		proxy as keystore_proxy,
-		KeystoreProxy,
-		KeystoreReceiver,
-	},
-};
+use sc_keystore::LocalKeystore;
 use log::{info, warn, error};
 use sc_network::config::{Role, FinalityProofProvider, OnDemand, BoxFinalityProofRequestBuilder};
 use sc_network::NetworkService;
-use parking_lot::RwLock;
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::{
 	Block as BlockT, SaturatedConversion, HashFor, Zero, BlockIdTo,
@@ -63,7 +54,7 @@ use sc_telemetry::{telemetry, SUBSTRATE_INFO};
 use sp_transaction_pool::MaintainedTransactionPool;
 use prometheus_endpoint::Registry;
 use sc_client_db::{Backend, DatabaseSettings};
-use sp_core::traits::{CodeExecutor, SpawnNamed, SyncCryptoStore};
+use sp_core::traits::{CodeExecutor, SpawnNamed, CryptoStore, CryptoStorePtr, SyncCryptoStore};
 use sp_runtime::BuildStorage;
 use sc_client_api::{
 	BlockBackend, BlockchainEvents,
@@ -84,17 +75,17 @@ pub trait RpcExtensionBuilder {
 
 	/// Returns an instance of the RPC extension for a particular `DenyUnsafe`
 	/// value, e.g. the RPC extension might not expose some unsafe methods.
-	fn build(&self, deny: sc_rpc::DenyUnsafe) -> Self::Output;
+	fn build(&self, deny: sc_rpc::DenyUnsafe, subscriptions: SubscriptionManager) -> Self::Output;
 }
 
 impl<F, R> RpcExtensionBuilder for F where
-	F: Fn(sc_rpc::DenyUnsafe) -> R,
+	F: Fn(sc_rpc::DenyUnsafe, SubscriptionManager) -> R,
 	R: sc_rpc::RpcExtension<sc_rpc::Metadata>,
 {
 	type Output = R;
 
-	fn build(&self, deny: sc_rpc::DenyUnsafe) -> Self::Output {
-		(*self)(deny)
+	fn build(&self, deny: sc_rpc::DenyUnsafe, subscriptions: SubscriptionManager) -> Self::Output {
+		(*self)(deny, subscriptions)
 	}
 }
 
@@ -108,7 +99,7 @@ impl<R> RpcExtensionBuilder for NoopRpcExtensionBuilder<R> where
 {
 	type Output = R;
 
-	fn build(&self, _deny: sc_rpc::DenyUnsafe) -> Self::Output {
+	fn build(&self, _deny: sc_rpc::DenyUnsafe, _subscriptions: SubscriptionManager) -> Self::Output {
 		self.0.clone()
 	}
 }
@@ -168,16 +159,14 @@ pub type TLightCallExecutor<TBl, TExecDisp> = sc_light::GenesisCallExecutor<
 type TFullParts<TBl, TRtApi, TExecDisp> = (
 	TFullClient<TBl, TRtApi, TExecDisp>,
 	Arc<TFullBackend<TBl>>,
-	KeystoreParams,
-	KeystoreReceiver<Keystore>,
+	KeystoreContainer,
 	TaskManager,
 );
 
 type TLightParts<TBl, TRtApi, TExecDisp> = (
 	Arc<TLightClient<TBl, TRtApi, TExecDisp>>,
 	Arc<TLightBackend<TBl>>,
-	KeystoreParams,
-	KeystoreReceiver<Keystore>,
+	KeystoreContainer,
 	TaskManager,
 	Arc<OnDemand<TBl>>,
 );
@@ -200,33 +189,31 @@ pub type TLightClientWithBackend<TBl, TRtApi, TExecDisp, TBackend> = Client<
 >;
 
 /// Construct and hold different layers of Keystore wrappers
-pub struct KeystoreParams {
-	keystore: Arc<RwLock<KeystoreProxy>>,
+pub struct KeystoreContainer {
+	keystore: Arc<dyn CryptoStore>,
 	sync_keystore: Arc<SyncCryptoStore>,
 }
 
-impl KeystoreParams {
-	/// Construct KeystoreParams
-	pub fn new(config: &KeystoreConfig) -> Result<(Self, KeystoreReceiver<Keystore>), Error> {
-		let keystore = match config {
-			KeystoreConfig::Path { path, password } => Keystore::open(
+impl KeystoreContainer {
+	/// Construct KeystoreContainer
+	pub fn new(config: &KeystoreConfig) -> Result<Self, Error> {
+		let keystore = Arc::new(match config {
+			KeystoreConfig::Path { path, password } => LocalKeystore::open(
 				path.clone(),
 				password.clone()
 			)?,
-			KeystoreConfig::InMemory => Keystore::new_in_memory(),
-		};
-		let (keystore_proxy, keystore_receiver) = keystore_proxy(keystore);
-		let keystore = Arc::new(RwLock::new(keystore_proxy));
-		let sync_keystore = Arc::new(SyncCryptoStore::new(keystore.clone()));
+			KeystoreConfig::InMemory => LocalKeystore::in_memory(),
+		});
+		let sync_keystore = Arc::new((keystore.clone() as CryptoStorePtr).into());
 
-		Ok((Self {
+		Ok(Self {
 			keystore,
 			sync_keystore,
-		}, keystore_receiver))
+		})
 	}
 
-	/// Returns an adapter to the asynchronous keystore that implements `BareCryptoStore`
-	pub fn keystore(&self) -> Arc<RwLock<KeystoreProxy>> {
+	/// Returns an adapter to the asynchronous keystore that implements `CryptoStore`
+	pub fn keystore(&self) -> Arc<dyn CryptoStore> {
 		self.keystore.clone()
 	}
 
@@ -253,7 +240,7 @@ pub fn new_full_parts<TBl, TRtApi, TExecDisp>(
 	TBl: BlockT,
 	TExecDisp: NativeExecutionDispatch + 'static,
 {
-	let (keystore_container, keystore_receiver) = KeystoreParams::new(&config.keystore)?;
+	let keystore_container = KeystoreContainer::new(&config.keystore)?;
 
 	let task_manager = {
 		let registry = config.prometheus_config.as_ref().map(|cfg| &cfg.registry);
@@ -309,7 +296,6 @@ pub fn new_full_parts<TBl, TRtApi, TExecDisp>(
 		client,
 		backend,
 		keystore_container,
-		keystore_receiver,
 		task_manager
 	))
 }
@@ -327,7 +313,7 @@ pub fn new_light_parts<TBl, TRtApi, TExecDisp>(
 		TaskManager::new(config.task_executor.clone(), registry)?
 	};
 
-	let (keystore_params, keystore_receiver) = KeystoreParams::new(&config.keystore)?;
+	let keystore_params = KeystoreContainer::new(&config.keystore)?;
 
 	let executor = NativeExecutor::<TExecDisp>::new(
 		config.wasm_method,
@@ -363,7 +349,7 @@ pub fn new_light_parts<TBl, TRtApi, TExecDisp>(
 		config.prometheus_config.as_ref().map(|config| config.registry.clone()),
 	)?);
 
-	Ok((client, backend, keystore_params, keystore_receiver, task_manager, on_demand))
+	Ok((client, backend, keystore_params, task_manager, on_demand))
 }
 
 /// Create an instance of db-backed client.
@@ -486,7 +472,7 @@ pub fn build_offchain_workers<TBl, TBackend, TCl>(
 /// Spawn the tasks that are required to run a node.
 pub fn spawn_tasks<TBl, TBackend, TExPool, TRpc, TCl>(
 	params: SpawnTasksParams<TBl, TCl, TExPool, TRpc, TBackend>,
-) -> Result<Arc<RpcHandlers>, Error>
+) -> Result<RpcHandlers, Error>
 	where
 		TCl: ProvideRuntimeApi<TBl> + HeaderMetadata<TBl, Error=sp_blockchain::Error> + Chain<TBl> +
 		BlockBackend<TBl> + BlockIdTo<TBl, Error=sp_blockchain::Error> + ProofProvider<TBl> +
@@ -584,7 +570,7 @@ pub fn spawn_tasks<TBl, TBackend, TExPool, TRpc, TCl>(
 	);
 	let rpc = start_rpc_servers(&config, gen_handler)?;
 	// This is used internally, so don't restrict access to unsafe RPC
-	let rpc_handlers = Arc::new(RpcHandlers(gen_handler(sc_rpc::DenyUnsafe::No)));
+	let rpc_handlers = RpcHandlers(Arc::new(gen_handler(sc_rpc::DenyUnsafe::No).into()));
 
 	// Telemetry
 	let telemetry = config.telemetry_endpoints.clone().and_then(|endpoints| {
@@ -808,7 +794,7 @@ fn gen_handler<TBl, TBackend, TExPool, TRpc, TCl>(
 	let author = sc_rpc::author::Author::new(
 		client,
 		transaction_pool,
-		subscriptions,
+		subscriptions.clone(),
 		keystore,
 		deny_unsafe,
 	);
@@ -830,7 +816,7 @@ fn gen_handler<TBl, TBackend, TExPool, TRpc, TCl>(
 		maybe_offchain_rpc,
 		author::AuthorApi::to_delegate(author),
 		system::SystemApi::to_delegate(system),
-		rpc_extensions_builder.build(deny_unsafe),
+		rpc_extensions_builder.build(deny_unsafe, subscriptions),
 	))
 }
 
@@ -898,7 +884,7 @@ pub fn build_network<TBl, TExPool, TImpQu, TCl>(
 				);
 				DEFAULT_PROTOCOL_ID
 			}
-		}.as_bytes();
+		};
 		sc_network::config::ProtocolId::from(protocol_id_full)
 	};
 

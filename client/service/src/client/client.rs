@@ -34,8 +34,6 @@ use sp_core::{
 };
 #[cfg(feature="test-helpers")]
 use sp_core::traits::SyncCryptoStore;
-#[cfg(feature="test-helpers")]
-use sc_keystore::proxy::proxy as keystore_proxy;
 use sc_telemetry::{telemetry, SUBSTRATE_INFO};
 use sp_runtime::{
 	Justification, BuildStorage,
@@ -164,7 +162,7 @@ pub fn new_in_mem<E, Block, S, RA, TStore>(
 	E: CodeExecutor + RuntimeInfo,
 	S: BuildStorage,
 	Block: BlockT,
-	TStore: sp_core::traits::BareCryptoStore + 'static,
+	TStore: sp_core::traits::CryptoStore + 'static,
 {
 	new_with_backend(
 		Arc::new(in_mem::Backend::new()),
@@ -203,13 +201,11 @@ pub fn new_with_backend<B, E, Block, S, RA, TStore>(
 		S: BuildStorage,
 		Block: BlockT,
 		B: backend::LocalBackend<Block> + 'static,
-		TStore: sp_core::traits::BareCryptoStore + 'static,
+		TStore: sp_core::traits::CryptoStore + 'static,
 {
 	let sync_keystore = match keystore {
 		Some(store) => {
-			let (keystore_proxy, _) = keystore_proxy(store);
-			let keystore = Arc::new(RwLock::new(keystore_proxy));
-			let sync_keystore = Arc::new(SyncCryptoStore::new(keystore.clone()));
+			let sync_keystore = Arc::new(SyncCryptoStore::new(Arc::new(store)));
 			Some(sync_keystore)
 		},
 		None => None

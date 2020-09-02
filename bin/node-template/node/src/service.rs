@@ -33,7 +33,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 >, ServiceError> {
 	let inherent_data_providers = sp_inherents::InherentDataProviders::new();
 
-	let (client, backend, keystore_params, keystore_receiver, task_manager) =
+	let (client, backend, keystore_params, task_manager) =
 		sc_service::new_full_parts::<Block, RuntimeApi, Executor>(&config)?;
 	let client = Arc::new(client);
 
@@ -54,7 +54,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		grandpa_block_import.clone(), client.clone(),
 	);
 
-	let import_queue = sc_consensus_aura::import_queue::<_, _, _, AuraPair, _>(
+	let import_queue = sc_consensus_aura::import_queue::<_, _, _, AuraPair, _, _>(
 		sc_consensus_aura::slot_duration(&*client)?,
 		aura_block_import,
 		Some(Box::new(grandpa_block_import.clone())),
@@ -63,10 +63,11 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		inherent_data_providers.clone(),
 		&task_manager.spawn_handle(),
 		config.prometheus_registry(),
+		sp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone()),
 	)?;
 
 	Ok(sc_service::PartialComponents {
-		client, backend, task_manager, import_queue, keystore_params, keystore_receiver,
+		client, backend, task_manager, import_queue, keystore_params,
 		select_chain, transaction_pool, inherent_data_providers,
 		other: (grandpa_block_import, grandpa_link),
 	})
@@ -75,12 +76,10 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 /// Builds a new service for a full client.
 pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 	let sc_service::PartialComponents {
-		client, backend, mut task_manager, import_queue, keystore_params, keystore_receiver,
+		client, backend, mut task_manager, import_queue, keystore_params,
 		select_chain, transaction_pool, inherent_data_providers,
 		other: (block_import, grandpa_link),
 	} = new_partial(&config)?;
-
-	task_manager.spawn_essential_handle().spawn("keystore", keystore_receiver);
 
 	let finality_proof_provider =
 		GrandpaFinalityProofProvider::new_for_service(backend.clone(), client.clone());
@@ -115,7 +114,7 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 		let client = client.clone();
 		let pool = transaction_pool.clone();
 
-		Box::new(move |deny_unsafe| {
+		Box::new(move |deny_unsafe, _| {
 			let deps = crate::rpc::FullDeps {
 				client: client.clone(),
 				pool: pool.clone(),
@@ -223,10 +222,8 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 
 /// Builds a new service for a light client.
 pub fn new_light(config: Configuration) -> Result<TaskManager, ServiceError> {
-	let (client, backend, keystore, keystore_receiver, mut task_manager, on_demand) =
+	let (client, backend, keystore, mut task_manager, on_demand) =
 		sc_service::new_light_parts::<Block, RuntimeApi, Executor>(&config)?;
-
-	task_manager.spawn_essential_handle().spawn("keystore", keystore_receiver);
 
 	let transaction_pool = Arc::new(sc_transaction_pool::BasicPool::new_light(
 		config.transaction_pool.clone(),
@@ -244,7 +241,7 @@ pub fn new_light(config: Configuration) -> Result<TaskManager, ServiceError> {
 	let finality_proof_request_builder =
 		finality_proof_import.create_finality_proof_request_builder();
 
-	let import_queue = sc_consensus_aura::import_queue::<_, _, _, AuraPair, _>(
+	let import_queue = sc_consensus_aura::import_queue::<_, _, _, AuraPair, _, _>(
 		sc_consensus_aura::slot_duration(&*client)?,
 		grandpa_block_import,
 		None,
@@ -253,6 +250,7 @@ pub fn new_light(config: Configuration) -> Result<TaskManager, ServiceError> {
 		InherentDataProviders::new(),
 		&task_manager.spawn_handle(),
 		config.prometheus_registry(),
+		sp_consensus::NeverCanAuthor,
 	)?;
 
 	let finality_proof_provider =
@@ -282,7 +280,7 @@ pub fn new_light(config: Configuration) -> Result<TaskManager, ServiceError> {
 		transaction_pool,
 		task_manager: &mut task_manager,
 		on_demand: Some(on_demand),
-		rpc_extensions_builder: Box::new(|_| ()),
+		rpc_extensions_builder: Box::new(|_, _| ()),
 		telemetry_connection_sinks: sc_service::TelemetryConnectionSinks::default(),
 		config,
 		client,
