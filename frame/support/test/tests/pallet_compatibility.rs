@@ -119,8 +119,6 @@ pub mod pallet {
 			<Dummy<T>>::put(&new_value);
 			Self::deposit_event(Event::Dummy(new_value));
 
-			// frame_system::Module::<T>::deposit_event(<T as Trait>::Event::from(Event::<T>::Dummy(new_value))); // TODO TODO: fix the span for this error
-
 			Ok(().into())
 		}
 	}

@@ -5,7 +5,7 @@ mod pallet {
 
 	#[pallet::trait_]
 	pub trait Trait: frame_system::Trait {
-		type Bar; // TODO TODO: this is not obvious Bar need codec, maybe pass no bound to codec would allow better span
+		type Bar;
 	}
 
 	#[pallet::module]

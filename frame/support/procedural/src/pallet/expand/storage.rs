@@ -23,8 +23,6 @@ use frame_support_procedural_tools::clean_type_string;
 /// * generate StoragePrefix structs (e.g. for a storage `MyStorage` a struct with the name
 ///   `MyStorageP` is generated and implements StorageInstance trait.
 /// * generate metadatas
-/// * TODO TODO: maybe assert that storages are correclty written, i.e. they implement their respective
-///   trait correctly
 /// * replace the first generic `_` by the genereted prefix structure
 pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
