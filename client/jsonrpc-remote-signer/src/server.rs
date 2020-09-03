@@ -20,7 +20,7 @@ use sp_core::{
 };
 
 use jsonrpc_derive::rpc;
-use jsonrpc_core::{IoHandler, BoxFuture, Error as RpcError};
+use jsonrpc_core::{BoxFuture, Error as RpcError};
 
 use futures::{
 	channel::{
@@ -102,7 +102,7 @@ impl<Store: CryptoStore + 'static> KeystoreReceiver<Store> {
 		}
 	}
 
-	fn process_request(mut store: Store, request: KeystoreRequest) -> Pin<Box<dyn Future<Output = Store> + Send>> {
+	fn process_request(store: Store, request: KeystoreRequest) -> Pin<Box<dyn Future<Output = Store> + Send>> {
 		let sender = request.sender;
 		match request.method {
 			RequestMethod::SignWith(id, key, msg) => {
@@ -176,6 +176,7 @@ impl<Store: CryptoStore + 'static> KeystoreReceiver<Store> {
 				})
 			},
 			RequestMethod::Keys(id) => {
+				println!("asked for keys {:?}", id);
 				Box::pin(async move {
 					let result = store.keys(id).await;
 					let _ = sender.send(KeystoreResponse::Keys(result));
@@ -262,7 +263,7 @@ impl GenericRemoteSignerServer {
 			sender: request_sender,
 			method: request,
 		};
-		self.sender.unbounded_send(request);
+		self.sender.unbounded_send(request).expect("Unbounded Send doesn't fail");
 		receiver
 	}
 }
@@ -441,6 +442,7 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 #[cfg(test)]
 mod tests {
 	use tokio;
+	use serde_json;
 	use sp_core::traits::CryptoStore;
 	use jsonrpc_test;
 	use sc_keystore::LocalKeystore;
@@ -450,30 +452,28 @@ mod tests {
 
 	const TEST_TK : KeyTypeId = KeyTypeId(*b"test");
 
-	async fn setup(msg_count: u8) -> (jsonrpc_test::Rpc, tokio::task::JoinHandle<()>) {
+	async fn setup(msg_count: u8) -> jsonrpc_test::Rpc {
 		let keystore = LocalKeystore::in_memory();
-		keystore.ed25519_generate_new(TEST_TK, None).await.expect("InMem Keystore doesn't fail");
-		keystore.sr25519_generate_new(TEST_TK, None).await.expect("InMem Keystore doesn't fail");
+		keystore.ed25519_generate_new(TEST_TK, Some("//Alice")).await.expect("InMem Keystore doesn't fail");
+		keystore.sr25519_generate_new(TEST_TK, Some("//Bob")).await.expect("InMem Keystore doesn't fail");
 
 		let (server, mut runner) = GenericRemoteSignerServer::proxy(keystore);
 
-		(
-			jsonrpc_test::Rpc::new(RemoteSignerApi::to_delegate(server)),
-			// starting the background service
-			tokio::task::spawn(async move {
-				for _ in 0..msg_count {
-					runner.next().await;
-				}
-			})
-		)
+		tokio::task::spawn(async move {
+			for _ in 0..msg_count {
+				runner.next().await;
+			}
+		});
+
+		jsonrpc_test::Rpc::new(RemoteSignerApi::to_delegate(server))
 	}
 
-	#[tokio::test]
+	#[tokio::test(core_threads=4)]
 	async fn test_keys() {
-		let (rpc, handle) : (jsonrpc_test::Rpc, tokio::task::JoinHandle<()>) = setup(3).await;
-		tokio::task::spawn_blocking(move ||{
-			assert_eq!(rpc.request("signer_keys", &[TEST_TK]).len(), 2);
-		});
+		let rpc = setup(3).await;
+		let r = rpc.request("signer_keys", &[TEST_TK]);
+		let res : Vec<CryptoTypePublicPair> = serde_json::from_str(&r).unwrap();
+		assert_eq!(res.len(), 2);
 	}
 
 }
