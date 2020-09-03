@@ -1,5 +1,5 @@
 [package]
-name = "sc-json-rpc-remote-signer"
+name = "sc-jsonrpc-remote-signer"
 version = "2.0.0-rc6"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -15,5 +15,9 @@ jsonrpc-core-client = "14.0"
 sp-core = { version = "2.0.0-rc5", path="../../primitives/core" }
 sp-application-crypto = { version = "2.0.0-rc5", path="../../primitives/application-crypto" }
 sc-keystore = { version = "2.0.0-rc5", path="../keystore" }
-futures = { version = "0.3.1", features = ["compat"] }
+futures = { version = "0.3.5", features = ["compat"] }
 parking_lot = "0.11"
+
+[dev-dependencies]
+jsonrpc-test = "14.2.0"
+tokio = { version = "0.2", features = ["full"] }

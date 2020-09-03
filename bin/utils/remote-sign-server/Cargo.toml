@@ -7,7 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-sc-remote-signer = { package = "sc-json-rpc-remote-signer", version = "2.0.0-rc6", path = "../../../client/json-rpc-remote-signer" }
+sc-remote-signer = { package = "sc-jsonrpc-remote-signer", version = "2.0.0-rc6", path = "../../../client/jsonrpc-remote-signer" }
 structopt = { version = "0.3", default-features = false }
 sc-cli = { version = "0.8.0-rc6", path = "../../../client/cli" }
 sc-keystore = { version = "2.0.0-rc6", path = "../../../client/keystore" }

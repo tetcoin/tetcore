@@ -29,7 +29,7 @@ use futures::{
 	},
 	compat::Future01CompatExt,
 	future::{Future, FutureExt, TryFutureExt},
-	stream::Stream,
+	stream::{Stream, StreamExt},
 	sink::SinkExt,
 };
 
@@ -84,7 +84,7 @@ pub enum KeystoreResponse {
 enum State<Store: CryptoStore> {
 	Idle(Store),
 	Pending(Pin<Box<dyn Future<Output = Store> + Send>>),
-	Poisoned,
+	Ended,
 }
 
 pub struct KeystoreReceiver<Store: CryptoStore> {
@@ -198,17 +198,17 @@ impl<Store: CryptoStore + 'static> KeystoreReceiver<Store> {
 	}
 }
 
-impl<Store: CryptoStore + 'static> Future for KeystoreReceiver<Store> {
-	type Output = ();
+impl<Store: CryptoStore + 'static> Stream for KeystoreReceiver<Store> {
+	type Item = ();
 
-	fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
+	fn poll_next(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Option<Self::Item>> {
 		let this = &mut *self;
 		loop {
-			match std::mem::replace(&mut this.state, State::Poisoned) {
+			match std::mem::replace(&mut this.state, State::Ended) {
 				State::Idle(store) => {
 					match Pin::new(&mut this.receiver).poll_next(cx) {
 						Poll::Ready(None) => {
-							return Poll::Ready(());
+							return Poll::Ready(Some(()));
 						},
 						Poll::Ready(Some(request)) => {
 							let future = KeystoreReceiver::process_request(store, request);
@@ -216,6 +216,7 @@ impl<Store: CryptoStore + 'static> Future for KeystoreReceiver<Store> {
 						},
 						Poll::Pending => {
 							this.state = State::Idle(store);
+							return Poll::Pending;
 						}
 					}
 				},
@@ -226,11 +227,12 @@ impl<Store: CryptoStore + 'static> Future for KeystoreReceiver<Store> {
 						},
 						Poll::Pending => {
 							this.state = State::Pending(future);
+							return Poll::Pending;
 						}
 					}
 				},
-				State::Poisoned => {
-					unreachable!();
+				State::Ended => {
+					return Poll::Ready(None);
 				}
 			}
 		}
@@ -434,4 +436,44 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 			}
 		).boxed().compat())
     }
+}
+
+#[cfg(test)]
+mod tests {
+	use tokio;
+	use sp_core::traits::CryptoStore;
+	use jsonrpc_test;
+	use sc_keystore::LocalKeystore;
+
+	use super::*;
+	use crate::RemoteSignerApi;
+
+	const TEST_TK : KeyTypeId = KeyTypeId(*b"test");
+
+	async fn setup(msg_count: u8) -> (jsonrpc_test::Rpc, tokio::task::JoinHandle<()>) {
+		let keystore = LocalKeystore::in_memory();
+		keystore.ed25519_generate_new(TEST_TK, None).await.expect("InMem Keystore doesn't fail");
+		keystore.sr25519_generate_new(TEST_TK, None).await.expect("InMem Keystore doesn't fail");
+
+		let (server, mut runner) = GenericRemoteSignerServer::proxy(keystore);
+
+		(
+			jsonrpc_test::Rpc::new(RemoteSignerApi::to_delegate(server)),
+			// starting the background service
+			tokio::task::spawn(async move {
+				for _ in 0..msg_count {
+					runner.next().await;
+				}
+			})
+		)
+	}
+
+	#[tokio::test]
+	async fn test_keys() {
+		let (rpc, handle) : (jsonrpc_test::Rpc, tokio::task::JoinHandle<()>) = setup(3).await;
+		tokio::task::spawn_blocking(move ||{
+			assert_eq!(rpc.request("signer_keys", &[TEST_TK]).len(), 2);
+		});
+	}
+
 }

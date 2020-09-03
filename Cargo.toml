@@ -39,7 +39,7 @@ members = [
 	"client/executor/runtime-test",
 	"client/finality-grandpa",
 	"client/informant",
-	"client/json-rpc-remote-signer",
+	"client/jsonrpc-remote-signer",
 	"client/keystore",
 	"client/light",
 	"client/network",
