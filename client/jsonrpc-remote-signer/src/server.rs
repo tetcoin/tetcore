@@ -280,12 +280,12 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 
 
     fn sr25519_generate_new(
-		&mut self,
+		&self,
 		id: KeyTypeId,
-		seed: Option<&str>,
+		seed: Option<String>,
 	) -> BoxFuture<sp_application_crypto::sr25519::Public> {
 		Box::new(self.send_request(
-			RequestMethod::Sr25519GenerateNew(id, seed.map(|s| s.to_string()))
+			RequestMethod::Sr25519GenerateNew(id, seed)
 		).map(|response|
 			if  let Ok(KeystoreResponse::Sr25519GenerateNew(result)) = response {
 				 result.map_err(|_|RpcError::internal_error())
@@ -306,12 +306,12 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
     }
 
     fn ed25519_generate_new(
-		&mut self,
+		&self,
 		id: KeyTypeId,
-		seed: Option<&str>,
+		seed: Option<String>,
 	) -> BoxFuture<sp_application_crypto::ed25519::Public> {
 		Box::new(self.send_request(
-			RequestMethod::Ed25519GenerateNew(id, seed.map(|s| s.to_string()))
+			RequestMethod::Ed25519GenerateNew(id, seed)
 		).map(|response|
 			if let Ok(KeystoreResponse::Ed25519GenerateNew(result)) = response {
 				result.map_err(|_| RpcError::internal_error())
@@ -333,12 +333,12 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
     }
 
     fn ecdsa_generate_new(
-		&mut self,
+		&self,
 		id: KeyTypeId,
-		seed: Option<&str>,
+		seed: Option<String>,
 	) -> BoxFuture<sp_application_crypto::ecdsa::Public> {
 		Box::new(self.send_request(
-			RequestMethod::EcdsaGenerateNew(id, seed.map(|s| s.to_string()))
+			RequestMethod::EcdsaGenerateNew(id, seed)
 		).map(|response|
 			if let Ok(KeystoreResponse::EcdsaGenerateNew(result)) = response
 				 {
@@ -349,10 +349,10 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 		).boxed().compat())
     }
 
-    fn insert_unknown(&mut self, key_type: KeyTypeId, suri: &str, public: &[u8]) -> BoxFuture<()> {
+    fn insert_unknown(&self, key_type: KeyTypeId, suri: String, public: Vec<u8>) -> BoxFuture<()> {
 		Box::new(
 			self.send_request(RequestMethod::InsertUnknown(
-					key_type, suri.to_string(), public.to_vec())
+					key_type, suri, public)
 			).map(|_| Ok(())).boxed().compat())
 	}
 
@@ -380,7 +380,7 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 		).boxed().compat())
     }
 
-    fn has_keys(&self, public_keys: &[(Vec<u8>, KeyTypeId)]) -> BoxFuture<bool> {
+    fn has_keys(&self, public_keys: Vec<(Vec<u8>, KeyTypeId)>) -> BoxFuture<bool> {
 		Box::new(self.send_request(RequestMethod::HasKeys(public_keys.to_vec())).map(|response|
 			if let Ok(KeystoreResponse::HasKeys(exists)) = response {
 				Ok(exists)
@@ -393,10 +393,10 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
     fn sign_with(
 		&self,
 		id: KeyTypeId,
-		key: &CryptoTypePublicPair,
-		msg: &[u8],
+		key: CryptoTypePublicPair,
+		msg: Vec<u8>,
 	) -> BoxFuture<Vec<u8>> {
-		Box::new(self.send_request(RequestMethod::SignWith(id, key.clone(), msg.to_vec())).map(|response|
+		Box::new(self.send_request(RequestMethod::SignWith(id, key, msg)).map(|response|
 			if let Ok(KeystoreResponse::SignWith(result)) =  response {
 				result.map_err(|_| RpcError::internal_error())
 			} else {
@@ -409,7 +409,7 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 		&self,
 		id: KeyTypeId,
 		keys: Vec<CryptoTypePublicPair>,
-		msg: &[u8]
+		msg: Vec<u8>
 	) -> BoxFuture<(CryptoTypePublicPair, Vec<u8>)> {
 		todo!{}
 	}
@@ -418,18 +418,19 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 		&self,
 		id: KeyTypeId,
 		keys: Vec<CryptoTypePublicPair>,
-		msg: &[u8],
-	) -> BoxFuture<Vec<BoxFuture<Vec<u8>>>> {
+		msg: Vec<u8>,
+	) -> BoxFuture<Vec<Result<Vec<u8>, String>>> {
 		todo!{}
 	}
 
     fn sr25519_vrf_sign(
 		&self,
 		key_type: KeyTypeId,
-		public: &sp_application_crypto::sr25519::Public,
-		transcript_data: sp_core::vrf::VRFTranscriptData,
+		public: sp_application_crypto::sr25519::Public,
+		transcript_data: crate::TransferableVRFTranscriptData,
 	) -> BoxFuture<sp_core::vrf::VRFSignature> {
-		Box::new(self.send_request(RequestMethod::Sr25519VrfSign(key_type, *public, transcript_data)).map(|response|
+
+		Box::new(self.send_request(RequestMethod::Sr25519VrfSign(key_type, public, transcript_data.into())).map(|response|
 			if let Ok(KeystoreResponse::Sr25519VrfSign(result)) = response {
 				result.map_err(|_| RpcError::internal_error())
 			} else {
@@ -455,7 +456,11 @@ mod tests {
 
 	async fn setup(msg_count: u8) -> jsonrpc_test::Rpc {
 		let keystore = LocalKeystore::in_memory();
-		keystore.ed25519_generate_new(TEST_TK, Some("//Alice"))
+		keystore.sr25519_generate_new(TEST_TK, Some("//Alice"))
+			.await.expect("InMem Keystore doesn't fail");
+		keystore.ed25519_generate_new(TEST_TK, Some("//Bob"))
+			.await.expect("InMem Keystore doesn't fail");
+		keystore.ecdsa_generate_new(TEST_TK, Some("//Charlie"))
 			.await.expect("InMem Keystore doesn't fail");
 
 
@@ -475,11 +480,46 @@ mod tests {
 		let rpc = setup(2).await;
 		let r = rpc.request("signer_keys", &[TEST_TK]);
 		let res : Vec<CryptoTypePublicPair> = serde_json::from_str(&r).unwrap();
-		assert_eq!(res.len(), 3);
+		assert_eq!(res.len(), 9);
 
 		let r = rpc.request("signer_keys", &[TEST_TK_NOPE]);
 		let res : Vec<CryptoTypePublicPair> = serde_json::from_str(&r).unwrap();
 		assert_eq!(res.len(), 0);
 	}
 
+	#[tokio::test(core_threads=4)]
+	async fn test_sr25519_public_keys() {
+		let rpc = setup(2).await;
+		let r = rpc.request("signer_sr25519_public_keys", &[TEST_TK]);
+		let res : Vec<sr25519::Public> = serde_json::from_str(&r).unwrap();
+		assert_eq!(res.len(), 3);
+
+		let r = rpc.request("signer_sr25519_public_keys", &[TEST_TK_NOPE]);
+		let res : Vec<sr25519::Public> = serde_json::from_str(&r).unwrap();
+		assert_eq!(res.len(), 0);
+	}
+
+	#[tokio::test(core_threads=4)]
+	async fn test_ed25519_public_keys() {
+		let rpc = setup(2).await;
+		let r = rpc.request("signer_ed25519_public_keys", &[TEST_TK]);
+		let res : Vec<ed25519::Public> = serde_json::from_str(&r).unwrap();
+		assert_eq!(res.len(), 3);
+
+		let r = rpc.request("signer_ed25519_public_keys", &[TEST_TK_NOPE]);
+		let res : Vec<ed25519::Public> = serde_json::from_str(&r).unwrap();
+		assert_eq!(res.len(), 0);
+	}
+
+	#[tokio::test(core_threads=4)]
+	async fn test_ecdsa_public_keys() {
+		let rpc = setup(2).await;
+		let r = rpc.request("signer_ecdsa_public_keys", &[TEST_TK]);
+		let res : Vec<ecdsa::Public> = serde_json::from_str(&r).unwrap();
+		assert_eq!(res.len(), 2);
+
+		let r = rpc.request("signer_ecdsa_public_keys", &[TEST_TK_NOPE]);
+		let res : Vec<ecdsa::Public> = serde_json::from_str(&r).unwrap();
+		assert_eq!(res.len(), 0);
+	}
 }

@@ -6,6 +6,8 @@ use core::{
 	task::{Context, Poll},
 	pin::Pin
 };
+use std::mem;
+use serde;
 
 use futures::{
 	channel::{
@@ -19,11 +21,35 @@ use futures::{
 };
 use sp_core::{
 	crypto::{KeyTypeId, CryptoTypePublicPair},
-	vrf::{VRFTranscriptData, VRFSignature},
+	vrf::{VRFTranscriptData, VRFSignature, VRFTranscriptValue},
 	ed25519, sr25519, ecdsa, traits::CryptoStore
 };
 
 pub mod server;
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct TransferableVRFTranscriptData {
+	/// The transcript's label
+	pub label: Vec<u8>,
+	/// Additional data to be registered into the transcript
+	pub items: Vec<(String, VRFTranscriptValue)>,
+}
+
+unsafe fn make_static_u8<'a>(x: &'a [u8]) -> &'static [u8] {  mem::transmute(x) }
+unsafe fn make_static_str<'a>(x: &'a str) -> &'static str {  mem::transmute(x) }
+
+impl From<TransferableVRFTranscriptData> for VRFTranscriptData {
+	fn from(t: TransferableVRFTranscriptData) -> VRFTranscriptData {
+		unsafe {
+			VRFTranscriptData {
+				label: make_static_u8(&t.label),
+				items: t.items.into_iter().map(|(s, v)| {
+					(make_static_str(&s), v)
+				}).collect()
+			}
+		}
+	}
+}
 
 /// Substrate Remote Signer API
 /// matches `sp-core::CryptoStore`
@@ -31,40 +57,51 @@ pub mod server;
 pub trait RemoteSignerApi {
 
 	/// Returns all sr25519 public keys for the given key type.
+	#[rpc(name="signer_sr25519_public_keys", returns = "Vec<sr25519::Public>")]
 	fn sr25519_public_keys(&self, id: KeyTypeId) -> BoxFuture<Vec<sr25519::Public>>;
+
 	/// Generate a new sr25519 key pair for the given key type and an optional seed.
 	///
 	/// If the given seed is `Some(_)`, the key pair will only be stored in memory.
 	///
 	/// Returns the public key of the generated key pair.
+	#[rpc(name="signer_sr25519_generate_new", returns = "sr25519::Public")]
 	fn sr25519_generate_new(
-		&mut self,
+		&self,
 		id: KeyTypeId,
-		seed: Option<&str>,
+		seed: Option<String>,
 	) -> BoxFuture<sr25519::Public>;
+
 	/// Returns all ed25519 public keys for the given key type.
+	#[rpc(name="signer_ed25519_public_keys", returns = "Vec<ed25519::Public>")]
 	fn ed25519_public_keys(&self, id: KeyTypeId) -> BoxFuture<Vec<ed25519::Public>>;
+
 	/// Generate a new ed25519 key pair for the given key type and an optional seed.
 	///
 	/// If the given seed is `Some(_)`, the key pair will only be stored in memory.
 	///
 	/// Returns the public key of the generated key pair.
+	#[rpc(name="signer_ed25519_generate_new", returns = "ed25519::Public")]
 	fn ed25519_generate_new(
-		&mut self,
+		&self,
 		id: KeyTypeId,
-		seed: Option<&str>,
+		seed: Option<String>,
 	) -> BoxFuture<ed25519::Public>;
+
 	/// Returns all ecdsa public keys for the given key type.
+	#[rpc(name="signer_ecdsa_public_keys", returns = "Vec<ecdsa::Public>")]
 	fn ecdsa_public_keys(&self, id: KeyTypeId) -> BoxFuture<Vec<ecdsa::Public>>;
+
 	/// Generate a new ecdsa key pair for the given key type and an optional seed.
 	///
 	/// If the given seed is `Some(_)`, the key pair will only be stored in memory.
 	///
 	/// Returns the public key of the generated key pair.
+	#[rpc(name="signer_ecdsa_generate_new", returns = "ecdsa::Public")]
 	fn ecdsa_generate_new(
-		&mut self,
+		&self,
 		id: KeyTypeId,
-		seed: Option<&str>,
+		seed: Option<String>,
 	) -> BoxFuture<ecdsa::Public>;
 
 	/// Insert a new key. This doesn't require any known of the crypto; but a public key must be
@@ -73,12 +110,14 @@ pub trait RemoteSignerApi {
 	/// Places it into the file system store.
 	///
 	/// `Err` if there's some sort of weird filesystem error, but should generally be `Ok`.
-	fn insert_unknown(&mut self, key_type: KeyTypeId, suri: &str, public: &[u8]) -> BoxFuture<()>;
+	#[rpc(name="signer_insert_unknown", returns = "()")]
+	fn insert_unknown(&self, key_type: KeyTypeId, suri: String, public: Vec<u8>) -> BoxFuture<()>;
 
 	/// Find intersection between provided keys and supported keys
 	///
 	/// Provided a list of (CryptoTypeId,[u8]) pairs, this would return
 	/// a filtered set of public keys which are supported by the keystore.
+	#[rpc(name="signer_supported_keys", returns = "Vec<CryptoTypePublicPair>")]
 	fn supported_keys(
 		&self,
 		id: KeyTypeId,
@@ -94,7 +133,8 @@ pub trait RemoteSignerApi {
 	/// Checks if the private keys for the given public key and key type combinations exist.
 	///
 	/// Returns `true` iff all private keys could be found.
-	fn has_keys(&self, public_keys: &[(Vec<u8>, KeyTypeId)]) -> BoxFuture<bool>;
+	#[rpc(name="signer_has_keys", returns = "bool")]
+	fn has_keys(&self, public_keys: Vec<(Vec<u8>, KeyTypeId)>) -> BoxFuture<bool>;
 
 	/// Sign with key
 	///
@@ -103,11 +143,12 @@ pub trait RemoteSignerApi {
 	///
 	/// Returns the SCALE encoded signature if key is found & supported,
 	/// an error otherwise.
+	#[rpc(name="signer_sign_with", returns = "Vec<u8>")]
 	fn sign_with(
 		&self,
 		id: KeyTypeId,
-		key: &CryptoTypePublicPair,
-		msg: &[u8],
+		key: CryptoTypePublicPair,
+		msg: Vec<u8>,
 	) -> BoxFuture<Vec<u8>>;
 
 	/// Sign with any key
@@ -116,11 +157,12 @@ pub trait RemoteSignerApi {
 	/// sign the provided message with that key.
 	///
 	/// Returns a tuple of the used key and the SCALE encoded signature.
+	#[rpc(name="signer_sign_with_any", returns = "(CryptoTypePublicPair, Vec<u8>)")]
 	fn sign_with_any(
 		&self,
 		id: KeyTypeId,
 		keys: Vec<CryptoTypePublicPair>,
-		msg: &[u8]
+		msg: Vec<u8>,
 	) -> BoxFuture<(CryptoTypePublicPair, Vec<u8>)>;
 
 	/// Sign with all keys
@@ -130,12 +172,13 @@ pub trait RemoteSignerApi {
 	///
 	/// Returns a list of `BoxFuture`s each representing the SCALE encoded
 	/// signature of each key or a Error for non-supported keys.
+	#[rpc(name="signer_sign_with_all", returns = "Vec<Result<Vec<u8>, String>>")]
 	fn sign_with_all(
 		&self,
 		id: KeyTypeId,
 		keys: Vec<CryptoTypePublicPair>,
-		msg: &[u8],
-	) -> BoxFuture<Vec<BoxFuture<Vec<u8>>>>;
+		msg: Vec<u8>,
+	) -> BoxFuture<Vec<Result<Vec<u8>, String>>>;
 
 	/// Generate VRF signature for given transcript data.
 	///
@@ -151,10 +194,11 @@ pub trait RemoteSignerApi {
 	/// the public key and key type provided do not match a private
 	/// key in the keystore. Or, in the context of remote signing
 	/// an error could be a network one.
-	fn sr25519_vrf_sign<'a>(
-		&'a self,
+	#[rpc(name="signer_sr25519_vrf_sign", returns = "VRFSignature")]
+	fn sr25519_vrf_sign(
+		&self,
 		key_type: KeyTypeId,
-		public: &sr25519::Public,
-		transcript_data: VRFTranscriptData,
+		public: sr25519::Public,
+		transcript_data: TransferableVRFTranscriptData,
 	) -> BoxFuture<VRFSignature>;
 }
