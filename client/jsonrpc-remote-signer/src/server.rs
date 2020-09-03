@@ -451,11 +451,13 @@ mod tests {
 	use crate::RemoteSignerApi;
 
 	const TEST_TK : KeyTypeId = KeyTypeId(*b"test");
+	const TEST_TK_NOPE : KeyTypeId = KeyTypeId(*b"nope");
 
 	async fn setup(msg_count: u8) -> jsonrpc_test::Rpc {
 		let keystore = LocalKeystore::in_memory();
-		keystore.ed25519_generate_new(TEST_TK, Some("//Alice")).await.expect("InMem Keystore doesn't fail");
-		keystore.sr25519_generate_new(TEST_TK, Some("//Bob")).await.expect("InMem Keystore doesn't fail");
+		keystore.ed25519_generate_new(TEST_TK, Some("//Alice"))
+			.await.expect("InMem Keystore doesn't fail");
+
 
 		let (server, mut runner) = GenericRemoteSignerServer::proxy(keystore);
 
@@ -470,10 +472,14 @@ mod tests {
 
 	#[tokio::test(core_threads=4)]
 	async fn test_keys() {
-		let rpc = setup(3).await;
+		let rpc = setup(2).await;
 		let r = rpc.request("signer_keys", &[TEST_TK]);
 		let res : Vec<CryptoTypePublicPair> = serde_json::from_str(&r).unwrap();
-		assert_eq!(res.len(), 2);
+		assert_eq!(res.len(), 3);
+
+		let r = rpc.request("signer_keys", &[TEST_TK_NOPE]);
+		let res : Vec<CryptoTypePublicPair> = serde_json::from_str(&r).unwrap();
+		assert_eq!(res.len(), 0);
 	}
 
 }
