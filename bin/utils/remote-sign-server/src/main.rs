@@ -1,7 +1,7 @@
 use structopt::StructOpt;
 
-use jsonrpc_http_server::jsonrpc_core::{IoHandler, Value, Params};
-use jsonrpc_http_server::{ServerBuilder};
+use jsonrpc_http_server::jsonrpc_core::IoHandler;
+use jsonrpc_http_server::ServerBuilder;
 
 use tokio;
 
@@ -18,6 +18,10 @@ use sc_remote_signer::{
 struct Opt {
     #[structopt(flatten)]
     keystore: KeystoreParams,
+    #[structopt(long = "port", short="-p", default_value="33033")]
+    port: u32,
+    #[structopt(long = "interface", short="-i", default_value="127.0.0.1")]
+    interface: String,
 }
 #[tokio::main]
 async fn main() {
@@ -31,6 +35,9 @@ async fn main() {
         Ok(KeystoreConfig::InMemory) => unreachable!()
     }.unwrap();
 
+    let server_addr = format!("{}:{}", opt.interface, opt.port).parse()
+        .expect("Could not parse interface/port");
+
     let (remote_server, receiver) = GenericRemoteSignerServer::proxy(keystore);
 
     let mut io = IoHandler::new();
@@ -38,12 +45,12 @@ async fn main() {
 
 	let server = ServerBuilder::new(io)
         .threads(3)
-        .start_http(&"127.0.0.1:3030".parse().unwrap())
+        .start_http(&server_addr)
         .unwrap();
 
     tokio::spawn(receiver);
     let _ = tokio::task::spawn_blocking(move || {
-        println!("Serving at localhost:3030");
+        println!("Serving Remote Signer at {:}", server_addr);
         server.wait()
     }).await;
 }
