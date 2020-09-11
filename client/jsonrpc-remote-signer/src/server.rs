@@ -2,7 +2,6 @@
 #![allow(missing_docs)]
 use std::{
 	pin::Pin,
-	sync::Arc,
 	task::{Context, Poll}
 };
 use sp_core::{
@@ -17,9 +16,9 @@ use sp_core::{
 		CryptoStore,
 		Error as CryptoStoreError,
 	},
+	vrf::VRFTranscriptData,
 };
 
-use jsonrpc_derive::rpc;
 use jsonrpc_core::{BoxFuture, Error as RpcError};
 
 use futures::{
@@ -27,11 +26,38 @@ use futures::{
 		oneshot,
 		mpsc::{UnboundedSender, UnboundedReceiver, unbounded},
 	},
-	compat::Future01CompatExt,
 	future::{Future, FutureExt, TryFutureExt},
 	stream::{Stream, StreamExt},
-	sink::SinkExt,
 };
+use std::convert::TryInto;
+
+use sp_consensus_babe::BABE_ENGINE_ID;
+
+use crate::TransferableVRFTranscriptData;
+
+impl TryInto<VRFTranscriptData> for TransferableVRFTranscriptData {
+	type Error = String;
+
+	fn try_into(self: TransferableVRFTranscriptData) -> Result<VRFTranscriptData, Self::Error> {
+
+		let (label, field_names) = {
+			if self.label.as_slice() == &BABE_ENGINE_ID {
+				(&BABE_ENGINE_ID, vec!["slot number", "current epoch", "chain randomness"])
+			} else {
+				return Err(format!("VRF Label '{:?}' not supported", self.label))
+			}
+		};
+
+		if field_names.len() != self.items.len() {
+			return Err(format!("Expected '{:?}' to have {:} items but found {:}",
+				label, field_names.len(), self.items.len()))
+		}
+
+		Ok(VRFTranscriptData {
+			label, items: field_names.into_iter().zip(self.items).collect::<Vec<_>>()
+		})
+	}
+}
 
 
 pub enum RequestMethod {
@@ -185,7 +211,6 @@ impl<Store: CryptoStore + 'static> KeystoreReceiver<Store> {
 			},
 			RequestMethod::InsertUnknown(key_type, suri, pubkey) => {
 				Box::pin(async move {
-					let mut store = store;
 					let result = store.insert_unknown(
 						key_type,
 						suri.as_str(),
@@ -295,7 +320,9 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 		).boxed().compat())
     }
 
-    fn ed25519_public_keys(&self, id: KeyTypeId) -> BoxFuture<Vec<sp_application_crypto::ed25519::Public>> {
+	fn ed25519_public_keys(&self, id: KeyTypeId)
+		-> BoxFuture<Vec<sp_application_crypto::ed25519::Public>>
+	{
 		Box::new(self.send_request(RequestMethod::Ed25519PublicKeys(id)).map(|response|
 			if let Ok(KeystoreResponse::Ed25519PublicKeys(keys)) = response {
 				Ok(keys)
@@ -321,7 +348,9 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 		).boxed().compat())
     }
 
-    fn ecdsa_public_keys(&self, id: KeyTypeId) -> BoxFuture<Vec<sp_application_crypto::ecdsa::Public>> {
+	fn ecdsa_public_keys(&self, id: KeyTypeId)
+		-> BoxFuture<Vec<sp_application_crypto::ecdsa::Public>>
+	{
 		Box::new(self.send_request(RequestMethod::EcdsaPublicKeys(id)).map(|response|
 			if let Ok(KeystoreResponse::EcdsaPublicKeys(keys)) = response
 			{
@@ -430,13 +459,20 @@ impl crate::RemoteSignerApi for GenericRemoteSignerServer {
 		transcript_data: crate::TransferableVRFTranscriptData,
 	) -> BoxFuture<sp_core::vrf::VRFSignature> {
 
-		Box::new(self.send_request(RequestMethod::Sr25519VrfSign(key_type, public, transcript_data.into())).map(|response|
-			if let Ok(KeystoreResponse::Sr25519VrfSign(result)) = response {
-				result.map_err(|_| RpcError::internal_error())
-			} else {
-				Err(RpcError::internal_error())
-			}
-		).boxed().compat())
+		match transcript_data.try_into() {
+			Ok(vrf_data) =>  Box::new(
+				self.send_request(RequestMethod::Sr25519VrfSign(key_type, public, vrf_data))
+					.map(|response|
+						if let Ok(KeystoreResponse::Sr25519VrfSign(result)) = response {
+							result.map_err(|_| RpcError::internal_error())
+						} else {
+							Err(RpcError::internal_error())
+						}
+					).boxed()
+				.compat()
+			),
+			Err(e) => Box::new(futures::future::err(RpcError::invalid_params(e)).compat())
+		}
     }
 }
 

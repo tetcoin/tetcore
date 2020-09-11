@@ -6945,6 +6945,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sp-application-crypto",
+ "sp-consensus-babe",
  "sp-core",
  "tokio 0.2.21",
 ]

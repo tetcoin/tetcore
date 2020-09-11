@@ -1,30 +1,16 @@
 
 use jsonrpc_derive::rpc;
-use jsonrpc_core::{IoHandler, BoxFuture, Error as RpcError};
+use jsonrpc_core::{BoxFuture, Error as RpcError};
 
-use core::{
-	task::{Context, Poll},
-	pin::Pin
-};
-use std::mem;
 use serde;
 
-use futures::{
-	channel::{
-		oneshot,
-		mpsc::{UnboundedSender, UnboundedReceiver, channel},
-	},
-	compat::Future01CompatExt,
-	future::{Future as Future03, FutureExt, TryFutureExt},
-	stream::Stream,
-	sink::SinkExt,
-};
 use sp_core::{
 	crypto::{KeyTypeId, CryptoTypePublicPair},
-	vrf::{VRFTranscriptData, VRFSignature, VRFTranscriptValue},
-	ed25519, sr25519, ecdsa, traits::CryptoStore
+	vrf::{VRFSignature, VRFTranscriptValue},
+	ed25519, sr25519, ecdsa
 };
 
+#[cfg(feature = "server")]
 pub mod server;
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -32,23 +18,7 @@ pub struct TransferableVRFTranscriptData {
 	/// The transcript's label
 	pub label: Vec<u8>,
 	/// Additional data to be registered into the transcript
-	pub items: Vec<(String, VRFTranscriptValue)>,
-}
-
-unsafe fn make_static_u8<'a>(x: &'a [u8]) -> &'static [u8] {  mem::transmute(x) }
-unsafe fn make_static_str<'a>(x: &'a str) -> &'static str {  mem::transmute(x) }
-
-impl From<TransferableVRFTranscriptData> for VRFTranscriptData {
-	fn from(t: TransferableVRFTranscriptData) -> VRFTranscriptData {
-		unsafe {
-			VRFTranscriptData {
-				label: make_static_u8(&t.label),
-				items: t.items.into_iter().map(|(s, v)| {
-					(make_static_str(&s), v)
-				}).collect()
-			}
-		}
-	}
+	pub items: Vec<VRFTranscriptValue>,
 }
 
 /// Substrate Remote Signer API
