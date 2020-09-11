@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use std::{
 	collections::{HashMap, HashSet},
 	fs::{self, File},
@@ -9,13 +8,19 @@ use std::{
 use async_trait::async_trait;
 use parking_lot::RwLock;
 use sp_core::{
-	crypto::{IsWrappedBy, CryptoTypePublicPair, KeyTypeId, Pair as PairT, ExposeSecret, SecretString, Public},
+	crypto::{CryptoTypePublicPair, KeyTypeId, Pair as PairT, ExposeSecret, SecretString, Public},
 	traits::{CryptoStore, Error as TraitError, SyncCryptoStore},
 	sr25519::{Public as Sr25519Public, Pair as Sr25519Pair},
 	vrf::{VRFTranscriptData, VRFSignature, make_transcript},
 	Encode,
 };
-use sp_application_crypto::{AppKey, AppPublic, AppPair, ed25519, sr25519, ecdsa};
+use sp_application_crypto::{ed25519, sr25519, ecdsa};
+
+#[cfg(test)]
+use sp_core::crypto::IsWrappedBy;
+#[cfg(test)]
+use sp_application_crypto::{AppPublic, AppKey, AppPair};
+
 use crate::{Result, Error};
 
 /// A local based keystore that is either memory-based or filesystem-based.
@@ -28,7 +33,7 @@ impl LocalKeystore {
 		Ok(Self(RwLock::new(inner)))
 	}
 
-	/// Create a local keystore in memory
+	/// Create a local keystore in memory.
 	pub fn in_memory() -> Self {
 		let inner = KeystoreInner::new_in_memory();
 		Self(RwLock::new(inner))
@@ -260,33 +265,13 @@ impl KeystoreInner {
 	/// Insert a new key with anonymous crypto.
 	///
 	/// Places it into the file system store.
-	pub(crate) fn insert_unknown(&self, key_type: KeyTypeId, suri: &str, public: &[u8]) -> Result<()> {
+	pub fn insert_unknown(&self, key_type: KeyTypeId, suri: &str, public: &[u8]) -> Result<()> {
 		if let Some(path) = self.key_file_path(public, key_type) {
 			let mut file = File::create(path).map_err(Error::Io)?;
 			serde_json::to_writer(&file, &suri).map_err(Error::Json)?;
 			file.flush().map_err(Error::Io)?;
 		}
 		Ok(())
-	}
-
-	/// Insert a new key.
-	///
-	/// Places it into the file system store.
-	pub fn insert_by_type<Pair: PairT>(&self, key_type: KeyTypeId, suri: &str) -> Result<Pair> {
-		let pair = Pair::from_string(
-			suri,
-			self.password()
-		).map_err(|_| Error::InvalidSeed)?;
-		self.insert_unknown(key_type, suri, pair.public().as_slice())
-			.map_err(|_| Error::Unavailable)?;
-		Ok(pair)
-	}
-
-	/// Insert a new key.
-	///
-	/// Places it into the file system store.
-	pub fn insert<Pair: AppPair>(&self, suri: &str) -> Result<Pair> {
-		self.insert_by_type::<Pair::Generic>(Pair::ID, suri).map(Into::into)
 	}
 
 	/// Generate a new key.
@@ -305,6 +290,7 @@ impl KeystoreInner {
 	/// Generate a new key.
 	///
 	/// Places it into the file system store.
+	#[cfg(test)]
 	pub fn generate<Pair: AppPair>(&self) -> Result<Pair> {
 		self.generate_by_type::<Pair::Generic>(Pair::ID).map(Into::into)
 	}
@@ -325,6 +311,7 @@ impl KeystoreInner {
 	/// Create a new key from seed.
 	///
 	/// Does not place it into the file system store.
+	#[cfg(test)]
 	pub fn insert_ephemeral_from_seed<Pair: AppPair>(&mut self, seed: &str) -> Result<Pair> {
 		self.insert_ephemeral_from_seed_by_type::<Pair::Generic>(seed, Pair::ID).map(Into::into)
 	}
@@ -360,6 +347,7 @@ impl KeystoreInner {
 	}
 
 	/// Get a key pair for the given public key.
+	#[cfg(test)]
 	pub fn key_pair<Pair: AppPair>(&self, public: &<Pair as AppKey>::Public) -> Result<Pair> {
 		self.key_pair_by_type::<Pair::Generic>(IsWrappedBy::from_ref(public), Pair::ID).map(Into::into)
 	}
@@ -370,6 +358,7 @@ impl KeystoreInner {
 	/// to determine the key type. Unless you use a specialized application-type public key, then
 	/// this only give you keys registered under generic cryptography, and will not return keys
 	/// registered under the application type.
+	#[cfg(test)]
 	pub fn public_keys<Public: AppPublic>(&self) -> Result<Vec<Public>> {
 		self.raw_public_keys(Public::ID)
 			.map(|v| {

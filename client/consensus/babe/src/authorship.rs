@@ -15,6 +15,7 @@
 // along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
 
 //! BABE authority selection and slot claiming.
+
 use std::sync::Arc;
 use sp_application_crypto::AppKey;
 use sp_consensus_babe::{
@@ -295,7 +296,7 @@ mod tests {
 	#[test]
 	fn claim_secondary_plain_slot_works() {
 		let keystore = LocalKeystore::in_memory();
-		let sync_keystore = Arc::new(keystore.into());
+		let sync_keystore: Arc<SyncCryptoStore> = Arc::new(keystore.into());
 		let valid_public_key = dbg!(sync_keystore.sr25519_generate_new(
 			AuthorityId::ID,
 			Some(sp_core::crypto::DEV_PHRASE),

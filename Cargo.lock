@@ -6531,6 +6531,7 @@ dependencies = [
 name = "sc-consensus-aura"
 version = "0.8.0-rc6"
 dependencies = [
+ "async-std",
  "derive_more",
  "env_logger 0.7.1",
  "futures 0.3.5",
@@ -6569,6 +6570,7 @@ dependencies = [
 name = "sc-consensus-babe"
 version = "0.8.0-rc6"
 dependencies = [
+ "async-std",
  "derive_more",
  "env_logger 0.7.1",
  "fork-tree",
@@ -6674,13 +6676,19 @@ dependencies = [
  "parking_lot 0.10.2",
  "sc-basic-authorship",
  "sc-client-api",
+ "sc-consensus-babe",
+ "sc-consensus-epochs",
+ "sc-keystore",
  "sc-transaction-pool",
  "serde",
+ "sp-api",
  "sp-blockchain",
  "sp-consensus",
+ "sp-consensus-babe",
  "sp-core",
  "sp-inherents",
  "sp-runtime",
+ "sp-timestamp",
  "sp-transaction-pool",
  "substrate-prometheus-endpoint",
  "substrate-test-runtime-client",

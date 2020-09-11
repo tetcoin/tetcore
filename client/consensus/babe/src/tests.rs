@@ -48,6 +48,7 @@ use rand_chacha::{
 };
 use sc_keystore::LocalKeystore;
 use sp_application_crypto::key_types::BABE;
+use async_std::task;
 
 type Item = DigestItem<Hash>;
 
@@ -386,8 +387,8 @@ fn run_one_test(
 		let select_chain = peer.select_chain().expect("Full client has select_chain");
 
 		let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-		let keystore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore").into();
-		keystore.ed25519_generate_new(BABE, Some(seed)).expect("Generates authority key");
+		let keystore: SyncCryptoStore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore").into();
+		keystore.sr25519_generate_new(BABE, Some(seed)).expect("Generates authority key");
 		keystore_paths.push(keystore_path);
 
 		let mut got_own = false;
@@ -434,8 +435,7 @@ fn run_one_test(
 			can_author_with: sp_consensus::AlwaysCanAuthor,
 		}).expect("Starts babe"));
 	}
-
-	futures::executor::block_on(future::select(
+	task::block_on(future::select(
 		futures::future::poll_fn(move |cx| {
 			let mut net = net.lock();
 			net.poll(cx);
@@ -517,7 +517,7 @@ fn sig_is_not_pre_digest() {
 #[test]
 fn can_author_block() {
 	let _ = env_logger::try_init();
-	let keystore = LocalKeystore::new_in_memory().into();
+	let keystore: Arc<SyncCryptoStore> = Arc::new(LocalKeystore::in_memory().into());
 	let public = keystore.sr25519_generate_new(BABE, Some("//Alice"))
 		.expect("Generates authority pair");
 
@@ -543,7 +543,6 @@ fn can_author_block() {
 		allowed_slots: AllowedSlots::PrimaryAndSecondaryPlainSlots,
 	};
 
-	let keystore = Arc::new(keystore);
 	// with secondary slots enabled it should never be empty
 	match claim_slot(i, &epoch, keystore.clone()) {
 		None => i += 1,
@@ -825,7 +824,7 @@ fn verify_slots_are_strictly_increasing() {
 fn babe_transcript_generation_match() {
 	let _ = env_logger::try_init();
 	let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-	let keystore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore").into();
+	let keystore: SyncCryptoStore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore").into();
 	let public = keystore.sr25519_generate_new(BABE, Some("//Alice"))
 		.expect("Generates authority pair");
 

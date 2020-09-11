@@ -247,14 +247,12 @@ impl<B, C, E, I, P, Error, SO> sc_consensus_slots::SimpleSlotWorker<B> for AuraW
 	) -> Option<Self::Claim> {
 		let expected_author = slot_author::<P>(slot_number, epoch_data);
 		expected_author.and_then(|p| {
-			let has_keys = self.keystore.has_keys(
+			 if self.keystore.has_keys(
 				&[(p.to_raw_vec(), sp_application_crypto::key_types::AURA)],
-			);
-			match has_keys {
-				true => {
-					Some(p.clone())
-				},
-				false => None
+			) {
+				Some(p.clone())
+			} else {
+				None
 			}
 		})
 	}
@@ -890,6 +888,7 @@ mod tests {
 	use substrate_test_runtime_client::runtime::{Header, H256};
 	use sc_keystore::LocalKeystore;
 	use sp_application_crypto::key_types::AURA;
+	use async_std::task;
 
 	type Error = sp_blockchain::Error;
 
@@ -1052,7 +1051,7 @@ mod tests {
 			).expect("Starts aura"));
 		}
 
-		futures::executor::block_on(future::select(
+		task::block_on(future::select(
 			future::poll_fn(move |cx| {
 				net.lock().poll(cx);
 				Poll::<()>::Pending
