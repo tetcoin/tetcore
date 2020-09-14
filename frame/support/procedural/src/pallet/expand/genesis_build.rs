@@ -57,11 +57,12 @@ pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 	};
 
 	genesis_build_item_impl.attrs.push(syn::parse_quote!( #[cfg(feature = "std")] ));
+	let where_clause = &genesis_build.where_clause;
 
 	quote::quote_spanned!(genesis_build_item.span() =>
 		#[cfg(feature = "std")]
 		impl<#type_impl_gen> #scrate::sp_runtime::BuildModuleGenesisStorage<#trait_use_gen>
-			for #gen_cfg_ident<#gen_cfg_use_gen>
+			for #gen_cfg_ident<#gen_cfg_use_gen> #where_clause
 		{
 			fn build_module_genesis_storage(
 				&self,

@@ -911,6 +911,9 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
+/// NOTE: At this moment macro doesn't support where clause on trait, but where clause can be
+/// used on some of the usage of this trait.
+///
 /// ### `#[pallet::module]`
 ///
 /// The placeholder module struct must be defined as followed:
@@ -1031,7 +1034,8 @@ pub mod pallet_prelude {
 /// **WARNING**: modifying event, changing its variant order, removing some must be done with care.
 /// Indeed this will change the outer runtime event type, this type might be used by third parties.
 ///
-/// NOTE: for instantiable pallet, event must be generic over T and I.
+/// NOTE: For instantiable pallet, event must be generic over T and I.
+/// NOTE: At this moment declaration doesn't support where clause.
 ///
 /// ### `#[pallet::storage]` optional
 ///

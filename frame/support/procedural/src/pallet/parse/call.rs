@@ -164,7 +164,7 @@ impl CallDef {
 					let arg_ident = if let syn::Pat::Ident(pat) = &*arg.pat {
 						pat.ident.clone()
 					} else {
-						let msg = "Invalid pallet::call, argumen must be ident";
+						let msg = "Invalid pallet::call, argument must be ident";
 						return Err(syn::Error::new(arg.pat.span(), msg));
 					};
 

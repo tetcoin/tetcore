@@ -44,27 +44,32 @@ pub mod pallet {
 	pub struct Module<T>(PhantomData<T>);
 
 	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
+	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> where T::Balance: From<u64> {
 		fn on_initialize(_: BlockNumberFor<T>) -> Weight {
+			T::Balance::from(3u64); // Test for where clause
 			Self::deposit_event(Event::Something(10));
 			10
 		}
 		fn on_finalize(_: BlockNumberFor<T>) {
+			T::Balance::from(3u64); // Test for where clause
 			Self::deposit_event(Event::Something(20));
 		}
 		fn on_runtime_upgrade() -> Weight {
+			T::Balance::from(3u64); // Test for where clause
 			Self::deposit_event(Event::Something(30));
 			30
 		}
 		fn integrity_test() {
+			T::Balance::from(3u64); // Test for where clause
 		}
 	}
 
 	#[pallet::call]
-	impl<T: Trait> Call for Module<T> {
+	impl<T: Trait> Call for Module<T> where T::Balance: From<u64> {
 		/// Doc comment put in metadata
 		#[pallet::weight(Weight::from(*_foo))]
 		fn foo(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
+			T::Balance::from(3u64); // Test for where clause
 			let _ = origin;
 			Self::deposit_event(Event::Something(3));
 			Ok(().into())
@@ -118,8 +123,10 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuilder<T> for GenesisConfig {
-		fn build(&self) {}
+	impl<T: Trait> GenesisBuilder<T> for GenesisConfig where T::Balance: From<u64> {
+		fn build(&self) {
+			T::Balance::from(3u64); // Test for where clause
+		}
 	}
 
 	#[pallet::origin]
@@ -127,24 +134,26 @@ pub mod pallet {
 	pub struct Origin<T>(PhantomData<T>);
 
 	#[pallet::validate_unsigned]
-	impl<T: Trait> ValidateUnsigned for Module<T> {
+	impl<T: Trait> ValidateUnsigned for Module<T> where T::Balance: From<u64> {
 		type Call = Call<T>;
 		fn validate_unsigned(
 			_source: TransactionSource,
 			_call: &Self::Call
 		) -> TransactionValidity {
+			T::Balance::from(3u64); // Test for where clause
 			Err(TransactionValidityError::Invalid(InvalidTransaction::Call))
 		}
 	}
 
 	#[pallet::inherent]
-	impl<T: Trait> ProvideInherent for Module<T> {
+	impl<T: Trait> ProvideInherent for Module<T> where T::Balance: From<u64> {
 		type Call = Call<T>;
 		type Error = InherentError;
 
 		const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
 
 		fn create_inherent(_data: &InherentData) -> Option<Self::Call> {
+			T::Balance::from(3u64); // Test for where clause
 			unimplemented!();
 		}
 	}

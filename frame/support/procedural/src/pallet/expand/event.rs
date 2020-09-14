@@ -103,4 +103,3 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 	)
 }
-

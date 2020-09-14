@@ -24,6 +24,8 @@ pub struct GenesisBuildDef {
 	pub index: usize,
 	/// A set of usage of instance, must be check for consistency with trait.
 	pub instances: Vec<helper::InstanceUsage>,
+	/// The where_clause used.
+	pub where_clause: Option<syn::WhereClause>,
 }
 
 impl GenesisBuildDef {
@@ -45,12 +47,10 @@ impl GenesisBuildDef {
 		let mut instances = vec![];
 		instances.push(helper::check_genesis_builder_usage(&item_trait)?);
 
-		if item.generics.where_clause.is_some() {
-			let msg = "Invalid pallet::genesis_build, expect no where clause";
-			return Err(syn::Error::new(item.generics.where_clause.span(), msg));
-		}
-
-		Ok(Self { index, instances })
+		Ok(Self {
+			index,
+			instances,
+			where_clause: item.generics.where_clause.clone(),
+		})
 	}
 }
-

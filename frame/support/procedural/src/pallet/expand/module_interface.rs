@@ -24,6 +24,7 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
+	let where_clause = &def.module_interface.where_clause;
 
 	let module_interface_item_span = def.item.content.as_mut()
 		.expect("Checked by def parser").1[def.module_interface.index].span();
@@ -31,7 +32,7 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 	quote::quote_spanned!(module_interface_item_span =>
 		impl<#type_impl_gen>
 			#scrate::traits::OnFinalize<<T as frame_system::Trait>::BlockNumber>
-			for #module_ident<#type_use_gen>
+			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn on_finalize(n: <T as frame_system::Trait>::BlockNumber) {
 				<
@@ -44,7 +45,7 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 
 		impl<#type_impl_gen>
 			#scrate::traits::OnInitialize<<T as frame_system::Trait>::BlockNumber>
-			for #module_ident<#type_use_gen>
+			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn on_initialize(
 				n: <T as frame_system::Trait>::BlockNumber
@@ -59,7 +60,7 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 
 		impl<#type_impl_gen>
 			#scrate::traits::OnRuntimeUpgrade
-			for #module_ident<#type_use_gen>
+			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn on_runtime_upgrade() -> #scrate::weights::Weight {
 				<
@@ -72,7 +73,7 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 
 		impl<#type_impl_gen>
 			#scrate::traits::OffchainWorker<<T as frame_system::Trait>::BlockNumber>
-			for #module_ident<#type_use_gen>
+			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn offchain_worker(n: <T as frame_system::Trait>::BlockNumber) {
 				<
@@ -83,7 +84,10 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_gen> #scrate::traits::IntegrityTest for #module_ident<#type_use_gen> {
+		impl<#type_impl_gen>
+			#scrate::traits::IntegrityTest
+			for #module_ident<#type_use_gen> #where_clause
+		{
 			fn integrity_test() {
 				<
 					Self as #scrate::traits::ModuleInterface<

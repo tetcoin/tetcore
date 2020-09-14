@@ -24,6 +24,8 @@ pub struct ModuleInterfaceDef {
 	pub index: usize,
 	/// A set of usage of instance, must be check for consistency with trait.
 	pub instances: Vec<helper::InstanceUsage>,
+	/// The where_clause used.
+	pub where_clause: Option<syn::WhereClause>,
 }
 
 impl ModuleInterfaceDef {
@@ -58,6 +60,10 @@ impl ModuleInterfaceDef {
 			return Err(syn::Error::new(item_trait.span(), msg));
 		}
 
-		Ok(Self { index, instances })
+		Ok(Self {
+			index,
+			instances,
+			where_clause: item.generics.where_clause.clone(),
+		})
 	}
 }
