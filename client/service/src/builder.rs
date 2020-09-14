@@ -203,6 +203,9 @@ impl KeystoreContainer {
 				path.clone(),
 				password.clone()
 			)?,
+			KeystoreConfig::Remote { .. } => {
+				LocalKeystore::in_memory()
+			}
 			KeystoreConfig::InMemory => LocalKeystore::in_memory(),
 		});
 		let sync_keystore = Arc::new((keystore.clone() as CryptoStorePtr).into());

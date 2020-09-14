@@ -15,7 +15,7 @@ jsonrpc-core-client = "14.0"
 sp-core = { version = "2.0.0-rc6", path="../../primitives/core" }
 sp-consensus-babe = { version = "0.8.0-rc6", path="../../primitives/consensus/babe", optional = true }
 sp-application-crypto = { version = "2.0.0-rc6", path="../../primitives/application-crypto" }
-sc-keystore = { version = "2.0.0-rc6", path="../keystore" }
+sc-keystore = { version = "2.0.0-rc6", path="../keystore", optional = true }
 futures = { version = "0.3.5", features = ["compat"] }
 parking_lot = "0.11"
 serde = { version = "1.0.115", features = ["derive"] }
@@ -26,7 +26,10 @@ tokio = { version = "0.2", features = ["full"] }
 serde_json = "1.0.57"
 
 [features]
-default = ["server"]
+default = ["server", "client"]
 server = [
-    "sp-consensus-babe"
+    "sp-consensus-babe",
+    "sc-keystore"
+]
+client = [
 ]

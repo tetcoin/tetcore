@@ -13,6 +13,9 @@ use sp_core::{
 #[cfg(feature = "server")]
 pub mod server;
 
+#[cfg(feature = "client")]
+pub mod client;
+
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct TransferableVRFTranscriptData {
 	/// The transcript's label
