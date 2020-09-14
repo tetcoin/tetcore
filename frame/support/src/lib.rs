@@ -1050,6 +1050,18 @@ pub mod pallet_prelude {
 /// type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
 /// ```
 ///
+/// An additional attribute allows to define a getter on `Module`:
+/// `#[pallet::generate_getter(fn $my_getter_fn_name)]`
+///
+/// it can be used as this:
+/// #[pallet::storage]
+/// #[pallet::generate_getter(fn my_storage)]
+/// type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+///
+/// NOTE: if the querykind generic parameter is still generic at this stage or is using some type
+/// alias then the generation of the getter might fail. In this case getter can be implemented
+/// manually.
+///
 /// ### `#[pallet::type_value]` optional
 ///
 /// Helper to define a struct implementing `Get` trait. To ease use of storage types.
@@ -1252,6 +1264,7 @@ pub mod pallet_prelude {
 ///
 /// 	// Another declaration
 /// 	#[pallet::storage]
+/// 	#[pallet::generate_getter(fn my_storage)]
 /// 	type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
 ///
 /// 	// Declare genesis config. (This is optional)
@@ -1381,6 +1394,7 @@ pub mod pallet_prelude {
 /// 		StorageValueType<_, T::Balance, ValueQuery, MyDefault<T, I>>;
 ///
 /// 	#[pallet::storage]
+/// 	#[pallet::generate_getter(fn my_storage)]
 /// 	type MyStorage<I = DefaultInstance> =
 /// 		StorageMapType<_, Blake2_128Concat, u32, u32>;
 ///

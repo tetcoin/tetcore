@@ -22,6 +22,31 @@ use quote::ToTokens;
 /// List of additional token to be used for parsing.
 mod keyword {
 	syn::custom_keyword!(Error);
+	syn::custom_keyword!(pallet);
+	syn::custom_keyword!(generate_getter);
+	syn::custom_keyword!(OptionQuery);
+	syn::custom_keyword!(ValueQuery);
+}
+
+/// Parse for `#[pallet::generate_getter(fn dummy)]`
+pub struct PalletStorageAttr {
+	getter: syn::Ident,
+}
+
+impl syn::parse::Parse for PalletStorageAttr {
+	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+		input.parse::<syn::Token![#]>()?;
+		let content;
+		syn::bracketed!(content in input);
+		content.parse::<keyword::pallet>()?;
+		content.parse::<syn::Token![::]>()?;
+		content.parse::<keyword::generate_getter>()?;
+
+		let generate_content;
+		syn::parenthesized!(generate_content in content);
+		generate_content.parse::<syn::Token![fn]>()?;
+		Ok(Self { getter: generate_content.parse::<syn::Ident>()? })
+	}
 }
 
 /// The value and key types used by storages. Needed to expand metadata.
@@ -33,6 +58,11 @@ pub enum Metadata{
 		key1: syn::GenericArgument,
 		key2: syn::GenericArgument
 	},
+}
+
+pub enum QueryKind {
+	OptionQuery,
+	ValueQuery,
 }
 
 /// Definition of a storage, storage is a storage type like
@@ -55,6 +85,12 @@ pub struct StorageDef {
 	pub docs: Vec<syn::Lit>,
 	/// A set of usage of instance, must be check for consistency with trait.
 	pub instances: Vec<helper::InstanceUsage>,
+	/// Optional getter to generate. If some then query_kind is ensured to be some as well.
+	pub getter: Option<syn::Ident>,
+	/// Whereas the querytype of the storage is OptionQuery or ValueQuery.
+	/// Note that this is best effort as it can't be determined when QueryKind is generic, and
+	/// result can be false if user do some unexpected type alias.
+	pub query_kind: Option<QueryKind>,
 }
 
 /// In `Foo<A, B, C>` retrieve the argument at given position, i.e. A is argument at position 0.
@@ -85,6 +121,13 @@ impl StorageDef {
 			return Err(syn::Error::new(item.span(), "Invalid pallet::storage, expect item type"));
 		};
 
+		let mut attrs: Vec<PalletStorageAttr> = helper::take_item_attrs(&mut item.attrs)?;
+		if attrs.len() > 1 {
+			let msg = "Invalid pallet::storage, multiple argument pallet::generate_getter found";
+			return Err(syn::Error::new(attrs[1].getter.span(), msg));
+		}
+		let getter = attrs.pop().map(|attr| attr.getter);
+
 		let mut instances = vec![];
 		instances.push(helper::check_storage_optional_gen(&item.generics, item.span())?);
 
@@ -107,19 +150,23 @@ impl StorageDef {
 			return Err(syn::Error::new(item.ty.span(), msg));
 		}
 
+		let query_kind;
 		let metadata = match &*typ.path.segments[0].ident.to_string() {
 			"StorageValueType" => {
+				query_kind = retrieve_arg(&typ.path.segments[0], 2);
 				Metadata::Value {
 					value: retrieve_arg(&typ.path.segments[0], 1)?,
 				}
 			}
 			"StorageMapType" => {
+				query_kind = retrieve_arg(&typ.path.segments[0], 4);
 				Metadata::Map {
 					key: retrieve_arg(&typ.path.segments[0], 2)?,
 					value: retrieve_arg(&typ.path.segments[0], 3)?,
 				}
 			}
 			"StorageDoubleMapType" => {
+				query_kind = retrieve_arg(&typ.path.segments[0], 6);
 				Metadata::DoubleMap {
 					key1: retrieve_arg(&typ.path.segments[0], 2)?,
 					key2: retrieve_arg(&typ.path.segments[0], 4)?,
@@ -136,6 +183,23 @@ impl StorageDef {
 				return Err(syn::Error::new(item.ty.span(), msg));
 			}
 		};
+		let query_kind = query_kind
+			.map(|query_kind| match query_kind {
+				syn::GenericArgument::Type(syn::Type::Path(path))
+					if path.path.segments.last().map_or(false, |s| s.ident == "OptionQuery")
+				=> Some(QueryKind::OptionQuery),
+				syn::GenericArgument::Type(syn::Type::Path(path))
+					if path.path.segments.last().map_or(false, |s| s.ident == "ValueQuery")
+				=> Some(QueryKind::ValueQuery),
+				_ => None,
+			})
+			.unwrap_or(Some(QueryKind::OptionQuery)); // This value must match the default generic.
+
+		if query_kind.is_none() && getter.is_some() {
+			let msg = "Invalid pallet::storage, cannot generate getter because QueryKind is not \
+				identifiable. QueryKind must be `OptionQuery` or `ValueQuery` to be identifiable.";
+			return Err(syn::Error::new(getter.unwrap().span(), msg));
+		}
 
 		let prefix_arg = retrieve_arg(&typ.path.segments[0], 0)?;
 		syn::parse2::<syn::Token![_]>(prefix_arg.to_token_stream())
@@ -159,6 +223,8 @@ impl StorageDef {
 			instances,
 			metadata,
 			docs,
+			getter,
+			query_kind,
 		})
 	}
 }

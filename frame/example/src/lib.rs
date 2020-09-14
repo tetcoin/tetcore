@@ -256,11 +256,12 @@
 
 use sp_std::marker::PhantomData;
 use frame_support::{
-	dispatch::{DispatchResult, IsSubType}, decl_module, decl_storage, decl_event,
+	dispatch::{IsSubType, DispatchResultWithPostInfo},
 	weights::{DispatchClass, ClassifyDispatch, WeighData, Weight, PaysFee, Pays},
+	StorageValue,
 };
+use frame_system::ensure_signed;
 use sp_std::prelude::*;
-use frame_system::{ensure_signed, ensure_root};
 use codec::{Encode, Decode};
 use sp_runtime::{
 	traits::{
@@ -270,6 +271,9 @@ use sp_runtime::{
 		ValidTransaction, TransactionValidityError, InvalidTransaction, TransactionValidity,
 	},
 };
+
+/// A type alias for the balance type from this pallet's point of view.
+type BalanceOf<T> = <T as pallet_balances::Trait>::Balance;
 
 // A custom weight calculator tailored for the dispatch call `set_dummy()`. This actually examines
 // the arguments and makes a decision based upon them.
@@ -311,114 +315,110 @@ impl<T: pallet_balances::Trait> PaysFee<(&BalanceOf<T>,)> for WeightForSetDummy<
 	}
 }
 
-/// A type alias for the balance type from this pallet's point of view.
-type BalanceOf<T> = <T as pallet_balances::Trait>::Balance;
+// Reexport pallet definition so runtime can use the crate directly.
+pub use pallet::*;
+#[frame_support::pallet(Example)]
+mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use frame_system::{ensure_signed, ensure_root};
 
-/// Our pallet's configuration trait. All our types and constants go in here. If the
-/// pallet is dependent on specific other pallets, then their configuration traits
-/// should be added to our implied traits list.
-///
-/// `frame_system::Trait` should always be included in our implied traits.
-pub trait Trait: pallet_balances::Trait {
-	/// The overarching event type.
-	type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
-}
+	use super::BalanceOf;
 
-decl_storage! {
-	// A macro for the Storage trait, and its implementation, for this pallet.
-	// This allows for type-safe usage of the Substrate storage database, so you can
-	// keep things around between blocks.
-	//
-	// It is important to update your storage name so that your pallet's
-	// storage items are isolated from other pallets.
-	// ---------------------------------vvvvvvv
-	trait Store for Module<T: Trait> as Example {
-		// Any storage declarations of the form:
-		//   `pub? Name get(fn getter_name)? [config()|config(myname)] [build(|_| {...})] : <type> (= <new_default_value>)?;`
-		// where `<type>` is either:
-		//   - `Type` (a basic value item); or
-		//   - `map hasher(HasherKind) KeyType => ValueType` (a map item).
-		//
-		// Note that there are two optional modifiers for the storage type declaration.
-		// - `Foo: Option<u32>`:
-		//   - `Foo::put(1); Foo::get()` returns `Some(1)`;
-		//   - `Foo::kill(); Foo::get()` returns `None`.
-		// - `Foo: u32`:
-		//   - `Foo::put(1); Foo::get()` returns `1`;
-		//   - `Foo::kill(); Foo::get()` returns `0` (u32::default()).
-		// e.g. Foo: u32;
-		// e.g. pub Bar get(fn bar): map hasher(blake2_128_concat) T::AccountId => Vec<(T::Balance, u64)>;
-		//
-		// For basic value items, you'll get a type which implements
-		// `frame_support::StorageValue`. For map items, you'll get a type which
-		// implements `frame_support::StorageMap`.
-		//
-		// If they have a getter (`get(getter_name)`), then your pallet will come
-		// equipped with `fn getter_name() -> Type` for basic value items or
-		// `fn getter_name(key: KeyType) -> ValueType` for map items.
-		Dummy get(fn dummy) config(): Option<T::Balance>;
-
-		// A map that has enumerable entries.
-		Bar get(fn bar) config(): map hasher(blake2_128_concat) T::AccountId => T::Balance;
-
-		// this one uses the default, we'll demonstrate the usage of 'mutate' API.
-		Foo get(fn foo) config(): T::Balance;
+	/// Our pallet's configuration trait. All our types and constants go in here. If the
+	/// pallet is dependent on specific other pallets, then their configuration traits
+	/// should be added to our implied traits list.
+	///
+	/// `frame_system::Trait` should always be included in our implied traits.
+	#[pallet::trait_]
+	pub trait Trait: pallet_balances::Trait + frame_system::Trait {
+		/// The overarching event type.
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
 	}
-}
 
-decl_event!(
+	// This allows for type-safe usage of the Substrate storage database, so you can
+	// keep things around between blocks. (It also put those information into metadata).
+	//
+	// It is important to update your storage name (here `Example`) so that your pallet's
+	// storage items are isolated from other pallets.
+	//
+	//
+	// Any storage declarations of the form: `pub? type $Name = $StorageType<_, ...>`
+	//
+	// Note that `QueryKind` and `OnDefault` generic allow to define how the value is queryied.
+	// let's say for `type Foo = StorageValue<_, u32, $QueryKind, $OnEmpty>`
+	// - for `$QueryKind = OptionQuery`, `$OnEmpty = GetDefault`:
+	//   - `Foo::put(1); Foo::get()` returns `Some(1)`;
+	//   - `Foo::kill(); Foo::get()` returns `$OnEmpty::get()` i.e. `None`.
+	// - for `$QueryKind = ValueQuery`, `$OnEmpty = GetDefault`:
+	//   - `Foo::put(1); Foo::get()` returns `1`;
+	//   - `Foo::kill(); Foo::get()` returns `$OnEmpty::get()` i.e. `0`.
+	//
+	// The first generic `_` is automatically filled by the macro. It defines which prefix the
+	// storage will use in the trie. The macro use the name of the type (e.g. `Dummy`) as storage
+	// prefix.
+	#[pallet::storage]
+	#[pallet::generate_getter(fn dummy)]
+	pub type Dummy<T: Trait> = StorageValueType<_, T::Balance>;
+
+	// A map that has enumerable entries.
+	#[pallet::storage]
+	#[pallet::generate_getter(fn bar)]
+	pub(crate) type Bar<T: Trait> = StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
+
+	// Contrary to Dummy, this one uses ValueQuery, we'll demonstrate the usage of 'mutate' API.
+	#[pallet::storage]
+	#[pallet::generate_getter(fn foo)]
+	pub(crate) type Foo<T: Trait> = StorageValueType<_, T::Balance, ValueQuery>;
+
 	/// Events are a simple means of reporting specific conditions and
 	/// circumstances that have happened that users, Dapps and/or chain explorers would find
 	/// interesting and otherwise difficult to detect.
-	pub enum Event<T> where B = <T as pallet_balances::Trait>::Balance {
+	#[pallet::event]
+	// Metadata allow to define what metadata name correspond to which type.
+	// Here `BalanceOf<T>` type will be written `B` in the metadata.
+	#[pallet::metadata(BalanceOf<T> = B)]
+	pub enum Event<T: Trait> {
 		// Just a normal `enum`, here's a dummy event to ensure it compiles.
 		/// Dummy event, just here so there's a generic type that's used.
-		Dummy(B),
+		Dummy(BalanceOf<T>),
 	}
-);
 
-// The module declaration. This states the entry points that we handle. The
-// macro takes care of the marshalling of arguments and dispatch.
-//
-// Anyone can have these functions execute by signing and submitting
-// an extrinsic. Ensure that calls into each of these execute in a time, memory and
-// using storage space proportional to any costs paid for by the caller or otherwise the
-// difficulty of forcing the call to happen.
-//
-// Generally you'll want to split these into three groups:
-// - Public calls that are signed by an external account.
-// - Root calls that are allowed to be made only by the governance system.
-// - Unsigned calls that can be of two kinds:
-//   * "Inherent extrinsics" that are opinions generally held by the block
-//     authors that build child blocks.
-//   * Unsigned Transactions that are of intrinsic recognizable utility to the
-//     network, and are validated by the runtime.
-//
-// Information about where this dispatch initiated from is provided as the first argument
-// "origin". As such functions must always look like:
-//
-// `fn foo(origin, bar: Bar, baz: Baz) -> Result;`
-//
-// The `Result` is required as part of the syntax (and expands to the conventional dispatch
-// result of `Result<(), &'static str>`).
-//
-// When you come to `impl` them later in the pallet, you must specify the full type for `origin`:
-//
-// `fn foo(origin: T::Origin, bar: Bar, baz: Baz) { ... }`
-//
-// There are three entries in the `frame_system::Origin` enum that correspond
-// to the above bullets: `::Signed(AccountId)`, `::Root` and `::None`. You should always match
-// against them as the first thing you do in your function. There are three convenience calls
-// in system that do the matching for you and return a convenient result: `ensure_signed`,
-// `ensure_root` and `ensure_none`.
-decl_module! {
-	// Simple declaration of the `Module` type. Lets the macro know what its working on.
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		/// Deposit one of this pallet's events by using the default implementation.
-		/// It is also possible to provide a custom implementation.
-		/// For non-generic events, the generic parameter just needs to be dropped, so that it
-		/// looks like: `fn deposit_event() = default;`.
-		fn deposit_event() = default;
+	// Define the module struct, a place holder which implements various traits.
+	#[pallet::module]
+	// Generate deposit_event function using frame_system deposit_event.
+	#[pallet::generate(fn deposit_event)]
+	pub struct Module<T>(PhantomData<T>);
+
+	// The module declaration. This states the entry points that we handle. The
+	// macro takes care of the marshalling of arguments and dispatch.
+	//
+	// Anyone can have these functions execute by signing and submitting
+	// an extrinsic. Ensure that calls into each of these execute in a time, memory and
+	// using storage space proportional to any costs paid for by the caller or otherwise the
+	// difficulty of forcing the call to happen.
+	//
+	// Generally you'll want to split these into three groups:
+	// - Public calls that are signed by an external account.
+	// - Root calls that are allowed to be made only by the governance system.
+	// - Unsigned calls that can be of two kinds:
+	//   * "Inherent extrinsics" that are opinions generally held by the block
+	//     authors that build child blocks.
+	//   * Unsigned Transactions that are of intrinsic recognizable utility to the
+	//     network, and are validated by the runtime.
+	//
+	// Information about where this dispatch initiated from is provided as the first argument
+	// "origin". As such functions must always look like:
+	//
+	// `fn foo(origin: OriginFor<T>, bar: Bar, baz: Baz) -> DispatchResultWithPostInfo;`
+	//
+	// There are three entries in the `frame_system::Origin` enum that correspond
+	// to the above bullets: `::Signed(AccountId)`, `::Root` and `::None`. You should always match
+	// against them as the first thing you do in your function. There are three convenience calls
+	// in system that do the matching for you and return a convenient result: `ensure_signed`,
+	// `ensure_root` and `ensure_none`.
+	#[pallet::call]
+	impl<T: Trait> Call for Module<T> {
 		/// This is your public interface. Be extremely careful.
 		/// This is just a simple example of how to interact with the pallet from the external
 		/// world.
@@ -462,13 +462,16 @@ decl_module! {
 		// information to properly execute the transaction, whilst keeping the total load of the
 		// chain in a moderate rate.
 		//
-		// The _right-hand-side_ value of the `#[weight]` attribute can be any type that implements
+		// The _parens_ value of the `#[palletweight]` attribute can be any type that implements
 		// a set of traits, namely [`WeighData`] and [`ClassifyDispatch`]. The former conveys the
 		// weight (a numeric representation of pure execution time and difficulty) of the
 		// transaction and the latter demonstrates the [`DispatchClass`] of the call. A higher
 		// weight means a larger transaction (less of which can be placed in a single block).
-		#[weight = 0]
-		fn accumulate_dummy(origin, increase_by: T::Balance) -> DispatchResult {
+		#[pallet::weight(0)]
+		pub fn accumulate_dummy(
+			origin: OriginFor<T>,
+			increase_by: T::Balance
+		) -> DispatchResultWithPostInfo {
 			// This is a public call, so we ensure that the origin is some signed account.
 			let _sender = ensure_signed(origin)?;
 
@@ -492,10 +495,10 @@ decl_module! {
 			});
 
 			// Let's deposit an event to let the outside world know this happened.
-			Self::deposit_event(RawEvent::Dummy(increase_by));
+			Self::deposit_event(Event::Dummy(increase_by));
 
 			// All good.
-			Ok(())
+			Ok(().into())
 		}
 
 		/// A privileged call; in this case it resets our dummy value to something new.
@@ -507,13 +510,22 @@ decl_module! {
 		// without worrying about gameability or attack scenarios.
 		// If you do not specify `Result` explicitly as return value, it will be added automatically
 		// for you and `Ok(())` will be returned.
-		#[weight = WeightForSetDummy::<T>(<BalanceOf<T>>::from(100u32))]
-		fn set_dummy(origin, #[compact] new_value: T::Balance) {
+		#[pallet::weight(super::WeightForSetDummy::<T>(<BalanceOf<T>>::from(100u32)))]
+		fn set_dummy(
+			origin: OriginFor<T>,
+			#[pallet::compact] new_value: T::Balance
+		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
 			// Put the new value into storage.
 			<Dummy<T>>::put(new_value);
-		}
 
+			Ok(().into())
+		}
+	}
+
+
+	#[pallet::module_interface]
+	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
 		// The signature could also look like: `fn on_initialize()`.
 		// This function could also very well have a weight annotation, similar to any other. The
 		// only difference is that it mut be returned, not annotated.
@@ -540,6 +552,32 @@ decl_module! {
 			// sp_io::submit_extrinsic
 		}
 	}
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Trait> {
+		pub dummy: T::Balance,
+		pub bar: Vec<(T::AccountId, T::Balance)>,
+		pub foo: T::Balance,
+	}
+
+	impl<T: Trait> Default for GenesisConfig<T> {
+		fn default() -> Self {
+			Self {
+				dummy: Default::default(),
+				bar: Default::default(),
+				foo: Default::default(),
+			}
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Trait> GenesisBuilder<T> for GenesisConfig<T> {
+		fn build(&self) {
+			<Dummy<T>>::put(&self.dummy);
+			for (k, v) in &self.bar { <Bar<T>>::insert(k, v); }
+			<Foo<T>>::put(&self.foo);
+		}
+	}
 }
 
 // The main implementation block for the pallet. Functions here fall into three broad
@@ -550,18 +588,23 @@ decl_module! {
 impl<T: Trait> Module<T> {
 	// Add public immutables and private mutables.
 	#[allow(dead_code)]
-	fn accumulate_foo(origin: T::Origin, increase_by: T::Balance) -> DispatchResult {
+	fn accumulate_foo(
+		origin: T::Origin,
+		increase_by: T::Balance
+	) -> DispatchResultWithPostInfo {
 		let _sender = ensure_signed(origin)?;
 
 		let prev = <Foo<T>>::get();
-		// Because Foo has 'default', the type of 'foo' in closure is the raw type instead of an Option<> type.
+		// Because Foo has 'default', the type of 'foo' in closure is the raw type instead of
+		// an Option<> type.
+
 		let result = <Foo<T>>::mutate(|foo| {
 			*foo = *foo + increase_by;
 			*foo
 		});
 		assert!(prev + increase_by == result);
 
-		Ok(())
+		Ok(().into())
 	}
 }
 
@@ -718,6 +761,7 @@ mod tests {
 	// or public keys. `u64` is used as the `AccountId` and no `Signature`s are required.
 	use sp_runtime::{
 		Perbill,
+		BuildModuleGenesisStorage,
 		testing::Header,
 		traits::{BlakeTwo256, IdentityLookup},
 	};
@@ -798,7 +842,7 @@ mod tests {
 			// we configure the map with (key, value) pairs.
 			bar: vec![(1, 2), (2, 3)],
 			foo: 24,
-		}.assimilate_storage(&mut t).unwrap();
+		}.build_module_genesis_storage(&mut t).unwrap();
 		t.into()
 	}
 

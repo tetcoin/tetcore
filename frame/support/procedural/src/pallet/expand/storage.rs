@@ -17,7 +17,7 @@
 
 use crate::pallet::Def;
 use proc_macro2::Span;
-use crate::pallet::parse::storage::Metadata;
+use crate::pallet::parse::storage::{Metadata, QueryKind};
 use frame_support_procedural_tools::clean_type_string;
 
 /// * generate StoragePrefix structs (e.g. for a storage `MyStorage` a struct with the name
@@ -27,6 +27,7 @@ use frame_support_procedural_tools::clean_type_string;
 pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
 	let type_impl_static_gen = &def.type_impl_static_generics();
+	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 
@@ -166,6 +167,75 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 			)
 		});
 
+	let getters = def.storages.iter()
+		.map(|storage| if let Some(getter) = &storage.getter {
+			let docs = storage.docs.iter().map(|d| quote::quote!(#[doc = #d]));
+
+			let ident = &storage.ident;
+			let gen = match (storage.has_trait, storage.has_instance) {
+				(true, true) => quote::quote!(<T, I>),
+				(false, true) => quote::quote!(<I>),
+				(false, false) => quote::quote!(),
+				(true, false) => quote::quote!(<T>),
+			};
+			let full_ident = quote::quote!(#ident #gen);
+
+			match &storage.metadata {
+				Metadata::Value { value } => {
+					let query = match storage.query_kind.as_ref().expect("Checked by def") {
+						QueryKind::OptionQuery => quote::quote!(Option<#value>),
+						QueryKind::ValueQuery => quote::quote!(#value),
+					};
+					quote::quote_spanned!(getter.span() =>
+						impl<#type_impl_gen> #module_ident<#type_use_gen> {
+							#( #docs )*
+							pub fn #getter() -> #query {
+								<#full_ident as #scrate::storage::StorageValue<#value>>::get()
+							}
+						}
+					)
+				},
+				Metadata::Map { key, value } => {
+					let query = match storage.query_kind.as_ref().expect("Checked by def") {
+						QueryKind::OptionQuery => quote::quote!(Option<#value>),
+						QueryKind::ValueQuery => quote::quote!(#value),
+					};
+					quote::quote_spanned!(getter.span() =>
+						impl<#type_impl_gen> #module_ident<#type_use_gen> {
+							#( #docs )*
+							pub fn #getter<KArg>(k: KArg) -> #query where
+								KArg: #scrate::codec::EncodeLike<#key>,
+							{
+								<#full_ident as #scrate::storage::StorageMap<#key, #value>>::get(k)
+							}
+						}
+					)
+				},
+				Metadata::DoubleMap { key1, key2, value } => {
+					let query = match storage.query_kind.as_ref().expect("Checked by def") {
+						QueryKind::OptionQuery => quote::quote!(Option<#value>),
+						QueryKind::ValueQuery => quote::quote!(#value),
+					};
+					quote::quote_spanned!(getter.span() =>
+						impl<#type_impl_gen> #module_ident<#type_use_gen> {
+							#( #docs )*
+							pub fn #getter<KArg1, KArg2>(k1: KArg1, k2: KArg2) -> #query where
+								KArg1: #scrate::codec::EncodeLike<#key1>,
+								KArg2: #scrate::codec::EncodeLike<#key2>,
+							{
+								<
+									#full_ident
+									as #scrate::storage::StorageDoubleMap<#key1, #key2, #value>
+								>::get(k1, k2)
+							}
+						}
+					)
+				},
+			}
+		} else {
+			Default::default()
+		});
+
 	quote::quote!(
 		#(
 			#prefix_struct_vis struct #prefix_struct_ident<#prefix_struct_use_gen>(
@@ -192,5 +262,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 				}
 			}
 		}
+
+		#( #getters )*
 	)
 }
