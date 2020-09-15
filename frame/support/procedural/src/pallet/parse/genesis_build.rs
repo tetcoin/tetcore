@@ -33,13 +33,13 @@ impl GenesisBuildDef {
 		let item = if let syn::Item::Impl(item) = item {
 			item
 		} else {
-			let msg = "Invalid pallet::module_interface, expect item impl";
+			let msg = "Invalid pallet::genesis_build, expect item impl";
 			return Err(syn::Error::new(item.span(), msg));
 		};
 
 		let item_trait = &item.trait_.as_ref()
 			.ok_or_else(|| {
-				let msg = "Invalid pallet::module_interface, expect impl<..> GenesisBuilder<..> \
+				let msg = "Invalid pallet::genesis_build, expect impl<..> GenesisBuilder<..> \
 					for GenesisConfig<..>";
 				syn::Error::new(item.span(), msg)
 			})?.1;

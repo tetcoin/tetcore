@@ -1112,6 +1112,10 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
+/// Macro will implement `sp_runtime::BuildModuleGenesisStorage` using `__InherentHiddenInstance`
+/// for non-instantiable pallets. And will also implement `fn build_storage` and
+/// `fn assimilate_storage`.
+///
 /// ### `#[pallet::inherent]` optional
 ///
 /// Allow the pallet to provide inherent:

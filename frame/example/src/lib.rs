@@ -321,7 +321,6 @@ pub use pallet::*;
 mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
-	use frame_system::{ensure_signed, ensure_root};
 
 	use super::BalanceOf;
 

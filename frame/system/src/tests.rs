@@ -18,7 +18,7 @@
 use crate::*;
 use mock::{*, Origin};
 use sp_core::H256;
-use sp_runtime::DispatchError;
+use sp_runtime::DispatchErrorWithPostInfo;
 use frame_support::weights::WithPostDispatchInfo;
 
 #[test]
@@ -332,7 +332,7 @@ fn set_code_checks_works() {
 		("test", 1, 2, Err(Error::<Test>::SpecVersionNeedsToIncrease)),
 		("test", 1, 1, Err(Error::<Test>::SpecVersionNeedsToIncrease)),
 		("test2", 1, 1, Err(Error::<Test>::InvalidSpecName)),
-		("test", 2, 1, Ok(())),
+		("test", 2, 1, Ok(().into())),
 		("test", 0, 1, Err(Error::<Test>::SpecVersionNeedsToIncrease)),
 		("test", 1, 0, Err(Error::<Test>::SpecVersionNeedsToIncrease)),
 	];
@@ -354,7 +354,7 @@ fn set_code_checks_works() {
 				vec![1, 2, 3, 4],
 			);
 
-			assert_eq!(expected.map_err(DispatchError::from), res);
+			assert_eq!(expected.map_err(DispatchErrorWithPostInfo::from), res);
 		});
 	}
 }
