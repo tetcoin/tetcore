@@ -99,7 +99,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 				#scrate::sp_std::marker::PhantomData<(#type_use_gen,)>,
 				#scrate::Never,
 			),
-			#( #fn_( #( #args_compact_attr #args_type )* ), )*
+			#( #fn_( #( #args_compact_attr #args_type ),* ), )*
 		}
 
 		impl<#type_impl_gen> #scrate::dispatch::GetDispatchInfo for #call_ident<#type_use_gen>
