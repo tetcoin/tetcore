@@ -46,7 +46,7 @@ impl RemoteKeystore {
 		let mut counter = 0;
 		loop {
 
-			match http::connect::<Client>(&self.url).compat().await? {
+			match http::connect::<Client>(&self.url).compat().await {
 				Ok(client) => {
 					*w = Some(client);
 					return Ok(())

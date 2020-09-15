@@ -40,7 +40,7 @@ pin-project = "0.4.8"
 hash-db = "0.15.2"
 serde = "1.0.101"
 serde_json = "1.0.41"
-sc-jsonrpc-remote-signer = { version = "2.0.0-rc6", path = "../jsonrpc-remote-signer" }
+sc-jsonrpc-remote-signer = { version = "2.0.0-rc6", path = "../jsonrpc-remote-signer", features = ["client"] }
 sc-keystore = { version = "2.0.0-rc6", path = "../keystore" }
 sp-io = { version = "2.0.0-rc6", path = "../../primitives/io" }
 sp-runtime = { version = "2.0.0-rc6", path = "../../primitives/runtime" }

@@ -134,7 +134,7 @@ pub enum KeystoreConfig {
 	},
 	/// A remote Keystore instance
 	Remote {
-		// the URI to connect to for the remote-instance
+		/// the URI to connect to for the remote-instance
 		uri: String,
 	},
 	/// In-memory keystore. Recommended for in-browser nodes.
