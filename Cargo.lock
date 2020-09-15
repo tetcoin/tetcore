@@ -7081,6 +7081,7 @@ version = "2.0.0-rc6"
 dependencies = [
  "async-trait",
  "futures 0.3.5",
+ "hyper 0.12.35",
  "jsonrpc-client-transports",
  "jsonrpc-core",
  "jsonrpc-core-client",

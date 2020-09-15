@@ -45,12 +45,30 @@ impl RemoteKeystore {
 
 		let mut counter = 0;
 		loop {
+			let (sender, receiver) = futures::channel::oneshot::channel();
+			let url = self.url.clone();
+			std::thread::spawn(move || {
+				let connect = hyper::rt::lazy(move || {
+					use jsonrpc_core::futures::Future;
+					http::connect(&url)
+						.then(|client| {
+							if sender.send(client).is_err() {
+								panic!("The caller did not wait for the server.");
+							}
+							// TODO kill the tokio runtime now and the thread in case
+							// `client.is_err()`
+							Ok(())
+						})
+				});
+				hyper::rt::run(connect);
+			});
 
-			match http::connect::<Client>(&self.url).compat().await {
+			let client = receiver.await.expect("Always sends something");
+			match client {
 				Ok(client) => {
 					*w = Some(client);
-					return Ok(())
-				}
+					return Ok(());
+				},
 				Err(e) => {
 					log::warn!{
 						target: "remote_keystore",

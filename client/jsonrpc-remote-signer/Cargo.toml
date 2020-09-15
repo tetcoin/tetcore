@@ -9,6 +9,9 @@ repository = "https://github.com/paritytech/substrate/"
 description = "Implementing a substrate client remote signer via JSON-RPC"
 
 [dependencies]
+# TODO The root of all evil, get rid asap.
+hyper = "0.12"
+
 jsonrpc-derive = "14.2.1"
 jsonrpc-core = "14.2.0"
 jsonrpc-core-client = "14.0"
