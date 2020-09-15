@@ -2447,6 +2447,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "hyper-tls"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3a800d6aa50af4b5850b2b0f659625ce9504df908e9733b635720483be26174f"
+dependencies = [
+ "bytes 0.4.12",
+ "futures 0.1.29",
+ "hyper 0.12.35",
+ "native-tls",
+ "tokio-io",
+]
+
+[[package]]
 name = "idna"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2603,13 +2616,14 @@ dependencies = [
 
 [[package]]
 name = "jsonrpc-client-transports"
-version = "14.2.0"
+version = "14.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ecbdaacc17243168d9d1fa6b2bd7556a27e1e60a621d8a2a6e590ae2b145d158"
+checksum = "2773fa94a2a1fd51efb89a8f45b8861023dbb415d18d3c9235ae9388d780f9ec"
 dependencies = [
  "failure",
  "futures 0.1.29",
  "hyper 0.12.35",
+ "hyper-tls",
  "jsonrpc-core",
  "jsonrpc-pubsub",
  "log 0.4.11",
@@ -7067,6 +7081,7 @@ version = "2.0.0-rc6"
 dependencies = [
  "async-trait",
  "futures 0.3.5",
+ "jsonrpc-client-transports",
  "jsonrpc-core",
  "jsonrpc-core-client",
  "jsonrpc-derive",

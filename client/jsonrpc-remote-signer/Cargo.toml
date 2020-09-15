@@ -12,6 +12,7 @@ description = "Implementing a substrate client remote signer via JSON-RPC"
 jsonrpc-derive = "14.2.1"
 jsonrpc-core = "14.2.0"
 jsonrpc-core-client = "14.0"
+jsonrpc-client-transports = { version = "14.2.1", optional = true }
 sp-core = { version = "2.0.0-rc6", path="../../primitives/core" }
 sp-consensus-babe = { version = "0.8.0-rc6", path="../../primitives/consensus/babe", optional = true }
 sp-application-crypto = { version = "2.0.0-rc6", path="../../primitives/application-crypto" }
@@ -37,6 +38,5 @@ server = [
 client = [
     "async-trait",
     "tokio",
-    "jsonrpc-core-client/http",
-    "jsonrpc-core-client/ws",
+    "jsonrpc-client-transports",
 ]

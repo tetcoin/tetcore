@@ -11,7 +11,7 @@ use sp_application_crypto::{ed25519, sr25519, ecdsa};
 use futures::compat::Future01CompatExt;
 
 use crate::gen_client::Client;
-use jsonrpc_core_client::transports::http;
+use jsonrpc_client_transports::transports::http;
 
 
 /// A remote based keystore that is either memory-based or filesystem-based.
