@@ -296,6 +296,15 @@ impl CryptoStore for RemoteKeystore {
 		public: &Sr25519Public,
 		transcript_data: VRFTranscriptData,
 	) -> std::result::Result<VRFSignature, CryptoStoreError> {
-		todo! { }
+
+		self.ensure_connected().await?;
+		let client = self.client.read().await;
+		client
+			.as_ref()
+			.ok_or(CryptoStoreError::Unavailable)?
+			.sr25519_vrf_sign(key_type, public.clone(), transcript_data.into())
+			.compat()
+			.await
+			.map_err(|e|CryptoStoreError::Other(format!("{:}", e)) )
 	}
 }

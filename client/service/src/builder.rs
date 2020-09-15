@@ -206,13 +206,18 @@ impl KeystoreContainer {
 			KeystoreConfig::InMemory => LocalKeystore::in_memory(),
 
 			KeystoreConfig::Remote { uri } => {
-				let keystore = Arc::new(
-					sc_jsonrpc_remote_signer::client::RemoteKeystore::open(
-						uri.clone(), None
-					).map_err(|e| Error::Other(format!("Could not open Remote Keystore: {:?}", e)))?
-				);
-				let sync_keystore = Arc::new((keystore.clone() as CryptoStorePtr).into());
-				return Ok(Self { keystore, sync_keystore } )
+				if uri.starts_with("ssrs1+") {
+					let keystore = Arc::new(
+						sc_jsonrpc_remote_signer::client::RemoteKeystore::open(
+							uri[6..].to_string(), None
+						).map_err(|e| Error::Other(format!("Could not open Remote Keystore: {:?}", e)))?
+					);
+					let sync_keystore = Arc::new((keystore.clone() as CryptoStorePtr).into());
+					return Ok(Self { keystore, sync_keystore } )
+				}
+				else {
+					return Err(Error::Other(format!("Unsupported Remote Keystore protocol: {:}", uri)))
+				}
 			}
 		});
 		let sync_keystore = Arc::new((keystore.clone() as CryptoStorePtr).into());

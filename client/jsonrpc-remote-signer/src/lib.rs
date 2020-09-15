@@ -6,7 +6,7 @@ use serde;
 
 use sp_core::{
 	crypto::{KeyTypeId, CryptoTypePublicPair},
-	vrf::{VRFSignature, VRFTranscriptValue},
+	vrf::{VRFSignature, VRFTranscriptData, VRFTranscriptValue},
 	ed25519, sr25519, ecdsa
 };
 
@@ -22,6 +22,15 @@ pub struct TransferableVRFTranscriptData {
 	pub label: Vec<u8>,
 	/// Additional data to be registered into the transcript
 	pub items: Vec<VRFTranscriptValue>,
+}
+
+impl From<VRFTranscriptData> for TransferableVRFTranscriptData {
+	fn from(d: VRFTranscriptData) -> TransferableVRFTranscriptData {
+		TransferableVRFTranscriptData {
+			label: d.label.to_vec(),
+			items:  d.items.into_iter().map(|(k, v)| v).collect()
+		}
+	}
 }
 
 /// Substrate Remote Signer API
