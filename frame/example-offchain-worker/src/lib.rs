@@ -172,7 +172,7 @@ mod pallet {
 	#[pallet::metadata(<T as frame_system::Trait>::AccountId = AccountId)]
 	pub enum Event<T: Trait> {
 		/// Event generated when new price is accepted to contribute to the average.
-		/// [price, who]
+		/// \[price, who\]
 		NewPrice(u32, <T as frame_system::Trait>::AccountId),
 	}
 
@@ -474,16 +474,6 @@ impl<T: Trait> Module<T> {
 		// Note this call will block until response is received.
 		let price = Self::fetch_price().map_err(|_| "Failed to fetch price")?;
 
-		// Received price is wrapped into a call to `submit_price_unsigned` public function of this
-		// pallet. This means that the transaction, when executed, will simply call that function
-		// passing `price` as an argument.
-		let call = Call::submit_price_unsigned(block_number, price);
-
-		// Now let's create a transaction out of this call and submit it to the pool.
-		// Here we showcase two ways to send an unsigned transaction with a signed payload
-		SubmitTransaction::<T, Call<T>>::submit_unsigned_transaction(call.into())
-			.map_err(|()| "Unable to submit unsigned transaction.")?;
-
 		// -- Sign using any account
 		let (_, result) = Signer::<T, T::AuthorityId>::any_account().send_unsigned_transaction(
 			|account| PricePayload {
@@ -512,16 +502,6 @@ impl<T: Trait> Module<T> {
 		// Make an external HTTP request to fetch the current price.
 		// Note this call will block until response is received.
 		let price = Self::fetch_price().map_err(|_| "Failed to fetch price")?;
-
-		// Received price is wrapped into a call to `submit_price_unsigned` public function of this
-		// pallet. This means that the transaction, when executed, will simply call that function
-		// passing `price` as an argument.
-		let call = Call::submit_price_unsigned(block_number, price);
-
-		// Now let's create a transaction out of this call and submit it to the pool.
-		// Here we showcase two ways to send an unsigned transaction with a signed payload
-		SubmitTransaction::<T, Call<T>>::submit_unsigned_transaction(call.into())
-			.map_err(|()| "Unable to submit unsigned transaction.")?;
 
 		// -- Sign using all accounts
 		let transaction_results = Signer::<T, T::AuthorityId>::all_accounts()
