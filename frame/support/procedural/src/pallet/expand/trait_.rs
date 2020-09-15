@@ -88,7 +88,7 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 						)
 					),
 					documentation: #scrate::dispatch::DecodeDifferent::Encode(
-						&[ #( #doc )* ]
+						&[ #( #doc ),* ]
 					),
 				}
 			})
@@ -101,7 +101,7 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 			pub fn module_constants_metadata()
 				-> &'static [#scrate::dispatch::ModuleConstantMetadata]
 			{
-				&[ #( #consts )* ]
+				&[ #( #consts ),* ]
 			}
 		}
 	)

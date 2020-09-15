@@ -33,9 +33,18 @@ pub mod pallet {
 
 	#[pallet::trait_]
 	pub trait Trait: frame_system::Trait {
+		/// Some comment
+		/// Some comment
 		#[pallet::const_]
 		type MyGetParam: Get<u32>;
+
+		/// Some comment
+		/// Some comment
+		#[pallet::const_]
+		type MyGetParam2: Get<u32>;
+
 		type Balance: Parameter + Default;
+
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
 	}
 
@@ -68,7 +77,7 @@ pub mod pallet {
 	impl<T: Trait> Call for Module<T> where T::Balance: From<u64> {
 		/// Doc comment put in metadata
 		#[pallet::weight(Weight::from(*_foo))]
-		fn foo(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
+		fn foo(origin: OriginFor<T>, #[pallet::compact] _foo: u32, _bar: u32) -> DispatchResultWithPostInfo {
 			T::Balance::from(3u64); // Test for where clause
 			let _ = origin;
 			Self::deposit_event(Event::Something(3));
@@ -174,6 +183,7 @@ pub mod pallet {
 
 frame_support::parameter_types!(
 	pub const MyGetParam: u32= 10;
+	pub const MyGetParam2: u32= 11;
 	pub const BlockHashCount: u32 = 250;
 	pub const MaximumBlockWeight: frame_support::weights::Weight = 1024;
 	pub const MaximumBlockLength: u32 = 2 * 1024;
@@ -210,6 +220,7 @@ impl frame_system::Trait for Runtime {
 impl pallet::Trait for Runtime {
 	type Event = Event;
 	type MyGetParam= MyGetParam;
+	type MyGetParam2= MyGetParam2;
 	type Balance = u64;
 }
 
@@ -230,7 +241,7 @@ frame_support::construct_runtime!(
 
 #[test]
 fn call_expand() {
-	let call_foo = pallet::Call::<Runtime>::foo(3);
+	let call_foo = pallet::Call::<Runtime>::foo(3, 0);
 	assert_eq!(
 		call_foo.get_dispatch_info(),
 		DispatchInfo {
@@ -275,7 +286,7 @@ fn instance_expand() {
 fn module_expand_deposit_event() {
 	TestExternalities::default().execute_with(|| {
 		frame_system::Module::<Runtime>::set_block_number(1);
-		pallet::Call::<Runtime>::foo(3).dispatch_bypass_filter(None.into()).unwrap();
+		pallet::Call::<Runtime>::foo(3, 0).dispatch_bypass_filter(None.into()).unwrap();
 		assert_eq!(
 			frame_system::Module::<Runtime>::events()[0].event,
 			Event::pallet(pallet::Event::Something(3)),
@@ -432,6 +443,10 @@ fn metadata() {
 					FunctionArgumentMetadata {
 						name: DecodeDifferent::Decoded("_foo".to_string()),
 						ty: DecodeDifferent::Decoded("Compact<u32>".to_string()),
+					},
+					FunctionArgumentMetadata {
+						name: DecodeDifferent::Decoded("_bar".to_string()),
+						ty: DecodeDifferent::Decoded("u32".to_string()),
 					}
 				]),
 				documentation: DecodeDifferent::Decoded(vec![
@@ -477,7 +492,19 @@ fn metadata() {
 				name: DecodeDifferent::Decoded("MyGetParam".to_string()),
 				ty: DecodeDifferent::Decoded("u32".to_string()),
 				value: DecodeDifferent::Decoded(vec![10, 0, 0, 0]),
-				documentation: DecodeDifferent::Decoded(vec![]),
+				documentation: DecodeDifferent::Decoded(vec![
+					" Some comment".to_string(),
+					" Some comment".to_string(),
+				]),
+			},
+			ModuleConstantMetadata {
+				name: DecodeDifferent::Decoded("MyGetParam2".to_string()),
+				ty: DecodeDifferent::Decoded("u32".to_string()),
+				value: DecodeDifferent::Decoded(vec![11, 0, 0, 0]),
+				documentation: DecodeDifferent::Decoded(vec![
+					" Some comment".to_string(),
+					" Some comment".to_string(),
+				]),
 			},
 		]),
 		errors: DecodeDifferent::Decoded(vec![
