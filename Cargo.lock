@@ -8971,6 +8971,7 @@ dependencies = [
 name = "substrate-remote-sign-server"
 version = "0.1.0"
 dependencies = [
+ "env_logger 0.7.1",
  "jsonrpc-http-server",
  "sc-cli",
  "sc-jsonrpc-remote-signer",

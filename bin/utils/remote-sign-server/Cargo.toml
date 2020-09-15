@@ -14,3 +14,4 @@ sc-keystore = { version = "2.0.0-rc6", path = "../../../client/keystore" }
 sc-service = { version = "0.8.0-rc6", path = "../../../client/service" }
 jsonrpc-http-server = { version = "14.2.0" }
 tokio = { version = "0.2", features = ["full"] }
+env_logger = "0.7.1"
