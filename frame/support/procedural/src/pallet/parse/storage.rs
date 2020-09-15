@@ -197,7 +197,8 @@ impl StorageDef {
 
 		if query_kind.is_none() && getter.is_some() {
 			let msg = "Invalid pallet::storage, cannot generate getter because QueryKind is not \
-				identifiable. QueryKind must be `OptionQuery` or `ValueQuery` to be identifiable.";
+				identifiable. QueryKind must be `OptionQuery`, `ValueQuery`, or default one to be \
+				identifiable.";
 			return Err(syn::Error::new(getter.unwrap().span(), msg));
 		}
 

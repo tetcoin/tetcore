@@ -1360,6 +1360,9 @@ impl<T: Trait> Lookup for ChainContext<T> {
 }
 
 pub mod pallet_prelude {
+	pub use crate::ensure_signed;
+	pub use crate::ensure_none;
+	pub use crate::ensure_root;
 	pub type OriginFor<T> = <T as crate::Trait>::Origin;
 	pub type BlockNumberFor<T> = <T as crate::Trait>::BlockNumber;
 }

@@ -42,19 +42,12 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use frame_system::{
-	self as system,
-	ensure_signed,
-	ensure_none,
 	offchain::{
 		AppCrypto, CreateSignedTransaction, SendUnsignedTransaction, SendSignedTransaction,
 		SignedPayload, SigningTypes, Signer, SubmitTransaction,
 	}
 };
-use frame_support::{
-	debug,
-	dispatch::DispatchResult, decl_module, decl_storage, decl_event,
-	traits::Get,
-};
+use frame_support::{debug, storage::StorageValue, traits::Get};
 use sp_core::crypto::KeyTypeId;
 use sp_runtime::{
 	RuntimeDebug,
@@ -62,7 +55,6 @@ use sp_runtime::{
 	traits::Zero,
 	transaction_validity::{
 		InvalidTransaction, ValidTransaction, TransactionValidity, TransactionSource,
-		TransactionPriority,
 	},
 };
 use codec::{Encode, Decode};
@@ -101,37 +93,6 @@ pub mod crypto {
 	}
 }
 
-/// This pallet's configuration trait
-pub trait Trait: CreateSignedTransaction<Call<Self>> {
-	/// The identifier type for an offchain worker.
-	type AuthorityId: AppCrypto<Self::Public, Self::Signature>;
-
-	/// The overarching event type.
-	type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
-	/// The overarching dispatch call type.
-	type Call: From<Call<Self>>;
-
-	// Configuration parameters
-
-	/// A grace period after we send transaction.
-	///
-	/// To avoid sending too many transactions, we only attempt to send one
-	/// every `GRACE_PERIOD` blocks. We use Local Storage to coordinate
-	/// sending between distinct runs of this offchain worker.
-	type GracePeriod: Get<Self::BlockNumber>;
-
-	/// Number of blocks of cooldown after unsigned transaction is included.
-	///
-	/// This ensures that we only accept unsigned transactions once, every `UnsignedInterval` blocks.
-	type UnsignedInterval: Get<Self::BlockNumber>;
-
-	/// A configuration for base priority of unsigned transactions.
-	///
-	/// This is exposed so that it can be tuned for particular runtime, when
-	/// multiple pallets send unsigned transactions.
-	type UnsignedPriority: Get<TransactionPriority>;
-}
-
 /// Payload used by this example crate to hold price
 /// data required to submit a transaction.
 #[derive(Encode, Decode, Clone, PartialEq, Eq, RuntimeDebug)]
@@ -147,104 +108,77 @@ impl<T: SigningTypes> SignedPayload<T> for PricePayload<T::Public, T::BlockNumbe
 	}
 }
 
-decl_storage! {
-	trait Store for Module<T: Trait> as ExampleOffchainWorker {
-		/// A vector of recently submitted prices.
-		///
-		/// This is used to calculate average price, should have bounded size.
-		Prices get(fn prices): Vec<u32>;
-		/// Defines the block when next unsigned transaction will be accepted.
-		///
-		/// To prevent spam of unsigned (and unpayed!) transactions on the network,
-		/// we only allow one transaction every `T::UnsignedInterval` blocks.
-		/// This storage entry defines when new transaction is going to be accepted.
-		NextUnsignedAt get(fn next_unsigned_at): T::BlockNumber;
-	}
-}
+pub use pallet::*;
+#[frame_support::pallet(ExampleOffchainWorker)]
+mod pallet {
+	use super::{CreateSignedTransaction, AppCrypto, PricePayload, TransactionType};
+	use frame_support::{pallet_prelude::*, debug};
+	use frame_system::pallet_prelude::*;
 
-decl_event!(
+	/// This pallet's configuration trait
+	#[pallet::trait_]
+	pub trait Trait: CreateSignedTransaction<Call<Self>> + frame_system::Trait {
+		/// The identifier type for an offchain worker.
+		type AuthorityId: AppCrypto<Self::Public, Self::Signature>;
+
+		/// The overarching event type.
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
+		/// The overarching dispatch call type.
+		type Call: From<Call<Self>>;
+
+		// Configuration parameters
+
+		/// A grace period after we send transaction.
+		///
+		/// To avoid sending too many transactions, we only attempt to send one
+		/// every `GRACE_PERIOD` blocks. We use Local Storage to coordinate
+		/// sending between distinct runs of this offchain worker.
+		type GracePeriod: Get<Self::BlockNumber>;
+
+		/// Number of blocks of cooldown after unsigned transaction is included.
+		///
+		/// This ensures that we only accept unsigned transactions once, every `UnsignedInterval`
+		/// blocks.
+		type UnsignedInterval: Get<Self::BlockNumber>;
+
+		/// A configuration for base priority of unsigned transactions.
+		///
+		/// This is exposed so that it can be tuned for particular runtime, when
+		/// multiple pallets send unsigned transactions.
+		type UnsignedPriority: Get<TransactionPriority>;
+	}
+
+	/// A vector of recently submitted prices.
+	///
+	/// This is used to calculate average price, should have bounded size.
+	#[pallet::storage]
+	#[pallet::generate_getter(fn prices)]
+	pub(crate) type Prices = StorageValueType<_, Vec<u32>, ValueQuery>;
+
+	/// Defines the block when next unsigned transaction will be accepted.
+	///
+	/// To prevent spam of unsigned (and unpayed!) transactions on the network,
+	/// we only allow one transaction every `T::UnsignedInterval` blocks.
+	/// This storage entry defines when new transaction is going to be accepted.
+	#[pallet::storage]
+	#[pallet::generate_getter(fn next_unsigned_at)]
+	pub(crate) type NextUnsignedAt<T: Trait> = StorageValueType<_, T::BlockNumber, ValueQuery>;
+
 	/// Events generated by the module.
-	pub enum Event<T> where AccountId = <T as frame_system::Trait>::AccountId {
-		/// Event generated when new price is accepted to contribute to the average. 
+	#[pallet::event]
+	#[pallet::metadata(<T as frame_system::Trait>::AccountId = AccountId)]
+	pub enum Event<T: Trait> {
+		/// Event generated when new price is accepted to contribute to the average.
 		/// [price, who]
-		NewPrice(u32, AccountId),
+		NewPrice(u32, <T as frame_system::Trait>::AccountId),
 	}
-);
 
-decl_module! {
-	/// A public part of the pallet.
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		fn deposit_event() = default;
+	#[pallet::module]
+	#[pallet::generate(fn deposit_event)]
+	pub struct Module<T>(PhantomData<T>);
 
-		/// Submit new price to the list.
-		///
-		/// This method is a public function of the module and can be called from within
-		/// a transaction. It appends given `price` to current list of prices.
-		/// In our example the `offchain worker` will create, sign & submit a transaction that
-		/// calls this function passing the price.
-		///
-		/// The transaction needs to be signed (see `ensure_signed`) check, so that the caller
-		/// pays a fee to execute it.
-		/// This makes sure that it's not easy (or rather cheap) to attack the chain by submitting
-		/// excesive transactions, but note that it doesn't ensure the price oracle is actually
-		/// working and receives (and provides) meaningful data.
-		/// This example is not focused on correctness of the oracle itself, but rather its
-		/// purpose is to showcase offchain worker capabilities.
-		#[weight = 0]
-		pub fn submit_price(origin, price: u32) -> DispatchResult {
-			// Retrieve sender of the transaction.
-			let who = ensure_signed(origin)?;
-			// Add the price to the on-chain list.
-			Self::add_price(who, price);
-			Ok(())
-		}
-
-		/// Submit new price to the list via unsigned transaction.
-		///
-		/// Works exactly like the `submit_price` function, but since we allow sending the
-		/// transaction without a signature, and hence without paying any fees,
-		/// we need a way to make sure that only some transactions are accepted.
-		/// This function can be called only once every `T::UnsignedInterval` blocks.
-		/// Transactions that call that function are de-duplicated on the pool level
-		/// via `validate_unsigned` implementation and also are rendered invalid if
-		/// the function has already been called in current "session".
-		///
-		/// It's important to specify `weight` for unsigned calls as well, because even though
-		/// they don't charge fees, we still don't want a single block to contain unlimited
-		/// number of such transactions.
-		///
-		/// This example is not focused on correctness of the oracle itself, but rather its
-		/// purpose is to showcase offchain worker capabilities.
-		#[weight = 0]
-		pub fn submit_price_unsigned(origin, _block_number: T::BlockNumber, price: u32)
-			-> DispatchResult
-		{
-			// This ensures that the function can only be called via unsigned transaction.
-			ensure_none(origin)?;
-			// Add the price to the on-chain list, but mark it as coming from an empty address.
-			Self::add_price(Default::default(), price);
-			// now increment the block number at which we expect next unsigned transaction.
-			let current_block = <system::Module<T>>::block_number();
-			<NextUnsignedAt<T>>::put(current_block + T::UnsignedInterval::get());
-			Ok(())
-		}
-
-		#[weight = 0]
-		pub fn submit_price_unsigned_with_signed_payload(
-			origin,
-			price_payload: PricePayload<T::Public, T::BlockNumber>,
-			_signature: T::Signature,
-		) -> DispatchResult {
-			// This ensures that the function can only be called via unsigned transaction.
-			ensure_none(origin)?;
-			// Add the price to the on-chain list, but mark it as coming from an empty address.
-			Self::add_price(Default::default(), price_payload.price);
-			// now increment the block number at which we expect next unsigned transaction.
-			let current_block = <system::Module<T>>::block_number();
-			<NextUnsignedAt<T>>::put(current_block + T::UnsignedInterval::get());
-			Ok(())
-		}
-
+	#[pallet::module_interface]
+	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
 		/// Offchain Worker entry point.
 		///
 		/// By implementing `fn offchain_worker` within `decl_module!` you declare a new offchain
@@ -269,7 +203,7 @@ decl_module! {
 			// to the storage and other included pallets.
 			//
 			// We can easily import `frame_system` and retrieve a block hash of the parent block.
-			let parent_hash = <system::Module<T>>::block_hash(block_number - 1.into());
+			let parent_hash = <frame_system::Module<T>>::block_hash(block_number - 1.into());
 			debug::debug!("Current block: {:?} (parent hash: {:?})", block_number, parent_hash);
 
 			// It's a good practice to keep `fn offchain_worker()` function minimal, and move most
@@ -293,6 +227,82 @@ decl_module! {
 			if let Err(e) = res {
 				debug::error!("Error: {}", e);
 			}
+		}
+	}
+
+	/// A public part of the pallet.
+	#[pallet::call]
+	impl<T: Trait> Call for Module<T> {
+		/// Submit new price to the list.
+		///
+		/// This method is a public function of the module and can be called from within
+		/// a transaction. It appends given `price` to current list of prices.
+		/// In our example the `offchain worker` will create, sign & submit a transaction that
+		/// calls this function passing the price.
+		///
+		/// The transaction needs to be signed (see `ensure_signed`) check, so that the caller
+		/// pays a fee to execute it.
+		/// This makes sure that it's not easy (or rather cheap) to attack the chain by submitting
+		/// excesive transactions, but note that it doesn't ensure the price oracle is actually
+		/// working and receives (and provides) meaningful data.
+		/// This example is not focused on correctness of the oracle itself, but rather its
+		/// purpose is to showcase offchain worker capabilities.
+		#[pallet::weight(0)]
+		pub fn submit_price(origin: OriginFor<T>, price: u32) -> DispatchResultWithPostInfo {
+			// Retrieve sender of the transaction.
+			let who = ensure_signed(origin)?;
+			// Add the price to the on-chain list.
+			Self::add_price(who, price);
+			Ok(().into())
+		}
+
+		/// Submit new price to the list via unsigned transaction.
+		///
+		/// Works exactly like the `submit_price` function, but since we allow sending the
+		/// transaction without a signature, and hence without paying any fees,
+		/// we need a way to make sure that only some transactions are accepted.
+		/// This function can be called only once every `T::UnsignedInterval` blocks.
+		/// Transactions that call that function are de-duplicated on the pool level
+		/// via `validate_unsigned` implementation and also are rendered invalid if
+		/// the function has already been called in current "session".
+		///
+		/// It's important to specify `weight` for unsigned calls as well, because even though
+		/// they don't charge fees, we still don't want a single block to contain unlimited
+		/// number of such transactions.
+		///
+		/// This example is not focused on correctness of the oracle itself, but rather its
+		/// purpose is to showcase offchain worker capabilities.
+		#[pallet::weight(0)]
+		pub fn submit_price_unsigned(
+			origin: OriginFor<T>,
+			_block_number: T::BlockNumber,
+			price: u32
+		) -> DispatchResultWithPostInfo
+		{
+			// This ensures that the function can only be called via unsigned transaction.
+			ensure_none(origin)?;
+			// Add the price to the on-chain list, but mark it as coming from an empty address.
+			Self::add_price(Default::default(), price);
+			// now increment the block number at which we expect next unsigned transaction.
+			let current_block = <frame_system::Module<T>>::block_number();
+			<NextUnsignedAt<T>>::put(current_block + T::UnsignedInterval::get());
+			Ok(().into())
+		}
+
+		#[pallet::weight(0)]
+		pub fn submit_price_unsigned_with_signed_payload(
+			origin: OriginFor<T>,
+			price_payload: PricePayload<T::Public, T::BlockNumber>,
+			_signature: T::Signature,
+		) -> DispatchResultWithPostInfo {
+			// This ensures that the function can only be called via unsigned transaction.
+			ensure_none(origin)?;
+			// Add the price to the on-chain list, but mark it as coming from an empty address.
+			Self::add_price(Default::default(), price_payload.price);
+			// now increment the block number at which we expect next unsigned transaction.
+			let current_block = <frame_system::Module<T>>::block_number();
+			<NextUnsignedAt<T>>::put(current_block + T::UnsignedInterval::get());
+			Ok(().into())
 		}
 	}
 }
@@ -631,7 +641,7 @@ impl<T: Trait> Module<T> {
 			.expect("The average is not empty, because it was just mutated; qed");
 		debug::info!("Current average price is: {}", average);
 		// here we are raising the NewPrice event
-		Self::deposit_event(RawEvent::NewPrice(price, who));
+		Self::deposit_event(Event::NewPrice(price, who));
 	}
 
 	/// Calculate current average price.
@@ -654,7 +664,7 @@ impl<T: Trait> Module<T> {
 			return InvalidTransaction::Stale.into();
 		}
 		// Let's make sure to reject transactions from the future.
-		let current_block = <system::Module<T>>::block_number();
+		let current_block = <frame_system::Module<T>>::block_number();
 		if &current_block < block_number {
 			return InvalidTransaction::Future.into();
 		}
