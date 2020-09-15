@@ -7096,6 +7096,7 @@ dependencies = [
  "sp-consensus-babe",
  "sp-core",
  "tokio 0.2.21",
+ "url 1.7.2",
 ]
 
 [[package]]
@@ -8989,6 +8990,7 @@ version = "0.1.0"
 dependencies = [
  "env_logger 0.7.1",
  "jsonrpc-http-server",
+ "jsonrpc-ws-server",
  "sc-cli",
  "sc-jsonrpc-remote-signer",
  "sc-keystore",

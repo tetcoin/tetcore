@@ -9,24 +9,33 @@ use sp_core::{
 use sp_application_crypto::{ed25519, sr25519, ecdsa};
 
 use futures::compat::Future01CompatExt;
+use url::Url;
 
 use crate::gen_client::Client;
-use jsonrpc_client_transports::transports::http;
-
+use jsonrpc_client_transports::transports::{http, ws};
 
 /// A remote based keystore that is either memory-based or filesystem-based.
 pub struct RemoteKeystore {
 	client: RwLock<Option<Client>>,
-	url: String,
+	url: Url,
 	max_retry: u8,
 }
 
 impl RemoteKeystore {
 	/// Create a local keystore from filesystem.
-	pub fn open(url: String, max_retry: Option<u8>) -> Result<Self, ()> {
+	pub fn open(url: String, max_retry: Option<u8>) -> Result<Self, String> {
+		let url : Url = url
+			.parse()
+			.map_err(|e| format!("Parsing Remote Signer URL failed: {:?}", e))?;
+
+		match url.scheme() {
+			"http" | "https" | "ws" | "wss" => {},
+			_ => return Err(format!("Remote Signer doesn't speak {:}", url.scheme()))
+		};
+
 		Ok(RemoteKeystore{
 			client: RwLock::new(None),
-			url: url,
+			url,
 			max_retry: max_retry.unwrap_or(10),
 		})
 	}
@@ -40,30 +49,39 @@ impl RemoteKeystore {
 
 		log::info!{
 			target: "remote_keystore" ,
-			"Attempting to connect to {:}", self.url
+			"Connecting to {:}", self.url
 		};
 
 		let mut counter = 0;
 		loop {
-			let (sender, receiver) = futures::channel::oneshot::channel();
-			let url = self.url.clone();
-			std::thread::spawn(move || {
-				let connect = hyper::rt::lazy(move || {
-					use jsonrpc_core::futures::Future;
-					http::connect(&url)
-						.then(|client| {
-							if sender.send(client).is_err() {
-								panic!("The caller did not wait for the server.");
-							}
-							// TODO kill the tokio runtime now and the thread in case
-							// `client.is_err()`
-							Ok(())
-						})
-				});
-				hyper::rt::run(connect);
-			});
+			let client = match self.url.scheme() {
+				"http" | "https" => {
+					let (sender, receiver) = futures::channel::oneshot::channel();
+					let url = self.url.clone().into_string();
+					std::thread::spawn(move || {
+						let connect = hyper::rt::lazy(move || {
+							use jsonrpc_core::futures::Future;
+							http::connect(&url)
+								.then(|client| {
+									if sender.send(client).is_err() {
+										panic!("The caller did not wait for the server.");
+									}
+									// TODO kill the tokio runtime now and the thread in case
+									// `client.is_err()`
+									Ok(())
+								})
+						});
+						hyper::rt::run(connect);
+					});
 
-			let client = receiver.await.expect("Always sends something");
+					receiver.await.expect("Always sends something")
+				},
+				"ws" | "wss" => {
+					ws::connect::<Client>(&self.url).compat().await
+				},
+				_ => unreachable!()
+			};
+
 			match client {
 				Ok(client) => {
 					*w = Some(client);

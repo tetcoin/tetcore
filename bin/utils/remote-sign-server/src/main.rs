@@ -1,8 +1,5 @@
 use structopt::StructOpt;
 
-use jsonrpc_http_server::jsonrpc_core::IoHandler;
-use jsonrpc_http_server::ServerBuilder;
-
 use tokio::stream::StreamExt;
 
 use sc_cli::KeystoreParams;
@@ -21,10 +18,15 @@ use env_logger;
 struct Opt {
     #[structopt(flatten)]
     keystore: KeystoreParams,
+    /// The port to listen on
     #[structopt(long = "port", short="-p", default_value="33033")]
     port: u32,
+    /// The interface to listen on
     #[structopt(long = "interface", short="-i", default_value="127.0.0.1")]
     interface: String,
+    // Run in websocket-mode (instead of http)
+    #[structopt(long = "websocket")]
+    websocket: bool,
 }
 
 #[tokio::main]
@@ -45,14 +47,6 @@ async fn main() {
 
     let (remote_server, mut receiver) = GenericRemoteSignerServer::proxy(keystore);
 
-    let mut io = IoHandler::new();
-    io.extend_with(RemoteSignerApi::to_delegate(remote_server));
-
-	let server = ServerBuilder::new(io)
-        .threads(3)
-        .start_http(&server_addr)
-        .unwrap();
-
     tokio::spawn(async move {
         loop {
             if receiver.next().await == None {
@@ -60,8 +54,30 @@ async fn main() {
             }
         }
     });
-    let _ = tokio::task::spawn_blocking(move || {
-        println!("Serving Remote Signer at {:}", server_addr);
-        server.wait()
-    }).await;
+
+    if opt.websocket {
+        let mut io = jsonrpc_ws_server::jsonrpc_core::IoHandler::new();
+        io.extend_with(RemoteSignerApi::to_delegate(remote_server));
+
+        let server = jsonrpc_ws_server::ServerBuilder::new(io)
+            .start(&server_addr)
+            .unwrap();
+        let _ = tokio::task::spawn_blocking(move || {
+            println!("Serving Remote Signer at ws://{:}", server_addr);
+            server.wait()
+        }).await;
+
+    }  else {
+        let mut io = jsonrpc_http_server::jsonrpc_core::IoHandler::new();
+        io.extend_with(RemoteSignerApi::to_delegate(remote_server));
+
+        let server = jsonrpc_http_server::ServerBuilder::new(io)
+            .threads(3)
+            .start_http(&server_addr)
+            .unwrap();
+        let _ = tokio::task::spawn_blocking(move || {
+            println!("Serving Remote Signer at http://{:}", server_addr);
+            server.wait()
+        }).await;
+    }
 }
