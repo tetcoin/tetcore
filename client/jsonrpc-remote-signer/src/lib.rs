@@ -1,13 +1,23 @@
 
 use jsonrpc_derive::rpc;
-use jsonrpc_core::{BoxFuture, Error as RpcError};
+use jsonrpc_core::BoxFuture;
 
 use serde;
 
 use sp_core::{
 	crypto::{KeyTypeId, CryptoTypePublicPair},
 	vrf::{VRFSignature, VRFTranscriptValue},
+	traits::{Error as CryptoStoreError},
 	ed25519, sr25519, ecdsa
+};
+
+
+use futures::{
+	channel::{
+		oneshot,
+	},
+	future::{Future, FutureExt, TryFutureExt},
+	stream::StreamExt,
 };
 
 #[cfg(feature = "server")]
@@ -22,6 +32,53 @@ pub struct TransferableVRFTranscriptData {
 	pub label: Vec<u8>,
 	/// Additional data to be registered into the transcript
 	pub items: Vec<VRFTranscriptValue>,
+}
+
+enum RequestMethod {
+	Sr25519PublicKeys(KeyTypeId),
+	Sr25519GenerateNew(KeyTypeId, Option<String>),
+	Sr25519VrfSign(
+		KeyTypeId,
+		sp_application_crypto::sr25519::Public,
+		sp_core::vrf::VRFTranscriptData,
+	),
+	Ed25519PublicKeys(KeyTypeId),
+	Ed25519GenerateNew(KeyTypeId, Option<String>),
+	EcdsaPublicKeys(KeyTypeId),
+	EcdsaGenerateNew(KeyTypeId, Option<String>),
+	InsertUnknown(KeyTypeId, String, Vec<u8>),
+	SupportedKeys(KeyTypeId, Vec<CryptoTypePublicPair>),
+	Keys(KeyTypeId,),
+	HasKeys(Vec<(Vec<u8>, KeyTypeId)>),
+	SignWith(KeyTypeId, CryptoTypePublicPair, Vec<u8>),
+}
+
+struct KeystoreRequest {
+	sender: oneshot::Sender<KeystoreResponse>,
+	method: RequestMethod,
+}
+
+enum KeystoreResponse {
+	Sr25519PublicKeys(Vec<sr25519::Public>),
+	Sr25519GenerateNew(
+		Result<sp_application_crypto::sr25519::Public, CryptoStoreError>
+	),
+	Sr25519VrfSign(
+		Result<sp_core::vrf::VRFSignature, CryptoStoreError>
+	),
+	Ed25519PublicKeys(Vec<ed25519::Public>),
+	Ed25519GenerateNew(
+		Result<sp_application_crypto::ed25519::Public, CryptoStoreError>
+	),
+	EcdsaPublicKeys(Vec<ecdsa::Public>),
+	EcdsaGenerateNew(
+		Result<sp_application_crypto::ecdsa::Public, CryptoStoreError>
+	),
+	InsertUnknown(Result<(), ()>),
+	SupportedKeys(Result<Vec<CryptoTypePublicPair>, CryptoStoreError>),
+	Keys(Result<Vec<CryptoTypePublicPair>, CryptoStoreError>),
+	HasKeys(bool),
+	SignWith(Result<Vec<u8>, CryptoStoreError>),
 }
 
 /// Substrate Remote Signer API
