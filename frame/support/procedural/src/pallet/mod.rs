@@ -23,7 +23,7 @@
 //!   which holds the ItemMod without `#[pallet::*]` and information given by those attributes
 //! 2 - expand from the parsed information
 //!   This step will modify the ItemMod by adding some derive attributes or phantom data variants
-//!   to user defineds types. And also crate new types and implement block.
+//!   to user defined types. And also crate new types and implement block.
 
 mod parse;
 mod expand;

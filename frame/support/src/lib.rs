@@ -1455,4 +1455,33 @@ pub mod pallet_prelude {
 /// 	pub const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"testpall";
 /// }
 /// ```
+///
+/// ### Notes for migration from decl_* macros
+///
+/// * macros defined pallet types in scope thus in order not to break the crate you might want to
+///   reexport pallets types, and import crate types.
+///
+///   ```nocompile
+///   pub use pallet::*;
+///   mod pallet {
+///   	use crate::*;
+///   	...
+///   }
+///   ```
+///
+/// * storages are now defined in pallet module, to make available private storages in crate scope
+///   use `pub(crate) type MyStorage = ..`
+///
+/// * storages attributes: `get(fn my_getter)` should now be written:
+///   `#[pallet::generate_getter(fn my_getter)`
+///
+/// * storages attributes: build and config have been removed, they must be manually written in the
+///   GenesisConfig and GenesisBuild implementation.
+///
+/// * storages which value is `Option<$SomeType>` is now of value `$SomeType` and QueryKind is
+///   `OptionQuery`. storages which value is `$SomeType` (not an option) is of QueryKind
+///   `ValueQuery`.
+///   Thus `MyStorage: u32` translate to `type MyStorage = StorageValueType<_, u32, ValueQuery>`
+///   Thus `MyStorage: Option<u32>` translate to
+///   `type MyStorage = StorageValueType<_, u32>` (OptionQuery being default).
 pub use frame_support_procedural::pallet;

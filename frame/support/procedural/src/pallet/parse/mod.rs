@@ -235,6 +235,7 @@ impl Def {
 		}
 	}
 
+	/// Depending on if pallet is instantiable:
 	/// * either `T: Trait`
 	/// * or `T: Trait<I>, I: Instance`
 	pub fn type_impl_generics(&self) -> proc_macro2::TokenStream {
@@ -245,6 +246,7 @@ impl Def {
 		}
 	}
 
+	/// Depending on if pallet is instantiable:
 	/// * either `T: Trait`
 	/// * or `T: Trait<I>, I: 'static + Instance`
 	pub fn type_impl_static_generics(&self) -> proc_macro2::TokenStream {
@@ -255,6 +257,7 @@ impl Def {
 		}
 	}
 
+	/// Depending on if pallet is instantiable:
 	/// * either `T: Trait`
 	/// * or `T: Trait<I>, I: Instance = DefaultInstance`
 	pub fn type_decl_generics(&self) -> proc_macro2::TokenStream {
@@ -265,6 +268,7 @@ impl Def {
 		}
 	}
 
+	/// Depending on if pallet is instantiable:
 	/// * either ``
 	/// * or `<I>`
 	/// to be used when using pallet trait `Trait`
@@ -276,6 +280,7 @@ impl Def {
 		}
 	}
 
+	/// Depending on if pallet is instantiable:
 	/// * either `T`
 	/// * or `T, I`
 	pub fn type_use_generics(&self) -> proc_macro2::TokenStream {
@@ -312,6 +317,7 @@ mod keyword {
 	syn::custom_keyword!(genesis_config);
 	syn::custom_keyword!(validate_unsigned);
 	syn::custom_keyword!(type_value);
+	syn::custom_keyword!(pallet);
 }
 
 /// Parse attributes for item in pallet module
@@ -337,7 +343,7 @@ impl syn::parse::Parse for PalletAttr {
 		input.parse::<syn::Token![#]>()?;
 		let content;
 		syn::bracketed!(content in input);
-		content.parse::<syn::Ident>()?;
+		content.parse::<keyword::pallet>()?;
 		content.parse::<syn::Token![::]>()?;
 
 		let lookahead = content.lookahead1();

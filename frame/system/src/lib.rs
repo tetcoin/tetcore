@@ -407,7 +407,6 @@ mod pallet {
 		code: Vec<u8>,
 	}
 
-	// TODO TODO: recreate .build_storage and .assimilate_storage
 	#[pallet::genesis_build]
 	impl<T: Trait> GenesisBuild<T> for GenesisConfig {
 		fn build(&self) {
