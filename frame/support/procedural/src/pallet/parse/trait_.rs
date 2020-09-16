@@ -111,30 +111,30 @@ impl syn::parse::Parse for TypeAttrConst {
 	}
 }
 
-/// Parse for `frame_system::Trait`
-pub struct FrameSystemTraitParse;
+/// Parse for `$ident::Trait`
+pub struct TraitBoundParse(syn::Ident);
 
-impl syn::parse::Parse for FrameSystemTraitParse {
+impl syn::parse::Parse for TraitBoundParse {
 	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-		input.parse::<keyword::frame_system>()?;
+		let ident = input.parse::<syn::Ident>()?;
 		input.parse::<syn::Token![::]>()?;
 		input.parse::<keyword::Trait>()?;
 
-		Ok(Self)
+		Ok(Self(ident))
 	}
 }
 
-/// Parse for `IsType<<Sef as frame_system::Trait>::Event>`
-pub struct IsTypeFrameSystemEventParse;
+/// Parse for `IsType<<Sef as $ident::Trait>::Event>`
+pub struct IsTypeBoundEventParse(syn::Ident);
 
-impl syn::parse::Parse for IsTypeFrameSystemEventParse {
+impl syn::parse::Parse for IsTypeBoundEventParse {
 	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
 		input.parse::<keyword::IsType>()?;
 		input.parse::<syn::Token![<]>()?;
 		input.parse::<syn::Token![<]>()?;
 		input.parse::<syn::Token![Self]>()?;
 		input.parse::<syn::Token![as]>()?;
-		input.parse::<keyword::frame_system>()?;
+		let ident = input.parse::<syn::Ident>()?;
 		input.parse::<syn::Token![::]>()?;
 		input.parse::<keyword::Trait>()?;
 		input.parse::<syn::Token![>]>()?;
@@ -142,7 +142,7 @@ impl syn::parse::Parse for IsTypeFrameSystemEventParse {
 		input.parse::<keyword::Event>()?;
 		input.parse::<syn::Token![>]>()?;
 
-		Ok(Self)
+		Ok(Self(ident))
 	}
 }
 
@@ -179,7 +179,11 @@ impl syn::parse::Parse for FromEventParse {
 
 /// Check if trait_item is `type Event`, if so checks its bounds are those expected.
 /// (Event type is reserved type)
-fn check_event_type(trait_item: &syn::TraitItem, trait_has_instance: bool)  -> syn::Result<bool> {
+fn check_event_type(
+	frame_system: &syn::Ident,
+	trait_item: &syn::TraitItem,
+	trait_has_instance: bool
+)  -> syn::Result<bool> {
 	if let syn::TraitItem::Type(type_) = trait_item {
 		if type_.ident == "Event" {
 			// Check event has no generics
@@ -191,12 +195,16 @@ fn check_event_type(trait_item: &syn::TraitItem, trait_has_instance: bool)  -> s
 			// Check bound contains IsType and From
 
 			let has_is_type_bound = type_.bounds.iter().any(|s| {
-				syn::parse2::<IsTypeFrameSystemEventParse>(s.to_token_stream()).is_ok()
+				syn::parse2::<IsTypeBoundEventParse>(s.to_token_stream())
+					.map_or(false, |b| b.0 == *frame_system)
 			});
 
 			if !has_is_type_bound {
-				let msg = "Invalid `type Event`, associated type `Event` is reserved and must \
-					bound: `IsType<<Self as frame_system::Trait>::Event>`";
+				let msg = format!(
+					"Invalid `type Event`, associated type `Event` is reserved and must \
+					bound: `IsType<<Self as {}::Trait>::Event>`",
+					frame_system,
+				);
 				return Err(syn::Error::new(type_.span(), msg));
 			}
 
@@ -231,7 +239,11 @@ fn check_event_type(trait_item: &syn::TraitItem, trait_has_instance: bool)  -> s
 }
 
 impl TraitDef {
-	pub fn try_from(index: usize, item: &mut syn::Item) -> syn::Result<Self> {
+	pub fn try_from(
+		frame_system: &syn::Ident,
+		index: usize,
+		item: &mut syn::Item
+	) -> syn::Result<Self> {
 		let item = if let syn::Item::Trait(item) = item {
 			item
 		} else {
@@ -268,8 +280,8 @@ impl TraitDef {
 		let mut consts_metadata = vec![];
 		for trait_item in &mut item.items {
 			// Parse for event
-			has_event_type = has_event_type || check_event_type(trait_item, has_instance)?;
-
+			has_event_type = has_event_type
+				|| check_event_type(frame_system, trait_item, has_instance)?;
 
 			// Parse for const_
 			let type_attrs_const: Vec<TypeAttrConst> = helper::take_item_attrs(trait_item)?;
@@ -309,7 +321,8 @@ impl TraitDef {
 		let disable_system_supertrait_check = attr.is_some();
 
 		let has_frame_system_supertrait = item.supertraits.iter().any(|s| {
-			syn::parse2::<FrameSystemTraitParse>(s.to_token_stream()).is_ok()
+			syn::parse2::<TraitBoundParse>(s.to_token_stream())
+				.map_or(false, |b| b.0 == *frame_system)
 		});
 
 		if !has_frame_system_supertrait && !disable_system_supertrait_check {
@@ -326,9 +339,11 @@ impl TraitDef {
 			};
 
 			let msg = format!(
-				"Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, \
-				found {}.",
-				found
+				"Invalid pallet::trait, expect explicit `{}::Trait` as supertrait, \
+				found {}. To disable this check, use \
+				`#[pallet::disable_frame_system_supertrait_check]`",
+				frame_system,
+				found,
 			);
 			return Err(syn::Error::new(item.span(), msg));
 		}

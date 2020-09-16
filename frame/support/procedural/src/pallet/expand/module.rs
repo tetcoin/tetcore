@@ -21,6 +21,7 @@ use crate::pallet::Def;
 /// * if event is defined, implement deposit_event on module.
 pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
+	let frame_system = &def.system_crate();
 
 	let module_item = {
 		let item = &mut def.item.content.as_mut().expect("Checked by def").1[def.module.index];
@@ -57,10 +58,10 @@ pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
 
 					let event = <
 						<T as Trait#trait_use_gen>::Event as
-						Into<<T as frame_system::Trait>::Event>
+						Into<<T as #frame_system::Trait>::Event>
 					>::into(event);
 
-					<frame_system::Module<T>>::deposit_event(event)
+					<#frame_system::Module<T>>::deposit_event(event)
 				}
 			}
 		)

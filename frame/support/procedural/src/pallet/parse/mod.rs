@@ -35,7 +35,7 @@ pub mod validate_unsigned;
 pub mod type_value;
 
 use syn::spanned::Spanned;
-use frame_support_procedural_tools::generate_crate_access;
+use frame_support_procedural_tools::generate_crate_access_2018;
 
 /// Parsed definition of a pallet.
 pub struct Def {
@@ -57,10 +57,15 @@ pub struct Def {
 	pub genesis_build: Option<genesis_build::GenesisBuildDef>,
 	pub validate_unsigned: Option<validate_unsigned::ValidateUnsignedDef>,
 	pub type_values: Vec<type_value::TypeValueDef>,
+	pub frame_system: syn::Ident,
+	pub frame_support: syn::Ident,
 }
 
 impl Def {
 	pub fn try_from(name: syn::Ident, mut item: syn::ItemMod) -> syn::Result<Self> {
+		let frame_system = generate_crate_access_2018("frame-system")?;
+		let frame_support = generate_crate_access_2018("frame-support")?;
+
 		let item_span = item.span().clone();
 		let items = &mut item.content.as_mut()
 			.ok_or_else(|| {
@@ -87,7 +92,7 @@ impl Def {
 
 			match pallet_attr {
 				Some(PalletAttr::Trait) =>
-					trait_ = Some(trait_::TraitDef::try_from(index, item)?),
+					trait_ = Some(trait_::TraitDef::try_from(&frame_system, index, item)?),
 				Some(PalletAttr::Module) =>
 					module = Some(module::ModuleDef::try_from(index, item)?),
 				Some(PalletAttr::ModuleInterface) => {
@@ -148,6 +153,8 @@ impl Def {
 			inherent,
 			storages,
 			type_values,
+			frame_system,
+			frame_support,
 		};
 
 		def.check_instance_usage()?;
@@ -291,14 +298,14 @@ impl Def {
 		}
 	}
 
-	/// Unique id used to generate crate access to frame-support.
-	pub fn hidden_crate_name(&self) -> &'static str {
-		"pallet"
+	/// Return path to frame-support crate.
+	pub fn scrate(&self) -> syn::Ident {
+		self.frame_support.clone()
 	}
 
-	/// Return path to frame-support crate.
-	pub fn scrate(&self) -> proc_macro2::TokenStream {
-		generate_crate_access(&self.hidden_crate_name(), "frame-support")
+	/// Return path to frame-system crate.
+	pub fn system_crate(&self) -> syn::Ident {
+		self.frame_system.clone()
 	}
 }
 

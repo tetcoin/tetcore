@@ -34,6 +34,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		def.item.content.as_mut().expect("Checked by def parser").1[error.index].span();
 	let error_ident = &error.error;
 	let scrate = &def.scrate();
+	let frame_system = &def.system_crate();
 	let type_impl_gen = &def.type_impl_generics();
 	let type_impl_static_gen = &def.type_impl_static_generics();
 	let type_use_gen = &def.type_use_generics();
@@ -114,7 +115,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		{
 			fn from(err: #error_ident<#type_use_gen>) -> Self {
 				let index = <
-					<T as frame_system::Trait>::ModuleToIndex
+					<T as #frame_system::Trait>::ModuleToIndex
 					as #scrate::traits::ModuleToIndex
 				>::module_to_index::<Module<#type_use_gen>>()
 					.expect("Every active module has an index in the runtime; qed") as u8;

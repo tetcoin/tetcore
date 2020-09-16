@@ -32,6 +32,7 @@ use frame_support_procedural_tools::clean_type_string;
 /// * impl call_functions for Module (metadata)
 pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
+	let frame_system = &def.system_crate();
 	let type_impl_gen = &def.type_impl_generics();
 	let type_decl_gen = &def.type_decl_generics();
 	let type_use_gen = &def.type_use_generics();
@@ -153,7 +154,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 		impl<#type_impl_gen> #scrate::traits::UnfilteredDispatchable for #call_ident<#type_use_gen>
 			#where_clause
 		{
-			type Origin = frame_system::pallet_prelude::OriginFor<T>;
+			type Origin = #frame_system::pallet_prelude::OriginFor<T>;
 			fn dispatch_bypass_filter(
 				self,
 				origin: Self::Origin

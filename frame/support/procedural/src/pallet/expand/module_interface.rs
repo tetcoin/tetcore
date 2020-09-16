@@ -25,34 +25,35 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 	let where_clause = &def.module_interface.where_clause;
+	let frame_system = &def.system_crate();
 
 	let module_interface_item_span = def.item.content.as_mut()
 		.expect("Checked by def parser").1[def.module_interface.index].span();
 
 	quote::quote_spanned!(module_interface_item_span =>
 		impl<#type_impl_gen>
-			#scrate::traits::OnFinalize<<T as frame_system::Trait>::BlockNumber>
+			#scrate::traits::OnFinalize<<T as #frame_system::Trait>::BlockNumber>
 			for #module_ident<#type_use_gen> #where_clause
 		{
-			fn on_finalize(n: <T as frame_system::Trait>::BlockNumber) {
+			fn on_finalize(n: <T as #frame_system::Trait>::BlockNumber) {
 				<
 					Self as #scrate::traits::ModuleInterface<
-						<T as frame_system::Trait>::BlockNumber
+						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::on_finalize(n)
 			}
 		}
 
 		impl<#type_impl_gen>
-			#scrate::traits::OnInitialize<<T as frame_system::Trait>::BlockNumber>
+			#scrate::traits::OnInitialize<<T as #frame_system::Trait>::BlockNumber>
 			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn on_initialize(
-				n: <T as frame_system::Trait>::BlockNumber
+				n: <T as #frame_system::Trait>::BlockNumber
 			) -> #scrate::weights::Weight {
 				<
 					Self as #scrate::traits::ModuleInterface<
-						<T as frame_system::Trait>::BlockNumber
+						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::on_initialize(n)
 			}
@@ -65,20 +66,20 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 			fn on_runtime_upgrade() -> #scrate::weights::Weight {
 				<
 					Self as #scrate::traits::ModuleInterface<
-						<T as frame_system::Trait>::BlockNumber
+						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::on_runtime_upgrade()
 			}
 		}
 
 		impl<#type_impl_gen>
-			#scrate::traits::OffchainWorker<<T as frame_system::Trait>::BlockNumber>
+			#scrate::traits::OffchainWorker<<T as #frame_system::Trait>::BlockNumber>
 			for #module_ident<#type_use_gen> #where_clause
 		{
-			fn offchain_worker(n: <T as frame_system::Trait>::BlockNumber) {
+			fn offchain_worker(n: <T as #frame_system::Trait>::BlockNumber) {
 				<
 					Self as #scrate::traits::ModuleInterface<
-						<T as frame_system::Trait>::BlockNumber
+						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::offchain_worker(n)
 			}
@@ -91,7 +92,7 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 			fn integrity_test() {
 				<
 					Self as #scrate::traits::ModuleInterface<
-						<T as frame_system::Trait>::BlockNumber
+						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::integrity_test()
 			}
