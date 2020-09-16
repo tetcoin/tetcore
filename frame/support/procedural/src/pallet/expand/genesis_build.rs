@@ -80,7 +80,7 @@ pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 				storage: &mut #scrate::sp_runtime::Storage,
 			) -> std::result::Result<(), std::string::String> {
 				#scrate::BasicExternalities::execute_with_storage(storage, || {
-					<Self as #scrate::traits::GenesisBuilder<#type_use_gen>>::build(self);
+					<Self as #scrate::traits::GenesisBuild<#type_use_gen>>::build(self);
 					Ok(())
 				})
 			}
@@ -105,7 +105,7 @@ pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 			) -> sp_std::result::Result<(), String> #where_clause
 			{
 				#scrate::BasicExternalities::execute_with_storage(storage, || {
-					<Self as #scrate::traits::GenesisBuilder<#type_use_gen>>::build(self);
+					<Self as #scrate::traits::GenesisBuild<#type_use_gen>>::build(self);
 					Ok(())
 				})
 			}

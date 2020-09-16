@@ -16,7 +16,7 @@ mod pallet {
 	impl<T: Trait> Call for Module<T> {}
 
 	#[pallet::genesis_build]
-	impl GenesisBuilder for GenesisConfig {}
+	impl GenesisBuild for GenesisConfig {}
 }
 
 fn main() {

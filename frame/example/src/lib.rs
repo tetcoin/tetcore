@@ -570,7 +570,7 @@ mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuilder<T> for GenesisConfig<T> {
+	impl<T: Trait> GenesisBuild<T> for GenesisConfig<T> {
 		fn build(&self) {
 			<Dummy<T>>::put(&self.dummy);
 			for (k, v) in &self.bar { <Bar<T>>::insert(k, v); }
@@ -848,7 +848,7 @@ mod tests {
 	#[test]
 	fn it_works_for_optional_value() {
 		new_test_ext().execute_with(|| {
-			// Check that GenesisBuilder works properly.
+			// Check that GenesisBuild works properly.
 			assert_eq!(Example::dummy(), Some(42));
 
 			// Check that accumulate works when we have Some value in Dummy already.

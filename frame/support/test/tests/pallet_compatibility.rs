@@ -169,7 +169,7 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuilder<T> for GenesisConfig<T> {
+	impl<T: Trait> GenesisBuild<T> for GenesisConfig<T> {
 		fn build(&self) {
 			if let Some(dummy) = self.dummy.as_ref() {
 				<Dummy<T>>::put(dummy);

@@ -1731,7 +1731,7 @@ pub trait ModuleInterface<BlockNumber> {
 
 /// A trait to define the build function of a genesis config, T and I are placeholder for pallet
 /// trait and pallet instance.
-pub trait GenesisBuilder<T, I=()>: Default + MaybeSerializeDeserialize {
+pub trait GenesisBuild<T, I=()>: Default + MaybeSerializeDeserialize {
 	/// The build function is called within an externalities allowing storage APIs.
 	/// Thus one can write to storage using regular pallet storages.
 	fn build(&self);

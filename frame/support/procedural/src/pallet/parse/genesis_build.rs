@@ -39,7 +39,7 @@ impl GenesisBuildDef {
 
 		let item_trait = &item.trait_.as_ref()
 			.ok_or_else(|| {
-				let msg = "Invalid pallet::genesis_build, expect impl<..> GenesisBuilder<..> \
+				let msg = "Invalid pallet::genesis_build, expect impl<..> GenesisBuild<..> \
 					for GenesisConfig<..>";
 				syn::Error::new(item.span(), msg)
 			})?.1;

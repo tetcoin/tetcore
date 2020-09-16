@@ -829,7 +829,7 @@ mod tests {
 /// prelude to be used alongside pallet macro, for ease of use.
 pub mod pallet_prelude {
 	pub use sp_std::marker::PhantomData;
-	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuilder, IsType};
+	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuild, IsType};
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
 	pub use frame_support::storage::types::*;
 	pub use frame_support::{EqNoBound, PartialEqNoBound, DebugStripped, DebugNoBound, CloneNoBound};
@@ -1107,7 +1107,7 @@ pub mod pallet_prelude {
 ///
 /// ```nocompile
 /// #[pallet::genesis_build]
-/// impl<T: Trait> GenesisBuilder<T> for GenesisConfig {
+/// impl<T: Trait> GenesisBuild<T> for GenesisConfig {
 /// 	fn build(&self) {}
 /// }
 /// ```
@@ -1284,7 +1284,7 @@ pub mod pallet_prelude {
 ///
 /// 	// Declare genesis builder. (This is need only if GenesisConfig is declared)
 /// 	#[pallet::genesis_build]
-/// 	impl<T: Trait> GenesisBuilder<T> for GenesisConfig {
+/// 	impl<T: Trait> GenesisBuild<T> for GenesisConfig {
 /// 		fn build(&self) {}
 /// 	}
 ///
@@ -1409,7 +1409,7 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::genesis_build]
-/// 	impl<T: Trait<I>, I: Instance> GenesisBuilder<T, I> for GenesisConfig {
+/// 	impl<T: Trait<I>, I: Instance> GenesisBuild<T, I> for GenesisConfig {
 /// 		fn build(&self) {}
 /// 	}
 ///

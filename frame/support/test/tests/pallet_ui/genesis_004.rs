@@ -1,6 +1,6 @@
 #[frame_support::pallet(Example)]
 mod pallet {
-	use frame_support::pallet_prelude::{ModuleInterface, GenesisBuilder};
+	use frame_support::pallet_prelude::{ModuleInterface, GenesisBuild};
 	use frame_system::pallet_prelude::BlockNumberFor;
 
 	#[pallet::trait_]
@@ -19,7 +19,7 @@ mod pallet {
 	pub struct GenesisConfig;
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuilder<T> for GenesisConfig {}
+	impl<T: Trait> GenesisBuild<T> for GenesisConfig {}
 }
 
 fn main() {

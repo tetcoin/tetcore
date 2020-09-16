@@ -22,7 +22,7 @@ use quote::ToTokens;
 mod keyword {
 	syn::custom_keyword!(I);
 	syn::custom_keyword!(compact);
-	syn::custom_keyword!(GenesisBuilder);
+	syn::custom_keyword!(GenesisBuild);
 	syn::custom_keyword!(OriginFor);
 	syn::custom_keyword!(Trait);
 	syn::custom_keyword!(T);
@@ -528,12 +528,12 @@ pub fn check_storage_optional_gen(
 }
 
 /// Check the syntax:
-/// * either `GenesisBuilder<T>`
-/// * or `GenesisBuilder<T, I>`
+/// * either `GenesisBuild<T>`
+/// * or `GenesisBuild<T, I>`
 ///
 /// return the instance if found.
 pub fn check_genesis_builder_usage(type_: &syn::Path) -> syn::Result<InstanceUsage> {
-	let expected = "expect `GenesisBuilder<T>` or `GenesisBuilder<T, I>`";
+	let expected = "expect `GenesisBuild<T>` or `GenesisBuild<T, I>`";
 	pub struct Checker(InstanceUsage);
 	impl syn::parse::Parse for Checker {
 		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
@@ -542,7 +542,7 @@ pub fn check_genesis_builder_usage(type_: &syn::Path) -> syn::Result<InstanceUsa
 				has_instance: false,
 			};
 
-			input.parse::<keyword::GenesisBuilder>()?;
+			input.parse::<keyword::GenesisBuild>()?;
 			input.parse::<syn::Token![<]>()?;
 			input.parse::<keyword::T>()?;
 			if input.peek(syn::Token![,]) {

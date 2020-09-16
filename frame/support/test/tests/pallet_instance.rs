@@ -134,7 +134,7 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait<I>, I:Instance> GenesisBuilder<T, I> for GenesisConfig {
+	impl<T: Trait<I>, I:Instance> GenesisBuild<T, I> for GenesisConfig {
 		fn build(&self) {}
 	}
 

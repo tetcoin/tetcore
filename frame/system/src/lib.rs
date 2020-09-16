@@ -409,7 +409,7 @@ mod pallet {
 
 	// TODO TODO: recreate .build_storage and .assimilate_storage
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuilder<T> for GenesisConfig {
+	impl<T: Trait> GenesisBuild<T> for GenesisConfig {
 		fn build(&self) {
 			use codec::Encode;
 

@@ -132,7 +132,7 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuilder<T> for GenesisConfig where T::Balance: From<u64> {
+	impl<T: Trait> GenesisBuild<T> for GenesisConfig where T::Balance: From<u64> {
 		fn build(&self) {
 			T::Balance::from(3u64); // Test for where clause
 		}
