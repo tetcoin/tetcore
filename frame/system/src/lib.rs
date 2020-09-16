@@ -175,6 +175,11 @@ pub type Key = Vec<u8>;
 pub type KeyValue = (Vec<u8>, Vec<u8>);
 
 pub use pallet::*;
+
+/// Temporary type to avoid breaking other pallet
+#[doc(hidden)]
+pub type RawEvent<T> = Event<T>;
+
 #[frame_support::pallet(System)]
 mod pallet {
 	use crate as frame_system;
@@ -402,9 +407,9 @@ mod pallet {
 	#[pallet::genesis_config]
 	#[derive(Default)]
 	pub struct GenesisConfig {
-		changes_trie_config: Option<ChangesTrieConfiguration>,
+		pub changes_trie_config: Option<ChangesTrieConfiguration>,
 		#[serde(with = "sp_core::bytes")]
-		code: Vec<u8>,
+		pub code: Vec<u8>,
 	}
 
 	#[pallet::genesis_build]

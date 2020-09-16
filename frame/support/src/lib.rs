@@ -1472,6 +1472,9 @@ pub mod pallet_prelude {
 /// * storages are now defined in pallet module, to make available private storages in crate scope
 ///   use `pub(crate) type MyStorage = ..`
 ///
+/// * dispatch functions are now defined in pallet module, to make available private storages in \
+///   crate scope use `pub(crate) fn foo(origin...`
+///
 /// * storages attributes: `get(fn my_getter)` should now be written:
 ///   `#[pallet::generate_getter(fn my_getter)`
 ///
@@ -1484,4 +1487,17 @@ pub mod pallet_prelude {
 ///   Thus `MyStorage: u32` translate to `type MyStorage = StorageValueType<_, u32, ValueQuery>`
 ///   Thus `MyStorage: Option<u32>` translate to
 ///   `type MyStorage = StorageValueType<_, u32>` (OptionQuery being default).
+///
+/// * dispatchable function must now have the full signature, thus origin can be replace by
+///   `origin: OriginFor<T>` and result must be `DispatchResultWithPostInfo`, thus `Ok(().into()`
+///   can be added as result.
+///
+/// * `#[compact]` on dispatchable argument must be replaced by `#[pallet::compact]`
+///
+/// * `#[weight = ..]` replaced by `#[pallet::weight(..)]`
+///
+/// * `RawEvent` is no longer generated thus replaced by `Event`.
+///
+/// * `on_initialize`, `on_finalize`, `on_runtime_upgrade`, `offchain_worker`, `integrity_test` are
+///   moved to `ModuleInterface implementation.
 pub use frame_support_procedural::pallet;

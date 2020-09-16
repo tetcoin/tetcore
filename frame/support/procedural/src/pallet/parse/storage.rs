@@ -129,7 +129,7 @@ impl StorageDef {
 		let getter = attrs.pop().map(|attr| attr.getter);
 
 		let mut instances = vec![];
-		instances.push(helper::check_storage_optional_gen(&item.generics, item.span())?);
+		instances.push(helper::check_storage_optional_gen(&item.generics, item.ident.span())?);
 
 		if item.generics.where_clause.is_some() {
 			let msg = "Invalid pallet::storage, unexpected where clause";

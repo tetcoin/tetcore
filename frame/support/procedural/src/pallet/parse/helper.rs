@@ -297,7 +297,9 @@ pub fn check_type_def_optional_generics(
 			let mut err = syn::Error::new(span, msg);
 			err.combine(e);
 			err
-		})?.0;
+		})?.0
+		// Span can be call_site if generic is empty. Thus we replace it.
+		.map(|mut i| { i.span = span; i });
 
 	Ok(i)
 }
@@ -516,13 +518,16 @@ pub fn check_storage_optional_gen(
 		}
 	}
 
-	let i = syn::parse2::<Checker>(gen.params.to_token_stream())
+	let mut i = syn::parse2::<Checker>(gen.params.to_token_stream())
 		.map_err(|e| {
 			let msg = format!("Invalid type def generics: {}", expected);
 			let mut err = syn::Error::new(span, msg);
 			err.combine(e);
 			err
 		})?.0;
+
+	// Span can be call_site if generic is empty. Thus we replace it.
+	i.span = span;
 
 	Ok(i)
 }
@@ -619,7 +624,9 @@ pub fn check_type_value_gen(
 			let mut err = syn::Error::new(span, msg);
 			err.combine(e);
 			err
-		})?.0;
+		})?.0
+		// Span can be call_site if generic is empty. Thus we replace it.
+		.map(|mut i| { i.span = span; i });
 
 	Ok(i)
 }
