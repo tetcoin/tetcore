@@ -1,4 +1,4 @@
-error: Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, found `balance :: Trait`, `timestamp :: Trait`.
+error: Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, found `balance :: Trait`, `timestamp :: Trait`. To disable this check, use `#[pallet::disable_frame_system_supertrait_check]`
   --> $DIR/step_008.rs:11:2
    |
 11 |     pub trait Trait: balance::Trait + timestamp::Trait {}

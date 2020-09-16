@@ -1,10 +1,10 @@
 error[E0277]: the trait bound `pallet::GenesisConfig: std::default::Default` is not satisfied
     --> $DIR/genesis_004.rs:22:17
      |
-22   |     impl<T: Trait> GenesisBuilder<T> for GenesisConfig {}
-     |                    ^^^^^^^^^^^^^^^^^ the trait `std::default::Default` is not implemented for `pallet::GenesisConfig`
+22   |     impl<T: Trait> GenesisBuild<T> for GenesisConfig {}
+     |                    ^^^^^^^^^^^^^^^ the trait `std::default::Default` is not implemented for `pallet::GenesisConfig`
      |
-    ::: $WORKSPACE/frame/support/src/traits.rs
+    ::: $WORKSPACE/frame/support/src/traits.rs:1734:34
      |
-     | pub trait GenesisBuilder<T, I=()>: Default + MaybeSerializeDeserialize {
-     |                                    ------- required by this bound in `pallet::sp_api_hidden_includes_pallet::hidden_include::traits::GenesisBuilder`
+1734 | pub trait GenesisBuild<T, I=()>: Default + MaybeSerializeDeserialize {
+     |                                  ------- required by this bound in `frame_support::traits::GenesisBuild`

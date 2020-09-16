@@ -1,4 +1,4 @@
-error: Invalid pallet::module_interface, expect impl<..> GenesisBuilder<..> for GenesisConfig<..>
+error: Invalid pallet::genesis_build, expect impl<..> GenesisBuild<..> for GenesisConfig<..>
   --> $DIR/genesis_001.rs:19:2
    |
 19 |     impl Foo {}

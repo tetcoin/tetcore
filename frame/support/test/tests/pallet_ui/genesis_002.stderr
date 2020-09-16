@@ -1,8 +1,8 @@
-error: Invalid genesis builder: expect `GenesisBuilder<T>` or `GenesisBuilder<T, I>`
+error: Invalid genesis builder: expect `GenesisBuild<T>` or `GenesisBuild<T, I>`
   --> $DIR/genesis_002.rs:19:7
    |
-19 |     impl GenesisBuilder for GenesisConfig {}
-   |          ^^^^^^^^^^^^^^
+19 |     impl GenesisBuild for GenesisConfig {}
+   |          ^^^^^^^^^^^^
 
 error: expected `<`
  --> $DIR/genesis_002.rs:1:1
