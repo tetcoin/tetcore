@@ -1506,7 +1506,7 @@ pub mod pallet_prelude {
 ///   crate scope use `pub(crate) fn foo(origin...`
 ///
 /// * storages attributes: `get(fn my_getter)` should now be written:
-///   `#[pallet::generate_getter(fn my_getter)`
+///   `#[pallet::generate_getter(fn my_getter)]`
 ///
 /// * storages attributes: build and config have been removed, they must be manually written in the
 ///   GenesisConfig and GenesisBuild implementation.
