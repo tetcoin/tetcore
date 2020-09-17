@@ -91,35 +91,42 @@ impl Def {
 			let pallet_attr: Option<PalletAttr> = helper::take_first_item_attr(item)?;
 
 			match pallet_attr {
-				Some(PalletAttr::Trait) =>
+				Some(PalletAttr::Trait(_)) if trait_.is_none() =>
 					trait_ = Some(trait_::TraitDef::try_from(&frame_system, index, item)?),
-				Some(PalletAttr::Module) =>
+				Some(PalletAttr::Module(_)) if module.is_none() =>
 					module = Some(module::ModuleDef::try_from(index, item)?),
-				Some(PalletAttr::ModuleInterface) => {
+				Some(PalletAttr::ModuleInterface(_)) if module_interface.is_none() => {
 					let m = module_interface::ModuleInterfaceDef::try_from(index, item)?;
 					module_interface = Some(m);
 				},
-				Some(PalletAttr::Call) => call = Some(call::CallDef::try_from(index, item)?),
-				Some(PalletAttr::Error) => error = Some(error::ErrorDef::try_from(index, item)?),
-				Some(PalletAttr::Event) => event = Some(event::EventDef::try_from(index, item)?),
-				Some(PalletAttr::GenesisConfig) => {
+				Some(PalletAttr::Call(span)) if call.is_none() =>
+					call = Some(call::CallDef::try_from(span, index, item)?),
+				Some(PalletAttr::Error(_)) if error.is_none() =>
+					error = Some(error::ErrorDef::try_from(index, item)?),
+				Some(PalletAttr::Event(_)) if event.is_none() =>
+					event = Some(event::EventDef::try_from(index, item)?),
+				Some(PalletAttr::GenesisConfig(_)) if genesis_config.is_none() => {
 					genesis_config
 						= Some(genesis_config::GenesisConfigDef::try_from(index, item)?);
 				},
-				Some(PalletAttr::GenesisBuild) =>
+				Some(PalletAttr::GenesisBuild(_)) if genesis_build.is_none() =>
 					genesis_build = Some(genesis_build::GenesisBuildDef::try_from(index, item)?),
-				Some(PalletAttr::Origin) =>
+				Some(PalletAttr::Origin(_)) if origin.is_none() =>
 					origin = Some(origin::OriginDef::try_from(index, item)?),
-				Some(PalletAttr::Inherent) =>
+				Some(PalletAttr::Inherent(_)) if inherent.is_none() =>
 					inherent = Some(inherent::InherentDef::try_from(index, item)?),
-				Some(PalletAttr::Storage) =>
+				Some(PalletAttr::Storage(_)) =>
 					storages.push(storage::StorageDef::try_from(index, item)?),
-				Some(PalletAttr::ValidateUnsigned) => {
+				Some(PalletAttr::ValidateUnsigned(_)) if validate_unsigned.is_none() => {
 					let v = validate_unsigned::ValidateUnsignedDef::try_from(index, item)?;
 					validate_unsigned = Some(v);
 				},
-				Some(PalletAttr::TypeValue) =>
+				Some(PalletAttr::TypeValue(_)) =>
 					type_values.push(type_value::TypeValueDef::try_from(index, item)?),
+				Some(attr) => {
+					let msg = "Invalid duplicated attribute";
+					return Err(syn::Error::new(attr.span(), msg));
+				},
 				None => (),
 			}
 		}
@@ -169,24 +176,18 @@ impl Def {
 		match (
 			self.trait_.has_event_type,
 			self.event.is_some(),
-			&self.module.generate_fn_deposit_event,
 		) {
-			(true, false, _) => {
+			(true, false) => {
 				let msg = "Invalid usage of Event, trait `Trait` contains associated type `Event`, \
 					but enum `Event` is not declared (i.e. no use of `#[pallet::event]`). \
 					Note that type `Event` in trait is reserved to work alongside pallet event.";
 				Err(syn::Error::new(proc_macro2::Span::call_site(), msg))
 			},
-			(false, true, _) => {
+			(false, true) => {
 				let msg = "Invalid usage of Event, trait `Trait` contains no associated type \
 					`Event`, but enum `Event` is declared (in use of `#[pallet::event]`). \
 					An Event associated type must be declare on trait `Trait`.";
 				Err(syn::Error::new(proc_macro2::Span::call_site(), msg))
-			},
-			(false, false, Some((_, span))) => {
-				let msg = "Invalid usage of Event, deposit_event can't be generated for pallet \
-					without `Event`, please use `#[pallet::event]` to declare it";
-				Err(syn::Error::new(*span, msg))
 			},
 			_ => Ok(())
 		}
@@ -330,19 +331,39 @@ mod keyword {
 /// Parse attributes for item in pallet module
 /// syntax must be `pallet::` (e.g. `#[pallet::trait_]`)
 pub enum PalletAttr {
-	Trait,
-	Module,
-	ModuleInterface,
-	Call,
-	Error,
-	Event,
-	Origin,
-	Inherent,
-	Storage,
-	GenesisConfig,
-	GenesisBuild,
-	ValidateUnsigned,
-	TypeValue,
+	Trait(proc_macro2::Span),
+	Module(proc_macro2::Span),
+	ModuleInterface(proc_macro2::Span),
+	Call(proc_macro2::Span),
+	Error(proc_macro2::Span),
+	Event(proc_macro2::Span),
+	Origin(proc_macro2::Span),
+	Inherent(proc_macro2::Span),
+	Storage(proc_macro2::Span),
+	GenesisConfig(proc_macro2::Span),
+	GenesisBuild(proc_macro2::Span),
+	ValidateUnsigned(proc_macro2::Span),
+	TypeValue(proc_macro2::Span),
+}
+
+impl PalletAttr {
+	fn span(&self) -> proc_macro2::Span {
+		match self {
+			Self::Trait(span) => span.clone(),
+			Self::Module(span) => span.clone(),
+			Self::ModuleInterface(span) => span.clone(),
+			Self::Call(span) => span.clone(),
+			Self::Error(span) => span.clone(),
+			Self::Event(span) => span.clone(),
+			Self::Origin(span) => span.clone(),
+			Self::Inherent(span) => span.clone(),
+			Self::Storage(span) => span.clone(),
+			Self::GenesisConfig(span) => span.clone(),
+			Self::GenesisBuild(span) => span.clone(),
+			Self::ValidateUnsigned(span) => span.clone(),
+			Self::TypeValue(span) => span.clone(),
+		}
+	}
 }
 
 impl syn::parse::Parse for PalletAttr {
@@ -355,44 +376,31 @@ impl syn::parse::Parse for PalletAttr {
 
 		let lookahead = content.lookahead1();
 		if lookahead.peek(keyword::trait_) {
-			content.parse::<keyword::trait_>()?;
-			Ok(PalletAttr::Trait)
+			Ok(PalletAttr::Trait(content.parse::<keyword::trait_>()?.span()))
 		} else if lookahead.peek(keyword::module) {
-			content.parse::<keyword::module>()?;
-			Ok(PalletAttr::Module)
+			Ok(PalletAttr::Module(content.parse::<keyword::module>()?.span()))
 		} else if lookahead.peek(keyword::module_interface) {
-			content.parse::<keyword::module_interface>()?;
-			Ok(PalletAttr::ModuleInterface)
+			Ok(PalletAttr::ModuleInterface(content.parse::<keyword::module_interface>()?.span()))
 		} else if lookahead.peek(keyword::call) {
-			content.parse::<keyword::call>()?;
-			Ok(PalletAttr::Call)
+			Ok(PalletAttr::Call(content.parse::<keyword::call>()?.span()))
 		} else if lookahead.peek(keyword::error) {
-			content.parse::<keyword::error>()?;
-			Ok(PalletAttr::Error)
+			Ok(PalletAttr::Error(content.parse::<keyword::error>()?.span()))
 		} else if lookahead.peek(keyword::event) {
-			content.parse::<keyword::event>()?;
-			Ok(PalletAttr::Event)
+			Ok(PalletAttr::Event(content.parse::<keyword::event>()?.span()))
 		} else if lookahead.peek(keyword::origin) {
-			content.parse::<keyword::origin>()?;
-			Ok(PalletAttr::Origin)
+			Ok(PalletAttr::Origin(content.parse::<keyword::origin>()?.span()))
 		} else if lookahead.peek(keyword::inherent) {
-			content.parse::<keyword::inherent>()?;
-			Ok(PalletAttr::Inherent)
+			Ok(PalletAttr::Inherent(content.parse::<keyword::inherent>()?.span()))
 		} else if lookahead.peek(keyword::storage) {
-			content.parse::<keyword::storage>()?;
-			Ok(PalletAttr::Storage)
+			Ok(PalletAttr::Storage(content.parse::<keyword::storage>()?.span()))
 		} else if lookahead.peek(keyword::genesis_config) {
-			content.parse::<keyword::genesis_config>()?;
-			Ok(PalletAttr::GenesisConfig)
+			Ok(PalletAttr::GenesisConfig(content.parse::<keyword::genesis_config>()?.span()))
 		} else if lookahead.peek(keyword::genesis_build) {
-			content.parse::<keyword::genesis_build>()?;
-			Ok(PalletAttr::GenesisBuild)
+			Ok(PalletAttr::GenesisBuild(content.parse::<keyword::genesis_build>()?.span()))
 		} else if lookahead.peek(keyword::validate_unsigned) {
-			content.parse::<keyword::validate_unsigned>()?;
-			Ok(PalletAttr::ValidateUnsigned)
+			Ok(PalletAttr::ValidateUnsigned(content.parse::<keyword::validate_unsigned>()?.span()))
 		} else if lookahead.peek(keyword::type_value) {
-			content.parse::<keyword::type_value>()?;
-			Ok(PalletAttr::TypeValue)
+			Ok(PalletAttr::TypeValue(content.parse::<keyword::type_value>()?.span()))
 		} else {
 			Err(lookahead.error())
 		}

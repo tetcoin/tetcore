@@ -922,15 +922,6 @@ pub mod pallet_prelude {
 /// pub struct Module<T>(PhantomData<T>);
 /// ```
 ///
-/// an optional attribute `#[pallet::generate($vis fn deposit_event)]` can be used to generate a
-/// handy function to deposit event defined by `#[pallet::event]` (see later).
-///
-/// ```nocompile
-/// #[pallet::module]
-/// #[pallet::generate(pub(crate) fn deposit_event)]
-/// pub struct Module<T>(PhantomData<T>);
-/// ```
-///
 /// ### `#[pallet::module_interface]`
 ///
 /// Above defined module needs to implement trait Module interface as:
@@ -945,7 +936,7 @@ pub mod pallet_prelude {
 /// The dispatchables of the pallet. Define as:
 /// ```nocompile
 /// #[pallet::call]
-/// impl<T: Trait> Call for Module<T> {
+/// impl<T: Trait> Module<T> {
 /// 	/// Doc comment put in metadata
 /// 	#[pallet::weight($ExpressionResultingInWeight)]
 /// 	fn foo(
@@ -1036,6 +1027,13 @@ pub mod pallet_prelude {
 ///
 /// NOTE: For instantiable pallet, event must be generic over T and I.
 /// NOTE: At this moment declaration doesn't support where clause.
+///
+/// an optional attribute `#[pallet::generate($vis fn deposit_event)]` can be used to generate a
+/// handy function `deposit_event` on `Module`.
+///
+/// ```nocompile
+/// #[pallet::generate(pub(crate) fn deposit_event)]
+/// ```
 ///
 /// ### `#[pallet::storage]` optional
 ///
@@ -1179,7 +1177,6 @@ pub mod pallet_prelude {
 /// 	// Define the module struct placeholder, various pallet function are implemented on it.
 /// 	// The macro checks struct generics: is expected `T` or `T, I = DefaultInstance`
 /// 	#[pallet::module]
-/// 	#[pallet::generate(pub(crate) fn deposit_event)]
 /// 	pub struct Module<T>(PhantomData<T>);
 ///
 /// 	// Implement on the module interface on module.
@@ -1208,7 +1205,7 @@ pub mod pallet_prelude {
 /// 	// The macro generate the enum `Call` with a variant for each dispatchable and implements
 /// 	// codec, Eq, PartialEq, Clone and Debug.
 /// 	#[pallet::call]
-/// 	impl<T: Trait> Call for Module<T> {
+/// 	impl<T: Trait> Module<T> {
 /// 		/// Doc comment put in metadata
 /// 		#[pallet::weight(0)] // Defines weight for call (function parameters are in scope)
 /// 		fn toto(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
@@ -1234,6 +1231,8 @@ pub mod pallet_prelude {
 /// 	#[pallet::event]
 /// 	// Additional argument to specify the metadata to use for given type.
 /// 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
+/// 	// Generate a funciton on Module to deposit an event.
+/// 	#[pallet::generate(pub(crate) fn deposit_event)]
 /// 	pub enum Event<T: Trait> {
 /// 		/// doc comment put in metadata
 /// 		// `<T as frame_system::Trait>::AccountId` is not defined in metadata list, the last
@@ -1357,7 +1356,6 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::module]
-/// 	#[pallet::generate(pub(crate) fn deposit_event)]
 /// 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 ///
 /// 	#[pallet::module_interface]
@@ -1365,7 +1363,7 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::call]
-/// 	impl<T: Trait<I>, I: Instance> Call for Module<T, I> {
+/// 	impl<T: Trait<I>, I: Instance> Module<T, I> {
 /// 		/// Doc comment put in metadata
 /// 		#[pallet::weight(0)]
 /// 		fn toto(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
@@ -1382,6 +1380,7 @@ pub mod pallet_prelude {
 ///
 /// 	#[pallet::event]
 /// 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
+/// 	#[pallet::generate(pub(crate) fn deposit_event)]
 /// 	pub enum Event<T: Trait<I>, I: Instance = DefaultInstance> {
 /// 		/// doc comment put in metadata
 /// 		Proposed(<T as frame_system::Trait>::AccountId),

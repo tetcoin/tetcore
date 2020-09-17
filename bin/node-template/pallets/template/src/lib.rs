@@ -40,6 +40,8 @@ mod pallet {
 	// https://substrate.dev/docs/en/knowledgebase/runtime/events
 	#[pallet::event]
 	#[pallet::metadata(<T as frame_system::Trait>::AccountId = AccountId)]
+	// Generate a helper function to deposit events.
+	#[pallet::generate(pub(crate) fn deposit_event)]
 	pub enum Event<T: Trait> {
 		/// Event documentation should end with an array that provides descriptive names for event
 		/// parameters. [something, who]
@@ -57,8 +59,6 @@ mod pallet {
 
 	// Type placeholder to implement pallet traits on it.
 	#[pallet::module]
-	// Generate a helper function to deposit events.
-	#[pallet::generate(pub(crate) fn deposit_event)]
 	pub struct Module<T>(PhantomData<T>);
 
 	#[pallet::module_interface]
@@ -68,7 +68,7 @@ mod pallet {
 	// These functions materialize as "extrinsics", which are often compared to transactions.
 	// Dispatchable functions must be annotated with a weight and must return a DispatchResult.
 	#[pallet::call]
-	impl<T: Trait> Call for Module<T> {
+	impl<T: Trait> Module<T> {
 		/// An example dispatchable that takes a singles value as a parameter, writes the value to
 		/// storage and emits an event. This function must be dispatched by a signed extrinsic.
 		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]

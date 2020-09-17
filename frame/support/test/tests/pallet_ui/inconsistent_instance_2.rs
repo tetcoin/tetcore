@@ -13,7 +13,7 @@ mod pallet {
 	impl<T: Trait<I>, I: Instance> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {}
 
 	#[pallet::call]
-	impl<T: Trait<I>, I: Instance> Call for Module<T, I> {}
+	impl<T: Trait<I>, I: Instance> Module<T, I> {}
 }
 
 fn main() {

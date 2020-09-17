@@ -16,7 +16,6 @@
 // limitations under the License.
 
 use crate::pallet::Def;
-use syn::spanned::Spanned;
 use frame_support_procedural_tools::clean_type_string;
 
 /// * create Call enum, add derives on it:
@@ -36,12 +35,9 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_impl_gen = &def.type_impl_generics();
 	let type_decl_gen = &def.type_decl_generics();
 	let type_use_gen = &def.type_use_generics();
-	let call_ident = &def.call.call;
+	let call_ident = syn::Ident::new("Call", def.call.attr_span.clone());
 	let module_ident = &def.module.module;
 	let where_clause = &def.call.where_clause;
-
-	let call_item_span =
-		def.item.content.as_mut().expect("Checked by def parser").1[def.call.index].span();
 
 	let fn_ = def.call.methods.iter().map(|method| &method.fn_).collect::<Vec<_>>();
 
@@ -82,7 +78,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			.collect::<Vec<_>>()
 	});
 
-	quote::quote_spanned!(call_item_span =>
+	quote::quote_spanned!(def.call.attr_span =>
 		#[cfg_attr(feature = "std", derive(#scrate::DebugNoBound))]
 		#[cfg_attr(not(feature = "std"), derive(#scrate::DebugStripped))]
 		#[derive(

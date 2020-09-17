@@ -1,5 +1,5 @@
-error: expected `Call`
-  --> $DIR/step_022.rs:15:17
+error: Invalid pallet::call, expect no trait ident as in `impl<..> Module<..> { .. }`
+  --> $DIR/step_022.rs:15:21
    |
 15 |     impl<T: Trait> Foo for Module<T> {}
-   |                    ^^^
+   |                        ^^^

@@ -15,7 +15,7 @@ mod pallet {
 	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {}
 
 	#[pallet::call]
-	impl<T: Trait> Call for Module<T> {
+	impl<T: Trait> Module<T> {
 		#[pallet::weight(0)]
 		fn foo(origin: OriginFor<T>, bar: T::Bar) -> DispatchResultWithPostInfo {
 			Ok(().into())

@@ -1,14 +1,14 @@
 error: Invalid generic declaration, trait is defined with instance but generic use none
   --> $DIR/inconsistent_instance_1.rs:16:7
    |
-16 |     impl<T: Trait> Call for Module<T> {}
+16 |     impl<T: Trait> Module<T> {}
    |          ^
 
 error: Invalid generic declaration, trait is defined with instance but generic use none
-  --> $DIR/inconsistent_instance_1.rs:16:26
+  --> $DIR/inconsistent_instance_1.rs:16:17
    |
-16 |     impl<T: Trait> Call for Module<T> {}
-   |                             ^^^^^^
+16 |     impl<T: Trait> Module<T> {}
+   |                    ^^^^^^
 
 error: Invalid generic declaration, trait is defined with instance but generic use none
   --> $DIR/inconsistent_instance_1.rs:10:20

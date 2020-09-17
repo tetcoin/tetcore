@@ -40,7 +40,6 @@ pub mod pallet {
 	}
 
 	#[pallet::module]
-	#[pallet::generate(fn deposit_event)]
 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 
 	#[pallet::module_interface]
@@ -75,7 +74,7 @@ pub mod pallet {
 	}
 
 	#[pallet::call]
-	impl<T: Trait<I>, I: Instance> Call for Module<T, I> {
+	impl<T: Trait<I>, I: Instance> Module<T, I> {
 		/// Doc comment put in metadata
 		#[pallet::weight(Weight::from(*_foo))]
 		fn foo(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
@@ -102,6 +101,7 @@ pub mod pallet {
 
 	#[pallet::event]
 	#[pallet::metadata(BalanceOf<T, I> = Balance, u32 = Other)]
+	#[pallet::generate(fn deposit_event)]
 	pub enum Event<T: Trait<I>, I: Instance = DefaultInstance> {
 		/// doc comment put in metadata
 		Proposed(<T as frame_system::Trait>::AccountId),

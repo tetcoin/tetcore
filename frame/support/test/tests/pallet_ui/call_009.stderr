@@ -6,9 +6,9 @@ error[E0369]: binary operation `==` cannot be applied to type `&<T as pallet::Tr
 3  | |     use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
 4  | |     use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
 ...  |
+16 | |
 17 | |     #[pallet::call]
-18 | |     impl<T: Trait> Call for Module<T> {
-   | |________^
+   | |__________________^
    |
    = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -20,9 +20,9 @@ error[E0308]: mismatched types
 3  | |     use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
 4  | |     use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
 ...  |
+16 | |
 17 | |     #[pallet::call]
-18 | |     impl<T: Trait> Call for Module<T> {
-   | |________^ expected associated type, found reference
+   | |__________________^ expected associated type, found reference
    |
    = note: expected associated type `<T as pallet::Trait>::Bar`
                     found reference `&<T as pallet::Trait>::Bar`
@@ -38,9 +38,9 @@ error[E0277]: `<T as pallet::Trait>::Bar` doesn't implement `std::fmt::Debug`
 3  | |     use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
 4  | |     use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
 ...  |
+16 | |
 17 | |     #[pallet::call]
-18 | |     impl<T: Trait> Call for Module<T> {
-   | |________^ `<T as pallet::Trait>::Bar` cannot be formatted using `{:?}` because it doesn't implement `std::fmt::Debug`
+   | |__________________^ `<T as pallet::Trait>::Bar` cannot be formatted using `{:?}` because it doesn't implement `std::fmt::Debug`
    |
    = help: the trait `std::fmt::Debug` is not implemented for `<T as pallet::Trait>::Bar`
    = note: required because of the requirements on the impl of `std::fmt::Debug` for `&<T as pallet::Trait>::Bar`

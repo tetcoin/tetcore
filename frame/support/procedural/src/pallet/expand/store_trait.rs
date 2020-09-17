@@ -17,6 +17,8 @@
 
 use crate::pallet::Def;
 
+// TODO TODO: this is breaking, all storage are in Store, and Store must be pub(crate) in some
+// situation.
 /// * generate Store trait
 /// * implement Store trait for module
 pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
@@ -41,7 +43,7 @@ pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
 	let pub_storage_generics = pub_storages.map(|s| s.1);
 
 	quote::quote!(
-		trait Store {
+		pub trait Store {
 			#(
 				type #pub_storage_names;
 			)*

@@ -377,6 +377,8 @@ mod pallet {
 	// Metadata allow to define what metadata name correspond to which type.
 	// Here `BalanceOf<T>` type will be written `B` in the metadata.
 	#[pallet::metadata(BalanceOf<T> = B)]
+	// Generate deposit_event function using frame_system deposit_event.
+	#[pallet::generate(pub(crate) fn deposit_event)]
 	pub enum Event<T: Trait> {
 		// Just a normal `enum`, here's a dummy event to ensure it compiles.
 		/// Dummy event, just here so there's a generic type that's used.
@@ -385,8 +387,6 @@ mod pallet {
 
 	// Define the module struct, a place holder which implements various traits.
 	#[pallet::module]
-	// Generate deposit_event function using frame_system deposit_event.
-	#[pallet::generate(pub(crate) fn deposit_event)]
 	pub struct Module<T>(PhantomData<T>);
 
 	// The module declaration. This states the entry points that we handle. The
@@ -417,7 +417,7 @@ mod pallet {
 	// in system that do the matching for you and return a convenient result: `ensure_signed`,
 	// `ensure_root` and `ensure_none`.
 	#[pallet::call]
-	impl<T: Trait> Call for Module<T> {
+	impl<T: Trait> Module<T> {
 		/// This is your public interface. Be extremely careful.
 		/// This is just a simple example of how to interact with the pallet from the external
 		/// world.

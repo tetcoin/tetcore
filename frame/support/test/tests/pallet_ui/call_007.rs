@@ -15,7 +15,7 @@ mod pallet {
 	struct Bar;
 
 	#[pallet::call]
-	impl<T: Trait> Call for Module<T> {
+	impl<T: Trait> Module<T> {
 		#[pallet::weight(0)]
 		fn foo(origin: OriginFor<T>, bar: Bar) -> DispatchResultWithPostInfo {
 			Ok(().into())

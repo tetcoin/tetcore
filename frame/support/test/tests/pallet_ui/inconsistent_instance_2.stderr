@@ -1,14 +1,14 @@
 error: Invalid generic declaration, trait is defined without instance but generic use some
   --> $DIR/inconsistent_instance_2.rs:16:7
    |
-16 |     impl<T: Trait<I>, I: Instance> Call for Module<T, I> {}
+16 |     impl<T: Trait<I>, I: Instance> Module<T, I> {}
    |          ^
 
 error: Invalid generic declaration, trait is defined without instance but generic use some
-  --> $DIR/inconsistent_instance_2.rs:16:42
+  --> $DIR/inconsistent_instance_2.rs:16:33
    |
-16 |     impl<T: Trait<I>, I: Instance> Call for Module<T, I> {}
-   |                                             ^^^^^^
+16 |     impl<T: Trait<I>, I: Instance> Module<T, I> {}
+   |                                    ^^^^^^
 
 error: Invalid generic declaration, trait is defined without instance but generic use some
   --> $DIR/inconsistent_instance_2.rs:10:20

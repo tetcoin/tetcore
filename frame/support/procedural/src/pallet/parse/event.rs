@@ -23,6 +23,9 @@ use quote::ToTokens;
 mod keyword {
 	syn::custom_keyword!(metadata);
 	syn::custom_keyword!(Event);
+	syn::custom_keyword!(pallet);
+	syn::custom_keyword!(generate);
+	syn::custom_keyword!(deposit_event);
 }
 
 /// Definition for pallet event enum.
@@ -39,6 +42,8 @@ pub struct EventDef {
 	pub has_instance: bool,
 	/// If event is declared with genericity.
 	pub is_generic: bool,
+	/// Weither the function `deposit_event` must be generated.
+	pub deposit_event: Option<(syn::Visibility, proc_macro2::Span)>
 }
 
 impl EventDef {
@@ -74,10 +79,30 @@ impl EventDef {
 /// Attribute for Event: defines metadata name to use.
 ///
 /// Syntax is:
-/// `#[pallet::metadata(SomeType = MetadataName, ...)]`
-pub struct PalletEventAttr {
-	metadata: Vec<(syn::Type, syn::Ident)>,
-	span: proc_macro2::Span,
+/// * `#[pallet::metadata(SomeType = MetadataName, ...)]`
+/// * `#[pallet::generate($vis fn deposit_event)]`
+enum PalletEventAttr {
+	Metadata {
+		metadata: Vec<(syn::Type, syn::Ident)>,
+		// Span of the attribute
+		span: proc_macro2::Span,
+	},
+	DepositEvent {
+		fn_vis: syn::Visibility,
+		// Span for the keyword deposit_event
+		fn_span: proc_macro2::Span,
+		// Span of the attribute
+		span: proc_macro2::Span,
+	},
+}
+
+impl PalletEventAttr {
+	fn span(&self) -> proc_macro2::Span {
+		match self {
+			Self::Metadata { span, .. } => span.clone(),
+			Self::DepositEvent { span, .. } => span.clone(),
+		}
+	}
 }
 
 /// Parse for syntax `$Type = $Ident`.
@@ -93,7 +118,7 @@ impl syn::parse::Parse for PalletEventAttr {
 		input.parse::<syn::Token![#]>()?;
 		let content;
 		syn::bracketed!(content in input);
-		content.parse::<syn::Ident>()?;
+		content.parse::<keyword::pallet>()?;
 		content.parse::<syn::Token![::]>()?;
 
 		let lookahead = content.lookahead1();
@@ -108,10 +133,46 @@ impl syn::parse::Parse for PalletEventAttr {
 				.map(syn::punctuated::Pair::into_value)
 				.collect();
 
-			Ok(PalletEventAttr { metadata, span })
+			Ok(PalletEventAttr::Metadata { metadata, span })
+		} else if lookahead.peek(keyword::generate) {
+			let span = content.parse::<keyword::generate>()?.span();
+
+			let generate_content;
+			syn::parenthesized!(generate_content in content);
+			let fn_vis = generate_content.parse::<syn::Visibility>()?;
+			generate_content.parse::<syn::Token![fn]>()?;
+			let fn_span = generate_content.parse::<keyword::deposit_event>()?.span();
+
+
+			Ok(PalletEventAttr::DepositEvent { fn_vis, span, fn_span })
 		} else {
 			Err(lookahead.error())
 		}
+	}
+}
+
+struct PalletEventAttrInfo {
+	metadata: Option<Vec<(syn::Type, syn::Ident)>>,
+	deposit_event: Option<(syn::Visibility, proc_macro2::Span)>,
+}
+
+impl PalletEventAttrInfo {
+	fn from_attrs(attrs: Vec<PalletEventAttr>) -> syn::Result<Self> {
+		let mut metadata = None;
+		let mut deposit_event = None;
+		for attr in attrs {
+			match attr {
+				PalletEventAttr::Metadata { metadata: m, .. } if metadata.is_none() =>
+					metadata = Some(m),
+				PalletEventAttr::DepositEvent { fn_vis, fn_span, .. } if deposit_event.is_none() =>
+					deposit_event = Some((fn_vis, fn_span)),
+				attr => {
+					return Err(syn::Error::new(attr.span(), "Duplicate attribute"));
+				}
+			}
+		}
+
+		Ok(PalletEventAttrInfo { metadata, deposit_event })
 	}
 }
 
@@ -123,13 +184,10 @@ impl EventDef {
 			return Err(syn::Error::new(item.span(), "Invalid pallet::event, expect item enum"))
 		};
 
-		let mut event_attrs: Vec<PalletEventAttr> = helper::take_item_attrs(&mut item.attrs)?;
-		if event_attrs.len() > 1 {
-			let msg = "Invalid pallet::metadata, expected only one attribute \
-				`pallet::metadata`";
-			return Err(syn::Error::new(event_attrs[1].span, msg));
-		}
-		let metadata = event_attrs.pop().map_or(vec![], |attr| attr.metadata);
+		let event_attrs: Vec<PalletEventAttr> = helper::take_item_attrs(&mut item.attrs)?;
+		let attr_info = PalletEventAttrInfo::from_attrs(event_attrs)?;
+		let metadata = attr_info.metadata.unwrap_or_else(|| vec![]);
+		let deposit_event = attr_info.deposit_event;
 
 		if !matches!(item.vis, syn::Visibility::Public(_)) {
 			let msg = "Invalid pallet::event, `Error` must be public";
@@ -193,6 +251,7 @@ impl EventDef {
 			metadata,
 			instances,
 			has_instance,
+			deposit_event,
 			event,
 			is_generic,
 		})

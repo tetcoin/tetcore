@@ -22,6 +22,7 @@ use syn::spanned::Spanned;
 /// * Add derive for codec, eq, partialeq, clone, debug on Event
 /// * Impl `From<Event>` for ()
 /// * Impl metadata function on Event
+/// * if deposit_event is defined, implement deposit_event on module.
 pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 	let event = if let Some(event) = &def.event {
 		event
@@ -30,6 +31,7 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 	};
 
 	let event_ident = &event.event;
+	let frame_system = &def.system_crate();
 	let scrate = &def.scrate();
 	let event_use_gen = &event.event_use_gen();
 	let event_impl_gen= &event.event_impl_gen();
@@ -89,7 +91,37 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		)]
 	));
 
+
+	let deposit_event = if let Some((fn_vis, fn_span)) = &event.deposit_event {
+		let event_use_gen = &event.event_use_gen();
+		let trait_use_gen = &def.trait_use_generics();
+		let type_impl_gen = &def.type_impl_generics();
+		let type_use_gen = &def.type_use_generics();
+
+		quote::quote_spanned!(*fn_span =>
+			impl<#type_impl_gen> Module<#type_use_gen> {
+				#fn_vis fn deposit_event(event: Event<#event_use_gen>) {
+					let event = <
+						<T as Trait#trait_use_gen>::Event as
+						From<Event<#event_use_gen>>
+					>::from(event);
+
+					let event = <
+						<T as Trait#trait_use_gen>::Event as
+						Into<<T as #frame_system::Trait>::Event>
+					>::into(event);
+
+					<#frame_system::Module<T>>::deposit_event(event)
+				}
+			}
+		)
+	} else {
+		Default::default()
+	};
+
 	quote::quote_spanned!(event_item_span =>
+		#deposit_event
+
 		impl<#event_impl_gen> From<#event_ident<#event_use_gen>> for () {
 			fn from(_: #event_ident<#event_use_gen>) -> () { () }
 		}

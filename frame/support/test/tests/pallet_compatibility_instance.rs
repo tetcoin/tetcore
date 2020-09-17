@@ -95,7 +95,6 @@ pub mod pallet {
 	}
 
 	#[pallet::module]
-	#[pallet::generate(fn deposit_event)]
 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 
 	#[pallet::module_interface]
@@ -111,7 +110,7 @@ pub mod pallet {
 	}
 
 	#[pallet::call]
-	impl<T: Trait<I>, I: Instance> Call for Module<T, I> {
+	impl<T: Trait<I>, I: Instance> Module<T, I> {
 		#[pallet::weight(<T::Balance as Into<Weight>>::into(new_value.clone()))]
 		fn set_dummy(origin: OriginFor<T>, #[pallet::compact] new_value: T::Balance) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
@@ -130,6 +129,7 @@ pub mod pallet {
 	}
 
 	#[pallet::event]
+	#[pallet::generate(fn deposit_event)]
 	pub enum Event<T: Trait<I>, I: Instance = DefaultInstance> {
 		/// Dummy event, just here so there's a generic type that's used.
 		Dummy(T::Balance),

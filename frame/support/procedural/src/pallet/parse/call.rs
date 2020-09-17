@@ -28,7 +28,7 @@ mod keyword {
 	syn::custom_keyword!(pallet);
 }
 
-/// Definition of dispatchables typically `impl<T: Trait> Call for Module<T> { ... }`
+/// Definition of dispatchables typically `impl<T: Trait> Module<T> { ... }`
 pub struct CallDef {
 	/// The where_clause used.
 	pub where_clause: Option<syn::WhereClause>,
@@ -38,8 +38,8 @@ pub struct CallDef {
 	pub index: usize,
 	/// Information on methods (used for expansion).
 	pub methods: Vec<CallVariantDef>,
-	/// The keyword Call used (contains span).
-	pub call: keyword::Call,
+	/// The span of the attribute.
+	pub attr_span: proc_macro2::Span,
 }
 
 /// Definition of dispatchable typically: `#[weight...] fn foo(origin .., param1: ...) -> ..`
@@ -96,7 +96,12 @@ impl syn::parse::Parse for ArgAttrIsCompact {
 }
 
 impl CallDef {
-	pub fn try_from(index: usize, item: &mut syn::Item) -> syn::Result<Self> {
+	pub fn try_from(
+		// Span needed for expansion
+		attr_span: proc_macro2::Span,
+		index: usize,
+		item: &mut syn::Item
+	) -> syn::Result<Self> {
 		let item = if let syn::Item::Impl(item) = item {
 			item
 		} else {
@@ -107,13 +112,11 @@ impl CallDef {
 		instances.push(helper::check_impl_generics(&item.generics, item.impl_token.span())?);
 		instances.push(helper::check_module_usage(&item.self_ty)?);
 
-		let call = item.trait_.take()
-			.ok_or_else(|| {
-				let msg = "Invalid pallet::call, expect Call ident as in \
-					`impl<..> Call for Module<..> { .. }`";
-				syn::Error::new(item.span(), msg)
-			})?.1;
-		let call = syn::parse2::<keyword::Call>(call.to_token_stream())?;
+		if let Some((_, _, for_)) = item.trait_ {
+			let msg = "Invalid pallet::call, expect no trait ident as in \
+				`impl<..> Module<..> { .. }`";
+			return Err(syn::Error::new(for_.span(), msg))
+		}
 
 		let mut methods = vec![];
 		for impl_item in &mut item.items {
@@ -187,7 +190,7 @@ impl CallDef {
 
 		Ok(Self {
 			index,
-			call,
+			attr_span,
 			instances,
 			methods,
 			where_clause: item.generics.where_clause.clone(),
