@@ -127,6 +127,12 @@ impl MutItemAttrs for Vec<syn::Attribute> {
 	}
 }
 
+impl MutItemAttrs for syn::ItemMod {
+	fn mut_item_attrs(&mut self) -> Option<&mut Vec<syn::Attribute>> {
+		Some(&mut self.attrs)
+	}
+}
+
 /// Return all doc attributes literals found.
 pub fn get_doc_literals(attrs: &Vec<syn::Attribute>) -> Vec<syn::Lit> {
 	attrs.iter()

@@ -16,41 +16,45 @@
 // limitations under the License.
 
 use crate::pallet::Def;
+use syn::spanned::Spanned;
 
-// TODO TODO: this is breaking, all storage are in Store, and Store must be pub(crate) in some
-// situation.
-/// * generate Store trait
-/// * implement Store trait for module
+/// If attribute `#[pallet::generate_store(..)]` is defined then:
+/// * generate Store trait with all storages,
+/// * implement Store trait for module.
 pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
+	let (trait_vis, trait_store) = if let Some(store) = &def.module.store {
+		store
+	} else {
+		return Default::default()
+	};
+
 	let type_impl_static_gen = &def.type_impl_static_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 
-	let pub_storages = def.storages.iter()
-		.filter_map(|storage| if let syn::Visibility::Public(_) = storage.vis {
+	let storages = def.storages.iter()
+		.map(|storage| {
 			let storage_generics = match (storage.has_trait, storage.has_instance) {
 				(true, true) => quote::quote!(T, I),
 				(true, false) => quote::quote!(T),
 				(false, true) => quote::quote!(I),
 				(false, false) => quote::quote!(),
 			};
-			Some((storage.ident.clone(), storage_generics))
-		} else {
-			None
+			(storage.ident.clone(), storage_generics)
 		});
 
-	let pub_storage_names = pub_storages.clone().map(|s| s.0).collect::<Vec<_>>();
-	let pub_storage_generics = pub_storages.map(|s| s.1);
+	let storage_names = storages.clone().map(|s| s.0).collect::<Vec<_>>();
+	let storage_generics = storages.map(|s| s.1);
 
-	quote::quote!(
-		pub trait Store {
+	quote::quote_spanned!(trait_store.span() =>
+		#trait_vis trait #trait_store {
 			#(
-				type #pub_storage_names;
+				type #storage_names;
 			)*
 		}
-		impl<#type_impl_static_gen> Store for #module_ident<#type_use_gen> {
+		impl<#type_impl_static_gen> #trait_store for #module_ident<#type_use_gen> {
 			#(
-				type #pub_storage_names = #pub_storage_names<#pub_storage_generics>;
+				type #storage_names = #storage_names<#storage_generics>;
 			)*
 		}
 	)

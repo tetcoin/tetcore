@@ -182,6 +182,7 @@ pub type RawEvent<T> = Event<T>;
 
 #[frame_support::pallet(System)]
 mod pallet {
+
 	use crate as frame_system;
 	use frame_support::pallet_prelude::*;
 	use crate::pallet_prelude::*;
@@ -467,7 +468,6 @@ mod pallet {
 		/// There is a non-zero reference count preventing the account from being purged.
 		NonZeroRefCount,
 	}
-
 	#[pallet::call]
 	impl<T: Trait> Module<T> {
 		/// A dispatch that will fill the block weight up to the given ratio.

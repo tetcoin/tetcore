@@ -49,6 +49,7 @@ pub mod pallet {
 	}
 
 	#[pallet::module]
+	#[pallet::generate_store(pub(crate) trait Store)]
 	pub struct Module<T>(PhantomData<T>);
 
 	#[pallet::module_interface]
@@ -92,6 +93,10 @@ pub mod pallet {
 		}
 	}
 
+
+	#[pallet::call]
+	impl<T: Trait> Module<T> where T::Balance: From<u64> {
+	}
 
 	#[pallet::error]
 	pub enum Error<T> {

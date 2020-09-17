@@ -20,6 +20,12 @@ use proc_macro2::Span;
 use crate::pallet::parse::storage::{Metadata, QueryKind};
 use frame_support_procedural_tools::clean_type_string;
 
+/// Generate the prefix_ident related the the storage.
+/// prefix_ident is used for the prefix struct to be given to storage as first generic param.
+fn prefix_ident(storage_ident: &syn::Ident) -> syn::Ident {
+	syn::Ident::new(&format!("_GeneratedPrefixForStorage{}", storage_ident), storage_ident.span())
+}
+
 /// * generate StoragePrefix structs (e.g. for a storage `MyStorage` a struct with the name
 ///   `MyStorageP` is generated and implements StorageInstance trait.
 /// * generate metadatas
@@ -31,16 +37,10 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 
-	let prefix_struct_ident = def.storages.iter()
-		.map(|storage_def|
-			syn::Ident::new(&format!("_{}Prefix", storage_def.ident), storage_def.ident.span())
-		)
-		.collect::<Vec<_>>();
-
 	// Replace first arg `_` by the generated prefix structure.
 	// Add `#[allow(type_alias_bounds)]`
-	for (i, def_storage) in def.storages.iter_mut().enumerate() {
-		let item = &mut def.item.content.as_mut().expect("Checked by def").1[def_storage.index];
+	for storage_def in def.storages.iter_mut() {
+		let item = &mut def.item.content.as_mut().expect("Checked by def").1[storage_def.index];
 
 		let typ_item = if let syn::Item::Type(t) = item {
 			t
@@ -64,20 +64,14 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 			unreachable!("Checked by def");
 		};
 
-		let ident = prefix_struct_ident[i].clone();
-		let generic = if def_storage.has_instance {
+		let prefix_ident = prefix_ident(&storage_def.ident);
+		let generic = if storage_def.has_instance {
 			quote::quote!(<I>)
 		} else {
 			Default::default()
 		};
-		args.args[0] = syn::parse_quote!(#ident #generic);
+		args.args[0] = syn::parse_quote!(#prefix_ident #generic);
 	}
-
-	let prefix_struct_vis = def.storages.iter()
-		.map(|storage_def| storage_def.vis.clone());
-
-	let prefix_struct_const = def.storages.iter()
-		.map(|storage_def| storage_def.ident.to_string());
 
 	let instance = if def.trait_.has_instance {
 		// If trait_ has instance parsing ensure storage is generic over `I`
@@ -236,8 +230,12 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 			Default::default()
 		});
 
-	quote::quote!(
-		#(
+	let prefix_structs = def.storages.iter().map(|storage_def| {
+		let prefix_struct_ident = prefix_ident(&storage_def.ident);
+		let prefix_struct_vis = &storage_def.vis;
+		let prefix_struct_const = storage_def.ident.to_string();
+
+		quote::quote_spanned!(storage_def.ident.span() =>
 			#prefix_struct_vis struct #prefix_struct_ident<#prefix_struct_use_gen>(
 				core::marker::PhantomData<((), #prefix_struct_use_gen)>
 			);
@@ -247,8 +245,10 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 				type I = #instance;
 				const STORAGE_PREFIX: &'static str = #prefix_struct_const;
 			}
-		)*
+		)
+	});
 
+	quote::quote!(
 		impl<#type_impl_static_gen> #module_ident<#type_use_gen> {
 			#[doc(hidden)]
 			pub fn storage_metadata() -> #scrate::metadata::StorageMetadata {
@@ -264,5 +264,6 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 
 		#( #getters )*
+		#( #prefix_structs )*
 	)
 }

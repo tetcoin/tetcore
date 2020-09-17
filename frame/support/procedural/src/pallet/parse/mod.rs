@@ -326,11 +326,13 @@ mod keyword {
 	syn::custom_keyword!(validate_unsigned);
 	syn::custom_keyword!(type_value);
 	syn::custom_keyword!(pallet);
+	syn::custom_keyword!(generate_store);
+	syn::custom_keyword!(Store);
 }
 
 /// Parse attributes for item in pallet module
 /// syntax must be `pallet::` (e.g. `#[pallet::trait_]`)
-pub enum PalletAttr {
+enum PalletAttr {
 	Trait(proc_macro2::Span),
 	Module(proc_macro2::Span),
 	ModuleInterface(proc_macro2::Span),

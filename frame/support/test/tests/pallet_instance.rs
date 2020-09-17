@@ -40,6 +40,7 @@ pub mod pallet {
 	}
 
 	#[pallet::module]
+	#[pallet::generate_store(pub(crate) trait Store)]
 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 
 	#[pallet::module_interface]

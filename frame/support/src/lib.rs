@@ -922,6 +922,18 @@ pub mod pallet_prelude {
 /// pub struct Module<T>(PhantomData<T>);
 /// ```
 ///
+/// Additionally a `Store` trait can be generated using additional attribute:
+/// `#[pallet::generate_store($vis trait Store)]` e.g.:
+///
+/// ```nocompile
+/// #[pallet::module]
+/// #[pallet::generate_store(pub(crate) trait Store)]
+/// pub struct Module<T>(PhantomData<T>);
+/// ```
+///
+/// The store trait contains an associated type for each storage. It is implemented for `Module`
+/// allowing to access the storage from module struct.
+///
 /// ### `#[pallet::module_interface]`
 ///
 /// Above defined module needs to implement trait Module interface as:
@@ -1177,6 +1189,7 @@ pub mod pallet_prelude {
 /// 	// Define the module struct placeholder, various pallet function are implemented on it.
 /// 	// The macro checks struct generics: is expected `T` or `T, I = DefaultInstance`
 /// 	#[pallet::module]
+/// 	#[pallet::generate_store(pub(crate) trait Store)]
 /// 	pub struct Module<T>(PhantomData<T>);
 ///
 /// 	// Implement on the module interface on module.
@@ -1356,6 +1369,7 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::module]
+/// 	#[pallet::generate_store(pub(crate) trait Store)]
 /// 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 ///
 /// 	#[pallet::module_interface]
@@ -1456,6 +1470,23 @@ pub mod pallet_prelude {
 /// ```
 ///
 /// ### Notes for migration from decl_* macros
+///
+/// A good strategy is to start from the code below and add decl_module, decl_storage, decl_event,
+/// ValidateUsigned, Inherent information inside the pallet.
+///
+/// ```
+/// pub use pallet::*;
+/// #[frame_support::pallet(MyPalletAsNamedInDeclStorage)]
+/// mod pallet {
+///		use frame_support::pallet_prelude::*;
+///		use frame_system::pallet_prelude::*;
+///		use super::*;
+///
+///		#[pallet::module]
+///		#[pallet::generate_store(pub(crate) Store)]
+///		pub struct Module<T>(PhantomData<T>);
+/// }
+/// ```
 ///
 /// * macros defined pallet types in scope thus in order not to break the crate you might want to
 ///   reexport pallets types, and import crate types.
