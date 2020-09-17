@@ -922,12 +922,12 @@ pub mod pallet_prelude {
 /// pub struct Module<T>(PhantomData<T>);
 /// ```
 ///
-/// an optional attribute `#[pallet::generate(fn deposit_event)]` can be used to generate a handy
-/// function to deposit event defined by `#[pallet::event]` (see later).
+/// an optional attribute `#[pallet::generate($vis fn deposit_event)]` can be used to generate a
+/// handy function to deposit event defined by `#[pallet::event]` (see later).
 ///
 /// ```nocompile
 /// #[pallet::module]
-/// #[pallet::generate(fn deposit_event)]
+/// #[pallet::generate(pub(crate) fn deposit_event)]
 /// pub struct Module<T>(PhantomData<T>);
 /// ```
 ///
@@ -1179,7 +1179,7 @@ pub mod pallet_prelude {
 /// 	// Define the module struct placeholder, various pallet function are implemented on it.
 /// 	// The macro checks struct generics: is expected `T` or `T, I = DefaultInstance`
 /// 	#[pallet::module]
-/// 	#[pallet::generate(fn deposit_event)]
+/// 	#[pallet::generate(pub(crate) fn deposit_event)]
 /// 	pub struct Module<T>(PhantomData<T>);
 ///
 /// 	// Implement on the module interface on module.
@@ -1357,7 +1357,7 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::module]
-/// 	#[pallet::generate(fn deposit_event)]
+/// 	#[pallet::generate(pub(crate) fn deposit_event)]
 /// 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 ///
 /// 	#[pallet::module_interface]

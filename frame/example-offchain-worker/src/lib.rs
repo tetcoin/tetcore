@@ -177,7 +177,7 @@ mod pallet {
 	}
 
 	#[pallet::module]
-	#[pallet::generate(fn deposit_event)]
+	#[pallet::generate(pub(crate) fn deposit_event)]
 	pub struct Module<T>(PhantomData<T>);
 
 	#[pallet::module_interface]

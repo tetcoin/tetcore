@@ -169,7 +169,7 @@ impl Def {
 		match (
 			self.trait_.has_event_type,
 			self.event.is_some(),
-			self.module.generate_fn_deposit_event,
+			&self.module.generate_fn_deposit_event,
 		) {
 			(true, false, _) => {
 				let msg = "Invalid usage of Event, trait `Trait` contains associated type `Event`, \
@@ -183,10 +183,10 @@ impl Def {
 					An Event associated type must be declare on trait `Trait`.";
 				Err(syn::Error::new(proc_macro2::Span::call_site(), msg))
 			},
-			(false, false, Some(span)) => {
+			(false, false, Some((_, span))) => {
 				let msg = "Invalid usage of Event, deposit_event can't be generated for pallet \
 					without `Event`, please use `#[pallet::event]` to declare it";
-				Err(syn::Error::new(span, msg))
+				Err(syn::Error::new(*span, msg))
 			},
 			_ => Ok(())
 		}

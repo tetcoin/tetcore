@@ -386,7 +386,7 @@ mod pallet {
 	// Define the module struct, a place holder which implements various traits.
 	#[pallet::module]
 	// Generate deposit_event function using frame_system deposit_event.
-	#[pallet::generate(fn deposit_event)]
+	#[pallet::generate(pub(crate) fn deposit_event)]
 	pub struct Module<T>(PhantomData<T>);
 
 	// The module declaration. This states the entry points that we handle. The

@@ -58,7 +58,7 @@ mod pallet {
 	// Type placeholder to implement pallet traits on it.
 	#[pallet::module]
 	// Generate a helper function to deposit events.
-	#[pallet::generate(fn deposit_event)]
+	#[pallet::generate(pub(crate) fn deposit_event)]
 	pub struct Module<T>(PhantomData<T>);
 
 	#[pallet::module_interface]

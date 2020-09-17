@@ -21,6 +21,7 @@ use quote::ToTokens;
 
 /// List of additional token to be used for parsing.
 mod keyword {
+	syn::custom_keyword!(pallet);
 	syn::custom_keyword!(Module);
 	syn::custom_keyword!(generate);
 	syn::custom_keyword!(deposit_event);
@@ -35,11 +36,12 @@ pub struct ModuleDef {
 	/// The keyword module used (contains span).
 	pub module: keyword::Module,
 	/// Weither the function `deposit_event` must be generated.
-	pub generate_fn_deposit_event: Option<proc_macro2::Span>
+	pub generate_fn_deposit_event: Option<(syn::Visibility, proc_macro2::Span)>
 }
 
-/// Parse for `#[pallet::generate(fn deposit_event)]`
+/// Parse for `#[pallet::generate($vis fn deposit_event)]`
 pub struct PalletModuleAttr {
+	vis: syn::Visibility,
 	span: proc_macro2::Span,
 }
 
@@ -48,14 +50,18 @@ impl syn::parse::Parse for PalletModuleAttr {
 		input.parse::<syn::Token![#]>()?;
 		let content;
 		syn::bracketed!(content in input);
-		content.parse::<syn::Ident>()?;
+		content.parse::<keyword::pallet>()?;
 		content.parse::<syn::Token![::]>()?;
 		content.parse::<keyword::generate>()?;
 
 		let generate_content;
 		syn::parenthesized!(generate_content in content);
+		let vis = generate_content.parse::<syn::Visibility>()?;
 		generate_content.parse::<syn::Token![fn]>()?;
-		Ok(Self { span: generate_content.parse::<keyword::deposit_event>()?.span() })
+		Ok(Self {
+			vis,
+			span: generate_content.parse::<keyword::deposit_event>()?.span()
+		})
 	}
 }
 
@@ -73,7 +79,7 @@ impl ModuleDef {
 			let msg = "Invalid pallet::module, multiple argument pallet::generate found";
 			return Err(syn::Error::new(event_attrs[1].span, msg));
 		}
-		let generate_fn_deposit_event = event_attrs.pop().map(|attr| attr.span);
+		let generate_fn_deposit_event = event_attrs.pop().map(|attr| (attr.vis, attr.span));
 
 		let module = syn::parse2::<keyword::Module>(item.ident.to_token_stream())?;
 

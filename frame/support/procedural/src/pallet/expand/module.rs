@@ -41,16 +41,16 @@ pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
 		)]
 	));
 
-	if let Some(fn_deposit_event_span) = def.module.generate_fn_deposit_event {
+	if let Some((fn_vis, fn_span)) = &def.module.generate_fn_deposit_event {
 		let event = def.event.as_ref().expect("Checked by parser");
 		let event_use_gen = &event.event_use_gen();
 		let trait_use_gen = &def.trait_use_generics();
 		let type_impl_gen = &def.type_impl_generics();
 		let type_use_gen = &def.type_use_generics();
 
-		quote::quote_spanned!(fn_deposit_event_span =>
+		quote::quote_spanned!(*fn_span =>
 			impl<#type_impl_gen> Module<#type_use_gen> {
-				pub fn deposit_event(event: Event<#event_use_gen>) {
+				#fn_vis fn deposit_event(event: Event<#event_use_gen>) {
 					let event = <
 						<T as Trait#trait_use_gen>::Event as
 						From<Event<#event_use_gen>>
