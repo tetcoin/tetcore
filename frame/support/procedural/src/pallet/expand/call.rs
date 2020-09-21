@@ -17,6 +17,7 @@
 
 use crate::pallet::Def;
 use frame_support_procedural_tools::clean_type_string;
+use syn::spanned::Spanned;
 
 /// * create Call enum, add derives on it:
 ///   * frame_support::CloneNoBound,
@@ -55,9 +56,9 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 
 	let args_compact_attr = def.call.methods.iter().map(|method| {
 		method.args.iter()
-			.map(|(is_compact, _, _)| {
+			.map(|(is_compact, _, type_)| {
 				if *is_compact {
-					quote::quote!( #[codec(compact)] )
+					quote::quote_spanned!(type_.span() => #[codec(compact)] )
 				} else {
 					quote::quote!()
 				}

@@ -93,11 +93,6 @@ pub mod pallet {
 		}
 	}
 
-
-	#[pallet::call]
-	impl<T: Trait> Module<T> where T::Balance: From<u64> {
-	}
-
 	#[pallet::error]
 	pub enum Error<T> {
 		/// doc comment put into metadata

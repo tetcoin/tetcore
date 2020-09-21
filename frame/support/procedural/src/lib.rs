@@ -315,14 +315,14 @@ pub fn derive_clone_no_bound(input: TokenStream) -> TokenStream {
 			syn::Fields::Named(named) => {
 				let fields = named.named.iter()
 					.map(|i| i.ident.as_ref().expect("named fields have ident"))
-					.map(|i| quote::quote!( #i: self.#i.clone() ));
+					.map(|i| quote::quote_spanned!(i.span() => #i: self.#i.clone() ));
 
 				quote::quote!( Self { #( #fields, )* } )
 			},
 			syn::Fields::Unnamed(unnamed) => {
 				let fields = unnamed.unnamed.iter().enumerate()
 					.map(|(i, _)| syn::Index::from(i))
-					.map(|i| quote::quote!( self.#i.clone() ));
+					.map(|i| quote::quote_spanned!(i.span() => self.#i.clone() ));
 
 				quote::quote!( Self ( #( #fields, )* ) )
 			},
@@ -339,7 +339,9 @@ pub fn derive_clone_no_bound(input: TokenStream) -> TokenStream {
 							let captured = named.named.iter()
 								.map(|i| i.ident.as_ref().expect("named fields have ident"));
 							let cloned = captured.clone()
-								.map(|i| quote::quote!( #i: #i.clone() ));
+								.map(|i| quote::quote_spanned!(i.span() =>
+									#i: core::clone::Clone::clone(#i)
+								));
 							quote::quote!(
 								Self::#ident { #( ref #captured, )* } => Self::#ident { #( #cloned, )*}
 							)
@@ -347,7 +349,10 @@ pub fn derive_clone_no_bound(input: TokenStream) -> TokenStream {
 						syn::Fields::Unnamed(unnamed) => {
 							let captured = unnamed.unnamed.iter().enumerate()
 								.map(|(i, f)| syn::Ident::new(&format!("_{}", i), f.span()));
-							let cloned = captured.clone().map(|i| quote::quote!( #i.clone() ));
+							let cloned = captured.clone()
+								.map(|i| quote::quote_spanned!(i.span() =>
+									core::clone::Clone::clone(#i)
+								));
 							quote::quote!(
 								Self::#ident ( #( ref #captured, )* ) => Self::#ident ( #( #cloned, )*)
 							)
@@ -356,7 +361,7 @@ pub fn derive_clone_no_bound(input: TokenStream) -> TokenStream {
 					}
 				});
 
-			quote::quote!( match *self {
+			quote::quote!( match self {
 				#( #variants, )*
 			})
 		},
@@ -417,7 +422,7 @@ pub fn derive_debug_no_bound(input: TokenStream) -> TokenStream {
 			syn::Fields::Named(named) => {
 				let fields = named.named.iter()
 					.map(|i| i.ident.as_ref().expect("named fields have ident"))
-					.map(|i| quote::quote!( .field(stringify!(#i), &self.#i) ));
+					.map(|i| quote::quote_spanned!(i.span() => .field(stringify!(#i), &self.#i) ));
 
 				quote::quote!( fmt.debug_struct(stringify!(#input_ident))
 					#( #fields )*
@@ -427,7 +432,7 @@ pub fn derive_debug_no_bound(input: TokenStream) -> TokenStream {
 			syn::Fields::Unnamed(unnamed) => {
 				let fields = unnamed.unnamed.iter().enumerate()
 					.map(|(i, _)| syn::Index::from(i))
-					.map(|i| quote::quote!( .field(&self.#i) ));
+					.map(|i| quote::quote_spanned!(i.span() => .field(&self.#i) ));
 
 				quote::quote!( fmt.debug_tuple(stringify!(#input_ident))
 					#( #fields )*
@@ -446,7 +451,9 @@ pub fn derive_debug_no_bound(input: TokenStream) -> TokenStream {
 							let captured = named.named.iter()
 								.map(|i| i.ident.as_ref().expect("named fields have ident"));
 							let debuged = captured.clone()
-								.map(|i| quote::quote!( .field(stringify!(#i), &#i) ));
+								.map(|i| quote::quote_spanned!(i.span() =>
+									.field(stringify!(#i), &#i)
+								));
 							quote::quote!(
 								Self::#ident { #( ref #captured, )* } => {
 									fmt.debug_struct(#full_variant_str)
@@ -458,7 +465,8 @@ pub fn derive_debug_no_bound(input: TokenStream) -> TokenStream {
 						syn::Fields::Unnamed(unnamed) => {
 							let captured = unnamed.unnamed.iter().enumerate()
 								.map(|(i, f)| syn::Ident::new(&format!("_{}", i), f.span()));
-							let debuged = captured.clone().map(|i| quote::quote!( .field(&#i) ));
+							let debuged = captured.clone()
+								.map(|i| quote::quote_spanned!(i.span() => .field(&#i) ));
 							quote::quote!(
 								Self::#ident ( #( ref #captured, )* ) => {
 									fmt.debug_tuple(#full_variant_str)
@@ -513,14 +521,14 @@ pub fn derive_partial_eq_no_bound(input: TokenStream) -> TokenStream {
 			syn::Fields::Named(named) => {
 				let fields = named.named.iter()
 					.map(|i| i.ident.as_ref().expect("named fields have ident"))
-					.map(|i| quote::quote!( self.#i == other.#i ));
+					.map(|i| quote::quote_spanned!(i.span() => self.#i == other.#i ));
 
 				quote::quote!( true #( && #fields )* )
 			},
 			syn::Fields::Unnamed(unnamed) => {
 				let fields = unnamed.unnamed.iter().enumerate()
 					.map(|(i, _)| syn::Index::from(i))
-					.map(|i| quote::quote!( self.#i == other.#i ));
+					.map(|i| quote::quote_spanned!(i.span() => self.#i == other.#i ));
 
 				quote::quote!( true #( && #fields )* )
 			},
@@ -537,18 +545,13 @@ pub fn derive_partial_eq_no_bound(input: TokenStream) -> TokenStream {
 							let names = named.named.iter()
 								.map(|i| i.ident.as_ref().expect("named fields have ident"));
 							let names_bis = names.clone()
-								.map(|i| {
-									syn::Ident::new(
-										&format!("{}_bis", i),
-										proc_macro2::Span::call_site(),
-									)
-								});
+								.map(|i| syn::Ident::new(&format!("{}_bis", i), i.span()));
 
 							let capture = names.clone();
 							let capture_bis = names.clone().zip(names_bis.clone())
 								.map(|(i, i_bis)| quote::quote!(#i: #i_bis));
 							let eq = names.zip(names_bis)
-								.map(|(i, i_bis)| quote::quote!(#i == #i_bis));
+								.map(|(i, i_bis)| quote::quote_spanned!(i.span() => #i == #i_bis));
 							quote::quote!(
 								(
 									Self::#ident { #( #capture, )* },
@@ -562,7 +565,7 @@ pub fn derive_partial_eq_no_bound(input: TokenStream) -> TokenStream {
 							let names_bis = unnamed.unnamed.iter().enumerate()
 								.map(|(i, f)| syn::Ident::new(&format!("_{}_bis", i), f.span()));
 							let eq = names.clone().zip(names_bis.clone())
-								.map(|(i, i_bis)| quote::quote!(#i == #i_bis));
+								.map(|(i, i_bis)| quote::quote_spanned!(i.span() => #i == #i_bis));
 							quote::quote!(
 								(
 									Self::#ident ( #( #names, )* ),
@@ -574,13 +577,13 @@ pub fn derive_partial_eq_no_bound(input: TokenStream) -> TokenStream {
 					}
 				});
 
-			quote::quote!( match (&self, other) {
+			quote::quote!( match (self, other) {
 				#( #variants, )*
 				_ => false,
 			})
 		},
 		syn::Data::Union(_) => {
-			let msg ="Union type not supported by `derive(CloneNoBound)`";
+			let msg ="Union type not supported by `derive(PartialEqNoBound)`";
 			return syn::Error::new(input.span(), msg).to_compile_error().into()
 		},
 	};

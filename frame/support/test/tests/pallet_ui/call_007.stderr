@@ -27,48 +27,28 @@ error[E0277]: the trait bound `pallet::Bar: pallet::_::_parity_scale_codec::Wrap
    = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0369]: binary operation `==` cannot be applied to type `&pallet::Bar`
-  --> $DIR/call_007.rs:1:1
+  --> $DIR/call_007.rs:20:37
    |
-1  | / #[frame_support::pallet(Example)]
-2  | | mod pallet {
-3  | |     use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
-4  | |     use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
-...  |
-16 | |
-17 | |     #[pallet::call]
-   | |__________________^
+20 |         fn foo(origin: OriginFor<T>, bar: Bar) -> DispatchResultWithPostInfo {
+   |                                           ^^^
    |
    = note: an implementation of `std::cmp::PartialEq` might be missing for `&pallet::Bar`
-   = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0308]: mismatched types
-  --> $DIR/call_007.rs:1:1
+error[E0277]: the trait bound `pallet::Bar: std::clone::Clone` is not satisfied
+  --> $DIR/call_007.rs:20:37
    |
-1  | / #[frame_support::pallet(Example)]
-2  | | mod pallet {
-3  | |     use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
-4  | |     use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
-...  |
-16 | |
-17 | |     #[pallet::call]
-   | |__________________^ expected struct `pallet::Bar`, found `&pallet::Bar`
+20 |         fn foo(origin: OriginFor<T>, bar: Bar) -> DispatchResultWithPostInfo {
+   |                                           ^^^ the trait `std::clone::Clone` is not implemented for `pallet::Bar`
    |
-   = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: required by `std::clone::Clone::clone`
 
 error[E0277]: `pallet::Bar` doesn't implement `std::fmt::Debug`
-  --> $DIR/call_007.rs:1:1
+  --> $DIR/call_007.rs:20:37
    |
-1  | / #[frame_support::pallet(Example)]
-2  | | mod pallet {
-3  | |     use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
-4  | |     use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
-...  |
-16 | |
-17 | |     #[pallet::call]
-   | |__________________^ `pallet::Bar` cannot be formatted using `{:?}`
+20 |         fn foo(origin: OriginFor<T>, bar: Bar) -> DispatchResultWithPostInfo {
+   |                                           ^^^ `pallet::Bar` cannot be formatted using `{:?}`
    |
    = help: the trait `std::fmt::Debug` is not implemented for `pallet::Bar`
    = note: add `#[derive(Debug)]` or manually implement `std::fmt::Debug`
    = note: required because of the requirements on the impl of `std::fmt::Debug` for `&pallet::Bar`
    = note: required for the cast to the object type `dyn std::fmt::Debug`
-   = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
