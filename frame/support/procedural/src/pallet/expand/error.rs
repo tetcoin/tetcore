@@ -115,9 +115,9 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		{
 			fn from(err: #error_ident<#type_use_gen>) -> Self {
 				let index = <
-					<T as #frame_system::Trait>::ModuleToIndex
-					as #scrate::traits::ModuleToIndex
-				>::module_to_index::<Module<#type_use_gen>>()
+					<T as #frame_system::Trait>::PalletInfo
+					as #scrate::traits::PalletInfo
+				>::index::<Module<#type_use_gen>>()
 					.expect("Every active module has an index in the runtime; qed") as u8;
 
 				#scrate::sp_runtime::DispatchError::Module {
