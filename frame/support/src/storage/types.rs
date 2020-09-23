@@ -87,7 +87,7 @@ impl<Value: FullCodec + 'static> QueryKindTrait<Value> for ValueQuery where
 ///   one.
 /// * Value must implement FullCodec
 /// * QueryKind must implmeent QueryKindTrait
-/// * OnEmpty must implement Get<QueryKind::Query> + 'static
+/// * OnEmpty must implement Get<QueryKindTrait::Query> + 'static
 ///
 /// By default query kind is OptionQuery and OnEmpty returns Default Query (i.e. None for
 /// OptionQuery or default value for ValueQuery).
@@ -126,7 +126,7 @@ where
 /// * Key must implement FullCodec
 /// * Value must implement FullCodec
 /// * QueryKind must implmeent QueryKindTrait
-/// * OnEmpty must implement Get<QueryKind::Query> + 'static
+/// * OnEmpty must implement Get<QueryKindTrait::Query> + 'static
 ///
 /// By default query kind is OptionQuery and OnEmpty returns Default Query (i.e. None for
 /// OptionQuery or default value for ValueQuery).
@@ -188,7 +188,7 @@ where
 /// * Key2 must implement FullCodec
 /// * Value must implement FullCodec
 /// * QueryKind must implmeent QueryKindTrait
-/// * OnEmpty must implement Get<QueryKind::Query> + 'static
+/// * OnEmpty must implement Get<QueryKindTrait::Query> + 'static
 ///
 /// By default query kind is OptionQuery and OnEmpty returns Default Query (i.e. None for
 /// OptionQuery or default value for ValueQuery).

@@ -860,13 +860,13 @@ pub mod pallet_prelude {
 /// It is define by a module item:
 /// ```nocompile
 /// #[pallet(MyPalletName)]
-/// mod {
+/// mod pallet {
 /// ...
 /// }
 /// ```
 ///
 /// Here `MyPalletName` is used as pallet unique identifier for storages. Storages will use keys
-/// prefixed with `twox128(MyPalletName)`.
+/// prefixed with `twox128(MyPalletName)` to isolate their storage from other pallets..
 ///
 /// Inside the module the macro will parse item with the attribute: `#[pallet::*]`, some attributes
 /// are mandatory, some other optional.
@@ -874,7 +874,8 @@ pub mod pallet_prelude {
 /// The attribute are explained with the syntax of non instantiable pallets, to see how pallet with
 /// instance work see below example.
 ///
-/// Note various type can be automatically imported using pallet_prelude and :
+/// Note various type can be automatically imported using pallet_prelude in frame_support and
+/// frame_system:
 /// ```nocompile
 /// #[pallet(MyPalletName)]
 /// mod {
@@ -884,25 +885,24 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
-/// ### `#[pallet::trait_]`
+/// # Trait: `#[pallet::trait_]` mandatory
+///
+/// The trait defining generics of the pallet.
 ///
 /// Item must be defined as
 /// ```nocompile
 /// #[pallet::trait_]
-/// pub trait Trait: frame_system::Trait {
+/// pub trait Trait: frame_system::Trait + $optionally_some_other_supertraits {
 /// ...
 /// }
 /// ```
+/// I.e. a regular trait definition named `Trait`, with supertrait `frame_system::Trait`,
+/// optionally other supertrait but no where clause.
 ///
-/// Optional the check for the supertrait `frame_system::Trait` can be bypassed with attribute
-/// `#[pallet::disable_frame_system_supertrait_check]` as:
-/// ```nocompile
-/// #[pallet::trait_]
-/// #[pallet::disable_frame_system_supertrait_check]
-/// pub trait Trait: pallet_timestamp::Trait {}
-/// ```
+/// The associated type `Event` is reserved, if defined it must bounds `From<Event>` and
+/// `IsType<<Self as frame_system::Trait>::Event>`, see `#[pallet::event]` for more information.
 ///
-/// Also trait assocaited constant can be put into metadata using `#[pallet::const_]` attribute:
+/// To put `Get` associated type into metadatas, use the attribute `#[pallet::const_]`, e.g.:
 /// ```nocompile
 /// #[pallet::trait_]
 /// pub trait Trait: frame_system::Trait {
@@ -911,186 +911,293 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
+/// To bypass the `frame_system::Trait` supertrait check, use the attribute
+/// `#[pallet::disable_frame_system_supertrait_check]`, e.g.:
+/// ```nocompile
+/// #[pallet::trait_]
+/// #[pallet::disable_frame_system_supertrait_check]
+/// pub trait Trait: pallet_timestamp::Trait {}
+/// ```
+///
 /// NOTE: At this moment macro doesn't support where clause on trait, but where clause can be
 /// used on some of the usage of this trait.
 ///
-/// ### `#[pallet::module]`
+/// ### Macro expansion:
 ///
-/// The placeholder module struct must be defined as followed:
+/// The macro expand pallet constant metadata with the information given by `#[pallet::const_]`.
+///
+/// # Module: `#[pallet::module]` mandatory
+///
+/// The placeholder module type, on which is implemented pallet informations.
+///
+/// Item must be defined as followed:
 /// ```nocompile
 /// #[pallet::module]
 /// pub struct Module<T>(PhantomData<T>);
 /// ```
+/// I.e. a regular struct definition named `Module`, with generic T and no where clause.
 ///
-/// Additionally a `Store` trait can be generated using additional attribute:
-/// `#[pallet::generate_store($vis trait Store)]` e.g.:
-///
+/// To generate a `Store` trait associating all storages, use the attribute
+/// `#[pallet::generate_store($vis trait Store)]`, e.g.:
 /// ```nocompile
 /// #[pallet::module]
-/// #[pallet::generate_store(pub(crate) trait Store)]
+/// #[pallet::generate_store(pub(super) trait Store)]
 /// pub struct Module<T>(PhantomData<T>);
 /// ```
+/// More precisely the store trait contains an associated type for each storage. It is implemented
+/// for `Module` allowing to access the storage from module struct.
 ///
-/// The store trait contains an associated type for each storage. It is implemented for `Module`
-/// allowing to access the storage from module struct.
+/// ### Macro expansion:
 ///
-/// ### `#[pallet::module_interface]`
+/// The macro add this attribute to the struct definition:
+/// ```nocompile
+/// #[derive(
+/// 	frame_support::CloneNoBound,
+/// 	frame_support::EqNoBound,
+/// 	frame_support::PartialEqNoBound,
+/// 	frame_support::DebugStripped,
+/// )]
+/// ```
 ///
-/// Above defined module needs to implement trait Module interface as:
+/// If attribute generate_store then macro create the trait `Store` and implement it on `Module`.
+///
+/// # Module interface: `#[pallet::module_interface]` mandatory
+///
+/// Implementation of `ModuleInterface` on `Module` allowing to define some specific pallet
+/// logic.
+///
+/// Item must be defined as
 /// ```nocompile
 /// #[pallet::module_interface]
-/// impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
+/// impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> $optional_where_clause {
 /// }
 /// ```
+/// I.e. a regular trait implementation with generic bound: `T: Trait`, for the trait
+/// `ModuleInterface<BlockNumberFor<T>>` (they are defined in preludes), for the type `Module<T>`
+/// and with an optional where clause.
 ///
-/// ### `#[pallet::call]`
+/// ### Macro expansion:
 ///
-/// The dispatchables of the pallet. Define as:
+/// The macro implement the traits `OnInitialize`, `OnFinalize`, `OnRuntimeUpgrade`,
+/// `OffchainWorker`, `IntegrityTest` using `ModuleInterface` implementation.
+///
+/// # Call: `#[pallet::call]` mandatory
+///
+/// Implementation of pallet dispatchables.
+///
+/// Item must be defined as:
 /// ```nocompile
 /// #[pallet::call]
 /// impl<T: Trait> Module<T> {
-/// 	/// Doc comment put in metadata
+/// 	/// $some_doc
 /// 	#[pallet::weight($ExpressionResultingInWeight)]
-/// 	fn foo(
+/// 	$vis fn $fn_name(
 /// 		origin: OriginFor<T>,
-/// 		#[pallet::compact] foo: u32,
-/// 		bar: u32
+/// 		$some_arg: $some_type,
+/// 		// or with compact attribute: #[pallet::compact] $some_arg: $some_type,
+/// 		...
 /// 	) -> DispatchResultWithPostInfo {
-/// 		let _ = origin;
-/// 		Ok(().into())
+/// 		...
 /// 	}
-///
-/// 	#[pallet::weight(0)]
-/// 	fn ....
+/// 	...
 /// }
 /// ```
+/// I.e. a regular type implementation, with generic `T: Trait`, on type `Module<T>`, with
+/// optional where clause.
 ///
-/// Each dispatchable needs to define a weight with `#[pallet::weight($expr)]`, the first argument
-/// must be `origin: OriginFor<T>`, compact encoding for argument can be used using
-/// `#[pallet::compact]`, function must return DispatchResultWithPostInfo.
+/// Each dispatchable needs to define a weight with `#[pallet::weight($expr)]` attribute,
+/// the first argument must be `origin: OriginFor<T>`, compact encoding for argument can be used
+/// using `#[pallet::compact]`, function must return DispatchResultWithPostInfo.
 ///
 /// All arguments must implement `Debug`, `PartialEq`, `Eq`, `Decode`, `Encode`, `Clone`. For ease
 /// of use just bound trait `Member` available in frame_support::pallet_prelude.
 ///
-/// **WARNING**: modifying dispatchables, changing their order, removing some must be done with care.
-/// Indeed this will change the outer runtime call type (which is an enum with one variant per
-/// pallet), this outer runtime call is likely to be stored on chain by scheduler or other pallet.
+/// **WARNING**: modifying dispatchables, changing their order, removing some must be done with
+/// care. Indeed this will change the outer runtime call type (which is an enum with one variant
+/// per pallet), this outer runtime call can be stored on-chain (e.g. in pallet-scheduler).
 /// Thus migration might be needed.
 ///
-/// ### `#[pallet::error]` optional
+/// ### Macro expansion
 ///
-/// Allow to define an error to return from dispatchable. This error type is put into metadata.
+/// The macro create an enum `Call` with one variant per dispatchable. This enum implements:
+/// `Clone`, `Eq`, `PartialEq`, `Debug` (with stripped implementation in `not("std")`), `Encode`,
+/// `Decode`, `GetDispatchInfo`, `GetCallName`, `UnfilteredDispatchable`.
 ///
+/// The macro implement on `Module`, the `Callable` trait and a function `call_functions` which
+/// returns the dispatchable metadatas.
+///
+/// # Error: `#[pallet::error]` optional
+///
+/// Allow to define an error type to be return from dispatchable on error.
+/// This error type informations are put into metadata.
+///
+/// Item must be defined as:
 /// ```nocompile
 /// #[pallet::error]
 /// pub enum Error<T> {
-/// 	/// doc comment put into metadata
-/// 	SomeError,
-/// 	/// other description
-/// 	SomeOtherError,
+/// 	/// $some_optional_doc
+/// 	$SomeFieldLessVariant,
+/// 	...
 /// }
 /// ```
+/// I.e. a regular rust enum named `Error`, with generic `T` and fieldless variants.
 ///
-/// ### `#[pallet::event]` optional
+/// ### Macro expansion
+///
+/// The macro implements `Debug` trait and functions `as_u8` using variant position, and `as_str`
+/// using variant doc.
+///
+/// The macro implements `From<Error<T>>` for `&'static str`.
+/// The macro implements `From<Error<T>>` for `DispatchError`.
+///
+/// The macro implements `ModuleErrorMetadata` on `Module` defining the `ErrorMetadata` of the
+/// pallet.
+///
+/// # Event: `#[pallet::event]` optional
 ///
 /// Allow to define pallet events, pallet events are stored in the block when they deposited (and
 /// removed in next block).
 ///
-/// It is defined as an enum (with named or unnamed fields variant), each variant documentations
-/// and field types are put into metadata. `#[pallet::metadata(..)]` allows to specify the metadata
-/// to associated with some type. E.g:
+/// Item is defined as:
 /// ```nocompile
-/// #[pallet::metadata(SomeType = Metadata, SomeOtherType = Metadata2, ...)]
+/// #[pallet::event]
+/// #[pallet::metadata($SomeType = $Metadata, $SomeOtherType = $Metadata, ..)] // Optional
+/// #[pallet::generate($visbility fn deposit_event)] // Optional
+/// pub enum Event<$some_generic> {
+/// 	/// Some doc
+/// 	$SomeName($SomeType, $YetanotherType, ...),
+/// 	...
+/// }
 /// ```
-/// will set for types matching `SomeType` the metadata `Metadata` and same for `SomeOtherType`.
+/// I.e. an enum (with named or unnamed fields variant), named Event, with generic: none or `T` or
+/// `T:Trait`, and without where clause.
 ///
-/// The macro will add the attribute:
+/// Each field must implement `Clone`, `Eq`, `PartialEq`, `Encode`, `Decode`, and `Debug` (on std
+/// only).
+/// For ease of use just bound trait `Member` available in frame_support::pallet_prelude.
+///
+/// Variant documentations and field types are put into metadata.
+/// The attribute `#[pallet::metadata(..)]` allows to specify the metadata to put for some types.
+///
+/// The metadat of a type is defined by:
+/// * if matching a type in `#[pallet::metadata(..)]`, then the corresponding metadata.
+/// * otherwise the last segment of the type.
+///
+/// E.g.:
+/// ```nocompile
+/// #[pallet::event]
+/// #[pallet::metadata(u32 = SpecialU32)]
+/// pub enum Event<T: Trait> {
+/// 	Proposed(u32, T::AccountId),
+/// }
+/// ```
+/// will write in event variant metadata `"SpecialU32"` and `"AccountId"`.
+///
+/// The attribute `#[pallet::generate($visbility fn deposit_event)]` generate a helper function on
+/// `Module` to deposit event.
+///
+/// NOTE: For instantiable pallet, event must be generic over T and I.
+///
+/// NOTE: At this moment declaration doesn't support where clause.
+///
+/// ### Macro expansion:
+///
+/// Macro will add on enum `Event` the attributes:
 /// * `#[derive(frame_support::CloneNoBound)]`,
 /// * `#[derive(frame_support::EqNoBound)]`,
 /// * `#[derive(frame_support::PartialEqNoBound)]`,
 /// * `#[derive(codec::Encode)]`,
 /// * `#[derive(codec::Decode)]`,
 /// * `#[cfg_attr(not(feature = "std"), derive(frame_support::DebugStripped))]`
-/// * `#[cfg_attr(feature = "std", derive(frame_support::DebugStripped))]`
+/// * `#[cfg_attr(feature = "std", derive(frame_support::DebugNoBound))]`
 ///
-/// Thus each fields must implement `Clone`, `Eq`, `PartialEq`, `Encode`, `Decode`, and `Debug`
-/// (on std).
-/// For ease of use just bound trait `Member` available in frame_support::pallet_prelude.
+/// Macro implements `From<Event<..>>` for ().
 ///
-/// ```nocompile
-/// #[pallet::event]
-/// // Additional argument to specify the metadata to use for given type.
-/// #[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
-/// pub enum Event<T: Trait> {
-/// 	/// doc comment put in metadata
-/// 	// `<T as frame_system::Trait>::AccountId` is not defined in metadata list, the last
-/// 	// segment is put into metadata, i.e. `AccountId`
-/// 	Proposed(<T as frame_system::Trait>::AccountId),
-/// 	/// doc
-/// 	// here metadata will be `Balance` as define in metadata list
-/// 	Spending { balance: BalanceOf<T> },
-/// 	// here metadata will be `Other` as define in metadata list
-/// 	Something(u32),
-/// }
-/// ```
+/// Macro implements metadata function on `Event` returning the `EventMetadata`.
 ///
-/// **WARNING**: modifying event, changing its variant order, removing some must be done with care.
-/// Indeed this will change the outer runtime event type, this type might be used by third parties.
+/// If `#[pallet::generate]` then macro implement `fn deposit_event` on `Module`.
 ///
-/// NOTE: For instantiable pallet, event must be generic over T and I.
-/// NOTE: At this moment declaration doesn't support where clause.
-///
-/// an optional attribute `#[pallet::generate($vis fn deposit_event)]` can be used to generate a
-/// handy function `deposit_event` on `Module`.
-///
-/// ```nocompile
-/// #[pallet::generate(pub(crate) fn deposit_event)]
-/// ```
-///
-/// ### `#[pallet::storage]` optional
+/// # Storage: `#[pallet::storage]` optional
 ///
 /// Allow to define some abstract storage inside runtime storage and also set its metadata.
-/// It must be a type alias that aliases one of type in
-/// `frame_support::pallet_prelude::{StorageValueType, StorageMapType, StorageDoubleMapType}`
-/// The macro parse the type alias to get the metadata for keys and value types. And automatically
-/// expand the first generic argument `Prefix`, which must be written `_`.
+/// This attribute can be used multiple times.
 ///
+/// Item is defined as:
 /// ```nocompile
 /// #[pallet::storage]
-/// type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// #[pallet::generate_getter(fn $getter_name)] // optional
+/// $vis type $StorageName<$some_generic> = $StorageType<_, $some_generics, ...>;
 /// ```
+/// I.e. it must be a type alias, with generics: none or `T` or `T: Trait`, aliased type must be one
+/// of `StorageValueType`, `StorageMapType` or `StorageDoubleMapType` (defined in frame_support).
+/// Their first generic must be `_` as it is written by the macro itself.
 ///
-/// An additional attribute allows to define a getter on `Module`:
-/// `#[pallet::generate_getter(fn $my_getter_fn_name)]`
+/// The optional attribute `#[pallet::generate_getter(fn $my_getter_fn_name)]` allow to define a
+/// getter function on `Module`.
 ///
-/// it can be used as this:
+/// E.g:
+/// ```nocompile
 /// #[pallet::storage]
 /// #[pallet::generate_getter(fn my_storage)]
-/// type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// pub(super) type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// ```
 ///
 /// NOTE: if the querykind generic parameter is still generic at this stage or is using some type
 /// alias then the generation of the getter might fail. In this case getter can be implemented
 /// manually.
 ///
-/// ### `#[pallet::type_value]` optional
+/// ### Macro expansion
+///
+/// For each storage the macro generate a struct named
+/// `_GeneratedPrefixForStorage$NameOfStorage`, implements StorageInstance on it using pallet
+/// names and storage name. and use it as first generic of the aliased type.
+///
+/// The macro implement the function `storage_metadata` on `Module` implementing the metadata for
+/// storages.
+///
+/// # Type value: `#[pallet::type_value]` optional
 ///
 /// Helper to define a struct implementing `Get` trait. To ease use of storage types.
+/// This attribute can be used multiple time.
 ///
-/// syntax:
+/// Item is defined as
+/// ```nocompile
+/// #[pallet::type_value]
+/// fn $MyDefaultName<$some_generic>() -> $default_type { $expr }
+/// ```
+/// I.e.: a function definition with generics none or `T: Trait` and a returned type.
+///
+/// E.g.:
 /// ```nocompile
 /// #[pallet::type_value]
 /// fn MyDefault<T: Trait>() -> T::Balance { 3.into() }
 /// ```
 ///
-/// It expand to a struct with the name of the function and its generic, and implement
+/// NOTE: This attribute is meant to be used alongside `#[pallet::storage]` to defined some
+/// specific default value in storage.
+///
+/// ### Macro expansion
+///
+/// Macro generate struct with the name of the function and its generic, and implement
 /// `Get<$ReturnType>` on it using the provided function block.
 ///
-/// ### `#[pallet::genesis_config]` optional
+/// # Genesis config: `#[pallet::genesis_config]` optional
 ///
-/// Either a type alias or an enum or a struct. It needs to be public and implement GenesisBuild
-/// with `#[pallet::genesis_build]`.
+/// Allow to define the genesis configuration of the pallet.
 ///
-/// NOTE: The type generics are constrained to be either none, or T or T, I and with trait bounds
+/// Item is defined as either a type alias or an enum or a struct.
+/// It needs to be public and implement trait GenesisBuild with `#[pallet::genesis_build]`.
+/// The type generics is constrained to be either none, or `T` or `T: Trait`.
+///
+/// E.g:
+/// ```nocompile
+/// #[pallet::genesis_config]
+/// pub struct GenesisConfig<T: Trait> {
+/// 	_myfield: BalanceOf<T>,
+/// }
+/// ```
+///
+/// ### Macro expansion
 ///
 /// Macro will add the following attribute on it:
 /// * `#[cfg(feature = "std")]`
@@ -1100,21 +1207,21 @@ pub mod pallet_prelude {
 /// * `#[serde(bound(serialize = ""))]`
 /// * `#[serde(bound(deserialize = ""))]`
 ///
+/// # Genesis build: `#[pallet::genesis_build]` optional
+///
+/// Allow to define how genesis_configuration is built.
+///
+/// Item is defined as
 /// ```nocompile
-/// #[pallet::genesis_config]
-/// #[derive(Default)]
-/// pub struct GenesisConfig {
-/// 	_myfield: u32,
+/// #[pallet::genesis_build]
+/// impl<T: Trait> GenesisBuild<T> for GenesisConfig<$maybe_generics> {
+/// 	fn build(&self) { $expr }
 /// }
 /// ```
+/// I.e. a rust trait implementation with generic `T: Trait`, of trait `GenesisBuild<T>` on type
+/// `GenesisConfig` with generics none or `T`.
 ///
-/// ### `#[pallet::genesis_build]` optional
-///
-/// Implementation of trait `GenesisBuild` on `GenesisConfig`.
-///
-/// Macro will add the following attribute on it:
-/// * `#[cfg(feature = "std")]`
-///
+/// E.g.:
 /// ```nocompile
 /// #[pallet::genesis_build]
 /// impl<T: Trait> GenesisBuild<T> for GenesisConfig {
@@ -1122,48 +1229,73 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
+/// ### Macro expansion
+///
+/// Macro will add the following attribute on it:
+/// * `#[cfg(feature = "std")]`
+///
 /// Macro will implement `sp_runtime::BuildModuleGenesisStorage` using `__InherentHiddenInstance`
-/// for non-instantiable pallets. And will also implement `fn build_storage` and
-/// `fn assimilate_storage`.
+/// for non-instantiable pallets.
 ///
-/// ### `#[pallet::inherent]` optional
+/// Macro will implement some helper functions: `fn build_storage` and `fn assimilate_storage`.
 ///
-/// Allow the pallet to provide inherent:
+/// # Inherent: `#[pallet::inherent]` optional
 ///
+/// Allow the pallet to provide some inherent:
+///
+/// Item is defined as:
 /// ```nocompile
 /// #[pallet::inherent]
 /// impl<T: Trait> ProvideInherent for Module<T> {
 /// 	// ... regular trait implementation
 /// }
 /// ```
+/// I.e. a trait implementation with bound `T: Trait`, of trait `ProvideInherent` for type
+/// `Module<T>`, and some optional where clause.
 ///
-/// ### `#[pallet::validate_unsigned]` optional
+/// ### Macro expansion
+///
+/// Macro make currenlty no use of this information, but it might use this information in the
+/// future to give information directly to construct_runtime.
+///
+/// # Validate unsigned: `#[pallet::validate_unsigned]` optional
 ///
 /// Allow the pallet to validate some unsigned transaction:
 ///
+/// Item is defined as:
 /// ```nocompile
 /// #[pallet::validate_unsigned]
 /// impl<T: Trait> ValidateUnsigned for Module<T> {
 /// 	// ... regular trait implementation
 /// }
 /// ```
+/// I.e. a trait implementation with bound `T: Trait`, of trait `ValidateUnsigned` for type
+/// `Module<T>`, and some optional where clause.
 ///
-/// ### `#[pallet::origin]` optional
+/// ### Macro expansion
 ///
-/// Either a type alias or an enum or a struct. It needs to be public.
+/// Macro make currenlty no use of this information, but it might use this information in the
+/// future to give information directly to construct_runtime.
 ///
+/// # Origin: `#[pallet::origin]` optional
+///
+/// Allow to define some origin for the pallet.
+///
+/// Item must be either a type alias or an enum or a struct. It needs to be public.
+///
+/// E.g.:
 /// ```nocompile
 /// #[pallet::origin]
 /// pub struct Origin<T>(PhantomData<(T)>);
 /// ```
 ///
-/// **WARNING**: modifying origin changes the outer runtime origin. This outer runtime origin is likely
-/// to be stored on chain e.g. by scheduler, thus any change must be taken with care as it might
-/// require some migration.
+/// **WARNING**: modifying origin changes the outer runtime origin. This outer runtime origin can
+/// be stored on-chain (e.g. in pallet-scheduler), thus any change must be done with care as it
+/// might require some migration.
 ///
 /// NOTE: for instantiable pallet, origin must be generic over T and I.
 ///
-/// ### Example for pallet without instance.
+/// # Example for pallet without instance.
 ///
 /// ```
 /// #[frame_support::pallet(Example)]
@@ -1189,7 +1321,7 @@ pub mod pallet_prelude {
 /// 	// Define the module struct placeholder, various pallet function are implemented on it.
 /// 	// The macro checks struct generics: is expected `T` or `T, I = DefaultInstance`
 /// 	#[pallet::module]
-/// 	#[pallet::generate_store(pub(crate) trait Store)]
+/// 	#[pallet::generate_store(pub(super) trait Store)]
 /// 	pub struct Module<T>(PhantomData<T>);
 ///
 /// 	// Implement on the module interface on module.
@@ -1245,7 +1377,7 @@ pub mod pallet_prelude {
 /// 	// Additional argument to specify the metadata to use for given type.
 /// 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
 /// 	// Generate a funciton on Module to deposit an event.
-/// 	#[pallet::generate(pub(crate) fn deposit_event)]
+/// 	#[pallet::generate(pub(super) fn deposit_event)]
 /// 	pub enum Event<T: Trait> {
 /// 		/// doc comment put in metadata
 /// 		// `<T as frame_system::Trait>::AccountId` is not defined in metadata list, the last
@@ -1260,7 +1392,7 @@ pub mod pallet_prelude {
 ///
 /// 	// Define a struct which implements `frame_support::traits::Get<T::Balance>`
 /// 	#[pallet::type_value]
-/// 	fn MyDefault<T: Trait>() -> T::Balance { 3.into() }
+/// 	pub(super) fn MyDefault<T: Trait>() -> T::Balance { 3.into() }
 ///
 /// 	// Declare a storage, any amount of storage can be declared.
 /// 	//
@@ -1276,12 +1408,13 @@ pub mod pallet_prelude {
 /// 	// NOTE: for storage hasher, the type is not copied because storage hasher trait already
 /// 	// implements metadata. Thus generic storage hasher is supported.
 /// 	#[pallet::storage]
-/// 	type MyStorageValue<T: Trait> = StorageValueType<_, T::Balance, ValueQuery, MyDefault<T>>;
+/// 	pub(super) type MyStorageValue<T: Trait> =
+/// 		StorageValueType<_, T::Balance, ValueQuery, MyDefault<T>>;
 ///
 /// 	// Another declaration
 /// 	#[pallet::storage]
 /// 	#[pallet::generate_getter(fn my_storage)]
-/// 	type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// 	pub(super) type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
 ///
 /// 	// Declare genesis config. (This is optional)
 /// 	//
@@ -1350,7 +1483,7 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
-/// ### Example for pallet with instance.
+/// # Example for pallet with instance.
 ///
 /// ```
 /// #[frame_support::pallet(ExampleInstantiable)]
@@ -1369,7 +1502,7 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::module]
-/// 	#[pallet::generate_store(pub(crate) trait Store)]
+/// 	#[pallet::generate_store(pub(super) trait Store)]
 /// 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
 ///
 /// 	#[pallet::module_interface]
@@ -1394,7 +1527,7 @@ pub mod pallet_prelude {
 ///
 /// 	#[pallet::event]
 /// 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
-/// 	#[pallet::generate(pub(crate) fn deposit_event)]
+/// 	#[pallet::generate(pub(super) fn deposit_event)]
 /// 	pub enum Event<T: Trait<I>, I: Instance = DefaultInstance> {
 /// 		/// doc comment put in metadata
 /// 		Proposed(<T as frame_system::Trait>::AccountId),
@@ -1404,15 +1537,15 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::type_value]
-/// 	fn MyDefault<T: Trait<I>, I: Instance>() -> T::Balance { 3.into() }
+/// 	pub(super) fn MyDefault<T: Trait<I>, I: Instance>() -> T::Balance { 3.into() }
 ///
 /// 	#[pallet::storage]
-/// 	type MyStorageValue<T: Trait<I>, I: Instance = DefaultInstance> =
+/// 	pub(super) type MyStorageValue<T: Trait<I>, I: Instance = DefaultInstance> =
 /// 		StorageValueType<_, T::Balance, ValueQuery, MyDefault<T, I>>;
 ///
 /// 	#[pallet::storage]
 /// 	#[pallet::generate_getter(fn my_storage)]
-/// 	type MyStorage<I = DefaultInstance> =
+/// 	pub(super) type MyStorage<I = DefaultInstance> =
 /// 		StorageMapType<_, Blake2_128Concat, u32, u32>;
 ///
 /// 	#[pallet::genesis_config]
@@ -1469,12 +1602,12 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
-/// ### Notes for migration from decl_* macros
+/// # Notes for migration from decl_* macros
 ///
 /// A good strategy is to start from the code below and add decl_module, decl_storage, decl_event,
 /// ValidateUsigned, Inherent information inside the pallet.
 ///
-/// ```
+/// ```nocompile
 /// pub use pallet::*;
 /// #[frame_support::pallet(MyPalletAsNamedInDeclStorage)]
 /// mod pallet {
@@ -1483,7 +1616,7 @@ pub mod pallet_prelude {
 ///		use super::*;
 ///
 ///		#[pallet::module]
-///		#[pallet::generate_store(pub(crate) Store)]
+///		#[pallet::generate_store(pub(super) Store)]
 ///		pub struct Module<T>(PhantomData<T>);
 /// }
 /// ```
@@ -1500,10 +1633,10 @@ pub mod pallet_prelude {
 ///   ```
 ///
 /// * storages are now defined in pallet module, to make available private storages in crate scope
-///   use `pub(crate) type MyStorage = ..`
+///   use `pub(super) type MyStorage = ..`
 ///
 /// * dispatch functions are now defined in pallet module, to make available private storages in \
-///   crate scope use `pub(crate) fn foo(origin...`
+///   crate scope use `pub(super) fn foo(origin...`
 ///
 /// * storages attributes: `get(fn my_getter)` should now be written:
 ///   `#[pallet::generate_getter(fn my_getter)]`
