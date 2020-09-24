@@ -50,7 +50,7 @@ impl ErrorDef {
 		}
 
 		let mut instances = vec![];
-		instances.push(helper::check_type_def_generics(&item.generics, item.ident.span())?);
+		instances.push(helper::check_type_def_gen_no_bounds(&item.generics, item.ident.span())?);
 
 		if item.generics.where_clause.is_some() {
 			let msg = "Invalid pallet::error, unexpected where clause";

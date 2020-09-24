@@ -66,7 +66,7 @@ impl EventDef {
 	pub fn event_impl_gen(&self) -> proc_macro2::TokenStream {
 		if self.is_generic {
 			if self.has_instance {
-				quote::quote!(T: Trait<I>, I: Instance)
+				quote::quote!(T: Trait<I>, I)
 			} else {
 				quote::quote!(T: Trait)
 			}
@@ -202,10 +202,7 @@ impl EventDef {
 		let is_generic = item.generics.params.len() > 0;
 
 		let mut instances = vec![];
-		if let Some(u) = helper::check_type_def_optional_generics(
-			&item.generics,
-			item.ident.span()
-		)? {
+		if let Some(u) = helper::check_type_def_optional_gen(&item.generics, item.ident.span())? {
 			instances.push(u);
 		} else {
 			// construct_runtime only allow generic event for instantiable pallet.

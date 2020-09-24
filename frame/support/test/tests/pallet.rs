@@ -17,14 +17,14 @@
 
 use frame_support::{
 	weights::{DispatchInfo, DispatchClass, Pays, GetDispatchInfo},
-	traits::{GetCallName, Instance, OnInitialize, OnFinalize, OnRuntimeUpgrade},
+	traits::{GetCallName, OnInitialize, OnFinalize, OnRuntimeUpgrade},
 	dispatch::UnfilteredDispatchable,
 	storage::unhashed,
 };
 use sp_runtime::{traits::Block as _, DispatchError};
 use sp_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
 
-#[frame_support::pallet(Example)]
+#[frame_support::pallet]
 pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
@@ -111,19 +111,19 @@ pub mod pallet {
 	}
 
 	#[pallet::storage]
-	pub type Value = StorageValueType<_, u32>;
+	pub type Value<T> = StorageValueType<_, u32>;
 
 	#[pallet::storage]
-	pub type Map = StorageMapType<_, Blake2_128Concat, u8, u16>;
+	pub type Map<T> = StorageMapType<_, Blake2_128Concat, u8, u16>;
 
 	#[pallet::storage]
-	pub type Map2 = StorageMapType<_, Twox64Concat, u16, u32>;
+	pub type Map2<T> = StorageMapType<_, Twox64Concat, u16, u32>;
 
 	#[pallet::storage]
-	pub type DoubleMap = StorageDoubleMapType<_, Blake2_128Concat, u8, Twox64Concat, u16, u32>;
+	pub type DoubleMap<T> = StorageDoubleMapType<_, Blake2_128Concat, u8, Twox64Concat, u16, u32>;
 
 	#[pallet::storage]
-	pub type DoubleMap2 = StorageDoubleMapType<_, Twox64Concat, u16, Blake2_128Concat, u32, u64>;
+	pub type DoubleMap2<T> = StorageDoubleMapType<_, Twox64Concat, u16, Blake2_128Concat, u32, u64>;
 
 	#[pallet::genesis_config]
 	#[derive(Default)]
@@ -211,7 +211,7 @@ impl frame_system::Trait for Runtime {
 	type AvailableBlockRatio = AvailableBlockRatio;
 	type MaximumBlockLength = MaximumBlockLength;
 	type Version = ();
-	type ModuleToIndex = ModuleToIndex;
+	type PalletInfo = PalletInfo;
 	type AccountData = ();
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
@@ -235,7 +235,7 @@ frame_support::construct_runtime!(
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
 		System: frame_system::{Module, Call, Event<T>},
-		Pallet: pallet::{Module, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
+		Example: pallet::{Module, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
 	}
 );
 
@@ -279,7 +279,8 @@ fn error_expand() {
 
 #[test]
 fn instance_expand() {
-	assert_eq!(pallet::__InherentHiddenInstance::PREFIX, "Example");
+	// Assert same type.
+	let _: pallet::__InherentHiddenInstance = ();
 }
 
 #[test]
@@ -311,35 +312,35 @@ fn storage_expand() {
 	}
 
 	TestExternalities::default().execute_with(|| {
-		pallet::Value::put(1);
+		pallet::Value::<Runtime>::put(1);
 		let k = [twox_128(b"Example"), twox_128(b"Value")].concat();
 		assert_eq!(unhashed::get::<u32>(&k), Some(1u32));
 
-		pallet::Map::insert(1, 2);
+		pallet::Map::<Runtime>::insert(1, 2);
 		let mut k = [twox_128(b"Example"), twox_128(b"Map")].concat();
 		k.extend(1u8.using_encoded(blake2_128_concat));
 		assert_eq!(unhashed::get::<u16>(&k), Some(2u16));
-		assert_eq!(&k[..32], &<pallet::Map>::final_prefix());
+		assert_eq!(&k[..32], &<pallet::Map<Runtime>>::final_prefix());
 
-		pallet::Map2::insert(1, 2);
+		pallet::Map2::<Runtime>::insert(1, 2);
 		let mut k = [twox_128(b"Example"), twox_128(b"Map2")].concat();
 		k.extend(1u16.using_encoded(twox_64_concat));
 		assert_eq!(unhashed::get::<u32>(&k), Some(2u32));
-		assert_eq!(&k[..32], &<pallet::Map2>::final_prefix());
+		assert_eq!(&k[..32], &<pallet::Map2<Runtime>>::final_prefix());
 
-		pallet::DoubleMap::insert(&1, &2, &3);
+		pallet::DoubleMap::<Runtime>::insert(&1, &2, &3);
 		let mut k = [twox_128(b"Example"), twox_128(b"DoubleMap")].concat();
 		k.extend(1u8.using_encoded(blake2_128_concat));
 		k.extend(2u16.using_encoded(twox_64_concat));
 		assert_eq!(unhashed::get::<u32>(&k), Some(3u32));
-		assert_eq!(&k[..32], &<pallet::DoubleMap>::final_prefix());
+		assert_eq!(&k[..32], &<pallet::DoubleMap<Runtime>>::final_prefix());
 
-		pallet::DoubleMap2::insert(&1, &2, &3);
+		pallet::DoubleMap2::<Runtime>::insert(&1, &2, &3);
 		let mut k = [twox_128(b"Example"), twox_128(b"DoubleMap2")].concat();
 		k.extend(1u16.using_encoded(twox_64_concat));
 		k.extend(2u32.using_encoded(blake2_128_concat));
 		assert_eq!(unhashed::get::<u64>(&k), Some(3u64));
-		assert_eq!(&k[..32], &<pallet::DoubleMap2>::final_prefix());
+		assert_eq!(&k[..32], &<pallet::DoubleMap2<Runtime>>::final_prefix());
 	})
 }
 
@@ -373,7 +374,8 @@ fn metadata() {
 	use codec::{Decode, Encode};
 
 	let expected_pallet_metadata = ModuleMetadata {
-		name: DecodeDifferent::Decoded("Pallet".to_string()),
+		index: 1,
+		name: DecodeDifferent::Decoded("Example".to_string()),
 		storage: Some(DecodeDifferent::Decoded(StorageMetadata {
 			prefix: DecodeDifferent::Decoded("Example".to_string()),
 			entries: DecodeDifferent::Decoded(vec![
@@ -518,7 +520,7 @@ fn metadata() {
 	};
 
 	let metadata = match Runtime::metadata().1 {
-		RuntimeMetadata::V11(metadata) => metadata,
+		RuntimeMetadata::V12(metadata) => metadata,
 		_ => panic!("metadata has been bump, test needs to be updated"),
 	};
 

@@ -39,7 +39,7 @@ impl ModuleInterfaceDef {
 
 		let mut instances = vec![];
 		instances.push(helper::check_module_usage(&item.self_ty)?);
-		instances.push(helper::check_impl_generics(&item.generics, item.impl_token.span())?);
+		instances.push(helper::check_impl_gen(&item.generics, item.impl_token.span())?);
 
 		let item_trait = &item.trait_.as_ref()
 			.ok_or_else(|| {

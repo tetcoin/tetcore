@@ -38,7 +38,7 @@ pub fn expand_type_values(def: &mut Def) -> proc_macro2::TokenStream {
 			struct_use_gen,
 		) = match (type_value.has_trait, type_value.has_instance) {
 			(true, true) => (
-				quote::quote!(T: Trait<I>, I: #scrate::traits::Instance),
+				quote::quote!(T: Trait<I>, I),
 				quote::quote!(T, I),
 			),
 			(true, false) => (quote::quote!(T: Trait), quote::quote!(T)),

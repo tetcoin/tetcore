@@ -109,7 +109,7 @@ impl<T: SigningTypes> SignedPayload<T> for PricePayload<T::Public, T::BlockNumbe
 }
 
 pub use pallet::*;
-#[frame_support::pallet(ExampleOffchainWorker)]
+#[frame_support::pallet]
 mod pallet {
 	use super::{CreateSignedTransaction, AppCrypto, PricePayload, TransactionType};
 	use frame_support::{pallet_prelude::*, debug};
@@ -156,7 +156,7 @@ mod pallet {
 	/// This is used to calculate average price, should have bounded size.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn prices)]
-	pub(crate) type Prices = StorageValueType<_, Vec<u32>, ValueQuery>;
+	pub(crate) type Prices<T> = StorageValueType<_, Vec<u32>, ValueQuery>;
 
 	/// Defines the block when next unsigned transaction will be accepted.
 	///
@@ -610,7 +610,7 @@ impl<T: Trait> Module<T> {
 	/// Add new price to the list.
 	fn add_price(who: T::AccountId, price: u32) {
 		debug::info!("Adding to the average: {}", price);
-		Prices::mutate(|prices| {
+		Prices::<T>::mutate(|prices| {
 			const MAX_LEN: usize = 64;
 
 			if prices.len() < MAX_LEN {
@@ -629,7 +629,7 @@ impl<T: Trait> Module<T> {
 
 	/// Calculate current average price.
 	fn average_price() -> Option<u32> {
-		let prices = Prices::get();
+		let prices = Prices::<T>::get();
 		if prices.is_empty() {
 			None
 		} else {

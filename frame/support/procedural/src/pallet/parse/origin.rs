@@ -50,7 +50,7 @@ impl OriginDef {
 		let is_generic = generics.params.len() > 0;
 
 		let mut instances = vec![];
-		if let Some(u) = helper::check_type_def_optional_generics(&generics, item.span())? {
+		if let Some(u) = helper::check_type_def_optional_gen(&generics, item.span())? {
 			instances.push(u);
 		} else {
 			// construct_runtime only allow generic event for instantiable pallet.

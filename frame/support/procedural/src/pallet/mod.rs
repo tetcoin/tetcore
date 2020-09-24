@@ -28,28 +28,21 @@
 mod parse;
 mod expand;
 
-use proc_macro2::Span;
 pub use parse::Def;
+use syn::spanned::Spanned;
 
 pub fn pallet(
 	attr: proc_macro::TokenStream,
 	item: proc_macro::TokenStream
 ) -> proc_macro::TokenStream {
-	let attr = syn::parse::<syn::Ident>(attr)
-		.map_err(|e| {
-			let error_msg = "Invalid pallet macro call: expect `#[frame_support::pallet($IDENT)]`";
-			let mut err = syn::Error::new(Span::call_site(), error_msg);
-			err.combine(e);
-			err
-		});
-
-	let attr = match attr {
-		Ok(attr) => attr,
-		Err(err) => return err.to_compile_error().into(),
-	};
+	if !attr.is_empty() {
+		let msg = "Invalid pallet macro call: expect `#[frame_support::pallet]`";
+		let span = proc_macro2::TokenStream::from(attr).span();
+		return syn::Error::new(span, msg).to_compile_error().into();
+	}
 
 	let item = syn::parse_macro_input!(item as syn::ItemMod);
-	match parse::Def::try_from(attr, item) {
+	match parse::Def::try_from(item) {
 		Ok(def) => expand::expand(def).into(),
 		Err(e) => e.to_compile_error().into(),
 	}

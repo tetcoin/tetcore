@@ -180,7 +180,7 @@ pub use pallet::*;
 #[doc(hidden)]
 pub type RawEvent<T> = Event<T>;
 
-#[frame_support::pallet(System)]
+#[frame_support::pallet]
 mod pallet {
 
 	use crate as frame_system;
@@ -194,11 +194,11 @@ mod pallet {
 	#[pallet::module_interface]
 	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
 		fn on_runtime_upgrade() -> Weight {
-			if !UpgradedToU32RefCount::get() {
+			if !<UpgradedToU32RefCount<T>>::get() {
 				Account::<T>::translate::<(T::Index, u8, T::AccountData), _>(|_key, (nonce, rc, data)|
 					Some(AccountInfo { nonce, refcount: rc as RefCount, data })
 				);
-				UpgradedToU32RefCount::put(true);
+				<UpgradedToU32RefCount<T>>::put(true);
 				T::MaximumBlockWeight::get()
 			} else {
 				0
@@ -337,16 +337,16 @@ mod pallet {
 
 	/// Total extrinsics count for the current block.
 	#[pallet::storage]
-	pub(crate) type ExtrinsicCount = StorageValueType<_, u32>;
+	pub(crate) type ExtrinsicCount<T> = StorageValueType<_, u32>;
 
 	/// The current weight for the block.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn block_weight)]
-	pub(crate) type BlockWeight = StorageValueType<_, weights::ExtrinsicsWeight, ValueQuery>;
+	pub(crate) type BlockWeight<T> = StorageValueType<_, weights::ExtrinsicsWeight, ValueQuery>;
 
 	/// Total length (in bytes) for all extrinsics put together, for the current block.
 	#[pallet::storage]
-	pub(crate) type AllExtrinsicsLen = StorageValueType<_, u32>;
+	pub(crate) type AllExtrinsicsLen<T> = StorageValueType<_, u32>;
 
 	/// Map of block numbers to block hashes.
 	#[pallet::storage]
@@ -357,7 +357,7 @@ mod pallet {
 		/// Extrinsics data for the current block (maps an extrinsic's index to its data).
 	#[pallet::storage]
 	#[pallet::generate_getter(fn extrinsic_data)]
-	pub(crate) type ExtrinsicData = StorageMapType<_, Twox64Concat, u32, Vec<u8>, ValueQuery>;
+	pub(crate) type ExtrinsicData<T> = StorageMapType<_, Twox64Concat, u32, Vec<u8>, ValueQuery>;
 
 	/// The current block number being processed. Set by `execute_block`.
 	#[pallet::storage]
@@ -388,7 +388,7 @@ mod pallet {
 	/// The number of events in the `Events<T>` list.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn event_count)]
-	pub(crate) type EventCount = StorageValueType<_, EventIndex, ValueQuery>;
+	pub(crate) type EventCount<T> = StorageValueType<_, EventIndex, ValueQuery>;
 
 	// TODO: https://github.com/paritytech/substrate/issues/2553
 	// Possibly, we can improve it by using something like:
@@ -412,15 +412,15 @@ mod pallet {
 
 	/// Stores the `spec_version` and `spec_name` of when the last runtime upgrade happened.
 	#[pallet::storage]
-	pub type LastRuntimeUpgrade = StorageValueType<_, LastRuntimeUpgradeInfo>;
+	pub type LastRuntimeUpgrade<T> = StorageValueType<_, LastRuntimeUpgradeInfo>;
 
 	/// True if we have upgraded so that `type RefCount` is `u32`. False (default) if not.
 	#[pallet::storage]
-	type UpgradedToU32RefCount = StorageValueType<_, bool, ValueQuery>;
+	type UpgradedToU32RefCount<T> = StorageValueType<_, bool, ValueQuery>;
 
 	/// The execution phase of the block.
 	#[pallet::storage]
-	pub(crate) type ExecutionPhase = StorageValueType<_, Phase>;
+	pub(crate) type ExecutionPhase<T> = StorageValueType<_, Phase>;
 
 	#[pallet::genesis_config]
 	#[derive(Default)]
@@ -447,8 +447,8 @@ mod pallet {
 
 			<BlockHash<T>>::insert::<_, T::Hash>(T::BlockNumber::zero(), hash69());
 			<ParentHash<T>>::put::<T::Hash>(hash69());
-			LastRuntimeUpgrade::put(LastRuntimeUpgradeInfo::from(T::Version::get()));
-			UpgradedToU32RefCount::put(true);
+			<LastRuntimeUpgrade<T>>::put(LastRuntimeUpgradeInfo::from(T::Version::get()));
+			<UpgradedToU32RefCount<T>>::put(true);
 		}
 	}
 
@@ -1006,7 +1006,7 @@ impl<T: Trait> Module<T> {
 		// Don't populate events on genesis.
 		if block_number.is_zero() { return }
 
-		let phase = ExecutionPhase::get().unwrap_or_default();
+		let phase = <ExecutionPhase<T>>::get().unwrap_or_default();
 		let event = EventRecord {
 			phase,
 			event,
@@ -1015,14 +1015,14 @@ impl<T: Trait> Module<T> {
 
 		// Index of the to be added event.
 		let event_idx = {
-			let old_event_count = EventCount::get();
+			let old_event_count = <EventCount<T>>::get();
 			let new_event_count = match old_event_count.checked_add(1) {
 				// We've reached the maximum number of events at this block, just
 				// don't do anything and leave the event_count unaltered.
 				None => return,
 				Some(nc) => nc,
 			};
-			EventCount::put(new_event_count);
+			<EventCount<T>>::put(new_event_count);
 			old_event_count
 		};
 
@@ -1040,11 +1040,11 @@ impl<T: Trait> Module<T> {
 
 	/// Gets extrinsics count.
 	pub fn extrinsic_count() -> u32 {
-		ExtrinsicCount::get().unwrap_or_default()
+		<ExtrinsicCount<T>>::get().unwrap_or_default()
 	}
 
 	pub fn all_extrinsics_len() -> u32 {
-		AllExtrinsicsLen::get().unwrap_or_default()
+		<AllExtrinsicsLen<T>>::get().unwrap_or_default()
 	}
 
 	/// Inform the system module of some additional weight that should be accounted for, in the
@@ -1063,7 +1063,7 @@ impl<T: Trait> Module<T> {
 	///
 	/// Another potential use-case could be for the `on_initialize` and `on_finalize` hooks.
 	pub fn register_extra_weight_unchecked(weight: Weight, class: DispatchClass) {
-		BlockWeight::mutate(|current_weight| {
+		<BlockWeight<T>>::mutate(|current_weight| {
 			current_weight.add(weight, class);
 		});
 	}
@@ -1077,7 +1077,7 @@ impl<T: Trait> Module<T> {
 		kind: InitKind,
 	) {
 		// populate environment
-		ExecutionPhase::put(Phase::Initialization);
+		<ExecutionPhase<T>>::put(Phase::Initialization);
 		storage::unhashed::put(well_known_keys::EXTRINSIC_INDEX, &0u32);
 		<Number<T>>::put(number);
 		<Digest<T>>::put(digest);
@@ -1086,21 +1086,21 @@ impl<T: Trait> Module<T> {
 		<ExtrinsicsRoot<T>>::put(txs_root);
 
 		// Remove previous block data from storage
-		BlockWeight::kill();
+		<BlockWeight<T>>::kill();
 
 		// Kill inspectable storage entries in state when `InitKind::Full`.
 		if let InitKind::Full = kind {
 			<Events<T>>::kill();
-			EventCount::kill();
+			<EventCount<T>>::kill();
 			<EventTopics<T>>::remove_all();
 		}
 	}
 
 	/// Remove temporary "environment" entries in storage.
 	pub fn finalize() -> T::Header {
-		ExecutionPhase::kill();
-		ExtrinsicCount::kill();
-		AllExtrinsicsLen::kill();
+		<ExecutionPhase<T>>::kill();
+		<ExtrinsicCount<T>>::kill();
+		<AllExtrinsicsLen<T>>::kill();
 
 		let number = <Number<T>>::take();
 		let parent_hash = <ParentHash<T>>::take();
@@ -1189,10 +1189,10 @@ impl<T: Trait> Module<T> {
 	/// Set the current block weight. This should only be used in some integration tests.
 	#[cfg(any(feature = "std", test))]
 	pub fn set_block_limits(weight: Weight, len: usize) {
-		BlockWeight::mutate(|current_weight| {
+		<BlockWeight<T>>::mutate(|current_weight| {
 			current_weight.put(weight, DispatchClass::Normal)
 		});
-		AllExtrinsicsLen::put(len as u32);
+		<AllExtrinsicsLen<T>>::put(len as u32);
 	}
 
 	/// Reset events. Can be used as an alternative to
@@ -1200,7 +1200,7 @@ impl<T: Trait> Module<T> {
 	#[cfg(any(feature = "std", feature = "runtime-benchmarks", test))]
 	pub fn reset_events() {
 		<Events<T>>::kill();
-		EventCount::kill();
+		<EventCount<T>>::kill();
 		<EventTopics<T>>::remove_all();
 	}
 
@@ -1224,7 +1224,7 @@ impl<T: Trait> Module<T> {
 	/// NOTE: This function is called only when the block is being constructed locally.
 	/// `execute_block` doesn't note any extrinsics.
 	pub fn note_extrinsic(encoded_xt: Vec<u8>) {
-		ExtrinsicData::insert(Self::extrinsic_index().unwrap_or_default(), encoded_xt);
+		<ExtrinsicData<T>>::insert(Self::extrinsic_index().unwrap_or_default(), encoded_xt);
 	}
 
 	/// To be called immediately after an extrinsic has been applied.
@@ -1243,7 +1243,7 @@ impl<T: Trait> Module<T> {
 		let next_extrinsic_index = Self::extrinsic_index().unwrap_or_default() + 1u32;
 
 		storage::unhashed::put(well_known_keys::EXTRINSIC_INDEX, &next_extrinsic_index);
-		ExecutionPhase::put(Phase::ApplyExtrinsic(next_extrinsic_index));
+		<ExecutionPhase<T>>::put(Phase::ApplyExtrinsic(next_extrinsic_index));
 	}
 
 	/// To be called immediately after `note_applied_extrinsic` of the last extrinsic of the block
@@ -1251,20 +1251,20 @@ impl<T: Trait> Module<T> {
 	pub fn note_finished_extrinsics() {
 		let extrinsic_index: u32 = storage::unhashed::take(well_known_keys::EXTRINSIC_INDEX)
 			.unwrap_or_default();
-		ExtrinsicCount::put(extrinsic_index);
-		ExecutionPhase::put(Phase::Finalization);
+		<ExtrinsicCount<T>>::put(extrinsic_index);
+		<ExecutionPhase<T>>::put(Phase::Finalization);
 	}
 
 	/// To be called immediately after finishing the initialization of the block
 	/// (e.g., called `on_initialize` for all modules).
 	pub fn note_finished_initialize() {
-		ExecutionPhase::put(Phase::ApplyExtrinsic(0))
+		<ExecutionPhase<T>>::put(Phase::ApplyExtrinsic(0))
 	}
 
 	/// Remove all extrinsic data and save the extrinsics trie root.
 	pub fn derive_extrinsics() {
-		let extrinsics = (0..ExtrinsicCount::get().unwrap_or_default())
-			.map(ExtrinsicData::take).collect();
+		let extrinsics = (0..<ExtrinsicCount<T>>::get().unwrap_or_default())
+			.map(<ExtrinsicData<T>>::take).collect();
 		let xts_root = extrinsics_data_root::<T::Hashing>(extrinsics);
 		<ExtrinsicsRoot<T>>::put(xts_root);
 	}

@@ -105,7 +105,8 @@ where
 {
 	type Query = QueryKind::Query;
 	fn module_prefix() -> &'static [u8] {
-		<Prefix::I as crate::traits::Instance>::PREFIX.as_bytes()
+		<Prefix::PalletInfo as crate::traits::PalletInfo>::name::<Prefix::Pallet>()
+			.expect("Every active pallet has a name in the runtime; qed").as_bytes()
 	}
 	fn storage_prefix() -> &'static [u8] {
 		Prefix::STORAGE_PREFIX.as_bytes()
@@ -147,7 +148,8 @@ where
 	type Query = QueryKind::Query;
 	type Hasher = Hasher;
 	fn module_prefix() -> &'static [u8] {
-		<Prefix::I as crate::traits::Instance>::PREFIX.as_bytes()
+		<Prefix::PalletInfo as crate::traits::PalletInfo>::name::<Prefix::Pallet>()
+			.expect("Every active pallet has a name in the runtime; qed").as_bytes()
 	}
 	fn storage_prefix() -> &'static [u8] {
 		Prefix::STORAGE_PREFIX.as_bytes()
@@ -215,7 +217,8 @@ where
 	type Hasher1 = Hasher1;
 	type Hasher2 = Hasher2;
 	fn module_prefix() -> &'static [u8] {
-		<Prefix::I as crate::traits::Instance>::PREFIX.as_bytes()
+		<Prefix::PalletInfo as crate::traits::PalletInfo>::name::<Prefix::Pallet>()
+			.expect("Every active pallet has a name in the runtime; qed").as_bytes()
 	}
 	fn storage_prefix() -> &'static [u8] {
 		Prefix::STORAGE_PREFIX.as_bytes()

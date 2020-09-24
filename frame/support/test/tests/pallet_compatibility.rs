@@ -79,7 +79,7 @@ mod pallet_old {
 	}
 }
 
-#[frame_support::pallet(Example)]
+#[frame_support::pallet]
 pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
@@ -147,7 +147,7 @@ pub mod pallet {
 	type Foo<T: Trait> = StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T>>;
 
 	#[pallet::storage]
-	type Double = StorageDoubleMapType<
+	type Double<T> = StorageDoubleMapType<
 		_, Blake2_128Concat, u32, Twox64Concat, u64, u16, ValueQuery
 	>;
 
@@ -211,7 +211,7 @@ impl frame_system::Trait for Runtime {
 	type AvailableBlockRatio = AvailableBlockRatio;
 	type MaximumBlockLength = MaximumBlockLength;
 	type Version = ();
-	type ModuleToIndex = ();
+	type PalletInfo = PalletInfo;
 	type AccountData = ();
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
@@ -239,7 +239,8 @@ frame_support::construct_runtime!(
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
 		System: frame_system::{Module, Call, Event<T>},
-		Pallet: pallet::{Module, Call, Event<T>, Config<T>, Storage},
+		// NOTE: name Example here is needed in order to have same module prefix
+		Example: pallet::{Module, Call, Event<T>, Config<T>, Storage},
 		PalletOld: pallet_old::{Module, Call, Event<T>, Config<T>, Storage},
 	}
 );
@@ -255,7 +256,7 @@ mod test {
 	fn metadata() {
 		let metadata = Runtime::metadata();
 		let modules = match metadata.1 {
-			frame_metadata::RuntimeMetadata::V11(frame_metadata::RuntimeMetadataV11 {
+			frame_metadata::RuntimeMetadata::V12(frame_metadata::RuntimeMetadataV12 {
 				modules: frame_metadata::DecodeDifferent::Encode(m),
 				..
 			}) => m,

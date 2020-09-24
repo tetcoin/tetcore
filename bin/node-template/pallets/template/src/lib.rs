@@ -13,7 +13,7 @@ mod tests;
 // Reexport to ease usage in construct_runtime as only one pallet is defined in this crate.
 pub use pallet::*;
 
-#[frame_support::pallet(TemplateModule)]
+#[frame_support::pallet]
 mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
@@ -34,7 +34,7 @@ mod pallet {
 	// https://substrate.dev/docs/en/knowledgebase/runtime/storage#declaring-storage-items
 	#[pallet::storage]
 	#[pallet::generate_getter(fn something)]
-	type Something = StorageValueType<_, u32>;
+	type Something<T> = StorageValueType<_, u32>;
 
 	// Pallets use events to inform users when important changes are made.
 	// https://substrate.dev/docs/en/knowledgebase/runtime/events
@@ -83,7 +83,7 @@ mod pallet {
 			let who = ensure_signed(origin)?;
 
 			// Update storage.
-			Something::put(something);
+			Something::<T>::put(something);
 
 			// Emit an event.
 			Self::deposit_event(Event::SomethingStored(something, who));
@@ -97,14 +97,14 @@ mod pallet {
 			let _who = ensure_signed(origin)?;
 
 			// Read a value from storage.
-			match Something::get() {
+			match Something::<T>::get() {
 				// Return an error if the value has not been set.
 				None => Err(Error::<T>::NoneValue)?,
 				Some(old) => {
 					// Increment the value read from storage; will error in the event of overflow.
 					let new = old.checked_add(1).ok_or(Error::<T>::StorageOverflow)?;
 					// Update the value in storage with the incremented result.
-					Something::put(new);
+					Something::<T>::put(new);
 					Ok(().into())
 				},
 			}

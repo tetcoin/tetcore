@@ -39,8 +39,6 @@ use frame_support_procedural_tools::generate_crate_access_2018;
 
 /// Parsed definition of a pallet.
 pub struct Def {
-	/// The name of the pallet in `#[pallet(MyExample)]`.
-	pub name: syn::Ident,
 	/// The module items.
 	/// (their order must not be modified because they are registered in individual definitions).
 	pub item: syn::ItemMod,
@@ -62,7 +60,7 @@ pub struct Def {
 }
 
 impl Def {
-	pub fn try_from(name: syn::Ident, mut item: syn::ItemMod) -> syn::Result<Self> {
+	pub fn try_from(mut item: syn::ItemMod) -> syn::Result<Self> {
 		let frame_system = generate_crate_access_2018("frame-system")?;
 		let frame_support = generate_crate_access_2018("frame-support")?;
 
@@ -143,7 +141,6 @@ impl Def {
 		}
 
 		let def = Def {
-			name,
 			item: item,
 			trait_: trait_.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::trait_]`"))?,
 			module: module
@@ -245,10 +242,10 @@ impl Def {
 
 	/// Depending on if pallet is instantiable:
 	/// * either `T: Trait`
-	/// * or `T: Trait<I>, I: Instance`
+	/// * or `T: Trait<I>, I: 'static`
 	pub fn type_impl_generics(&self) -> proc_macro2::TokenStream {
 		if self.trait_.has_instance {
-			quote::quote!(T: Trait<I>, I: Instance)
+			quote::quote!(T: Trait<I>, I: 'static)
 		} else {
 			quote::quote!(T: Trait)
 		}
@@ -256,21 +253,10 @@ impl Def {
 
 	/// Depending on if pallet is instantiable:
 	/// * either `T: Trait`
-	/// * or `T: Trait<I>, I: 'static + Instance`
-	pub fn type_impl_static_generics(&self) -> proc_macro2::TokenStream {
-		if self.trait_.has_instance {
-			quote::quote!(T: Trait<I>, I: 'static + Instance)
-		} else {
-			quote::quote!(T: Trait)
-		}
-	}
-
-	/// Depending on if pallet is instantiable:
-	/// * either `T: Trait`
-	/// * or `T: Trait<I>, I: Instance = DefaultInstance`
+	/// * or `T: Trait<I>, I: 'static = ()`
 	pub fn type_decl_generics(&self) -> proc_macro2::TokenStream {
 		if self.trait_.has_instance {
-			quote::quote!(T: Trait<I>, I: Instance = DefaultInstance)
+			quote::quote!(T: Trait<I>, I: 'static = ())
 		} else {
 			quote::quote!(T: Trait)
 		}

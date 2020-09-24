@@ -75,10 +75,6 @@ pub struct StorageDef {
 	pub vis: syn::Visibility,
 	/// The type ident, to generate the StoragePrefix for.
 	pub ident: syn::Ident,
-	/// If storage is declared with instance.
-	pub has_instance: bool,
-	/// If storage is generic over trait.
-	pub has_trait: bool,
 	/// The keys and value metadata of the storage.
 	pub metadata: Metadata,
 	/// The doc associated to the storage.
@@ -129,7 +125,7 @@ impl StorageDef {
 		let getter = attrs.pop().map(|attr| attr.getter);
 
 		let mut instances = vec![];
-		instances.push(helper::check_storage_optional_gen(&item.generics, item.ident.span())?);
+		instances.push(helper::check_type_def_gen(&item.generics, item.ident.span())?);
 
 		if item.generics.where_clause.is_some() {
 			let msg = "Invalid pallet::storage, unexpected where clause";
@@ -212,15 +208,10 @@ impl StorageDef {
 				err
 			})?;
 
-		let has_instance = item.generics.type_params().any(|t| t.ident == "I");
-		let has_trait = item.generics.type_params().any(|t| t.ident == "T");
-
 		Ok(StorageDef {
 			index,
 			vis: item.vis.clone(),
 			ident: item.ident.clone(),
-			has_instance,
-			has_trait,
 			instances,
 			metadata,
 			docs,

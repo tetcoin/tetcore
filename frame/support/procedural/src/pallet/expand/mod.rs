@@ -42,7 +42,7 @@ pub fn expand(mut def: Def) -> proc_macro2::TokenStream {
 	let error = error::expand_error(&mut def);
 	let event = event::expand_event(&mut def);
 	let storages = storage::expand_storages(&mut def);
-	let instances = instances::expand_instances(&mut def);
+	let instances = instances::expand_instances();
 	let store_trait = store_trait::expand_store_trait(&mut def);
 	let module_interface = module_interface::expand_module_interface(&mut def);
 	let genesis_build = genesis_build::expand_genesis_build(&mut def);

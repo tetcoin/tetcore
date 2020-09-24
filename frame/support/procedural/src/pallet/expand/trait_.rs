@@ -41,7 +41,6 @@ fn replace_self_by_t(input: proc_macro2::TokenStream) -> proc_macro2::TokenStrea
 pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
 	let type_impl_gen = &def.type_impl_generics();
-	let type_impl_static_gen = &def.type_impl_static_generics();
 	let type_decl_gen = &def.type_decl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
@@ -95,7 +94,7 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 		});
 
 	quote::quote!(
-		impl<#type_impl_static_gen> #module_ident<#type_use_gen> {
+		impl<#type_impl_gen> #module_ident<#type_use_gen> {
 
 			#[doc(hidden)]
 			pub fn module_constants_metadata()

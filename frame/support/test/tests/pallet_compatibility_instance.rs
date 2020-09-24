@@ -79,14 +79,14 @@ mod pallet_old {
 	}
 }
 
-#[frame_support::pallet(Example)]
+#[frame_support::pallet]
 pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
 	use frame_system::ensure_root;
 
 	#[pallet::trait_]
-	pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
+	pub trait Trait<I: 'static = ()>: frame_system::Trait {
 		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default
 			+ MaybeSerializeDeserialize;
 		#[pallet::const_]
@@ -95,10 +95,10 @@ pub mod pallet {
 	}
 
 	#[pallet::module]
-	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
+	pub struct Module<T, I = ()>(PhantomData<(T, I)>);
 
 	#[pallet::module_interface]
-	impl<T: Trait<I>, I: Instance> ModuleInterface<T::BlockNumber> for Module<T, I> {
+	impl<T: Trait<I>, I: 'static> ModuleInterface<T::BlockNumber> for Module<T, I> {
 		fn on_initialize(_n: T::BlockNumber) -> Weight {
 			<Dummy<T, I>>::put(T::Balance::from(10));
 			10
@@ -110,7 +110,7 @@ pub mod pallet {
 	}
 
 	#[pallet::call]
-	impl<T: Trait<I>, I: Instance> Module<T, I> {
+	impl<T: Trait<I>, I: 'static> Module<T, I> {
 		#[pallet::weight(<T::Balance as Into<Weight>>::into(new_value.clone()))]
 		fn set_dummy(origin: OriginFor<T>, #[pallet::compact] new_value: T::Balance) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
@@ -123,44 +123,44 @@ pub mod pallet {
 	}
 
 	#[pallet::error]
-	pub enum Error<T, I = DefaultInstance> {
+	pub enum Error<T, I = ()> {
 		/// Some wrong behavior
 		Wrong,
 	}
 
 	#[pallet::event]
 	#[pallet::generate(fn deposit_event)]
-	pub enum Event<T: Trait<I>, I: Instance = DefaultInstance> {
+	pub enum Event<T: Trait<I>, I: 'static = ()> {
 		/// Dummy event, just here so there's a generic type that's used.
 		Dummy(T::Balance),
 	}
 
 	#[pallet::storage]
 	/// Some documentation
-	type Dummy<T: Trait<I>, I: Instance = DefaultInstance> = StorageValueType<_, T::Balance, OptionQuery>;
+	type Dummy<T: Trait<I>, I: 'static = ()> = StorageValueType<_, T::Balance, OptionQuery>;
 
 	#[pallet::storage]
-	type Bar<T: Trait<I>, I: Instance = DefaultInstance> =
+	type Bar<T: Trait<I>, I: 'static = ()> =
 		StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
 	#[pallet::storage]
-	type Foo<T: Trait<I>, I: Instance = DefaultInstance> =
+	type Foo<T: Trait<I>, I: 'static = ()> =
 		StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T, I>>;
-	#[pallet::type_value] pub fn OnFooEmpty<T: Trait<I>, I: Instance>() -> T::Balance { 3.into() }
+	#[pallet::type_value] pub fn OnFooEmpty<T: Trait<I>, I: 'static>() -> T::Balance { 3.into() }
 
 	#[pallet::storage]
-	type Double<I: Instance = DefaultInstance> = StorageDoubleMapType<
+	type Double<T, I = ()> = StorageDoubleMapType<
 		_, Blake2_128Concat, u32, Twox64Concat, u64, u16, ValueQuery
 	>;
 
 	#[pallet::genesis_config]
-	pub struct GenesisConfig<T: Trait<I>, I: Instance = DefaultInstance> {
+	pub struct GenesisConfig<T: Trait<I>, I: 'static = ()> {
 		dummy: Option<T::Balance>,
 		bar: Vec<(T::AccountId, T::Balance)>,
 		foo: T::Balance,
 	}
 
-	impl<T: Trait<I>, I: Instance> Default for GenesisConfig<T, I> {
+	impl<T: Trait<I>, I: 'static> Default for GenesisConfig<T, I> {
 		fn default() -> Self {
 			GenesisConfig {
 				dummy: Default::default(),
@@ -171,7 +171,7 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait<I>, I: Instance> GenesisBuild<T, I> for GenesisConfig<T, I> {
+	impl<T: Trait<I>, I: 'static> GenesisBuild<T, I> for GenesisConfig<T, I> {
 		fn build(&self) {
 			if let Some(dummy) = self.dummy.as_ref() {
 				<Dummy<T, I>>::put(dummy);
@@ -213,7 +213,7 @@ impl frame_system::Trait for Runtime {
 	type AvailableBlockRatio = AvailableBlockRatio;
 	type MaximumBlockLength = MaximumBlockLength;
 	type Version = ();
-	type ModuleToIndex = ();
+	type PalletInfo = PalletInfo;
 	type AccountData = ();
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
@@ -261,11 +261,11 @@ frame_support::construct_runtime!(
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
 		System: frame_system::{Module, Call, Event<T>},
-		Pallet: pallet::{Module, Call, Event<T>, Config<T>, Storage},
+		Example: pallet::{Module, Call, Event<T>, Config<T>, Storage},
 		PalletOld: pallet_old::{Module, Call, Event<T>, Config<T>, Storage},
-		Pallet2: pallet::<Instance2>::{Module, Call, Event<T>, Config<T>, Storage},
+		Instance2Example: pallet::<Instance2>::{Module, Call, Event<T>, Config<T>, Storage},
 		PalletOld2: pallet_old::<Instance2>::{Module, Call, Event<T>, Config<T>, Storage},
-		Pallet3: pallet::<Instance3>::{Module, Call, Event<T>, Config<T>, Storage},
+		Instance3Example: pallet::<Instance3>::{Module, Call, Event<T>, Config<T>, Storage},
 		PalletOld3: pallet_old::<Instance3>::{Module, Call, Event<T>, Config<T>, Storage},
 	}
 );
@@ -281,7 +281,7 @@ mod test {
 	fn metadata() {
 		let metadata = Runtime::metadata();
 		let modules = match metadata.1 {
-			frame_metadata::RuntimeMetadata::V11(frame_metadata::RuntimeMetadataV11 {
+			frame_metadata::RuntimeMetadata::V12(frame_metadata::RuntimeMetadataV12 {
 				modules: frame_metadata::DecodeDifferent::Encode(m),
 				..
 			}) => m,

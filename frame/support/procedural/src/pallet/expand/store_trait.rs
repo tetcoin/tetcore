@@ -28,23 +28,11 @@ pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
 		return Default::default()
 	};
 
-	let type_impl_static_gen = &def.type_impl_static_generics();
+	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 
-	let storages = def.storages.iter()
-		.map(|storage| {
-			let storage_generics = match (storage.has_trait, storage.has_instance) {
-				(true, true) => quote::quote!(T, I),
-				(true, false) => quote::quote!(T),
-				(false, true) => quote::quote!(I),
-				(false, false) => quote::quote!(),
-			};
-			(storage.ident.clone(), storage_generics)
-		});
-
-	let storage_names = storages.clone().map(|s| s.0).collect::<Vec<_>>();
-	let storage_generics = storages.map(|s| s.1);
+	let storage_names = &def.storages.iter().map(|storage| &storage.ident).collect::<Vec<_>>();
 
 	quote::quote_spanned!(trait_store.span() =>
 		#trait_vis trait #trait_store {
@@ -52,9 +40,9 @@ pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
 				type #storage_names;
 			)*
 		}
-		impl<#type_impl_static_gen> #trait_store for #module_ident<#type_use_gen> {
+		impl<#type_impl_gen> #trait_store for #module_ident<#type_use_gen> {
 			#(
-				type #storage_names = #storage_names<#storage_generics>;
+				type #storage_names = #storage_names<#type_use_gen>;
 			)*
 		}
 	)

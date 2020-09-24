@@ -829,7 +829,9 @@ mod tests {
 /// prelude to be used alongside pallet macro, for ease of use.
 pub mod pallet_prelude {
 	pub use sp_std::marker::PhantomData;
-	pub use frame_support::traits::{Get, Instance, ModuleInterface, GenesisBuild, IsType};
+	pub use frame_support::traits::{Get, ModuleInterface, IsType};
+	#[cfg(feature = "std")]
+	pub use frame_support::traits::GenesisBuild;
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
 	pub use frame_support::storage::types::*;
 	pub use frame_support::{EqNoBound, PartialEqNoBound, DebugStripped, DebugNoBound, CloneNoBound};
@@ -859,14 +861,11 @@ pub mod pallet_prelude {
 ///
 /// It is define by a module item:
 /// ```nocompile
-/// #[pallet(MyPalletName)]
+/// #[pallet]
 /// mod pallet {
 /// ...
 /// }
 /// ```
-///
-/// Here `MyPalletName` is used as pallet unique identifier for storages. Storages will use keys
-/// prefixed with `twox128(MyPalletName)` to isolate their storage from other pallets..
 ///
 /// Inside the module the macro will parse item with the attribute: `#[pallet::*]`, some attributes
 /// are mandatory, some other optional.
@@ -1128,9 +1127,14 @@ pub mod pallet_prelude {
 /// #[pallet::generate_getter(fn $getter_name)] // optional
 /// $vis type $StorageName<$some_generic> = $StorageType<_, $some_generics, ...>;
 /// ```
-/// I.e. it must be a type alias, with generics: none or `T` or `T: Trait`, aliased type must be one
+/// I.e. it must be a type alias, with generics: `T` or `T: Trait`, aliased type must be one
 /// of `StorageValueType`, `StorageMapType` or `StorageDoubleMapType` (defined in frame_support).
 /// Their first generic must be `_` as it is written by the macro itself.
+///
+/// The Prefix generic written by the macro is generated using PalletInfo::name and the name of the
+/// storage type.
+/// E.g. if runtime name the pallet MyExample the storage `type Foo<T> = ...` use
+/// prefixes: `Twox128(b"MyExample") ++ Twox128(b"Foo")`.
 ///
 /// The optional attribute `#[pallet::generate_getter(fn $my_getter_fn_name)]` allow to define a
 /// getter function on `Module`.
@@ -1139,7 +1143,7 @@ pub mod pallet_prelude {
 /// ```nocompile
 /// #[pallet::storage]
 /// #[pallet::generate_getter(fn my_storage)]
-/// pub(super) type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// pub(super) type MyStorage<T> = StorageMapType<_, Blake2_128Concat, u32, u32>;
 /// ```
 ///
 /// NOTE: if the querykind generic parameter is still generic at this stage or is using some type
@@ -1234,10 +1238,8 @@ pub mod pallet_prelude {
 /// Macro will add the following attribute on it:
 /// * `#[cfg(feature = "std")]`
 ///
-/// Macro will implement `sp_runtime::BuildModuleGenesisStorage` using `__InherentHiddenInstance`
-/// for non-instantiable pallets.
-///
-/// Macro will implement some helper functions: `fn build_storage` and `fn assimilate_storage`.
+/// Macro will implement `sp_runtime::BuildModuleGenesisStorage` using `()` as second generic for
+/// non-instantiable pallets.
 ///
 /// # Inherent: `#[pallet::inherent]` optional
 ///
@@ -1298,7 +1300,7 @@ pub mod pallet_prelude {
 /// # Example for pallet without instance.
 ///
 /// ```
-/// #[frame_support::pallet(Example)]
+/// #[frame_support::pallet]
 /// // NOTE: Example is name of the pallet, it will be used as unique identifier for storage
 /// pub mod pallet {
 /// 	use frame_support::pallet_prelude::*; // Import various types used in pallet definition
@@ -1307,7 +1309,7 @@ pub mod pallet_prelude {
 /// 	type BalanceOf<T> = <T as Trait>::Balance;
 ///
 /// 	// Define the generic parameter of the pallet
-/// 	// The macro checks trait generics: is expected none or `I: Instance = DefaultInstance`.
+/// 	// The macro checks trait generics: is expected none or `I = ()`.
 /// 	// The macro parses `#[pallet::const_]` attributes: used to generate constant metadata,
 /// 	// expected syntax is `type $IDENT: Get<$TYPE>;`.
 /// 	#[pallet::trait_]
@@ -1414,7 +1416,7 @@ pub mod pallet_prelude {
 /// 	// Another declaration
 /// 	#[pallet::storage]
 /// 	#[pallet::generate_getter(fn my_storage)]
-/// 	pub(super) type MyStorage = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// 	pub(super) type MyStorage<T> = StorageMapType<_, Blake2_128Concat, u32, u32>;
 ///
 /// 	// Declare genesis config. (This is optional)
 /// 	//
@@ -1486,15 +1488,15 @@ pub mod pallet_prelude {
 /// # Example for pallet with instance.
 ///
 /// ```
-/// #[frame_support::pallet(ExampleInstantiable)]
+/// #[frame_support::pallet]
 /// pub mod pallet {
 /// 	use frame_support::pallet_prelude::*;
 /// 	use frame_system::pallet_prelude::*;
 ///
-/// 	type BalanceOf<T, I = DefaultInstance> = <T as Trait<I>>::Balance;
+/// 	type BalanceOf<T, I = ()> = <T as Trait<I>>::Balance;
 ///
 /// 	#[pallet::trait_]
-/// 	pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
+/// 	pub trait Trait<I: 'static = ()>: frame_system::Trait {
 /// 		#[pallet::const_]
 /// 		type MyGetParam: Get<u32>;
 /// 		type Balance: Parameter + From<u8>;
@@ -1503,14 +1505,14 @@ pub mod pallet_prelude {
 ///
 /// 	#[pallet::module]
 /// 	#[pallet::generate_store(pub(super) trait Store)]
-/// 	pub struct Module<T, I = DefaultInstance>(PhantomData<(T, I)>);
+/// 	pub struct Module<T, I = ()>(PhantomData<(T, I)>);
 ///
 /// 	#[pallet::module_interface]
-/// 	impl<T: Trait<I>, I: Instance> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {
+/// 	impl<T: Trait<I>, I: 'static> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {
 /// 	}
 ///
 /// 	#[pallet::call]
-/// 	impl<T: Trait<I>, I: Instance> Module<T, I> {
+/// 	impl<T: Trait<I>, I: 'static> Module<T, I> {
 /// 		/// Doc comment put in metadata
 /// 		#[pallet::weight(0)]
 /// 		fn toto(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
@@ -1520,7 +1522,7 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::error]
-/// 	pub enum Error<T, I = DefaultInstance> {
+/// 	pub enum Error<T, I = ()> {
 /// 		/// doc comment put into metadata
 /// 		InsufficientProposersBalance,
 /// 	}
@@ -1528,7 +1530,7 @@ pub mod pallet_prelude {
 /// 	#[pallet::event]
 /// 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
 /// 	#[pallet::generate(pub(super) fn deposit_event)]
-/// 	pub enum Event<T: Trait<I>, I: Instance = DefaultInstance> {
+/// 	pub enum Event<T: Trait<I>, I: 'static = ()> {
 /// 		/// doc comment put in metadata
 /// 		Proposed(<T as frame_system::Trait>::AccountId),
 /// 		/// doc
@@ -1537,15 +1539,15 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::type_value]
-/// 	pub(super) fn MyDefault<T: Trait<I>, I: Instance>() -> T::Balance { 3.into() }
+/// 	pub(super) fn MyDefault<T: Trait<I>, I: 'static>() -> T::Balance { 3.into() }
 ///
 /// 	#[pallet::storage]
-/// 	pub(super) type MyStorageValue<T: Trait<I>, I: Instance = DefaultInstance> =
+/// 	pub(super) type MyStorageValue<T: Trait<I>, I: 'static = ()> =
 /// 		StorageValueType<_, T::Balance, ValueQuery, MyDefault<T, I>>;
 ///
 /// 	#[pallet::storage]
 /// 	#[pallet::generate_getter(fn my_storage)]
-/// 	pub(super) type MyStorage<I = DefaultInstance> =
+/// 	pub(super) type MyStorage<T, I = ()> =
 /// 		StorageMapType<_, Blake2_128Concat, u32, u32>;
 ///
 /// 	#[pallet::genesis_config]
@@ -1555,15 +1557,15 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::genesis_build]
-/// 	impl<T: Trait<I>, I: Instance> GenesisBuild<T, I> for GenesisConfig {
+/// 	impl<T: Trait<I>, I: 'static> GenesisBuild<T, I> for GenesisConfig {
 /// 		fn build(&self) {}
 /// 	}
 ///
 /// 	#[pallet::origin]
-/// 	pub struct Origin<T, I = DefaultInstance>(PhantomData<(T, I)>);
+/// 	pub struct Origin<T, I = ()>(PhantomData<(T, I)>);
 ///
 /// 	#[pallet::validate_unsigned]
-/// 	impl<T: Trait<I>, I: Instance> ValidateUnsigned for Module<T, I> {
+/// 	impl<T: Trait<I>, I: 'static> ValidateUnsigned for Module<T, I> {
 /// 		type Call = Call<T, I>;
 /// 		fn validate_unsigned(
 /// 			source: TransactionSource,
@@ -1574,7 +1576,7 @@ pub mod pallet_prelude {
 /// 	}
 ///
 /// 	#[pallet::inherent]
-/// 	impl<T: Trait<I>, I: Instance> ProvideInherent for Module<T, I> {
+/// 	impl<T: Trait<I>, I: 'static> ProvideInherent for Module<T, I> {
 /// 		type Call = Call<T, I>;
 /// 		type Error = InherentError;
 ///
@@ -1609,7 +1611,7 @@ pub mod pallet_prelude {
 ///
 /// ```nocompile
 /// pub use pallet::*;
-/// #[frame_support::pallet(MyPalletAsNamedInDeclStorage)]
+/// #[frame_support::pallet]
 /// mod pallet {
 ///		use frame_support::pallet_prelude::*;
 ///		use frame_system::pallet_prelude::*;

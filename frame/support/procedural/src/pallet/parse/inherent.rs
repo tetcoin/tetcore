@@ -51,7 +51,7 @@ impl InherentDef {
 
 		let mut instances = vec![];
 		instances.push(helper::check_module_usage(&item.self_ty)?);
-		instances.push(helper::check_impl_generics(&item.generics, item.impl_token.span())?);
+		instances.push(helper::check_impl_gen(&item.generics, item.impl_token.span())?);
 
 		Ok(InherentDef { index, instances })
 	}

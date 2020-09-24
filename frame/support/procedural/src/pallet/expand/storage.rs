@@ -16,7 +16,6 @@
 // limitations under the License.
 
 use crate::pallet::Def;
-use proc_macro2::Span;
 use crate::pallet::parse::storage::{Metadata, QueryKind};
 use frame_support_procedural_tools::clean_type_string;
 
@@ -27,12 +26,12 @@ fn prefix_ident(storage_ident: &syn::Ident) -> syn::Ident {
 }
 
 /// * generate StoragePrefix structs (e.g. for a storage `MyStorage` a struct with the name
-///   `MyStorageP` is generated and implements StorageInstance trait.
+///   `_GeneratedPrefixForStorage$NameOfStorage` is generated and implements StorageInstance trait.
 /// * generate metadatas
 /// * replace the first generic `_` by the genereted prefix structure
 pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
-	let type_impl_static_gen = &def.type_impl_static_generics();
+	let frame_system = &def.system_crate();
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
@@ -65,40 +64,16 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 		};
 
 		let prefix_ident = prefix_ident(&storage_def.ident);
-		let generic = if storage_def.has_instance {
-			quote::quote!(<I>)
-		} else {
-			Default::default()
-		};
-		args.args[0] = syn::parse_quote!(#prefix_ident #generic);
+		args.args[0] = syn::parse_quote!( #prefix_ident<#type_use_gen> );
 	}
-
-	let instance = if def.trait_.has_instance {
-		// If trait_ has instance parsing ensure storage is generic over `I`
-		syn::Ident::new("I", Span::call_site())
-	} else {
-		// Otherwise we use __InherentHiddenInstance
-		syn::Ident::new(crate::INHERENT_INSTANCE_NAME, Span::call_site())
-	};
-
-	let (prefix_struct_impl_gen, prefix_struct_use_gen) = if def.trait_.has_instance {
-		(quote::quote!(I: #scrate::traits::Instance), quote::quote!(I))
-	} else {
-		(Default::default(), Default::default())
-	};
 
 	let entries = def.storages.iter()
 		.map(|storage| {
 			let docs = &storage.docs;
 
 			let ident = &storage.ident;
-			let gen = match (storage.has_trait, storage.has_instance) {
-				(true, true) => quote::quote!(<T, I>),
-				(false, true) => quote::quote!(<I>),
-				(false, false) => quote::quote!(),
-				(true, false) => quote::quote!(<T>),
-			};
-			let full_ident = quote::quote!(#ident #gen);
+			let gen = &def.type_use_generics();
+			let full_ident = quote::quote!( #ident<#gen> );
 
 			let metadata_trait = match &storage.metadata {
 				Metadata::Value { .. } =>
@@ -166,13 +141,8 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 			let docs = storage.docs.iter().map(|d| quote::quote!(#[doc = #d]));
 
 			let ident = &storage.ident;
-			let gen = match (storage.has_trait, storage.has_instance) {
-				(true, true) => quote::quote!(<T, I>),
-				(false, true) => quote::quote!(<I>),
-				(false, false) => quote::quote!(),
-				(true, false) => quote::quote!(<T>),
-			};
-			let full_ident = quote::quote!(#ident #gen);
+			let gen = &def.type_use_generics();
+			let full_ident = quote::quote!( #ident<#gen> );
 
 			match &storage.metadata {
 				Metadata::Value { value } => {
@@ -236,25 +206,29 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 		let prefix_struct_const = storage_def.ident.to_string();
 
 		quote::quote_spanned!(storage_def.ident.span() =>
-			#prefix_struct_vis struct #prefix_struct_ident<#prefix_struct_use_gen>(
-				core::marker::PhantomData<((), #prefix_struct_use_gen)>
+			#prefix_struct_vis struct #prefix_struct_ident<#type_use_gen>(
+				core::marker::PhantomData<(#type_use_gen,)>
 			);
-			impl<#prefix_struct_impl_gen> #scrate::traits::StorageInstance
-			for #prefix_struct_ident<#prefix_struct_use_gen>
+			impl<#type_impl_gen> #scrate::traits::StorageInstance
+			for #prefix_struct_ident<#type_use_gen>
 			{
-				type I = #instance;
+				type PalletInfo = <T as #frame_system::Trait>::PalletInfo;
+				type Pallet = Module<#type_use_gen>;
 				const STORAGE_PREFIX: &'static str = #prefix_struct_const;
 			}
 		)
 	});
 
 	quote::quote!(
-		impl<#type_impl_static_gen> #module_ident<#type_use_gen> {
+		impl<#type_impl_gen> #module_ident<#type_use_gen> {
 			#[doc(hidden)]
 			pub fn storage_metadata() -> #scrate::metadata::StorageMetadata {
 				#scrate::metadata::StorageMetadata {
 					prefix: #scrate::metadata::DecodeDifferent::Encode(
-						<#instance as #scrate::traits::Instance>::PREFIX
+						<
+							<T as #frame_system::Trait>::PalletInfo as #scrate::traits::PalletInfo
+						>::name::<#module_ident<#type_use_gen>>()
+							.expect("Every active pallet has a name in the runtime; qed")
 					),
 					entries: #scrate::metadata::DecodeDifferent::Encode(
 						&[ #( #entries, )* ]

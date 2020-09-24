@@ -38,7 +38,7 @@ mod keyword {
 pub struct TraitDef {
 	/// The index of error item in pallet module.
 	pub index: usize,
-	/// Wheither the trait has instance (i.e. define with `Trait<I: Instance = DefaultInstance>`)
+	/// Wheither the trait has instance (i.e. define with `Trait<I = ()>`)
 	pub has_instance: bool,
 	/// Const associated type.
 	pub consts_metadata: Vec<ConstMetadataDef>,
@@ -270,7 +270,7 @@ impl TraitDef {
 
 		let has_instance;
 		if let Some(_) = item.generics.params.first() {
-			helper::check_trait_def_generics(&item.generics, item.ident.span())?;
+			helper::check_trait_def_gen(&item.generics, item.ident.span())?;
 			has_instance = true;
 		} else {
 			has_instance = false;

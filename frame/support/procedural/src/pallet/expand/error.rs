@@ -36,7 +36,6 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	let scrate = &def.scrate();
 	let frame_system = &def.system_crate();
 	let type_impl_gen = &def.type_impl_generics();
-	let type_impl_static_gen = &def.type_impl_static_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 
@@ -110,7 +109,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_static_gen> From<#error_ident<#type_use_gen>>
+		impl<#type_impl_gen> From<#error_ident<#type_use_gen>>
 			for #scrate::sp_runtime::DispatchError
 		{
 			fn from(err: #error_ident<#type_use_gen>) -> Self {
