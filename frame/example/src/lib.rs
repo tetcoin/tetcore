@@ -317,7 +317,7 @@ impl<T: pallet_balances::Trait> PaysFee<(&BalanceOf<T>,)> for WeightForSetDummy<
 
 // Reexport pallet definition so runtime can use the crate directly.
 pub use pallet::*;
-#[frame_support::pallet(Example)]
+#[frame_support::pallet]
 mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;

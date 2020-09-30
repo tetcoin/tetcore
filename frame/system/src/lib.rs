@@ -430,6 +430,14 @@ mod pallet {
 		pub code: Vec<u8>,
 	}
 
+	#[cfg(feature = "std")]
+	impl GenesisConfig {
+		/// Helper method to call GenesisBuild::build_storage.
+		pub fn build_storage<T: Trait>(self) -> Result<sp_runtime::Storage, String> {
+			GenesisBuild::<T>::build_storage(&self)
+		}
+	}
+
 	#[pallet::genesis_build]
 	impl<T: Trait> GenesisBuild<T> for GenesisConfig {
 		fn build(&self) {
