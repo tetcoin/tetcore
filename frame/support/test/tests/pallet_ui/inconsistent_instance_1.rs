@@ -1,10 +1,10 @@
-#[frame_support::pallet(Example)]
+#[frame_support::pallet]
 mod pallet {
 	use frame_support::pallet_prelude::ModuleInterface;
 	use frame_system::pallet_prelude::BlockNumberFor;
 
 	#[pallet::trait_]
-	pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {}
+	pub trait Trait<I: 'static = ()>: frame_system::Trait {}
 
 	#[pallet::module]
 	pub struct Module<T>(core::marker::PhantomData<T>);

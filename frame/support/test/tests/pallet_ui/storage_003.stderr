@@ -1,5 +1,5 @@
 error: Invalid pallet::storage, expect ident: `StorageValueType` or `StorageMapType` or `StorageDoubleMapType` in order to expand metadata, found `u8`
-  --> $DIR/storage_003.rs:19:13
+  --> $DIR/storage_003.rs:19:16
    |
-19 |     type Foo = u8;
-   |                ^^
+19 |     type Foo<T> = u8;
+   |                   ^^

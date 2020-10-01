@@ -184,7 +184,7 @@ pub fn check_trait_def_gen(
 	gen: &syn::Generics,
 	span: proc_macro2::Span,
 ) -> syn::Result<()> {
-	let expected = "expect `I = ()`";
+	let expected = "expect `I: 'static = ()`";
 	pub struct CheckTraitDefGenerics;
 	impl syn::parse::Parse for CheckTraitDefGenerics {
 		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {

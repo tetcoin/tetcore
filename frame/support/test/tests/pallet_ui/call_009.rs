@@ -1,4 +1,4 @@
-#[frame_support::pallet(Example)]
+#[frame_support::pallet]
 mod pallet {
 	use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
 	use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};

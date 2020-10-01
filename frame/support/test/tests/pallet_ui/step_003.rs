@@ -1,4 +1,4 @@
-#[frame_support::pallet(Example)]
+#[frame_support::pallet]
 mod pallet {
 }
 

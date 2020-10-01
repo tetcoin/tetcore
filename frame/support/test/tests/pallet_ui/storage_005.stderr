@@ -1,11 +1,11 @@
 error: Invalid use of `#[pallet::storage]`, the type first generic argument must be `_`, the final argument is automatically set by macro.
-  --> $DIR/storage_005.rs:19:30
+  --> $DIR/storage_005.rs:19:33
    |
-19 |     type Foo = StorageValueType<u8, u8>;
-   |                                 ^^
+19 |     type Foo<T> = StorageValueType<u8, u8>;
+   |                                    ^^
 
 error: expected `_`
-  --> $DIR/storage_005.rs:19:30
+  --> $DIR/storage_005.rs:19:33
    |
-19 |     type Foo = StorageValueType<u8, u8>;
-   |                                 ^^
+19 |     type Foo<T> = StorageValueType<u8, u8>;
+   |                                    ^^

@@ -1,4 +1,4 @@
-#[frame_support::pallet(Example)]
+#[frame_support::pallet]
 mod pallet {
 	use frame_support::pallet_prelude::ModuleInterface;
 	use frame_system::pallet_prelude::BlockNumberFor;
@@ -7,13 +7,13 @@ mod pallet {
 	pub trait Trait: frame_system::Trait {}
 
 	#[pallet::module]
-	pub struct Module<T, I = DefaultInstance>(core::marker::PhantomData<(T, I)>);
+	pub struct Module<T, I = ()>(core::marker::PhantomData<(T, I)>);
 
 	#[pallet::module_interface]
-	impl<T: Trait<I>, I: Instance> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {}
+	impl<T: Trait<I>, I: 'static> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {}
 
 	#[pallet::call]
-	impl<T: Trait<I>, I: Instance> Module<T, I> {}
+	impl<T: Trait<I>, I: 'static> Module<T, I> {}
 }
 
 fn main() {

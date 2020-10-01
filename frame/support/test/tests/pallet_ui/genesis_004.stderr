@@ -4,7 +4,7 @@ error[E0277]: the trait bound `pallet::GenesisConfig: std::default::Default` is 
 22   |     impl<T: Trait> GenesisBuild<T> for GenesisConfig {}
      |                    ^^^^^^^^^^^^^^^ the trait `std::default::Default` is not implemented for `pallet::GenesisConfig`
      |
-    ::: $WORKSPACE/frame/support/src/traits.rs:1734:34
+    ::: $WORKSPACE/frame/support/src/traits.rs
      |
-1734 | pub trait GenesisBuild<T, I=()>: Default + MaybeSerializeDeserialize {
+     | pub trait GenesisBuild<T, I=()>: Default + MaybeSerializeDeserialize {
      |                                  ------- required by this bound in `frame_support::traits::GenesisBuild`

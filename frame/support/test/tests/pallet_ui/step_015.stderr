@@ -1,4 +1,4 @@
-error: Invalid generics: expect `impl<T: Trait>` or `impl<T: Trait<I>, I: Instance>`
+error: Invalid generics: expect `impl<T: Trait>` or `impl<T: Trait<I>, I: 'static>`
   --> $DIR/step_015.rs:11:2
    |
 11 |     impl<T> path::ModuleInterface for Module<T> {}
@@ -7,7 +7,7 @@ error: Invalid generics: expect `impl<T: Trait>` or `impl<T: Trait<I>, I: Instan
 error: expected `:`
  --> $DIR/step_015.rs:1:1
   |
-1 | #[frame_support::pallet(Example)]
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1 | #[frame_support::pallet]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
   |
   = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)

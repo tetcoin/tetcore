@@ -14,7 +14,7 @@ error[E0277]: the trait bound `pallet::Bar: pallet::_::_parity_scale_codec::code
 error[E0277]: the trait bound `pallet::Bar: pallet::_::_parity_scale_codec::WrapperTypeEncode` is not satisfied
   --> $DIR/call_007.rs:1:1
    |
-1  | / #[frame_support::pallet(Example)]
+1  | / #[frame_support::pallet]
 2  | | mod pallet {
 3  | |     use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
 4  | |     use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
