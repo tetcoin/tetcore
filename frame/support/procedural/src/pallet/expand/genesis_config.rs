@@ -30,7 +30,7 @@ pub fn expand_genesis_config(def: &mut Def) -> proc_macro2::TokenStream {
 	} else {
 		return Default::default()
 	};
-	let scrate = &def.scrate();
+	let frame_support = &def.frame_support;
 
 	let genesis_config_item = &mut def.item.content.as_mut()
 		.expect("Checked by def parser").1[genesis_config.index];
@@ -40,7 +40,9 @@ pub fn expand_genesis_config(def: &mut Def) -> proc_macro2::TokenStream {
 		syn::Item::Struct(syn::ItemStruct { attrs, .. }) |
 		syn::Item::Type(syn::ItemType { attrs, .. }) => {
 			attrs.push(syn::parse_quote!( #[cfg(feature = "std")] ));
-			attrs.push(syn::parse_quote!( #[derive(#scrate::Serialize, #scrate::Deserialize)] ));
+			attrs.push(syn::parse_quote!(
+				#[derive(#frame_support::Serialize, #frame_support::Deserialize)]
+			));
 			attrs.push(syn::parse_quote!( #[serde(rename_all = "camelCase")] ));
 			attrs.push(syn::parse_quote!( #[serde(deny_unknown_fields)] ));
 			attrs.push(syn::parse_quote!( #[serde(bound(serialize = ""))] ));

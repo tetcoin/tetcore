@@ -20,24 +20,24 @@ use syn::spanned::Spanned;
 
 /// * implement the individual traits using the ModuleInterface trait
 pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
-	let scrate = &def.scrate();
+	let frame_support = &def.frame_support;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
 	let where_clause = &def.module_interface.where_clause;
-	let frame_system = &def.system_crate();
+	let frame_system = &def.frame_system;
 
 	let module_interface_item_span = def.item.content.as_mut()
 		.expect("Checked by def parser").1[def.module_interface.index].span();
 
 	quote::quote_spanned!(module_interface_item_span =>
 		impl<#type_impl_gen>
-			#scrate::traits::OnFinalize<<T as #frame_system::Trait>::BlockNumber>
+			#frame_support::traits::OnFinalize<<T as #frame_system::Trait>::BlockNumber>
 			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn on_finalize(n: <T as #frame_system::Trait>::BlockNumber) {
 				<
-					Self as #scrate::traits::ModuleInterface<
+					Self as #frame_support::traits::ModuleInterface<
 						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::on_finalize(n)
@@ -45,14 +45,14 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 
 		impl<#type_impl_gen>
-			#scrate::traits::OnInitialize<<T as #frame_system::Trait>::BlockNumber>
+			#frame_support::traits::OnInitialize<<T as #frame_system::Trait>::BlockNumber>
 			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn on_initialize(
 				n: <T as #frame_system::Trait>::BlockNumber
-			) -> #scrate::weights::Weight {
+			) -> #frame_support::weights::Weight {
 				<
-					Self as #scrate::traits::ModuleInterface<
+					Self as #frame_support::traits::ModuleInterface<
 						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::on_initialize(n)
@@ -60,12 +60,12 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 
 		impl<#type_impl_gen>
-			#scrate::traits::OnRuntimeUpgrade
+			#frame_support::traits::OnRuntimeUpgrade
 			for #module_ident<#type_use_gen> #where_clause
 		{
-			fn on_runtime_upgrade() -> #scrate::weights::Weight {
+			fn on_runtime_upgrade() -> #frame_support::weights::Weight {
 				<
-					Self as #scrate::traits::ModuleInterface<
+					Self as #frame_support::traits::ModuleInterface<
 						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::on_runtime_upgrade()
@@ -73,12 +73,12 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 
 		impl<#type_impl_gen>
-			#scrate::traits::OffchainWorker<<T as #frame_system::Trait>::BlockNumber>
+			#frame_support::traits::OffchainWorker<<T as #frame_system::Trait>::BlockNumber>
 			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn offchain_worker(n: <T as #frame_system::Trait>::BlockNumber) {
 				<
-					Self as #scrate::traits::ModuleInterface<
+					Self as #frame_support::traits::ModuleInterface<
 						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::offchain_worker(n)
@@ -86,12 +86,12 @@ pub fn expand_module_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 
 		impl<#type_impl_gen>
-			#scrate::traits::IntegrityTest
+			#frame_support::traits::IntegrityTest
 			for #module_ident<#type_use_gen> #where_clause
 		{
 			fn integrity_test() {
 				<
-					Self as #scrate::traits::ModuleInterface<
+					Self as #frame_support::traits::ModuleInterface<
 						<T as #frame_system::Trait>::BlockNumber
 					>
 				>::integrity_test()

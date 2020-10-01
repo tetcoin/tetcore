@@ -30,8 +30,8 @@ fn prefix_ident(storage_ident: &syn::Ident) -> syn::Ident {
 /// * generate metadatas
 /// * replace the first generic `_` by the genereted prefix structure
 pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
-	let scrate = &def.scrate();
-	let frame_system = &def.system_crate();
+	let frame_support = &def.frame_support;
+	let frame_system = &def.frame_system;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
@@ -77,19 +77,19 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 
 			let metadata_trait = match &storage.metadata {
 				Metadata::Value { .. } =>
-					quote::quote!(#scrate::storage::types::StorageValueMetadata),
+					quote::quote!(#frame_support::storage::types::StorageValueMetadata),
 				Metadata::Map { .. } =>
-					quote::quote!(#scrate::storage::types::StorageMapMetadata),
+					quote::quote!(#frame_support::storage::types::StorageMapMetadata),
 				Metadata::DoubleMap { .. } =>
-					quote::quote!(#scrate::storage::types::StorageDoubleMapMetadata),
+					quote::quote!(#frame_support::storage::types::StorageDoubleMapMetadata),
 			};
 
 			let ty = match &storage.metadata {
 				Metadata::Value { value } => {
 					let value = clean_type_string(&quote::quote!(#value).to_string());
 					quote::quote!(
-						#scrate::metadata::StorageEntryType::Plain(
-							#scrate::metadata::DecodeDifferent::Encode(#value)
+						#frame_support::metadata::StorageEntryType::Plain(
+							#frame_support::metadata::DecodeDifferent::Encode(#value)
 						)
 					)
 				},
@@ -97,10 +97,10 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 					let value = clean_type_string(&quote::quote!(#value).to_string());
 					let key = clean_type_string(&quote::quote!(#key).to_string());
 					quote::quote!(
-						#scrate::metadata::StorageEntryType::Map {
+						#frame_support::metadata::StorageEntryType::Map {
 							hasher: <#full_ident as #metadata_trait>::HASHER,
-							key: #scrate::metadata::DecodeDifferent::Encode(#key),
-							value: #scrate::metadata::DecodeDifferent::Encode(#value),
+							key: #frame_support::metadata::DecodeDifferent::Encode(#key),
+							value: #frame_support::metadata::DecodeDifferent::Encode(#value),
 							unused: false,
 						}
 					)
@@ -110,28 +110,30 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 					let key1 = clean_type_string(&quote::quote!(#key1).to_string());
 					let key2 = clean_type_string(&quote::quote!(#key2).to_string());
 					quote::quote!(
-						#scrate::metadata::StorageEntryType::DoubleMap {
+						#frame_support::metadata::StorageEntryType::DoubleMap {
 							hasher: <#full_ident as #metadata_trait>::HASHER1,
 							key2_hasher: <#full_ident as #metadata_trait>::HASHER2,
-							key1: #scrate::metadata::DecodeDifferent::Encode(#key1),
-							key2: #scrate::metadata::DecodeDifferent::Encode(#key2),
-							value: #scrate::metadata::DecodeDifferent::Encode(#value),
+							key1: #frame_support::metadata::DecodeDifferent::Encode(#key1),
+							key2: #frame_support::metadata::DecodeDifferent::Encode(#key2),
+							value: #frame_support::metadata::DecodeDifferent::Encode(#value),
 						}
 					)
 				}
 			};
 
 			quote::quote_spanned!(storage.ident.span() =>
-				#scrate::metadata::StorageEntryMetadata {
-					name: #scrate::metadata::DecodeDifferent::Encode(
+				#frame_support::metadata::StorageEntryMetadata {
+					name: #frame_support::metadata::DecodeDifferent::Encode(
 						<#full_ident as #metadata_trait>::NAME
 					),
 					modifier: <#full_ident as #metadata_trait>::MODIFIER,
 					ty: #ty,
-					default: #scrate::metadata::DecodeDifferent::Encode(
+					default: #frame_support::metadata::DecodeDifferent::Encode(
 						<#full_ident as #metadata_trait>::DEFAULT
 					),
-					documentation: #scrate::metadata::DecodeDifferent::Encode(&[ #( #docs, )* ]),
+					documentation: #frame_support::metadata::DecodeDifferent::Encode(&[
+						#( #docs, )*
+					]),
 				}
 			)
 		});
@@ -154,7 +156,9 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						impl<#type_impl_gen> #module_ident<#type_use_gen> {
 							#( #docs )*
 							pub fn #getter() -> #query {
-								<#full_ident as #scrate::storage::StorageValue<#value>>::get()
+								<
+									#full_ident as #frame_support::storage::StorageValue<#value>
+								>::get()
 							}
 						}
 					)
@@ -168,9 +172,11 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						impl<#type_impl_gen> #module_ident<#type_use_gen> {
 							#( #docs )*
 							pub fn #getter<KArg>(k: KArg) -> #query where
-								KArg: #scrate::codec::EncodeLike<#key>,
+								KArg: #frame_support::codec::EncodeLike<#key>,
 							{
-								<#full_ident as #scrate::storage::StorageMap<#key, #value>>::get(k)
+								<
+									#full_ident as #frame_support::storage::StorageMap<#key, #value>
+								>::get(k)
 							}
 						}
 					)
@@ -184,12 +190,12 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						impl<#type_impl_gen> #module_ident<#type_use_gen> {
 							#( #docs )*
 							pub fn #getter<KArg1, KArg2>(k1: KArg1, k2: KArg2) -> #query where
-								KArg1: #scrate::codec::EncodeLike<#key1>,
-								KArg2: #scrate::codec::EncodeLike<#key2>,
+								KArg1: #frame_support::codec::EncodeLike<#key1>,
+								KArg2: #frame_support::codec::EncodeLike<#key2>,
 							{
 								<
-									#full_ident
-									as #scrate::storage::StorageDoubleMap<#key1, #key2, #value>
+									#full_ident as
+									#frame_support::storage::StorageDoubleMap<#key1, #key2, #value>
 								>::get(k1, k2)
 							}
 						}
@@ -209,7 +215,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 			#prefix_struct_vis struct #prefix_struct_ident<#type_use_gen>(
 				core::marker::PhantomData<(#type_use_gen,)>
 			);
-			impl<#type_impl_gen> #scrate::traits::StorageInstance
+			impl<#type_impl_gen> #frame_support::traits::StorageInstance
 			for #prefix_struct_ident<#type_use_gen>
 			{
 				type PalletInfo = <T as #frame_system::Trait>::PalletInfo;
@@ -222,15 +228,16 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 	quote::quote!(
 		impl<#type_impl_gen> #module_ident<#type_use_gen> {
 			#[doc(hidden)]
-			pub fn storage_metadata() -> #scrate::metadata::StorageMetadata {
-				#scrate::metadata::StorageMetadata {
-					prefix: #scrate::metadata::DecodeDifferent::Encode(
+			pub fn storage_metadata() -> #frame_support::metadata::StorageMetadata {
+				#frame_support::metadata::StorageMetadata {
+					prefix: #frame_support::metadata::DecodeDifferent::Encode(
 						<
-							<T as #frame_system::Trait>::PalletInfo as #scrate::traits::PalletInfo
+							<T as #frame_system::Trait>::PalletInfo as
+							#frame_support::traits::PalletInfo
 						>::name::<#module_ident<#type_use_gen>>()
 							.expect("Every active pallet has a name in the runtime; qed")
 					),
-					entries: #scrate::metadata::DecodeDifferent::Encode(
+					entries: #frame_support::metadata::DecodeDifferent::Encode(
 						&[ #( #entries, )* ]
 					),
 				}

@@ -31,8 +31,8 @@ use syn::spanned::Spanned;
 /// * impl Callable for Module
 /// * impl call_functions for Module (metadata)
 pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
-	let scrate = &def.scrate();
-	let frame_system = &def.system_crate();
+	let frame_support = &def.frame_support;
+	let frame_system = &def.frame_system;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_decl_gen = &def.type_decl_generics();
 	let type_use_gen = &def.type_use_generics();
@@ -80,48 +80,51 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	});
 
 	quote::quote_spanned!(def.call.attr_span =>
-		#[cfg_attr(feature = "std", derive(#scrate::DebugNoBound))]
-		#[cfg_attr(not(feature = "std"), derive(#scrate::DebugStripped))]
+		#[cfg_attr(feature = "std", derive(#frame_support::DebugNoBound))]
+		#[cfg_attr(not(feature = "std"), derive(#frame_support::DebugStripped))]
 		#[derive(
-			#scrate::CloneNoBound,
-			#scrate::EqNoBound,
-			#scrate::PartialEqNoBound,
-			#scrate::codec::Encode,
-			#scrate::codec::Decode,
+			#frame_support::CloneNoBound,
+			#frame_support::EqNoBound,
+			#frame_support::PartialEqNoBound,
+			#frame_support::codec::Encode,
+			#frame_support::codec::Decode,
 		)]
 		#[allow(non_camel_case_types)]
 		pub enum #call_ident<#type_decl_gen> {
 			#[doc(hidden)]
 			#[codec(skip)]
 			__Ignore(
-				#scrate::sp_std::marker::PhantomData<(#type_use_gen,)>,
-				#scrate::Never,
+				#frame_support::sp_std::marker::PhantomData<(#type_use_gen,)>,
+				#frame_support::Never,
 			),
 			#( #fn_( #( #args_compact_attr #args_type ),* ), )*
 		}
 
-		impl<#type_impl_gen> #scrate::dispatch::GetDispatchInfo for #call_ident<#type_use_gen>
+		impl<#type_impl_gen> #frame_support::dispatch::GetDispatchInfo
+			for #call_ident<#type_use_gen>
 			#where_clause
 		{
-			fn get_dispatch_info(&self) -> #scrate::dispatch::DispatchInfo {
+			fn get_dispatch_info(&self) -> #frame_support::dispatch::DispatchInfo {
 				match *self {
 					#(
 						Self::#fn_ ( #( ref #args_name, )* ) => {
 							let base_weight = #fn_weight;
 
 							let weight = <
-								dyn #scrate::dispatch::WeighData<( #( & #args_type, )* )>
+								dyn #frame_support::dispatch::WeighData<( #( & #args_type, )* )>
 							>::weigh_data(&base_weight, ( #( #args_name, )* ));
 
 							let class = <
-								dyn #scrate::dispatch::ClassifyDispatch<( #( & #args_type, )* )>
+								dyn #frame_support::dispatch::ClassifyDispatch<
+									( #( & #args_type, )* )
+								>
 							>::classify_dispatch(&base_weight, ( #( #args_name, )* ));
 
 							let pays_fee = <
-								dyn #scrate::dispatch::PaysFee<( #( & #args_type, )* )>
+								dyn #frame_support::dispatch::PaysFee<( #( & #args_type, )* )>
 							>::pays_fee(&base_weight, ( #( #args_name, )* ));
 
-							#scrate::dispatch::DispatchInfo {
+							#frame_support::dispatch::DispatchInfo {
 								weight,
 								class,
 								pays_fee,
@@ -133,7 +136,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_gen> #scrate::dispatch::GetCallName for #call_ident<#type_use_gen>
+		impl<#type_impl_gen> #frame_support::dispatch::GetCallName for #call_ident<#type_use_gen>
 			#where_clause
 		{
 			fn get_call_name(&self) -> &'static str {
@@ -148,14 +151,15 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_gen> #scrate::traits::UnfilteredDispatchable for #call_ident<#type_use_gen>
+		impl<#type_impl_gen> #frame_support::traits::UnfilteredDispatchable
+			for #call_ident<#type_use_gen>
 			#where_clause
 		{
 			type Origin = #frame_system::pallet_prelude::OriginFor<T>;
 			fn dispatch_bypass_filter(
 				self,
 				origin: Self::Origin
-			) -> #scrate::dispatch::DispatchResultWithPostInfo {
+			) -> #frame_support::dispatch::DispatchResultWithPostInfo {
 				match self {
 					#(
 						Self::#fn_( #( #args_name, )* ) =>
@@ -170,7 +174,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_gen> #scrate::dispatch::Callable<T> for #module_ident<#type_use_gen>
+		impl<#type_impl_gen> #frame_support::dispatch::Callable<T> for #module_ident<#type_use_gen>
 			#where_clause
 		{
 			type Call = #call_ident<#type_use_gen>;
@@ -178,23 +182,23 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 
 		impl<#type_impl_gen> #module_ident<#type_use_gen> #where_clause {
 			#[doc(hidden)]
-			pub fn call_functions() -> &'static [#scrate::dispatch::FunctionMetadata] {
+			pub fn call_functions() -> &'static [#frame_support::dispatch::FunctionMetadata] {
 				&[ #(
-					#scrate::dispatch::FunctionMetadata {
-						name: #scrate::dispatch::DecodeDifferent::Encode(stringify!(#fn_)),
-						arguments: #scrate::dispatch::DecodeDifferent::Encode(
+					#frame_support::dispatch::FunctionMetadata {
+						name: #frame_support::dispatch::DecodeDifferent::Encode(stringify!(#fn_)),
+						arguments: #frame_support::dispatch::DecodeDifferent::Encode(
 							&[ #(
-								#scrate::dispatch::FunctionArgumentMetadata {
-									name: #scrate::dispatch::DecodeDifferent::Encode(
+								#frame_support::dispatch::FunctionArgumentMetadata {
+									name: #frame_support::dispatch::DecodeDifferent::Encode(
 										stringify!(#args_name)
 									),
-									ty: #scrate::dispatch::DecodeDifferent::Encode(
+									ty: #frame_support::dispatch::DecodeDifferent::Encode(
 										#args_metadata_type
 									),
 								},
 							)* ]
 						),
-						documentation: #scrate::dispatch::DecodeDifferent::Encode(
+						documentation: #frame_support::dispatch::DecodeDifferent::Encode(
 							&[ #( #fn_doc ),* ]
 						),
 					},

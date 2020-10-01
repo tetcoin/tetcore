@@ -39,7 +39,7 @@ fn replace_self_by_t(input: proc_macro2::TokenStream) -> proc_macro2::TokenStrea
 
 /// * Impl fn module_constant_metadata for module.
 pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
-	let scrate = &def.scrate();
+	let frame_support = &def.frame_support;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_decl_gen = &def.type_decl_generics();
 	let type_use_gen = &def.type_use_generics();
@@ -61,32 +61,32 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 				#[allow(non_upper_case_types)]
 				#[allow(non_camel_case_types)]
 				struct #default_byte_getter<#type_decl_gen>(
-					#scrate::sp_std::marker::PhantomData<(#type_use_gen)>
+					#frame_support::sp_std::marker::PhantomData<(#type_use_gen)>
 				);
 
-				impl<#type_impl_gen> #scrate::dispatch::DefaultByte for
+				impl<#type_impl_gen> #frame_support::dispatch::DefaultByte for
 					#default_byte_getter<#type_use_gen>
 				{
-					fn default_byte(&self) -> #scrate::sp_std::vec::Vec<u8> {
-						let value = <T::#ident as #scrate::traits::Get<#const_type>>::get();
-						#scrate::codec::Encode::encode(&value)
+					fn default_byte(&self) -> #frame_support::sp_std::vec::Vec<u8> {
+						let value = <T::#ident as #frame_support::traits::Get<#const_type>>::get();
+						#frame_support::codec::Encode::encode(&value)
 					}
 				}
 
 				unsafe impl<#type_impl_gen> Send for #default_byte_getter<#type_use_gen> {}
 				unsafe impl<#type_impl_gen> Sync for #default_byte_getter<#type_use_gen> {}
 
-				#scrate::dispatch::ModuleConstantMetadata {
-					name: #scrate::dispatch::DecodeDifferent::Encode(#ident_str),
-					ty: #scrate::dispatch::DecodeDifferent::Encode(#const_type_str),
-					value: #scrate::dispatch::DecodeDifferent::Encode(
-						#scrate::dispatch::DefaultByteGetter(
+				#frame_support::dispatch::ModuleConstantMetadata {
+					name: #frame_support::dispatch::DecodeDifferent::Encode(#ident_str),
+					ty: #frame_support::dispatch::DecodeDifferent::Encode(#const_type_str),
+					value: #frame_support::dispatch::DecodeDifferent::Encode(
+						#frame_support::dispatch::DefaultByteGetter(
 							&#default_byte_getter::<#type_use_gen>(
-								#scrate::sp_std::marker::PhantomData
+								#frame_support::sp_std::marker::PhantomData
 							)
 						)
 					),
-					documentation: #scrate::dispatch::DecodeDifferent::Encode(
+					documentation: #frame_support::dispatch::DecodeDifferent::Encode(
 						&[ #( #doc ),* ]
 					),
 				}
@@ -98,7 +98,7 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 
 			#[doc(hidden)]
 			pub fn module_constants_metadata()
-				-> &'static [#scrate::dispatch::ModuleConstantMetadata]
+				-> &'static [#frame_support::dispatch::ModuleConstantMetadata]
 			{
 				&[ #( #consts ),* ]
 			}

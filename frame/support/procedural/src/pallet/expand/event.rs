@@ -31,18 +31,22 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 	};
 
 	let event_ident = &event.event;
-	let frame_system = &def.system_crate();
-	let scrate = &def.scrate();
+	let frame_system = &def.frame_system;
+	let frame_support = &def.frame_support;
 	let event_use_gen = &event.event_use_gen();
 	let event_impl_gen= &event.event_impl_gen();
 	let metadata = event.metadata.iter()
 		.map(|(ident, args, docs)| {
 			let name = format!("{}", ident);
 			quote::quote!(
-				#scrate::event::EventMetadata {
-					name: #scrate::event::DecodeDifferent::Encode(#name),
-					arguments: #scrate::event::DecodeDifferent::Encode(&[ #( stringify!(#args), )* ]),
-					documentation: #scrate::event::DecodeDifferent::Encode(&[ #( #docs, )* ]),
+				#frame_support::event::EventMetadata {
+					name: #frame_support::event::DecodeDifferent::Encode(#name),
+					arguments: #frame_support::event::DecodeDifferent::Encode(&[
+						#( stringify!(#args), )*
+					]),
+					documentation: #frame_support::event::DecodeDifferent::Encode(&[
+						#( #docs, )*
+					]),
 				},
 			)
 		});
@@ -65,8 +69,8 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 			#[doc(hidden)]
 			#[codec(skip)]
 			__Ignore(
-				#scrate::sp_std::marker::PhantomData<(#event_use_gen)>,
-				#scrate::Never,
+				#frame_support::sp_std::marker::PhantomData<(#event_use_gen)>,
+				#frame_support::Never,
 			)
 		);
 
@@ -76,18 +80,18 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 
 	// derive some traits because system event require Clone, FullCodec, Eq, PartialEq and Debug
 	event_item.attrs.push(syn::parse_quote!(
-		#[cfg_attr(feature = "std", derive(#scrate::DebugNoBound))]
+		#[cfg_attr(feature = "std", derive(#frame_support::DebugNoBound))]
 	));
 	event_item.attrs.push(syn::parse_quote!(
-		#[cfg_attr(not(feature = "std"), derive(#scrate::DebugStripped))]
+		#[cfg_attr(not(feature = "std"), derive(#frame_support::DebugStripped))]
 	));
 	event_item.attrs.push(syn::parse_quote!(
 		#[derive(
-			#scrate::CloneNoBound,
-			#scrate::EqNoBound,
-			#scrate::PartialEqNoBound,
-			#scrate::codec::Encode,
-			#scrate::codec::Decode,
+			#frame_support::CloneNoBound,
+			#frame_support::EqNoBound,
+			#frame_support::PartialEqNoBound,
+			#frame_support::codec::Encode,
+			#frame_support::codec::Decode,
 		)]
 	));
 
@@ -129,7 +133,7 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		impl<#event_impl_gen> #event_ident<#event_use_gen> {
 			#[allow(dead_code)]
 			#[doc(hidden)]
-			pub fn metadata() -> &'static [#scrate::event::EventMetadata] {
+			pub fn metadata() -> &'static [#frame_support::event::EventMetadata] {
 				&[ #( #metadata )* ]
 			}
 		}

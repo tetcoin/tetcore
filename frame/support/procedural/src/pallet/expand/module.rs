@@ -19,7 +19,7 @@ use crate::pallet::Def;
 
 /// * Add derive Eq, PartialEq, Debug and Clone on Module
 pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
-	let scrate = &def.scrate();
+	let frame_support = &def.frame_support;
 
 	let module_item = {
 		let item = &mut def.item.content.as_mut().expect("Checked by def").1[def.module.index];
@@ -32,10 +32,10 @@ pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
 
 	module_item.attrs.push(syn::parse_quote!(
 		#[derive(
-			#scrate::CloneNoBound,
-			#scrate::EqNoBound,
-			#scrate::PartialEqNoBound,
-			#scrate::DebugStripped,
+			#frame_support::CloneNoBound,
+			#frame_support::EqNoBound,
+			#frame_support::PartialEqNoBound,
+			#frame_support::DebugStripped,
 		)]
 	));
 

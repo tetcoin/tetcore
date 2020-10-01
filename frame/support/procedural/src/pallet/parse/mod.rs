@@ -284,16 +284,6 @@ impl Def {
 			quote::quote!(T)
 		}
 	}
-
-	/// Return path to frame-support crate.
-	pub fn scrate(&self) -> syn::Ident {
-		self.frame_support.clone()
-	}
-
-	/// Return path to frame-system crate.
-	pub fn system_crate(&self) -> syn::Ident {
-		self.frame_system.clone()
-	}
 }
 
 /// List of additional token to be used for parsing.

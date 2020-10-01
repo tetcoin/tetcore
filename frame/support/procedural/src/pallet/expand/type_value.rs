@@ -20,7 +20,7 @@ use syn::spanned::Spanned;
 
 pub fn expand_type_values(def: &mut Def) -> proc_macro2::TokenStream {
 	let mut expand = quote::quote!();
-	let scrate = def.scrate();
+	let frame_support = &def.frame_support;
 
 	for type_value in &def.type_values {
 		// Remove item from module content
@@ -48,7 +48,7 @@ pub fn expand_type_values(def: &mut Def) -> proc_macro2::TokenStream {
 
 		expand.extend(quote::quote_spanned!(span =>
 			#vis struct #ident<#struct_use_gen>(core::marker::PhantomData<((), #struct_use_gen)>);
-			impl<#struct_impl_gen> #scrate::traits::Get<#type_> for #ident<#struct_use_gen> {
+			impl<#struct_impl_gen> #frame_support::traits::Get<#type_> for #ident<#struct_use_gen> {
 				fn get() -> #type_ #block
 			}
 		));

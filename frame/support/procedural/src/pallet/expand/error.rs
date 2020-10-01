@@ -33,8 +33,8 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	let error_item_span =
 		def.item.content.as_mut().expect("Checked by def parser").1[error.index].span();
 	let error_ident = &error.error;
-	let scrate = &def.scrate();
-	let frame_system = &def.system_crate();
+	let frame_support = &def.frame_support;
+	let frame_system = &def.frame_system;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let module_ident = &def.module.module;
@@ -42,8 +42,8 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	let phantom_variant: syn::Variant = syn::parse_quote!(
 		#[doc(hidden)]
 		__Ignore(
-			#scrate::sp_std::marker::PhantomData<(#type_use_gen)>,
-			#scrate::Never,
+			#frame_support::sp_std::marker::PhantomData<(#type_use_gen)>,
+			#frame_support::Never,
 		)
 	);
 
@@ -60,9 +60,9 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		.map(|(variant, doc)| {
 			let variant_str = format!("{}", variant);
 			quote::quote!(
-				#scrate::error::ErrorMetadata {
-					name: #scrate::error::DecodeDifferent::Encode(#variant_str),
-					documentation: #scrate::error::DecodeDifferent::Encode(&[ #( #doc, )* ]),
+				#frame_support::error::ErrorMetadata {
+					name: #frame_support::error::DecodeDifferent::Encode(#variant_str),
+					documentation: #frame_support::error::DecodeDifferent::Encode(&[ #( #doc, )* ]),
 				},
 			)
 		});
@@ -79,9 +79,9 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	error_item.variants.insert(0, phantom_variant);
 
 	quote::quote_spanned!(error_item_span =>
-		impl<#type_impl_gen> #scrate::sp_std::fmt::Debug for #error_ident<#type_use_gen> {
-			fn fmt(&self, f: &mut #scrate::sp_std::fmt::Formatter<'_>)
-				-> #scrate::sp_std::fmt::Result
+		impl<#type_impl_gen> #frame_support::sp_std::fmt::Debug for #error_ident<#type_use_gen> {
+			fn fmt(&self, f: &mut #frame_support::sp_std::fmt::Formatter<'_>)
+				-> #frame_support::sp_std::fmt::Result
 			{
 				f.write_str(self.as_str())
 			}
@@ -110,16 +110,16 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 
 		impl<#type_impl_gen> From<#error_ident<#type_use_gen>>
-			for #scrate::sp_runtime::DispatchError
+			for #frame_support::sp_runtime::DispatchError
 		{
 			fn from(err: #error_ident<#type_use_gen>) -> Self {
 				let index = <
 					<T as #frame_system::Trait>::PalletInfo
-					as #scrate::traits::PalletInfo
+					as #frame_support::traits::PalletInfo
 				>::index::<Module<#type_use_gen>>()
 					.expect("Every active module has an index in the runtime; qed") as u8;
 
-				#scrate::sp_runtime::DispatchError::Module {
+				#frame_support::sp_runtime::DispatchError::Module {
 					index,
 					error: err.as_u8(),
 					message: Some(err.as_str()),
@@ -127,8 +127,10 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_gen> #scrate::error::ModuleErrorMetadata for #module_ident<#type_use_gen> {
-			fn metadata() -> &'static [#scrate::error::ErrorMetadata] {
+		impl<#type_impl_gen> #frame_support::error::ModuleErrorMetadata
+			for #module_ident<#type_use_gen>
+		{
+			fn metadata() -> &'static [#frame_support::error::ErrorMetadata] {
 				&[ #( #metadata )* ]
 			}
 		}

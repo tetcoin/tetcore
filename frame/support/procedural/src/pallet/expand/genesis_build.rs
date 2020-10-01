@@ -27,7 +27,7 @@ pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 		return Default::default()
 	};
 
-	let scrate = &def.scrate();
+	let frame_support = &def.frame_support;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let trait_use_gen = if def.trait_.has_instance {
@@ -60,15 +60,15 @@ pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 
 	quote::quote_spanned!(genesis_build_item.span() =>
 		#[cfg(feature = "std")]
-		impl<#type_impl_gen> #scrate::sp_runtime::BuildModuleGenesisStorage<#trait_use_gen>
+		impl<#type_impl_gen> #frame_support::sp_runtime::BuildModuleGenesisStorage<#trait_use_gen>
 			for #gen_cfg_ident<#gen_cfg_use_gen> #where_clause
 		{
 			fn build_module_genesis_storage(
 				&self,
-				storage: &mut #scrate::sp_runtime::Storage,
+				storage: &mut #frame_support::sp_runtime::Storage,
 			) -> std::result::Result<(), std::string::String> {
-				#scrate::BasicExternalities::execute_with_storage(storage, || {
-					<Self as #scrate::traits::GenesisBuild<#type_use_gen>>::build(self);
+				#frame_support::BasicExternalities::execute_with_storage(storage, || {
+					<Self as #frame_support::traits::GenesisBuild<#type_use_gen>>::build(self);
 					Ok(())
 				})
 			}
