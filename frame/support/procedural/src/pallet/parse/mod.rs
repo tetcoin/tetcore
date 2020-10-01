@@ -142,7 +142,7 @@ impl Def {
 
 		let def = Def {
 			item: item,
-			trait_: trait_.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::trait_]`"))?,
+			trait_: trait_.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::config]`"))?,
 			module: module
 				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::module]`"))?,
 			module_interface: module_interface
@@ -302,7 +302,7 @@ mod keyword {
 	syn::custom_keyword!(call);
 	syn::custom_keyword!(event);
 	syn::custom_keyword!(module);
-	syn::custom_keyword!(trait_);
+	syn::custom_keyword!(config);
 	syn::custom_keyword!(module_interface);
 	syn::custom_keyword!(inherent);
 	syn::custom_keyword!(error);
@@ -317,7 +317,7 @@ mod keyword {
 }
 
 /// Parse attributes for item in pallet module
-/// syntax must be `pallet::` (e.g. `#[pallet::trait_]`)
+/// syntax must be `pallet::` (e.g. `#[pallet::config]`)
 enum PalletAttr {
 	Trait(proc_macro2::Span),
 	Module(proc_macro2::Span),
@@ -363,8 +363,8 @@ impl syn::parse::Parse for PalletAttr {
 		content.parse::<syn::Token![::]>()?;
 
 		let lookahead = content.lookahead1();
-		if lookahead.peek(keyword::trait_) {
-			Ok(PalletAttr::Trait(content.parse::<keyword::trait_>()?.span()))
+		if lookahead.peek(keyword::config) {
+			Ok(PalletAttr::Trait(content.parse::<keyword::config>()?.span()))
 		} else if lookahead.peek(keyword::module) {
 			Ok(PalletAttr::Module(content.parse::<keyword::module>()?.span()))
 		} else if lookahead.peek(keyword::module_interface) {

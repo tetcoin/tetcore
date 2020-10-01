@@ -26,7 +26,7 @@ mod keyword {
 	syn::custom_keyword!(T);
 	syn::custom_keyword!(I);
 	syn::custom_keyword!(Get);
-	syn::custom_keyword!(trait_);
+	syn::custom_keyword!(config);
 	syn::custom_keyword!(IsType);
 	syn::custom_keyword!(Event);
 	syn::custom_keyword!(constant);
@@ -247,24 +247,24 @@ impl TraitDef {
 		let item = if let syn::Item::Trait(item) = item {
 			item
 		} else {
-			let msg = "Invalid pallet::trait, expect Trait definition";
+			let msg = "Invalid pallet::trait, expect trait definition";
 			return Err(syn::Error::new(item.span(), msg));
 		};
 
 		if !matches!(item.vis, syn::Visibility::Public(_)) {
-			let msg = "Invalid pallet::trait_, Trait must be public";
+			let msg = "Invalid pallet::config, trait must be public";
 			return Err(syn::Error::new(item.span(), msg));
 		}
 
 		syn::parse2::<keyword::Trait>(item.ident.to_token_stream())?;
 
 		if item.generics.where_clause.is_some() {
-			let msg = "Invalid pallet::trait, expect no where clause";
+			let msg = "Invalid pallet::config, expect no where clause";
 			return Err(syn::Error::new(item.generics.where_clause.span(), msg));
 		}
 
 		if item.generics.params.len() > 1 {
-			let msg = "Invalid pallet::trait, expect no more than one generics";
+			let msg = "Invalid pallet::config, expect no more than one generics";
 			return Err(syn::Error::new(item.generics.params[2].span(), msg));
 		}
 
