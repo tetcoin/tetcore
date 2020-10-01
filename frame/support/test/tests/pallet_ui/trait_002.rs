@@ -5,7 +5,7 @@ mod pallet {
 
 	#[pallet::trait_]
 	pub trait Trait: frame_system::Trait {
-		#[pallet::const_]
+		#[pallet::constant]
 		type U;
 	}
 

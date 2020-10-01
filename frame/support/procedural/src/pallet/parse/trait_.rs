@@ -29,7 +29,7 @@ mod keyword {
 	syn::custom_keyword!(trait_);
 	syn::custom_keyword!(IsType);
 	syn::custom_keyword!(Event);
-	syn::custom_keyword!(const_);
+	syn::custom_keyword!(constant);
 	syn::custom_keyword!(frame_system);
 	syn::custom_keyword!(disable_frame_system_supertrait_check);
 }
@@ -90,7 +90,7 @@ impl syn::parse::Parse for DisableFrameSystemSupertraitCheck {
 	}
 }
 
-/// Parse for `#[pallet::const_]`
+/// Parse for `#[pallet::constant]`
 pub struct TypeAttrConst(proc_macro2::Span);
 
 impl Spanned for TypeAttrConst {
@@ -107,7 +107,7 @@ impl syn::parse::Parse for TypeAttrConst {
 		content.parse::<syn::Ident>()?;
 		content.parse::<syn::Token![::]>()?;
 
-		Ok(TypeAttrConst(content.parse::<keyword::const_>()?.span()))
+		Ok(TypeAttrConst(content.parse::<keyword::constant>()?.span()))
 	}
 }
 
@@ -283,7 +283,7 @@ impl TraitDef {
 			has_event_type = has_event_type
 				|| check_event_type(frame_system, trait_item, has_instance)?;
 
-			// Parse for const_
+			// Parse for constant
 			let type_attrs_const: Vec<TypeAttrConst> = helper::take_item_attrs(trait_item)?;
 
 			if type_attrs_const.len() > 1 {
@@ -294,16 +294,16 @@ impl TraitDef {
 			if type_attrs_const.len() == 1 {
 				match trait_item {
 					syn::TraitItem::Type(type_) => {
-						let const_ = syn::parse2::<ConstMetadataDef>(type_.to_token_stream())
+						let constant = syn::parse2::<ConstMetadataDef>(type_.to_token_stream())
 							.map_err(|e| {
-								let error_msg = "Invalid usage of `#[pallet::const_]`, syntax \
+								let error_msg = "Invalid usage of `#[pallet::constant]`, syntax \
 									must be `type $SomeIdent: Get<$SomeType>;`";
 								let mut err = syn::Error::new(type_.span(), error_msg);
 								err.combine(e);
 								err
 							})?;
 
-						consts_metadata.push(const_);
+						consts_metadata.push(constant);
 					},
 					_ => {
 						let msg = "Invalid pallet::const in pallet::trait, expect type trait \

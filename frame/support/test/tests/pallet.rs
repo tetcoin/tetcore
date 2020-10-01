@@ -35,12 +35,12 @@ pub mod pallet {
 	pub trait Trait: frame_system::Trait {
 		/// Some comment
 		/// Some comment
-		#[pallet::const_]
+		#[pallet::constant]
 		type MyGetParam: Get<u32>;
 
 		/// Some comment
 		/// Some comment
-		#[pallet::const_]
+		#[pallet::constant]
 		type MyGetParam2: Get<u32>;
 
 		type Balance: Parameter + Default;

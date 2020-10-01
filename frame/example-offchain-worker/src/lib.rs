@@ -133,21 +133,21 @@ mod pallet {
 		/// To avoid sending too many transactions, we only attempt to send one
 		/// every `GRACE_PERIOD` blocks. We use Local Storage to coordinate
 		/// sending between distinct runs of this offchain worker.
-		#[pallet::const_]
+		#[pallet::constant]
 		type GracePeriod: Get<Self::BlockNumber>;
 
 		/// Number of blocks of cooldown after unsigned transaction is included.
 		///
 		/// This ensures that we only accept unsigned transactions once, every `UnsignedInterval`
 		/// blocks.
-		#[pallet::const_]
+		#[pallet::constant]
 		type UnsignedInterval: Get<Self::BlockNumber>;
 
 		/// A configuration for base priority of unsigned transactions.
 		///
 		/// This is exposed so that it can be tuned for particular runtime, when
 		/// multiple pallets send unsigned transactions.
-		#[pallet::const_]
+		#[pallet::constant]
 		type UnsignedPriority: Get<TransactionPriority>;
 	}
 

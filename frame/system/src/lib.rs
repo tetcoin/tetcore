@@ -266,23 +266,23 @@ mod pallet {
 			+ IsType<<Self as frame_system::Trait>::Event>;
 
 		/// Maximum number of block number to block hash mappings to keep (oldest pruned first).
-		#[pallet::const_]
+		#[pallet::constant]
 		type BlockHashCount: Get<Self::BlockNumber>;
 
 		/// The maximum weight of a block.
-		#[pallet::const_]
+		#[pallet::constant]
 		type MaximumBlockWeight: Get<Weight>;
 
 		/// The weight of runtime database operations the runtime can invoke.
-		#[pallet::const_]
+		#[pallet::constant]
 		type DbWeight: Get<RuntimeDbWeight>;
 
 		/// The base weight of executing a block, independent of the transactions in the block.
-		#[pallet::const_]
+		#[pallet::constant]
 		type BlockExecutionWeight: Get<Weight>;
 
 		/// The base weight of an Extrinsic in the block, independent of the of extrinsic being executed.
-		#[pallet::const_]
+		#[pallet::constant]
 		type ExtrinsicBaseWeight: Get<Weight>;
 
 		/// The maximal weight of a single Extrinsic. This should be set to at most
@@ -291,7 +291,7 @@ mod pallet {
 		type MaximumExtrinsicWeight: Get<Weight>;
 
 		/// The maximum length of a block (in bytes).
-		#[pallet::const_]
+		#[pallet::constant]
 		type MaximumBlockLength: Get<u32>;
 
 		/// The portion of the block that is available to normal transaction. The rest can only be used

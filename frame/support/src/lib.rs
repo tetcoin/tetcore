@@ -901,11 +901,11 @@ pub mod pallet_prelude {
 /// The associated type `Event` is reserved, if defined it must bounds `From<Event>` and
 /// `IsType<<Self as frame_system::Trait>::Event>`, see `#[pallet::event]` for more information.
 ///
-/// To put `Get` associated type into metadatas, use the attribute `#[pallet::const_]`, e.g.:
+/// To put `Get` associated type into metadatas, use the attribute `#[pallet::constant]`, e.g.:
 /// ```nocompile
 /// #[pallet::trait_]
 /// pub trait Trait: frame_system::Trait {
-///		#[pallet::const_]
+///		#[pallet::constant]
 ///		type Foo: Get<u32>;
 /// }
 /// ```
@@ -923,7 +923,7 @@ pub mod pallet_prelude {
 ///
 /// ### Macro expansion:
 ///
-/// The macro expand pallet constant metadata with the information given by `#[pallet::const_]`.
+/// The macro expand pallet constant metadata with the information given by `#[pallet::constant]`.
 ///
 /// # Module: `#[pallet::module]` mandatory
 ///
@@ -1310,11 +1310,11 @@ pub mod pallet_prelude {
 ///
 /// 	// Define the generic parameter of the pallet
 /// 	// The macro checks trait generics: is expected none or `I = ()`.
-/// 	// The macro parses `#[pallet::const_]` attributes: used to generate constant metadata,
+/// 	// The macro parses `#[pallet::constant]` attributes: used to generate constant metadata,
 /// 	// expected syntax is `type $IDENT: Get<$TYPE>;`.
 /// 	#[pallet::trait_]
 /// 	pub trait Trait: frame_system::Trait {
-/// 		#[pallet::const_] // put the constant in metadata
+/// 		#[pallet::constant] // put the constant in metadata
 /// 		type MyGetParam: Get<u32>;
 /// 		type Balance: Parameter + From<u8>;
 /// 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
@@ -1497,7 +1497,7 @@ pub mod pallet_prelude {
 ///
 /// 	#[pallet::trait_]
 /// 	pub trait Trait<I: 'static = ()>: frame_system::Trait {
-/// 		#[pallet::const_]
+/// 		#[pallet::constant]
 /// 		type MyGetParam: Get<u32>;
 /// 		type Balance: Parameter + From<u8>;
 /// 		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Trait>::Event>;

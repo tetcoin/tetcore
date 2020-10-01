@@ -1,4 +1,4 @@
-error: Invalid usage of `#[pallet::const_]`, syntax must be `type $SomeIdent: Get<$SomeType>;`
+error: Invalid usage of `#[pallet::constant]`, syntax must be `type $SomeIdent: Get<$SomeType>;`
  --> $DIR/trait_002.rs:9:3
   |
 9 |         type U;
