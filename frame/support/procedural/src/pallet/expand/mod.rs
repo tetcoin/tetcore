@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod trait_;
-mod module;
+mod config;
+mod pallet_struct;
 mod call;
 mod error;
 mod event;
 mod storage;
-mod module_interface;
+mod interface;
 mod store_trait;
 mod instances;
 mod genesis_build;
@@ -36,29 +36,29 @@ use quote::ToTokens;
 /// * create some new types,
 /// * impl stuff on them.
 pub fn expand(mut def: Def) -> proc_macro2::TokenStream {
-	let trait_ = trait_::expand_trait_(&mut def);
-	let module = module::expand_module(&mut def);
+	let config = config::expand_config(&mut def);
+	let pallet_struct = pallet_struct::expand_pallet_struct(&mut def);
 	let call = call::expand_call(&mut def);
 	let error = error::expand_error(&mut def);
 	let event = event::expand_event(&mut def);
 	let storages = storage::expand_storages(&mut def);
 	let instances = instances::expand_instances();
 	let store_trait = store_trait::expand_store_trait(&mut def);
-	let module_interface = module_interface::expand_module_interface(&mut def);
+	let interface = interface::expand_interface(&mut def);
 	let genesis_build = genesis_build::expand_genesis_build(&mut def);
 	let genesis_config = genesis_config::expand_genesis_config(&mut def);
 	let type_values = type_value::expand_type_values(&mut def);
 
 	let new_items = quote::quote!(
-		#trait_
-		#module
+		#config
+		#pallet_struct
 		#call
 		#error
 		#event
 		#storages
 		#instances
 		#store_trait
-		#module_interface
+		#interface
 		#genesis_build
 		#genesis_config
 		#type_values

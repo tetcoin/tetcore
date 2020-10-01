@@ -17,7 +17,11 @@
 
 use frame_support::codec::{Encode, Decode, EncodeLike};
 
-pub trait Trait: 'static + Eq + Clone {
+/// Temporary keep old name Trait, to be removed alongside old macro.
+pub trait Trait: Config {}
+impl<Runtime: Config> Trait for Runtime {}
+
+pub trait Config: 'static + Eq + Clone {
 	type Origin: Into<Result<RawOrigin<Self::AccountId>, Self::Origin>>
 		+ From<RawOrigin<Self::AccountId>>;
 
@@ -30,6 +34,9 @@ pub trait Trait: 'static + Eq + Clone {
 	type PalletInfo: frame_support::traits::PalletInfo;
 }
 
+/// Temporary keep old module name, to be removed alongside old macro.
+#[allow(unused)]
+pub type Pallet<T> = Module<T>;
 frame_support::decl_module! {
 	pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=self {
 		#[weight = 0]
@@ -42,7 +49,7 @@ impl<T: Trait> Module<T> {
 }
 
 frame_support::decl_event!(
-	pub enum Event<T> where BlockNumber = <T as Trait>::BlockNumber {
+	pub enum Event<T> where BlockNumber = <T as Config>::BlockNumber {
 		ExtrinsicSuccess,
 		ExtrinsicFailed,
 		Ignore(BlockNumber),
@@ -76,7 +83,7 @@ impl<AccountId> From<Option<AccountId>> for RawOrigin<AccountId> {
 	}
 }
 
-pub type Origin<T> = RawOrigin<<T as Trait>::AccountId>;
+pub type Origin<T> = RawOrigin<<T as Config>::AccountId>;
 
 #[allow(dead_code)]
 pub fn ensure_root<OuterOrigin, AccountId>(o: OuterOrigin) -> Result<(), &'static str>

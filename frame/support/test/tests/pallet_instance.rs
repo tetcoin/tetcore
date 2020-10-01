@@ -30,22 +30,22 @@ pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
 
-	type BalanceOf<T, I> = <T as Trait<I>>::Balance;
+	type BalanceOf<T, I> = <T as Config<I>>::Balance;
 
 	#[pallet::config]
-	pub trait Trait<I: 'static = ()>: frame_system::Trait {
+	pub trait Config<I: 'static = ()>: frame_system::Config {
 		#[pallet::constant]
 		type MyGetParam: Get<u32>;
 		type Balance: Parameter + Default;
-		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Config>::Event>;
 	}
 
-	#[pallet::module]
+	#[pallet::pallet]
 	#[pallet::generate_store(pub(crate) trait Store)]
-	pub struct Module<T, I = ()>(PhantomData<(T, I)>);
+	pub struct Pallet<T, I = ()>(PhantomData<(T, I)>);
 
-	#[pallet::module_interface]
-	impl<T: Trait<I>, I: 'static> ModuleInterface<BlockNumberFor<T>> for Module<T, I> {
+	#[pallet::interface]
+	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {
 		fn on_initialize(_: BlockNumberFor<T>) -> Weight {
 			if TypeId::of::<I>() == TypeId::of::<()>() {
 				Self::deposit_event(Event::Something(10));
@@ -76,7 +76,7 @@ pub mod pallet {
 	}
 
 	#[pallet::call]
-	impl<T: Trait<I>, I: 'static> Module<T, I> {
+	impl<T: Config<I>, I: 'static> Pallet<T, I> {
 		/// Doc comment put in metadata
 		#[pallet::weight(Weight::from(*_foo))]
 		fn foo(origin: OriginFor<T>, #[pallet::compact] _foo: u32) -> DispatchResultWithPostInfo {
@@ -104,9 +104,9 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::metadata(BalanceOf<T, I> = Balance, u32 = Other)]
 	#[pallet::generate(fn deposit_event)]
-	pub enum Event<T: Trait<I>, I: 'static = ()> {
+	pub enum Event<T: Config<I>, I: 'static = ()> {
 		/// doc comment put in metadata
-		Proposed(<T as frame_system::Trait>::AccountId),
+		Proposed(<T as frame_system::Config>::AccountId),
 		/// doc
 		Spending(BalanceOf<T, I>),
 		Something(u32),
@@ -136,7 +136,7 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait<I>, I:'static> GenesisBuild<T, I> for GenesisConfig {
+	impl<T: Config<I>, I:'static> GenesisBuild<T, I> for GenesisConfig {
 		fn build(&self) {}
 	}
 
@@ -145,7 +145,7 @@ pub mod pallet {
 	pub struct Origin<T, I = ()>(PhantomData<(T, I)>);
 
 	#[pallet::validate_unsigned]
-	impl<T: Trait<I>, I: 'static> ValidateUnsigned for Module<T, I> {
+	impl<T: Config<I>, I: 'static> ValidateUnsigned for Pallet<T, I> {
 		type Call = Call<T, I>;
 		fn validate_unsigned(
 			_source: TransactionSource,
@@ -156,7 +156,7 @@ pub mod pallet {
 	}
 
 	#[pallet::inherent]
-	impl<T: Trait<I>, I: 'static> ProvideInherent for Module<T, I> {
+	impl<T: Config<I>, I: 'static> ProvideInherent for Pallet<T, I> {
 		type Call = Call<T, I>;
 		type Error = InherentError;
 
@@ -189,7 +189,7 @@ frame_support::parameter_types!(
 	pub const AvailableBlockRatio: sp_runtime::Perbill = sp_runtime::Perbill::one();
 );
 
-impl frame_system::Trait for Runtime {
+impl frame_system::Config for Runtime {
 	type BaseCallFilter = ();
 	type Origin = Origin;
 	type Index = u64;
@@ -216,12 +216,12 @@ impl frame_system::Trait for Runtime {
 	type OnKilledAccount = ();
 	type SystemWeightInfo = ();
 }
-impl pallet::Trait for Runtime {
+impl pallet::Config for Runtime {
 	type Event = Event;
 	type MyGetParam= MyGetParam;
 	type Balance = u64;
 }
-impl pallet::Trait<pallet::Instance1> for Runtime {
+impl pallet::Config<pallet::Instance1> for Runtime {
 	type Event = Event;
 	type MyGetParam= MyGetParam;
 	type Balance = u64;
@@ -237,9 +237,9 @@ frame_support::construct_runtime!(
 		NodeBlock = Block,
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
-		System: frame_system::{Module, Call, Event<T>},
-		Example: pallet::{Module, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
-		Instance1Example: pallet::<Instance1>::{Module, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
+		System: frame_system::{Pallet, Call, Event<T>},
+		Example: pallet::{Pallet, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
+		Instance1Example: pallet::<Instance1>::{Pallet, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
 	}
 );
 

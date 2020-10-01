@@ -22,8 +22,12 @@
 #![warn(missing_docs)]
 #![deny(warnings)]
 
+/// Temporary alias before removal
+pub trait Trait: Config {}
+impl<Runtime: Config> Trait for Runtime {}
+
 /// The configuration trait
-pub trait Trait {
+pub trait Config {
 	/// The runtime origin type.
 	type Origin;
 	/// The block number type.

@@ -19,7 +19,7 @@ use super::helper;
 use syn::spanned::Spanned;
 
 /// Definition of  type value. Just a function which is expanded to a struct implementing `Get`.
-/// e.g.: `fn foo<T: Trait>() -> T::Balance { T::Balance::zero() }`
+/// e.g.: `fn foo<T: Config>() -> T::Balance { T::Balance::zero() }`
 pub struct TypeValueDef {
 	/// The index of error item in pallet module.
 	pub index: usize,
@@ -35,7 +35,7 @@ pub struct TypeValueDef {
 	pub has_trait: bool,
 	/// If type value is generic over instance I.
 	pub has_instance: bool,
-	/// A set of usage of instance, must be check for consistency with trait.
+	/// A set of usage of instance, must be check for consistency with config.
 	pub instances: Vec<helper::InstanceUsage>,
 }
 

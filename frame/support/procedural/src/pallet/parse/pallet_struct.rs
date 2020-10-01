@@ -22,30 +22,30 @@ use quote::ToTokens;
 /// List of additional token to be used for parsing.
 mod keyword {
 	syn::custom_keyword!(pallet);
-	syn::custom_keyword!(Module);
+	syn::custom_keyword!(Pallet);
 	syn::custom_keyword!(generate_store);
 	syn::custom_keyword!(Store);
 }
 
-/// Definition of the pallet module.
-pub struct ModuleDef {
-	/// The index of error item in pallet module.
+/// Definition of the pallet pallet.
+pub struct PalletStructDef {
+	/// The index of item in pallet pallet.
 	pub index: usize,
-	/// A set of usage of instance, must be check for consistency with trait.
+	/// A set of usage of instance, must be check for consistency with config trait.
 	pub instances: Vec<helper::InstanceUsage>,
-	/// The keyword module used (contains span).
-	pub module: keyword::Module,
+	/// The keyword Pallet used (contains span).
+	pub pallet: keyword::Pallet,
 	/// Weither the trait `Store` must be generated.
 	pub store: Option<(syn::Visibility, keyword::Store)>
 }
 
-/// Parse for `#[pallet::generate($vis fn deposit_event)]`
-pub struct PalletModuleAttr {
+/// Parse for `#[pallet::generate_store($vis trait Store)]`
+pub struct PalletStructAttr {
 	vis: syn::Visibility,
 	keyword: keyword::Store,
 }
 
-impl syn::parse::Parse for PalletModuleAttr {
+impl syn::parse::Parse for PalletStructAttr {
 	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
 		input.parse::<syn::Token![#]>()?;
 		let content;
@@ -63,36 +63,36 @@ impl syn::parse::Parse for PalletModuleAttr {
 	}
 }
 
-impl ModuleDef {
+impl PalletStructDef {
 	pub fn try_from(index: usize, item: &mut syn::Item) -> syn::Result<Self> {
 		let item = if let syn::Item::Struct(item) = item {
 			item
 		} else {
-			let msg = "Invalid pallet::module, expect struct definition";
+			let msg = "Invalid pallet::pallet, expect struct definition";
 			return Err(syn::Error::new(item.span(), msg));
 		};
 
-		let mut event_attrs: Vec<PalletModuleAttr> = helper::take_item_attrs(&mut item.attrs)?;
+		let mut event_attrs: Vec<PalletStructAttr> = helper::take_item_attrs(&mut item.attrs)?;
 		if event_attrs.len() > 1 {
-			let msg = "Invalid pallet::module, multiple argument pallet::generate_store found";
+			let msg = "Invalid pallet::pallet, multiple argument pallet::generate_store found";
 			return Err(syn::Error::new(event_attrs[1].keyword.span(), msg));
 		}
 		let store = event_attrs.pop().map(|attr| (attr.vis, attr.keyword));
 
-		let module = syn::parse2::<keyword::Module>(item.ident.to_token_stream())?;
+		let pallet = syn::parse2::<keyword::Pallet>(item.ident.to_token_stream())?;
 
 		if !matches!(item.vis, syn::Visibility::Public(_)) {
-			let msg = "Invalid pallet::module, Module must be public";
+			let msg = "Invalid pallet::pallet, Pallet must be public";
 			return Err(syn::Error::new(item.span(), msg));
 		}
 		if item.generics.where_clause.is_some() {
-			let msg = "Invalid pallet::module, where clause not supported on Module declaration";
+			let msg = "Invalid pallet::pallet, where clause not supported on Pallet declaration";
 			return Err(syn::Error::new(item.generics.where_clause.span(), msg));
 		}
 
 		let mut instances = vec![];
 		instances.push(helper::check_type_def_gen_no_bounds(&item.generics, item.ident.span())?);
 
-		Ok(Self { index, instances, module, store })
+		Ok(Self { index, instances, pallet, store })
 	}
 }

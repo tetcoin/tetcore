@@ -20,7 +20,7 @@ use super::helper;
 
 /// Definition for pallet genesis build implementation.
 pub struct GenesisBuildDef {
-	/// The index of error item in pallet module.
+	/// The index of item in pallet module.
 	pub index: usize,
 	/// A set of usage of instance, must be check for consistency with trait.
 	pub instances: Vec<helper::InstanceUsage>,

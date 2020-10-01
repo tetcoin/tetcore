@@ -24,13 +24,13 @@ mod keyword {
 	syn::custom_keyword!(compact);
 	syn::custom_keyword!(GenesisBuild);
 	syn::custom_keyword!(OriginFor);
-	syn::custom_keyword!(Trait);
+	syn::custom_keyword!(Config);
 	syn::custom_keyword!(T);
-	syn::custom_keyword!(Module);
+	syn::custom_keyword!(Pallet);
 	syn::custom_keyword!(origin);
 }
 
-/// A usage of instance, either the trait `Trait` has been used with instance or without instance.
+/// A usage of instance, either the trait `Config` has been used with instance or without instance.
 /// Used to check for consistency.
 #[derive(Clone)]
 pub struct InstanceUsage {
@@ -180,7 +180,7 @@ impl syn::parse::Parse for StaticLifetime {
 /// `span` is used in case generics is empty (empty generics has span == call_site).
 ///
 /// return the instance if found.
-pub fn check_trait_def_gen(
+pub fn check_config_def_gen(
 	gen: &syn::Generics,
 	span: proc_macro2::Span,
 ) -> syn::Result<()> {
@@ -256,9 +256,9 @@ pub fn check_type_def_gen_no_bounds(
 /// Check the syntax:
 /// * either `` (no generics
 /// * or `T`
-/// * or `T: Trait`
+/// * or `T: Config`
 /// * or `T, I = ()`
-/// * or `T: Trait<I>, I: 'static = ()`
+/// * or `T: Config<I>, I: 'static = ()`
 ///
 /// `span` is used in case generics is empty (empty generics has span == call_site).
 ///
@@ -267,8 +267,8 @@ pub fn check_type_def_optional_gen(
 	gen: &syn::Generics,
 	span: proc_macro2::Span,
 ) -> syn::Result<Option<InstanceUsage>> {
-	let expected = "expect `` or `T` or `T: Trait` or `T, I = ()` or \
-		`T: Trait<I>, I: 'static = ()`";
+	let expected = "expect `` or `T` or `T: Config` or `T, I = ()` or \
+		`T: Config<I>, I: 'static = ()`";
 	pub struct Checker(Option<InstanceUsage>);
 	impl syn::parse::Parse for Checker {
 		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
@@ -298,7 +298,7 @@ pub fn check_type_def_optional_gen(
 				Ok(Self(Some(instance_usage)))
 			} else if lookahead.peek(syn::Token![:]) {
 				input.parse::<syn::Token![:]>()?;
-				input.parse::<keyword::Trait>()?;
+				input.parse::<keyword::Config>()?;
 
 				if input.is_empty() {
 					return Ok(Self(Some(instance_usage)))
@@ -365,12 +365,12 @@ pub fn check_dispatchable_first_arg(arg: &syn::FnArg) -> syn::Result<()> {
 }
 
 /// Check the syntax:
-/// * either `Module<T>`
-/// * or `Module<T, I>`
+/// * either `Pallet<T>`
+/// * or `Pallet<T, I>`
 ///
 /// return the instance if found.
-pub fn check_module_usage(type_: &Box<syn::Type>) -> syn::Result<InstanceUsage> {
-	let expected = "expect `Module<T>` or `Module<T, I>`";
+pub fn check_pallet_struct_usage(type_: &Box<syn::Type>) -> syn::Result<InstanceUsage> {
+	let expected = "expect `Pallet<T>` or `Pallet<T, I>`";
 	pub struct Checker(InstanceUsage);
 	impl syn::parse::Parse for Checker {
 		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
@@ -379,7 +379,7 @@ pub fn check_module_usage(type_: &Box<syn::Type>) -> syn::Result<InstanceUsage> 
 				has_instance: false,
 			};
 
-			input.parse::<keyword::Module>()?;
+			input.parse::<keyword::Pallet>()?;
 			input.parse::<syn::Token![<]>()?;
 			input.parse::<keyword::T>()?;
 			if input.peek(syn::Token![,]) {
@@ -395,7 +395,7 @@ pub fn check_module_usage(type_: &Box<syn::Type>) -> syn::Result<InstanceUsage> 
 
 	let i = syn::parse2::<Checker>(type_.to_token_stream())
 		.map_err(|e| {
-			let msg = format!("Invalid module type: {}", expected);
+			let msg = format!("Invalid pallet struct: {}", expected);
 			let mut err = syn::Error::new(type_.span(), msg);
 			err.combine(e);
 			err
@@ -405,8 +405,8 @@ pub fn check_module_usage(type_: &Box<syn::Type>) -> syn::Result<InstanceUsage> 
 }
 
 /// Check the generic is:
-/// * either `T: Trait`
-/// * or `T: Trait<I>, I: 'static`
+/// * either `T: Config`
+/// * or `T: Config<I>, I: 'static`
 ///
 /// `span` is used in case generics is empty (empty generics has span == call_site).
 ///
@@ -415,7 +415,7 @@ pub fn check_impl_gen(
 	gen: &syn::Generics,
 	span: proc_macro2::Span
 ) -> syn::Result<InstanceUsage> {
-	let expected = "expect `impl<T: Trait>` or `impl<T: Trait<I>, I: 'static>`";
+	let expected = "expect `impl<T: Config>` or `impl<T: Config<I>, I: 'static>`";
 	pub struct Checker(InstanceUsage);
 	impl syn::parse::Parse for Checker {
 		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
@@ -426,7 +426,7 @@ pub fn check_impl_gen(
 
 			input.parse::<keyword::T>()?;
 			input.parse::<syn::Token![:]>()?;
-			input.parse::<keyword::Trait>()?;
+			input.parse::<keyword::Config>()?;
 			if input.peek(syn::Token![<]) {
 				instance_usage.has_instance = true;
 				input.parse::<syn::Token![<]>()?;
@@ -454,9 +454,9 @@ pub fn check_impl_gen(
 
 /// Check the syntax:
 /// * or `T`
-/// * or `T: Trait`
+/// * or `T: Config`
 /// * or `T, I = ()`
-/// * or `T: Trait<I>, I: 'static = ()`
+/// * or `T: Config<I>, I: 'static = ()`
 ///
 /// `span` is used in case generics is empty (empty generics has span == call_site).
 ///
@@ -465,8 +465,8 @@ pub fn check_type_def_gen(
 	gen: &syn::Generics,
 	span: proc_macro2::Span,
 ) -> syn::Result<InstanceUsage> {
-	let expected = "expect `T` or `T: Trait` or `T, I = ()` or \
-		`T: Trait<I>, I: 'static = ()`";
+	let expected = "expect `T` or `T: Config` or `T, I = ()` or \
+		`T: Config<I>, I: 'static = ()`";
 	pub struct Checker(InstanceUsage);
 	impl syn::parse::Parse for Checker {
 		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
@@ -492,7 +492,7 @@ pub fn check_type_def_gen(
 				Ok(Self(instance_usage))
 			} else if lookahead.peek(syn::Token![:]) {
 				input.parse::<syn::Token![:]>()?;
-				input.parse::<keyword::Trait>()?;
+				input.parse::<keyword::Config>()?;
 
 				if input.is_empty() {
 					return Ok(Self(instance_usage))
@@ -572,8 +572,8 @@ pub fn check_genesis_builder_usage(type_: &syn::Path) -> syn::Result<InstanceUsa
 
 /// Check the syntax:
 /// * either `` (no generics)
-/// * or `T: Trait`
-/// * or `T: Trait<I>, I: 'static`
+/// * or `T: Config`
+/// * or `T: Config<I>, I: 'static`
 ///
 /// `span` is used in case generics is empty (empty generics has span == call_site).
 ///
@@ -582,7 +582,7 @@ pub fn check_type_value_gen(
 	gen: &syn::Generics,
 	span: proc_macro2::Span,
 ) -> syn::Result<Option<InstanceUsage>> {
-	let expected = "expect `` or `T: Trait` or `T: Trait<I>, I: 'static`";
+	let expected = "expect `` or `T: Config` or `T: Config<I>, I: 'static`";
 	pub struct Checker(Option<InstanceUsage>);
 	impl syn::parse::Parse for Checker {
 		fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
@@ -592,7 +592,7 @@ pub fn check_type_value_gen(
 
 			input.parse::<keyword::T>()?;
 			input.parse::<syn::Token![:]>()?;
-			input.parse::<keyword::Trait>()?;
+			input.parse::<keyword::Config>()?;
 
 			let mut instance_usage = InstanceUsage {
 				span: input.span(),

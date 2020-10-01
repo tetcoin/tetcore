@@ -1,5 +1,5 @@
 error: Invalid `type Event`, associated type `Event` is reserved and must bound: `From<Event>` or `From<Event<Self>>` or `From<Event<Self, I>>`
  --> $DIR/event_005.rs:9:3
   |
-9 |         type Event: IsType<<Self as frame_system::Trait>::Event>;
+9 |         type Event: IsType<<Self as frame_system::Config>::Event>;
   |         ^^^^

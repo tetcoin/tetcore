@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use codec::{Encode, Decode};
-use crate::{Trait, Module, BlockHash};
+use crate::{Config, Pallet, BlockHash};
 use frame_support::StorageMap;
 use sp_runtime::{
 	generic::Era,
@@ -28,16 +28,16 @@ use sp_runtime::{
 
 /// Check for transaction mortality.
 #[derive(Encode, Decode, Clone, Eq, PartialEq)]
-pub struct CheckMortality<T: Trait + Send + Sync>(Era, sp_std::marker::PhantomData<T>);
+pub struct CheckMortality<T: Config + Send + Sync>(Era, sp_std::marker::PhantomData<T>);
 
-impl<T: Trait + Send + Sync> CheckMortality<T> {
+impl<T: Config + Send + Sync> CheckMortality<T> {
 	/// utility constructor. Used only in client/factory code.
 	pub fn from(era: Era) -> Self {
 		Self(era, sp_std::marker::PhantomData)
 	}
 }
 
-impl<T: Trait + Send + Sync> sp_std::fmt::Debug for CheckMortality<T> {
+impl<T: Config + Send + Sync> sp_std::fmt::Debug for CheckMortality<T> {
 	#[cfg(feature = "std")]
 	fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
 		write!(f, "CheckMortality({:?})", self.0)
@@ -49,7 +49,7 @@ impl<T: Trait + Send + Sync> sp_std::fmt::Debug for CheckMortality<T> {
 	}
 }
 
-impl<T: Trait + Send + Sync> SignedExtension for CheckMortality<T> {
+impl<T: Config + Send + Sync> SignedExtension for CheckMortality<T> {
 	type AccountId = T::AccountId;
 	type Call = T::Call;
 	type AdditionalSigned = T::Hash;
@@ -63,7 +63,7 @@ impl<T: Trait + Send + Sync> SignedExtension for CheckMortality<T> {
 		_info: &DispatchInfoOf<Self::Call>,
 		_len: usize,
 	) -> TransactionValidity {
-		let current_u64 = <Module<T>>::block_number().saturated_into::<u64>();
+		let current_u64 = <Pallet<T>>::block_number().saturated_into::<u64>();
 		let valid_till = self.0.death(current_u64);
 		Ok(ValidTransaction {
 			longevity: valid_till.saturating_sub(current_u64),
@@ -72,12 +72,12 @@ impl<T: Trait + Send + Sync> SignedExtension for CheckMortality<T> {
 	}
 
 	fn additional_signed(&self) -> Result<Self::AdditionalSigned, TransactionValidityError> {
-		let current_u64 = <Module<T>>::block_number().saturated_into::<u64>();
+		let current_u64 = <Pallet<T>>::block_number().saturated_into::<u64>();
 		let n = self.0.birth(current_u64).saturated_into::<T::BlockNumber>();
 		if !<BlockHash<T>>::contains_key(n) {
 			Err(InvalidTransaction::AncientBirthBlock.into())
 		} else {
-			Ok(<Module<T>>::block_hash(n))
+			Ok(<Pallet<T>>::block_hash(n))
 		}
 	}
 }

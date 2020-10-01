@@ -26,7 +26,7 @@ mod pallet_old {
 	pub trait Trait: frame_system::Trait {
 		type SomeConst: Get<Self::Balance>;
 		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default;
-		type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self>> + Into<<Self as frame_system::Config>::Event>;
 	}
 
 	decl_storage! {
@@ -86,19 +86,19 @@ pub mod pallet {
 	use frame_system::ensure_root;
 
 	#[pallet::config]
-	pub trait Trait: frame_system::Trait {
+	pub trait Config: frame_system::Config {
 		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default
 			+ MaybeSerializeDeserialize;
 		#[pallet::constant]
 		type SomeConst: Get<Self::Balance>;
-		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 	}
 
-	#[pallet::module]
-	pub struct Module<T>(PhantomData<T>);
+	#[pallet::pallet]
+	pub struct Pallet<T>(PhantomData<T>);
 
-	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface<T::BlockNumber> for Module<T> {
+	#[pallet::interface]
+	impl<T: Config> Interface<T::BlockNumber> for Pallet<T> {
 		fn on_initialize(_n: T::BlockNumber) -> Weight {
 			<Dummy<T>>::put(T::Balance::from(10));
 			10
@@ -110,7 +110,7 @@ pub mod pallet {
 	}
 
 	#[pallet::call]
-	impl<T: Trait> Module<T> {
+	impl<T: Config> Pallet<T> {
 		#[pallet::weight(<T::Balance as Into<Weight>>::into(new_value.clone()))]
 		fn set_dummy(origin: OriginFor<T>, #[pallet::compact] new_value: T::Balance) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
@@ -130,21 +130,21 @@ pub mod pallet {
 
 	#[pallet::event]
 	#[pallet::generate(fn deposit_event)]
-	pub enum Event<T: Trait> {
+	pub enum Event<T: Config> {
 		/// Dummy event, just here so there's a generic type that's used.
 		Dummy(T::Balance),
 	}
 
 	#[pallet::storage]
 	/// Some documentation
-	type Dummy<T: Trait> = StorageValueType<_, T::Balance, OptionQuery>;
+	type Dummy<T: Config> = StorageValueType<_, T::Balance, OptionQuery>;
 
 	#[pallet::storage]
-	type Bar<T: Trait> = StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
+	type Bar<T: Config> = StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
-	#[pallet::type_value] pub fn OnFooEmpty<T: Trait>() -> T::Balance { 3.into() }
+	#[pallet::type_value] pub fn OnFooEmpty<T: Config>() -> T::Balance { 3.into() }
 	#[pallet::storage]
-	type Foo<T: Trait> = StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T>>;
+	type Foo<T: Config> = StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T>>;
 
 	#[pallet::storage]
 	type Double<T> = StorageDoubleMapType<
@@ -152,13 +152,13 @@ pub mod pallet {
 	>;
 
 	#[pallet::genesis_config]
-	pub struct GenesisConfig<T: Trait> {
+	pub struct GenesisConfig<T: Config> {
 		dummy: Option<T::Balance>,
 		bar: Vec<(T::AccountId, T::Balance)>,
 		foo: T::Balance,
 	}
 
-	impl<T: Trait> Default for GenesisConfig<T> {
+	impl<T: Config> Default for GenesisConfig<T> {
 		fn default() -> Self {
 			GenesisConfig {
 				dummy: Default::default(),
@@ -169,7 +169,7 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuild<T> for GenesisConfig<T> {
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
 		fn build(&self) {
 			if let Some(dummy) = self.dummy.as_ref() {
 				<Dummy<T>>::put(dummy);
@@ -190,7 +190,7 @@ frame_support::parameter_types!(
 	pub const AvailableBlockRatio: sp_runtime::Perbill = sp_runtime::Perbill::one();
 );
 
-impl frame_system::Trait for Runtime {
+impl frame_system::Config for Runtime {
 	type BaseCallFilter = ();
 	type Origin = Origin;
 	type Index = u64;
@@ -217,7 +217,7 @@ impl frame_system::Trait for Runtime {
 	type OnKilledAccount = ();
 	type SystemWeightInfo = ();
 }
-impl pallet::Trait for Runtime {
+impl pallet::Config for Runtime {
 	type Event = Event;
 	type SomeConst = SomeConst;
 	type Balance = u64;
@@ -240,7 +240,7 @@ frame_support::construct_runtime!(
 	{
 		System: frame_system::{Module, Call, Event<T>},
 		// NOTE: name Example here is needed in order to have same module prefix
-		Example: pallet::{Module, Call, Event<T>, Config<T>, Storage},
+		Example: pallet::{Pallet, Call, Event<T>, Config<T>, Storage},
 		PalletOld: pallet_old::{Module, Call, Event<T>, Config<T>, Storage},
 	}
 );

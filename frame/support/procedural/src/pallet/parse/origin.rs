@@ -25,7 +25,7 @@ use super::helper;
 /// * `struct Origin`
 /// * `enum Origin`
 pub struct OriginDef {
-	/// The index of error item in pallet module.
+	/// The index of item in pallet module.
 	pub index: usize,
 	pub has_instance: bool,
 	pub is_generic: bool,

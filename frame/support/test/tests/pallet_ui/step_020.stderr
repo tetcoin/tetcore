@@ -1,11 +1,11 @@
-error: Invalid module type: expect `Module<T>` or `Module<T, I>`
-  --> $DIR/step_020.rs:15:17
+error: Invalid pallet struct: expect `Pallet<T>` or `Pallet<T, I>`
+  --> $DIR/step_020.rs:15:18
    |
-15 |     impl<T: Trait> Foo {}
-   |                    ^^^
+15 |     impl<T: Config> Foo {}
+   |                     ^^^
 
-error: expected `Module`
-  --> $DIR/step_020.rs:15:17
+error: expected `Pallet`
+  --> $DIR/step_020.rs:15:18
    |
-15 |     impl<T: Trait> Foo {}
-   |                    ^^^
+15 |     impl<T: Config> Foo {}
+   |                     ^^^

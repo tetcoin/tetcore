@@ -23,7 +23,10 @@ use frame_support::{
 use sp_io::TestExternalities;
 use sp_std::result;
 
-pub trait Trait {
+/// Temporary keep old name Trait, to be removed alongside old macro.
+pub trait Trait: Config {}
+impl<Runtime: Config> Trait for Runtime {}
+pub trait Config {
 	type Origin;
 	type BlockNumber: Encode + Decode + EncodeLike + Default + Clone;
 }
@@ -53,7 +56,7 @@ frame_support::decl_storage!{
 }
 
 struct Runtime;
-impl Trait for Runtime {
+impl Config for Runtime {
 	type Origin = u32;
 	type BlockNumber = u32;
 }

@@ -1,4 +1,4 @@
-error: expected `Module`
+error: expected `Pallet`
  --> $DIR/step_010.rs:7:13
   |
 7 |     pub struct Foo {}

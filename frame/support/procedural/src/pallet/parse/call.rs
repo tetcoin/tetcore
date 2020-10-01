@@ -28,7 +28,7 @@ mod keyword {
 	syn::custom_keyword!(pallet);
 }
 
-/// Definition of dispatchables typically `impl<T: Trait> Module<T> { ... }`
+/// Definition of dispatchables typically `impl<T: Config> Pallet<T> { ... }`
 pub struct CallDef {
 	/// The where_clause used.
 	pub where_clause: Option<syn::WhereClause>,
@@ -110,11 +110,11 @@ impl CallDef {
 
 		let mut instances = vec![];
 		instances.push(helper::check_impl_gen(&item.generics, item.impl_token.span())?);
-		instances.push(helper::check_module_usage(&item.self_ty)?);
+		instances.push(helper::check_pallet_struct_usage(&item.self_ty)?);
 
 		if let Some((_, _, for_)) = item.trait_ {
 			let msg = "Invalid pallet::call, expect no trait ident as in \
-				`impl<..> Module<..> { .. }`";
+				`impl<..> Pallet<..> { .. }`";
 			return Err(syn::Error::new(for_.span(), msg))
 		}
 

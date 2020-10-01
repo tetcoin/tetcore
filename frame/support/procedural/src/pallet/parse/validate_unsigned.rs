@@ -22,7 +22,7 @@ use super::helper;
 pub struct ValidateUnsignedDef {
 	/// The index of validate unsigned item in pallet module.
 	pub index: usize,
-	/// A set of usage of instance, must be check for consistency with trait.
+	/// A set of usage of instance, must be check for consistency with config.
 	pub instances: Vec<helper::InstanceUsage>,
 }
 
@@ -37,7 +37,7 @@ impl ValidateUnsignedDef {
 
 		if item.trait_.is_none() {
 			let msg = "Invalid pallet::validate_unsigned, expect impl<..> ValidateUnsigned for \
-				Module<..>";
+				Pallet<..>";
 			return Err(syn::Error::new(item.span(), msg));
 		}
 
@@ -48,12 +48,12 @@ impl ValidateUnsignedDef {
 			}
 		} else {
 			let msg = "Invalid pallet::validate_unsigned, expect impl<..> ValidateUnsigned for \
-				Module<..>";
+				Pallet<..>";
 			return Err(syn::Error::new(item.span(), msg));
 		}
 
 		let mut instances = vec![];
-		instances.push(helper::check_module_usage(&item.self_ty)?);
+		instances.push(helper::check_pallet_struct_usage(&item.self_ty)?);
 		instances.push(helper::check_impl_gen(&item.generics, item.impl_token.span())?);
 
 		Ok(ValidateUnsignedDef { index, instances })

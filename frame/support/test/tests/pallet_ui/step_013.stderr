@@ -1,4 +1,4 @@
-error: Invalid pallet::module_interface, expect item impl
+error: Invalid pallet::interface, expect item impl
   --> $DIR/step_013.rs:10:2
    |
 10 |     pub enum Foo {}

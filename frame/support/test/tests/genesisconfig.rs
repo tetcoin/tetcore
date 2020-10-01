@@ -15,7 +15,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub trait Trait {
+/// Temporary keep old name Trait, to be removed alongside old macro.
+pub trait Trait: Config {}
+impl<Runtime: Config> Trait for Runtime {}
+pub trait Config {
 	type BlockNumber: codec::Codec + codec::EncodeLike + Default;
 	type Origin;
 }
@@ -32,7 +35,7 @@ frame_support::decl_storage! {
 
 struct Test;
 
-impl Trait for Test {
+impl Config for Test {
 	type BlockNumber = u32;
 	type Origin = ();
 }

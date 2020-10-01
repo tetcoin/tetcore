@@ -57,7 +57,7 @@ impl Convert<u128, u64> for CurrencyToVoteHandler {
 #[derive(Clone, Eq, PartialEq, Debug)]
 pub struct Test;
 
-impl frame_system::Trait for Test {
+impl frame_system::Config for Test {
 	type BaseCallFilter = ();
 	type Origin = Origin;
 	type Index = AccountIndex;

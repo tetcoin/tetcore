@@ -103,19 +103,19 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		let type_use_gen = &def.type_use_generics();
 
 		quote::quote_spanned!(*fn_span =>
-			impl<#type_impl_gen> Module<#type_use_gen> {
+			impl<#type_impl_gen> Pallet<#type_use_gen> {
 				#fn_vis fn deposit_event(event: Event<#event_use_gen>) {
 					let event = <
-						<T as Trait#trait_use_gen>::Event as
+						<T as Config#trait_use_gen>::Event as
 						From<Event<#event_use_gen>>
 					>::from(event);
 
 					let event = <
-						<T as Trait#trait_use_gen>::Event as
-						Into<<T as #frame_system::Trait>::Event>
+						<T as Config#trait_use_gen>::Event as
+						Into<<T as #frame_system::Config>::Event>
 					>::into(event);
 
-					<#frame_system::Module<T>>::deposit_event(event)
+					<#frame_system::Pallet<T>>::deposit_event(event)
 				}
 			}
 		)

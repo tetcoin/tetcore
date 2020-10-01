@@ -30,7 +30,7 @@ pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
-	let trait_use_gen = if def.trait_.has_instance {
+	let trait_use_gen = if def.config.has_instance {
 		quote::quote!(T, I)
 	} else {
 		// `__InherentHiddenInstance` used by construct_runtime here is alias for `()`

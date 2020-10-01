@@ -22,7 +22,7 @@ use syn::spanned::Spanned;
 /// * impl as_u8 and as_str for Error
 /// * impl `From<Error>` for static str
 /// * impl `From<Error>` for DispatchError
-/// * impl ModuleErrorMetadata for Module
+/// * impl ModuleErrorMetadata for Pallet
 pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	let error = if let Some(error) = &def.error {
 		error
@@ -37,7 +37,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_system = &def.frame_system;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
-	let module_ident = &def.module.module;
+	let pallet_ident = &def.pallet_struct.pallet;
 
 	let phantom_variant: syn::Variant = syn::parse_quote!(
 		#[doc(hidden)]
@@ -114,9 +114,9 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		{
 			fn from(err: #error_ident<#type_use_gen>) -> Self {
 				let index = <
-					<T as #frame_system::Trait>::PalletInfo
+					<T as #frame_system::Config>::PalletInfo
 					as #frame_support::traits::PalletInfo
-				>::index::<Module<#type_use_gen>>()
+				>::index::<Pallet<#type_use_gen>>()
 					.expect("Every active module has an index in the runtime; qed") as u8;
 
 				#frame_support::sp_runtime::DispatchError::Module {
@@ -128,7 +128,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 
 		impl<#type_impl_gen> #frame_support::error::ModuleErrorMetadata
-			for #module_ident<#type_use_gen>
+			for #pallet_ident<#type_use_gen>
 		{
 			fn metadata() -> &'static [#frame_support::error::ErrorMetadata] {
 				&[ #( #metadata )* ]

@@ -1,7 +1,7 @@
-error: Invalid generics: expect `impl<T: Trait>` or `impl<T: Trait<I>, I: 'static>`
+error: Invalid generics: expect `impl<T: Config>` or `impl<T: Config<I>, I: 'static>`
   --> $DIR/step_015.rs:11:2
    |
-11 |     impl<T> path::ModuleInterface for Module<T> {}
+11 |     impl<T> path::Interface for Pallet<T> {}
    |     ^^^^
 
 error: expected `:`

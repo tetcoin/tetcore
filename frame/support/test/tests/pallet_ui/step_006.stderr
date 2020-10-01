@@ -1,4 +1,4 @@
-error: expected `Trait`
+error: expected `Config`
  --> $DIR/step_006.rs:4:12
   |
 4 |     pub trait Foo {}

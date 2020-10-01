@@ -28,8 +28,8 @@ use syn::spanned::Spanned;
 /// * impl GetDispatchInfo for Call
 /// * impl GetCallName for Call
 /// * impl UnfilteredDispatchable for Call
-/// * impl Callable for Module
-/// * impl call_functions for Module (metadata)
+/// * impl Callable for Pallet
+/// * impl call_functions for Pallet (metadata)
 pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 	let frame_system = &def.frame_system;
@@ -37,7 +37,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_decl_gen = &def.type_decl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let call_ident = syn::Ident::new("Call", def.call.attr_span.clone());
-	let module_ident = &def.module.module;
+	let pallet_ident = &def.pallet_struct.pallet;
 	let where_clause = &def.call.where_clause;
 
 	let fn_ = def.call.methods.iter().map(|method| &method.fn_).collect::<Vec<_>>();
@@ -163,7 +163,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 				match self {
 					#(
 						Self::#fn_( #( #args_name, )* ) =>
-							<#module_ident<#type_use_gen>>::#fn_(origin, #( #args_name, )* )
+							<#pallet_ident<#type_use_gen>>::#fn_(origin, #( #args_name, )* )
 								.map(Into::into).map_err(Into::into),
 					)*
 					Self::__Ignore(_, _) => {
@@ -174,13 +174,13 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_gen> #frame_support::dispatch::Callable<T> for #module_ident<#type_use_gen>
+		impl<#type_impl_gen> #frame_support::dispatch::Callable<T> for #pallet_ident<#type_use_gen>
 			#where_clause
 		{
 			type Call = #call_ident<#type_use_gen>;
 		}
 
-		impl<#type_impl_gen> #module_ident<#type_use_gen> #where_clause {
+		impl<#type_impl_gen> #pallet_ident<#type_use_gen> #where_clause {
 			#[doc(hidden)]
 			pub fn call_functions() -> &'static [#frame_support::dispatch::FunctionMetadata] {
 				&[ #(

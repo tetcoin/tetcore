@@ -133,7 +133,7 @@ parameter_types! {
 
 // Configure FRAME pallets to include in runtime.
 
-impl frame_system::Trait for Runtime {
+impl frame_system::Config for Runtime {
 	/// The basic call filter to use in dispatchable.
 	type BaseCallFilter = ();
 	/// The identifier used to distinguish between accounts.
@@ -262,7 +262,7 @@ impl pallet_sudo::Trait for Runtime {
 }
 
 /// Configure the pallet template in pallets/template.
-impl template::Trait for Runtime {
+impl template::Config for Runtime {
 	type Event = Event;
 }
 
@@ -282,7 +282,7 @@ construct_runtime!(
 		TransactionPayment: pallet_transaction_payment::{Module, Storage},
 		Sudo: pallet_sudo::{Module, Call, Config<T>, Storage, Event<T>},
 		// Include the custom logic from the template pallet in the runtime.
-		TemplateModule: template::{Module, Call, Storage, Event<T>},
+		TemplateModule: template::{Pallet, Call, Storage, Event<T>},
 	}
 );
 

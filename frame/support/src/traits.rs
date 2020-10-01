@@ -1606,16 +1606,16 @@ pub trait EnsureOrigin<OuterOrigin> {
 /// Implemented for pallet dispatchable type by `decl_module` and for runtime dispatchable by
 /// `construct_runtime` and `impl_outer_dispatch`.
 pub trait UnfilteredDispatchable {
-	/// The origin type of the runtime, (i.e. `frame_system::Trait::Origin`).
+	/// The origin type of the runtime, (i.e. `frame_system::Config::Origin`).
 	type Origin;
 
 	/// Dispatch this call but do not check the filter in origin.
 	fn dispatch_bypass_filter(self, origin: Self::Origin) -> crate::dispatch::DispatchResultWithPostInfo;
 }
 
-/// Methods available on `frame_system::Trait::Origin`.
+/// Methods available on `frame_system::Config::Origin`.
 pub trait OriginTrait: Sized {
-	/// Runtime call type, as in `frame_system::Trait::Call`
+	/// Runtime call type, as in `frame_system::Config::Call`
 	type Call;
 
 	/// The caller origin, overarching type of all pallets origins.
@@ -1624,7 +1624,7 @@ pub trait OriginTrait: Sized {
 	/// Add a filter to the origin.
 	fn add_filter(&mut self, filter: impl Fn(&Self::Call) -> bool + 'static);
 
-	/// Reset origin filters to default one, i.e `frame_system::Trait::BaseCallFilter`.
+	/// Reset origin filters to default one, i.e `frame_system::Config::BaseCallFilter`.
 	fn reset_filter(&mut self);
 
 	/// Replace the caller with caller from the other origin
@@ -1691,8 +1691,8 @@ impl<T: Default> crate::traits::Get<T> for GetDefault {
 	}
 }
 
-/// The module interface trait. Implementing this lets you express some logic to execute.
-pub trait ModuleInterface<BlockNumber> {
+/// The pallet interface trait. Implementing this lets you express some logic to execute.
+pub trait Interface<BlockNumber> {
 	/// The block is being finalized. Implement to have something happen.
 	fn on_finalize(_n: BlockNumber) {}
 

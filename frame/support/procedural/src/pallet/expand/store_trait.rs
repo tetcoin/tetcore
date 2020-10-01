@@ -22,7 +22,7 @@ use syn::spanned::Spanned;
 /// * generate Store trait with all storages,
 /// * implement Store trait for module.
 pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
-	let (trait_vis, trait_store) = if let Some(store) = &def.module.store {
+	let (trait_vis, trait_store) = if let Some(store) = &def.pallet_struct.store {
 		store
 	} else {
 		return Default::default()
@@ -30,7 +30,7 @@ pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
 
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
-	let module_ident = &def.module.module;
+	let pallet_ident = &def.pallet_struct.pallet;
 
 	let storage_names = &def.storages.iter().map(|storage| &storage.ident).collect::<Vec<_>>();
 
@@ -40,7 +40,7 @@ pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
 				type #storage_names;
 			)*
 		}
-		impl<#type_impl_gen> #trait_store for #module_ident<#type_use_gen> {
+		impl<#type_impl_gen> #trait_store for #pallet_ident<#type_use_gen> {
 			#(
 				type #storage_names = #storage_names<#type_use_gen>;
 			)*

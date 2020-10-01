@@ -156,11 +156,11 @@ mod benchmarking;
 mod default_weights;
 
 type BalanceOf<T, I> =
-	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::Balance;
+	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 type PositiveImbalanceOf<T, I> =
-	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::PositiveImbalance;
+	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::PositiveImbalance;
 type NegativeImbalanceOf<T, I> =
-	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::NegativeImbalance;
+	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance;
 
 pub trait WeightInfo {
 	fn propose_spend() -> Weight;
@@ -216,7 +216,7 @@ pub trait Trait<I=DefaultInstance>: frame_system::Trait {
 	type DataDepositPerByte: Get<BalanceOf<Self, I>>;
 
 	/// The overarching event type.
-	type Event: From<Event<Self, I>> + Into<<Self as frame_system::Trait>::Event>;
+	type Event: From<Event<Self, I>> + Into<<Self as frame_system::Config>::Event>;
 
 	/// Handler for the unbalanced decrease when slashing for a rejected proposal or bounty.
 	type OnSlash: OnUnbalanced<NegativeImbalanceOf<Self, I>>;
@@ -412,8 +412,8 @@ decl_event!(
 	pub enum Event<T, I=DefaultInstance>
 	where
 		Balance = BalanceOf<T, I>,
-		<T as frame_system::Trait>::AccountId,
-		<T as frame_system::Trait>::Hash,
+		<T as frame_system::Config>::AccountId,
+		<T as frame_system::Config>::Hash,
 	{
 		/// New proposal. \[proposal_index\]
 		Proposed(ProposalIndex),

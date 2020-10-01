@@ -1,14 +1,14 @@
 #[frame_support::pallet]
 mod pallet {
 	mod balance {
-		pub trait Trait: frame_system::Trait {}
+		pub trait Config: frame_system::Config {}
 	}
 	mod timestamp {
-		pub trait Trait: frame_system::Trait {}
+		pub trait Config: frame_system::Config {}
 	}
 
 	#[pallet::config]
-	pub trait Trait: balance::Trait + timestamp::Trait {}
+	pub trait Config: balance::Config + timestamp::Config {}
 }
 
 fn main() {

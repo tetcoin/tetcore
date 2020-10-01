@@ -66,9 +66,9 @@ impl EventDef {
 	pub fn event_impl_gen(&self) -> proc_macro2::TokenStream {
 		if self.is_generic {
 			if self.has_instance {
-				quote::quote!(T: Trait<I>, I)
+				quote::quote!(T: Config<I>, I)
 			} else {
-				quote::quote!(T: Trait)
+				quote::quote!(T: Config)
 			}
 		} else {
 			quote::quote!()

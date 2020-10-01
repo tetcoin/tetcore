@@ -62,9 +62,9 @@
 //! // Include the following links that shows what trait needs to be implemented to use the pallet
 //! // and the supported dispatchables that are documented in the Call enum.
 //!
-//! - \[`<INSERT_CUSTOM_PALLET_NAME>::Trait`](./trait.Trait.html)
+//! - \[`<INSERT_CUSTOM_PALLET_NAME>::Config`](./trait.Config.html)
 //! - \[`Call`](./enum.Call.html)
-//! - \[`Module`](./struct.Module.html)
+//! - \[`Pallet`](./struct.Pallet.html)
 //!
 //! \## Overview
 //!
@@ -211,7 +211,7 @@
 //! \```rust
 //! use <INSERT_CUSTOM_PALLET_NAME>;
 //!
-//! pub trait Trait: <INSERT_CUSTOM_PALLET_NAME>::Trait { }
+//! pub trait Config: <INSERT_CUSTOM_PALLET_NAME>::Config { }
 //! \```
 //!
 //! \### Simple Code Snippet
@@ -328,11 +328,11 @@ mod pallet {
 	/// pallet is dependent on specific other pallets, then their configuration traits
 	/// should be added to our implied traits list.
 	///
-	/// `frame_system::Trait` should always be included in our implied traits.
+	/// `frame_system::Config` should always be included in our implied traits.
 	#[pallet::config]
-	pub trait Trait: pallet_balances::Trait + frame_system::Trait {
+	pub trait Config: pallet_balances::Trait + frame_system::Config {
 		/// The overarching event type.
-		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 	}
 
 	// This allows for type-safe usage of the Substrate storage database, so you can
@@ -358,17 +358,17 @@ mod pallet {
 	// prefix.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn dummy)]
-	pub type Dummy<T: Trait> = StorageValueType<_, T::Balance>;
+	pub type Dummy<T: Config> = StorageValueType<_, T::Balance>;
 
 	// A map that has enumerable entries.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn bar)]
-	pub(crate) type Bar<T: Trait> = StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
+	pub(crate) type Bar<T: Config> = StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
 	// Contrary to Dummy, this one uses ValueQuery, we'll demonstrate the usage of 'mutate' API.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn foo)]
-	pub(crate) type Foo<T: Trait> = StorageValueType<_, T::Balance, ValueQuery>;
+	pub(crate) type Foo<T: Config> = StorageValueType<_, T::Balance, ValueQuery>;
 
 	/// Events are a simple means of reporting specific conditions and
 	/// circumstances that have happened that users, Dapps and/or chain explorers would find
@@ -379,15 +379,15 @@ mod pallet {
 	#[pallet::metadata(BalanceOf<T> = B)]
 	// Generate deposit_event function using frame_system deposit_event.
 	#[pallet::generate(pub(crate) fn deposit_event)]
-	pub enum Event<T: Trait> {
+	pub enum Event<T: Config> {
 		// Just a normal `enum`, here's a dummy event to ensure it compiles.
 		/// Dummy event, just here so there's a generic type that's used.
 		Dummy(BalanceOf<T>),
 	}
 
 	// Define the module struct, a place holder which implements various traits.
-	#[pallet::module]
-	pub struct Module<T>(PhantomData<T>);
+	#[pallet::pallet]
+	pub struct Pallet<T>(PhantomData<T>);
 
 	// The module declaration. This states the entry points that we handle. The
 	// macro takes care of the marshalling of arguments and dispatch.
@@ -417,7 +417,7 @@ mod pallet {
 	// in system that do the matching for you and return a convenient result: `ensure_signed`,
 	// `ensure_root` and `ensure_none`.
 	#[pallet::call]
-	impl<T: Trait> Module<T> {
+	impl<T: Config> Pallet<T> {
 		/// This is your public interface. Be extremely careful.
 		/// This is just a simple example of how to interact with the pallet from the external
 		/// world.
@@ -523,8 +523,8 @@ mod pallet {
 	}
 
 
-	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
 		// The signature could also look like: `fn on_initialize()`.
 		// This function could also very well have a weight annotation, similar to any other. The
 		// only difference is that it mut be returned, not annotated.
@@ -553,13 +553,13 @@ mod pallet {
 	}
 
 	#[pallet::genesis_config]
-	pub struct GenesisConfig<T: Trait> {
+	pub struct GenesisConfig<T: Config> {
 		pub dummy: T::Balance,
 		pub bar: Vec<(T::AccountId, T::Balance)>,
 		pub foo: T::Balance,
 	}
 
-	impl<T: Trait> Default for GenesisConfig<T> {
+	impl<T: Config> Default for GenesisConfig<T> {
 		fn default() -> Self {
 			Self {
 				dummy: Default::default(),
@@ -570,7 +570,7 @@ mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuild<T> for GenesisConfig<T> {
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
 		fn build(&self) {
 			<Dummy<T>>::put(&self.dummy);
 			for (k, v) in &self.bar { <Bar<T>>::insert(k, v); }
@@ -584,7 +584,7 @@ mod pallet {
 // - Public interface. These are functions that are `pub` and generally fall into inspector
 // functions that do not write to storage and operation functions that do.
 // - Private functions. These are your usual private utilities unavailable to other pallets.
-impl<T: Trait> Module<T> {
+impl<T: Config> Pallet<T> {
 	// Add public immutables and private mutables.
 	#[allow(dead_code)]
 	fn accumulate_foo(
@@ -612,7 +612,7 @@ impl<T: Trait> Module<T> {
 // decodable type that implements `SignedExtension`. See the trait definition for the full list of
 // bounds. As a convention, you can follow this approach to create an extension for your pallet:
 //   - If the extension does not carry any data, then use a tuple struct with just a `marker`
-//     (needed for the compiler to accept `T: Trait`) will suffice.
+//     (needed for the compiler to accept `T: Config`) will suffice.
 //   - Otherwise, create a tuple struct which contains the external data. Of course, for the entire
 //     struct to be decodable, each individual item also needs to be decodable.
 //
@@ -643,21 +643,21 @@ impl<T: Trait> Module<T> {
 /// Additionally, it drops any transaction with an encoded length higher than 200 bytes. No
 /// particular reason why, just to demonstrate the power of signed extensions.
 #[derive(Encode, Decode, Clone, Eq, PartialEq)]
-pub struct WatchDummy<T: Trait + Send + Sync>(PhantomData<T>);
+pub struct WatchDummy<T: Config + Send + Sync>(PhantomData<T>);
 
-impl<T: Trait + Send + Sync> sp_std::fmt::Debug for WatchDummy<T> {
+impl<T: Config + Send + Sync> sp_std::fmt::Debug for WatchDummy<T> {
 	fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
 		write!(f, "WatchDummy")
 	}
 }
 
-impl<T: Trait + Send + Sync> SignedExtension for WatchDummy<T>
+impl<T: Config + Send + Sync> SignedExtension for WatchDummy<T>
 where
-	<T as frame_system::Trait>::Call: IsSubType<Call<T>>,
+	<T as frame_system::Config>::Call: IsSubType<Call<T>>,
 {
 	const IDENTIFIER: &'static str = "WatchDummy";
 	type AccountId = T::AccountId;
-	type Call = <T as frame_system::Trait>::Call;
+	type Call = <T as frame_system::Config>::Call;
 	type AdditionalSigned = ();
 	type Pre = ();
 
@@ -786,7 +786,7 @@ mod tests {
 		pub const MaximumBlockLength: u32 = 2 * 1024;
 		pub const AvailableBlockRatio: Perbill = Perbill::one();
 	}
-	impl frame_system::Trait for Test {
+	impl frame_system::Config for Test {
 		type BaseCallFilter = ();
 		type Origin = Origin;
 		type Index = u64;
@@ -825,11 +825,11 @@ mod tests {
 		type AccountStore = System;
 		type WeightInfo = ();
 	}
-	impl Trait for Test {
+	impl Config for Test {
 		type Event = ();
 	}
-	type System = frame_system::Module<Test>;
-	type Example = Module<Test>;
+	type System = frame_system::Pallet<Test>;
+	type Example = Pallet<Test>;
 
 	// This function basically just builds a genesis storage key/value store according to
 	// our desired mockup.

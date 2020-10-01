@@ -1,10 +1,10 @@
 #[frame_support::pallet]
 mod pallet {
 	#[pallet::config]
-	pub trait Trait: frame_system::Trait {}
+	pub trait Config: frame_system::Config {}
 
-	#[pallet::module]
-	pub struct Module<T> {}
+	#[pallet::pallet]
+	pub struct Pallet<T> {}
 }
 
 fn main() {

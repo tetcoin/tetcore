@@ -1,4 +1,4 @@
-error: Invalid generics: expect `impl<T: Trait>` or `impl<T: Trait<I>, I: 'static>`
+error: Invalid generics: expect `impl<T: Config>` or `impl<T: Config<I>, I: 'static>`
   --> $DIR/step_019.rs:15:2
    |
 15 |     impl Foo {}

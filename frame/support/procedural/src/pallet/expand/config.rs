@@ -37,15 +37,15 @@ fn replace_self_by_t(input: proc_macro2::TokenStream) -> proc_macro2::TokenStrea
 	proc_macro2::TokenStream::from_iter(output)
 }
 
-/// * Impl fn module_constant_metadata for module.
-pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
+/// * Impl fn module_constant_metadata for pallet.
+pub fn expand_config(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_decl_gen = &def.type_decl_generics();
 	let type_use_gen = &def.type_use_generics();
-	let module_ident = &def.module.module;
+	let pallet_ident = &def.pallet_struct.pallet;
 
-	let consts = def.trait_.consts_metadata.iter()
+	let consts = def.config.consts_metadata.iter()
 		.map(|const_| {
 			let const_type = replace_self_by_t(const_.type_.to_token_stream());
 			let const_type_str = clean_type_string(&const_type.to_string());
@@ -94,7 +94,7 @@ pub fn expand_trait_(def: &mut Def) -> proc_macro2::TokenStream {
 		});
 
 	quote::quote!(
-		impl<#type_impl_gen> #module_ident<#type_use_gen> {
+		impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
 
 			#[doc(hidden)]
 			pub fn module_constants_metadata()

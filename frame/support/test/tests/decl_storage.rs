@@ -28,7 +28,10 @@ mod tests {
 		pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=self {}
 	}
 
-	pub trait Trait {
+	/// Temporary keep old name Trait, to be removed alongside old macro.
+	pub trait Trait: Config {}
+	impl<Runtime: Config> Trait for Runtime {}
+	pub trait Config {
 		type Origin: Encode + Decode + EncodeLike + std::default::Default;
 		type BlockNumber;
 	}
@@ -74,7 +77,7 @@ mod tests {
 			pub PUBGETMAPU32MYDEF get(fn pub_map_u32_getter_mydef):
 				map hasher(blake2_128_concat) u32 => String = "pubmap".into();
 
-			COMPLEXTYPE1: ::std::vec::Vec<<T as Trait>::Origin>;
+			COMPLEXTYPE1: ::std::vec::Vec<<T as Config>::Origin>;
 			COMPLEXTYPE2: (Vec<Vec<(u16, Box<()>)>>, u32);
 			COMPLEXTYPE3: [u32; 25];
 		}
@@ -85,7 +88,7 @@ mod tests {
 
 	struct TraitImpl {}
 
-	impl Trait for TraitImpl {
+	impl Config for TraitImpl {
 		type Origin = u32;
 		type BlockNumber = u32;
 	}
@@ -353,7 +356,7 @@ mod tests {
 				StorageEntryMetadata {
 					name: DecodeDifferent::Encode("COMPLEXTYPE1"),
 					modifier: StorageEntryModifier::Default,
-					ty: StorageEntryType::Plain(DecodeDifferent::Encode("::std::vec::Vec<<T as Trait>::Origin>")),
+					ty: StorageEntryType::Plain(DecodeDifferent::Encode("::std::vec::Vec<<T as Config>::Origin>")),
 					default: DecodeDifferent::Encode(
 						DefaultByteGetter(&__GetByteStructCOMPLEXTYPE1(PhantomData::<TraitImpl>))
 					),
@@ -414,7 +417,10 @@ mod tests {
 #[cfg(test)]
 #[allow(dead_code)]
 mod test2 {
-	pub trait Trait {
+	/// Temporary keep old name Trait, to be removed alongside old macro.
+	pub trait Trait: Config {}
+	impl<Runtime: Config> Trait for Runtime {}
+	pub trait Config {
 		type Origin;
 		type BlockNumber;
 	}
@@ -441,7 +447,7 @@ mod test2 {
 
 	struct TraitImpl {}
 
-	impl Trait for TraitImpl {
+	impl Config for TraitImpl {
 		type Origin = u32;
 		type BlockNumber = u32;
 	}
@@ -450,7 +456,10 @@ mod test2 {
 #[cfg(test)]
 #[allow(dead_code)]
 mod test3 {
-	pub trait Trait {
+	/// Temporary keep old name Trait, to be removed alongside old macro.
+	pub trait Trait: Config {}
+	impl<Runtime: Config> Trait for Runtime {}
+	pub trait Config {
 		type Origin;
 		type BlockNumber;
 	}
@@ -467,7 +476,7 @@ mod test3 {
 
 	struct TraitImpl {}
 
-	impl Trait for TraitImpl {
+	impl Config for TraitImpl {
 		type Origin = u32;
 		type BlockNumber = u32;
 	}
@@ -479,7 +488,10 @@ mod test_append_and_len {
 	use sp_io::TestExternalities;
 	use codec::{Encode, Decode};
 
-	pub trait Trait {
+	/// Temporary keep old name Trait, to be removed alongside old macro.
+	pub trait Trait: Config {}
+	impl<Runtime: Config> Trait for Runtime {}
+	pub trait Config {
 		type Origin;
 		type BlockNumber;
 	}
@@ -511,7 +523,7 @@ mod test_append_and_len {
 
 	struct Test {}
 
-	impl Trait for Test {
+	impl Config for Test {
 		type Origin = u32;
 		type BlockNumber = u32;
 	}

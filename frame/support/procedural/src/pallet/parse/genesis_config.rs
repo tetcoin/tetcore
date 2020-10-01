@@ -25,7 +25,7 @@ use super::helper;
 /// * `struct GenesisConfig`
 /// * `enum GenesisConfig`
 pub struct GenesisConfigDef {
-	/// The index of error item in pallet module.
+	/// The index of item in pallet module.
 	pub index: usize,
 	/// Weither type has instance generic.
 	pub has_instance: bool,

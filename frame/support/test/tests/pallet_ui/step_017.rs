@@ -3,13 +3,13 @@ mod pallet {
 	use frame_support::pallet_prelude::*;
 
 	#[pallet::config]
-	pub trait Trait: frame_system::Trait {}
+	pub trait Config: frame_system::Config {}
 
-	#[pallet::module]
-	pub struct Module<T> {}
+	#[pallet::pallet]
+	pub struct Pallet<T> {}
 
-	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface for Module<T> {}
+	#[pallet::interface]
+	impl<T: Config> Interface for Pallet<T> {}
 
 	#[pallet::call]
 	pub enum Call {}

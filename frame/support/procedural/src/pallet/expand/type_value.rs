@@ -38,10 +38,10 @@ pub fn expand_type_values(def: &mut Def) -> proc_macro2::TokenStream {
 			struct_use_gen,
 		) = match (type_value.has_trait, type_value.has_instance) {
 			(true, true) => (
-				quote::quote!(T: Trait<I>, I),
+				quote::quote!(T: Config<I>, I),
 				quote::quote!(T, I),
 			),
-			(true, false) => (quote::quote!(T: Trait), quote::quote!(T)),
+			(true, false) => (quote::quote!(T: Config), quote::quote!(T)),
 			(false, false) => (quote::quote!(), quote::quote!()),
 			(false, true) => unreachable!("Checked by def"),
 		};

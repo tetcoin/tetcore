@@ -1,4 +1,4 @@
-error: Invalid usage of Event, trait `Trait` contains no associated type `Event`, but enum `Event` is declared (in use of `#[pallet::event]`). An Event associated type must be declare on trait `Trait`.
+error: Invalid usage of Event, `Config` contains no associated type `Event`, but enum `Event` is declared (in use of `#[pallet::event]`). An Event associated type must be declare on trait `Config`.
  --> $DIR/event_003.rs:1:1
   |
 1 | #[frame_support::pallet]

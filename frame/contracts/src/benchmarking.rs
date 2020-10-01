@@ -103,7 +103,7 @@ fn expanded_contract<T: Trait>(target_bytes: u32) -> (Vec<u8>, <T::Hashing as Ha
 	contract_with_call_body::<T>(FuncBody::new(Vec::new(), instructions))
 }
 
-fn advance_block<T: Trait>(num: <T as frame_system::Trait>::BlockNumber) {
+fn advance_block<T: Trait>(num: <T as frame_system::Config>::BlockNumber) {
 	let now = System::<T>::block_number();
 	System::<T>::set_block_number(now + num);
 }

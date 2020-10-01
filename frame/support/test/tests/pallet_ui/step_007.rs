@@ -1,7 +1,7 @@
 #[frame_support::pallet]
 mod pallet {
 	#[pallet::config]
-	pub trait Trait {}
+	pub trait Config {}
 }
 
 fn main() {

@@ -34,7 +34,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_system = &def.frame_system;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
-	let module_ident = &def.module.module;
+	let pallet_ident = &def.pallet_struct.pallet;
 
 	// Replace first arg `_` by the generated prefix structure.
 	// Add `#[allow(type_alias_bounds)]`
@@ -153,7 +153,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						QueryKind::ValueQuery => quote::quote!(#value),
 					};
 					quote::quote_spanned!(getter.span() =>
-						impl<#type_impl_gen> #module_ident<#type_use_gen> {
+						impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
 							#( #docs )*
 							pub fn #getter() -> #query {
 								<
@@ -169,7 +169,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						QueryKind::ValueQuery => quote::quote!(#value),
 					};
 					quote::quote_spanned!(getter.span() =>
-						impl<#type_impl_gen> #module_ident<#type_use_gen> {
+						impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
 							#( #docs )*
 							pub fn #getter<KArg>(k: KArg) -> #query where
 								KArg: #frame_support::codec::EncodeLike<#key>,
@@ -187,7 +187,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						QueryKind::ValueQuery => quote::quote!(#value),
 					};
 					quote::quote_spanned!(getter.span() =>
-						impl<#type_impl_gen> #module_ident<#type_use_gen> {
+						impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
 							#( #docs )*
 							pub fn #getter<KArg1, KArg2>(k1: KArg1, k2: KArg2) -> #query where
 								KArg1: #frame_support::codec::EncodeLike<#key1>,
@@ -218,23 +218,23 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 			impl<#type_impl_gen> #frame_support::traits::StorageInstance
 			for #prefix_struct_ident<#type_use_gen>
 			{
-				type PalletInfo = <T as #frame_system::Trait>::PalletInfo;
-				type Pallet = Module<#type_use_gen>;
+				type PalletInfo = <T as #frame_system::Config>::PalletInfo;
+				type Pallet = Pallet<#type_use_gen>;
 				const STORAGE_PREFIX: &'static str = #prefix_struct_const;
 			}
 		)
 	});
 
 	quote::quote!(
-		impl<#type_impl_gen> #module_ident<#type_use_gen> {
+		impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
 			#[doc(hidden)]
 			pub fn storage_metadata() -> #frame_support::metadata::StorageMetadata {
 				#frame_support::metadata::StorageMetadata {
 					prefix: #frame_support::metadata::DecodeDifferent::Encode(
 						<
-							<T as #frame_system::Trait>::PalletInfo as
+							<T as #frame_system::Config>::PalletInfo as
 							#frame_support::traits::PalletInfo
-						>::name::<#module_ident<#type_use_gen>>()
+						>::name::<#pallet_ident<#type_use_gen>>()
 							.expect("Every active pallet has a name in the runtime; qed")
 					),
 					entries: #frame_support::metadata::DecodeDifferent::Encode(

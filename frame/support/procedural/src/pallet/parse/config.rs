@@ -21,7 +21,7 @@ use quote::ToTokens;
 
 /// List of additional token to be used for parsing.
 mod keyword {
-	syn::custom_keyword!(Trait);
+	syn::custom_keyword!(Config);
 	syn::custom_keyword!(From);
 	syn::custom_keyword!(T);
 	syn::custom_keyword!(I);
@@ -34,21 +34,21 @@ mod keyword {
 	syn::custom_keyword!(disable_frame_system_supertrait_check);
 }
 
-/// Input definition for the pallet trait.
-pub struct TraitDef {
-	/// The index of error item in pallet module.
+/// Input definition for the pallet config.
+pub struct ConfigDef {
+	/// The index of item in pallet module.
 	pub index: usize,
-	/// Wheither the trait has instance (i.e. define with `Trait<I = ()>`)
+	/// Wheither the trait has instance (i.e. define with `Config<I = ()>`)
 	pub has_instance: bool,
 	/// Const associated type.
 	pub consts_metadata: Vec<ConstMetadataDef>,
 	/// Wether the trait has the associated type `Event`, note that those bounds are checked:
-	/// * `IsType<Self as frame_system::Trait>::Event`
+	/// * `IsType<Self as frame_system::Config>::Event`
 	/// * `From<Event>` or `From<Event<T>>` or `From<Event<T, I>>`
 	pub has_event_type: bool,
 }
 
-/// Input definition for a constant in pallet trait.
+/// Input definition for a constant in pallet config.
 pub struct ConstMetadataDef {
 	/// Name of the associated type.
 	pub ident: syn::Ident,
@@ -111,20 +111,20 @@ impl syn::parse::Parse for TypeAttrConst {
 	}
 }
 
-/// Parse for `$ident::Trait`
-pub struct TraitBoundParse(syn::Ident);
+/// Parse for `$ident::Config`
+pub struct ConfigBoundParse(syn::Ident);
 
-impl syn::parse::Parse for TraitBoundParse {
+impl syn::parse::Parse for ConfigBoundParse {
 	fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
 		let ident = input.parse::<syn::Ident>()?;
 		input.parse::<syn::Token![::]>()?;
-		input.parse::<keyword::Trait>()?;
+		input.parse::<keyword::Config>()?;
 
 		Ok(Self(ident))
 	}
 }
 
-/// Parse for `IsType<<Sef as $ident::Trait>::Event>`
+/// Parse for `IsType<<Sef as $ident::Config>::Event>` and retrieve `$ident`
 pub struct IsTypeBoundEventParse(syn::Ident);
 
 impl syn::parse::Parse for IsTypeBoundEventParse {
@@ -136,7 +136,7 @@ impl syn::parse::Parse for IsTypeBoundEventParse {
 		input.parse::<syn::Token![as]>()?;
 		let ident = input.parse::<syn::Ident>()?;
 		input.parse::<syn::Token![::]>()?;
-		input.parse::<keyword::Trait>()?;
+		input.parse::<keyword::Config>()?;
 		input.parse::<syn::Token![>]>()?;
 		input.parse::<syn::Token![::]>()?;
 		input.parse::<keyword::Event>()?;
@@ -202,7 +202,7 @@ fn check_event_type(
 			if !has_is_type_bound {
 				let msg = format!(
 					"Invalid `type Event`, associated type `Event` is reserved and must \
-					bound: `IsType<<Self as {}::Trait>::Event>`",
+					bound: `IsType<<Self as {}::Config>::Event>`",
 					frame_system,
 				);
 				return Err(syn::Error::new(type_.span(), msg));
@@ -224,7 +224,7 @@ fn check_event_type(
 				&& (from_event_bound.has_instance != trait_has_instance)
 			{
 				let msg = "Invalid `type Event`, associated type `Event` bounds inconsistent \
-					`From<Event..>`. Trait and generic Event must be both with instance or \
+					`From<Event..>`. Config and generic Event must be both with instance or \
 					without instance";
 				return Err(syn::Error::new(type_.span(), msg));
 			}
@@ -238,7 +238,7 @@ fn check_event_type(
 	}
 }
 
-impl TraitDef {
+impl ConfigDef {
 	pub fn try_from(
 		frame_system: &syn::Ident,
 		index: usize,
@@ -247,7 +247,7 @@ impl TraitDef {
 		let item = if let syn::Item::Trait(item) = item {
 			item
 		} else {
-			let msg = "Invalid pallet::trait, expect trait definition";
+			let msg = "Invalid pallet::config, expect trait definition";
 			return Err(syn::Error::new(item.span(), msg));
 		};
 
@@ -256,7 +256,7 @@ impl TraitDef {
 			return Err(syn::Error::new(item.span(), msg));
 		}
 
-		syn::parse2::<keyword::Trait>(item.ident.to_token_stream())?;
+		syn::parse2::<keyword::Config>(item.ident.to_token_stream())?;
 
 		if item.generics.where_clause.is_some() {
 			let msg = "Invalid pallet::config, expect no where clause";
@@ -270,7 +270,7 @@ impl TraitDef {
 
 		let has_instance;
 		if let Some(_) = item.generics.params.first() {
-			helper::check_trait_def_gen(&item.generics, item.ident.span())?;
+			helper::check_config_def_gen(&item.generics, item.ident.span())?;
 			has_instance = true;
 		} else {
 			has_instance = false;
@@ -287,7 +287,7 @@ impl TraitDef {
 			let type_attrs_const: Vec<TypeAttrConst> = helper::take_item_attrs(trait_item)?;
 
 			if type_attrs_const.len() > 1 {
-				let msg = "Invalid attribute in pallet::trait, only one attribute is expected";
+				let msg = "Invalid attribute in pallet::config, only one attribute is expected";
 				return Err(syn::Error::new(type_attrs_const[1].span(), msg));
 			}
 
@@ -306,7 +306,7 @@ impl TraitDef {
 						consts_metadata.push(constant);
 					},
 					_ => {
-						let msg = "Invalid pallet::const in pallet::trait, expect type trait \
+						let msg = "Invalid pallet::constant in pallet::config, expect type trait \
 							item";
 						return Err(syn::Error::new(trait_item.span(), msg));
 					},
@@ -321,7 +321,7 @@ impl TraitDef {
 		let disable_system_supertrait_check = attr.is_some();
 
 		let has_frame_system_supertrait = item.supertraits.iter().any(|s| {
-			syn::parse2::<TraitBoundParse>(s.to_token_stream())
+			syn::parse2::<ConfigBoundParse>(s.to_token_stream())
 				.map_or(false, |b| b.0 == *frame_system)
 		});
 
@@ -339,7 +339,7 @@ impl TraitDef {
 			};
 
 			let msg = format!(
-				"Invalid pallet::trait, expect explicit `{}::Trait` as supertrait, \
+				"Invalid pallet::trait, expect explicit `{}::Config` as supertrait, \
 				found {}. To disable this check, use \
 				`#[pallet::disable_frame_system_supertrait_check]`",
 				frame_system,

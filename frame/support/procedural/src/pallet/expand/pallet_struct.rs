@@ -18,19 +18,20 @@
 use crate::pallet::Def;
 
 /// * Add derive Eq, PartialEq, Debug and Clone on Module
-pub fn expand_module(def: &mut Def) -> proc_macro2::TokenStream {
+pub fn expand_pallet_struct(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 
-	let module_item = {
-		let item = &mut def.item.content.as_mut().expect("Checked by def").1[def.module.index];
+	let pallet_item = {
+		let pallet_module_items = &mut def.item.content.as_mut().expect("Checked by def").1;
+		let item = &mut pallet_module_items[def.pallet_struct.index];
 		if let syn::Item::Struct(item) = item {
 			item
 		} else {
-			unreachable!("Checked by module parser")
+			unreachable!("Checked by pallet struct parser")
 		}
 	};
 
-	module_item.attrs.push(syn::parse_quote!(
+	pallet_item.attrs.push(syn::parse_quote!(
 		#[derive(
 			#frame_support::CloneNoBound,
 			#frame_support::EqNoBound,

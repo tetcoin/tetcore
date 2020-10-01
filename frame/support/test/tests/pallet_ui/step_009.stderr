@@ -1,4 +1,4 @@
-error: Invalid pallet::module, expect struct definition
+error: Invalid pallet::pallet, expect struct definition
  --> $DIR/step_009.rs:7:2
   |
 7 |     pub enum Foo {}

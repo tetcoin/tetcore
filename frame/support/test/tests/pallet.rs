@@ -29,10 +29,10 @@ pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
 
-	type BalanceOf<T> = <T as Trait>::Balance;
+	type BalanceOf<T> = <T as Config>::Balance;
 
 	#[pallet::config]
-	pub trait Trait: frame_system::Trait {
+	pub trait Config: frame_system::Config {
 		/// Some comment
 		/// Some comment
 		#[pallet::constant]
@@ -45,15 +45,15 @@ pub mod pallet {
 
 		type Balance: Parameter + Default;
 
-		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 	}
 
-	#[pallet::module]
+	#[pallet::pallet]
 	#[pallet::generate_store(pub(crate) trait Store)]
-	pub struct Module<T>(PhantomData<T>);
+	pub struct Pallet<T>(PhantomData<T>);
 
-	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> where T::Balance: From<u64> {
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> where T::Balance: From<u64> {
 		fn on_initialize(_: BlockNumberFor<T>) -> Weight {
 			T::Balance::from(3u64); // Test for where clause
 			Self::deposit_event(Event::Something(10));
@@ -74,7 +74,7 @@ pub mod pallet {
 	}
 
 	#[pallet::call]
-	impl<T: Trait> Module<T> where T::Balance: From<u64> {
+	impl<T: Config> Pallet<T> where T::Balance: From<u64> {
 		/// Doc comment put in metadata
 		#[pallet::weight(Weight::from(*_foo))]
 		fn foo(origin: OriginFor<T>, #[pallet::compact] _foo: u32, _bar: u32) -> DispatchResultWithPostInfo {
@@ -102,9 +102,9 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
 	#[pallet::generate(fn deposit_event)]
-	pub enum Event<T: Trait> {
+	pub enum Event<T: Config> {
 		/// doc comment put in metadata
-		Proposed(<T as frame_system::Trait>::AccountId),
+		Proposed(<T as frame_system::Config>::AccountId),
 		/// doc
 		Spending(BalanceOf<T>),
 		Something(u32),
@@ -132,7 +132,7 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuild<T> for GenesisConfig where T::Balance: From<u64> {
+	impl<T: Config> GenesisBuild<T> for GenesisConfig where T::Balance: From<u64> {
 		fn build(&self) {
 			T::Balance::from(3u64); // Test for where clause
 		}
@@ -143,7 +143,7 @@ pub mod pallet {
 	pub struct Origin<T>(PhantomData<T>);
 
 	#[pallet::validate_unsigned]
-	impl<T: Trait> ValidateUnsigned for Module<T> where T::Balance: From<u64> {
+	impl<T: Config> ValidateUnsigned for Pallet<T> where T::Balance: From<u64> {
 		type Call = Call<T>;
 		fn validate_unsigned(
 			_source: TransactionSource,
@@ -155,7 +155,7 @@ pub mod pallet {
 	}
 
 	#[pallet::inherent]
-	impl<T: Trait> ProvideInherent for Module<T> where T::Balance: From<u64> {
+	impl<T: Config> ProvideInherent for Pallet<T> where T::Balance: From<u64> {
 		type Call = Call<T>;
 		type Error = InherentError;
 
@@ -190,7 +190,7 @@ frame_support::parameter_types!(
 	pub const AvailableBlockRatio: sp_runtime::Perbill = sp_runtime::Perbill::one();
 );
 
-impl frame_system::Trait for Runtime {
+impl frame_system::Config for Runtime {
 	type BaseCallFilter = ();
 	type Origin = Origin;
 	type Index = u64;
@@ -217,7 +217,7 @@ impl frame_system::Trait for Runtime {
 	type OnKilledAccount = ();
 	type SystemWeightInfo = ();
 }
-impl pallet::Trait for Runtime {
+impl pallet::Config for Runtime {
 	type Event = Event;
 	type MyGetParam= MyGetParam;
 	type MyGetParam2= MyGetParam2;
@@ -234,8 +234,8 @@ frame_support::construct_runtime!(
 		NodeBlock = Block,
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
-		System: frame_system::{Module, Call, Event<T>},
-		Example: pallet::{Module, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
+		System: frame_system::{Pallet, Call, Event<T>},
+		Example: pallet::{Pallet, Call, Event<T>, Config, Storage, Inherent, Origin<T>, ValidateUnsigned},
 	}
 );
 
@@ -284,12 +284,12 @@ fn instance_expand() {
 }
 
 #[test]
-fn module_expand_deposit_event() {
+fn pallet_expand_deposit_event() {
 	TestExternalities::default().execute_with(|| {
-		frame_system::Module::<Runtime>::set_block_number(1);
+		frame_system::Pallet::<Runtime>::set_block_number(1);
 		pallet::Call::<Runtime>::foo(3, 0).dispatch_bypass_filter(None.into()).unwrap();
 		assert_eq!(
-			frame_system::Module::<Runtime>::events()[0].event,
+			frame_system::Pallet::<Runtime>::events()[0].event,
 			Event::pallet(pallet::Event::Something(3)),
 		);
 	})
@@ -345,24 +345,24 @@ fn storage_expand() {
 }
 
 #[test]
-fn module_interface_expand() {
+fn pallet_interface_expand() {
 	TestExternalities::default().execute_with(|| {
-		frame_system::Module::<Runtime>::set_block_number(1);
+		frame_system::Pallet::<Runtime>::set_block_number(1);
 
 		assert_eq!(AllModules::on_initialize(1), 10);
 		AllModules::on_finalize(1);
 		assert_eq!(AllModules::on_runtime_upgrade(), 30);
 
 		assert_eq!(
-			frame_system::Module::<Runtime>::events()[0].event,
+			frame_system::Pallet::<Runtime>::events()[0].event,
 			Event::pallet(pallet::Event::Something(10)),
 		);
 		assert_eq!(
-			frame_system::Module::<Runtime>::events()[1].event,
+			frame_system::Pallet::<Runtime>::events()[1].event,
 			Event::pallet(pallet::Event::Something(20)),
 		);
 		assert_eq!(
-			frame_system::Module::<Runtime>::events()[2].event,
+			frame_system::Pallet::<Runtime>::events()[2].event,
 			Event::pallet(pallet::Event::Something(30)),
 		);
 	})

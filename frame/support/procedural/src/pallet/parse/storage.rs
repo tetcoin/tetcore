@@ -79,7 +79,7 @@ pub struct StorageDef {
 	pub metadata: Metadata,
 	/// The doc associated to the storage.
 	pub docs: Vec<syn::Lit>,
-	/// A set of usage of instance, must be check for consistency with trait.
+	/// A set of usage of instance, must be check for consistency with config.
 	pub instances: Vec<helper::InstanceUsage>,
 	/// Optional getter to generate. If some then query_kind is ensured to be some as well.
 	pub getter: Option<syn::Ident>,

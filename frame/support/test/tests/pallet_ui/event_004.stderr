@@ -1,4 +1,4 @@
-error: Invalid `type Event`, associated type `Event` is reserved and must bound: `IsType<<Self as frame_system::Trait>::Event>`
+error: Invalid `type Event`, associated type `Event` is reserved and must bound: `IsType<<Self as frame_system::Config>::Event>`
  --> $DIR/event_004.rs:9:3
   |
 9 |         type Event;

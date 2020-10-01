@@ -1255,11 +1255,11 @@ macro_rules! decl_module {
 		impl<$trait_instance: $trait_name$(<I>, $instance: $instantiable)?> $module<$trait_instance $(, $instance)?>
 			where $( $other_where_bounds )*
 		{
-			/// Deposits an event using `frame_system::Module::deposit_event`.
+			/// Deposits an event using `frame_system::Pallet::deposit_event`.
 			$vis fn deposit_event(
 				event: impl Into<< $trait_instance as $trait_name $(<$instance>)? >::Event>
 			) {
-				<$system::Module<$trait_instance>>::deposit_event(event.into())
+				<$system::Pallet<$trait_instance>>::deposit_event(event.into())
 			}
 		}
 	};
@@ -1270,11 +1270,11 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 		fn on_initialize() -> $return:ty { $( $impl:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnInitialize<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OnInitialize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
-			fn on_initialize(_block_number_not_used: <$trait_instance as $system::Trait>::BlockNumber) -> $return {
+			fn on_initialize(_block_number_not_used: <$trait_instance as $system::Config>::BlockNumber) -> $return {
 				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_initialize"));
 				{ $( $impl )* }
 			}
@@ -1287,8 +1287,8 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 		fn on_initialize($param:ident : $param_ty:ty) -> $return:ty { $( $impl:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnInitialize<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OnInitialize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_initialize($param: $param_ty) -> $return {
@@ -1303,8 +1303,8 @@ macro_rules! decl_module {
 		$module:ident<$trait_instance:ident: $trait_name:ident$(<I>, $instance:ident: $instantiable:path)?>;
 		{ $( $other_where_bounds:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnInitialize<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OnInitialize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{}
 	};
@@ -1370,11 +1370,11 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 		fn on_finalize() { $( $impl:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnFinalize<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OnFinalize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
-			fn on_finalize(_block_number_not_used: <$trait_instance as $system::Trait>::BlockNumber) {
+			fn on_finalize(_block_number_not_used: <$trait_instance as $system::Config>::BlockNumber) {
 				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_finalize"));
 				{ $( $impl )* }
 			}
@@ -1387,8 +1387,8 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 		fn on_finalize($param:ident : $param_ty:ty) { $( $impl:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnFinalize<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OnFinalize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_finalize($param: $param_ty) {
@@ -1403,8 +1403,8 @@ macro_rules! decl_module {
 		$module:ident<$trait_instance:ident: $trait_name:ident$(<I>, $instance:ident: $instantiable:path)?>;
 		{ $( $other_where_bounds:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnFinalize<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OnFinalize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 		}
@@ -1416,11 +1416,11 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 		fn offchain_worker() { $( $impl:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OffchainWorker<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OffchainWorker<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
-			fn offchain_worker(_block_number_not_used: <$trait_instance as $system::Trait>::BlockNumber) { $( $impl )* }
+			fn offchain_worker(_block_number_not_used: <$trait_instance as $system::Config>::BlockNumber) { $( $impl )* }
 		}
 	};
 
@@ -1430,8 +1430,8 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 		fn offchain_worker($param:ident : $param_ty:ty) { $( $impl:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OffchainWorker<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OffchainWorker<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn offchain_worker($param: $param_ty) { $( $impl )* }
@@ -1443,8 +1443,8 @@ macro_rules! decl_module {
 		$module:ident<$trait_instance:ident: $trait_name:ident$(<I>, $instance:ident: $instantiable:path)?>;
 		{ $( $other_where_bounds:tt )* }
 	) => {
-		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OffchainWorker<<$trait_instance as $system::Trait>::BlockNumber>
+		impl<$trait_instance: $system::Config + $trait_name$(<I>, $instance: $instantiable)?>
+			$crate::traits::OffchainWorker<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{}
 	};
@@ -2365,7 +2365,9 @@ mod tests {
 	pub mod system {
 		use codec::{Encode, Decode};
 
-		pub trait Trait {
+		pub trait Trait: Config {}
+		impl<Runtime: Config> Trait for Runtime {}
+		pub trait Config {
 			type AccountId;
 			type Call;
 			type BaseCallFilter;
@@ -2389,7 +2391,7 @@ mod tests {
 			}
 		}
 
-		pub type Origin<T> = RawOrigin<<T as Trait>::AccountId>;
+		pub type Origin<T> = RawOrigin<<T as Config>::AccountId>;
 	}
 
 	decl_module! {
@@ -2508,7 +2510,7 @@ mod tests {
 		}
 	}
 
-	impl system::Trait for TraitImpl {
+	impl system::Config for TraitImpl {
 		type Origin = OuterOrigin;
 		type AccountId = u32;
 		type Call = OuterCall;

@@ -19,9 +19,9 @@
 //!
 //! Parse the module into `Def` struct through `Def::try_from` function.
 
-pub mod trait_;
-pub mod module;
-pub mod module_interface;
+pub mod config;
+pub mod pallet_struct;
+pub mod interface;
 pub mod call;
 pub mod error;
 pub mod origin;
@@ -42,9 +42,9 @@ pub struct Def {
 	/// The module items.
 	/// (their order must not be modified because they are registered in individual definitions).
 	pub item: syn::ItemMod,
-	pub trait_: trait_::TraitDef,
-	pub module: module::ModuleDef,
-	pub module_interface: module_interface::ModuleInterfaceDef,
+	pub config: config::ConfigDef,
+	pub pallet_struct: pallet_struct::PalletStructDef,
+	pub interface: interface::InterfaceDef,
 	pub call: call::CallDef,
 	pub storages: Vec<storage::StorageDef>,
 	pub error: Option<error::ErrorDef>,
@@ -71,9 +71,9 @@ impl Def {
 				syn::Error::new(item_span, msg)
 			})?.1;
 
-		let mut trait_ = None;
-		let mut module = None;
-		let mut module_interface = None;
+		let mut config = None;
+		let mut pallet_struct = None;
+		let mut interface = None;
 		let mut call = None;
 		let mut error = None;
 		let mut event = None;
@@ -89,13 +89,13 @@ impl Def {
 			let pallet_attr: Option<PalletAttr> = helper::take_first_item_attr(item)?;
 
 			match pallet_attr {
-				Some(PalletAttr::Trait(_)) if trait_.is_none() =>
-					trait_ = Some(trait_::TraitDef::try_from(&frame_system, index, item)?),
-				Some(PalletAttr::Module(_)) if module.is_none() =>
-					module = Some(module::ModuleDef::try_from(index, item)?),
-				Some(PalletAttr::ModuleInterface(_)) if module_interface.is_none() => {
-					let m = module_interface::ModuleInterfaceDef::try_from(index, item)?;
-					module_interface = Some(m);
+				Some(PalletAttr::Config(_)) if config.is_none() =>
+					config = Some(config::ConfigDef::try_from(&frame_system, index, item)?),
+				Some(PalletAttr::Pallet(_)) if pallet_struct.is_none() =>
+					pallet_struct = Some(pallet_struct::PalletStructDef::try_from(index, item)?),
+				Some(PalletAttr::Interface(_)) if interface.is_none() => {
+					let m = interface::InterfaceDef::try_from(index, item)?;
+					interface = Some(m);
 				},
 				Some(PalletAttr::Call(span)) if call.is_none() =>
 					call = Some(call::CallDef::try_from(span, index, item)?),
@@ -142,11 +142,11 @@ impl Def {
 
 		let def = Def {
 			item: item,
-			trait_: trait_.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::config]`"))?,
-			module: module
-				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::module]`"))?,
-			module_interface: module_interface
-				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::module_interface]`"))?,
+			config: config.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::config]`"))?,
+			pallet_struct: pallet_struct
+				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::pallet]`"))?,
+			interface: interface
+				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::interface]`"))?,
 			call: call.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::call]"))?,
 			genesis_config,
 			genesis_build,
@@ -171,31 +171,31 @@ impl Def {
 	/// and trait defines type Event, or not declared and no trait associated type.
 	fn check_event_usage(&self) -> syn::Result<()> {
 		match (
-			self.trait_.has_event_type,
+			self.config.has_event_type,
 			self.event.is_some(),
 		) {
 			(true, false) => {
-				let msg = "Invalid usage of Event, trait `Trait` contains associated type `Event`, \
+				let msg = "Invalid usage of Event, `Config` contains associated type `Event`, \
 					but enum `Event` is not declared (i.e. no use of `#[pallet::event]`). \
 					Note that type `Event` in trait is reserved to work alongside pallet event.";
 				Err(syn::Error::new(proc_macro2::Span::call_site(), msg))
 			},
 			(false, true) => {
-				let msg = "Invalid usage of Event, trait `Trait` contains no associated type \
+				let msg = "Invalid usage of Event, `Config` contains no associated type \
 					`Event`, but enum `Event` is declared (in use of `#[pallet::event]`). \
-					An Event associated type must be declare on trait `Trait`.";
+					An Event associated type must be declare on trait `Config`.";
 				Err(syn::Error::new(proc_macro2::Span::call_site(), msg))
 			},
 			_ => Ok(())
 		}
 	}
-	/// Check that usage of trait `Trait` is consistent with the definition, i.e. it is used with
+	/// Check that usage of trait `Config` is consistent with the definition, i.e. it is used with
 	/// instance iff it is defined with instance.
 	fn check_instance_usage(&self) -> syn::Result<()> {
 		let mut instances = vec![];
 		instances.extend_from_slice(&self.call.instances[..]);
-		instances.extend_from_slice(&self.module.instances[..]);
-		instances.extend_from_slice(&self.module_interface.instances[..]);
+		instances.extend_from_slice(&self.pallet_struct.instances[..]);
+		instances.extend_from_slice(&self.interface.instances[..]);
 		instances.extend(&mut self.storages.iter().flat_map(|s| s.instances.clone()));
 		if let Some(event) = &self.event {
 			instances.extend_from_slice(&event.instances[..]);
@@ -218,10 +218,10 @@ impl Def {
 
 		let mut errors = instances.into_iter()
 			.filter_map(|instances| {
-				if instances.has_instance == self.trait_.has_instance {
+				if instances.has_instance == self.config.has_instance {
 					return None
 				}
-				let msg = if self.trait_.has_instance {
+				let msg = if self.config.has_instance {
 					"Invalid generic declaration, trait is defined with instance but generic use none"
 				} else {
 					"Invalid generic declaration, trait is defined without instance but generic use \
@@ -241,33 +241,33 @@ impl Def {
 	}
 
 	/// Depending on if pallet is instantiable:
-	/// * either `T: Trait`
-	/// * or `T: Trait<I>, I: 'static`
+	/// * either `T: Config`
+	/// * or `T: Config<I>, I: 'static`
 	pub fn type_impl_generics(&self) -> proc_macro2::TokenStream {
-		if self.trait_.has_instance {
-			quote::quote!(T: Trait<I>, I: 'static)
+		if self.config.has_instance {
+			quote::quote!(T: Config<I>, I: 'static)
 		} else {
-			quote::quote!(T: Trait)
+			quote::quote!(T: Config)
 		}
 	}
 
 	/// Depending on if pallet is instantiable:
-	/// * either `T: Trait`
-	/// * or `T: Trait<I>, I: 'static = ()`
+	/// * either `T: Config`
+	/// * or `T: Config<I>, I: 'static = ()`
 	pub fn type_decl_generics(&self) -> proc_macro2::TokenStream {
-		if self.trait_.has_instance {
-			quote::quote!(T: Trait<I>, I: 'static = ())
+		if self.config.has_instance {
+			quote::quote!(T: Config<I>, I: 'static = ())
 		} else {
-			quote::quote!(T: Trait)
+			quote::quote!(T: Config)
 		}
 	}
 
 	/// Depending on if pallet is instantiable:
 	/// * either ``
 	/// * or `<I>`
-	/// to be used when using pallet trait `Trait`
+	/// to be used when using pallet trait `Config`
 	pub fn trait_use_generics(&self) -> proc_macro2::TokenStream {
-		if self.trait_.has_instance {
+		if self.config.has_instance {
 			quote::quote!(<I>)
 		} else {
 			quote::quote!()
@@ -278,7 +278,7 @@ impl Def {
 	/// * either `T`
 	/// * or `T, I`
 	pub fn type_use_generics(&self) -> proc_macro2::TokenStream {
-		if self.trait_.has_instance {
+		if self.config.has_instance {
 			quote::quote!(T, I)
 		} else {
 			quote::quote!(T)
@@ -291,9 +291,8 @@ mod keyword {
 	syn::custom_keyword!(origin);
 	syn::custom_keyword!(call);
 	syn::custom_keyword!(event);
-	syn::custom_keyword!(module);
 	syn::custom_keyword!(config);
-	syn::custom_keyword!(module_interface);
+	syn::custom_keyword!(interface);
 	syn::custom_keyword!(inherent);
 	syn::custom_keyword!(error);
 	syn::custom_keyword!(storage);
@@ -309,9 +308,9 @@ mod keyword {
 /// Parse attributes for item in pallet module
 /// syntax must be `pallet::` (e.g. `#[pallet::config]`)
 enum PalletAttr {
-	Trait(proc_macro2::Span),
-	Module(proc_macro2::Span),
-	ModuleInterface(proc_macro2::Span),
+	Config(proc_macro2::Span),
+	Pallet(proc_macro2::Span),
+	Interface(proc_macro2::Span),
 	Call(proc_macro2::Span),
 	Error(proc_macro2::Span),
 	Event(proc_macro2::Span),
@@ -327,9 +326,9 @@ enum PalletAttr {
 impl PalletAttr {
 	fn span(&self) -> proc_macro2::Span {
 		match self {
-			Self::Trait(span) => span.clone(),
-			Self::Module(span) => span.clone(),
-			Self::ModuleInterface(span) => span.clone(),
+			Self::Config(span) => span.clone(),
+			Self::Pallet(span) => span.clone(),
+			Self::Interface(span) => span.clone(),
 			Self::Call(span) => span.clone(),
 			Self::Error(span) => span.clone(),
 			Self::Event(span) => span.clone(),
@@ -354,11 +353,11 @@ impl syn::parse::Parse for PalletAttr {
 
 		let lookahead = content.lookahead1();
 		if lookahead.peek(keyword::config) {
-			Ok(PalletAttr::Trait(content.parse::<keyword::config>()?.span()))
-		} else if lookahead.peek(keyword::module) {
-			Ok(PalletAttr::Module(content.parse::<keyword::module>()?.span()))
-		} else if lookahead.peek(keyword::module_interface) {
-			Ok(PalletAttr::ModuleInterface(content.parse::<keyword::module_interface>()?.span()))
+			Ok(PalletAttr::Config(content.parse::<keyword::config>()?.span()))
+		} else if lookahead.peek(keyword::pallet) {
+			Ok(PalletAttr::Pallet(content.parse::<keyword::pallet>()?.span()))
+		} else if lookahead.peek(keyword::interface) {
+			Ok(PalletAttr::Interface(content.parse::<keyword::interface>()?.span()))
 		} else if lookahead.peek(keyword::call) {
 			Ok(PalletAttr::Call(content.parse::<keyword::call>()?.span()))
 		} else if lookahead.peek(keyword::error) {

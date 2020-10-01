@@ -1,22 +1,22 @@
 #[frame_support::pallet]
 mod pallet {
-	use frame_support::pallet_prelude::ModuleInterface;
+	use frame_support::pallet_prelude::Interface;
 	use frame_system::pallet_prelude::BlockNumberFor;
 
 	#[pallet::config]
-	pub trait Trait: frame_system::Trait {
+	pub trait Config: frame_system::Config {
 		#[pallet::constant]
 		type U;
 	}
 
-	#[pallet::module]
-	pub struct Module<T>(core::marker::PhantomData<T>);
+	#[pallet::pallet]
+	pub struct Pallet<T>(core::marker::PhantomData<T>);
 
-	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {}
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {}
 
 	#[pallet::call]
-	impl<T: Trait> Module<T> {}
+	impl<T: Config> Pallet<T> {}
 }
 
 fn main() {

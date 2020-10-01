@@ -53,7 +53,7 @@ parameter_types! {
 	pub const MaximumBlockLength: u32 = 2 * 1024;
 	pub const AvailableBlockRatio: Perbill = Perbill::one();
 }
-impl frame_system::Trait for Test {
+impl frame_system::Config for Test {
 	type BaseCallFilter = ();
 	type Origin = Origin;
 	type Call = ();
@@ -115,7 +115,7 @@ parameter_types! {
 	pub const UnsignedPriority: u64 = 1 << 20;
 }
 
-impl Trait for Test {
+impl Config for Test {
 	type Event = ();
 	type AuthorityId = crypto::TestAuthId;
 	type Call = Call<Test>;
@@ -124,7 +124,7 @@ impl Trait for Test {
 	type UnsignedPriority = UnsignedPriority;
 }
 
-type Example = Module<Test>;
+type Example = Pallet<Test>;
 
 #[test]
 fn it_aggregates_the_price() {
@@ -278,7 +278,7 @@ fn should_submit_unsigned_transaction_on_chain_for_any_account() {
 
 			let signature_valid = <PricePayload<
 				<Test as SigningTypes>::Public,
-				<Test as frame_system::Trait>::BlockNumber
+				<Test as frame_system::Config>::BlockNumber
 					> as SignedPayload<Test>>::verify::<crypto::TestAuthId>(&price_payload, signature);
 
 			assert!(signature_valid);
@@ -331,7 +331,7 @@ fn should_submit_unsigned_transaction_on_chain_for_all_accounts() {
 
 			let signature_valid = <PricePayload<
 				<Test as SigningTypes>::Public,
-				<Test as frame_system::Trait>::BlockNumber
+				<Test as frame_system::Config>::BlockNumber
 					> as SignedPayload<Test>>::verify::<crypto::TestAuthId>(&price_payload, signature);
 
 			assert!(signature_valid);

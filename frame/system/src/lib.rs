@@ -15,17 +15,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! # System Module
+//! # System Pallet
 //!
 //! The System module provides low-level access to core types and cross-cutting utilities.
 //! It acts as the base layer for other pallets to interact with the Substrate framework components.
 //!
-//! - [`system::Trait`](./trait.Trait.html)
+//! - [`system::Config`](./trait.Config.html)
 //!
 //! ## Overview
 //!
 //! The System module defines the core data types used in a Substrate runtime.
-//! It also provides several utility functions (see [`Module`](./struct.Module.html)) for other FRAME pallets.
+//! It also provides several utility functions (see [`Pallet`](./struct.Pallet.html)) for other FRAME pallets.
 //!
 //! In addition, it manages the storage items for extrinsics data, indexes, event records, and digest items,
 //! among other things that support the execution of the current block.
@@ -41,7 +41,7 @@
 //!
 //! ### Public Functions
 //!
-//! See the [`Module`](./struct.Module.html) struct for details of publicly available functions.
+//! See the [`Pallet`](./struct.Pallet.html) struct for details of publicly available functions.
 //!
 //! ### Signed Extensions
 //!
@@ -74,15 +74,15 @@
 //! use frame_support::{decl_module, dispatch};
 //! use frame_system::{self as system, ensure_signed};
 //!
-//! pub trait Trait: system::Trait {}
+//! pub trait Trait: system::Config {}
 //!
 //! decl_module! {
 //! 	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
 //! 		#[weight = 0]
 //! 		pub fn system_module_example(origin) -> dispatch::DispatchResult {
 //! 			let _sender = ensure_signed(origin)?;
-//! 			let _extrinsic_count = <system::Module<T>>::extrinsic_count();
-//! 			let _parent_hash = <system::Module<T>>::parent_hash();
+//! 			let _extrinsic_count = <system::Pallet<T>>::extrinsic_count();
+//! 			let _parent_hash = <system::Pallet<T>>::parent_hash();
 //! 			Ok(())
 //! 		}
 //! 	}
@@ -168,8 +168,8 @@ pub trait WeightInfo {
 	fn suicide() -> Weight;
 }
 
-pub type DigestOf<T> = generic::Digest<<T as Trait>::Hash>;
-pub type DigestItemOf<T> = generic::DigestItem<<T as Trait>::Hash>;
+pub type DigestOf<T> = generic::Digest<<T as Config>::Hash>;
+pub type DigestItemOf<T> = generic::DigestItem<<T as Config>::Hash>;
 
 pub type Key = Vec<u8>;
 pub type KeyValue = (Vec<u8>, Vec<u8>);
@@ -188,11 +188,20 @@ mod pallet {
 	use crate::pallet_prelude::*;
 	use super::*;
 
-	#[pallet::module]
-	pub struct Module<T>(PhantomData<T>);
+	/// Temporary keep old name Module, soon to be deprecated alongside old macro.
+	// #[deprecated(note="use Config instead")]
+	pub type Module<T> = Pallet<T>;
 
-	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {
+	/// Temporary keep old name Trait, soon to be deprecated alongside old macro.
+	// #[deprecated(note="use Config instead")]
+	pub trait Trait: Config {}
+	impl<Runtime: Config> Trait for Runtime {}
+
+	#[pallet::pallet]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
 		fn on_runtime_upgrade() -> Weight {
 			if !<UpgradedToU32RefCount<T>>::get() {
 				Account::<T>::translate::<(T::Index, u8, T::AccountData), _>(|_key, (nonce, rc, data)|
@@ -208,7 +217,7 @@ mod pallet {
 
 	#[pallet::config]
 	#[pallet::disable_frame_system_supertrait_check]
-	pub trait Trait: 'static + Eq + Clone {
+	pub trait Config: 'static + Eq + Clone {
 		/// The basic call filter to use in Origin. All origins are built with this filter as base,
 		/// except Root.
 		type BaseCallFilter: Filter<Self::Call>;
@@ -263,7 +272,7 @@ mod pallet {
 
 		/// The aggregated event type of the runtime.
 		type Event: Parameter + Member + From<Event<Self>> + Debug
-			+ IsType<<Self as frame_system::Trait>::Event>;
+			+ IsType<<Self as frame_system::Config>::Event>;
 
 		/// Maximum number of block number to block hash mappings to keep (oldest pruned first).
 		#[pallet::constant]
@@ -326,12 +335,12 @@ mod pallet {
 
 	/// Exposed trait-generic origin type.
 	#[pallet::origin]
-	pub type Origin<T> = RawOrigin<<T as Trait>::AccountId>;
+	pub type Origin<T> = RawOrigin<<T as Config>::AccountId>;
 
 	/// The full account information for a particular account ID.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn account)]
-	pub type Account<T: Trait> = StorageMapType<
+	pub type Account<T: Config> = StorageMapType<
 		_, Blake2_128Concat, T::AccountId, AccountInfo<T::Index, T::AccountData>, ValueQuery
 	>;
 
@@ -351,7 +360,7 @@ mod pallet {
 	/// Map of block numbers to block hashes.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn block_hash)]
-	pub type BlockHash<T: Trait> =
+	pub type BlockHash<T: Config> =
 		StorageMapType<_, Twox64Concat, T::BlockNumber, T::Hash, ValueQuery>;
 
 		/// Extrinsics data for the current block (maps an extrinsic's index to its data).
@@ -362,27 +371,27 @@ mod pallet {
 	/// The current block number being processed. Set by `execute_block`.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn block_number)]
-	pub(crate) type Number<T: Trait> = StorageValueType<_, T::BlockNumber, ValueQuery>;
+	pub(crate) type Number<T: Config> = StorageValueType<_, T::BlockNumber, ValueQuery>;
 
 	/// Hash of the previous block.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn parent_hash)]
-	pub(crate) type ParentHash<T: Trait> = StorageValueType<_, T::Hash, ValueQuery>;
+	pub(crate) type ParentHash<T: Config> = StorageValueType<_, T::Hash, ValueQuery>;
 
 	/// Extrinsics root of the current block, also part of the block header.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn extrinsics_root)]
-	pub(crate) type ExtrinsicsRoot<T: Trait> = StorageValueType<_, T::Hash, ValueQuery>;
+	pub(crate) type ExtrinsicsRoot<T: Config> = StorageValueType<_, T::Hash, ValueQuery>;
 
 	/// Digest of the current block, also part of the block header.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn digest)]
-	pub(crate) type Digest<T: Trait> = StorageValueType<_, DigestOf<T>, ValueQuery>;
+	pub(crate) type Digest<T: Config> = StorageValueType<_, DigestOf<T>, ValueQuery>;
 
 	/// Events deposited for the current block.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn events)]
-	pub(crate) type Events<T: Trait> =
+	pub(crate) type Events<T: Config> =
 		StorageValueType<_, Vec<EventRecord<T::Event, T::Hash>>, ValueQuery>;
 
 	/// The number of events in the `Events<T>` list.
@@ -407,7 +416,7 @@ mod pallet {
 	/// no notification will be triggered thus the event might be lost.
 	#[pallet::storage]
 	#[pallet::generate_getter(fn event_topics)]
-	pub(crate) type EventTopics<T: Trait> =
+	pub(crate) type EventTopics<T: Config> =
 		StorageMapType<_, Blake2_128Concat, T::Hash, Vec<(T::BlockNumber, EventIndex)>, ValueQuery>;
 
 	/// Stores the `spec_version` and `spec_name` of when the last runtime upgrade happened.
@@ -432,14 +441,14 @@ mod pallet {
 
 	#[cfg(feature = "std")]
 	impl GenesisConfig {
-		/// Helper method to call GenesisBuild::build_storage.
-		pub fn build_storage<T: Trait>(self) -> Result<sp_runtime::Storage, String> {
+		/// Helper method to call `GenesisBuild::<T>::build_storage`.
+		pub fn build_storage<T: Config>(self) -> Result<sp_runtime::Storage, String> {
 			GenesisBuild::<T>::build_storage(&self)
 		}
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait> GenesisBuild<T> for GenesisConfig {
+	impl<T: Config> GenesisBuild<T> for GenesisConfig {
 		fn build(&self) {
 			use codec::Encode;
 
@@ -462,8 +471,8 @@ mod pallet {
 
 	/// Event for the System module.
 	#[pallet::event]
-	#[pallet::metadata(<T as Trait>::AccountId = AccountId)]
-	pub enum Event<T: Trait> {
+	#[pallet::metadata(<T as Config>::AccountId = AccountId)]
+	pub enum Event<T: Config> {
 		/// An extrinsic completed successfully. \[info\]
 		ExtrinsicSuccess(DispatchInfo),
 		/// An extrinsic failed. \[error, info\]
@@ -471,9 +480,9 @@ mod pallet {
 		/// `:code` was updated.
 		CodeUpdated,
 		/// A new \[account\] was created.
-		NewAccount(<T as Trait>::AccountId),
+		NewAccount(<T as Config>::AccountId),
 		/// An \[account\] was reaped.
-		KilledAccount(<T as Trait>::AccountId),
+		KilledAccount(<T as Config>::AccountId),
 	}
 
 	/// Error for the System module
@@ -495,7 +504,7 @@ mod pallet {
 		NonZeroRefCount,
 	}
 	#[pallet::call]
-	impl<T: Trait> Module<T> {
+	impl<T: Config> Pallet<T> {
 		/// A dispatch that will fill the block weight up to the given ratio.
 		// TODO: This should only be available for testing, rather than in general usage, but
 		// that's not possible at present (since it's within the decl_module macro).
@@ -977,7 +986,7 @@ pub enum RefStatus {
 	Unreferenced,
 }
 
-impl<T: Trait> Module<T> {
+impl<T: Config> Pallet<T> {
 	/// Deposits an event into this block's event record.
 	pub fn deposit_event(event: impl Into<T::Event>) {
 		Self::deposit_event_indexed(&[], event.into());
@@ -1304,7 +1313,7 @@ impl<T: Trait> Module<T> {
 				);
 			}
 		}
-		Module::<T>::on_killed_account(who.clone());
+		Pallet::<T>::on_killed_account(who.clone());
 	}
 
 	/// Determine whether or not it is possible to update the code.
@@ -1332,33 +1341,33 @@ impl<T: Trait> Module<T> {
 
 /// Event handler which calls on_created_account when it happens.
 pub struct CallOnCreatedAccount<T>(PhantomData<T>);
-impl<T: Trait> Happened<T::AccountId> for CallOnCreatedAccount<T> {
+impl<T: Config> Happened<T::AccountId> for CallOnCreatedAccount<T> {
 	fn happened(who: &T::AccountId) {
-		Module::<T>::on_created_account(who.clone());
+		Pallet::<T>::on_created_account(who.clone());
 	}
 }
 
 /// Event handler which calls kill_account when it happens.
 pub struct CallKillAccount<T>(PhantomData<T>);
-impl<T: Trait> Happened<T::AccountId> for CallKillAccount<T> {
+impl<T: Config> Happened<T::AccountId> for CallKillAccount<T> {
 	fn happened(who: &T::AccountId) {
-		Module::<T>::kill_account(who)
+		Pallet::<T>::kill_account(who)
 	}
 }
 
-impl<T: Trait> BlockNumberProvider for Module<T>
+impl<T: Config> BlockNumberProvider for Pallet<T>
 {
-	type BlockNumber = <T as Trait>::BlockNumber;
+	type BlockNumber = <T as Config>::BlockNumber;
 
 	fn current_block_number() -> Self::BlockNumber {
-		Module::<T>::block_number()
+		Pallet::<T>::block_number()
 	}
 }
 
 // Implement StoredMap for a simple single-item, kill-account-on-remove system. This works fine for
 // storing a single item which is required to not be empty/default for the account to exist.
 // Anything more complex will need more sophisticated logic.
-impl<T: Trait> StoredMap<T::AccountId, T::AccountData> for Module<T> {
+impl<T: Config> StoredMap<T::AccountId, T::AccountData> for Pallet<T> {
 	fn get(k: &T::AccountId) -> T::AccountData {
 		Account::<T>::get(k).data
 	}
@@ -1425,7 +1434,7 @@ pub fn split_inner<T, R, S>(option: Option<T>, splitter: impl FnOnce(T) -> (R, S
 }
 
 
-impl<T: Trait> IsDeadAccount<T::AccountId> for Module<T> {
+impl<T: Config> IsDeadAccount<T::AccountId> for Pallet<T> {
 	fn is_dead_account(who: &T::AccountId) -> bool {
 		!Account::<T>::contains_key(who)
 	}
@@ -1438,7 +1447,7 @@ impl<T> Default for ChainContext<T> {
 	}
 }
 
-impl<T: Trait> Lookup for ChainContext<T> {
+impl<T: Config> Lookup for ChainContext<T> {
 	type Source = <T::Lookup as StaticLookup>::Source;
 	type Target = <T::Lookup as StaticLookup>::Target;
 
@@ -1451,6 +1460,6 @@ pub mod pallet_prelude {
 	pub use crate::ensure_signed;
 	pub use crate::ensure_none;
 	pub use crate::ensure_root;
-	pub type OriginFor<T> = <T as crate::Trait>::Origin;
-	pub type BlockNumberFor<T> = <T as crate::Trait>::BlockNumber;
+	pub type OriginFor<T> = <T as crate::Config>::Origin;
+	pub type BlockNumberFor<T> = <T as crate::Config>::BlockNumber;
 }

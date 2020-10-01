@@ -293,7 +293,9 @@ mod tests {
 	mod system {
 		use super::*;
 
-		pub trait Trait: 'static {
+		pub trait Trait: Config {}
+		impl<Runtime: Config> Trait for Runtime {}
+		pub trait Config: 'static {
 			type BaseCallFilter;
 			const ASSOCIATED_CONST: u64 = 500;
 			type Origin: Into<Result<RawOrigin<Self::AccountId>, Self::Origin>>
@@ -336,7 +338,7 @@ mod tests {
 			}
 		}
 
-		pub type Origin<T> = RawOrigin<<T as Trait>::AccountId>;
+		pub type Origin<T> = RawOrigin<<T as Config>::AccountId>;
 	}
 
 	mod event_module {
@@ -441,7 +443,7 @@ mod tests {
 		pub const SystemValue: u32 = 600;
 	}
 
-	impl system::Trait for TestRuntime {
+	impl system::Config for TestRuntime {
 		type BaseCallFilter = ();
 		type Origin = Origin;
 		type AccountId = u32;
@@ -475,7 +477,7 @@ mod tests {
 	struct ConstantAssociatedConstByteGetter;
 	impl DefaultByte for ConstantAssociatedConstByteGetter {
 		fn default_byte(&self) -> Vec<u8> {
-			<TestRuntime as system::Trait>::ASSOCIATED_CONST.encode()
+			<TestRuntime as system::Config>::ASSOCIATED_CONST.encode()
 		}
 	}
 

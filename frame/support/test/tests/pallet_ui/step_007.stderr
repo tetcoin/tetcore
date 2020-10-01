@@ -1,5 +1,5 @@
-error: Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, found none. To disable this check, use `#[pallet::disable_frame_system_supertrait_check]`
+error: Invalid pallet::trait, expect explicit `frame_system::Config` as supertrait, found none. To disable this check, use `#[pallet::disable_frame_system_supertrait_check]`
  --> $DIR/step_007.rs:4:2
   |
-4 |     pub trait Trait {}
+4 |     pub trait Config {}
   |     ^^^

@@ -20,9 +20,9 @@ mod pallet {
 
 	/// Configure the pallet by specifying the parameters and types on which it depends.
 	#[pallet::config]
-	pub trait Trait: frame_system::Trait {
+	pub trait Config: frame_system::Config {
 		/// Because this pallet emits events, it depends on the runtime's definition of an event.
-		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 	}
 
 	// The pallet's runtime storage items.
@@ -39,13 +39,13 @@ mod pallet {
 	// Pallets use events to inform users when important changes are made.
 	// https://substrate.dev/docs/en/knowledgebase/runtime/events
 	#[pallet::event]
-	#[pallet::metadata(<T as frame_system::Trait>::AccountId = AccountId)]
+	#[pallet::metadata(<T as frame_system::Config>::AccountId = AccountId)]
 	// Generate a helper function to deposit events.
 	#[pallet::generate(pub(crate) fn deposit_event)]
-	pub enum Event<T: Trait> {
+	pub enum Event<T: Config> {
 		/// Event documentation should end with an array that provides descriptive names for event
 		/// parameters. [something, who]
-		SomethingStored(u32, <T as frame_system::Trait>::AccountId),
+		SomethingStored(u32, <T as frame_system::Config>::AccountId),
 	}
 
 	// Errors inform users that something went wrong.
@@ -58,17 +58,17 @@ mod pallet {
 	}
 
 	// Type placeholder to implement pallet traits on it.
-	#[pallet::module]
-	pub struct Module<T>(PhantomData<T>);
+	#[pallet::pallet]
+	pub struct Pallet<T>(PhantomData<T>);
 
-	#[pallet::module_interface]
-	impl<T: Trait> ModuleInterface<BlockNumberFor<T>> for Module<T> {}
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {}
 
 	// Dispatchable functions allows users to interact with the pallet and invoke state changes.
 	// These functions materialize as "extrinsics", which are often compared to transactions.
 	// Dispatchable functions must be annotated with a weight and must return a DispatchResult.
 	#[pallet::call]
-	impl<T: Trait> Module<T> {
+	impl<T: Config> Pallet<T> {
 		/// An example dispatchable that takes a singles value as a parameter, writes the value to
 		/// storage and emits an event. This function must be dispatched by a signed extrinsic.
 		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]

@@ -26,7 +26,7 @@ mod pallet_old {
 	pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
 		type SomeConst: Get<Self::Balance>;
 		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default;
-		type Event: From<Event<Self, I>> + Into<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self, I>> + Into<<Self as frame_system::Config>::Event>;
 	}
 
 	decl_storage! {
@@ -86,19 +86,19 @@ pub mod pallet {
 	use frame_system::ensure_root;
 
 	#[pallet::config]
-	pub trait Trait<I: 'static = ()>: frame_system::Trait {
+	pub trait Config<I: 'static = ()>: frame_system::Config {
 		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default
 			+ MaybeSerializeDeserialize;
 		#[pallet::constant]
 		type SomeConst: Get<Self::Balance>;
-		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Trait>::Event>;
+		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Config>::Event>;
 	}
 
-	#[pallet::module]
-	pub struct Module<T, I = ()>(PhantomData<(T, I)>);
+	#[pallet::pallet]
+	pub struct Pallet<T, I = ()>(PhantomData<(T, I)>);
 
-	#[pallet::module_interface]
-	impl<T: Trait<I>, I: 'static> ModuleInterface<T::BlockNumber> for Module<T, I> {
+	#[pallet::interface]
+	impl<T: Config<I>, I: 'static> Interface<T::BlockNumber> for Pallet<T, I> {
 		fn on_initialize(_n: T::BlockNumber) -> Weight {
 			<Dummy<T, I>>::put(T::Balance::from(10));
 			10
@@ -110,7 +110,7 @@ pub mod pallet {
 	}
 
 	#[pallet::call]
-	impl<T: Trait<I>, I: 'static> Module<T, I> {
+	impl<T: Config<I>, I: 'static> Pallet<T, I> {
 		#[pallet::weight(<T::Balance as Into<Weight>>::into(new_value.clone()))]
 		fn set_dummy(origin: OriginFor<T>, #[pallet::compact] new_value: T::Balance) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
@@ -130,23 +130,23 @@ pub mod pallet {
 
 	#[pallet::event]
 	#[pallet::generate(fn deposit_event)]
-	pub enum Event<T: Trait<I>, I: 'static = ()> {
+	pub enum Event<T: Config<I>, I: 'static = ()> {
 		/// Dummy event, just here so there's a generic type that's used.
 		Dummy(T::Balance),
 	}
 
 	#[pallet::storage]
 	/// Some documentation
-	type Dummy<T: Trait<I>, I: 'static = ()> = StorageValueType<_, T::Balance, OptionQuery>;
+	type Dummy<T: Config<I>, I: 'static = ()> = StorageValueType<_, T::Balance, OptionQuery>;
 
 	#[pallet::storage]
-	type Bar<T: Trait<I>, I: 'static = ()> =
+	type Bar<T: Config<I>, I: 'static = ()> =
 		StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
 	#[pallet::storage]
-	type Foo<T: Trait<I>, I: 'static = ()> =
+	type Foo<T: Config<I>, I: 'static = ()> =
 		StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T, I>>;
-	#[pallet::type_value] pub fn OnFooEmpty<T: Trait<I>, I: 'static>() -> T::Balance { 3.into() }
+	#[pallet::type_value] pub fn OnFooEmpty<T: Config<I>, I: 'static>() -> T::Balance { 3.into() }
 
 	#[pallet::storage]
 	type Double<T, I = ()> = StorageDoubleMapType<
@@ -154,13 +154,13 @@ pub mod pallet {
 	>;
 
 	#[pallet::genesis_config]
-	pub struct GenesisConfig<T: Trait<I>, I: 'static = ()> {
+	pub struct GenesisConfig<T: Config<I>, I: 'static = ()> {
 		dummy: Option<T::Balance>,
 		bar: Vec<(T::AccountId, T::Balance)>,
 		foo: T::Balance,
 	}
 
-	impl<T: Trait<I>, I: 'static> Default for GenesisConfig<T, I> {
+	impl<T: Config<I>, I: 'static> Default for GenesisConfig<T, I> {
 		fn default() -> Self {
 			GenesisConfig {
 				dummy: Default::default(),
@@ -171,7 +171,7 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Trait<I>, I: 'static> GenesisBuild<T, I> for GenesisConfig<T, I> {
+	impl<T: Config<I>, I: 'static> GenesisBuild<T, I> for GenesisConfig<T, I> {
 		fn build(&self) {
 			if let Some(dummy) = self.dummy.as_ref() {
 				<Dummy<T, I>>::put(dummy);
@@ -192,7 +192,7 @@ frame_support::parameter_types!(
 	pub const AvailableBlockRatio: sp_runtime::Perbill = sp_runtime::Perbill::one();
 );
 
-impl frame_system::Trait for Runtime {
+impl frame_system::Config for Runtime {
 	type BaseCallFilter = ();
 	type Origin = Origin;
 	type Index = u64;
@@ -219,17 +219,17 @@ impl frame_system::Trait for Runtime {
 	type OnKilledAccount = ();
 	type SystemWeightInfo = ();
 }
-impl pallet::Trait for Runtime {
+impl pallet::Config for Runtime {
 	type Event = Event;
 	type SomeConst = SomeConst;
 	type Balance = u64;
 }
-impl pallet::Trait<pallet::Instance2> for Runtime {
+impl pallet::Config<pallet::Instance2> for Runtime {
 	type Event = Event;
 	type SomeConst = SomeConst;
 	type Balance = u64;
 }
-impl pallet::Trait<pallet::Instance3> for Runtime {
+impl pallet::Config<pallet::Instance3> for Runtime {
 	type Event = Event;
 	type SomeConst = SomeConst;
 	type Balance = u64;
@@ -260,12 +260,12 @@ frame_support::construct_runtime!(
 		NodeBlock = Block,
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
-		System: frame_system::{Module, Call, Event<T>},
-		Example: pallet::{Module, Call, Event<T>, Config<T>, Storage},
+		System: frame_system::{Pallet, Call, Event<T>},
+		Example: pallet::{Pallet, Call, Event<T>, Config<T>, Storage},
 		PalletOld: pallet_old::{Module, Call, Event<T>, Config<T>, Storage},
-		Instance2Example: pallet::<Instance2>::{Module, Call, Event<T>, Config<T>, Storage},
+		Instance2Example: pallet::<Instance2>::{Pallet, Call, Event<T>, Config<T>, Storage},
 		PalletOld2: pallet_old::<Instance2>::{Module, Call, Event<T>, Config<T>, Storage},
-		Instance3Example: pallet::<Instance3>::{Module, Call, Event<T>, Config<T>, Storage},
+		Instance3Example: pallet::<Instance3>::{Pallet, Call, Event<T>, Config<T>, Storage},
 		PalletOld3: pallet_old::<Instance3>::{Module, Call, Event<T>, Config<T>, Storage},
 	}
 );

@@ -1,9 +1,9 @@
 #[frame_support::pallet]
 mod pallet {
 	#[pallet::config]
-	pub trait Trait: frame_system::Trait {}
+	pub trait Config: frame_system::Config {}
 
-	#[pallet::module]
+	#[pallet::pallet]
 	pub struct Foo {}
 }
 

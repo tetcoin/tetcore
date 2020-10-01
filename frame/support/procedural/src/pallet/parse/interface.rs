@@ -18,9 +18,9 @@
 use syn::spanned::Spanned;
 use super::helper;
 
-/// Implementation of the pallet module interface.
-pub struct ModuleInterfaceDef {
-	/// The index of error item in pallet module.
+/// Implementation of the pallet interface.
+pub struct InterfaceDef {
+	/// The index of item in pallet.
 	pub index: usize,
 	/// A set of usage of instance, must be check for consistency with trait.
 	pub instances: Vec<helper::InstanceUsage>,
@@ -28,31 +28,31 @@ pub struct ModuleInterfaceDef {
 	pub where_clause: Option<syn::WhereClause>,
 }
 
-impl ModuleInterfaceDef {
+impl InterfaceDef {
 	pub fn try_from(index: usize, item: &mut syn::Item) -> syn::Result<Self> {
 		let item = if let syn::Item::Impl(item) = item {
 			item
 		} else {
-			let msg = "Invalid pallet::module_interface, expect item impl";
+			let msg = "Invalid pallet::interface, expect item impl";
 			return Err(syn::Error::new(item.span(), msg));
 		};
 
 		let mut instances = vec![];
-		instances.push(helper::check_module_usage(&item.self_ty)?);
+		instances.push(helper::check_pallet_struct_usage(&item.self_ty)?);
 		instances.push(helper::check_impl_gen(&item.generics, item.impl_token.span())?);
 
 		let item_trait = &item.trait_.as_ref()
 			.ok_or_else(|| {
-				let msg = "Invalid pallet::module_interface, expect impl<..> ModuleInterface \
-					for Module<..>";
+				let msg = "Invalid pallet::interface, expect impl<..> Interface \
+					for Pallet<..>";
 				syn::Error::new(item.span(), msg)
 			})?.1;
 
 		if item_trait.segments.len() != 1
-			|| item_trait.segments[0].ident != "ModuleInterface"
+			|| item_trait.segments[0].ident != "Interface"
 		{
 			let msg = format!(
-				"Invalid pallet::module_interface, expect trait to be `ModuleInterface` found `{}`\
+				"Invalid pallet::interface, expect trait to be `Interface` found `{}`\
 				, you can import from `frame_support::pallet_prelude`",
 				quote::quote!(#item_trait)
 			);

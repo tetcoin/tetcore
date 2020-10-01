@@ -23,7 +23,10 @@ use sp_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
 mod no_instance {
 	use codec::{Encode, Decode, EncodeLike};
 
-	pub trait Trait {
+	/// Temporary keep old name Trait, to be removed alongside old macro.
+	pub trait Trait: Config {}
+	impl<Runtime: Config> Trait for Runtime {}
+	pub trait Config {
 		type Origin;
 		type BlockNumber: Encode + Decode + EncodeLike + Default + Clone;
 	}

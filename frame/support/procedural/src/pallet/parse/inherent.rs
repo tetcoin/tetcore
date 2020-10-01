@@ -35,7 +35,7 @@ impl InherentDef {
 		};
 
 		if item.trait_.is_none() {
-			let msg = "Invalid pallet::inherent, expect impl<..> ProvideInherent for Module<..>";
+			let msg = "Invalid pallet::inherent, expect impl<..> ProvideInherent for Pallet<..>";
 			return Err(syn::Error::new(item.span(), msg));
 		}
 
@@ -45,12 +45,12 @@ impl InherentDef {
 				return Err(syn::Error::new(last.span(), msg));
 			}
 		} else {
-			let msg = "Invalid pallet::inherent, expect impl<..> ProvideInherent for Module<..>";
+			let msg = "Invalid pallet::inherent, expect impl<..> ProvideInherent for Pallet<..>";
 			return Err(syn::Error::new(item.span(), msg));
 		}
 
 		let mut instances = vec![];
-		instances.push(helper::check_module_usage(&item.self_ty)?);
+		instances.push(helper::check_pallet_struct_usage(&item.self_ty)?);
 		instances.push(helper::check_impl_gen(&item.generics, item.impl_token.span())?);
 
 		Ok(InherentDef { index, instances })

@@ -1,5 +1,5 @@
 error[E0107]: wrong number of type arguments: expected 1, found 0
-  --> $DIR/step_021.rs:12:17
+  --> $DIR/step_021.rs:12:18
    |
-12 |     impl<T: Trait> ModuleInterface for Module<T> {}
-   |                    ^^^^^^^^^^^^^^^ expected 1 type argument
+12 |     impl<T: Config> Interface for Pallet<T> {}
+   |                     ^^^^^^^^^ expected 1 type argument

@@ -4,7 +4,14 @@ macro_rules! reserved {
 			mod $reserved {
 				pub use frame_support::dispatch;
 
-				pub trait Trait {
+				/// Temporary keep old name Trait, to be removed alongside old macro.
+				pub trait Trait: Config {}
+				impl<Runtime: Config> Trait for Runtime {}
+				/// Temporary keep old module name, to be removed alongside old macro.
+#[allow(unused)]
+				pub type Pallet<T> = Module<T>;
+
+				pub trait Config {
 					type Origin;
 					type BlockNumber: Into<u32>;
 				}

@@ -15,7 +15,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub trait Trait {
+/// Temporary keep old name Trait, to be removed alongside old macro.
+pub trait Trait: Config {}
+impl<Runtime: Config> Trait for Runtime {}
+/// Temporary keep old module name, to be removed alongside old macro.
+#[allow(unused)]
+pub type Pallet<T> = Module<T>;
+
+pub trait Config {
 	type Origin;
 	type BlockNumber: codec::Codec + codec::EncodeLike + Default + Clone;
 }

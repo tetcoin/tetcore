@@ -551,7 +551,10 @@ mod tests {
 	use codec::{Encode, Decode};
 
 	mod system {
-		pub trait Trait {
+		/// Temporary keep old name Trait, soon to be deprecated alongside old macro.
+		pub trait Trait: Config {}
+		impl<Runtime: Config> Trait for Runtime {}
+		pub trait Config {
 			type Origin;
 			type BlockNumber;
 		}
@@ -722,7 +725,7 @@ mod tests {
 		type BlockNumber = u32;
 	}
 
-	impl system::Trait for TestRuntime {
+	impl system::Config for TestRuntime {
 		type Origin = u32;
 		type BlockNumber = u32;
 	}
