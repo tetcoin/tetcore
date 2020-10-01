@@ -2,7 +2,7 @@
 mod pallet {
 	use frame_support::pallet_prelude::*;
 
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: frame_system::Trait {}
 
 	#[pallet::module]

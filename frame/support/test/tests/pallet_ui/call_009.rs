@@ -3,7 +3,7 @@ mod pallet {
 	use frame_support::pallet_prelude::{ModuleInterface, DispatchResultWithPostInfo};
 	use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
 
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: frame_system::Trait {
 		type Bar: codec::Codec;
 	}

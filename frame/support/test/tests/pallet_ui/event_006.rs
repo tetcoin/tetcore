@@ -3,7 +3,7 @@ mod pallet {
 	use frame_support::pallet_prelude::{ModuleInterface, IsType};
 	use frame_system::pallet_prelude::BlockNumberFor;
 
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: frame_system::Trait {
 		type Bar;
 		type Event: IsType<<Self as frame_system::Trait>::Event> + From<Event<Self>>;

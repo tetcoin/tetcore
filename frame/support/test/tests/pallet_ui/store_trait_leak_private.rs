@@ -4,7 +4,7 @@ mod pallet {
 	use frame_system::pallet_prelude::BlockNumberFor;
 	use frame_support::pallet_prelude::StorageValueType;
 
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: frame_system::Trait {}
 
 	#[pallet::module]

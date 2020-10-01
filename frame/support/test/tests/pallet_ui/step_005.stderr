@@ -1,4 +1,4 @@
-error: Invalid pallet::trait_, Trait must be public
+error: Invalid pallet::config, trait must be public
  --> $DIR/step_005.rs:4:2
   |
 4 |     trait Foo {}

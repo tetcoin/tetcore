@@ -32,7 +32,7 @@ pub mod pallet {
 
 	type BalanceOf<T, I> = <T as Trait<I>>::Balance;
 
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait<I: 'static = ()>: frame_system::Trait {
 		#[pallet::constant]
 		type MyGetParam: Get<u32>;

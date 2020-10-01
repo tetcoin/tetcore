@@ -329,7 +329,7 @@ mod pallet {
 	/// should be added to our implied traits list.
 	///
 	/// `frame_system::Trait` should always be included in our implied traits.
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: pallet_balances::Trait + frame_system::Trait {
 		/// The overarching event type.
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;

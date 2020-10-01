@@ -3,7 +3,7 @@ mod pallet {
 	use frame_support::pallet_prelude::ModuleInterface;
 	use frame_system::pallet_prelude::BlockNumberFor;
 
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: frame_system::Trait {
 		#[pallet::constant]
 		type U;

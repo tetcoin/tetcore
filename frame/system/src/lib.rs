@@ -206,7 +206,7 @@ mod pallet {
 		}
 	}
 
-	#[pallet::trait_]
+	#[pallet::config]
 	#[pallet::disable_frame_system_supertrait_check]
 	pub trait Trait: 'static + Eq + Clone {
 		/// The basic call filter to use in Origin. All origins are built with this filter as base,

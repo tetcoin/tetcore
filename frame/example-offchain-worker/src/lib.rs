@@ -116,7 +116,7 @@ mod pallet {
 	use frame_system::pallet_prelude::*;
 
 	/// This pallet's configuration trait
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: CreateSignedTransaction<Call<Self>> + frame_system::Trait {
 		/// The identifier type for an offchain worker.
 		type AuthorityId: AppCrypto<Self::Public, Self::Signature>;

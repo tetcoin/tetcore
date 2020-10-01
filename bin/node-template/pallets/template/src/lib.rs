@@ -19,7 +19,7 @@ mod pallet {
 	use frame_system::pallet_prelude::*;
 
 	/// Configure the pallet by specifying the parameters and types on which it depends.
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: frame_system::Trait {
 		/// Because this pallet emits events, it depends on the runtime's definition of an event.
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Trait>::Event>;

@@ -884,13 +884,13 @@ pub mod pallet_prelude {
 /// }
 /// ```
 ///
-/// # Trait: `#[pallet::trait_]` mandatory
+/// # Config trait: `#[pallet::config]` mandatory
 ///
 /// The trait defining generics of the pallet.
 ///
 /// Item must be defined as
 /// ```nocompile
-/// #[pallet::trait_]
+/// #[pallet::config]
 /// pub trait Trait: frame_system::Trait + $optionally_some_other_supertraits {
 /// ...
 /// }
@@ -903,7 +903,7 @@ pub mod pallet_prelude {
 ///
 /// To put `Get` associated type into metadatas, use the attribute `#[pallet::constant]`, e.g.:
 /// ```nocompile
-/// #[pallet::trait_]
+/// #[pallet::config]
 /// pub trait Trait: frame_system::Trait {
 ///		#[pallet::constant]
 ///		type Foo: Get<u32>;
@@ -913,7 +913,7 @@ pub mod pallet_prelude {
 /// To bypass the `frame_system::Trait` supertrait check, use the attribute
 /// `#[pallet::disable_frame_system_supertrait_check]`, e.g.:
 /// ```nocompile
-/// #[pallet::trait_]
+/// #[pallet::config]
 /// #[pallet::disable_frame_system_supertrait_check]
 /// pub trait Trait: pallet_timestamp::Trait {}
 /// ```
@@ -1312,7 +1312,7 @@ pub mod pallet_prelude {
 /// 	// The macro checks trait generics: is expected none or `I = ()`.
 /// 	// The macro parses `#[pallet::constant]` attributes: used to generate constant metadata,
 /// 	// expected syntax is `type $IDENT: Get<$TYPE>;`.
-/// 	#[pallet::trait_]
+/// 	#[pallet::config]
 /// 	pub trait Trait: frame_system::Trait {
 /// 		#[pallet::constant] // put the constant in metadata
 /// 		type MyGetParam: Get<u32>;
@@ -1495,7 +1495,7 @@ pub mod pallet_prelude {
 ///
 /// 	type BalanceOf<T, I = ()> = <T as Trait<I>>::Balance;
 ///
-/// 	#[pallet::trait_]
+/// 	#[pallet::config]
 /// 	pub trait Trait<I: 'static = ()>: frame_system::Trait {
 /// 		#[pallet::constant]
 /// 		type MyGetParam: Get<u32>;

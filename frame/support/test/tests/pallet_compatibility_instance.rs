@@ -85,7 +85,7 @@ pub mod pallet {
 	use frame_system::pallet_prelude::*;
 	use frame_system::ensure_root;
 
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait<I: 'static = ()>: frame_system::Trait {
 		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default
 			+ MaybeSerializeDeserialize;

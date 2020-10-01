@@ -7,7 +7,7 @@ mod pallet {
 		pub trait Trait: frame_system::Trait {}
 	}
 
-	#[pallet::trait_]
+	#[pallet::config]
 	pub trait Trait: balance::Trait + timestamp::Trait {}
 }
 

@@ -1,4 +1,4 @@
-error: Invalid pallet::trait, expect Trait definition
+error: Invalid pallet::trait, expect trait definition
  --> $DIR/step_004.rs:4:2
   |
 4 |     struct Foo;
