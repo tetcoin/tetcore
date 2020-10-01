@@ -481,7 +481,9 @@ mod tests {
 	use sp_runtime::{
 		generic::Era, Perbill, DispatchError, testing::{Digest, Header, Block},
 		traits::{Header as HeaderT, BlakeTwo256, IdentityLookup},
-		transaction_validity::{InvalidTransaction, ValidTransaction},
+		transaction_validity::{
+			InvalidTransaction, ValidTransaction, TransactionValidityError, UnknownTransaction
+		},
 	};
 	use frame_support::{
 		parameter_types,
@@ -496,7 +498,7 @@ mod tests {
 	mod custom {
 		use frame_support::weights::{Weight, DispatchClass};
 		use sp_runtime::transaction_validity::{
-			UnknownTransaction, TransactionValidityError, TransactionSource, TransactionValidity
+			UnknownTransaction, TransactionSource, TransactionValidity
 		};
 
 		pub trait Trait: frame_system::Trait {}
@@ -522,6 +524,11 @@ mod tests {
 					let _ = frame_system::ensure_root(origin)?;
 				}
 
+				#[weight = 0]
+				fn unallowed_unsigned(origin) {
+					let _ = frame_system::ensure_root(origin)?;
+				}
+
 				// module hooks.
 				// one with block number arg and one without
 				fn on_initialize(n: T::BlockNumber) -> Weight {
@@ -542,10 +549,6 @@ mod tests {
 
 		impl<T: Trait> sp_runtime::traits::ValidateUnsigned for Module<T> {
 			type Call = Call<T>;
-
-			fn pre_dispatch(_call: &Self::Call) -> Result<(), TransactionValidityError> {
-				Ok(())
-			}
 
 			fn validate_unsigned(
 				_source: TransactionSource,
@@ -657,7 +660,6 @@ mod tests {
 	);
 	type TestXt = sp_runtime::testing::TestXt<Call, SignedExtra>;
 	type TestBlock = Block<TestXt>;
-	#[allow(unused)]
 	type TestUncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<
 		<Runtime as frame_system::Trait>::AccountId,
 		<Runtime as frame_system::Trait>::Call,
@@ -897,17 +899,26 @@ mod tests {
 
 	#[test]
 	fn validate_unsigned() {
-		let xt = TestXt::new(Call::Custom(custom::Call::allowed_unsigned()), None);
+		let valid = TestXt::new(Call::Custom(custom::Call::allowed_unsigned()), None);
+		let invalid = TestXt::new(Call::Custom(custom::Call::unallowed_unsigned()), None);
 		let mut t = new_test_ext(1);
 
 		let mut default_with_prio_3 = ValidTransaction::default();
 		default_with_prio_3.priority = 3;
 		t.execute_with(|| {
 			assert_eq!(
-				Executive::validate_transaction(TransactionSource::InBlock, xt.clone()),
+				Executive::validate_transaction(TransactionSource::InBlock, valid.clone()),
 				Ok(default_with_prio_3),
 			);
-			assert_eq!(Executive::apply_extrinsic(xt), Ok(Err(DispatchError::BadOrigin)));
+			assert_eq!(
+				Executive::validate_transaction(TransactionSource::InBlock, invalid.clone()),
+				Err(TransactionValidityError::Unknown(UnknownTransaction::NoUnsignedValidator)),
+			);
+			assert_eq!(Executive::apply_extrinsic(valid), Ok(Err(DispatchError::BadOrigin)));
+			assert_eq!(
+				Executive::apply_extrinsic(invalid),
+				Err(TransactionValidityError::Unknown(UnknownTransaction::NoUnsignedValidator))
+			);
 		});
 	}
 
