@@ -111,6 +111,7 @@ impl<T: SigningTypes> SignedPayload<T> for PricePayload<T::Public, T::BlockNumbe
 pub use pallet::*;
 #[frame_support::pallet]
 mod pallet {
+	use sp_std::prelude::*;
 	use super::{CreateSignedTransaction, AppCrypto, PricePayload, TransactionType};
 	use frame_support::{pallet_prelude::*, debug};
 	use frame_system::pallet_prelude::*;
