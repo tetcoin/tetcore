@@ -16,7 +16,7 @@ mod pallet {
 	impl<T: Config> Pallet<T> {}
 
 	#[pallet::storage]
-	type Foo<T> = StorageValueType;
+	type Foo<T> = StorageValue;
 }
 
 fn main() {

@@ -2,7 +2,7 @@
 mod pallet {
 	use frame_support::pallet_prelude::Interface;
 	use frame_system::pallet_prelude::BlockNumberFor;
-	use frame_support::pallet_prelude::StorageValueType;
+	use frame_support::pallet_prelude::StorageValue;
 
 	#[pallet::config]
 	pub trait Config: frame_system::Config {}
@@ -18,7 +18,7 @@ mod pallet {
 	impl<T: Config> Pallet<T> {}
 
 	#[pallet::storage]
-	type Foo<T> = StorageValueType<_, u8>;
+	type Foo<T> = StorageValue<_, u8>;
 }
 
 fn main() {

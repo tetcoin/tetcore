@@ -66,7 +66,7 @@ pub enum QueryKind {
 }
 
 /// Definition of a storage, storage is a storage type like
-/// `type MyStorage = StorageValueType<MyStorageP, u32>`
+/// `type MyStorage = StorageValue<MyStorageP, u32>`
 /// The keys and values types are parsed in order to get metadata
 pub struct StorageDef {
 	/// The index of error item in pallet module.
@@ -148,20 +148,20 @@ impl StorageDef {
 
 		let query_kind;
 		let metadata = match &*typ.path.segments[0].ident.to_string() {
-			"StorageValueType" => {
+			"StorageValue" => {
 				query_kind = retrieve_arg(&typ.path.segments[0], 2);
 				Metadata::Value {
 					value: retrieve_arg(&typ.path.segments[0], 1)?,
 				}
 			}
-			"StorageMapType" => {
+			"StorageMap" => {
 				query_kind = retrieve_arg(&typ.path.segments[0], 4);
 				Metadata::Map {
 					key: retrieve_arg(&typ.path.segments[0], 2)?,
 					value: retrieve_arg(&typ.path.segments[0], 3)?,
 				}
 			}
-			"StorageDoubleMapType" => {
+			"StorageDoubleMap" => {
 				query_kind = retrieve_arg(&typ.path.segments[0], 6);
 				Metadata::DoubleMap {
 					key1: retrieve_arg(&typ.path.segments[0], 2)?,
@@ -171,8 +171,8 @@ impl StorageDef {
 			}
 			found @ _ => {
 				let msg = format!(
-					"Invalid pallet::storage, expect ident: `StorageValueType` or \
-					`StorageMapType` or `StorageDoubleMapType` in order to expand metadata, found \
+					"Invalid pallet::storage, expect ident: `StorageValue` or \
+					`StorageMap` or `StorageDoubleMap` in order to expand metadata, found \
 					`{}`",
 					found,
 				);

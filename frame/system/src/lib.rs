@@ -114,7 +114,7 @@ use sp_runtime::{
 
 use sp_core::{ChangesTrieConfiguration, storage::well_known_keys};
 use frame_support::{
-	Parameter, ensure, debug, storage, StorageMap, StorageValue, StoragePrefixedMap,
+	Parameter, ensure, debug, storage,
 	traits::{
 		Contains, Get, PalletInfo, OnNewAccount, OnKilledAccount, IsDeadAccount, Happened,
 		StoredMap, EnsureOrigin, OriginTrait, Filter,
@@ -340,64 +340,64 @@ mod pallet {
 	/// The full account information for a particular account ID.
 	#[pallet::storage]
 	#[pallet::getter(fn account)]
-	pub type Account<T: Config> = StorageMapType<
+	pub type Account<T: Config> = StorageMap<
 		_, Blake2_128Concat, T::AccountId, AccountInfo<T::Index, T::AccountData>, ValueQuery
 	>;
 
 	/// Total extrinsics count for the current block.
 	#[pallet::storage]
-	pub(crate) type ExtrinsicCount<T> = StorageValueType<_, u32>;
+	pub(crate) type ExtrinsicCount<T> = StorageValue<_, u32>;
 
 	/// The current weight for the block.
 	#[pallet::storage]
 	#[pallet::getter(fn block_weight)]
-	pub(crate) type BlockWeight<T> = StorageValueType<_, weights::ExtrinsicsWeight, ValueQuery>;
+	pub(crate) type BlockWeight<T> = StorageValue<_, weights::ExtrinsicsWeight, ValueQuery>;
 
 	/// Total length (in bytes) for all extrinsics put together, for the current block.
 	#[pallet::storage]
-	pub(crate) type AllExtrinsicsLen<T> = StorageValueType<_, u32>;
+	pub(crate) type AllExtrinsicsLen<T> = StorageValue<_, u32>;
 
 	/// Map of block numbers to block hashes.
 	#[pallet::storage]
 	#[pallet::getter(fn block_hash)]
 	pub type BlockHash<T: Config> =
-		StorageMapType<_, Twox64Concat, T::BlockNumber, T::Hash, ValueQuery>;
+		StorageMap<_, Twox64Concat, T::BlockNumber, T::Hash, ValueQuery>;
 
 		/// Extrinsics data for the current block (maps an extrinsic's index to its data).
 	#[pallet::storage]
 	#[pallet::getter(fn extrinsic_data)]
-	pub(crate) type ExtrinsicData<T> = StorageMapType<_, Twox64Concat, u32, Vec<u8>, ValueQuery>;
+	pub(crate) type ExtrinsicData<T> = StorageMap<_, Twox64Concat, u32, Vec<u8>, ValueQuery>;
 
 	/// The current block number being processed. Set by `execute_block`.
 	#[pallet::storage]
 	#[pallet::getter(fn block_number)]
-	pub(crate) type Number<T: Config> = StorageValueType<_, T::BlockNumber, ValueQuery>;
+	pub(crate) type Number<T: Config> = StorageValue<_, T::BlockNumber, ValueQuery>;
 
 	/// Hash of the previous block.
 	#[pallet::storage]
 	#[pallet::getter(fn parent_hash)]
-	pub(crate) type ParentHash<T: Config> = StorageValueType<_, T::Hash, ValueQuery>;
+	pub(crate) type ParentHash<T: Config> = StorageValue<_, T::Hash, ValueQuery>;
 
 	/// Extrinsics root of the current block, also part of the block header.
 	#[pallet::storage]
 	#[pallet::getter(fn extrinsics_root)]
-	pub(crate) type ExtrinsicsRoot<T: Config> = StorageValueType<_, T::Hash, ValueQuery>;
+	pub(crate) type ExtrinsicsRoot<T: Config> = StorageValue<_, T::Hash, ValueQuery>;
 
 	/// Digest of the current block, also part of the block header.
 	#[pallet::storage]
 	#[pallet::getter(fn digest)]
-	pub(crate) type Digest<T: Config> = StorageValueType<_, DigestOf<T>, ValueQuery>;
+	pub(crate) type Digest<T: Config> = StorageValue<_, DigestOf<T>, ValueQuery>;
 
 	/// Events deposited for the current block.
 	#[pallet::storage]
 	#[pallet::getter(fn events)]
 	pub(crate) type Events<T: Config> =
-		StorageValueType<_, Vec<EventRecord<T::Event, T::Hash>>, ValueQuery>;
+		StorageValue<_, Vec<EventRecord<T::Event, T::Hash>>, ValueQuery>;
 
 	/// The number of events in the `Events<T>` list.
 	#[pallet::storage]
 	#[pallet::getter(fn event_count)]
-	pub(crate) type EventCount<T> = StorageValueType<_, EventIndex, ValueQuery>;
+	pub(crate) type EventCount<T> = StorageValue<_, EventIndex, ValueQuery>;
 
 	// TODO: https://github.com/paritytech/substrate/issues/2553
 	// Possibly, we can improve it by using something like:
@@ -417,19 +417,19 @@ mod pallet {
 	#[pallet::storage]
 	#[pallet::getter(fn event_topics)]
 	pub(crate) type EventTopics<T: Config> =
-		StorageMapType<_, Blake2_128Concat, T::Hash, Vec<(T::BlockNumber, EventIndex)>, ValueQuery>;
+		StorageMap<_, Blake2_128Concat, T::Hash, Vec<(T::BlockNumber, EventIndex)>, ValueQuery>;
 
 	/// Stores the `spec_version` and `spec_name` of when the last runtime upgrade happened.
 	#[pallet::storage]
-	pub type LastRuntimeUpgrade<T> = StorageValueType<_, LastRuntimeUpgradeInfo>;
+	pub type LastRuntimeUpgrade<T> = StorageValue<_, LastRuntimeUpgradeInfo>;
 
 	/// True if we have upgraded so that `type RefCount` is `u32`. False (default) if not.
 	#[pallet::storage]
-	type UpgradedToU32RefCount<T> = StorageValueType<_, bool, ValueQuery>;
+	type UpgradedToU32RefCount<T> = StorageValue<_, bool, ValueQuery>;
 
 	/// The execution phase of the block.
 	#[pallet::storage]
-	pub(crate) type ExecutionPhase<T> = StorageValueType<_, Phase>;
+	pub(crate) type ExecutionPhase<T> = StorageValue<_, Phase>;
 
 	#[pallet::genesis_config]
 	#[derive(Default)]

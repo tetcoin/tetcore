@@ -26,7 +26,7 @@ use sp_core::{ChangesTrieConfiguration, storage::well_known_keys};
 use sp_runtime::traits::Hash;
 use frame_benchmarking::{benchmarks, whitelisted_caller};
 use frame_support::traits::Get;
-use frame_support::storage::{self, StorageMap};
+use frame_support::storage;
 use frame_system::{Module as System, Call, RawOrigin, DigestItemOf, AccountInfo};
 
 mod mock;

@@ -16,7 +16,7 @@ mod pallet {
 	impl<T: Config> Pallet<T> {}
 
 	#[pallet::storage]
-	type Foo<T> = StorageValueType<u8, u8>;
+	type Foo<T> = StorageValue<u8, u8>;
 }
 
 fn main() {

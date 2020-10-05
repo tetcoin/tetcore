@@ -113,21 +113,21 @@ pub mod pallet {
 	}
 
 	#[pallet::storage]
-	pub type Value<T, I = ()> = StorageValueType<_, u32>;
+	pub type Value<T, I = ()> = StorageValue<_, u32>;
 
 	#[pallet::storage]
-	pub type Map<T, I = ()> = StorageMapType<_, Blake2_128Concat, u8, u16>;
+	pub type Map<T, I = ()> = StorageMap<_, Blake2_128Concat, u8, u16>;
 
 	#[pallet::storage]
-	pub type Map2<T, I = ()> = StorageMapType<_, Twox64Concat, u16, u32>;
+	pub type Map2<T, I = ()> = StorageMap<_, Twox64Concat, u16, u32>;
 
 	#[pallet::storage]
 	pub type DoubleMap<T, I = ()> =
-		StorageDoubleMapType<_, Blake2_128Concat, u8, Twox64Concat, u16, u32>;
+		StorageDoubleMap<_, Blake2_128Concat, u8, Twox64Concat, u16, u32>;
 
 	#[pallet::storage]
 	pub type DoubleMap2<T, I = ()> =
-		StorageDoubleMapType<_, Twox64Concat, u16, Blake2_128Concat, u32, u64>;
+		StorageDoubleMap<_, Twox64Concat, u16, Blake2_128Concat, u32, u64>;
 
 	#[pallet::genesis_config]
 	#[derive(Default)]
@@ -343,6 +343,7 @@ fn module_expand_deposit_event() {
 #[test]
 fn storage_expand() {
 	use frame_support::pallet_prelude::*;
+	use frame_support::StoragePrefixedMap;
 
 	fn twox_64_concat(d: &[u8]) -> Vec<u8> {
 		let mut v = twox_64(d).to_vec();

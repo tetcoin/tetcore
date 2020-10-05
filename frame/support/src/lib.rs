@@ -833,7 +833,9 @@ pub mod pallet_prelude {
 	#[cfg(feature = "std")]
 	pub use frame_support::traits::GenesisBuild;
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
-	pub use frame_support::storage::types::*;
+	pub use frame_support::storage::types::{
+		StorageValue, StorageMap, StorageDoubleMap, ValueQuery, OptionQuery,
+	};
 	pub use frame_support::{EqNoBound, PartialEqNoBound, DebugStripped, DebugNoBound, CloneNoBound};
 	pub use codec::{Encode, Decode};
 	pub use sp_inherents::ProvideInherent;
@@ -850,10 +852,6 @@ pub mod pallet_prelude {
 			TransactionTag, TransactionLongevity, TransactionValidityError, InvalidTransaction,
 			UnknownTransaction,
 		},
-	};
-	pub use crate::{
-		StorageValue, StorageMap, StorageDoubleMap, StoragePrefixedMap, IterableStorageMap,
-		IterableStorageDoubleMap,
 	};
 }
 
@@ -1127,7 +1125,7 @@ pub mod pallet_prelude {
 /// $vis type $StorageName<$some_generic> = $StorageType<_, $some_generics, ...>;
 /// ```
 /// I.e. it must be a type alias, with generics: `T` or `T: Config`, aliased type must be one
-/// of `StorageValueType`, `StorageMapType` or `StorageDoubleMapType` (defined in frame_support).
+/// of `StorageValue`, `StorageMap` or `StorageDoubleMap` (defined in frame_support).
 /// Their first generic must be `_` as it is written by the macro itself.
 ///
 /// The Prefix generic written by the macro is generated using PalletInfo::name and the name of the
@@ -1142,7 +1140,7 @@ pub mod pallet_prelude {
 /// ```nocompile
 /// #[pallet::storage]
 /// #[pallet::getter(fn my_storage)]
-/// pub(super) type MyStorage<T> = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// pub(super) type MyStorage<T> = StorageMap<_, Blake2_128Concat, u32, u32>;
 /// ```
 ///
 /// NOTE: if the querykind generic parameter is still generic at this stage or is using some type
@@ -1400,7 +1398,7 @@ pub mod pallet_prelude {
 ///
 /// 	// Declare a storage, any amount of storage can be declared.
 /// 	//
-/// 	// Is expected either `StorageValueType`, `StorageMapType` or `StorageDoubleMapType`.
+/// 	// Is expected either `StorageValue`, `StorageMap` or `StorageDoubleMap`.
 /// 	// The macro generates for struct `$identP` (for storage of name `$ident`) and implement
 /// 	// storage instance on it.
 /// 	// The macro macro expand the metadata for the storage with the type used:
@@ -1413,12 +1411,12 @@ pub mod pallet_prelude {
 /// 	// implements metadata. Thus generic storage hasher is supported.
 /// 	#[pallet::storage]
 /// 	pub(super) type MyStorageValue<T: Config> =
-/// 		StorageValueType<_, T::Balance, ValueQuery, MyDefault<T>>;
+/// 		StorageValue<_, T::Balance, ValueQuery, MyDefault<T>>;
 ///
 /// 	// Another declaration
 /// 	#[pallet::storage]
 /// 	#[pallet::getter(fn my_storage)]
-/// 	pub(super) type MyStorage<T> = StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// 	pub(super) type MyStorage<T> = StorageMap<_, Blake2_128Concat, u32, u32>;
 ///
 /// 	// Declare genesis config. (This is optional)
 /// 	//
@@ -1545,12 +1543,12 @@ pub mod pallet_prelude {
 ///
 /// 	#[pallet::storage]
 /// 	pub(super) type MyStorageValue<T: Config<I>, I: 'static = ()> =
-/// 		StorageValueType<_, T::Balance, ValueQuery, MyDefault<T, I>>;
+/// 		StorageValue<_, T::Balance, ValueQuery, MyDefault<T, I>>;
 ///
 /// 	#[pallet::storage]
 /// 	#[pallet::getter(fn my_storage)]
 /// 	pub(super) type MyStorage<T, I = ()> =
-/// 		StorageMapType<_, Blake2_128Concat, u32, u32>;
+/// 		StorageMap<_, Blake2_128Concat, u32, u32>;
 ///
 /// 	#[pallet::genesis_config]
 /// 	#[derive(Default)]
@@ -1651,9 +1649,9 @@ pub mod pallet_prelude {
 /// * storages which value is `Option<$SomeType>` is now of value `$SomeType` and QueryKind is
 ///   `OptionQuery`. storages which value is `$SomeType` (not an option) is of QueryKind
 ///   `ValueQuery`.
-///   Thus `MyStorage: u32` translate to `type MyStorage = StorageValueType<_, u32, ValueQuery>`
+///   Thus `MyStorage: u32` translate to `type MyStorage = StorageValue<_, u32, ValueQuery>`
 ///   Thus `MyStorage: Option<u32>` translate to
-///   `type MyStorage = StorageValueType<_, u32>` (OptionQuery being default).
+///   `type MyStorage = StorageValue<_, u32>` (OptionQuery being default).
 ///
 /// * dispatchable function must now have the full signature, thus origin can be replace by
 ///   `origin: OriginFor<T>` and result must be `DispatchResultWithPostInfo`, thus `Ok(().into()`

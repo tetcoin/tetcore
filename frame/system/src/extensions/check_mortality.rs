@@ -17,7 +17,6 @@
 
 use codec::{Encode, Decode};
 use crate::{Config, Pallet, BlockHash};
-use frame_support::StorageMap;
 use sp_runtime::{
 	generic::Era,
 	traits::{SignedExtension, DispatchInfoOf, SaturatedConversion},

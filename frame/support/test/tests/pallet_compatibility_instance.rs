@@ -137,19 +137,19 @@ pub mod pallet {
 
 	#[pallet::storage]
 	/// Some documentation
-	type Dummy<T: Config<I>, I: 'static = ()> = StorageValueType<_, T::Balance, OptionQuery>;
+	type Dummy<T: Config<I>, I: 'static = ()> = StorageValue<_, T::Balance, OptionQuery>;
 
 	#[pallet::storage]
 	type Bar<T: Config<I>, I: 'static = ()> =
-		StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
+		StorageMap<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
 	#[pallet::storage]
 	type Foo<T: Config<I>, I: 'static = ()> =
-		StorageValueType<_, T::Balance, ValueQuery, OnFooEmpty<T, I>>;
+		StorageValue<_, T::Balance, ValueQuery, OnFooEmpty<T, I>>;
 	#[pallet::type_value] pub fn OnFooEmpty<T: Config<I>, I: 'static>() -> T::Balance { 3.into() }
 
 	#[pallet::storage]
-	type Double<T, I = ()> = StorageDoubleMapType<
+	type Double<T, I = ()> = StorageDoubleMap<
 		_, Blake2_128Concat, u32, Twox64Concat, u64, u16, ValueQuery
 	>;
 
