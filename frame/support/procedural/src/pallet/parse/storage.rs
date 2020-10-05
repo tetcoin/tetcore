@@ -23,12 +23,12 @@ use quote::ToTokens;
 mod keyword {
 	syn::custom_keyword!(Error);
 	syn::custom_keyword!(pallet);
-	syn::custom_keyword!(generate_getter);
+	syn::custom_keyword!(getter);
 	syn::custom_keyword!(OptionQuery);
 	syn::custom_keyword!(ValueQuery);
 }
 
-/// Parse for `#[pallet::generate_getter(fn dummy)]`
+/// Parse for `#[pallet::getter(fn dummy)]`
 pub struct PalletStorageAttr {
 	getter: syn::Ident,
 }
@@ -40,7 +40,7 @@ impl syn::parse::Parse for PalletStorageAttr {
 		syn::bracketed!(content in input);
 		content.parse::<keyword::pallet>()?;
 		content.parse::<syn::Token![::]>()?;
-		content.parse::<keyword::generate_getter>()?;
+		content.parse::<keyword::getter>()?;
 
 		let generate_content;
 		syn::parenthesized!(generate_content in content);
@@ -119,7 +119,7 @@ impl StorageDef {
 
 		let mut attrs: Vec<PalletStorageAttr> = helper::take_item_attrs(&mut item.attrs)?;
 		if attrs.len() > 1 {
-			let msg = "Invalid pallet::storage, multiple argument pallet::generate_getter found";
+			let msg = "Invalid pallet::storage, multiple argument pallet::getter found";
 			return Err(syn::Error::new(attrs[1].getter.span(), msg));
 		}
 		let getter = attrs.pop().map(|attr| attr.getter);

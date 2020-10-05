@@ -1123,7 +1123,7 @@ pub mod pallet_prelude {
 /// Item is defined as:
 /// ```nocompile
 /// #[pallet::storage]
-/// #[pallet::generate_getter(fn $getter_name)] // optional
+/// #[pallet::getter(fn $getter_name)] // optional
 /// $vis type $StorageName<$some_generic> = $StorageType<_, $some_generics, ...>;
 /// ```
 /// I.e. it must be a type alias, with generics: `T` or `T: Config`, aliased type must be one
@@ -1135,13 +1135,13 @@ pub mod pallet_prelude {
 /// E.g. if runtime name the pallet MyExample the storage `type Foo<T> = ...` use
 /// prefixes: `Twox128(b"MyExample") ++ Twox128(b"Foo")`.
 ///
-/// The optional attribute `#[pallet::generate_getter(fn $my_getter_fn_name)]` allow to define a
+/// The optional attribute `#[pallet::getter(fn $my_getter_fn_name)]` allow to define a
 /// getter function on `Pallet`.
 ///
 /// E.g:
 /// ```nocompile
 /// #[pallet::storage]
-/// #[pallet::generate_getter(fn my_storage)]
+/// #[pallet::getter(fn my_storage)]
 /// pub(super) type MyStorage<T> = StorageMapType<_, Blake2_128Concat, u32, u32>;
 /// ```
 ///
@@ -1417,7 +1417,7 @@ pub mod pallet_prelude {
 ///
 /// 	// Another declaration
 /// 	#[pallet::storage]
-/// 	#[pallet::generate_getter(fn my_storage)]
+/// 	#[pallet::getter(fn my_storage)]
 /// 	pub(super) type MyStorage<T> = StorageMapType<_, Blake2_128Concat, u32, u32>;
 ///
 /// 	// Declare genesis config. (This is optional)
@@ -1548,7 +1548,7 @@ pub mod pallet_prelude {
 /// 		StorageValueType<_, T::Balance, ValueQuery, MyDefault<T, I>>;
 ///
 /// 	#[pallet::storage]
-/// 	#[pallet::generate_getter(fn my_storage)]
+/// 	#[pallet::getter(fn my_storage)]
 /// 	pub(super) type MyStorage<T, I = ()> =
 /// 		StorageMapType<_, Blake2_128Concat, u32, u32>;
 ///
@@ -1643,7 +1643,7 @@ pub mod pallet_prelude {
 ///   crate scope use `pub(super) fn foo(origin...`
 ///
 /// * storages attributes: `get(fn my_getter)` should now be written:
-///   `#[pallet::generate_getter(fn my_getter)]`
+///   `#[pallet::getter(fn my_getter)]`
 ///
 /// * storages attributes: build and config have been removed, they must be manually written in the
 ///   GenesisConfig and GenesisBuild implementation.

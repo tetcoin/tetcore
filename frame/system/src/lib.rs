@@ -339,7 +339,7 @@ mod pallet {
 
 	/// The full account information for a particular account ID.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn account)]
+	#[pallet::getter(fn account)]
 	pub type Account<T: Config> = StorageMapType<
 		_, Blake2_128Concat, T::AccountId, AccountInfo<T::Index, T::AccountData>, ValueQuery
 	>;
@@ -350,7 +350,7 @@ mod pallet {
 
 	/// The current weight for the block.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn block_weight)]
+	#[pallet::getter(fn block_weight)]
 	pub(crate) type BlockWeight<T> = StorageValueType<_, weights::ExtrinsicsWeight, ValueQuery>;
 
 	/// Total length (in bytes) for all extrinsics put together, for the current block.
@@ -359,44 +359,44 @@ mod pallet {
 
 	/// Map of block numbers to block hashes.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn block_hash)]
+	#[pallet::getter(fn block_hash)]
 	pub type BlockHash<T: Config> =
 		StorageMapType<_, Twox64Concat, T::BlockNumber, T::Hash, ValueQuery>;
 
 		/// Extrinsics data for the current block (maps an extrinsic's index to its data).
 	#[pallet::storage]
-	#[pallet::generate_getter(fn extrinsic_data)]
+	#[pallet::getter(fn extrinsic_data)]
 	pub(crate) type ExtrinsicData<T> = StorageMapType<_, Twox64Concat, u32, Vec<u8>, ValueQuery>;
 
 	/// The current block number being processed. Set by `execute_block`.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn block_number)]
+	#[pallet::getter(fn block_number)]
 	pub(crate) type Number<T: Config> = StorageValueType<_, T::BlockNumber, ValueQuery>;
 
 	/// Hash of the previous block.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn parent_hash)]
+	#[pallet::getter(fn parent_hash)]
 	pub(crate) type ParentHash<T: Config> = StorageValueType<_, T::Hash, ValueQuery>;
 
 	/// Extrinsics root of the current block, also part of the block header.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn extrinsics_root)]
+	#[pallet::getter(fn extrinsics_root)]
 	pub(crate) type ExtrinsicsRoot<T: Config> = StorageValueType<_, T::Hash, ValueQuery>;
 
 	/// Digest of the current block, also part of the block header.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn digest)]
+	#[pallet::getter(fn digest)]
 	pub(crate) type Digest<T: Config> = StorageValueType<_, DigestOf<T>, ValueQuery>;
 
 	/// Events deposited for the current block.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn events)]
+	#[pallet::getter(fn events)]
 	pub(crate) type Events<T: Config> =
 		StorageValueType<_, Vec<EventRecord<T::Event, T::Hash>>, ValueQuery>;
 
 	/// The number of events in the `Events<T>` list.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn event_count)]
+	#[pallet::getter(fn event_count)]
 	pub(crate) type EventCount<T> = StorageValueType<_, EventIndex, ValueQuery>;
 
 	// TODO: https://github.com/paritytech/substrate/issues/2553
@@ -415,7 +415,7 @@ mod pallet {
 	/// the `EventIndex` then in case if the topic has the same contents on the next block
 	/// no notification will be triggered thus the event might be lost.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn event_topics)]
+	#[pallet::getter(fn event_topics)]
 	pub(crate) type EventTopics<T: Config> =
 		StorageMapType<_, Blake2_128Concat, T::Hash, Vec<(T::BlockNumber, EventIndex)>, ValueQuery>;
 

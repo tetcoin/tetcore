@@ -357,17 +357,17 @@ mod pallet {
 	// storage will use in the trie. The macro use the name of the type (e.g. `Dummy`) as storage
 	// prefix.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn dummy)]
+	#[pallet::getter(fn dummy)]
 	pub type Dummy<T: Config> = StorageValueType<_, T::Balance>;
 
 	// A map that has enumerable entries.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn bar)]
+	#[pallet::getter(fn bar)]
 	pub(crate) type Bar<T: Config> = StorageMapType<_, Blake2_128Concat, T::AccountId, T::Balance, ValueQuery>;
 
 	// Contrary to Dummy, this one uses ValueQuery, we'll demonstrate the usage of 'mutate' API.
 	#[pallet::storage]
-	#[pallet::generate_getter(fn foo)]
+	#[pallet::getter(fn foo)]
 	pub(crate) type Foo<T: Config> = StorageValueType<_, T::Balance, ValueQuery>;
 
 	/// Events are a simple means of reporting specific conditions and

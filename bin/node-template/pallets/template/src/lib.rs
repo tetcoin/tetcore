@@ -33,7 +33,7 @@ mod pallet {
 	// Learn more about declaring storage items:
 	// https://substrate.dev/docs/en/knowledgebase/runtime/storage#declaring-storage-items
 	#[pallet::storage]
-	#[pallet::generate_getter(fn something)]
+	#[pallet::getter(fn something)]
 	type Something<T> = StorageValueType<_, u32>;
 
 	// Pallets use events to inform users when important changes are made.
