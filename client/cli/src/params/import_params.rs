@@ -56,7 +56,7 @@ pub struct ImportParams {
 	)]
 	pub wasm_method: WasmExecutionMethod,
    
-    /// Folder to scrape WASM runtimes which override on-chain WASM runtimes if the
+    /// Folder from where WASM runtimes are scraped which override on-chain WASM runtimes when the
     /// runtime version matches.
     #[structopt(long, value_name = "PATH", parse(from_os_str))]
     pub wasm_runtime_overwrites: Option<PathBuf>,
