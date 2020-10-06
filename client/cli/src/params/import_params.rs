@@ -25,6 +25,7 @@ use crate::params::DatabaseParams;
 use crate::params::PruningParams;
 use sc_client_api::execution_extensions::ExecutionStrategies;
 use structopt::StructOpt;
+use std::path::PathBuf;
 
 /// Parameters for block import.
 #[derive(Debug, StructOpt)]
@@ -54,6 +55,11 @@ pub struct ImportParams {
 		default_value = "Interpreted"
 	)]
 	pub wasm_method: WasmExecutionMethod,
+   
+    /// Folder to scrape WASM runtimes which override on-chain WASM runtimes if the
+    /// runtime version matches.
+    #[structopt(long, value_name = "PATH", parse(from_os_str))]
+    pub wasm_runtime_overwrites: Option<PathBuf>,
 
 	#[allow(missing_docs)]
 	#[structopt(flatten)]
