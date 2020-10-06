@@ -33,6 +33,8 @@ const SYSTEM_MODULE_NAME: &str = "System";
 /// The complete definition of a module with the resulting fixed index.
 #[derive(Debug, Clone)]
 pub struct Module {
+	/// A Pallet use either Module (if defined with old macros) or Pallet.
+	/// This contains the struct to access Pallet information.
 	pub pallet_or_module: syn::Ident,
 	pub name: Ident,
 	pub index: u8,
@@ -90,6 +92,7 @@ fn complete_modules(decl: impl Iterator<Item = ModuleDeclaration>) -> syn::Resul
 				return Err(err);
 			}
 
+			// Get if pallet use struct Module or Pallet.
 			let module_part = module.module_parts.iter().find(|part| part.name() == "Module");
 			let pallet_part = module.module_parts.iter().find(|part| part.name() == "Pallet");
 			let pallet_or_module = match (module_part, pallet_part) {
