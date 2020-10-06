@@ -20,7 +20,7 @@ use syn::spanned::Spanned;
 
 /// If attribute `#[pallet::generate_store(..)]` is defined then:
 /// * generate Store trait with all storages,
-/// * implement Store trait for module.
+/// * implement Store trait for Pallet.
 pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
 	let (trait_vis, trait_store) = if let Some(store) = &def.pallet_struct.store {
 		store

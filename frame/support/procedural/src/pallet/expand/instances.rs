@@ -17,11 +17,15 @@
 
 use proc_macro2::Span;
 
-/// `construct_runtime` use inherent instance when no instance is provided.
-/// Note construct_runtime can be refactored once old decl_* macros are removed.
+/// * Provide inherent instance to be used by construct_runtime
+/// * Provide Instance0 .. Instance16 for instantiable pallet
 pub fn expand_instances() -> proc_macro2::TokenStream {
 	let inherent_ident = syn::Ident::new(crate::INHERENT_INSTANCE_NAME, Span::call_site());
-	let instances = (0..16).map(|i| syn::Ident::new(&format!("Instance{}", i), Span::call_site()));
+	let instances = if def.config.has_instance {
+		(0..16).map(|i| syn::Ident::new(&format!("Instance{}", i), Span::call_site()))
+	} else {
+		vec![]
+	};
 
 	quote::quote!(
 		/// Hidden instance generated to be internally used when module is used without

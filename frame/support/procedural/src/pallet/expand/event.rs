@@ -19,9 +19,7 @@ use crate::pallet::Def;
 use syn::spanned::Spanned;
 
 /// * Add __Ignore variant on Event
-/// * Add derive for codec, eq, partialeq, clone, debug on Event
-/// * Impl `From<Event>` for ()
-/// * Impl metadata function on Event
+/// * Impl various trait on Event including metadata
 /// * if deposit_event is defined, implement deposit_event on module.
 pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 	let event = if let Some(event) = &def.event {

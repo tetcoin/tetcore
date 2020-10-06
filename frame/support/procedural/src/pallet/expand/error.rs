@@ -18,10 +18,7 @@
 use crate::pallet::Def;
 use syn::spanned::Spanned;
 
-/// * impl Debug for Error
-/// * impl as_u8 and as_str for Error
-/// * impl `From<Error>` for static str
-/// * impl `From<Error>` for DispatchError
+/// * impl various trait on Error
 /// * impl ModuleErrorMetadata for Pallet
 pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	let error = if let Some(error) = &def.error {

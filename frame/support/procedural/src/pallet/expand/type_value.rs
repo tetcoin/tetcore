@@ -18,6 +18,8 @@
 use crate::pallet::Def;
 use syn::spanned::Spanned;
 
+/// * Generate the struct
+/// * implement the `Get<..>` on it
 pub fn expand_type_values(def: &mut Def) -> proc_macro2::TokenStream {
 	let mut expand = quote::quote!();
 	let frame_support = &def.frame_support;

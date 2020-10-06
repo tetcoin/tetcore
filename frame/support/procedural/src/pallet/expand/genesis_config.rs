@@ -17,13 +17,7 @@
 
 use crate::pallet::Def;
 
-/// * add attributes:
-///   * #[cfg(feature = "std")]
-///   * #[derive(Serialize, Deserialize)]
-///   * #[serde(rename_all = "camelCase")]
-///   * #[serde(deny_unknown_fields)]
-///   * #[serde(bound(serialize = ""))]
-///   * #[serde(bound(deserialize = ""))]
+/// * add various derive trait on GenesisConfig struct.
 pub fn expand_genesis_config(def: &mut Def) -> proc_macro2::TokenStream {
 	let genesis_config = if let Some(genesis_config) = &def.genesis_config {
 		genesis_config

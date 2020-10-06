@@ -1,5 +1,0 @@
-error: Invalid pallet::trait, expect explicit `frame_system::Trait` as supertrait, found `balance :: Trait`, `timestamp :: Trait`.
-  --> $DIR/step_006-3.rs:11:2
-   |
-11 |     pub trait Trait: balance::Trait + timestamp::Trait {}
-   |     ^^^

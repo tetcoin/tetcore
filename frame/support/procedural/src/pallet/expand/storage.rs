@@ -26,9 +26,9 @@ fn prefix_ident(storage_ident: &syn::Ident) -> syn::Ident {
 }
 
 /// * generate StoragePrefix structs (e.g. for a storage `MyStorage` a struct with the name
-///   `_GeneratedPrefixForStorage$NameOfStorage` is generated and implements StorageInstance trait.
-/// * generate metadatas
+///   `_GeneratedPrefixForStorage$NameOfStorage` is generated) and implements StorageInstance trait.
 /// * replace the first generic `_` by the genereted prefix structure
+/// * generate metadatas
 pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 	let frame_system = &def.frame_system;

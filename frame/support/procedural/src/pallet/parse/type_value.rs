@@ -18,8 +18,7 @@
 use super::helper;
 use syn::spanned::Spanned;
 
-/// Definition of  type value. Just a function which is expanded to a struct implementing `Get`.
-/// e.g.: `fn foo<T: Config>() -> T::Balance { T::Balance::zero() }`
+/// Definition of type value. Just a function which is expanded to a struct implementing `Get`.
 pub struct TypeValueDef {
 	/// The index of error item in pallet module.
 	pub index: usize,

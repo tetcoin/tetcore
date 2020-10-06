@@ -19,17 +19,8 @@ use crate::pallet::Def;
 use frame_support_procedural_tools::clean_type_string;
 use syn::spanned::Spanned;
 
-/// * create Call enum, add derives on it:
-///   * frame_support::CloneNoBound,
-///   * frame_support::EqNoBound,
-///   * frame_support::PartialEqNoBound,
-///   * codec::Encode,
-///   * codec::Decode,
-/// * impl GetDispatchInfo for Call
-/// * impl GetCallName for Call
-/// * impl UnfilteredDispatchable for Call
-/// * impl Callable for Pallet
-/// * impl call_functions for Pallet (metadata)
+/// * Generate enum call and implement various trait on it.
+/// * Implement Callable and call_function on `Pallet`
 pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 	let frame_system = &def.frame_system;

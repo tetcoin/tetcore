@@ -17,7 +17,7 @@
 
 use crate::pallet::Def;
 
-/// * Add derive Eq, PartialEq, Debug and Clone on Module
+/// * Add derive trait on Pallet
 pub fn expand_pallet_struct(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 
