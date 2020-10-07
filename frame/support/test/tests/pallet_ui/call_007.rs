@@ -2,6 +2,7 @@
 mod pallet {
 	use frame_support::pallet_prelude::{Interface, DispatchResultWithPostInfo};
 	use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
+	use codec::{Encode, Decode};
 
 	#[pallet::config]
 	pub trait Config: frame_system::Config {}
@@ -12,6 +13,7 @@ mod pallet {
 	#[pallet::interface]
 	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {}
 
+	#[derive(Encode, Decode)]
 	struct Bar;
 
 	#[pallet::call]
