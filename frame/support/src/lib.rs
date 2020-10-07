@@ -1728,4 +1728,8 @@ pub mod pallet_prelude {
 /// 	* storages with `build($expr)` or `config(..)` are built in genesis_build
 /// 	* add_extra_genesis fields are converted to genesis_config field with their correct default if specified
 /// 	* add_extra_genesis build is written into genesis_build
+/// * storages now use PalletInfo for module_prefix instead of the one given to decl_storage:
+/// 	Thus any use of this pallet in `construct_runtime!` should be careful to update name in
+/// 	order not to break storage or to upgrade storage (moreover for instantiable pallet).
+/// 	If pallet is published, make sure to warn about this breaking change.
 pub use frame_support_procedural::pallet;
