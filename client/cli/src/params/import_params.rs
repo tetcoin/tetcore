@@ -108,6 +108,11 @@ impl ImportParams {
 	pub fn wasm_method(&self) -> sc_service::config::WasmExecutionMethod {
 		self.wasm_method.into()
 	}
+    
+    /// Get the WASM runtime overwrite path.
+    pub fn wasm_runtime_overwrites(&self) -> Option<PathBuf> {
+        self.wasm_runtime_overwrites.clone().map(Into::into)
+    }
 
 	/// Get execution strategies for the parameters
 	pub fn execution_strategies(&self, is_dev: bool, is_validator: bool) -> ExecutionStrategies {

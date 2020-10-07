@@ -35,6 +35,7 @@ use sp_core::{sr25519, ChangesTrieConfiguration};
 use sp_core::storage::{ChildInfo, Storage, StorageChild};
 use substrate_test_runtime::genesismap::{GenesisConfig, additional_storage_with_genesis};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, Hash as HashT, NumberFor, HashFor};
+use sc_executor::sp_wasm_interface::HostFunctions;
 use sc_client_api::light::{
 	RemoteCallRequest, RemoteChangesRequest, RemoteBodyRequest,
 	Fetcher, RemoteHeaderRequest, RemoteReadRequest, RemoteReadChildRequest,
@@ -60,6 +61,7 @@ sc_executor::native_executor_instance! {
 	pub LocalExecutor,
 	substrate_test_runtime::api::dispatch,
 	substrate_test_runtime::native_version,
+    sp_io::SubstrateHostFunctions
 }
 
 /// Test client database backend.

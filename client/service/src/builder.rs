@@ -256,8 +256,8 @@ pub fn new_full_parts<TBl, TRtApi, TExecDisp>(
 			config.execution_strategies.clone(),
 			Some(keystore.clone()),
 		);
-
-		new_client(
+    
+        new_client(
 			db_config,
 			executor,
 			chain_spec.as_storage_builder(),
@@ -269,6 +269,7 @@ pub fn new_full_parts<TBl, TRtApi, TExecDisp>(
 			ClientConfig {
 				offchain_worker_enabled : config.offchain_worker.enabled ,
 				offchain_indexing_api: config.offchain_worker.indexing_enabled,
+                wasm_runtime_overwrites: config.wasm_runtime_overwrites.clone(),
 			},
 		)?
 	};

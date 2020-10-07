@@ -16,7 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::{sync::Arc, panic::UnwindSafe, result, cell::RefCell};
+use std::{
+    sync::Arc, panic::UnwindSafe, result, 
+    cell::RefCell, path::Path,
+};
 use codec::{Encode, Decode};
 use sp_runtime::{
 	generic::BlockId, traits::{Block as BlockT, HashFor, NumberFor},
@@ -28,51 +31,59 @@ use sp_state_machine::{
 use sc_executor::{RuntimeVersion, RuntimeInfo, NativeVersion};
 use sp_externalities::Extensions;
 use sp_core::{
-	NativeOrEncoded, NeverNativeValue, traits::{CodeExecutor, SpawnNamed},
+	NativeOrEncoded, NeverNativeValue, traits::{CodeExecutor, SpawnNamed, CallInWasm},
 	offchain::storage::OffchainOverlayedChanges,
 };
 use sp_api::{ProofRecorder, InitializeBlock, StorageTransactionCache};
 use sc_client_api::{backend, call_executor::CallExecutor};
-use super::client::ClientConfig;
+use super::{client::ClientConfig, wasm_overwrite::WasmOverwrite};
 
 /// Call executor that executes methods locally, querying all required
 /// data from local backend.
-pub struct LocalCallExecutor<B, E> {
+pub struct OverrideCallExecutor<B, E> {
 	backend: Arc<B>,
 	executor: E,
+    wasm_overwrite: WasmOverwrite,
 	spawn_handle: Box<dyn SpawnNamed>,
 	client_config: ClientConfig,
 }
 
-impl<B, E> LocalCallExecutor<B, E> {
+impl<B, E> OverrideCallExecutor<B, E> 
+where
+    E: RuntimeInfo + Clone + 'static
+{
 	/// Creates new instance of local call executor.
 	pub fn new(
 		backend: Arc<B>,
 		executor: E,
 		spawn_handle: Box<dyn SpawnNamed>,
 		client_config: ClientConfig,
-	) -> Self {
-		LocalCallExecutor {
+	) -> sp_blockchain::Result<Self> {
+        let wasm_overwrite = WasmOverwrite::new(client_config.wasm_runtime_overwrites.as_ref(), &executor)?;
+        
+		Ok(OverrideCallExecutor {
 			backend,
 			executor,
+            wasm_overwrite,
 			spawn_handle,
 			client_config,
-		}
+		})
 	}
 }
 
-impl<B, E> Clone for LocalCallExecutor<B, E> where E: Clone {
+impl<B, E> Clone for OverrideCallExecutor<B, E> where E: Clone {
 	fn clone(&self) -> Self {
-		LocalCallExecutor {
+		OverrideCallExecutor {
 			backend: self.backend.clone(),
 			executor: self.executor.clone(),
+            wasm_overwrite: self.wasm_overwrite.clone(),
 			spawn_handle: self.spawn_handle.clone(),
 			client_config: self.client_config.clone(),
 		}
 	}
 }
 
-impl<B, E, Block> CallExecutor<Block> for LocalCallExecutor<B, E>
+impl<B, E, Block> CallExecutor<Block> for OverrideCallExecutor<B, E>
 where
 	B: backend::Backend<Block>,
 	E: CodeExecutor + RuntimeInfo + Clone + 'static,
@@ -263,7 +274,7 @@ where
 	}
 }
 
-impl<B, E, Block> sp_version::GetRuntimeVersion<Block> for LocalCallExecutor<B, E>
+impl<B, E, Block> sp_version::GetRuntimeVersion<Block> for OverrideCallExecutor<B, E>
 	where
 		B: backend::Backend<Block>,
 		E: CodeExecutor + RuntimeInfo + Clone + 'static,
