@@ -858,7 +858,7 @@ pub mod pallet_prelude {
 /// `pallet` attribute macro allows to define a pallet to be used in `construct_runtime!`.
 ///
 /// It is define by a module item:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet]
 /// mod pallet {
 /// ...
@@ -873,7 +873,7 @@ pub mod pallet_prelude {
 ///
 /// Note various type can be automatically imported using pallet_prelude in frame_support and
 /// frame_system:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet]
 /// mod {
 ///		use frame_support::pallet_prelude::*;
@@ -887,7 +887,7 @@ pub mod pallet_prelude {
 /// The trait defining generics of the pallet.
 ///
 /// Item must be defined as
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::config]
 /// pub trait Config: frame_system::Config + $optionally_some_other_supertraits {
 /// ...
@@ -900,7 +900,7 @@ pub mod pallet_prelude {
 /// `IsType<<Self as frame_system::Config>::Event>`, see `#[pallet::event]` for more information.
 ///
 /// To put `Get` associated type into metadatas, use the attribute `#[pallet::constant]`, e.g.:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::config]
 /// pub trait Config: frame_system::Config {
 ///		#[pallet::constant]
@@ -910,7 +910,7 @@ pub mod pallet_prelude {
 ///
 /// To bypass the `frame_system::Config` supertrait check, use the attribute
 /// `#[pallet::disable_frame_system_supertrait_check]`, e.g.:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::config]
 /// #[pallet::disable_frame_system_supertrait_check]
 /// pub trait Config: pallet_timestamp::Config {}
@@ -928,7 +928,7 @@ pub mod pallet_prelude {
 /// The placeholder struct, on which is implemented pallet informations.
 ///
 /// Item must be defined as followed:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::pallet]
 /// pub struct Pallet<T>(PhantomData<T>);
 /// ```
@@ -936,7 +936,7 @@ pub mod pallet_prelude {
 ///
 /// To generate a `Store` trait associating all storages, use the attribute
 /// `#[pallet::generate_store($vis trait Store)]`, e.g.:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::pallet]
 /// #[pallet::generate_store(pub(super) trait Store)]
 /// pub struct Pallet<T>(PhantomData<T>);
@@ -947,7 +947,7 @@ pub mod pallet_prelude {
 /// ### Macro expansion:
 ///
 /// The macro add this attribute to the struct definition:
-/// ```rust,nocompile
+/// ```ignore
 /// #[derive(
 /// 	frame_support::CloneNoBound,
 /// 	frame_support::EqNoBound,
@@ -963,7 +963,7 @@ pub mod pallet_prelude {
 /// Implementation of `Interface` on `Pallet` allowing to define some specific pallet logic.
 ///
 /// Item must be defined as
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::interface]
 /// impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> $optional_where_clause {
 /// }
@@ -982,7 +982,7 @@ pub mod pallet_prelude {
 /// Implementation of pallet dispatchables.
 ///
 /// Item must be defined as:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::call]
 /// impl<T: Config> Pallet<T> {
 /// 	/// $some_doc
@@ -1028,7 +1028,7 @@ pub mod pallet_prelude {
 /// This error type informations are put into metadata.
 ///
 /// Item must be defined as:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::error]
 /// pub enum Error<T> {
 /// 	/// $some_optional_doc
@@ -1055,7 +1055,7 @@ pub mod pallet_prelude {
 /// removed in next block).
 ///
 /// Item is defined as:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::event]
 /// #[pallet::metadata($SomeType = $Metadata, $SomeOtherType = $Metadata, ..)] // Optional
 /// #[pallet::generate($visbility fn deposit_event)] // Optional
@@ -1080,7 +1080,7 @@ pub mod pallet_prelude {
 /// * otherwise the last segment of the type.
 ///
 /// E.g.:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::event]
 /// #[pallet::metadata(u32 = SpecialU32)]
 /// pub enum Event<T: Config> {
@@ -1119,7 +1119,7 @@ pub mod pallet_prelude {
 /// This attribute can be used multiple times.
 ///
 /// Item is defined as:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::storage]
 /// #[pallet::getter(fn $getter_name)] // optional
 /// $vis type $StorageName<$some_generic> = $StorageType<_, $some_generics, ...>;
@@ -1137,7 +1137,7 @@ pub mod pallet_prelude {
 /// getter function on `Pallet`.
 ///
 /// E.g:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::storage]
 /// #[pallet::getter(fn my_storage)]
 /// pub(super) type MyStorage<T> = StorageMap<_, Blake2_128Concat, u32, u32>;
@@ -1162,14 +1162,14 @@ pub mod pallet_prelude {
 /// This attribute can be used multiple time.
 ///
 /// Item is defined as
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::type_value]
 /// fn $MyDefaultName<$some_generic>() -> $default_type { $expr }
 /// ```
 /// I.e.: a function definition with generics none or `T: Config` and a returned type.
 ///
 /// E.g.:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::type_value]
 /// fn MyDefault<T: Config>() -> T::Balance { 3.into() }
 /// ```
@@ -1191,7 +1191,7 @@ pub mod pallet_prelude {
 /// The type generics is constrained to be either none, or `T` or `T: Config`.
 ///
 /// E.g:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::genesis_config]
 /// pub struct GenesisConfig<T: Config> {
 /// 	_myfield: BalanceOf<T>,
@@ -1213,7 +1213,7 @@ pub mod pallet_prelude {
 /// Allow to define how genesis_configuration is built.
 ///
 /// Item is defined as
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::genesis_build]
 /// impl<T: Config> GenesisBuild<T> for GenesisConfig<$maybe_generics> {
 /// 	fn build(&self) { $expr }
@@ -1223,7 +1223,7 @@ pub mod pallet_prelude {
 /// `GenesisConfig` with generics none or `T`.
 ///
 /// E.g.:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::genesis_build]
 /// impl<T: Config> GenesisBuild<T> for GenesisConfig {
 /// 	fn build(&self) {}
@@ -1243,7 +1243,7 @@ pub mod pallet_prelude {
 /// Allow the pallet to provide some inherent:
 ///
 /// Item is defined as:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::inherent]
 /// impl<T: Config> ProvideInherent for Pallet<T> {
 /// 	// ... regular trait implementation
@@ -1262,7 +1262,7 @@ pub mod pallet_prelude {
 /// Allow the pallet to validate some unsigned transaction:
 ///
 /// Item is defined as:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::validate_unsigned]
 /// impl<T: Config> ValidateUnsigned for Pallet<T> {
 /// 	// ... regular trait implementation
@@ -1283,7 +1283,7 @@ pub mod pallet_prelude {
 /// Item must be either a type alias or an enum or a struct. It needs to be public.
 ///
 /// E.g.:
-/// ```rust,nocompile
+/// ```ignore
 /// #[pallet::origin]
 /// pub struct Origin<T>(PhantomData<(T)>);
 /// ```
@@ -1619,7 +1619,7 @@ pub mod pallet_prelude {
 /// 	* provide_inherent,
 /// 	so far it should compile and all be correct.
 /// 4. start writing new pallet module
-/// 	```rust,nocompile
+/// 	```ignore
 /// 	pub use pallet::*;
 ///     #[frame_support::pallet]
 /// 	mod pallet {
@@ -1639,7 +1639,7 @@ pub mod pallet_prelude {
 /// 	* rename `Trait` to `Config`
 /// 	* all const in decl_module to `#[pallet::constant]`
 /// 6. **migrate decl_module**: write:
-/// 	```rust,nocompile
+/// 	```ignore
 /// 	#[pallet::interface]
 /// 	impl<T: Trait> Interface for Pallet<T> {
 /// 	}
@@ -1647,7 +1647,7 @@ pub mod pallet_prelude {
 /// 	and write inside on_initialize/on_finalize/on_runtime_upgrade/offchain_worker/integrity_test
 ///
 /// 	then write:
-/// 	```rust,nocompile
+/// 	```ignore
 /// 	#[pallet::call]
 /// 	impl<T: Trait> Pallet<T> {
 /// 	}
@@ -1666,7 +1666,7 @@ pub mod pallet_prelude {
 /// 8. **migrate error**: just rewrite it with attribute `#[pallet::error]`.
 /// 9. **migrate storage**:
 /// 	first migrate the genesis logic. write:
-/// 	```rust,nocompile
+/// 	```ignore
 /// 	#[pallet::genesis_config]
 /// 	struct GenesisConfig {
 /// 		// fields of add_extra_genesis
@@ -1699,7 +1699,7 @@ pub mod pallet_prelude {
 /// 	- for storage with default value: `= $expr;` provide some specific OnEmpty generic. To do so
 /// 		use of `#[pallet::type_value]` to generate the wanted struct to put.
 /// 		example: `MyStorage: u32 = 3u32` would be written:
-/// 		```
+/// 		```ignore
 /// 		#[pallet::type_value] fn MyStorageOnEmpty() -> u32 { 3u32 }
 /// 		#[pallet::storage]
 /// 		pub(super) type MyStorage<T> = StorageValue<u32, ValueQuery, MyStorageOnEmpty>;

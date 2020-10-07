@@ -16,13 +16,14 @@
 // limitations under the License.
 
 use proc_macro2::Span;
+use crate::pallet::Def;
 
 /// * Provide inherent instance to be used by construct_runtime
 /// * Provide Instance0 .. Instance16 for instantiable pallet
-pub fn expand_instances() -> proc_macro2::TokenStream {
+pub fn expand_instances(def: &mut Def) -> proc_macro2::TokenStream {
 	let inherent_ident = syn::Ident::new(crate::INHERENT_INSTANCE_NAME, Span::call_site());
 	let instances = if def.config.has_instance {
-		(0..16).map(|i| syn::Ident::new(&format!("Instance{}", i), Span::call_site()))
+		(0..16).map(|i| syn::Ident::new(&format!("Instance{}", i), Span::call_site())).collect()
 	} else {
 		vec![]
 	};
