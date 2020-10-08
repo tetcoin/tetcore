@@ -21,7 +21,11 @@
 #![allow(deprecated)]
 use super::*;
 use authorship::claim_slot;
-use sp_core::{crypto::Pair, vrf::make_transcript as transcript_from_data};
+use sp_core::crypto::Pair;
+use sp_keystore::{
+	SyncCryptoStore,
+	vrf::make_transcript as transcript_from_data,
+};
 use sp_consensus_babe::{
 	AuthorityPair,
 	SlotNumber,
@@ -48,7 +52,6 @@ use rand_chacha::{
 };
 use sc_keystore::LocalKeystore;
 use sp_application_crypto::key_types::BABE;
-use async_std::task;
 
 type Item = DigestItem<Hash>;
 
@@ -350,7 +353,7 @@ impl TestNetFactory for BabeTestNet {
 #[test]
 #[should_panic]
 fn rejects_empty_block() {
-	env_logger::try_init().unwrap();
+	sp_tracing::try_init_simple();
 	let mut net = BabeTestNet::new(3);
 	let block_builder = |builder: BlockBuilder<_, _, _>| {
 		builder.build().unwrap().block
@@ -363,7 +366,7 @@ fn rejects_empty_block() {
 fn run_one_test(
 	mutator: impl Fn(&mut TestHeader, Stage) + Send + Sync + 'static,
 ) {
-	let _ = env_logger::try_init();
+	sp_tracing::try_init_simple();
 	let mutator = Arc::new(mutator) as Mutator;
 
 	MUTATOR.with(|m| *m.borrow_mut() = mutator.clone());
@@ -387,8 +390,9 @@ fn run_one_test(
 		let select_chain = peer.select_chain().expect("Full client has select_chain");
 
 		let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-		let keystore: SyncCryptoStore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore").into();
-		keystore.sr25519_generate_new(BABE, Some(seed)).expect("Generates authority key");
+		let keystore: SyncCryptoStorePtr = Arc::new(LocalKeystore::open(keystore_path.path(), None)
+			.expect("Creates keystore"));
+		SyncCryptoStore::sr25519_generate_new(&*keystore, BABE, Some(seed)).expect("Generates authority key");
 		keystore_paths.push(keystore_path);
 
 		let mut got_own = false;
@@ -435,7 +439,7 @@ fn run_one_test(
 			can_author_with: sp_consensus::AlwaysCanAuthor,
 		}).expect("Starts babe"));
 	}
-	task::block_on(future::select(
+	futures::executor::block_on(future::select(
 		futures::future::poll_fn(move |cx| {
 			let mut net = net.lock();
 			net.poll(cx);
@@ -491,7 +495,7 @@ fn rejects_missing_consensus_digests() {
 
 #[test]
 fn wrong_consensus_engine_id_rejected() {
-	let _ = env_logger::try_init();
+	sp_tracing::try_init_simple();
 	let sig = AuthorityPair::generate().0.sign(b"");
 	let bad_seal: Item = DigestItem::Seal([0; 4], sig.to_vec());
 	assert!(bad_seal.as_babe_pre_digest().is_none());
@@ -500,14 +504,14 @@ fn wrong_consensus_engine_id_rejected() {
 
 #[test]
 fn malformed_pre_digest_rejected() {
-	let _ = env_logger::try_init();
+	sp_tracing::try_init_simple();
 	let bad_seal: Item = DigestItem::Seal(BABE_ENGINE_ID, [0; 64].to_vec());
 	assert!(bad_seal.as_babe_pre_digest().is_none());
 }
 
 #[test]
 fn sig_is_not_pre_digest() {
-	let _ = env_logger::try_init();
+	sp_tracing::try_init_simple();
 	let sig = AuthorityPair::generate().0.sign(b"");
 	let bad_seal: Item = DigestItem::Seal(BABE_ENGINE_ID, sig.to_vec());
 	assert!(bad_seal.as_babe_pre_digest().is_none());
@@ -516,9 +520,11 @@ fn sig_is_not_pre_digest() {
 
 #[test]
 fn can_author_block() {
-	let _ = env_logger::try_init();
-	let keystore: Arc<SyncCryptoStore> = Arc::new(LocalKeystore::in_memory().into());
-	let public = keystore.sr25519_generate_new(BABE, Some("//Alice"))
+	sp_tracing::try_init_simple();
+	let keystore_path = tempfile::tempdir().expect("Creates keystore path");
+	let keystore: SyncCryptoStorePtr = Arc::new(LocalKeystore::open(keystore_path.path(), None)
+		.expect("Creates keystore"));
+	let public = SyncCryptoStore::sr25519_generate_new(&*keystore, BABE, Some("//Alice"))
 		.expect("Generates authority pair");
 
 	let mut i = 0;
@@ -822,10 +828,11 @@ fn verify_slots_are_strictly_increasing() {
 
 #[test]
 fn babe_transcript_generation_match() {
-	let _ = env_logger::try_init();
+	sp_tracing::try_init_simple();
 	let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-	let keystore: SyncCryptoStore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore").into();
-	let public = keystore.sr25519_generate_new(BABE, Some("//Alice"))
+	let keystore: SyncCryptoStorePtr = Arc::new(LocalKeystore::open(keystore_path.path(), None)
+		.expect("Creates keystore"));
+	let public = SyncCryptoStore::sr25519_generate_new(&*keystore, BABE, Some("//Alice"))
 		.expect("Generates authority pair");
 
 	let epoch = Epoch {

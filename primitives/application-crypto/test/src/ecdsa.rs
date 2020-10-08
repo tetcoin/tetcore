@@ -15,12 +15,15 @@
 // along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
 
 //! Integration tests for ecdsa
-use futures::executor::block_on;
+use std::sync::Arc;
 use sp_runtime::generic::BlockId;
 use sp_core::{
 	crypto::Pair,
-	traits::CryptoStorePtr,
-	testing::{KeyStore, ECDSA},
+	testing::ECDSA,
+};
+use sp_keystore::{
+	SyncCryptoStore,
+	testing::KeyStore,
 };
 use substrate_test_runtime_client::{
 	TestClientBuilder, DefaultTestClientBuilderExt, TestClientBuilderExt,
@@ -31,13 +34,13 @@ use sp_application_crypto::ecdsa::{AppPair, AppPublic};
 
 #[test]
 fn ecdsa_works_in_runtime() {
-	let keystore: CryptoStorePtr = KeyStore::new().into();
+	let keystore = Arc::new(KeyStore::new());
 	let test_client = TestClientBuilder::new().set_keystore(keystore.clone()).build();
 	let (signature, public) = test_client.runtime_api()
 		.test_ecdsa_crypto(&BlockId::Number(0))
 		.expect("Tests `ecdsa` crypto.");
 
-	let supported_keys = block_on(keystore.keys(ECDSA)).unwrap();
+	let supported_keys = SyncCryptoStore::keys(&*keystore, ECDSA).unwrap();
 	assert!(supported_keys.contains(&public.clone().into()));
 	assert!(AppPair::verify(&signature, "ecdsa", &AppPublic::from(public)));
 }

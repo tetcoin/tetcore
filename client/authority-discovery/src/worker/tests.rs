@@ -29,7 +29,8 @@ use libp2p::{kad, core::multiaddr, PeerId};
 use prometheus_endpoint::prometheus::default_registry;
 
 use sp_api::{ProvideRuntimeApi, ApiRef};
-use sp_core::{crypto::Public, testing::KeyStore, traits::CryptoStore};
+use sp_core::crypto::Public;
+use sp_keystore::{testing::KeyStore, CryptoStore};
 use sp_runtime::traits::{Zero, Block as BlockT, NumberFor};
 use substrate_test_runtime_client::runtime::Block;
 
@@ -311,7 +312,7 @@ fn new_registers_metrics() {
 
 #[test]
 fn triggers_dht_get_query() {
-	let _ = ::env_logger::try_init();
+	sp_tracing::try_init_simple();
 	let (_dht_event_tx, dht_event_rx) = channel(1000);
 
 	// Generate authority keys
@@ -344,7 +345,9 @@ fn triggers_dht_get_query() {
 
 #[test]
 fn publish_discover_cycle() {
-	let _ = ::env_logger::try_init();
+	sp_tracing::try_init_simple();
+
+	let mut pool = LocalPool::new();
 
 	let mut pool = LocalPool::new();
 
@@ -439,7 +442,8 @@ fn publish_discover_cycle() {
 
 	pool.run();
 }
-
+/// Don't terminate when sender side of service channel is dropped. Terminate when network event
+/// stream terminates.
 #[test]
 fn terminate_when_event_stream_terminates() {
 	let (dht_event_tx, dht_event_rx) = channel(1000);
@@ -449,7 +453,7 @@ fn terminate_when_event_stream_terminates() {
 		authorities: vec![],
 	});
 
-	let (_to_worker, from_service) = mpsc::channel(0);
+	let (to_worker, from_service) = mpsc::channel(0);
 	let worker = Worker::new(
 		from_service,
 		test_api,
@@ -463,6 +467,14 @@ fn terminate_when_event_stream_terminates() {
 
 	block_on(async {
 		assert_eq!(Poll::Pending, futures::poll!(&mut worker));
+
+		// Drop sender side of service channel.
+		drop(to_worker);
+		assert_eq!(
+			Poll::Pending, futures::poll!(&mut worker),
+			"Expect the authority discovery module not to terminate once the \
+			sender side of the service channel is closed.",
+		);
 
 		// Simulate termination of the network through dropping the sender side
 		// of the dht event channel.
@@ -845,21 +857,31 @@ fn lookup_throttling() {
 		for _ in 0..MAX_IN_FLIGHT_LOOKUPS {
 			assert!(matches!(receiver.next().await, Some(TestNetworkEvent::GetCalled(_))));
 		}
-		assert_eq!(metrics.requests_pending.get(), (remote_public_keys.len() - MAX_IN_FLIGHT_LOOKUPS) as u64);
+		assert_eq!(
+			metrics.requests_pending.get(),
+			(remote_public_keys.len() - MAX_IN_FLIGHT_LOOKUPS) as u64
+		);
 		assert_eq!(network.get_value_call.lock().unwrap().len(), MAX_IN_FLIGHT_LOOKUPS);
 
 		// Make first lookup succeed.
 		let remote_hash = network.get_value_call.lock().unwrap().pop().unwrap();
 		let remote_key: AuthorityId = remote_hash_to_key.get(&remote_hash).unwrap().clone();
 		let dht_event = {
-			let (key, value) = build_dht_event(vec![remote_multiaddr.clone()], remote_key, &remote_key_store).await;
+			let (key, value) = build_dht_event(
+				vec![remote_multiaddr.clone()],
+				remote_key,
+				&remote_key_store
+			).await;
 			sc_network::DhtEvent::ValueFound(vec![(key, value)])
 		};
 		dht_event_tx.send(dht_event).await.expect("Channel has capacity of 1.");
 
 		// Assert worker to trigger another lookup.
 		assert!(matches!(receiver.next().await, Some(TestNetworkEvent::GetCalled(_))));
-		assert_eq!(metrics.requests_pending.get(), (remote_public_keys.len() - MAX_IN_FLIGHT_LOOKUPS - 1) as u64);
+		assert_eq!(
+			metrics.requests_pending.get(),
+			(remote_public_keys.len() - MAX_IN_FLIGHT_LOOKUPS - 1) as u64
+		);
 		assert_eq!(network.get_value_call.lock().unwrap().len(), MAX_IN_FLIGHT_LOOKUPS);
 
 		// Make second one fail.
@@ -869,7 +891,10 @@ fn lookup_throttling() {
 
 		// Assert worker to trigger another lookup.
 		assert!(matches!(receiver.next().await, Some(TestNetworkEvent::GetCalled(_))));
-		assert_eq!(metrics.requests_pending.get(), (remote_public_keys.len() - MAX_IN_FLIGHT_LOOKUPS - 2) as u64);
+		assert_eq!(
+			metrics.requests_pending.get(),
+			(remote_public_keys.len() - MAX_IN_FLIGHT_LOOKUPS - 2) as u64
+		);
 		assert_eq!(network.get_value_call.lock().unwrap().len(), MAX_IN_FLIGHT_LOOKUPS);
 	}.boxed_local());
 }

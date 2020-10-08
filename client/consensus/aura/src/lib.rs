@@ -63,7 +63,8 @@ use sp_runtime::{
 };
 use sp_runtime::traits::{Block as BlockT, Header, DigestItemFor, Zero, Member};
 use sp_api::ProvideRuntimeApi;
-use sp_core::{traits::SyncCryptoStore, crypto::Pair};
+use sp_core::crypto::Pair;
+use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sp_inherents::{InherentDataProviders, InherentData};
 use sp_timestamp::{
 	TimestampInherentData, InherentType as TimestampInherent, InherentError as TIError
@@ -146,7 +147,7 @@ pub fn start_aura<B, C, SC, E, I, P, SO, CAW, Error>(
 	sync_oracle: SO,
 	inherent_data_providers: InherentDataProviders,
 	force_authoring: bool,
-	keystore: Arc<SyncCryptoStore>,
+	keystore: SyncCryptoStorePtr,
 	can_author_with: CAW,
 ) -> Result<impl Future<Output = ()>, sp_consensus::Error> where
 	B: BlockT,
@@ -191,7 +192,7 @@ struct AuraWorker<C, E, I, P, SO> {
 	client: Arc<C>,
 	block_import: Arc<Mutex<I>>,
 	env: E,
-	keystore: Arc<SyncCryptoStore>,
+	keystore: SyncCryptoStorePtr,
 	sync_oracle: SO,
 	force_authoring: bool,
 	_key_type: PhantomData<P>,
@@ -247,8 +248,9 @@ impl<B, C, E, I, P, Error, SO> sc_consensus_slots::SimpleSlotWorker<B> for AuraW
 	) -> Option<Self::Claim> {
 		let expected_author = slot_author::<P>(slot_number, epoch_data);
 		expected_author.and_then(|p| {
-			 if self.keystore.has_keys(
-				&[(p.to_raw_vec(), sp_application_crypto::key_types::AURA)],
+			 if SyncCryptoStore::has_keys(
+				 &*self.keystore,
+				 &[(p.to_raw_vec(), sp_application_crypto::key_types::AURA)],
 			) {
 				Some(p.clone())
 			} else {
@@ -284,15 +286,14 @@ impl<B, C, E, I, P, Error, SO> sc_consensus_slots::SimpleSlotWorker<B> for AuraW
 			// add it to a digest item.
 			let public_type_pair = public.to_public_crypto_pair();
 			let public = public.to_raw_vec();
-			let signature = keystore
-				.sign_with(
-					<AuthorityId<P> as AppKey>::ID,
-					&public_type_pair,
-					header_hash.as_ref()
-				)
-				.map_err(|e| sp_consensus::Error::CannotSign(
-					public.clone(), e.to_string(),
-				))?;
+			let signature = SyncCryptoStore::sign_with(
+				&*keystore,
+				<AuthorityId<P> as AppKey>::ID,
+				&public_type_pair,
+				header_hash.as_ref()
+			).map_err(|e| sp_consensus::Error::CannotSign(
+				public.clone(), e.to_string(),
+			))?;
 			let signature = signature.clone().try_into()
 				.map_err(|_| sp_consensus::Error::InvalidSignature(
 					signature, public
@@ -888,7 +889,6 @@ mod tests {
 	use substrate_test_runtime_client::runtime::{Header, H256};
 	use sc_keystore::LocalKeystore;
 	use sp_application_crypto::key_types::AURA;
-	use async_std::task;
 
 	type Error = sp_blockchain::Error;
 
@@ -996,7 +996,7 @@ mod tests {
 	#[test]
 	#[allow(deprecated)]
 	fn authoring_blocks() {
-		let _ = env_logger::try_init();
+		sp_tracing::try_init_simple();
 		let net = AuraTestNet::new(3);
 
 		let peers = &[
@@ -1016,10 +1016,11 @@ mod tests {
 			let client = peer.client().as_full().expect("full clients are created").clone();
 			let select_chain = peer.select_chain().expect("full client has a select chain");
 			let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-			let keystore: SyncCryptoStore= LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore.").into();
+			let keystore = Arc::new(LocalKeystore::open(keystore_path.path(), None)
+				.expect("Creates keystore."));
 
 
-			keystore.sr25519_generate_new(AURA, Some(&key.to_seed()))
+			SyncCryptoStore::sr25519_generate_new(&*keystore, AURA, Some(&key.to_seed()))
 				.expect("Creates authority key");
 			keystore_paths.push(keystore_path);
 
@@ -1086,8 +1087,9 @@ mod tests {
 		];
 
 		let keystore_path = tempfile::tempdir().expect("Creates keystore path");
-		let keystore: SyncCryptoStore = LocalKeystore::open(keystore_path.path(), None).expect("Creates keystore.").into();
-		let public = keystore.sr25519_generate_new(AuthorityPair::ID, None)
+		let keystore = LocalKeystore::open(keystore_path.path(), None)
+			.expect("Creates keystore.");
+		let public = SyncCryptoStore::sr25519_generate_new(&keystore, AuthorityPair::ID, None)
 			.expect("Key should be created");
 		authorities.push(public.into());
 

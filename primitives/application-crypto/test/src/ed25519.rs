@@ -17,12 +17,15 @@
 
 //! Integration tests for ed25519
 
-use futures::executor::block_on;
+use std::sync::Arc;
 use sp_runtime::generic::BlockId;
 use sp_core::{
 	crypto::Pair,
-	traits::CryptoStorePtr,
-	testing::{KeyStore, ED25519},
+	testing::ED25519,
+};
+use sp_keystore::{
+	SyncCryptoStore,
+	testing::KeyStore,
 };
 use substrate_test_runtime_client::{
 	TestClientBuilder, DefaultTestClientBuilderExt, TestClientBuilderExt,
@@ -33,13 +36,13 @@ use sp_application_crypto::ed25519::{AppPair, AppPublic};
 
 #[test]
 fn ed25519_works_in_runtime() {
-	let keystore: CryptoStorePtr = KeyStore::new().into();
+	let keystore = Arc::new(KeyStore::new());
 	let test_client = TestClientBuilder::new().set_keystore(keystore.clone()).build();
 	let (signature, public) = test_client.runtime_api()
 		.test_ed25519_crypto(&BlockId::Number(0))
 		.expect("Tests `ed25519` crypto.");
 
-	let supported_keys = block_on(keystore.keys(ED25519)).unwrap();
+	let supported_keys = SyncCryptoStore::keys(&*keystore, ED25519).unwrap();
 	assert!(supported_keys.contains(&public.clone().into()));
 	assert!(AppPair::verify(&signature, "ed25519", &AppPublic::from(public)));
 }

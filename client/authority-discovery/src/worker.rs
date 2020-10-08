@@ -45,7 +45,7 @@ use sc_network::{
 };
 use sp_authority_discovery::{AuthorityDiscoveryApi, AuthorityId, AuthoritySignature, AuthorityPair};
 use sp_core::crypto::{key_types, Pair};
-use sp_core::traits::CryptoStorePtr;
+use sp_keystore::CryptoStore;
 use sp_runtime::{traits::Block as BlockT, generic::BlockId};
 use sp_api::ProvideRuntimeApi;
 
@@ -75,7 +75,7 @@ const MAX_IN_FLIGHT_LOOKUPS: usize = 8;
 /// Role an authority discovery module can run as.
 pub enum Role {
 	/// Actual authority as well as a reference to its key store.
-	Authority(CryptoStorePtr),
+	Authority(Arc<dyn CryptoStore>),
 	/// Sentry node that guards an authority.
 	///
 	/// No reference to its key store needed, as sentry nodes don't have an identity to sign
@@ -256,14 +256,14 @@ where
 					if let Some(event) = event {
 						self.handle_dht_event(event).await;
 					} else {
+						// This point is reached if the network has shut down, at which point there is not
+						// much else to do than to shut down the authority discovery as well.
 						return;
 					}
 				},
-				// Handle messages from [`Service`].
-				msg = self.from_service.next().fuse() => {
-					if let Some(msg) = msg {
-						self.process_message_from_service(msg).await;
-					}
+				// Handle messages from [`Service`]. Ignore if sender side is closed.
+				msg = self.from_service.select_next_some() => {
+					self.process_message_from_service(msg);
 				},
 				// Set peerset priority group to a new random set of addresses.
 				_ = self.priority_group_set_interval.next().fuse() => {
@@ -296,7 +296,7 @@ where
 		}
 	}
 
-	async fn process_message_from_service(&self, msg: ServicetoWorkerMsg) {
+	fn process_message_from_service(&self, msg: ServicetoWorkerMsg) {
 		match msg {
 			ServicetoWorkerMsg::GetAddressesByAuthorityId(authority, sender) => {
 				let _ = sender.send(
@@ -360,14 +360,12 @@ where
 			self.client.as_ref(),
 		).await?.into_iter().map(Into::into).collect::<Vec<_>>();
 
-		let signatures = key_store
-			.sign_with_all(
-				key_types::AUTHORITY_DISCOVERY,
-				keys.clone(),
-				serialized_addresses.as_slice(),
-			)
-			.await
-			.map_err(|_| Error::Signing)?;
+		let signatures = key_store.sign_with_all(
+			key_types::AUTHORITY_DISCOVERY,
+			keys.clone(),
+			serialized_addresses.as_slice(),
+		).await.map_err(|_| Error::Signing)?;
+
 		for (sign_result, key) in signatures.into_iter().zip(keys) {
 			let mut signed_addresses = vec![];
 
@@ -396,11 +394,9 @@ where
 
 		let local_keys = match &self.role {
 			Role::Authority(key_store) => {
-				key_store
-					.sr25519_public_keys(key_types::AUTHORITY_DISCOVERY)
-					.await
-					.into_iter()
-					.collect::<HashSet<_>>()
+				key_store.sr25519_public_keys(
+					key_types::AUTHORITY_DISCOVERY
+				).await.into_iter().collect::<HashSet<_>>()
 			},
 			Role::Sentry => HashSet::new(),
 		};
@@ -606,7 +602,7 @@ where
 	// next authority set with two keys. The function does not return all of the local authority
 	// discovery public keys, but only the ones intersecting with the current or next authority set.
 	async fn get_own_public_keys_within_authority_set(
-		key_store: CryptoStorePtr,
+		key_store: Arc<dyn CryptoStore>,
 		client: &Client,
 	) -> Result<HashSet<AuthorityId>> {
 		let local_pub_keys = key_store
