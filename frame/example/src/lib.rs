@@ -377,7 +377,7 @@ mod pallet {
 	// Here `BalanceOf<T>` type will be written `B` in the metadata.
 	#[pallet::metadata(BalanceOf<T> = B)]
 	// Generate deposit_event function using frame_system deposit_event.
-	#[pallet::generate(pub(crate) fn deposit_event)]
+	#[pallet::generate_deposit(pub(crate) fn deposit_event)]
 	pub enum Event<T: Config> {
 		// Just a normal `enum`, here's a dummy event to ensure it compiles.
 		/// Dummy event, just here so there's a generic type that's used.

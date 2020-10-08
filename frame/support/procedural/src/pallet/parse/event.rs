@@ -24,7 +24,7 @@ mod keyword {
 	syn::custom_keyword!(metadata);
 	syn::custom_keyword!(Event);
 	syn::custom_keyword!(pallet);
-	syn::custom_keyword!(generate);
+	syn::custom_keyword!(generate_deposit);
 	syn::custom_keyword!(deposit_event);
 }
 
@@ -80,7 +80,7 @@ impl EventDef {
 ///
 /// Syntax is:
 /// * `#[pallet::metadata(SomeType = MetadataName, ...)]`
-/// * `#[pallet::generate($vis fn deposit_event)]`
+/// * `#[pallet::generate_deposit($vis fn deposit_event)]`
 enum PalletEventAttr {
 	Metadata {
 		metadata: Vec<(syn::Type, syn::Ident)>,
@@ -134,8 +134,8 @@ impl syn::parse::Parse for PalletEventAttr {
 				.collect();
 
 			Ok(PalletEventAttr::Metadata { metadata, span })
-		} else if lookahead.peek(keyword::generate) {
-			let span = content.parse::<keyword::generate>()?.span();
+		} else if lookahead.peek(keyword::generate_deposit) {
+			let span = content.parse::<keyword::generate_deposit>()?.span();
 
 			let generate_content;
 			syn::parenthesized!(generate_content in content);

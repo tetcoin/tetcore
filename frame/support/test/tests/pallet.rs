@@ -101,7 +101,7 @@ pub mod pallet {
 
 	#[pallet::event]
 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
-	#[pallet::generate(fn deposit_event)]
+	#[pallet::generate_deposit(fn deposit_event)]
 	pub enum Event<T: Config> {
 		/// doc comment put in metadata
 		Proposed(<T as frame_system::Config>::AccountId),

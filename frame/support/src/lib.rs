@@ -1058,7 +1058,7 @@ pub mod pallet_prelude {
 /// ```ignore
 /// #[pallet::event]
 /// #[pallet::metadata($SomeType = $Metadata, $SomeOtherType = $Metadata, ..)] // Optional
-/// #[pallet::generate($visbility fn deposit_event)] // Optional
+/// #[pallet::generate_deposit($visbility fn deposit_event)] // Optional
 /// pub enum Event<$some_generic> {
 /// 	/// Some doc
 /// 	$SomeName($SomeType, $YetanotherType, ...),
@@ -1089,8 +1089,8 @@ pub mod pallet_prelude {
 /// ```
 /// will write in event variant metadata `"SpecialU32"` and `"AccountId"`.
 ///
-/// The attribute `#[pallet::generate($visbility fn deposit_event)]` generate a helper function on
-/// `Pallet` to deposit event.
+/// The attribute `#[pallet::generate_deposit($visbility fn deposit_event)]` generate a helper
+/// function on `Pallet` to deposit event.
 ///
 /// NOTE: For instantiable pallet, event must be generic over T and I.
 ///
@@ -1111,7 +1111,7 @@ pub mod pallet_prelude {
 ///
 /// Macro implements metadata function on `Event` returning the `EventMetadata`.
 ///
-/// If `#[pallet::generate]` then macro implement `fn deposit_event` on `Pallet`.
+/// If `#[pallet::generate_deposit]` then macro implement `fn deposit_event` on `Pallet`.
 ///
 /// # Storage: `#[pallet::storage]` optional
 ///
@@ -1379,7 +1379,7 @@ pub mod pallet_prelude {
 /// 	// Additional argument to specify the metadata to use for given type.
 /// 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
 /// 	// Generate a funciton on Pallet to deposit an event.
-/// 	#[pallet::generate(pub(super) fn deposit_event)]
+/// 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 /// 	pub enum Event<T: Config> {
 /// 		/// doc comment put in metadata
 /// 		// `<T as frame_system::Config>::AccountId` is not defined in metadata list, the last
@@ -1529,7 +1529,7 @@ pub mod pallet_prelude {
 ///
 /// 	#[pallet::event]
 /// 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
-/// 	#[pallet::generate(pub(super) fn deposit_event)]
+/// 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 /// 	pub enum Event<T: Config<I>, I: 'static = ()> {
 /// 		/// doc comment put in metadata
 /// 		Proposed(<T as frame_system::Config>::AccountId),
@@ -1608,7 +1608,8 @@ pub mod pallet_prelude {
 ///
 /// 1. make crate compiling: rename usage of frame_system::Trait to frame_system::Config.
 /// 2. export metadata of the pallet for later checks
-/// 3. reorganize pallet to have trait Trait, decl_* macros, ValidateUnsigned, ProvideInherent, Origin all together in one file. suggested order:
+/// 3. reorganize pallet to have trait Trait, decl_* macros, ValidateUnsigned, ProvideInherent,
+/// 	Origin all together in one file. suggested order:
 /// 	* trait,
 /// 	* decl_module,
 /// 	* decl_event,
@@ -1629,8 +1630,8 @@ pub mod pallet_prelude {
 ///
 /// 		#[pallet::pallet]
 /// 		#[pallet::generete($visibility_of_trait_store trait Store)]
-/// 		// NOTE: if the visibility of trait store is private but you want to make it available in
-/// 		// super, then use `pub(super)` or `pub(crate)` to make it available in crate.
+/// 		// NOTE: if the visibility of trait store is private but you want to make it available
+/// 		// in super, then use `pub(super)` or `pub(crate)` to make it available in crate.
 /// 		pub struct Pallet<T>(PhantomData<T>);
 /// 		// pub struct Pallet<T, I = ()>(PhantomData<T>); // for instantiable pallet
 /// 	}
@@ -1661,7 +1662,7 @@ pub mod pallet_prelude {
 ///
 /// 7. **migrate event**:
 /// 	rewrite as a simple enum under with the attribute `#[pallet::event]`,
-/// 	use `#[pallet::generate($vis fn deposit_event)]` to generate deposit_event,
+/// 	use `#[pallet::generate_deposit($vis fn deposit_event)]` to generate deposit_event,
 /// 	use `#[pallet::metadata(...)]` to configure the metadata for types in order not to break them.
 /// 8. **migrate error**: just rewrite it with attribute `#[pallet::error]`.
 /// 9. **migrate storage**:
@@ -1683,8 +1684,8 @@ pub mod pallet_prelude {
 /// 	}
 /// 	```
 /// 	for each storages, if it contains config(..) then add a fields, and make its default to the
-/// 	value in `= ..;` or the type default if none, if it contains no build then also add the logic
-/// 	to build the value.
+/// 	value in `= ..;` or the type default if none, if it contains no build then also add the
+/// 	logic to build the value.
 /// 	for each storages if it contains build(..) then add the logic to genesis_build.
 ///
 /// 	NOTE: in decl_storage: is executed first the individual config and build and at the end the
@@ -1694,8 +1695,8 @@ pub mod pallet_prelude {
 /// 	- for private storage use `pub(crate) type ` or `pub(super) type` or nothing,
 /// 	- for storage with `get(fn ..)` use `#[pallet::getter(fn ...)]`
 /// 	- for storage with value being `Option<$something>` make generic `Value` being `$something`
-/// 		and generic `QueryKind` being `OptionQuery` (note: this is default). Otherwise make `Value`
-/// 		the complete value type and `QueryKind` being `ValueQuery`.
+/// 		and generic `QueryKind` being `OptionQuery` (note: this is default). Otherwise make
+/// 		`Value` the complete value type and `QueryKind` being `ValueQuery`.
 /// 	- for storage with default value: `= $expr;` provide some specific OnEmpty generic. To do so
 /// 		use of `#[pallet::type_value]` to generate the wanted struct to put.
 /// 		example: `MyStorage: u32 = 3u32` would be written:
@@ -1706,8 +1707,10 @@ pub mod pallet_prelude {
 /// 		```
 ///
 /// 10. **migrate origin**: just move the origin to the pallet module under `#[pallet::origin]`
-/// 11. **migrate validate_unsigned**: just move the ValidateUnsigned implementation to the pallet module under `#[pallet::validate_unsigned]`
-/// 12. **migrate provide_inherent**: just move the ValidateUnsigned implementation to the pallet module under `#[pallet::validate_unsigned]`
+/// 11. **migrate validate_unsigned**: just move the ValidateUnsigned implementation to the pallet
+/// 	module under `#[pallet::validate_unsigned]`
+/// 12. **migrate provide_inherent**: just move the ValidateUnsigned implementation to the pallet
+/// 	module under `#[pallet::validate_unsigned]`
 /// 13. rename the usage of Module to Pallet and the usage of Config to Trait inside the crate.
 /// 14. migration is done, now double check migration with the checking migration guidelines.
 ///
@@ -1723,10 +1726,13 @@ pub mod pallet_prelude {
 /// 	* Origin is moved inside macro unser `#[pallet::origin]` if it exists
 /// 	* ValidateUnsigned is moved inside macro under `#[pallet::validate_unsigned)]` if it exists
 /// 	* ProvideInherent is moved inside macro under `#[pallet::inherent)]` if it exists
-/// 	* on_initialize/on_finalize/on_runtime_upgrade/offchain_worker are moved to Interface implementation
-/// 	* storages with `config(..)` are converted to genesis_config field, and their default is `= $expr;` if the storage have default value
+/// 	* on_initialize/on_finalize/on_runtime_upgrade/offchain_worker are moved to Interface
+/// 		implementation
+/// 	* storages with `config(..)` are converted to genesis_config field, and their default is
+/// 		`= $expr;` if the storage have default value
 /// 	* storages with `build($expr)` or `config(..)` are built in genesis_build
-/// 	* add_extra_genesis fields are converted to genesis_config field with their correct default if specified
+/// 	* add_extra_genesis fields are converted to genesis_config field with their correct default
+/// 		if specified
 /// 	* add_extra_genesis build is written into genesis_build
 /// * storages now use PalletInfo for module_prefix instead of the one given to decl_storage:
 /// 	Thus any use of this pallet in `construct_runtime!` should be careful to update name in

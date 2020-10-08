@@ -41,7 +41,7 @@ mod pallet {
 	#[pallet::event]
 	#[pallet::metadata(<T as frame_system::Config>::AccountId = AccountId)]
 	// Generate a helper function to deposit events.
-	#[pallet::generate(pub(crate) fn deposit_event)]
+	#[pallet::generate_deposit(pub(crate) fn deposit_event)]
 	pub enum Event<T: Config> {
 		/// Event documentation should end with an array that provides descriptive names for event
 		/// parameters. [something, who]
