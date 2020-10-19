@@ -77,7 +77,7 @@ pub use self::storage::{
 	StorageValue, StorageMap, StorageDoubleMap, StoragePrefixedMap, IterableStorageMap,
 	IterableStorageDoubleMap, migration
 };
-pub use self::dispatch::{Parameter, Callable, IsSubType};
+pub use self::dispatch::{Parameter, Callable};
 pub use sp_runtime::{self, ConsensusEngineId, print, traits::Printable};
 
 /// A type that cannot be instantiated.
@@ -268,9 +268,112 @@ macro_rules! ord_parameter_types {
 
 #[doc(inline)]
 pub use frame_support_procedural::{
-	decl_storage, construct_runtime, DebugNoBound, DebugStripped, CloneNoBound, EqNoBound,
-	PartialEqNoBound, transactional,
+	decl_storage, construct_runtime, transactional, RuntimeDebugNoBound
 };
+
+/// Derive [`Clone`] but do not bound any generic.
+///
+/// This is useful for type generic over runtime:
+/// ```
+/// # use frame_support::CloneNoBound;
+/// trait Trait {
+///		type C: Clone;
+/// }
+///
+/// // Foo implements [`Clone`] because `C` bounds [`Clone`].
+/// // Otherwise compilation will fail with an output telling `c` doesn't implement [`Clone`].
+/// #[derive(CloneNoBound)]
+/// struct Foo<T: Trait> {
+///		c: T::C,
+/// }
+/// ```
+pub use frame_support_procedural::CloneNoBound;
+
+/// Derive [`Eq`] but do not bound any generic.
+///
+/// This is useful for type generic over runtime:
+/// ```
+/// # use frame_support::{EqNoBound, PartialEqNoBound};
+/// trait Trait {
+///		type C: Eq;
+/// }
+///
+/// // Foo implements [`Eq`] because `C` bounds [`Eq`].
+/// // Otherwise compilation will fail with an output telling `c` doesn't implement [`Eq`].
+/// #[derive(PartialEqNoBound, EqNoBound)]
+/// struct Foo<T: Trait> {
+///		c: T::C,
+/// }
+/// ```
+pub use frame_support_procedural::EqNoBound;
+
+/// Derive [`PartialEq`] but do not bound any generic.
+///
+/// This is useful for type generic over runtime:
+/// ```
+/// # use frame_support::PartialEqNoBound;
+/// trait Trait {
+///		type C: PartialEq;
+/// }
+///
+/// // Foo implements [`PartialEq`] because `C` bounds [`PartialEq`].
+/// // Otherwise compilation will fail with an output telling `c` doesn't implement [`PartialEq`].
+/// #[derive(PartialEqNoBound)]
+/// struct Foo<T: Trait> {
+///		c: T::C,
+/// }
+/// ```
+pub use frame_support_procedural::PartialEqNoBound;
+
+/// Derive [`Debug`] but do not bound any generic.
+///
+/// This is useful for type generic over runtime:
+/// ```
+/// # use frame_support::DebugNoBound;
+/// # use core::fmt::Debug;
+/// trait Trait {
+///		type C: Debug;
+/// }
+///
+/// // Foo implements [`Debug`] because `C` bounds [`Debug`].
+/// // Otherwise compilation will fail with an output telling `c` doesn't implement [`Debug`].
+/// #[derive(DebugNoBound)]
+/// struct Foo<T: Trait> {
+///		c: T::C,
+/// }
+/// ```
+pub use frame_support_procedural::DebugNoBound;
+
+/// Assert the annotated function is executed within a storage transaction.
+///
+/// The assertion is enabled for native execution and when `debug_assertions` are enabled.
+///
+/// # Example
+///
+/// ```
+/// # use frame_support::{
+/// # 	require_transactional, transactional, dispatch::DispatchResult
+/// # };
+///
+/// #[require_transactional]
+/// fn update_all(value: u32) -> DispatchResult {
+/// 	// Update multiple storages.
+/// 	// Return `Err` to indicate should revert.
+/// 	Ok(())
+/// }
+///
+/// #[transactional]
+/// fn safe_update(value: u32) -> DispatchResult {
+/// 	// This is safe
+/// 	update_all(value)
+/// }
+///
+/// fn unsafe_update(value: u32) -> DispatchResult {
+/// 	// this may panic if unsafe_update is not called within a storage transaction
+/// 	update_all(value)
+/// }
+/// ```
+pub use frame_support_procedural::require_transactional;
 
 /// Return Err of the expression: `return Err($expression);`.
 ///
@@ -836,7 +939,7 @@ pub mod pallet_prelude {
 	pub use frame_support::storage::types::{
 		StorageValue, StorageMap, StorageDoubleMap, ValueQuery, OptionQuery,
 	};
-	pub use frame_support::{EqNoBound, PartialEqNoBound, DebugStripped, DebugNoBound, CloneNoBound};
+	pub use frame_support::{EqNoBound, PartialEqNoBound, RuntimeDebugNoBound, DebugNoBound, CloneNoBound};
 	pub use codec::{Encode, Decode};
 	pub use sp_inherents::ProvideInherent;
 	pub use sp_inherents::InherentData;
@@ -952,7 +1055,7 @@ pub mod pallet_prelude {
 /// 	frame_support::CloneNoBound,
 /// 	frame_support::EqNoBound,
 /// 	frame_support::PartialEqNoBound,
-/// 	frame_support::DebugStripped,
+/// 	frame_support::RuntimeDebugNoBound,
 /// )]
 /// ```
 ///
@@ -1104,8 +1207,7 @@ pub mod pallet_prelude {
 /// * `#[derive(frame_support::PartialEqNoBound)]`,
 /// * `#[derive(codec::Encode)]`,
 /// * `#[derive(codec::Decode)]`,
-/// * `#[cfg_attr(not(feature = "std"), derive(frame_support::DebugStripped))]`
-/// * `#[cfg_attr(feature = "std", derive(frame_support::DebugNoBound))]`
+/// * `#[derive(frame_support::RuntimeDebugNoBound)]`
 ///
 /// Macro implements `From<Event<..>>` for ().
 ///

@@ -159,7 +159,7 @@ pub fn extrinsics_data_root<H: Hash>(xts: Vec<Vec<u8>>) -> H::Output {
 }
 
 pub trait WeightInfo {
-	fn remark() -> Weight;
+	fn remark(b: u32) -> Weight;
 	fn set_heap_pages() -> Weight;
 	fn set_changes_trie_config() -> Weight;
 	fn set_storage(i: u32, ) -> Weight;
@@ -521,7 +521,7 @@ mod pallet {
 		/// - Base Weight: 0.665 µs, independent of remark length.
 		/// - No DB operations.
 		/// # </weight>
-		#[pallet::weight(T::SystemWeightInfo::remark())]
+		#[pallet::weight(T::SystemWeightInfo::remark(_remark.len() as u32))]
 		fn remark(origin: OriginFor<T>, _remark: Vec<u8>) -> DispatchResultWithPostInfo {
 			ensure_signed(origin)?;
 			Ok(().into())

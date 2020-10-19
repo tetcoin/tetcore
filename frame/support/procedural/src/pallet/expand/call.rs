@@ -71,9 +71,8 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 	});
 
 	quote::quote_spanned!(def.call.attr_span =>
-		#[cfg_attr(feature = "std", derive(#frame_support::DebugNoBound))]
-		#[cfg_attr(not(feature = "std"), derive(#frame_support::DebugStripped))]
 		#[derive(
+			#frame_support::RuntimeDebugNoBound,
 			#frame_support::CloneNoBound,
 			#frame_support::EqNoBound,
 			#frame_support::PartialEqNoBound,

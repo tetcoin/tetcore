@@ -78,16 +78,11 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 
 	// derive some traits because system event require Clone, FullCodec, Eq, PartialEq and Debug
 	event_item.attrs.push(syn::parse_quote!(
-		#[cfg_attr(feature = "std", derive(#frame_support::DebugNoBound))]
-	));
-	event_item.attrs.push(syn::parse_quote!(
-		#[cfg_attr(not(feature = "std"), derive(#frame_support::DebugStripped))]
-	));
-	event_item.attrs.push(syn::parse_quote!(
 		#[derive(
 			#frame_support::CloneNoBound,
 			#frame_support::EqNoBound,
 			#frame_support::PartialEqNoBound,
+			#frame_support::RuntimeDebugNoBound,
 			#frame_support::codec::Encode,
 			#frame_support::codec::Decode,
 		)]

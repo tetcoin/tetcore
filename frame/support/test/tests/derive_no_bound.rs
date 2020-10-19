@@ -15,16 +15,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Tests for DebugNoBound, CloneNoBound, EqNoBound, PartialEqNoBound, and DebugStripped
+//! Tests for DebugNoBound, CloneNoBound, EqNoBound, PartialEqNoBound, and RuntimeDebugNoBound
 
-use frame_support_procedural::{DebugNoBound, CloneNoBound, EqNoBound, PartialEqNoBound, DebugStripped};
+use frame_support::{DebugNoBound, CloneNoBound, EqNoBound, PartialEqNoBound, RuntimeDebugNoBound};
 
-#[derive(DebugStripped)]
-pub struct Foo;
+#[derive(RuntimeDebugNoBound)]
+struct Unnamed(u64);
 
 #[test]
-fn foo_debug_stripped() {
-	assert_eq!(format!("{:?}", Foo), String::from("<stripped>"));
+fn runtime_debug_no_bound_display_correctly() {
+	// This test is not executed without std
+	assert_eq!(format!("{:?}", Unnamed(1)), "Unnamed(1)");
 }
 
 trait Trait {
@@ -122,12 +123,13 @@ enum Enum<T: Trait, U, V> {
 
 #[test]
 fn test_enum() {
-	let variant_0 = Enum::<Runtime, ImplNone, ImplNone>::VariantUnnamed(1, 2, 3, Default::default());
-	let variant_0_bis = Enum::<Runtime, ImplNone, ImplNone>::VariantUnnamed(1, 2, 4, Default::default());
-	let variant_1 = Enum::<Runtime, ImplNone, ImplNone>::VariantNamed { a: 1, b: 2, c: 3, phantom: Default::default() };
-	let variant_1_bis = Enum::<Runtime, ImplNone, ImplNone>::VariantNamed { a: 1, b: 2, c: 4, phantom: Default::default() };
-	let variant_2 = Enum::<Runtime, ImplNone, ImplNone>::VariantUnit;
-	let variant_3 = Enum::<Runtime, ImplNone, ImplNone>::VariantUnit2;
+	type TestEnum = Enum::<Runtime, ImplNone, ImplNone>;
+	let variant_0 = TestEnum::VariantUnnamed(1, 2, 3, Default::default());
+	let variant_0_bis = TestEnum::VariantUnnamed(1, 2, 4, Default::default());
+	let variant_1 = TestEnum::VariantNamed { a: 1, b: 2, c: 3, phantom: Default::default() };
+	let variant_1_bis = TestEnum::VariantNamed { a: 1, b: 2, c: 4, phantom: Default::default() };
+	let variant_2 = TestEnum::VariantUnit;
+	let variant_3 = TestEnum::VariantUnit2;
 
 	assert!(variant_0 != variant_0_bis);
 	assert!(variant_1 != variant_1_bis);

@@ -23,6 +23,9 @@ mod storage;
 mod construct_runtime;
 mod pallet;
 mod transactional;
+mod debug_no_bound;
+mod clone_no_bound;
+mod partial_eq_no_bound;
 
 pub(crate) use storage::INHERENT_INSTANCE_NAME;
 use proc_macro::TokenStream;
@@ -310,326 +313,6 @@ pub fn pallet(attr: TokenStream, item: TokenStream) -> TokenStream {
 	pallet::pallet(attr, item)
 }
 
-/// Derive Clone but do not bound any generic.
-#[proc_macro_derive(CloneNoBound)]
-pub fn derive_clone_no_bound(input: TokenStream) -> TokenStream {
-	use syn::spanned::Spanned;
-
-	let input: syn::DeriveInput = match syn::parse(input) {
-		Ok(input) => input,
-		Err(e) => return e.to_compile_error().into(),
-	};
-
-	let name = &input.ident;
-	let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-
-	let impl_ = match input.data {
-		syn::Data::Struct(struct_) => match struct_.fields {
-			syn::Fields::Named(named) => {
-				let fields = named.named.iter()
-					.map(|i| i.ident.as_ref().expect("named fields have ident"))
-					.map(|i| quote::quote_spanned!(i.span() => #i: self.#i.clone() ));
-
-				quote::quote!( Self { #( #fields, )* } )
-			},
-			syn::Fields::Unnamed(unnamed) => {
-				let fields = unnamed.unnamed.iter().enumerate()
-					.map(|(i, _)| syn::Index::from(i))
-					.map(|i| quote::quote_spanned!(i.span() => self.#i.clone() ));
-
-				quote::quote!( Self ( #( #fields, )* ) )
-			},
-			syn::Fields::Unit => {
-				quote::quote!( Self )
-			}
-		},
-		syn::Data::Enum(enum_) => {
-			let variants = enum_.variants.iter()
-				.map(|variant| {
-					let ident = &variant.ident;
-					match &variant.fields {
-						syn::Fields::Named(named) => {
-							let captured = named.named.iter()
-								.map(|i| i.ident.as_ref().expect("named fields have ident"));
-							let cloned = captured.clone()
-								.map(|i| quote::quote_spanned!(i.span() =>
-									#i: core::clone::Clone::clone(#i)
-								));
-							quote::quote!(
-								Self::#ident { #( ref #captured, )* } => Self::#ident { #( #cloned, )*}
-							)
-						},
-						syn::Fields::Unnamed(unnamed) => {
-							let captured = unnamed.unnamed.iter().enumerate()
-								.map(|(i, f)| syn::Ident::new(&format!("_{}", i), f.span()));
-							let cloned = captured.clone()
-								.map(|i| quote::quote_spanned!(i.span() =>
-									core::clone::Clone::clone(#i)
-								));
-							quote::quote!(
-								Self::#ident ( #( ref #captured, )* ) => Self::#ident ( #( #cloned, )*)
-							)
-						},
-						syn::Fields::Unit => quote::quote!( Self::#ident => Self::#ident ),
-					}
-				});
-
-			quote::quote!( match self {
-				#( #variants, )*
-			})
-		},
-		syn::Data::Union(_) => {
-			let msg ="Union type not supported by `derive(CloneNoBound)`";
-			return syn::Error::new(input.span(), msg).to_compile_error().into()
-		},
-	};
-
-	quote::quote!(
-		const _: () = {
-			impl #impl_generics core::clone::Clone for #name #ty_generics #where_clause {
-				fn clone(&self) -> Self {
-					#impl_
-				}
-			}
-		};
-	).into()
-}
-
-/// Derive Debug by returning `"<stripped>"` (also do not bound any generic).
-#[proc_macro_derive(DebugStripped)]
-pub fn derive_debug_stripped(input: TokenStream) -> TokenStream {
-	let input: syn::DeriveInput = match syn::parse(input) {
-		Ok(input) => input,
-		Err(e) => return e.to_compile_error().into(),
-	};
-
-	let name = &input.ident;
-	let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-
-	quote::quote!(
-		const _: () = {
-			impl #impl_generics core::fmt::Debug for #name #ty_generics #where_clause {
-				fn fmt(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
-					fmt.write_str("<stripped>")
-				}
-			}
-		};
-	).into()
-}
-
-/// Derive Debug but do not bound any generics.
-#[proc_macro_derive(DebugNoBound)]
-pub fn derive_debug_no_bound(input: TokenStream) -> TokenStream {
-	use syn::spanned::Spanned;
-
-	let input: syn::DeriveInput = match syn::parse(input) {
-		Ok(input) => input,
-		Err(e) => return e.to_compile_error().into(),
-	};
-
-	let input_ident = &input.ident;
-	let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-
-	let impl_ = match input.data {
-		syn::Data::Struct(struct_) => match struct_.fields {
-			syn::Fields::Named(named) => {
-				let fields = named.named.iter()
-					.map(|i| i.ident.as_ref().expect("named fields have ident"))
-					.map(|i| quote::quote_spanned!(i.span() => .field(stringify!(#i), &self.#i) ));
-
-				quote::quote!( fmt.debug_struct(stringify!(#input_ident))
-					#( #fields )*
-					.finish()
-				)
-			},
-			syn::Fields::Unnamed(unnamed) => {
-				let fields = unnamed.unnamed.iter().enumerate()
-					.map(|(i, _)| syn::Index::from(i))
-					.map(|i| quote::quote_spanned!(i.span() => .field(&self.#i) ));
-
-				quote::quote!( fmt.debug_tuple(stringify!(#input_ident))
-					#( #fields )*
-					.finish()
-				)
-			},
-			syn::Fields::Unit => quote::quote!( fmt.write_str(stringify!(#input_ident)) ),
-		},
-		syn::Data::Enum(enum_) => {
-			let variants = enum_.variants.iter()
-				.map(|variant| {
-					let ident = &variant.ident;
-					let full_variant_str = format!("{}::{}", input_ident, ident);
-					match &variant.fields {
-						syn::Fields::Named(named) => {
-							let captured = named.named.iter()
-								.map(|i| i.ident.as_ref().expect("named fields have ident"));
-							let debuged = captured.clone()
-								.map(|i| quote::quote_spanned!(i.span() =>
-									.field(stringify!(#i), &#i)
-								));
-							quote::quote!(
-								Self::#ident { #( ref #captured, )* } => {
-									fmt.debug_struct(#full_variant_str)
-										#( #debuged )*
-										.finish()
-								}
-							)
-						},
-						syn::Fields::Unnamed(unnamed) => {
-							let captured = unnamed.unnamed.iter().enumerate()
-								.map(|(i, f)| syn::Ident::new(&format!("_{}", i), f.span()));
-							let debuged = captured.clone()
-								.map(|i| quote::quote_spanned!(i.span() => .field(&#i) ));
-							quote::quote!(
-								Self::#ident ( #( ref #captured, )* ) => {
-									fmt.debug_tuple(#full_variant_str)
-										#( #debuged )*
-										.finish()
-								}
-							)
-						},
-						syn::Fields::Unit => quote::quote!(
-							Self::#ident => fmt.write_str(#full_variant_str)
-						),
-					}
-				});
-
-			quote::quote!( match *self {
-				#( #variants, )*
-			})
-		},
-		syn::Data::Union(_) => {
-			let msg ="Union type not supported by `derive(DebugNoBound)`";
-			return syn::Error::new(input.span(), msg).to_compile_error().into()
-		},
-	};
-
-	quote::quote!(
-		const _: () = {
-			impl #impl_generics core::fmt::Debug for #input_ident #ty_generics #where_clause {
-				fn fmt(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
-					#impl_
-				}
-			}
-		};
-	).into()
-}
-
-
-/// Derive PartialEq but do not bound any generic.
-#[proc_macro_derive(PartialEqNoBound)]
-pub fn derive_partial_eq_no_bound(input: TokenStream) -> TokenStream {
-	use syn::spanned::Spanned;
-
-	let input: syn::DeriveInput = match syn::parse(input) {
-		Ok(input) => input,
-		Err(e) => return e.to_compile_error().into(),
-	};
-
-	let name = &input.ident;
-	let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-
-	let impl_ = match input.data {
-		syn::Data::Struct(struct_) => match struct_.fields {
-			syn::Fields::Named(named) => {
-				let fields = named.named.iter()
-					.map(|i| i.ident.as_ref().expect("named fields have ident"))
-					.map(|i| quote::quote_spanned!(i.span() => self.#i == other.#i ));
-
-				quote::quote!( true #( && #fields )* )
-			},
-			syn::Fields::Unnamed(unnamed) => {
-				let fields = unnamed.unnamed.iter().enumerate()
-					.map(|(i, _)| syn::Index::from(i))
-					.map(|i| quote::quote_spanned!(i.span() => self.#i == other.#i ));
-
-				quote::quote!( true #( && #fields )* )
-			},
-			syn::Fields::Unit => {
-				quote::quote!( true )
-			}
-		},
-		syn::Data::Enum(enum_) => {
-			let variants = enum_.variants.iter()
-				.map(|variant| {
-					let ident = &variant.ident;
-					match &variant.fields {
-						syn::Fields::Named(named) => {
-							let names = named.named.iter()
-								.map(|i| i.ident.as_ref().expect("named fields have ident"));
-							let names_bis = names.clone()
-								.map(|i| syn::Ident::new(&format!("{}_bis", i), i.span()));
-
-							let capture = names.clone();
-							let capture_bis = names.clone().zip(names_bis.clone())
-								.map(|(i, i_bis)| quote::quote!(#i: #i_bis));
-							let eq = names.zip(names_bis)
-								.map(|(i, i_bis)| quote::quote_spanned!(i.span() => #i == #i_bis));
-							quote::quote!(
-								(
-									Self::#ident { #( #capture, )* },
-									Self::#ident { #( #capture_bis, )* },
-								) => true #( && #eq )*
-							)
-						},
-						syn::Fields::Unnamed(unnamed) => {
-							let names = unnamed.unnamed.iter().enumerate()
-								.map(|(i, f)| syn::Ident::new(&format!("_{}", i), f.span()));
-							let names_bis = unnamed.unnamed.iter().enumerate()
-								.map(|(i, f)| syn::Ident::new(&format!("_{}_bis", i), f.span()));
-							let eq = names.clone().zip(names_bis.clone())
-								.map(|(i, i_bis)| quote::quote_spanned!(i.span() => #i == #i_bis));
-							quote::quote!(
-								(
-									Self::#ident ( #( #names, )* ),
-									Self::#ident ( #( #names_bis, )* ),
-								) => true #( && #eq )*
-							)
-						},
-						syn::Fields::Unit => quote::quote!( (Self::#ident, Self::#ident) => true ),
-					}
-				});
-
-			quote::quote!( match (self, other) {
-				#( #variants, )*
-				_ => false,
-			})
-		},
-		syn::Data::Union(_) => {
-			let msg ="Union type not supported by `derive(PartialEqNoBound)`";
-			return syn::Error::new(input.span(), msg).to_compile_error().into()
-		},
-	};
-
-	quote::quote!(
-		const _: () = {
-			impl #impl_generics core::cmp::PartialEq for #name #ty_generics #where_clause {
-				fn eq(&self, other: &Self) -> bool {
-					#impl_
-				}
-			}
-		};
-	).into()
-}
-
-/// derive Eq but do no bound any generic.
-#[proc_macro_derive(EqNoBound)]
-pub fn derive_eq_no_bound(input: TokenStream) -> TokenStream {
-	let input: syn::DeriveInput = match syn::parse(input) {
-		Ok(input) => input,
-		Err(e) => return e.to_compile_error().into(),
-	};
-
-	let name = &input.ident;
-	let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-
-	quote::quote!(
-		const _: () = {
-			impl #impl_generics core::cmp::Eq for #name #ty_generics #where_clause {}
-		};
-	).into()
-}
-
 /// Execute the annotated function in a new storage transaction.
 ///
 /// The return type of the annotated function must be `Result`. All changes to storage performed
@@ -653,4 +336,78 @@ pub fn derive_eq_no_bound(input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn transactional(attr: TokenStream, input: TokenStream) -> TokenStream {
 	transactional::transactional(attr, input).unwrap_or_else(|e| e.to_compile_error().into())
+}
+
+/// Derive [`Clone`] but do not bound any generic. Docs are at `frame_support::CloneNoBound`.
+#[proc_macro_derive(CloneNoBound)]
+pub fn derive_clone_no_bound(input: TokenStream) -> TokenStream {
+	clone_no_bound::derive_clone_no_bound(input)
+}
+
+/// Derive [`Debug`] but do not bound any generics. Docs are at `frame_support::DeriveNoBounds`.
+#[proc_macro_derive(DebugNoBound)]
+pub fn derive_debug_no_bound(input: TokenStream) -> TokenStream {
+	debug_no_bound::derive_debug_no_bound(input)
+}
+
+/// Derive [`Debug`], if `std` is enabled it uses `frame_support::DebugNoBound`, if `std` is not
+/// enabled it just returns `"<stripped>"`.
+/// This behaviour is useful to prevent bloating the runtime WASM blob from unneeded code.
+#[proc_macro_derive(RuntimeDebugNoBound)]
+pub fn derive_runtime_debug_no_bound(input: TokenStream) -> TokenStream {
+	#[cfg(not(feature = "std"))]
+	{
+		let input: syn::DeriveInput = match syn::parse(input) {
+			Ok(input) => input,
+			Err(e) => return e.to_compile_error().into(),
+		};
+
+		let name = &input.ident;
+		let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+
+		quote::quote!(
+			const _: () = {
+				impl #impl_generics core::fmt::Debug for #name #ty_generics #where_clause {
+					fn fmt(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
+						fmt.write_str("<stripped>")
+					}
+				}
+			};
+		).into()
+	}
+
+	#[cfg(feature = "std")]
+	{
+		debug_no_bound::derive_debug_no_bound(input)
+	}
+}
+
+/// Derive [`PartialEq`] but do not bound any generic. Docs are at
+/// `frame_support::PartialEqNoBound`.
+#[proc_macro_derive(PartialEqNoBound)]
+pub fn derive_partial_eq_no_bound(input: TokenStream) -> TokenStream {
+	partial_eq_no_bound::derive_partial_eq_no_bound(input)
+}
+
+/// derive Eq but do no bound any generic. Docs are at `frame_support::EqNoBound`.
+#[proc_macro_derive(EqNoBound)]
+pub fn derive_eq_no_bound(input: TokenStream) -> TokenStream {
+	let input: syn::DeriveInput = match syn::parse(input) {
+		Ok(input) => input,
+		Err(e) => return e.to_compile_error().into(),
+	};
+
+	let name = &input.ident;
+	let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+
+	quote::quote_spanned!(name.span() =>
+		const _: () = {
+			impl #impl_generics core::cmp::Eq for #name #ty_generics #where_clause {}
+		};
+	).into()
+}
+
+#[proc_macro_attribute]
+pub fn require_transactional(attr: TokenStream, input: TokenStream) -> TokenStream {
+	transactional::require_transactional(attr, input).unwrap_or_else(|e| e.to_compile_error().into())
 }
