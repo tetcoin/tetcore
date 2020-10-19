@@ -18,21 +18,54 @@
 use frame_support::{
 	weights::{DispatchInfo, DispatchClass, Pays, GetDispatchInfo},
 	traits::{GetCallName, OnInitialize, OnFinalize, OnRuntimeUpgrade},
-	dispatch::UnfilteredDispatchable,
+	dispatch::{UnfilteredDispatchable, Parameter},
 	storage::unhashed,
 };
 use sp_runtime::{traits::Block as _, DispatchError};
 use sp_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
 
+pub struct SomeType1;
+impl From<SomeType1> for u64 { fn from(_t: SomeType1) -> Self { 0u64 } }
+
+pub struct SomeType2;
+impl From<SomeType2> for u64 { fn from(_t: SomeType2) -> Self { 0u64 } }
+
+pub struct SomeType3;
+impl From<SomeType3> for u64 { fn from(_t: SomeType3) -> Self { 0u64 } }
+
+pub struct SomeType4;
+impl From<SomeType4> for u64 { fn from(_t: SomeType4) -> Self { 0u64 } }
+
+pub struct SomeType5;
+impl From<SomeType5> for u64 { fn from(_t: SomeType5) -> Self { 0u64 } }
+
+pub struct SomeType6;
+impl From<SomeType6> for u64 { fn from(_t: SomeType6) -> Self { 0u64 } }
+
+pub struct SomeType7;
+impl From<SomeType7> for u64 { fn from(_t: SomeType7) -> Self { 0u64 } }
+
+pub trait SomeAssociation1 { type _1: Parameter; }
+impl SomeAssociation1 for u64 { type _1 = u64; }
+
+pub trait SomeAssociation2 { type _2: Parameter; }
+impl SomeAssociation2 for u64 { type _2 = u64; }
+
 #[frame_support::pallet]
 pub mod pallet {
+	use super::{
+		SomeType1, SomeType2, SomeType3, SomeType4, SomeType5, SomeType6, SomeType7,
+		SomeAssociation1, SomeAssociation2,
+	};
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
 
 	type BalanceOf<T> = <T as Config>::Balance;
 
 	#[pallet::config]
-	pub trait Config: frame_system::Config {
+	pub trait Config: frame_system::Config
+	where Self::Balance: From<SomeType1> + SomeAssociation1
+	{
 		/// Some comment
 		/// Some comment
 		#[pallet::constant]
@@ -53,32 +86,41 @@ pub mod pallet {
 	pub struct Pallet<T>(PhantomData<T>);
 
 	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> where T::Balance: From<u64> {
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T>
+	where T::Balance: From<SomeType2> + From<SomeType1> + SomeAssociation1
+	{
 		fn on_initialize(_: BlockNumberFor<T>) -> Weight {
-			T::Balance::from(3u64); // Test for where clause
+			T::Balance::from(SomeType1); // Test for where clause
+			T::Balance::from(SomeType2); // Test for where clause
 			Self::deposit_event(Event::Something(10));
 			10
 		}
 		fn on_finalize(_: BlockNumberFor<T>) {
-			T::Balance::from(3u64); // Test for where clause
+			T::Balance::from(SomeType1); // Test for where clause
+			T::Balance::from(SomeType2); // Test for where clause
 			Self::deposit_event(Event::Something(20));
 		}
 		fn on_runtime_upgrade() -> Weight {
-			T::Balance::from(3u64); // Test for where clause
+			T::Balance::from(SomeType1); // Test for where clause
+			T::Balance::from(SomeType2); // Test for where clause
 			Self::deposit_event(Event::Something(30));
 			30
 		}
 		fn integrity_test() {
-			T::Balance::from(3u64); // Test for where clause
+			T::Balance::from(SomeType1); // Test for where clause
+			T::Balance::from(SomeType2); // Test for where clause
 		}
 	}
 
 	#[pallet::call]
-	impl<T: Config> Pallet<T> where T::Balance: From<u64> {
+	impl<T: Config> Pallet<T>
+	where T::Balance: From<SomeType1> + From<SomeType3> + SomeAssociation1
+	{
 		/// Doc comment put in metadata
 		#[pallet::weight(Weight::from(*_foo))]
 		fn foo(origin: OriginFor<T>, #[pallet::compact] _foo: u32, _bar: u32) -> DispatchResultWithPostInfo {
-			T::Balance::from(3u64); // Test for where clause
+			T::Balance::from(SomeType1); // Test for where clause
+			T::Balance::from(SomeType3); // Test for where clause
 			let _ = origin;
 			Self::deposit_event(Event::Something(3));
 			Ok(().into())
@@ -102,19 +144,31 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::metadata(BalanceOf<T> = Balance, u32 = Other)]
 	#[pallet::generate_deposit(fn deposit_event)]
-	pub enum Event<T: Config> {
+	pub enum Event<T: Config> where T::Balance: SomeAssociation1 {
 		/// doc comment put in metadata
 		Proposed(<T as frame_system::Config>::AccountId),
 		/// doc
 		Spending(BalanceOf<T>),
 		Something(u32),
+		SomethingElse(<T::Balance as SomeAssociation1>::_1),
 	}
+
+	#[pallet::storage]
+	pub type ValueWhereClause<T: Config> where T::Balance: SomeAssociation2 =
+		StorageValue<_, <T::Balance as SomeAssociation2>::_2>;
 
 	#[pallet::storage]
 	pub type Value<T> = StorageValue<_, u32>;
 
+	#[pallet::type_value]
+	pub fn MyDefault<T: Config>() -> u16 where T::Balance: From<SomeType7> {
+		T::Balance::from(SomeType7); // Test where clause works
+		4u16
+	}
+
 	#[pallet::storage]
-	pub type Map<T> = StorageMap<_, Blake2_128Concat, u8, u16>;
+	pub type Map<T: Config> where T::Balance: From<SomeType7> =
+		StorageMap<_, Blake2_128Concat, u8, u16, ValueQuery, MyDefault<T>>;
 
 	#[pallet::storage]
 	pub type Map2<T> = StorageMap<_, Twox64Concat, u16, u32>;
@@ -132,9 +186,12 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Config> GenesisBuild<T> for GenesisConfig where T::Balance: From<u64> {
+	impl<T: Config> GenesisBuild<T> for GenesisConfig
+	where T::Balance: From<SomeType1> + SomeAssociation1 + From<SomeType4>
+	{
 		fn build(&self) {
-			T::Balance::from(3u64); // Test for where clause
+			T::Balance::from(SomeType1); // Test for where clause
+			T::Balance::from(SomeType4); // Test for where clause
 		}
 	}
 
@@ -143,26 +200,32 @@ pub mod pallet {
 	pub struct Origin<T>(PhantomData<T>);
 
 	#[pallet::validate_unsigned]
-	impl<T: Config> ValidateUnsigned for Pallet<T> where T::Balance: From<u64> {
+	impl<T: Config> ValidateUnsigned for Pallet<T>
+	where T::Balance: From<SomeType1> + SomeAssociation1 + From<SomeType5> + From<SomeType3>
+	{
 		type Call = Call<T>;
 		fn validate_unsigned(
 			_source: TransactionSource,
 			_call: &Self::Call
 		) -> TransactionValidity {
-			T::Balance::from(3u64); // Test for where clause
+			T::Balance::from(SomeType1); // Test for where clause
+			T::Balance::from(SomeType5); // Test for where clause
 			Err(TransactionValidityError::Invalid(InvalidTransaction::Call))
 		}
 	}
 
 	#[pallet::inherent]
-	impl<T: Config> ProvideInherent for Pallet<T> where T::Balance: From<u64> {
+	impl<T: Config> ProvideInherent for Pallet<T>
+	where T::Balance: From<SomeType1> + SomeAssociation1 + From<SomeType6> + From<SomeType3>
+	{
 		type Call = Call<T>;
 		type Error = InherentError;
 
 		const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
 
 		fn create_inherent(_data: &InherentData) -> Option<Self::Call> {
-			T::Balance::from(3u64); // Test for where clause
+			T::Balance::from(SomeType1); // Test for where clause
+			T::Balance::from(SomeType6); // Test for where clause
 			unimplemented!();
 		}
 	}
@@ -381,6 +444,17 @@ fn metadata() {
 			prefix: DecodeDifferent::Decoded("Example".to_string()),
 			entries: DecodeDifferent::Decoded(vec![
 				StorageEntryMetadata {
+					name: DecodeDifferent::Decoded("ValueWhereClause".to_string()),
+					modifier: StorageEntryModifier::Optional,
+					ty: StorageEntryType::Plain(
+						DecodeDifferent::Decoded(
+							"<T::Balance as SomeAssociation2>::_2".to_string()
+						),
+					),
+					default: DecodeDifferent::Decoded(vec![0]),
+					documentation: DecodeDifferent::Decoded(vec![]),
+				},
+				StorageEntryMetadata {
 					name: DecodeDifferent::Decoded("Value".to_string()),
 					modifier: StorageEntryModifier::Optional,
 					ty: StorageEntryType::Plain(DecodeDifferent::Decoded("u32".to_string())),
@@ -389,14 +463,14 @@ fn metadata() {
 				},
 				StorageEntryMetadata {
 					name: DecodeDifferent::Decoded("Map".to_string()),
-					modifier: StorageEntryModifier::Optional,
+					modifier: StorageEntryModifier::Default,
 					ty: StorageEntryType::Map {
 						key: DecodeDifferent::Decoded("u8".to_string()),
 						value: DecodeDifferent::Decoded("u16".to_string()),
 						hasher: StorageHasher::Blake2_128Concat,
 						unused: false,
 					},
-					default: DecodeDifferent::Decoded(vec![0]),
+					default: DecodeDifferent::Decoded(vec![4, 0]),
 					documentation: DecodeDifferent::Decoded(vec![]),
 				},
 				StorageEntryMetadata {
@@ -487,6 +561,11 @@ fn metadata() {
 			EventMetadata {
 				name: DecodeDifferent::Decoded("Something".to_string()),
 				arguments: DecodeDifferent::Decoded(vec!["Other".to_string()]),
+				documentation: DecodeDifferent::Decoded(vec![]),
+			},
+			EventMetadata {
+				name: DecodeDifferent::Decoded("SomethingElse".to_string()),
+				arguments: DecodeDifferent::Decoded(vec!["_1".to_string()]),
 				documentation: DecodeDifferent::Decoded(vec![]),
 			},
 		])),

@@ -46,13 +46,16 @@ pub struct ConfigDef {
 	/// * `IsType<Self as frame_system::Config>::Event`
 	/// * `From<Event>` or `From<Event<T>>` or `From<Event<T, I>>`
 	pub has_event_type: bool,
+	/// The where clause on trait definition but modified so `Self` is `T`.
+	pub where_clause: Option<syn::WhereClause>,
+
 }
 
 /// Input definition for a constant in pallet config.
 pub struct ConstMetadataDef {
 	/// Name of the associated type.
 	pub ident: syn::Ident,
-	/// The type in Get, e.g. `u32` in `type Foo: Get<u32>;`
+	/// The type in Get, e.g. `u32` in `type Foo: Get<u32>;`, but `Self` is replaced by `T`
 	pub type_: syn::Type,
 	/// The doc associated
 	pub doc: Vec<syn::Lit>,
@@ -66,7 +69,9 @@ impl syn::parse::Parse for ConstMetadataDef  {
 		input.parse::<syn::Token![:]>()?;
 		input.parse::<keyword::Get>()?;
 		input.parse::<syn::Token![<]>()?;
-		let type_ = input.parse::<syn::Type>()?;
+		let mut type_ = input.parse::<syn::Type>()?;
+		type_ = syn::parse2::<syn::Type>(replace_self_by_t(type_.to_token_stream()))
+			.expect("Internal error: replacing `Self` by `T` should result in valid type");
 		input.parse::<syn::Token![>]>()?;
 		input.parse::<syn::Token![;]>()?;
 
@@ -238,6 +243,22 @@ fn check_event_type(
 	}
 }
 
+/// Replace ident `Self` by `T`
+pub fn replace_self_by_t(input: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
+	input.into_iter()
+		.map(|token_tree| match token_tree {
+			proc_macro2::TokenTree::Group(group) =>
+				proc_macro2::Group::new(
+					group.delimiter(),
+					replace_self_by_t(group.stream())
+				).into(),
+			proc_macro2::TokenTree::Ident(ident) if ident == "Self" =>
+				proc_macro2::Ident::new("T", ident.span()).into(),
+			other @ _ => other
+		})
+		.collect()
+}
+
 impl ConfigDef {
 	pub fn try_from(
 		frame_system: &syn::Ident,
@@ -258,10 +279,13 @@ impl ConfigDef {
 
 		syn::parse2::<keyword::Config>(item.ident.to_token_stream())?;
 
-		if item.generics.where_clause.is_some() {
-			let msg = "Invalid pallet::config, expect no where clause";
-			return Err(syn::Error::new(item.generics.where_clause.span(), msg));
-		}
+
+		let where_clause = {
+			let stream = replace_self_by_t(item.generics.where_clause.to_token_stream());
+			syn::parse2::<Option<syn::WhereClause>>(stream)
+				.expect("Internal error: replacing `Self` by `T` should result in valid where
+					clause")
+		};
 
 		if item.generics.params.len() > 1 {
 			let msg = "Invalid pallet::config, expect no more than one generics";
@@ -348,6 +372,12 @@ impl ConfigDef {
 			return Err(syn::Error::new(item.span(), msg));
 		}
 
-		Ok(Self { index, has_instance, consts_metadata, has_event_type })
+		Ok(Self {
+			index,
+			has_instance,
+			consts_metadata,
+			has_event_type,
+			where_clause,
+		})
 	}
 }

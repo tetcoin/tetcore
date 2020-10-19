@@ -43,7 +43,9 @@ pub struct EventDef {
 	/// If event is declared with genericity.
 	pub is_generic: bool,
 	/// Weither the function `deposit_event` must be generated.
-	pub deposit_event: Option<(syn::Visibility, proc_macro2::Span)>
+	pub deposit_event: Option<(syn::Visibility, proc_macro2::Span)>,
+	/// Where clause used in event definition.
+	pub where_clause: Option<syn::WhereClause>,
 }
 
 impl EventDef {
@@ -193,11 +195,8 @@ impl EventDef {
 			let msg = "Invalid pallet::event, `Error` must be public";
 			return Err(syn::Error::new(item.span(), msg));
 		}
-		if item.generics.where_clause.is_some() {
-			let msg = "Invalid pallet::event, unexpected where clause";
-			return Err(syn::Error::new(item.generics.where_clause.as_ref().unwrap().span(), msg));
-		}
 
+		let where_clause = item.generics.where_clause.clone();
 		let has_instance = item.generics.params.len() == 2;
 		let is_generic = item.generics.params.len() > 0;
 
@@ -251,6 +250,7 @@ impl EventDef {
 			deposit_event,
 			event,
 			is_generic,
+			where_clause,
 		})
 	}
 }

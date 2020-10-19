@@ -140,6 +140,10 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 
 	let getters = def.storages.iter()
 		.map(|storage| if let Some(getter) = &storage.getter {
+			let completed_where_clause = super::merge_where_clauses(&[
+				&storage.where_clause,
+				&def.config.where_clause,
+			]);
 			let docs = storage.docs.iter().map(|d| quote::quote!(#[doc = #d]));
 
 			let ident = &storage.ident;
@@ -153,7 +157,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						QueryKind::ValueQuery => quote::quote!(#value),
 					};
 					quote::quote_spanned!(getter.span() =>
-						impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
+						impl<#type_impl_gen> #pallet_ident<#type_use_gen> #completed_where_clause {
 							#( #docs )*
 							pub fn #getter() -> #query {
 								<
@@ -169,7 +173,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						QueryKind::ValueQuery => quote::quote!(#value),
 					};
 					quote::quote_spanned!(getter.span() =>
-						impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
+						impl<#type_impl_gen> #pallet_ident<#type_use_gen> #completed_where_clause {
 							#( #docs )*
 							pub fn #getter<KArg>(k: KArg) -> #query where
 								KArg: #frame_support::codec::EncodeLike<#key>,
@@ -187,7 +191,7 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 						QueryKind::ValueQuery => quote::quote!(#value),
 					};
 					quote::quote_spanned!(getter.span() =>
-						impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
+						impl<#type_impl_gen> #pallet_ident<#type_use_gen> #completed_where_clause {
 							#( #docs )*
 							pub fn #getter<KArg1, KArg2>(k1: KArg1, k2: KArg2) -> #query where
 								KArg1: #frame_support::codec::EncodeLike<#key1>,
@@ -210,13 +214,15 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 		let prefix_struct_ident = prefix_ident(&storage_def.ident);
 		let prefix_struct_vis = &storage_def.vis;
 		let prefix_struct_const = storage_def.ident.to_string();
+		let config_where_clause = &def.config.where_clause;
 
 		quote::quote_spanned!(storage_def.ident.span() =>
 			#prefix_struct_vis struct #prefix_struct_ident<#type_use_gen>(
 				core::marker::PhantomData<(#type_use_gen,)>
 			);
 			impl<#type_impl_gen> #frame_support::traits::StorageInstance
-			for #prefix_struct_ident<#type_use_gen>
+				for #prefix_struct_ident<#type_use_gen>
+				#config_where_clause
 			{
 				type PalletInfo = <T as #frame_system::Config>::PalletInfo;
 				type Pallet = Pallet<#type_use_gen>;
@@ -225,8 +231,14 @@ pub fn expand_storages(def: &mut Def) -> proc_macro2::TokenStream {
 		)
 	});
 
+	let mut where_clauses = vec![&def.config.where_clause];
+	where_clauses.extend(def.storages.iter().map(|storage| &storage.where_clause));
+	let completed_where_clause = super::merge_where_clauses(&where_clauses);
+
 	quote::quote!(
-		impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
+		impl<#type_impl_gen> #pallet_ident<#type_use_gen>
+			#completed_where_clause
+		{
 			#[doc(hidden)]
 			pub fn storage_metadata() -> #frame_support::metadata::StorageMetadata {
 				#frame_support::metadata::StorageMetadata {

@@ -32,6 +32,10 @@ pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_use_gen = &def.type_use_generics();
 	let pallet_ident = &def.pallet_struct.pallet;
 
+	let mut where_clauses = vec![&def.config.where_clause];
+	where_clauses.extend(def.storages.iter().map(|storage| &storage.where_clause));
+	let completed_where_clause = super::merge_where_clauses(&where_clauses);
+
 	let storage_names = &def.storages.iter().map(|storage| &storage.ident).collect::<Vec<_>>();
 
 	quote::quote_spanned!(trait_store.span() =>
@@ -40,7 +44,9 @@ pub fn expand_store_trait(def: &mut Def) -> proc_macro2::TokenStream {
 				type #storage_names;
 			)*
 		}
-		impl<#type_impl_gen> #trait_store for #pallet_ident<#type_use_gen> {
+		impl<#type_impl_gen> #trait_store for #pallet_ident<#type_use_gen>
+			#completed_where_clause
+		{
 			#(
 				type #storage_names = #storage_names<#type_use_gen>;
 			)*

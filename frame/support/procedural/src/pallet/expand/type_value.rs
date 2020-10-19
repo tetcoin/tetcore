@@ -34,23 +34,21 @@ pub fn expand_type_values(def: &mut Def) -> proc_macro2::TokenStream {
 		let ident = &type_value.ident;
 		let block = &type_value.block;
 		let type_ = &type_value.type_;
+		let where_clause = &type_value.where_clause;
 
-		let (
-			struct_impl_gen,
-			struct_use_gen,
-		) = match (type_value.has_trait, type_value.has_instance) {
-			(true, true) => (
-				quote::quote!(T: Config<I>, I),
-				quote::quote!(T, I),
-			),
-			(true, false) => (quote::quote!(T: Config), quote::quote!(T)),
-			(false, false) => (quote::quote!(), quote::quote!()),
-			(false, true) => unreachable!("Checked by def"),
+		let (struct_impl_gen, struct_use_gen) = if type_value.is_generic {
+			(def.type_impl_generics(), def.type_use_generics())
+		} else {
+			(Default::default(), Default::default())
 		};
+
+		// TODO TODO: should those where clause be inside store trait ? and what about storages ???
 
 		expand.extend(quote::quote_spanned!(span =>
 			#vis struct #ident<#struct_use_gen>(core::marker::PhantomData<((), #struct_use_gen)>);
-			impl<#struct_impl_gen> #frame_support::traits::Get<#type_> for #ident<#struct_use_gen> {
+			impl<#struct_impl_gen> #frame_support::traits::Get<#type_> for #ident<#struct_use_gen>
+			#where_clause
+			{
 				fn get() -> #type_ #block
 			}
 		));

@@ -30,12 +30,12 @@ pub struct TypeValueDef {
 	pub type_: Box<syn::Type>,
 	/// The block returning the value to get
 	pub block: Box<syn::Block>,
-	/// If type value is generic over trait T.
-	pub has_trait: bool,
-	/// If type value is generic over instance I.
-	pub has_instance: bool,
+	/// If type value is generic over `T` (or `T` and `I` for instantiable pallet)
+	pub is_generic: bool,
 	/// A set of usage of instance, must be check for consistency with config.
 	pub instances: Vec<helper::InstanceUsage>,
+	/// The where clause of the function.
+	pub where_clause: Option<syn::WhereClause>,
 }
 
 impl TypeValueDef {
@@ -83,18 +83,18 @@ impl TypeValueDef {
 			instances.push(usage);
 		}
 
-		let has_instance = item.sig.generics.type_params().any(|t| t.ident == "I");
-		let has_trait = item.sig.generics.type_params().any(|t| t.ident == "T");
+		let is_generic = item.sig.generics.type_params().count() > 0;
+		let where_clause = item.sig.generics.where_clause.clone();
 
 		Ok(TypeValueDef {
 			index,
-			has_trait,
-			has_instance,
+			is_generic,
 			vis,
 			ident,
 			block,
 			type_,
 			instances,
+			where_clause,
 		})
 	}
 }

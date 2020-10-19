@@ -87,6 +87,8 @@ pub struct StorageDef {
 	/// Note that this is best effort as it can't be determined when QueryKind is generic, and
 	/// result can be false if user do some unexpected type alias.
 	pub query_kind: Option<QueryKind>,
+	/// Where clause of type definition.
+	pub where_clause: Option<syn::WhereClause>,
 }
 
 /// In `Foo<A, B, C>` retrieve the argument at given position, i.e. A is argument at position 0.
@@ -127,11 +129,7 @@ impl StorageDef {
 		let mut instances = vec![];
 		instances.push(helper::check_type_def_gen(&item.generics, item.ident.span())?);
 
-		if item.generics.where_clause.is_some() {
-			let msg = "Invalid pallet::storage, unexpected where clause";
-			return Err(syn::Error::new(item.generics.where_clause.as_ref().unwrap().span(), msg));
-		}
-
+		let where_clause = item.generics.where_clause.clone();
 		let docs = helper::get_doc_literals(&item.attrs);
 
 		let typ = if let syn::Type::Path(typ) = &*item.ty {
@@ -217,6 +215,7 @@ impl StorageDef {
 			docs,
 			getter,
 			query_kind,
+			where_clause,
 		})
 	}
 }

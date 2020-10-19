@@ -35,6 +35,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let pallet_ident = &def.pallet_struct.pallet;
+	let config_where_clause = &def.config.where_clause;
 
 	let phantom_variant: syn::Variant = syn::parse_quote!(
 		#[doc(hidden)]
@@ -76,7 +77,9 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	error_item.variants.insert(0, phantom_variant);
 
 	quote::quote_spanned!(error_item_span =>
-		impl<#type_impl_gen> #frame_support::sp_std::fmt::Debug for #error_ident<#type_use_gen> {
+		impl<#type_impl_gen> #frame_support::sp_std::fmt::Debug for #error_ident<#type_use_gen>
+			#config_where_clause
+		{
 			fn fmt(&self, f: &mut #frame_support::sp_std::fmt::Formatter<'_>)
 				-> #frame_support::sp_std::fmt::Result
 			{
@@ -84,7 +87,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_gen> #error_ident<#type_use_gen> {
+		impl<#type_impl_gen> #error_ident<#type_use_gen> #config_where_clause {
 			fn as_u8(&self) -> u8 {
 				match &self {
 					Self::__Ignore(_, _) => unreachable!("`__Ignore` can never be constructed"),
@@ -100,7 +103,9 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 			}
 		}
 
-		impl<#type_impl_gen> From<#error_ident<#type_use_gen>> for &'static str {
+		impl<#type_impl_gen> From<#error_ident<#type_use_gen>> for &'static str
+			#config_where_clause
+		{
 			fn from(err: #error_ident<#type_use_gen>) -> &'static str {
 				err.as_str()
 			}
@@ -108,6 +113,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 
 		impl<#type_impl_gen> From<#error_ident<#type_use_gen>>
 			for #frame_support::sp_runtime::DispatchError
+			#config_where_clause
 		{
 			fn from(err: #error_ident<#type_use_gen>) -> Self {
 				let index = <
@@ -126,6 +132,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 
 		impl<#type_impl_gen> #frame_support::error::ModuleErrorMetadata
 			for #pallet_ident<#type_use_gen>
+			#config_where_clause
 		{
 			fn metadata() -> &'static [#frame_support::error::ErrorMetadata] {
 				&[ #( #metadata )* ]
@@ -133,4 +140,3 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 	)
 }
-

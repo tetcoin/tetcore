@@ -85,6 +85,7 @@ impl PalletStructDef {
 			let msg = "Invalid pallet::pallet, Pallet must be public";
 			return Err(syn::Error::new(item.span(), msg));
 		}
+
 		if item.generics.where_clause.is_some() {
 			let msg = "Invalid pallet::pallet, where clause not supported on Pallet declaration";
 			return Err(syn::Error::new(item.generics.where_clause.span(), msg));

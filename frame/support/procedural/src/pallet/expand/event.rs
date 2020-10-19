@@ -28,6 +28,15 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		return Default::default()
 	};
 
+	let event_where_clause = &event.where_clause;
+
+	// NOTE: actually event where clause must be a subset of config where clause because of
+	// `type Event: From<Event<Self>>`. But we merge either way for potential better error message
+	let completed_where_clause = super::merge_where_clauses(&[
+		&event.where_clause,
+		&def.config.where_clause,
+	]);
+
 	let event_ident = &event.event;
 	let frame_system = &def.frame_system;
 	let frame_support = &def.frame_support;
@@ -96,7 +105,7 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 		let type_use_gen = &def.type_use_generics();
 
 		quote::quote_spanned!(*fn_span =>
-			impl<#type_impl_gen> Pallet<#type_use_gen> {
+			impl<#type_impl_gen> Pallet<#type_use_gen> #completed_where_clause {
 				#fn_vis fn deposit_event(event: Event<#event_use_gen>) {
 					let event = <
 						<T as Config#trait_use_gen>::Event as
@@ -119,11 +128,11 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 	quote::quote_spanned!(event_item_span =>
 		#deposit_event
 
-		impl<#event_impl_gen> From<#event_ident<#event_use_gen>> for () {
+		impl<#event_impl_gen> From<#event_ident<#event_use_gen>> for () #event_where_clause {
 			fn from(_: #event_ident<#event_use_gen>) -> () { () }
 		}
 
-		impl<#event_impl_gen> #event_ident<#event_use_gen> {
+		impl<#event_impl_gen> #event_ident<#event_use_gen> #event_where_clause {
 			#[allow(dead_code)]
 			#[doc(hidden)]
 			pub fn metadata() -> &'static [#frame_support::event::EventMetadata] {

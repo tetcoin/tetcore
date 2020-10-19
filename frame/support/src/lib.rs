@@ -992,12 +992,14 @@ pub mod pallet_prelude {
 /// Item must be defined as
 /// ```ignore
 /// #[pallet::config]
-/// pub trait Config: frame_system::Config + $optionally_some_other_supertraits {
+/// pub trait Config: frame_system::Config + $optionally_some_other_supertraits
+/// $optional_where_clause
+/// {
 /// ...
 /// }
 /// ```
 /// I.e. a regular trait definition named `Config`, with supertrait `frame_system::Config`,
-/// optionally other supertrait but no where clause.
+/// optionally other supertrait and where clause.
 ///
 /// The associated type `Event` is reserved, if defined it must bounds `From<Event>` and
 /// `IsType<<Self as frame_system::Config>::Event>`, see `#[pallet::event]` for more information.
@@ -1018,9 +1020,6 @@ pub mod pallet_prelude {
 /// #[pallet::disable_frame_system_supertrait_check]
 /// pub trait Config: pallet_timestamp::Config {}
 /// ```
-///
-/// NOTE: At this moment macro doesn't support where clause on trait, but where clause can be
-/// used on some of the usage of this trait.
 ///
 /// ### Macro expansion:
 ///
@@ -1162,14 +1161,14 @@ pub mod pallet_prelude {
 /// #[pallet::event]
 /// #[pallet::metadata($SomeType = $Metadata, $SomeOtherType = $Metadata, ..)] // Optional
 /// #[pallet::generate_deposit($visbility fn deposit_event)] // Optional
-/// pub enum Event<$some_generic> {
+/// pub enum Event<$some_generic> $optional_where_clause {
 /// 	/// Some doc
 /// 	$SomeName($SomeType, $YetanotherType, ...),
 /// 	...
 /// }
 /// ```
 /// I.e. an enum (with named or unnamed fields variant), named Event, with generic: none or `T` or
-/// `T: Config`, and without where clause.
+/// `T: Config`, and optional where clause.
 ///
 /// Each field must implement `Clone`, `Eq`, `PartialEq`, `Encode`, `Decode`, and `Debug` (on std
 /// only).
@@ -1197,8 +1196,6 @@ pub mod pallet_prelude {
 ///
 /// NOTE: For instantiable pallet, event must be generic over T and I.
 ///
-/// NOTE: At this moment declaration doesn't support where clause.
-///
 /// ### Macro expansion:
 ///
 /// Macro will add on enum `Event` the attributes:
@@ -1224,7 +1221,7 @@ pub mod pallet_prelude {
 /// ```ignore
 /// #[pallet::storage]
 /// #[pallet::getter(fn $getter_name)] // optional
-/// $vis type $StorageName<$some_generic> = $StorageType<_, $some_generics, ...>;
+/// $vis type $StorageName<$some_generic> $optional_where_clause = $StorageType<_, $some_generics, ...>;
 /// ```
 /// I.e. it must be a type alias, with generics: `T` or `T: Config`, aliased type must be one
 /// of `StorageValue`, `StorageMap` or `StorageDoubleMap` (defined in frame_support).
@@ -1266,7 +1263,7 @@ pub mod pallet_prelude {
 /// Item is defined as
 /// ```ignore
 /// #[pallet::type_value]
-/// fn $MyDefaultName<$some_generic>() -> $default_type { $expr }
+/// fn $MyDefaultName<$some_generic>() -> $default_type $optional_where_clause { $expr }
 /// ```
 /// I.e.: a function definition with generics none or `T: Config` and a returned type.
 ///

@@ -17,25 +17,7 @@
 
 use crate::pallet::Def;
 use frame_support_procedural_tools::clean_type_string;
-use core::iter::FromIterator;
 use quote::ToTokens;
-
-/// Replace ident `Self` by `T`
-fn replace_self_by_t(input: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
-	let output = input.into_iter()
-		.map(|token_tree| match token_tree {
-			proc_macro2::TokenTree::Group(group) =>
-				proc_macro2::Group::new(
-					group.delimiter(),
-					replace_self_by_t(group.stream())
-				).into(),
-			proc_macro2::TokenTree::Ident(ident) if ident == "Self" =>
-				proc_macro2::Ident::new("T", ident.span()).into(),
-			other @ _ => other
-		});
-
-	proc_macro2::TokenStream::from_iter(output)
-}
 
 /// * Impl fn module_constant_metadata for pallet.
 pub fn expand_config(def: &mut Def) -> proc_macro2::TokenStream {
@@ -44,11 +26,12 @@ pub fn expand_config(def: &mut Def) -> proc_macro2::TokenStream {
 	let type_decl_gen = &def.type_decl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let pallet_ident = &def.pallet_struct.pallet;
+	let where_clause = &def.config.where_clause;
 
 	let consts = def.config.consts_metadata.iter()
 		.map(|const_| {
-			let const_type = replace_self_by_t(const_.type_.to_token_stream());
-			let const_type_str = clean_type_string(&const_type.to_string());
+			let const_type = &const_.type_;
+			let const_type_str = clean_type_string(&const_type.to_token_stream().to_string());
 			let ident = &const_.ident;
 			let ident_str = format!("{}", ident);
 			let doc = const_.doc.clone().into_iter();
@@ -60,7 +43,7 @@ pub fn expand_config(def: &mut Def) -> proc_macro2::TokenStream {
 			quote::quote!({
 				#[allow(non_upper_case_types)]
 				#[allow(non_camel_case_types)]
-				struct #default_byte_getter<#type_decl_gen>(
+				struct #default_byte_getter<#type_decl_gen>( // TODO TODO: does it needs where clause ???
 					#frame_support::sp_std::marker::PhantomData<(#type_use_gen)>
 				);
 
@@ -94,7 +77,7 @@ pub fn expand_config(def: &mut Def) -> proc_macro2::TokenStream {
 		});
 
 	quote::quote!(
-		impl<#type_impl_gen> #pallet_ident<#type_use_gen> {
+		impl<#type_impl_gen> #pallet_ident<#type_use_gen> #where_clause {
 
 			#[doc(hidden)]
 			pub fn module_constants_metadata()

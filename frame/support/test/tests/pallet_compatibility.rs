@@ -17,15 +17,24 @@
 
 use sp_runtime::traits::Block as _;
 
+pub trait SomeAssociation {
+	type A: frame_support::dispatch::Parameter + Default;
+}
+impl SomeAssociation for u64 {
+	type A = u64;
+}
+
 mod pallet_old {
 	use frame_support::{
 		decl_storage, decl_error, decl_event, decl_module, weights::Weight, traits::Get, Parameter
 	};
 	use frame_system::ensure_root;
+	use super::SomeAssociation;
 
 	pub trait Trait: frame_system::Trait {
 		type SomeConst: Get<Self::Balance>;
-		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default;
+		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default
+			+ SomeAssociation;
 		type Event: From<Event<Self>> + Into<<Self as frame_system::Config>::Event>;
 	}
 
@@ -35,7 +44,10 @@ mod pallet_old {
 			Dummy get(fn dummy) config(): Option<T::Balance>;
 			Bar get(fn bar) config(): map hasher(blake2_128_concat) T::AccountId => T::Balance;
 			Foo get(fn foo) config(): T::Balance = 3.into();
-			Double get(fn double): double_map hasher(blake2_128_concat) u32, hasher(twox_64_concat) u64 => u16;
+			Double get(fn double): double_map
+				hasher(blake2_128_concat) u32,
+				hasher(twox_64_concat) u64
+				=> <T::Balance as SomeAssociation>::A;
 		}
 	}
 
@@ -81,6 +93,7 @@ mod pallet_old {
 
 #[frame_support::pallet]
 pub mod pallet {
+	use super::SomeAssociation;
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
 	use frame_system::ensure_root;
@@ -88,7 +101,7 @@ pub mod pallet {
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
 		type Balance: Parameter + codec::HasCompact + From<u32> + Into<Weight> + Default
-			+ MaybeSerializeDeserialize;
+			+ MaybeSerializeDeserialize + SomeAssociation;
 		#[pallet::constant]
 		type SomeConst: Get<Self::Balance>;
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
@@ -112,7 +125,10 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 		#[pallet::weight(<T::Balance as Into<Weight>>::into(new_value.clone()))]
-		fn set_dummy(origin: OriginFor<T>, #[pallet::compact] new_value: T::Balance) -> DispatchResultWithPostInfo {
+		fn set_dummy(
+			origin: OriginFor<T>,
+			#[pallet::compact] new_value: T::Balance
+		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
 
 			<Dummy<T>>::put(&new_value);
@@ -147,8 +163,8 @@ pub mod pallet {
 	type Foo<T: Config> = StorageValue<_, T::Balance, ValueQuery, OnFooEmpty<T>>;
 
 	#[pallet::storage]
-	type Double<T> = StorageDoubleMap<
-		_, Blake2_128Concat, u32, Twox64Concat, u64, u16, ValueQuery
+	type Double<T: Config> = StorageDoubleMap<
+		_, Blake2_128Concat, u32, Twox64Concat, u64, <T::Balance as SomeAssociation>::A, ValueQuery
 	>;
 
 	#[pallet::genesis_config]

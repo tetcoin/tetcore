@@ -31,6 +31,16 @@ mod type_value;
 use crate::pallet::Def;
 use quote::ToTokens;
 
+/// Merge where clause together, `where` token span is taken from the first not none one.
+pub fn merge_where_clauses(clauses: &[&Option<syn::WhereClause>]) -> Option<syn::WhereClause> {
+	let mut clauses = clauses.iter().filter_map(|f| f.as_ref());
+	let mut res = clauses.next()?.clone();
+	for other in clauses {
+		res.predicates.extend(other.predicates.iter().cloned())
+	}
+	Some(res)
+}
+
 /// Expand definition, in particular:
 /// * add some bounds and variants to type defined,
 /// * create some new types,
