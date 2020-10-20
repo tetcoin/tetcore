@@ -928,7 +928,7 @@ mod tests {
 		new_test_ext().execute_with(|| {
 			run_to_block(2);
 			let call = Call::Logger(logger::Call::log(42, 1000));
-			assert!(!<Test as frame_system::Trait>::BaseCallFilter::filter(&call));
+			assert!(!<Test as frame_system::Config>::BaseCallFilter::filter(&call));
 			assert_ok!(Scheduler::do_schedule(DispatchTime::After(0), None, 127, root(), call));
 			// Will trigger on the next block.
 			run_to_block(3);
@@ -966,7 +966,7 @@ mod tests {
 	fn reschedule_works() {
 		new_test_ext().execute_with(|| {
 			let call = Call::Logger(logger::Call::log(42, 1000));
-			assert!(!<Test as frame_system::Trait>::BaseCallFilter::filter(&call));
+			assert!(!<Test as frame_system::Config>::BaseCallFilter::filter(&call));
 			assert_eq!(Scheduler::do_schedule(DispatchTime::At(4), None, 127, root(), call).unwrap(), (4, 0));
 
 			run_to_block(3);
@@ -991,7 +991,7 @@ mod tests {
 	fn reschedule_named_works() {
 		new_test_ext().execute_with(|| {
 			let call = Call::Logger(logger::Call::log(42, 1000));
-			assert!(!<Test as frame_system::Trait>::BaseCallFilter::filter(&call));
+			assert!(!<Test as frame_system::Config>::BaseCallFilter::filter(&call));
 			assert_eq!(Scheduler::do_schedule_named(
 				1u32.encode(), DispatchTime::At(4), None, 127, root(), call
 			).unwrap(), (4, 0));
@@ -1018,7 +1018,7 @@ mod tests {
 	fn reschedule_named_perodic_works() {
 		new_test_ext().execute_with(|| {
 			let call = Call::Logger(logger::Call::log(42, 1000));
-			assert!(!<Test as frame_system::Trait>::BaseCallFilter::filter(&call));
+			assert!(!<Test as frame_system::Config>::BaseCallFilter::filter(&call));
 			assert_eq!(Scheduler::do_schedule_named(
 				1u32.encode(), DispatchTime::At(4), Some((3, 3)), 127, root(), call
 			).unwrap(), (4, 0));
