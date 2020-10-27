@@ -103,8 +103,8 @@
 //! # 	type Currency: Currency<Self::AccountId>;
 //! # }
 //!
-//! pub type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::Balance;
-//! pub type NegativeImbalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::NegativeImbalance;
+//! pub type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+//! pub type NegativeImbalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance;
 //!
 //! # fn main() {}
 //! ```
@@ -118,8 +118,8 @@
 //! 	type Currency: LockableCurrency<Self::AccountId, Moment=Self::BlockNumber>;
 //! }
 //! # struct StakingLedger<T: Trait> {
-//! # 	stash: <T as frame_system::Trait>::AccountId,
-//! # 	total: <<T as Trait>::Currency as frame_support::traits::Currency<<T as frame_system::Trait>::AccountId>>::Balance,
+//! # 	stash: <T as frame_system::Config>::AccountId,
+//! # 	total: <<T as Trait>::Currency as frame_support::traits::Currency<<T as frame_system::Config>::AccountId>>::Balance,
 //! # 	phantom: std::marker::PhantomData<T>,
 //! # }
 //! # const STAKING_ID: [u8; 8] = *b"staking ";
@@ -207,7 +207,7 @@ pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
 	type DustRemoval: OnUnbalanced<NegativeImbalance<Self, I>>;
 
 	/// The overarching event type.
-	type Event: From<Event<Self, I>> + Into<<Self as frame_system::Trait>::Event>;
+	type Event: From<Event<Self, I>> + Into<<Self as frame_system::Config>::Event>;
 
 	/// The minimum amount required to keep an account open.
 	type ExistentialDeposit: Get<Self::Balance>;
@@ -233,7 +233,7 @@ impl<T: Trait<I>, I: Instance> Subtrait<I> for T {
 
 decl_event!(
 	pub enum Event<T, I: Instance = DefaultInstance> where
-		<T as frame_system::Trait>::AccountId,
+		<T as frame_system::Config>::AccountId,
 		<T as Trait<I>>::Balance
 	{
 		/// An account was created with some free balance. \[account, free_balance\]
@@ -873,7 +873,7 @@ impl<T: Subtrait<I>, I: Instance> PartialEq for ElevatedTrait<T, I> {
 	fn eq(&self, _: &Self) -> bool { unimplemented!() }
 }
 impl<T: Subtrait<I>, I: Instance> Eq for ElevatedTrait<T, I> {}
-impl<T: Subtrait<I>, I: Instance> frame_system::Trait for ElevatedTrait<T, I> {
+impl<T: Subtrait<I>, I: Instance> frame_system::Config for ElevatedTrait<T, I> {
 	type BaseCallFilter = T::BaseCallFilter;
 	type Origin = T::Origin;
 	type Call = T::Call;
