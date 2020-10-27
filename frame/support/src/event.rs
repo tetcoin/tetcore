@@ -554,13 +554,15 @@ mod tests {
 		/// Temporary keep old name Trait, soon to be deprecated alongside old macro.
 		pub trait Trait: Config {}
 		impl<Runtime: Config> Trait for Runtime {}
-		pub trait Config {
+		pub trait Config: 'static {
 			type Origin;
 			type BlockNumber;
+			type PalletInfo: crate::traits::PalletInfo;
+			type DbWeight: crate::traits::Get<crate::weights::RuntimeDbWeight>;
 		}
 
 		decl_module! {
-			pub struct Module<T: Trait> for enum Call where origin: T::Origin {}
+			pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=self {}
 		}
 
 		decl_event!(
@@ -571,13 +573,15 @@ mod tests {
 	}
 
 	mod system_renamed {
-		pub trait Trait {
+		pub trait Trait: 'static {
 			type Origin;
 			type BlockNumber;
+			type PalletInfo: crate::traits::PalletInfo;
+			type DbWeight: crate::traits::Get<crate::weights::RuntimeDbWeight>;
 		}
 
 		decl_module! {
-			pub struct Module<T: Trait> for enum Call where origin: T::Origin {}
+			pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=self {}
 		}
 
 		decl_event!(
@@ -588,19 +592,19 @@ mod tests {
 	}
 
 	mod event_module {
-		pub trait Trait {
-			type Origin;
+		use super::system;
+
+		pub trait Trait: system::Trait {
 			type Balance;
-			type BlockNumber;
 		}
 
 		decl_module! {
-			pub struct Module<T: Trait> for enum Call where origin: T::Origin {}
+			pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=system {}
 		}
 
 		decl_event!(
 			/// Event without renaming the generic parameter `Balance` and `Origin`.
-			pub enum Event<T> where <T as Trait>::Balance, <T as Trait>::Origin
+			pub enum Event<T> where <T as Trait>::Balance, <T as system::Config>::Origin
 			{
 				/// Hi, I am a comment.
 				TestEvent(Balance, Origin),
@@ -611,21 +615,21 @@ mod tests {
 	}
 
 	mod event_module2 {
-		pub trait Trait {
-			type Origin;
+		use super::system;
+
+		pub trait Trait: system::Trait {
 			type Balance;
-			type BlockNumber;
 		}
 
 		decl_module! {
-			pub struct Module<T: Trait> for enum Call where origin: T::Origin {}
+			pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=system {}
 		}
 
 		decl_event!(
 			/// Event with renamed generic parameter
 			pub enum Event<T> where
 				BalanceRenamed = <T as Trait>::Balance,
-				OriginRenamed = <T as Trait>::Origin
+				OriginRenamed = <T as system::Config>::Origin
 			{
 				TestEvent(BalanceRenamed),
 				TestOrigin(OriginRenamed),
@@ -642,21 +646,21 @@ mod tests {
 	}
 
 	mod event_module4 {
-		pub trait Trait {
-			type Origin;
+		use super::system;
+
+		pub trait Trait: system::Trait {
 			type Balance;
-			type BlockNumber;
 		}
 
 		decl_module! {
-			pub struct Module<T: Trait> for enum Call where origin: T::Origin {}
+			pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=system {}
 		}
 
 		decl_event!(
 			/// Event finish formatting on an unnamed one with trailing comma
 			pub enum Event<T> where
 				<T as Trait>::Balance,
-				<T as Trait>::Origin,
+				<T as system::Config>::Origin,
 			{
 				TestEvent(Balance, Origin),
 			}
@@ -664,21 +668,21 @@ mod tests {
 	}
 
 	mod event_module5 {
-		pub trait Trait {
-			type Origin;
+		use super::system;
+
+		pub trait Trait: system::Trait {
 			type Balance;
-			type BlockNumber;
 		}
 
 		decl_module! {
-			pub struct Module<T: Trait> for enum Call where origin: T::Origin {}
+			pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=system {}
 		}
 
 		decl_event!(
 			/// Event finish formatting on an named one with trailing comma
 			pub enum Event<T> where
 				BalanceRenamed = <T as Trait>::Balance,
-				OriginRenamed = <T as Trait>::Origin,
+				OriginRenamed = <T as system::Config>::Origin,
 			{
 				TestEvent(BalanceRenamed, OriginRenamed),
 				TrailingCommaInArgs(
@@ -714,37 +718,40 @@ mod tests {
 	}
 
 	impl event_module::Trait for TestRuntime {
-		type Origin = u32;
 		type Balance = u32;
-		type BlockNumber = u32;
 	}
 
 	impl event_module2::Trait for TestRuntime {
-		type Origin = u32;
 		type Balance = u32;
-		type BlockNumber = u32;
 	}
 
 	impl system::Config for TestRuntime {
 		type Origin = u32;
 		type BlockNumber = u32;
+		type PalletInfo = ();
+		type DbWeight = ();
 	}
 
 	impl event_module::Trait for TestRuntime2 {
-		type Origin = u32;
 		type Balance = u32;
-		type BlockNumber = u32;
 	}
 
 	impl event_module2::Trait for TestRuntime2 {
-		type Origin = u32;
 		type Balance = u32;
-		type BlockNumber = u32;
 	}
 
 	impl system_renamed::Trait for TestRuntime2 {
 		type Origin = u32;
 		type BlockNumber = u32;
+		type PalletInfo = ();
+		type DbWeight = ();
+	}
+
+	impl system::Trait for TestRuntime2 {
+		type Origin = u32;
+		type BlockNumber = u32;
+		type PalletInfo = ();
+		type DbWeight = ();
 	}
 
 	const EXPECTED_METADATA: OuterEventMetadata = OuterEventMetadata {

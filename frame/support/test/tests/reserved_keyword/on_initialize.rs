@@ -8,13 +8,10 @@ macro_rules! reserved {
 				pub trait Trait: Config {}
 				impl<Runtime: Config> Trait for Runtime {}
 				/// Temporary keep old module name, to be removed alongside old macro.
-#[allow(unused)]
+				#[allow(unused)]
 				pub type Pallet<T> = Module<T>;
 
-				pub trait Config {
-					type Origin;
-					type BlockNumber: Into<u32>;
-				}
+				pub trait Config: frame_support_test::Config {}
 
 				pub mod system {
 					use frame_support::dispatch;
@@ -25,7 +22,7 @@ macro_rules! reserved {
 				}
 
 				frame_support::decl_module! {
-					pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=self {
+					pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=frame_support_test {
 						#[weight = 0]
 						fn $reserved(_origin) -> dispatch::DispatchResult { unreachable!() }
 					}

@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use frame_support::codec::{Encode, Decode, EncodeLike};
+use frame_support::{
+	codec::{Encode, Decode, EncodeLike}, traits::Get, weights::RuntimeDbWeight,
+};
 
 /// Temporary keep old name Trait, to be removed alongside old macro.
 pub trait Trait: Config {}
@@ -32,6 +34,7 @@ pub trait Config: 'static + Eq + Clone {
 	type Call;
 	type Event: From<Event<Self>>;
 	type PalletInfo: frame_support::traits::PalletInfo;
+	type DbWeight: Get<RuntimeDbWeight>;
 }
 
 /// Temporary keep old module name, to be removed alongside old macro.

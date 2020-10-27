@@ -22,16 +22,23 @@
 #![warn(missing_docs)]
 #![deny(warnings)]
 
+#[cfg(test)]
+mod pallet_version;
+
 /// Temporary alias before removal
 pub trait Trait: Config {}
 impl<Runtime: Config> Trait for Runtime {}
 
 /// The configuration trait
-pub trait Config {
+pub trait Config: 'static {
 	/// The runtime origin type.
-	type Origin;
+	type Origin: codec::Codec + codec::EncodeLike + Default;
 	/// The block number type.
-	type BlockNumber;
+	type BlockNumber: codec::Codec + codec::EncodeLike + Default;
+	/// The information about the pallet setup in the runtime.
+	type PalletInfo: frame_support::traits::PalletInfo;
+	/// The db weights.
+	type DbWeight: frame_support::traits::Get<frame_support::weights::RuntimeDbWeight>;
 }
 
 frame_support::decl_module! {

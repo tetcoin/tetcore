@@ -21,14 +21,10 @@ impl<Runtime: Config> Trait for Runtime {}
 /// Temporary keep old module name, to be removed alongside old macro.
 #[allow(unused)]
 pub type Pallet<T> = Module<T>;
-
-pub trait Config {
-	type Origin;
-	type BlockNumber: codec::Codec + codec::EncodeLike + Default + Clone;
-}
+pub trait Config: frame_support_test::Config {}
 
 frame_support::decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=self {}
+	pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=frame_support_test {}
 }
 
 frame_support::decl_storage!{

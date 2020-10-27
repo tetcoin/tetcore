@@ -21,18 +21,14 @@ use frame_support::{StorageDoubleMap, StorageMap, StorageValue, StoragePrefixedM
 use sp_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
 
 mod no_instance {
-	use codec::{Encode, Decode, EncodeLike};
-
 	/// Temporary keep old name Trait, to be removed alongside old macro.
 	pub trait Trait: Config {}
 	impl<Runtime: Config> Trait for Runtime {}
-	pub trait Config {
-		type Origin;
-		type BlockNumber: Encode + Decode + EncodeLike + Default + Clone;
-	}
+
+	pub trait Config: frame_support_test::Config {}
 
 	frame_support::decl_module! {
-		pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=self {}
+		pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=frame_support_test {}
 	}
 
 	frame_support::decl_storage!{
@@ -53,13 +49,11 @@ mod no_instance {
 }
 
 mod instance {
-	use super::no_instance;
-
-	pub trait Trait<I = DefaultInstance>: super::no_instance::Trait {}
+	pub trait Trait<I = DefaultInstance>: frame_support_test::Trait {}
 
 	frame_support::decl_module! {
 		pub struct Module<T: Trait<I>, I: Instance = DefaultInstance>
-			for enum Call where origin: T::Origin, system=no_instance {}
+			for enum Call where origin: T::Origin, system=frame_support_test {}
 	}
 
 	frame_support::decl_storage!{

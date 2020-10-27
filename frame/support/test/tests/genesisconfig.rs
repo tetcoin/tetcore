@@ -18,13 +18,10 @@
 /// Temporary keep old name Trait, to be removed alongside old macro.
 pub trait Trait: Config {}
 impl<Runtime: Config> Trait for Runtime {}
-pub trait Config {
-	type BlockNumber: codec::Codec + codec::EncodeLike + Default;
-	type Origin;
-}
+pub trait Config: frame_support_test::Config {}
 
 frame_support::decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=self {}
+	pub struct Module<T: Trait> for enum Call where origin: T::Origin, system=frame_support_test {}
 }
 
 frame_support::decl_storage! {
@@ -35,10 +32,14 @@ frame_support::decl_storage! {
 
 struct Test;
 
-impl Config for Test {
+impl frame_support_test::Config for Test {
 	type BlockNumber = u32;
 	type Origin = ();
+	type PalletInfo = ();
+	type DbWeight = ();
 }
+
+impl Config for Test {}
 
 #[test]
 fn init_genesis_config() {
