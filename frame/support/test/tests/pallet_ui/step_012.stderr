@@ -1,0 +1,5 @@
+error: Missing `#[pallet::interface]`
+ --> $DIR/step_012.rs:2:1
+  |
+2 | mod pallet {
+  | ^^^

@@ -1,0 +1,5 @@
+error: Missing `#[pallet::config]`
+ --> $DIR/step_003.rs:2:1
+  |
+2 | mod pallet {
+  | ^^^

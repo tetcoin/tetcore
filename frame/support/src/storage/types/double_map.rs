@@ -30,7 +30,8 @@ use frame_metadata::{DefaultByteGetter, StorageEntryModifier};
 use sp_std::vec::Vec;
 
 /// A type that implements StorageDoubleMap when generics are correctly set:
-/// * Prefix must implement StorageInstance
+/// * Prefix must implement StorageInstance, when used inside pallet macro with
+///   `#[pallet::storage]` just write `_` the macro will expand with storage prefix = storage name.
 /// * Hasher1 must implement StorageHasher
 /// * Hasher2 must implement StorageHasher
 /// * Key1 must implement FullCodec

@@ -30,7 +30,8 @@ use frame_metadata::{DefaultByteGetter, StorageEntryModifier};
 use sp_std::prelude::*;
 
 /// A type that implements StorageMap when generics are correctly set:
-/// * Prefix must implement StorageInstance
+/// * Prefix must implement StorageInstance, when used inside pallet macro with
+///   `#[pallet::storage]` just write `_` the macro will expand with storage_prefix = type name.
 /// * Hasher must implement StorageHasher
 /// * Key must implement FullCodec
 /// * Value must implement FullCodec

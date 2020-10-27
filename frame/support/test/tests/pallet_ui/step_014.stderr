@@ -1,0 +1,11 @@
+error: Invalid pallet struct: expect `Pallet<T>` or `Pallet<T, I>`
+  --> $DIR/step_014.rs:10:7
+   |
+10 |     impl Foo {}
+   |          ^^^
+
+error: expected `Pallet`
+  --> $DIR/step_014.rs:10:7
+   |
+10 |     impl Foo {}
+   |          ^^^

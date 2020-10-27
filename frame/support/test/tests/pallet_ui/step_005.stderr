@@ -1,0 +1,5 @@
+error: Invalid pallet::config, trait must be public
+ --> $DIR/step_005.rs:4:2
+  |
+4 |     trait Foo {}
+  |     ^^^^^

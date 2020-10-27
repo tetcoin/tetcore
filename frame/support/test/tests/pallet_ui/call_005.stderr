@@ -1,0 +1,5 @@
+error: Invalid pallet::call, require return type DispatchResultWithPostInfo
+  --> $DIR/call_005.rs:17:3
+   |
+17 |         fn foo(origin: OriginFor<T>) {}
+   |         ^^

@@ -1,0 +1,13 @@
+error: Invalid generics: expect `impl<T: Config>` or `impl<T: Config<I>, I: 'static>`
+  --> $DIR/step_019.rs:15:2
+   |
+15 |     impl Foo {}
+   |     ^^^^
+
+error: unexpected end of input, expected `T`
+ --> $DIR/step_019.rs:1:1
+  |
+1 | #[frame_support::pallet]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)

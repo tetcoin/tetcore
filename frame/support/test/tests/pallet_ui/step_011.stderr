@@ -1,0 +1,13 @@
+error: Invalid type def generics: expect `T` or `T, I = ()`
+ --> $DIR/step_011.rs:7:13
+  |
+7 |     pub struct Pallet {}
+  |                ^^^^^^
+
+error: unexpected end of input, expected `T`
+ --> $DIR/step_011.rs:1:1
+  |
+1 | #[frame_support::pallet]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)

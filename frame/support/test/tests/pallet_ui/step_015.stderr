@@ -1,0 +1,13 @@
+error: Invalid generics: expect `impl<T: Config>` or `impl<T: Config<I>, I: 'static>`
+  --> $DIR/step_015.rs:11:2
+   |
+11 |     impl<T> path::Interface for Pallet<T> {}
+   |     ^^^^
+
+error: expected `:`
+ --> $DIR/step_015.rs:1:1
+  |
+1 | #[frame_support::pallet]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)

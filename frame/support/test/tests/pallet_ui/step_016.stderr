@@ -1,0 +1,5 @@
+error: Missing `#[pallet::call]
+ --> $DIR/step_016.rs:2:1
+  |
+2 | mod pallet {
+  | ^^^

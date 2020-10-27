@@ -1,0 +1,13 @@
+error: expected item, found `;`
+  --> $DIR/error_002.rs:19:17
+   |
+19 |     pub enum Foo {};
+   |                    ^ help: remove this semicolon
+   |
+   = help: enum declarations are not followed by a semicolon
+
+error: expected one of: `fn`, `extern`, `use`, `static`, `const`, `unsafe`, `mod`, `type`, `existential`, `struct`, `enum`, `union`, `trait`, `auto`, `impl`, `default`, `macro`, identifier, `self`, `super`, `crate`, `::`
+  --> $DIR/error_002.rs:19:17
+   |
+19 |     pub enum Foo {};
+   |                    ^

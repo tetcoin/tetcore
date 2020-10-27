@@ -1,0 +1,5 @@
+error: Invalid pallet::trait, expect explicit `frame_system::Config` as supertrait, found `balance :: Config`, `timestamp :: Config`. To disable this check, use `#[pallet::disable_frame_system_supertrait_check]`
+  --> $DIR/step_008.rs:11:2
+   |
+11 |     pub trait Config: balance::Config + timestamp::Config {}
+   |     ^^^

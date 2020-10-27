@@ -28,7 +28,8 @@ use crate::{
 use frame_metadata::{DefaultByteGetter, StorageEntryModifier};
 
 /// A type that implements StorageValue trait when generics are correctly set:
-/// * Prefix must implement StorageInstance
+/// * Prefix must implement StorageInstance, when used inside pallet macro with
+///   `#[pallet::storage]` just write `_` the macro will expand with storage_prefix = type name.
 /// * Value must implement FullCodec
 /// * QueryKind must implmeent QueryKindTrait
 /// * OnEmpty must implement Get<QueryKindTrait::Query> + 'static
