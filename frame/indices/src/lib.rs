@@ -38,8 +38,8 @@ mod tests;
 mod benchmarking;
 mod default_weights;
 
-pub type Address<T> = RawAddress<<T as frame_system::Trait>::AccountId, <T as Trait>::AccountIndex>;
-type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::Balance;
+pub type Address<T> = RawAddress<<T as frame_system::Config>::AccountId, <T as Trait>::AccountIndex>;
+type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 
 pub trait WeightInfo {
 	fn claim() -> Weight;
@@ -62,7 +62,7 @@ pub trait Trait: frame_system::Trait {
 	type Deposit: Get<BalanceOf<Self>>;
 
 	/// The overarching event type.
-	type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
+	type Event: From<Event<Self>> + Into<<Self as frame_system::Config>::Event>;
 
 	/// Weight information for extrinsics in this pallet.
 	type WeightInfo: WeightInfo;
@@ -85,7 +85,7 @@ decl_storage! {
 
 decl_event!(
 	pub enum Event<T> where
-		<T as frame_system::Trait>::AccountId,
+		<T as frame_system::Config>::AccountId,
 		<T as Trait>::AccountIndex
 	{
 		/// A account index was assigned. \[who, index\]

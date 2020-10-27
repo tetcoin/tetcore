@@ -236,7 +236,7 @@ pub trait Trait: SendTransactionTypes<Call<Self>> + pallet_session::historical::
 	type AuthorityId: Member + Parameter + RuntimeAppPublic + Default + Ord;
 
 	/// The overarching event type.
-	type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
+	type Event: From<Event<Self>> + Into<<Self as frame_system::Config>::Event>;
 
 	/// An expected duration of the session.
 	///
@@ -397,7 +397,7 @@ decl_module! {
 	}
 }
 
-type OffchainResult<T, A> = Result<A, OffchainErr<<T as frame_system::Trait>::BlockNumber>>;
+type OffchainResult<T, A> = Result<A, OffchainErr<<T as frame_system::Config>::BlockNumber>>;
 
 /// Keep track of number of authored blocks per authority, uncles are counted as
 /// well since they're a valid proof of being online.

@@ -360,7 +360,7 @@ pub trait WeightInfo {
 
 pub trait Trait: frame_system::Trait {
 	/// The overarching event type.
-	type Event: From<Event> + Into<<Self as frame_system::Trait>::Event>;
+	type Event: From<Event> + Into<<Self as frame_system::Config>::Event>;
 
 	/// A stable ID for a validator.
 	type ValidatorId: Member + Parameter;

@@ -1273,10 +1273,10 @@ macro_rules! decl_module {
 		fn on_initialize() -> $return:ty { $( $impl:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnInitialize<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OnInitialize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
-			fn on_initialize(_block_number_not_used: <$trait_instance as $system::Trait>::BlockNumber) -> $return {
+			fn on_initialize(_block_number_not_used: <$trait_instance as $system::Config>::BlockNumber) -> $return {
 				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_initialize"));
 				{ $( $impl )* }
 			}
@@ -1290,7 +1290,7 @@ macro_rules! decl_module {
 		fn on_initialize($param:ident : $param_ty:ty) -> $return:ty { $( $impl:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnInitialize<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OnInitialize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_initialize($param: $param_ty) -> $return {
@@ -1306,7 +1306,7 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnInitialize<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OnInitialize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{}
 	};
@@ -1326,13 +1326,13 @@ macro_rules! decl_module {
 				let result: $return = (|| { $( $impl )* })();
 
 				let key = $crate::traits::PalletVersion::storage_key::<
-						<$trait_instance as $system::Trait>::PalletInfo, Self
+						<$trait_instance as $system::Config>::PalletInfo, Self
 					>().expect("Every active pallet has a name in the runtime; qed");
 				let version = $crate::crate_to_pallet_version!();
 				$crate::storage::unhashed::put(&key, &version);
 
 				let additional_write = <
-					<$trait_instance as $system::Trait>::DbWeight as $crate::traits::Get<_>
+					<$trait_instance as $system::Config>::DbWeight as $crate::traits::Get<_>
 				>::get().writes(1);
 
 				result.saturating_add(additional_write)
@@ -1353,13 +1353,13 @@ macro_rules! decl_module {
 				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_runtime_upgrade"));
 
 				let key = $crate::traits::PalletVersion::storage_key::<
-						<$trait_instance as $system::Trait>::PalletInfo, Self
+						<$trait_instance as $system::Config>::PalletInfo, Self
 					>().expect("Every active pallet has a name in the runtime; qed");
 				let version = $crate::crate_to_pallet_version!();
 				$crate::storage::unhashed::put(&key, &version);
 
 				<
-					<$trait_instance as $system::Trait>::DbWeight as $crate::traits::Get<_>
+					<$trait_instance as $system::Config>::DbWeight as $crate::traits::Get<_>
 				>::get().writes(1)
 			}
 		}
@@ -1401,10 +1401,10 @@ macro_rules! decl_module {
 		fn on_finalize() { $( $impl:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnFinalize<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OnFinalize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
-			fn on_finalize(_block_number_not_used: <$trait_instance as $system::Trait>::BlockNumber) {
+			fn on_finalize(_block_number_not_used: <$trait_instance as $system::Config>::BlockNumber) {
 				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_finalize"));
 				{ $( $impl )* }
 			}
@@ -1418,7 +1418,7 @@ macro_rules! decl_module {
 		fn on_finalize($param:ident : $param_ty:ty) { $( $impl:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnFinalize<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OnFinalize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_finalize($param: $param_ty) {
@@ -1434,7 +1434,7 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OnFinalize<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OnFinalize<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 		}
@@ -1447,10 +1447,10 @@ macro_rules! decl_module {
 		fn offchain_worker() { $( $impl:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OffchainWorker<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OffchainWorker<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
-			fn offchain_worker(_block_number_not_used: <$trait_instance as $system::Trait>::BlockNumber) { $( $impl )* }
+			fn offchain_worker(_block_number_not_used: <$trait_instance as $system::Config>::BlockNumber) { $( $impl )* }
 		}
 	};
 
@@ -1461,7 +1461,7 @@ macro_rules! decl_module {
 		fn offchain_worker($param:ident : $param_ty:ty) { $( $impl:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OffchainWorker<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OffchainWorker<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn offchain_worker($param: $param_ty) { $( $impl )* }
@@ -1474,7 +1474,7 @@ macro_rules! decl_module {
 		{ $( $other_where_bounds:tt )* }
 	) => {
 		impl<$trait_instance: $system::Trait + $trait_name$(<I>, $instance: $instantiable)?>
-			$crate::traits::OffchainWorker<<$trait_instance as $system::Trait>::BlockNumber>
+			$crate::traits::OffchainWorker<<$trait_instance as $system::Config>::BlockNumber>
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{}
 	};
@@ -1830,7 +1830,7 @@ macro_rules! decl_module {
 
 			fn storage_version() -> Option<$crate::traits::PalletVersion> {
 				let key = $crate::traits::PalletVersion::storage_key::<
-						<$trait_instance as $system::Trait>::PalletInfo, Self
+						<$trait_instance as $system::Config>::PalletInfo, Self
 					>().expect("Every active pallet has a name in the runtime; qed");
 
 				$crate::storage::unhashed::get(&key)
@@ -2413,7 +2413,11 @@ mod tests {
 	pub mod system {
 		use super::*;
 
-		pub trait Trait: 'static {
+		/// Kind of alias for `Config` trait. Deprecated as `Trait` is renamed `Config`.
+		pub trait Trait: Config {}
+		impl<T: Config> Trait for T {}
+
+		pub trait Config: 'static {
 			type AccountId;
 			type Call;
 			type BaseCallFilter;
@@ -2439,7 +2443,7 @@ mod tests {
 			}
 		}
 
-		pub type Origin<T> = RawOrigin<<T as Trait>::AccountId>;
+		pub type Origin<T> = RawOrigin<<T as Config>::AccountId>;
 	}
 
 	decl_module! {
@@ -2558,7 +2562,7 @@ mod tests {
 		}
 	}
 
-	impl system::Trait for TraitImpl {
+	impl system::Config for TraitImpl {
 		type Origin = OuterOrigin;
 		type AccountId = u32;
 		type Call = OuterCall;
