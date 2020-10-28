@@ -185,7 +185,7 @@ mod pallet {
 	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
 		/// Offchain Worker entry point.
 		///
-		/// By implementing `fn offchain_worker` you declare a new offchain
+		/// By implementing `fn offchain_worker` within `decl_module!` you declare a new offchain
 		/// worker.
 		/// This function will be called when the node is fully synced and a new best block is
 		/// succesfuly imported.
@@ -195,7 +195,7 @@ mod pallet {
 		/// You can use `Local Storage` API to coordinate runs of the worker.
 		fn offchain_worker(block_number: T::BlockNumber) {
 			// It's a good idea to add logs to your offchain workers.
-			// Using the `frame_support::debug` pallet you have access to the same API exposed by
+			// Using the `frame_support::debug` module you have access to the same API exposed by
 			// the `log` crate.
 			// Note that having logs compiled to WASM may cause the size of the blob to increase
 			// significantly. You can use `RuntimeDebug` custom derive to hide details of the types
@@ -207,7 +207,7 @@ mod pallet {
 			// to the storage and other included pallets.
 			//
 			// We can easily import `frame_system` and retrieve a block hash of the parent block.
-			let parent_hash = <frame_system::Pallet<T>>::block_hash(block_number - 1.into());
+			let parent_hash = <system::Module<T>>::block_hash(block_number - 1u32.into());
 			debug::debug!("Current block: {:?} (parent hash: {:?})", block_number, parent_hash);
 
 			// It's a good practice to keep `fn offchain_worker()` function minimal, and move most
@@ -306,61 +306,7 @@ mod pallet {
 			// now increment the block number at which we expect next unsigned transaction.
 			let current_block = <frame_system::Pallet<T>>::block_number();
 			<NextUnsignedAt<T>>::put(current_block + T::UnsignedInterval::get());
-<<<<<<< HEAD
 			Ok(().into())
-=======
-			Ok(())
-		}
-
-		/// Offchain Worker entry point.
-		///
-		/// By implementing `fn offchain_worker` within `decl_module!` you declare a new offchain
-		/// worker.
-		/// This function will be called when the node is fully synced and a new best block is
-		/// succesfuly imported.
-		/// Note that it's not guaranteed for offchain workers to run on EVERY block, there might
-		/// be cases where some blocks are skipped, or for some the worker runs twice (re-orgs),
-		/// so the code should be able to handle that.
-		/// You can use `Local Storage` API to coordinate runs of the worker.
-		fn offchain_worker(block_number: T::BlockNumber) {
-			// It's a good idea to add logs to your offchain workers.
-			// Using the `frame_support::debug` module you have access to the same API exposed by
-			// the `log` crate.
-			// Note that having logs compiled to WASM may cause the size of the blob to increase
-			// significantly. You can use `RuntimeDebug` custom derive to hide details of the types
-			// in WASM or use `debug::native` namespace to produce logs only when the worker is
-			// running natively.
-			debug::native::info!("Hello World from offchain workers!");
-
-			// Since off-chain workers are just part of the runtime code, they have direct access
-			// to the storage and other included pallets.
-			//
-			// We can easily import `frame_system` and retrieve a block hash of the parent block.
-			let parent_hash = <system::Module<T>>::block_hash(block_number - 1u32.into());
-			debug::debug!("Current block: {:?} (parent hash: {:?})", block_number, parent_hash);
-
-			// It's a good practice to keep `fn offchain_worker()` function minimal, and move most
-			// of the code to separate `impl` block.
-			// Here we call a helper function to calculate current average price.
-			// This function reads storage entries of the current state.
-			let average: Option<u32> = Self::average_price();
-			debug::debug!("Current price: {:?}", average);
-
-			// For this example we are going to send both signed and unsigned transactions
-			// depending on the block number.
-			// Usually it's enough to choose one or the other.
-			let should_send = Self::choose_transaction_type(block_number);
-			let res = match should_send {
-				TransactionType::Signed => Self::fetch_price_and_send_signed(),
-				TransactionType::UnsignedForAny => Self::fetch_price_and_send_unsigned_for_any_account(block_number),
-				TransactionType::UnsignedForAll => Self::fetch_price_and_send_unsigned_for_all_accounts(block_number),
-				TransactionType::Raw => Self::fetch_price_and_send_raw_unsigned(block_number),
-				TransactionType::None => Ok(()),
-			};
-			if let Err(e) = res {
-				debug::error!("Error: {}", e);
-			}
->>>>>>> origin/master
 		}
 	}
 }
