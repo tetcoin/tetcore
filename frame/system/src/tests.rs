@@ -354,7 +354,10 @@ fn set_code_checks_works() {
 				vec![1, 2, 3, 4],
 			);
 
-			assert_eq!(expected.map_err(DispatchError::from), res);
+			assert_eq!(
+				expected.map_err(DispatchError::from),
+				res.map_err(|info| info.error).map(|_| ())
+			);
 		});
 	}
 }
