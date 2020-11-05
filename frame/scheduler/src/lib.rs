@@ -58,262 +58,66 @@ use sp_std::{prelude::*, marker::PhantomData, borrow::Borrow};
 use codec::{Encode, Decode, Codec};
 use sp_runtime::{RuntimeDebug, traits::{Zero, One, BadOrigin, Saturating}};
 use frame_support::{
-	decl_module, decl_storage, decl_event, decl_error, IterableStorageMap,
-	dispatch::{Dispatchable, DispatchError, DispatchResult, Parameter},
-	traits::{Get, schedule::{self, DispatchTime}, OriginTrait, EnsureOrigin, IsType},
-	weights::{GetDispatchInfo, Weight},
+	dispatch::{Dispatchable, DispatchError, DispatchResult},
+	traits::{Get, schedule::{self, DispatchTime}, OriginTrait, EnsureOrigin},
+	weights::GetDispatchInfo,
 };
-use frame_system::{self as system, ensure_signed};
+use frame_system::{self as system};
 pub use weights::WeightInfo;
 
-/// Our pallet's configuration trait. All our types and constants go in here. If the
-/// pallet is dependent on specific other pallets, then their configuration traits
-/// should be added to our implied traits list.
-///
-/// `system::Trait` should always be included in our implied traits.
-pub trait Trait: system::Trait {
-	/// The overarching event type.
-	type Event: From<Event<Self>> + Into<<Self as system::Config>::Event>;
+pub use pallet::*;
 
-	/// The aggregated origin which the dispatch will take.
-	type Origin: OriginTrait<PalletsOrigin =
-		Self::PalletsOrigin> + From<Self::PalletsOrigin> + IsType<<Self as system::Config>::Origin>;
+#[frame_support::pallet]
+pub mod pallet {
 
-	/// The caller origin, overarching type of all pallets origins.
-	type PalletsOrigin: From<system::RawOrigin<Self::AccountId>> + Codec + Clone + Eq;
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-	/// The aggregated call type.
-	type Call: Parameter + Dispatchable<Origin=<Self as Trait>::Origin> + GetDispatchInfo + From<system::Call<Self>>;
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		type Event: From<Event<Self>> + Into<<Self as system::Config>::Event> +
+			IsType<<Self as frame_system::Config>::Event>;
 
-	/// The maximum weight that may be scheduled per block for any dispatchables of less priority
-	/// than `schedule::HARD_DEADLINE`.
-	type MaximumWeight: Get<Weight>;
+		/// The aggregated origin which the dispatch will take.
+		type Origin: OriginTrait<PalletsOrigin = Self::PalletsOrigin> + From<Self::PalletsOrigin> +
+			IsType<<Self as system::Config>::Origin>;
 
-	/// Required origin to schedule or cancel calls.
-	type ScheduleOrigin: EnsureOrigin<<Self as system::Config>::Origin>;
+		/// The caller origin, overarching type of all pallets origins.
+		type PalletsOrigin: From<system::RawOrigin<Self::AccountId>> + Codec + Clone + Eq;
 
-	/// The maximum number of scheduled calls in the queue for a single block.
-	/// Not strictly enforced, but used for weight estimation.
-	type MaxScheduledPerBlock: Get<u32>;
+		/// The aggregated call type.
+		type Call: Parameter + Dispatchable<Origin=<Self as Config>::Origin> + GetDispatchInfo +
+			From<system::Call<Self>>;
 
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
-}
+		/// The maximum weight that may be scheduled per block for any dispatchables of less
+		/// priority than `schedule::HARD_DEADLINE`.
+		type MaximumWeight: Get<Weight>;
 
-/// Just a simple index for naming period tasks.
-pub type PeriodicIndex = u32;
-/// The location of a scheduled task that can be used to remove it.
-pub type TaskAddress<BlockNumber> = (BlockNumber, u32);
+		/// Required origin to schedule or cancel calls.
+		type ScheduleOrigin: EnsureOrigin<<Self as system::Config>::Origin>;
 
-#[cfg_attr(any(feature = "std", test), derive(PartialEq, Eq))]
-#[derive(Clone, RuntimeDebug, Encode, Decode)]
-struct ScheduledV1<Call, BlockNumber> {
-	maybe_id: Option<Vec<u8>>,
-	priority: schedule::Priority,
-	call: Call,
-	maybe_periodic: Option<schedule::Period<BlockNumber>>,
-}
+		/// The maximum number of scheduled calls in the queue for a single block.
+		/// Not strictly enforced, but used for weight estimation.
+		type MaxScheduledPerBlock: Get<u32>;
 
-/// Information regarding an item to be executed in the future.
-#[cfg_attr(any(feature = "std", test), derive(PartialEq, Eq))]
-#[derive(Clone, RuntimeDebug, Encode, Decode)]
-pub struct ScheduledV2<Call, BlockNumber, PalletsOrigin, AccountId> {
-	/// The unique identity for this task, if there is one.
-	maybe_id: Option<Vec<u8>>,
-	/// This task's priority.
-	priority: schedule::Priority,
-	/// The call to be dispatched.
-	call: Call,
-	/// If the call is periodic, then this points to the information concerning that.
-	maybe_periodic: Option<schedule::Period<BlockNumber>>,
-	/// The origin to dispatch the call.
-	origin: PalletsOrigin,
-	_phantom: PhantomData<AccountId>,
-}
-
-/// The current version of Scheduled struct.
-pub type Scheduled<Call, BlockNumber, PalletsOrigin, AccountId> = ScheduledV2<Call, BlockNumber, PalletsOrigin, AccountId>;
-
-// A value placed in storage that represents the current version of the Scheduler storage.
-// This value is used by the `on_runtime_upgrade` logic to determine whether we run
-// storage migration logic.
-#[derive(Encode, Decode, Clone, Copy, PartialEq, Eq, RuntimeDebug)]
-enum Releases {
-	V1,
-	V2,
-}
-
-impl Default for Releases {
-	fn default() -> Self {
-		Releases::V1
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
 	}
-}
 
-decl_storage! {
-	trait Store for Module<T: Trait> as Scheduler {
-		/// Items to be executed, indexed by the block number that they should be executed on.
-		pub Agenda: map hasher(twox_64_concat) T::BlockNumber
-			=> Vec<Option<Scheduled<<T as Trait>::Call, T::BlockNumber, T::PalletsOrigin, T::AccountId>>>;
+	/// Deperacated name for Config
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
 
-		/// Lookup from identity to the block number and index of the task.
-		Lookup: map hasher(twox_64_concat) Vec<u8> => Option<TaskAddress<T::BlockNumber>>;
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
 
-		/// Storage version of the pallet.
-		///
-		/// New networks start with last version.
-		StorageVersion build(|_| Releases::V2): Releases;
-	}
-}
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
 
-decl_event!(
-	pub enum Event<T> where <T as system::Config>::BlockNumber {
-		/// Scheduled some task. \[when, index\]
-		Scheduled(BlockNumber, u32),
-		/// Canceled some task. \[when, index\]
-		Canceled(BlockNumber, u32),
-		/// Dispatched some task. \[task, id, result\]
-		Dispatched(TaskAddress<BlockNumber>, Option<Vec<u8>>, DispatchResult),
-	}
-);
-
-decl_error! {
-	pub enum Error for Module<T: Trait> {
-		/// Failed to schedule a call
-		FailedToSchedule,
-		/// Cannot find the scheduled call.
-		NotFound,
-		/// Given target block number is in the past.
-		TargetBlockNumberInPast,
-		/// Reschedule failed because it does not change scheduled time.
-		RescheduleNoChange,
-	}
-}
-
-decl_module! {
-	/// Scheduler module declaration.
-	pub struct Module<T: Trait> for enum Call where origin: <T as system::Config>::Origin {
-		type Error = Error<T>;
-		fn deposit_event() = default;
-
-		/// Anonymously schedule a task.
-		///
-		/// # <weight>
-		/// - S = Number of already scheduled calls
-		/// - Base Weight: 22.29 + .126 * S µs
-		/// - DB Weight:
-		///     - Read: Agenda
-		///     - Write: Agenda
-		/// - Will use base weight of 25 which should be good for up to 30 scheduled calls
-		/// # </weight>
-		#[weight = T::WeightInfo::schedule(T::MaxScheduledPerBlock::get())]
-		fn schedule(origin,
-			when: T::BlockNumber,
-			maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
-			priority: schedule::Priority,
-			call: Box<<T as Trait>::Call>,
-		) {
-			T::ScheduleOrigin::ensure_origin(origin.clone())?;
-			let origin = <T as Trait>::Origin::from(origin);
-			Self::do_schedule(DispatchTime::At(when), maybe_periodic, priority, origin.caller().clone(), *call)?;
-		}
-
-		/// Cancel an anonymously scheduled task.
-		///
-		/// # <weight>
-		/// - S = Number of already scheduled calls
-		/// - Base Weight: 22.15 + 2.869 * S µs
-		/// - DB Weight:
-		///     - Read: Agenda
-		///     - Write: Agenda, Lookup
-		/// - Will use base weight of 100 which should be good for up to 30 scheduled calls
-		/// # </weight>
-		#[weight = T::WeightInfo::cancel(T::MaxScheduledPerBlock::get())]
-		fn cancel(origin, when: T::BlockNumber, index: u32) {
-			T::ScheduleOrigin::ensure_origin(origin.clone())?;
-			let origin = <T as Trait>::Origin::from(origin);
-			Self::do_cancel(Some(origin.caller().clone()), (when, index))?;
-		}
-
-		/// Schedule a named task.
-		///
-		/// # <weight>
-		/// - S = Number of already scheduled calls
-		/// - Base Weight: 29.6 + .159 * S µs
-		/// - DB Weight:
-		///     - Read: Agenda, Lookup
-		///     - Write: Agenda, Lookup
-		/// - Will use base weight of 35 which should be good for more than 30 scheduled calls
-		/// # </weight>
-		#[weight = T::WeightInfo::schedule_named(T::MaxScheduledPerBlock::get())]
-		fn schedule_named(origin,
-			id: Vec<u8>,
-			when: T::BlockNumber,
-			maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
-			priority: schedule::Priority,
-			call: Box<<T as Trait>::Call>,
-		) {
-			T::ScheduleOrigin::ensure_origin(origin.clone())?;
-			let origin = <T as Trait>::Origin::from(origin);
-			Self::do_schedule_named(
-				id, DispatchTime::At(when), maybe_periodic, priority, origin.caller().clone(), *call
-			)?;
-		}
-
-		/// Cancel a named scheduled task.
-		///
-		/// # <weight>
-		/// - S = Number of already scheduled calls
-		/// - Base Weight: 24.91 + 2.907 * S µs
-		/// - DB Weight:
-		///     - Read: Agenda, Lookup
-		///     - Write: Agenda, Lookup
-		/// - Will use base weight of 100 which should be good for up to 30 scheduled calls
-		/// # </weight>
-		#[weight = T::WeightInfo::cancel_named(T::MaxScheduledPerBlock::get())]
-		fn cancel_named(origin, id: Vec<u8>) {
-			T::ScheduleOrigin::ensure_origin(origin.clone())?;
-			let origin = <T as Trait>::Origin::from(origin);
-			Self::do_cancel_named(Some(origin.caller().clone()), id)?;
-		}
-
-		/// Anonymously schedule a task after a delay.
-		///
-		/// # <weight>
-		/// Same as [`schedule`].
-		/// # </weight>
-		#[weight = T::WeightInfo::schedule(T::MaxScheduledPerBlock::get())]
-		fn schedule_after(origin,
-			after: T::BlockNumber,
-			maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
-			priority: schedule::Priority,
-			call: Box<<T as Trait>::Call>,
-		) {
-			T::ScheduleOrigin::ensure_origin(origin.clone())?;
-			let origin = <T as Trait>::Origin::from(origin);
-			Self::do_schedule(
-				DispatchTime::After(after), maybe_periodic, priority, origin.caller().clone(), *call
-			)?;
-		}
-
-		/// Schedule a named task after a delay.
-		///
-		/// # <weight>
-		/// Same as [`schedule_named`].
-		/// # </weight>
-		#[weight = T::WeightInfo::schedule_named(T::MaxScheduledPerBlock::get())]
-		fn schedule_named_after(origin,
-			id: Vec<u8>,
-			after: T::BlockNumber,
-			maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
-			priority: schedule::Priority,
-			call: Box<<T as Trait>::Call>,
-		) {
-			T::ScheduleOrigin::ensure_origin(origin.clone())?;
-			let origin = <T as Trait>::Origin::from(origin);
-			Self::do_schedule_named(
-				id, DispatchTime::After(after), maybe_periodic, priority, origin.caller().clone(), *call
-			)?;
-		}
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
 
 		/// Execute the scheduled calls
 		///
@@ -347,7 +151,7 @@ decl_module! {
 					*cumulative_weight = cumulative_weight
 						.saturating_add(s.call.get_dispatch_info().weight);
 
-					let origin = <<T as Trait>::Origin as From<T::PalletsOrigin>>::from(
+					let origin = <<T as Config>::Origin as From<T::PalletsOrigin>>::from(
 						s.origin.clone()
 					).into();
 
@@ -413,17 +217,271 @@ decl_module! {
 			total_weight
 		}
 	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
+		/// Anonymously schedule a task.
+		///
+		/// # <weight>
+		/// - S = Number of already scheduled calls
+		/// - Base Weight: 22.29 + .126 * S µs
+		/// - DB Weight:
+		///     - Read: Agenda
+		///     - Write: Agenda
+		/// - Will use base weight of 25 which should be good for up to 30 scheduled calls
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::schedule(T::MaxScheduledPerBlock::get()))]
+		pub(super) fn schedule(
+			origin: OriginFor<T>,
+			when: T::BlockNumber,
+			maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
+			priority: schedule::Priority,
+			call: Box<<T as Config>::Call>,
+		) -> DispatchResultWithPostInfo {
+			T::ScheduleOrigin::ensure_origin(origin.clone())?;
+			let origin = <<T as Config>::Origin as From<_>>::from(origin);
+			Self::do_schedule(DispatchTime::At(when), maybe_periodic, priority, origin.caller().clone(), *call)?;
+			Ok(().into())
+		}
+
+		/// Cancel an anonymously scheduled task.
+		///
+		/// # <weight>
+		/// - S = Number of already scheduled calls
+		/// - Base Weight: 22.15 + 2.869 * S µs
+		/// - DB Weight:
+		///     - Read: Agenda
+		///     - Write: Agenda, Lookup
+		/// - Will use base weight of 100 which should be good for up to 30 scheduled calls
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::cancel(T::MaxScheduledPerBlock::get()))]
+		pub(super) fn cancel(
+			origin: OriginFor<T>,
+			when: T::BlockNumber,
+			index: u32
+		) -> DispatchResultWithPostInfo {
+			T::ScheduleOrigin::ensure_origin(origin.clone())?;
+			let origin = <<T as Config>::Origin as From<_>>::from(origin);
+			Self::do_cancel(Some(origin.caller().clone()), (when, index))?;
+			Ok(().into())
+		}
+
+		/// Schedule a named task.
+		///
+		/// # <weight>
+		/// - S = Number of already scheduled calls
+		/// - Base Weight: 29.6 + .159 * S µs
+		/// - DB Weight:
+		///     - Read: Agenda, Lookup
+		///     - Write: Agenda, Lookup
+		/// - Will use base weight of 35 which should be good for more than 30 scheduled calls
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::schedule_named(T::MaxScheduledPerBlock::get()))]
+		pub(super) fn schedule_named(
+			origin: OriginFor<T>,
+			id: Vec<u8>,
+			when: T::BlockNumber,
+			maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
+			priority: schedule::Priority,
+			call: Box<<T as Config>::Call>,
+		) -> DispatchResultWithPostInfo {
+			T::ScheduleOrigin::ensure_origin(origin.clone())?;
+			let origin = <<T as Config>::Origin as From<_>>::from(origin);
+			Self::do_schedule_named(
+				id, DispatchTime::At(when), maybe_periodic, priority, origin.caller().clone(), *call
+			)?;
+			Ok(().into())
+		}
+
+		/// Cancel a named scheduled task.
+		///
+		/// # <weight>
+		/// - S = Number of already scheduled calls
+		/// - Base Weight: 24.91 + 2.907 * S µs
+		/// - DB Weight:
+		///     - Read: Agenda, Lookup
+		///     - Write: Agenda, Lookup
+		/// - Will use base weight of 100 which should be good for up to 30 scheduled calls
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::cancel_named(T::MaxScheduledPerBlock::get()))]
+		pub(super) fn cancel_named(
+			origin: OriginFor<T>,
+			id: Vec<u8>
+		) -> DispatchResultWithPostInfo {
+			T::ScheduleOrigin::ensure_origin(origin.clone())?;
+			let origin = <<T as Config>::Origin as From<_>>::from(origin);
+			Self::do_cancel_named(Some(origin.caller().clone()), id)?;
+			Ok(().into())
+		}
+
+		/// Anonymously schedule a task after a delay.
+		///
+		/// # <weight>
+		/// Same as [`schedule`].
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::schedule(T::MaxScheduledPerBlock::get()))]
+		pub(super) fn schedule_after(
+			origin: OriginFor<T>,
+			after: T::BlockNumber,
+			maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
+			priority: schedule::Priority,
+			call: Box<<T as Config>::Call>,
+		) -> DispatchResultWithPostInfo {
+			T::ScheduleOrigin::ensure_origin(origin.clone())?;
+			let origin = <<T as Config>::Origin as From<_>>::from(origin);
+			Self::do_schedule(
+				DispatchTime::After(after), maybe_periodic, priority, origin.caller().clone(), *call
+			)?;
+			Ok(().into())
+		}
+
+		/// Schedule a named task after a delay.
+		///
+		/// # <weight>
+		/// Same as [`schedule_named`].
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::schedule_named(T::MaxScheduledPerBlock::get()))]
+		pub(super) fn schedule_named_after(
+			origin: OriginFor<T>,
+			id: Vec<u8>,
+			after: T::BlockNumber,
+			maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
+			priority: schedule::Priority,
+			call: Box<<T as Config>::Call>,
+		) -> DispatchResultWithPostInfo {
+			T::ScheduleOrigin::ensure_origin(origin.clone())?;
+			let origin = <<T as Config>::Origin as From<_>>::from(origin);
+			Self::do_schedule_named(
+				id, DispatchTime::After(after), maybe_periodic, priority, origin.caller().clone(), *call
+			)?;
+			Ok(().into())
+		}
+	}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config> {
+		/// Scheduled some task. \[when, index\]
+		Scheduled(T::BlockNumber, u32),
+		/// Canceled some task. \[when, index\]
+		Canceled(T::BlockNumber, u32),
+		/// Dispatched some task. \[task, id, result\]
+		Dispatched(TaskAddress<T::BlockNumber>, Option<Vec<u8>>, DispatchResult),
+	}
+	/// Deprecated old name for event.
+	pub type RawEvent<T> = Event<T>;
+
+	#[pallet::error]
+	pub enum Error<T> {
+		/// Failed to schedule a call
+		FailedToSchedule,
+		/// Cannot find the scheduled call.
+		NotFound,
+		/// Given target block number is in the past.
+		TargetBlockNumberInPast,
+		/// Reschedule failed because it does not change scheduled time.
+		RescheduleNoChange,
+	}
+
+	/// Items to be executed, indexed by the block number that they should be executed on.
+	#[pallet::storage]
+	pub type Agenda<T: Config> = StorageMap<
+		_,
+		Twox64Concat,
+		T::BlockNumber,
+		Vec<Option<Scheduled<<T as Config>::Call, T::BlockNumber, T::PalletsOrigin, T::AccountId>>>,
+		ValueQuery
+	>;
+
+	/// Lookup from identity to the block number and index of the task.
+	#[pallet::storage]
+	pub(super) type Lookup<T: Config> = StorageMap<
+		_, Twox64Concat, Vec<u8>, TaskAddress<T::BlockNumber>
+	>;
+
+	/// Storage version of the pallet.
+	///
+	/// New networks start with last version.
+	#[pallet::storage]
+	pub(super) type StorageVersion<T: Config> = StorageValue<_, Releases, ValueQuery>;
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig;
+
+	#[cfg(feature = "std")]
+	impl Default for GenesisConfig {
+		fn default() -> Self {
+			Self
+		}
+	}
+
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig {
+		fn build(&self) {
+			<StorageVersion<T>>::put(Releases::V2);
+		}
+	}
+}
+
+/// Just a simple index for naming period tasks.
+pub type PeriodicIndex = u32;
+/// The location of a scheduled task that can be used to remove it.
+pub type TaskAddress<BlockNumber> = (BlockNumber, u32);
+
+#[cfg_attr(any(feature = "std", test), derive(PartialEq, Eq))]
+#[derive(Clone, RuntimeDebug, Encode, Decode)]
+struct ScheduledV1<Call, BlockNumber> {
+	maybe_id: Option<Vec<u8>>,
+	priority: schedule::Priority,
+	call: Call,
+	maybe_periodic: Option<schedule::Period<BlockNumber>>,
+}
+
+/// Information regarding an item to be executed in the future.
+#[cfg_attr(any(feature = "std", test), derive(PartialEq, Eq))]
+#[derive(Clone, RuntimeDebug, Encode, Decode)]
+pub struct ScheduledV2<Call, BlockNumber, PalletsOrigin, AccountId> {
+	/// The unique identity for this task, if there is one.
+	maybe_id: Option<Vec<u8>>,
+	/// This task's priority.
+	priority: schedule::Priority,
+	/// The call to be dispatched.
+	call: Call,
+	/// If the call is periodic, then this points to the information concerning that.
+	maybe_periodic: Option<schedule::Period<BlockNumber>>,
+	/// The origin to dispatch the call.
+	origin: PalletsOrigin,
+	_phantom: PhantomData<AccountId>,
+}
+
+/// The current version of Scheduled struct.
+pub type Scheduled<Call, BlockNumber, PalletsOrigin, AccountId> = ScheduledV2<Call, BlockNumber, PalletsOrigin, AccountId>;
+
+// A value placed in storage that represents the current version of the Scheduler storage.
+// This value is used by the `on_runtime_upgrade` logic to determine whether we run
+// storage migration logic.
+#[derive(Encode, Decode, Clone, Copy, PartialEq, Eq, RuntimeDebug)]
+enum Releases {
+	V1,
+	V2,
+}
+
+impl Default for Releases {
+	fn default() -> Self {
+		Releases::V1
+	}
 }
 
 impl<T: Trait> Module<T> {
 	/// Migrate storage format from V1 to V2.
 	/// Return true if migration is performed.
 	pub fn migrate_v1_to_t2() -> bool {
-		if StorageVersion::get() == Releases::V1 {
-			StorageVersion::put(Releases::V2);
+		if StorageVersion::<T>::get() == Releases::V1 {
+			StorageVersion::<T>::put(Releases::V2);
 
 			Agenda::<T>::translate::<
-				Vec<Option<ScheduledV1<<T as Trait>::Call, T::BlockNumber>>>, _
+				Vec<Option<ScheduledV1<<T as Config>::Call, T::BlockNumber>>>, _
 			>(|_, agenda| Some(
 				agenda
 					.into_iter()
@@ -447,7 +505,7 @@ impl<T: Trait> Module<T> {
 	/// Helper to migrate scheduler when the pallet origin type has changed.
 	pub fn migrate_origin<OldOrigin: Into<T::PalletsOrigin> + codec::Decode>() {
 		Agenda::<T>::translate::<
-			Vec<Option<Scheduled<<T as Trait>::Call, T::BlockNumber, OldOrigin, T::AccountId>>>, _
+			Vec<Option<Scheduled<<T as Config>::Call, T::BlockNumber, OldOrigin, T::AccountId>>>, _
 		>(|_, agenda| Some(
 			agenda
 				.into_iter()
@@ -485,7 +543,7 @@ impl<T: Trait> Module<T> {
 		maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
 		priority: schedule::Priority,
 		origin: T::PalletsOrigin,
-		call: <T as Trait>::Call
+		call: <T as Config>::Call
 	) -> Result<TaskAddress<T::BlockNumber>, DispatchError> {
 		let when = Self::resolve_time(when)?;
 
@@ -569,7 +627,7 @@ impl<T: Trait> Module<T> {
 		maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
 		priority: schedule::Priority,
 		origin: T::PalletsOrigin,
-		call: <T as Trait>::Call,
+		call: <T as Config>::Call,
 	) -> Result<TaskAddress<T::BlockNumber>, DispatchError> {
 		// ensure id it is unique
 		if Lookup::<T>::contains_key(&id) {
@@ -657,7 +715,7 @@ impl<T: Trait> Module<T> {
 	}
 }
 
-impl<T: Trait> schedule::Anon<T::BlockNumber, <T as Trait>::Call, T::PalletsOrigin> for Module<T> {
+impl<T: Trait> schedule::Anon<T::BlockNumber, <T as Config>::Call, T::PalletsOrigin> for Module<T> {
 	type Address = TaskAddress<T::BlockNumber>;
 
 	fn schedule(
@@ -665,7 +723,7 @@ impl<T: Trait> schedule::Anon<T::BlockNumber, <T as Trait>::Call, T::PalletsOrig
 		maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
 		priority: schedule::Priority,
 		origin: T::PalletsOrigin,
-		call: <T as Trait>::Call
+		call: <T as Config>::Call
 	) -> Result<Self::Address, DispatchError> {
 		Self::do_schedule(when, maybe_periodic, priority, origin, call)
 	}
@@ -686,7 +744,7 @@ impl<T: Trait> schedule::Anon<T::BlockNumber, <T as Trait>::Call, T::PalletsOrig
 	}
 }
 
-impl<T: Trait> schedule::Named<T::BlockNumber, <T as Trait>::Call, T::PalletsOrigin> for Module<T> {
+impl<T: Trait> schedule::Named<T::BlockNumber, <T as Config>::Call, T::PalletsOrigin> for Module<T> {
 	type Address = TaskAddress<T::BlockNumber>;
 
 	fn schedule_named(
@@ -695,7 +753,7 @@ impl<T: Trait> schedule::Named<T::BlockNumber, <T as Trait>::Call, T::PalletsOri
 		maybe_periodic: Option<schedule::Period<T::BlockNumber>>,
 		priority: schedule::Priority,
 		origin: T::PalletsOrigin,
-		call: <T as Trait>::Call,
+		call: <T as Config>::Call,
 	) -> Result<Self::Address, ()> {
 		Self::do_schedule_named(id, when, maybe_periodic, priority, origin, call).map_err(|_| ())
 	}
@@ -722,9 +780,9 @@ mod tests {
 
 	use frame_support::{
 		impl_outer_event, impl_outer_origin, impl_outer_dispatch, parameter_types, assert_ok, ord_parameter_types,
-		assert_noop, assert_err, Hashable,
+		assert_noop, assert_err, Hashable, decl_event, decl_module,
 		traits::{OnInitialize, OnFinalize, Filter},
-		weights::constants::RocksDbWeight,
+		weights::{constants::RocksDbWeight, Weight},
 	};
 	use sp_core::H256;
 	use sp_runtime::{
@@ -854,7 +912,7 @@ mod tests {
 		pub const One: u64 = 1;
 	}
 
-	impl Trait for Test {
+	impl Config for Test {
 		type Event = ();
 		type Origin = Origin;
 		type PalletsOrigin = OriginCaller;
@@ -1387,14 +1445,14 @@ mod tests {
 					}),
 				];
 				frame_support::migration::put_storage_value(
-					b"Scheduler",
+					b"test",
 					b"Agenda",
 					&k,
 					old,
 				);
 			}
 
-			assert_eq!(StorageVersion::get(), Releases::V1);
+			assert_eq!(StorageVersion::<Test>::get(), Releases::V1);
 
 			assert!(Scheduler::migrate_v1_to_t2());
 
@@ -1466,7 +1524,7 @@ mod tests {
 				)
 			]);
 
-			assert_eq!(StorageVersion::get(), Releases::V2);
+			assert_eq!(StorageVersion::<Test>::get(), Releases::V2);
 		});
 	}
 
@@ -1495,7 +1553,7 @@ mod tests {
 					}),
 				];
 				frame_support::migration::put_storage_value(
-					b"Scheduler",
+					b"test",
 					b"Agenda",
 					&k,
 					old,

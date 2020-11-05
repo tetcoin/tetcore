@@ -190,11 +190,13 @@ mod tests {
 	fn encode_decode_roundtrip() {
 		use codec::{Decode, Encode};
 		use super::super::super::Trait as SessionTrait;
+		use super::super::super::Config as SessionConfig;
 		use super::super::Trait as HistoricalTrait;
+		use super::super::Config as HistoricalConfig;
 
 		let sample = (
-				22u32 as <Test as SessionTrait>::ValidatorId,
-				7_777_777 as <Test as HistoricalTrait>::FullIdentification);
+				22u32 as <Test as SessionConfig>::ValidatorId,
+				7_777_777 as <Test as HistoricalConfig>::FullIdentification);
 
 		let encoded = sample.encode();
 		let decoded = Decode::decode(&mut encoded.as_slice()).expect("Must decode");

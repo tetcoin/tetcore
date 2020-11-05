@@ -26,28 +26,29 @@ use sp_runtime::{
 };
 use sp_core::H256;
 use sp_io;
-use frame_support::{impl_outer_origin, impl_outer_event, parameter_types};
+use frame_support::{impl_outer_origin, impl_outer_event, parameter_types, StorageValue};
 use frame_support::traits::Get;
 use frame_support::weights::{Weight, DispatchInfo, IdentityFee};
 use pallet_transaction_payment::CurrencyAdapter;
 use std::cell::RefCell;
-use crate::{GenesisConfig, Module, Trait, decl_tests, tests::CallWithDispatchInfo};
+use crate::{Module, Trait, Config, decl_tests};
 
 use frame_system as system;
-impl_outer_origin!{
-	pub enum Origin for Test {}
-}
+use crate as balances;
 
-mod balances {
-	pub use crate::Event;
-}
+pub type Block = sp_runtime::generic::Block<Header, UncheckedExtrinsic>;
+pub type UncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<u32, u64, Call, ()>;
 
-impl_outer_event! {
-	pub enum Event for Test {
-		system<T>,
-		balances<T>,
+frame_support::construct_runtime!(
+	pub enum Test where
+		Block = Block,
+		NodeBlock = Block,
+		UncheckedExtrinsic = UncheckedExtrinsic
+	{
+		System: system::{Module, Call, Event<T>, Config},
+		Balances: balances::{Module, Call, Event<T>, Config<T>},
 	}
-}
+);
 
 thread_local! {
 	static EXISTENTIAL_DEPOSIT: RefCell<u64> = RefCell::new(0);
@@ -58,9 +59,6 @@ impl Get<u64> for ExistentialDeposit {
 	fn get() -> u64 { EXISTENTIAL_DEPOSIT.with(|v| *v.borrow()) }
 }
 
-// Workaround for https://github.com/rust-lang/rust/issues/26925 . Remove when sorted.
-#[derive(Clone, PartialEq, Eq, Debug)]
-pub struct Test;
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const MaximumBlockWeight: Weight = 1024;
@@ -72,7 +70,7 @@ impl frame_system::Config for Test {
 	type Origin = Origin;
 	type Index = u64;
 	type BlockNumber = u64;
-	type Call = CallWithDispatchInfo;
+	type Call = Call;
 	type Hash = H256;
 	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = u64;
@@ -88,7 +86,7 @@ impl frame_system::Config for Test {
 	type MaximumBlockLength = MaximumBlockLength;
 	type AvailableBlockRatio = AvailableBlockRatio;
 	type Version = ();
-	type PalletInfo = ();
+	type PalletInfo = PalletInfo;
 	type AccountData = super::AccountData<u64>;
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
@@ -104,7 +102,7 @@ impl pallet_transaction_payment::Trait for Test {
 	type FeeMultiplierUpdate = ();
 }
 
-impl Trait for Test {
+impl Config for Test {
 	type Balance = u64;
 	type DustRemoval = ();
 	type Event = Event;
@@ -141,7 +139,7 @@ impl ExtBuilder {
 	pub fn build(self) -> sp_io::TestExternalities {
 		self.set_associated_consts();
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
-		GenesisConfig::<Test> {
+		balances::GenesisConfig::<Test> {
 			balances: if self.monied {
 				vec![
 					(1, 10 * self.existential_deposit),

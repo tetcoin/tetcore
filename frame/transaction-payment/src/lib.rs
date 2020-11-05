@@ -36,7 +36,6 @@
 use sp_std::prelude::*;
 use codec::{Encode, Decode};
 use frame_support::{
-	decl_storage, decl_module,
 	traits::Get,
 	weights::{
 		Weight, DispatchInfo, PostDispatchInfo, GetDispatchInfo, Pays, WeightToFeePolynomial,
@@ -59,11 +58,129 @@ use pallet_transaction_payment_rpc_runtime_api::RuntimeDispatchInfo;
 mod payment;
 pub use payment::*;
 
+pub use pallet::*;
+
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
+
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// Handler for withdrawing, refunding and depositing the transaction fee.
+		/// Transaction fees are withdrawn before the transaction is executed.
+		/// After the transaction was executed the transaction weight can be
+		/// adjusted, depending on the used resources by the transaction. If the
+		/// transaction weight is lower than expected, parts of the transaction fee
+		/// might be refunded. In the end the fees can be deposited.
+		type OnChargeTransaction: OnChargeTransaction<Self>;
+
+		/// The fee to be paid for making a transaction; the per-byte portion.
+		#[pallet::constant]
+		type TransactionByteFee: Get<BalanceOf<Self>>;
+
+		// TODO TODO: this constant is lost.
+		/// Convert a weight value into a deductible fee based on the currency type.
+		type WeightToFee: WeightToFeePolynomial<Balance=BalanceOf<Self>>;
+
+		/// Update the multiplier of the next block, based on the previous block's weight.
+		type FeeMultiplierUpdate: MultiplierUpdate;
+	}
+
+	/// Deperacated name for Config
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+		fn on_finalize(_: BlockNumberFor<T>) {
+			NextFeeMultiplier::<T>::mutate(|fm| {
+				*fm = T::FeeMultiplierUpdate::convert(*fm);
+			});
+		}
+
+		fn integrity_test() {
+			// given weight == u64, we build multipliers from `diff` of two weight values, which can
+			// at most be MaximumBlockWeight. Make sure that this can fit in a multiplier without
+			// loss.
+			use sp_std::convert::TryInto;
+			assert!(
+				<Multiplier as sp_runtime::traits::Bounded>::max_value() >=
+				Multiplier::checked_from_integer(
+					<T as frame_system::Config>::MaximumBlockWeight::get().try_into().unwrap()
+				).unwrap(),
+			);
+
+			// This is the minimum value of the multiplier. Make sure that if we collapse to this
+			// value, we can recover with a reasonable amount of traffic. For this test we assert
+			// that if we collapse to minimum, the trend will be positive with a weight value
+			// which is 1% more than the target.
+			let min_value = T::FeeMultiplierUpdate::min();
+			let mut target =
+				T::FeeMultiplierUpdate::target() *
+				(T::AvailableBlockRatio::get() * T::MaximumBlockWeight::get());
+
+			// add 1 percent;
+			let addition = target / 100;
+			if addition == 0 {
+				// this is most likely because in a test setup we set everything to ().
+				return;
+			}
+			target += addition;
+
+			sp_io::TestExternalities::new_empty().execute_with(|| {
+				<frame_system::Module<T>>::set_block_limits(target, 0);
+				let next = T::FeeMultiplierUpdate::convert(min_value);
+				assert!(next > min_value, "The minimum bound of the multiplier is too low. When \
+					block saturation is more than target by 1% and multiplier is minimal then \
+					the multiplier doesn't increase."
+				);
+			})
+		}
+	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {}
+
+	#[pallet::type_value]
+	pub fn DefaultForNextFeeMultiplier() -> Multiplier {
+		Multiplier::saturating_from_integer(1)
+	}
+
+	#[pallet::storage]
+	#[pallet::getter(fn next_fee_multiplier)]
+	pub type NextFeeMultiplier<T: Config> = StorageValue<
+		_, Multiplier, ValueQuery, DefaultForNextFeeMultiplier
+	>;
+
+	#[pallet::storage]
+	pub(super) type StorageVersion<T: Config> = StorageValue<_, Releases, ValueQuery>;
+
+	#[pallet::genesis_config]
+	#[derive(Default)]
+	pub struct GenesisConfig {}
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig {
+		fn build(&self) {
+			<StorageVersion<T>>::put(Releases::V2);
+		}
+	}
+}
+
 /// Fee multiplier.
 pub type Multiplier = FixedU128;
 
 type BalanceOf<T> =
-	<<T as Trait>::OnChargeTransaction as OnChargeTransaction<T>>::Balance;
+	<<T as Config>::OnChargeTransaction as OnChargeTransaction<T>>::Balance;
 
 /// A struct to update the weight multiplier per block. It implements `Convert<Multiplier,
 /// Multiplier>`, meaning that it can convert the previous multiplier to the next one. This should
@@ -213,89 +330,6 @@ impl Default for Releases {
 	}
 }
 
-pub trait Trait: frame_system::Trait {
-	/// Handler for withdrawing, refunding and depositing the transaction fee.
-	/// Transaction fees are withdrawn before the transaction is executed.
-	/// After the transaction was executed the transaction weight can be
-	/// adjusted, depending on the used resources by the transaction. If the
-	/// transaction weight is lower than expected, parts of the transaction fee
-	/// might be refunded. In the end the fees can be deposited.
-	type OnChargeTransaction: OnChargeTransaction<Self>;
-
-	/// The fee to be paid for making a transaction; the per-byte portion.
-	type TransactionByteFee: Get<BalanceOf<Self>>;
-
-	/// Convert a weight value into a deductible fee based on the currency type.
-	type WeightToFee: WeightToFeePolynomial<Balance=BalanceOf<Self>>;
-
-	/// Update the multiplier of the next block, based on the previous block's weight.
-	type FeeMultiplierUpdate: MultiplierUpdate;
-}
-
-decl_storage! {
-	trait Store for Module<T: Trait> as TransactionPayment {
-		pub NextFeeMultiplier get(fn next_fee_multiplier): Multiplier = Multiplier::saturating_from_integer(1);
-
-		StorageVersion build(|_: &GenesisConfig| Releases::V2): Releases;
-	}
-}
-
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		/// The fee to be paid for making a transaction; the per-byte portion.
-		const TransactionByteFee: BalanceOf<T> = T::TransactionByteFee::get();
-
-		/// The polynomial that is applied in order to derive fee from weight.
-		const WeightToFee: Vec<WeightToFeeCoefficient<BalanceOf<T>>> =
-			T::WeightToFee::polynomial().to_vec();
-
-		fn on_finalize() {
-			NextFeeMultiplier::mutate(|fm| {
-				*fm = T::FeeMultiplierUpdate::convert(*fm);
-			});
-		}
-
-		fn integrity_test() {
-			// given weight == u64, we build multipliers from `diff` of two weight values, which can
-			// at most be MaximumBlockWeight. Make sure that this can fit in a multiplier without
-			// loss.
-			use sp_std::convert::TryInto;
-			assert!(
-				<Multiplier as sp_runtime::traits::Bounded>::max_value() >=
-				Multiplier::checked_from_integer(
-					<T as frame_system::Config>::MaximumBlockWeight::get().try_into().unwrap()
-				).unwrap(),
-			);
-
-			// This is the minimum value of the multiplier. Make sure that if we collapse to this
-			// value, we can recover with a reasonable amount of traffic. For this test we assert
-			// that if we collapse to minimum, the trend will be positive with a weight value
-			// which is 1% more than the target.
-			let min_value = T::FeeMultiplierUpdate::min();
-			let mut target =
-				T::FeeMultiplierUpdate::target() *
-				(T::AvailableBlockRatio::get() * T::MaximumBlockWeight::get());
-
-			// add 1 percent;
-			let addition = target / 100;
-			if addition == 0 {
-				// this is most likely because in a test setup we set everything to ().
-				return;
-			}
-			target += addition;
-
-			sp_io::TestExternalities::new_empty().execute_with(|| {
-				<frame_system::Module<T>>::set_block_limits(target, 0);
-				let next = T::FeeMultiplierUpdate::convert(min_value);
-				assert!(next > min_value, "The minimum bound of the multiplier is too low. When \
-					block saturation is more than target by 1% and multiplier is minimal then \
-					the multiplier doesn't increase."
-				);
-			})
-		}
-	}
-}
-
 impl<T: Trait> Module<T> where
 	BalanceOf<T>: FixedPointOperand
 {
@@ -422,7 +456,7 @@ impl<T> Convert<Weight, BalanceOf<T>> for Module<T> where
 	/// share that the weight contributes to the overall fee of a transaction. It is mainly
 	/// for informational purposes and not used in the actual fee calculation.
 	fn convert(weight: Weight) -> BalanceOf<T> {
-		NextFeeMultiplier::get().saturating_mul_int(Self::weight_to_fee(weight))
+		NextFeeMultiplier::<T>::get().saturating_mul_int(Self::weight_to_fee(weight))
 	}
 }
 
@@ -449,14 +483,14 @@ impl<T: Trait + Send + Sync> ChargeTransactionPayment<T> where
 	) -> Result<
 		(
 			BalanceOf<T>,
-			<<T as Trait>::OnChargeTransaction as OnChargeTransaction<T>>::LiquidityInfo,
+			<<T as Config>::OnChargeTransaction as OnChargeTransaction<T>>::LiquidityInfo,
 		),
 		TransactionValidityError,
 	> {
 		let tip = self.0;
 		let fee = Module::<T>::compute_fee(len as u32, info, tip);
 
-		<<T as Trait>::OnChargeTransaction as OnChargeTransaction<T>>::withdraw_fee(who, call, info, fee, tip)
+		<<T as Config>::OnChargeTransaction as OnChargeTransaction<T>>::withdraw_fee(who, call, info, fee, tip)
 			.map(|i| (fee, i))
 	}
 
@@ -503,7 +537,7 @@ impl<T: Trait + Send + Sync> SignedExtension for ChargeTransactionPayment<T> whe
 		// who paid the fee
 		Self::AccountId,
 		// imbalance resulting from withdrawing the fee
-		<<T as Trait>::OnChargeTransaction as OnChargeTransaction<T>>::LiquidityInfo,
+		<<T as Config>::OnChargeTransaction as OnChargeTransaction<T>>::LiquidityInfo,
 	);
 	fn additional_signed(&self) -> sp_std::result::Result<(), TransactionValidityError> { Ok(()) }
 
@@ -647,7 +681,7 @@ mod tests {
 		pub const ExistentialDeposit: u64 = 1;
 	}
 
-	impl pallet_balances::Trait for Runtime {
+	impl pallet_balances::Config for Runtime {
 		type Balance = u64;
 		type Event = Event;
 		type DustRemoval = ();
@@ -680,7 +714,7 @@ mod tests {
 		}
 	}
 
-	impl Trait for Runtime {
+	impl Config for Runtime {
 		type OnChargeTransaction = CurrencyAdapter<Balances, ()>;
 		type TransactionByteFee = TransactionByteFee;
 		type WeightToFee = WeightToFee;
@@ -823,7 +857,7 @@ mod tests {
 			.execute_with(||
 		{
 			let len = 10;
-			NextFeeMultiplier::put(Multiplier::saturating_from_rational(3, 2));
+			NextFeeMultiplier::<Runtime>::put(Multiplier::saturating_from_rational(3, 2));
 
 			let pre = ChargeTransactionPayment::<Runtime>::from(5 /* tipped */)
 				.pre_dispatch(&2, CALL, &info_from_weight(100), len)
@@ -911,7 +945,7 @@ mod tests {
 			.execute_with(||
 		{
 			// all fees should be x1.5
-			NextFeeMultiplier::put(Multiplier::saturating_from_rational(3, 2));
+			NextFeeMultiplier::<Runtime>::put(Multiplier::saturating_from_rational(3, 2));
 			let len = 10;
 
 			assert!(
@@ -946,7 +980,7 @@ mod tests {
 			.execute_with(||
 		{
 			// all fees should be x1.5
-			NextFeeMultiplier::put(Multiplier::saturating_from_rational(3, 2));
+			NextFeeMultiplier::<Runtime>::put(Multiplier::saturating_from_rational(3, 2));
 
 			assert_eq!(
 				TransactionPayment::query_info(xt, len),
@@ -973,7 +1007,7 @@ mod tests {
 			.execute_with(||
 		{
 			// Next fee multiplier is zero
-			assert_eq!(NextFeeMultiplier::get(), Multiplier::one());
+			assert_eq!(NextFeeMultiplier::<Runtime>::get(), Multiplier::one());
 
 			// Tip only, no fees works
 			let dispatch_info = DispatchInfo {
@@ -1013,7 +1047,7 @@ mod tests {
 			.execute_with(||
 		{
 			// Add a next fee multiplier. Fees will be x3/2.
-			NextFeeMultiplier::put(Multiplier::saturating_from_rational(3, 2));
+			NextFeeMultiplier::<Runtime>::put(Multiplier::saturating_from_rational(3, 2));
 			// Base fee is unaffected by multiplier
 			let dispatch_info = DispatchInfo {
 				weight: 0,
@@ -1046,7 +1080,7 @@ mod tests {
 			.execute_with(||
 		{
 			// Add a next fee multiplier. All fees will be x1/2.
-			NextFeeMultiplier::put(Multiplier::saturating_from_rational(1, 2));
+			NextFeeMultiplier::<Runtime>::put(Multiplier::saturating_from_rational(1, 2));
 
 			// Base fee is unaffected by multiplier.
 			let dispatch_info = DispatchInfo {
@@ -1202,7 +1236,7 @@ mod tests {
 			let len = 10;
 			let tip = 5;
 
-			NextFeeMultiplier::put(Multiplier::saturating_from_rational(5, 4));
+			NextFeeMultiplier::<Runtime>::put(Multiplier::saturating_from_rational(5, 4));
 
 			let pre = ChargeTransactionPayment::<Runtime>::from(tip)
 				.pre_dispatch(&2, CALL, &info, len)
@@ -1236,7 +1270,7 @@ mod tests {
 			let len = 10;
 			let tip = 5;
 
-			NextFeeMultiplier::put(Multiplier::saturating_from_rational(5, 4));
+			NextFeeMultiplier::<Runtime>::put(Multiplier::saturating_from_rational(5, 4));
 
 			let pre = ChargeTransactionPayment::<Runtime>::from(tip)
 				.pre_dispatch(&2, CALL, &info, len)

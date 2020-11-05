@@ -160,7 +160,7 @@ use sp_std::prelude::*;
 use sp_std::{cmp, result, mem, fmt::Debug, ops::BitOr, convert::Infallible};
 use codec::{Codec, Encode, Decode};
 use frame_support::{
-	StorageValue, Parameter, decl_event, decl_storage, decl_module, decl_error, ensure,
+	Parameter, ensure,
 	traits::{
 		Currency, OnKilledAccount, OnUnbalanced, TryDrop, StoredMap,
 		WithdrawReasons, LockIdentifier, LockableCurrency, ExistenceRequirement,
@@ -179,87 +179,229 @@ use frame_system::{self as system, ensure_signed, ensure_root};
 pub use self::imbalances::{PositiveImbalance, NegativeImbalance};
 pub use weights::WeightInfo;
 
-pub trait Subtrait<I: Instance = DefaultInstance>: frame_system::Trait {
-	/// The balance of an account.
-	type Balance: Parameter + Member + AtLeast32BitUnsigned + Codec + Default + Copy +
-		MaybeSerializeDeserialize + Debug;
+pub use pallet::*;
 
-	/// The minimum amount required to keep an account open.
-	type ExistentialDeposit: Get<Self::Balance>;
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-	/// The means of storing the balances of an account.
-	type AccountStore: StoredMap<Self::AccountId, AccountData<Self::Balance>>;
+	#[pallet::config]
+	pub trait Config<I: 'static = ()>: frame_system::Config {
+		/// The balance of an account.
+		type Balance: Parameter + Member + AtLeast32BitUnsigned + Codec + Default + Copy +
+			MaybeSerializeDeserialize + Debug;
 
-	/// Weight information for the extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
+		/// Handler for the unbalanced reduction when removing a dust account.
+		type DustRemoval: OnUnbalanced<NegativeImbalance<Self, I>>;
 
-	/// The maximum number of locks that should exist on an account.
-	/// Not strictly enforced, but used for weight estimation.
-	type MaxLocks: Get<u32>;
-}
+		/// The overarching event type.
+		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Config>::Event>;
 
-pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
-	/// The balance of an account.
-	type Balance: Parameter + Member + AtLeast32BitUnsigned + Codec + Default + Copy +
-		MaybeSerializeDeserialize + Debug;
+		/// The minimum amount required to keep an account open.
+		#[pallet::constant]
+		type ExistentialDeposit: Get<Self::Balance>;
 
-	/// Handler for the unbalanced reduction when removing a dust account.
-	type DustRemoval: OnUnbalanced<NegativeImbalance<Self, I>>;
+		/// The means of storing the balances of an account.
+		type AccountStore: StoredMap<Self::AccountId, AccountData<Self::Balance>>;
 
-	/// The overarching event type.
-	type Event: From<Event<Self, I>> + Into<<Self as frame_system::Config>::Event>;
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
 
-	/// The minimum amount required to keep an account open.
-	type ExistentialDeposit: Get<Self::Balance>;
+		/// The maximum number of locks that should exist on an account.
+		/// Not strictly enforced, but used for weight estimation.
+		type MaxLocks: Get<u32>;
+	}
 
-	/// The means of storing the balances of an account.
-	type AccountStore: StoredMap<Self::AccountId, AccountData<Self::Balance>>;
+	pub type DefaultInstance = ();
 
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
+	/// Deperacated name for Config
+	pub trait Trait<I: 'static = ()>: Config<I> {}
+	impl<R: Config<I>, I: 'static> Trait<I> for R {}
 
-	/// The maximum number of locks that should exist on an account.
-	/// Not strictly enforced, but used for weight estimation.
-	type MaxLocks: Get<u32>;
-}
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T, I = ()>(PhantomData<(T, I)>);
 
-impl<T: Trait<I>, I: Instance> Subtrait<I> for T {
-	type Balance = T::Balance;
-	type ExistentialDeposit = T::ExistentialDeposit;
-	type AccountStore = T::AccountStore;
-	type WeightInfo = <T as Trait<I>>::WeightInfo;
-	type MaxLocks = T::MaxLocks;
-}
+	/// Deperacated name for Pallet
+	pub type Module<T, I = ()> = Pallet<T, I>;
 
-decl_event!(
-	pub enum Event<T, I: Instance = DefaultInstance> where
-		<T as frame_system::Config>::AccountId,
-		<T as Trait<I>>::Balance
-	{
+	#[pallet::interface]
+	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {}
+
+	#[pallet::call]
+	impl<T: Config<I>, I: 'static> Pallet<T, I> {
+		/// Transfer some liquid free balance to another account.
+		///
+		/// `transfer` will set the `FreeBalance` of the sender and receiver.
+		/// It will decrease the total issuance of the system by the `TransferFee`.
+		/// If the sender's account is below the existential deposit as a result
+		/// of the transfer, the account will be reaped.
+		///
+		/// The dispatch origin for this call must be `Signed` by the transactor.
+		///
+		/// # <weight>
+		/// - Dependent on arguments but not critical, given proper implementations for
+		///   input config types. See related functions below.
+		/// - It contains a limited number of reads and writes internally and no complex computation.
+		///
+		/// Related functions:
+		///
+		///   - `ensure_can_withdraw` is always called internally but has a bounded complexity.
+		///   - Transferring balances to accounts that did not exist before will cause
+		///      `T::OnNewAccount::on_new_account` to be called.
+		///   - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
+		///   - `transfer_keep_alive` works the same way as `transfer`, but has an additional
+		///     check that the transfer will not kill the origin account.
+		/// ---------------------------------
+		/// - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
+		/// - DB Weight: 1 Read and 1 Write to destination account
+		/// - Origin account is already in memory, so no DB operations for them.
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::transfer())]
+		pub fn transfer(
+			origin: OriginFor<T>,
+			dest: <T::Lookup as StaticLookup>::Source,
+			#[pallet::compact] value: T::Balance
+		) -> DispatchResultWithPostInfo {
+			let transactor = ensure_signed(origin)?;
+			let dest = T::Lookup::lookup(dest)?;
+			<Self as Currency<_>>::transfer(&transactor, &dest, value, ExistenceRequirement::AllowDeath)?;
+			Ok(().into())
+		}
+
+		/// Set the balances of a given account.
+		///
+		/// This will alter `FreeBalance` and `ReservedBalance` in storage. it will
+		/// also decrease the total issuance of the system (`TotalIssuance`).
+		/// If the new free or reserved balance is below the existential deposit,
+		/// it will reset the account nonce (`frame_system::AccountNonce`).
+		///
+		/// The dispatch origin for this call is `root`.
+		///
+		/// # <weight>
+		/// - Independent of the arguments.
+		/// - Contains a limited number of reads and writes.
+		/// ---------------------
+		/// - Base Weight:
+		///     - Creating: 27.56 µs
+		///     - Killing: 35.11 µs
+		/// - DB Weight: 1 Read, 1 Write to `who`
+		/// # </weight>
+		#[pallet::weight(
+			T::WeightInfo::set_balance_creating() // Creates a new account.
+			.max(T::WeightInfo::set_balance_killing()) // Kills an existing account.
+		)]
+		pub(super) fn set_balance(
+			origin: OriginFor<T>,
+			who: <T::Lookup as StaticLookup>::Source,
+			#[pallet::compact] new_free: T::Balance,
+			#[pallet::compact] new_reserved: T::Balance
+		) -> DispatchResultWithPostInfo {
+			ensure_root(origin)?;
+			let who = T::Lookup::lookup(who)?;
+			let existential_deposit = T::ExistentialDeposit::get();
+
+			let wipeout = new_free + new_reserved < existential_deposit;
+			let new_free = if wipeout { Zero::zero() } else { new_free };
+			let new_reserved = if wipeout { Zero::zero() } else { new_reserved };
+
+			let (free, reserved) = Self::mutate_account(&who, |account| {
+				if new_free > account.free {
+					mem::drop(PositiveImbalance::<T, I>::new(new_free - account.free));
+				} else if new_free < account.free {
+					mem::drop(NegativeImbalance::<T, I>::new(account.free - new_free));
+				}
+
+				if new_reserved > account.reserved {
+					mem::drop(PositiveImbalance::<T, I>::new(new_reserved - account.reserved));
+				} else if new_reserved < account.reserved {
+					mem::drop(NegativeImbalance::<T, I>::new(account.reserved - new_reserved));
+				}
+
+				account.free = new_free;
+				account.reserved = new_reserved;
+
+				(account.free, account.reserved)
+			});
+			Self::deposit_event(RawEvent::BalanceSet(who, free, reserved));
+			Ok(().into())
+		}
+
+		/// Exactly as `transfer`, except the origin must be root and the source account may be
+		/// specified.
+		/// # <weight>
+		/// - Same as transfer, but additional read and write because the source account is
+		///   not assumed to be in the overlay.
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::force_transfer())]
+		pub fn force_transfer(
+			origin: OriginFor<T>,
+			source: <T::Lookup as StaticLookup>::Source,
+			dest: <T::Lookup as StaticLookup>::Source,
+			#[pallet::compact] value: T::Balance
+		) -> DispatchResultWithPostInfo {
+			ensure_root(origin)?;
+			let source = T::Lookup::lookup(source)?;
+			let dest = T::Lookup::lookup(dest)?;
+			<Self as Currency<_>>::transfer(&source, &dest, value, ExistenceRequirement::AllowDeath)?;
+			Ok(().into())
+		}
+
+		/// Same as the [`transfer`] call, but with a check that the transfer will not kill the
+		/// origin account.
+		///
+		/// 99% of the time you want [`transfer`] instead.
+		///
+		/// [`transfer`]: struct.Module.html#method.transfer
+		/// # <weight>
+		/// - Cheaper than transfer because account cannot be killed.
+		/// - Base Weight: 51.4 µs
+		/// - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
+		/// #</weight>
+		#[pallet::weight(T::WeightInfo::transfer_keep_alive())]
+		pub fn transfer_keep_alive(
+			origin: OriginFor<T>,
+			dest: <T::Lookup as StaticLookup>::Source,
+			#[pallet::compact] value: T::Balance
+		) -> DispatchResultWithPostInfo {
+			let transactor = ensure_signed(origin)?;
+			let dest = T::Lookup::lookup(dest)?;
+			<Self as Currency<_>>::transfer(&transactor, &dest, value, KeepAlive)?;
+			Ok(().into())
+		}
+	}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config<I>, I: 'static = ()> {
 		/// An account was created with some free balance. \[account, free_balance\]
-		Endowed(AccountId, Balance),
+		Endowed(T::AccountId, T::Balance),
 		/// An account was removed whose balance was non-zero but below ExistentialDeposit,
 		/// resulting in an outright loss. \[account, balance\]
-		DustLost(AccountId, Balance),
+		DustLost(T::AccountId, T::Balance),
 		/// Transfer succeeded. \[from, to, value\]
-		Transfer(AccountId, AccountId, Balance),
+		Transfer(T::AccountId, T::AccountId, T::Balance),
 		/// A balance was set by root. \[who, free, reserved\]
-		BalanceSet(AccountId, Balance, Balance),
+		BalanceSet(T::AccountId, T::Balance, T::Balance),
 		/// Some amount was deposited (e.g. for transaction fees). \[who, deposit\]
-		Deposit(AccountId, Balance),
+		Deposit(T::AccountId, T::Balance),
 		/// Some balance was reserved (moved from free to reserved). \[who, value\]
-		Reserved(AccountId, Balance),
+		Reserved(T::AccountId, T::Balance),
 		/// Some balance was unreserved (moved from reserved to free). \[who, value\]
-		Unreserved(AccountId, Balance),
+		Unreserved(T::AccountId, T::Balance),
 		/// Some balance was moved from the reserve of the first account to the second account.
 		/// Final argument indicates the destination balance type.
 		/// \[from, to, balance, destination_status\]
-		ReserveRepatriated(AccountId, AccountId, Balance, Status),
+		ReserveRepatriated(T::AccountId, T::AccountId, T::Balance, Status),
 	}
-);
 
-decl_error! {
-	pub enum Error for Module<T: Trait<I>, I: Instance> {
+	/// Deprecated name for event.
+	pub type RawEvent<T, I = ()> = Event<T, I>;
+
+	#[pallet::error]
+	pub enum Error<T, I = ()> {
 		/// Vesting balance too high to send value
 		VestingBalance,
 		/// Account liquidity restrictions prevent withdrawal
@@ -276,6 +418,83 @@ decl_error! {
 		ExistingVestingSchedule,
 		/// Beneficiary account must pre-exist
 		DeadAccount,
+	}
+
+	/// The total units issued in the system.
+	#[pallet::storage]
+	#[pallet::getter(fn total_issuance)]
+	pub type TotalIssuance<T: Config<I>, I: 'static = ()> = StorageValue<_, T::Balance, ValueQuery>;
+
+	/// The balance of an account.
+	///
+	/// NOTE: This is only used in the case that this module is used to store balances.
+	#[pallet::storage]
+	pub type Account<T: Config<I>, I: 'static = ()> = StorageMap<_, Blake2_128Concat, T::AccountId, AccountData<T::Balance>, ValueQuery>;
+
+	/// Any liquidity locks on some account balances.
+	/// NOTE: Should only be accessed when setting, changing and freeing a lock.
+	#[pallet::storage]
+	#[pallet::getter(fn locks)]
+	pub type Locks<T: Config<I>, I: 'static = ()> = StorageMap<_, Blake2_128Concat, T::AccountId, Vec<BalanceLock<T::Balance>>, ValueQuery>;
+
+	/// Storage version of the pallet.
+	///
+	/// This is set to v2.0.0 for new networks.
+	#[pallet::storage]
+	pub(super) type StorageVersion<T: Config<I>, I: 'static = ()> = StorageValue<_, Releases, ValueQuery>;
+
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config<I>, I: 'static = ()> {
+		pub balances: Vec<(T::AccountId, T::Balance)>,
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config<I>, I: 'static> Default for GenesisConfig<T, I> {
+		fn default() -> Self {
+			Self {
+				balances: Default::default(),
+			}
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config<I>, I: 'static> GenesisBuild<T, I> for GenesisConfig<T, I> {
+		fn build(&self) {
+			let total = self.balances.iter()
+				.fold(Zero::zero(), |acc: T::Balance, &(_, n)| acc + n);
+			<TotalIssuance<T, I>>::put(total);
+			<StorageVersion<T, I>>::put(Releases::V2_0_0);
+			for (_, balance) in &self.balances {
+				assert!(
+					*balance >= <T as Config<I>>::ExistentialDeposit::get(),
+					"the balance of any account should always be more than existential deposit.",
+				)
+			}
+			for &(ref who, free) in &self.balances {
+				T::AccountStore::insert(who, AccountData { free, .. Default::default() });
+			}
+		}
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config<I>, I: 'static> GenesisConfig<T, I> {
+		/// Direct implementation of `GenesisBuild::build_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn build_storage(&self) -> Result<sp_runtime::Storage, String> {
+			<Self as GenesisBuild<T, I>>::build_storage(self)
+		}
+
+		/// Direct implementation of `GenesisBuild::assimilate_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn assimilate_storage(
+			&self,
+			storage: &mut sp_runtime::Storage
+		) -> Result<(), String> {
+			<Self as GenesisBuild<T, I>>::assimilate_storage(self, storage)
+		}
 	}
 }
 
@@ -381,191 +600,7 @@ impl Default for Releases {
 	}
 }
 
-decl_storage! {
-	trait Store for Module<T: Trait<I>, I: Instance=DefaultInstance> as Balances {
-		/// The total units issued in the system.
-		pub TotalIssuance get(fn total_issuance) build(|config: &GenesisConfig<T, I>| {
-			config.balances.iter().fold(Zero::zero(), |acc: T::Balance, &(_, n)| acc + n)
-		}): T::Balance;
-
-		/// The balance of an account.
-		///
-		/// NOTE: This is only used in the case that this module is used to store balances.
-		pub Account: map hasher(blake2_128_concat) T::AccountId => AccountData<T::Balance>;
-
-		/// Any liquidity locks on some account balances.
-		/// NOTE: Should only be accessed when setting, changing and freeing a lock.
-		pub Locks get(fn locks): map hasher(blake2_128_concat) T::AccountId => Vec<BalanceLock<T::Balance>>;
-
-		/// Storage version of the pallet.
-		///
-		/// This is set to v2.0.0 for new networks.
-		StorageVersion build(|_: &GenesisConfig<T, I>| Releases::V2_0_0): Releases;
-	}
-	add_extra_genesis {
-		config(balances): Vec<(T::AccountId, T::Balance)>;
-		// ^^ begin, length, amount liquid at genesis
-		build(|config: &GenesisConfig<T, I>| {
-			for (_, balance) in &config.balances {
-				assert!(
-					*balance >= <T as Trait<I>>::ExistentialDeposit::get(),
-					"the balance of any account should always be more than existential deposit.",
-				)
-			}
-			for &(ref who, free) in config.balances.iter() {
-				T::AccountStore::insert(who, AccountData { free, .. Default::default() });
-			}
-		});
-	}
-}
-
-decl_module! {
-	pub struct Module<T: Trait<I>, I: Instance = DefaultInstance> for enum Call where origin: T::Origin {
-		type Error = Error<T, I>;
-
-		/// The minimum amount required to keep an account open.
-		const ExistentialDeposit: T::Balance = T::ExistentialDeposit::get();
-
-		fn deposit_event() = default;
-
-		/// Transfer some liquid free balance to another account.
-		///
-		/// `transfer` will set the `FreeBalance` of the sender and receiver.
-		/// It will decrease the total issuance of the system by the `TransferFee`.
-		/// If the sender's account is below the existential deposit as a result
-		/// of the transfer, the account will be reaped.
-		///
-		/// The dispatch origin for this call must be `Signed` by the transactor.
-		///
-		/// # <weight>
-		/// - Dependent on arguments but not critical, given proper implementations for
-		///   input config types. See related functions below.
-		/// - It contains a limited number of reads and writes internally and no complex computation.
-		///
-		/// Related functions:
-		///
-		///   - `ensure_can_withdraw` is always called internally but has a bounded complexity.
-		///   - Transferring balances to accounts that did not exist before will cause
-		///      `T::OnNewAccount::on_new_account` to be called.
-		///   - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
-		///   - `transfer_keep_alive` works the same way as `transfer`, but has an additional
-		///     check that the transfer will not kill the origin account.
-		/// ---------------------------------
-		/// - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-		/// - DB Weight: 1 Read and 1 Write to destination account
-		/// - Origin account is already in memory, so no DB operations for them.
-		/// # </weight>
-		#[weight = T::WeightInfo::transfer()]
-		pub fn transfer(
-			origin,
-			dest: <T::Lookup as StaticLookup>::Source,
-			#[compact] value: T::Balance
-		) {
-			let transactor = ensure_signed(origin)?;
-			let dest = T::Lookup::lookup(dest)?;
-			<Self as Currency<_>>::transfer(&transactor, &dest, value, ExistenceRequirement::AllowDeath)?;
-		}
-
-		/// Set the balances of a given account.
-		///
-		/// This will alter `FreeBalance` and `ReservedBalance` in storage. it will
-		/// also decrease the total issuance of the system (`TotalIssuance`).
-		/// If the new free or reserved balance is below the existential deposit,
-		/// it will reset the account nonce (`frame_system::AccountNonce`).
-		///
-		/// The dispatch origin for this call is `root`.
-		///
-		/// # <weight>
-		/// - Independent of the arguments.
-		/// - Contains a limited number of reads and writes.
-		/// ---------------------
-		/// - Base Weight:
-		///     - Creating: 27.56 µs
-		///     - Killing: 35.11 µs
-		/// - DB Weight: 1 Read, 1 Write to `who`
-		/// # </weight>
-		#[weight = T::WeightInfo::set_balance_creating() // Creates a new account.
-			.max(T::WeightInfo::set_balance_killing()) // Kills an existing account.
-		]
-		fn set_balance(
-			origin,
-			who: <T::Lookup as StaticLookup>::Source,
-			#[compact] new_free: T::Balance,
-			#[compact] new_reserved: T::Balance
-		) {
-			ensure_root(origin)?;
-			let who = T::Lookup::lookup(who)?;
-			let existential_deposit = T::ExistentialDeposit::get();
-
-			let wipeout = new_free + new_reserved < existential_deposit;
-			let new_free = if wipeout { Zero::zero() } else { new_free };
-			let new_reserved = if wipeout { Zero::zero() } else { new_reserved };
-
-			let (free, reserved) = Self::mutate_account(&who, |account| {
-				if new_free > account.free {
-					mem::drop(PositiveImbalance::<T, I>::new(new_free - account.free));
-				} else if new_free < account.free {
-					mem::drop(NegativeImbalance::<T, I>::new(account.free - new_free));
-				}
-
-				if new_reserved > account.reserved {
-					mem::drop(PositiveImbalance::<T, I>::new(new_reserved - account.reserved));
-				} else if new_reserved < account.reserved {
-					mem::drop(NegativeImbalance::<T, I>::new(account.reserved - new_reserved));
-				}
-
-				account.free = new_free;
-				account.reserved = new_reserved;
-
-				(account.free, account.reserved)
-			});
-			Self::deposit_event(RawEvent::BalanceSet(who, free, reserved));
-		}
-
-		/// Exactly as `transfer`, except the origin must be root and the source account may be
-		/// specified.
-		/// # <weight>
-		/// - Same as transfer, but additional read and write because the source account is
-		///   not assumed to be in the overlay.
-		/// # </weight>
-		#[weight = T::WeightInfo::force_transfer()]
-		pub fn force_transfer(
-			origin,
-			source: <T::Lookup as StaticLookup>::Source,
-			dest: <T::Lookup as StaticLookup>::Source,
-			#[compact] value: T::Balance
-		) {
-			ensure_root(origin)?;
-			let source = T::Lookup::lookup(source)?;
-			let dest = T::Lookup::lookup(dest)?;
-			<Self as Currency<_>>::transfer(&source, &dest, value, ExistenceRequirement::AllowDeath)?;
-		}
-
-		/// Same as the [`transfer`] call, but with a check that the transfer will not kill the
-		/// origin account.
-		///
-		/// 99% of the time you want [`transfer`] instead.
-		///
-		/// [`transfer`]: struct.Module.html#method.transfer
-		/// # <weight>
-		/// - Cheaper than transfer because account cannot be killed.
-		/// - Base Weight: 51.4 µs
-		/// - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-		/// #</weight>
-		#[weight = T::WeightInfo::transfer_keep_alive()]
-		pub fn transfer_keep_alive(
-			origin,
-			dest: <T::Lookup as StaticLookup>::Source,
-			#[compact] value: T::Balance
-		) {
-			let transactor = ensure_signed(origin)?;
-			let dest = T::Lookup::lookup(dest)?;
-			<Self as Currency<_>>::transfer(&transactor, &dest, value, KeepAlive)?;
-		}
-	}
-}
-
-impl<T: Trait<I>, I: Instance> Module<T, I> {
+impl<T: Trait<I>, I: 'static> Module<T, I> {
 	// PRIVATE MUTABLES
 
 	/// Get the free balance of an account.
@@ -704,17 +739,16 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 // of the inner member.
 mod imbalances {
 	use super::{
-		result, Subtrait, DefaultInstance, Imbalance, Trait, Zero, Instance, Saturating,
-		StorageValue, TryDrop,
+		result, DefaultInstance, Imbalance, Trait, Zero, Saturating, TryDrop,
 	};
 	use sp_std::mem;
 
 	/// Opaque, move-only struct with private fields that serves as a token denoting that
 	/// funds have been created without any equal and opposite accounting.
 	#[must_use]
-	pub struct PositiveImbalance<T: Subtrait<I>, I: Instance=DefaultInstance>(T::Balance);
+	pub struct PositiveImbalance<T: Trait<I>, I: 'static=DefaultInstance>(T::Balance);
 
-	impl<T: Subtrait<I>, I: Instance> PositiveImbalance<T, I> {
+	impl<T: Trait<I>, I: 'static> PositiveImbalance<T, I> {
 		/// Create a new positive imbalance from a balance.
 		pub fn new(amount: T::Balance) -> Self {
 			PositiveImbalance(amount)
@@ -724,22 +758,22 @@ mod imbalances {
 	/// Opaque, move-only struct with private fields that serves as a token denoting that
 	/// funds have been destroyed without any equal and opposite accounting.
 	#[must_use]
-	pub struct NegativeImbalance<T: Subtrait<I>, I: Instance=DefaultInstance>(T::Balance);
+	pub struct NegativeImbalance<T: Trait<I>, I: 'static=DefaultInstance>(T::Balance);
 
-	impl<T: Subtrait<I>, I: Instance> NegativeImbalance<T, I> {
+	impl<T: Trait<I>, I: 'static> NegativeImbalance<T, I> {
 		/// Create a new negative imbalance from a balance.
 		pub fn new(amount: T::Balance) -> Self {
 			NegativeImbalance(amount)
 		}
 	}
 
-	impl<T: Trait<I>, I: Instance> TryDrop for PositiveImbalance<T, I> {
+	impl<T: Trait<I>, I: 'static> TryDrop for PositiveImbalance<T, I> {
 		fn try_drop(self) -> result::Result<(), Self> {
 			self.drop_zero()
 		}
 	}
 
-	impl<T: Trait<I>, I: Instance> Imbalance<T::Balance> for PositiveImbalance<T, I> {
+	impl<T: Trait<I>, I: 'static> Imbalance<T::Balance> for PositiveImbalance<T, I> {
 		type Opposite = NegativeImbalance<T, I>;
 
 		fn zero() -> Self {
@@ -784,13 +818,13 @@ mod imbalances {
 		}
 	}
 
-	impl<T: Trait<I>, I: Instance> TryDrop for NegativeImbalance<T, I> {
+	impl<T: Trait<I>, I: 'static> TryDrop for NegativeImbalance<T, I> {
 		fn try_drop(self) -> result::Result<(), Self> {
 			self.drop_zero()
 		}
 	}
 
-	impl<T: Trait<I>, I: Instance> Imbalance<T::Balance> for NegativeImbalance<T, I> {
+	impl<T: Trait<I>, I: 'static> Imbalance<T::Balance> for NegativeImbalance<T, I> {
 		type Opposite = PositiveImbalance<T, I>;
 
 		fn zero() -> Self {
@@ -835,82 +869,27 @@ mod imbalances {
 		}
 	}
 
-	impl<T: Subtrait<I>, I: Instance> Drop for PositiveImbalance<T, I> {
+	impl<T: Trait<I>, I: 'static> Drop for PositiveImbalance<T, I> {
 		/// Basic drop handler will just square up the total issuance.
 		fn drop(&mut self) {
-			<super::TotalIssuance<super::ElevatedTrait<T, I>, I>>::mutate(
+			<super::TotalIssuance<T, I>>::mutate(
 				|v| *v = v.saturating_add(self.0)
 			);
 		}
 	}
 
-	impl<T: Subtrait<I>, I: Instance> Drop for NegativeImbalance<T, I> {
+	impl<T: Trait<I>, I: 'static> Drop for NegativeImbalance<T, I> {
 		/// Basic drop handler will just square up the total issuance.
 		fn drop(&mut self) {
-			<super::TotalIssuance<super::ElevatedTrait<T, I>, I>>::mutate(
+			// TODO TODO TODO AAAAH THOSE ARE DIFFERENT TYPE ID ???
+			<super::TotalIssuance<T, I>>::mutate(
 				|v| *v = v.saturating_sub(self.0)
 			);
 		}
 	}
 }
 
-// TODO: #2052
-// Somewhat ugly hack in order to gain access to module's `increase_total_issuance_by`
-// using only the Subtrait (which defines only the types that are not dependent
-// on Positive/NegativeImbalance). Subtrait must be used otherwise we end up with a
-// circular dependency with Trait having some types be dependent on PositiveImbalance<Trait>
-// and PositiveImbalance itself depending back on Trait for its Drop impl (and thus
-// its type declaration).
-// This works as long as `increase_total_issuance_by` doesn't use the Imbalance
-// types (basically for charging fees).
-// This should eventually be refactored so that the type item that
-// depends on the Imbalance type (DustRemoval) is placed in its own pallet.
-struct ElevatedTrait<T: Subtrait<I>, I: Instance>(T, I);
-impl<T: Subtrait<I>, I: Instance> Clone for ElevatedTrait<T, I> {
-	fn clone(&self) -> Self { unimplemented!() }
-}
-impl<T: Subtrait<I>, I: Instance> PartialEq for ElevatedTrait<T, I> {
-	fn eq(&self, _: &Self) -> bool { unimplemented!() }
-}
-impl<T: Subtrait<I>, I: Instance> Eq for ElevatedTrait<T, I> {}
-impl<T: Subtrait<I>, I: Instance> frame_system::Config for ElevatedTrait<T, I> {
-	type BaseCallFilter = T::BaseCallFilter;
-	type Origin = T::Origin;
-	type Call = T::Call;
-	type Index = T::Index;
-	type BlockNumber = T::BlockNumber;
-	type Hash = T::Hash;
-	type Hashing = T::Hashing;
-	type AccountId = T::AccountId;
-	type Lookup = T::Lookup;
-	type Header = T::Header;
-	type Event = ();
-	type BlockHashCount = T::BlockHashCount;
-	type MaximumBlockWeight = T::MaximumBlockWeight;
-	type DbWeight = T::DbWeight;
-	type BlockExecutionWeight = T::BlockExecutionWeight;
-	type ExtrinsicBaseWeight = T::ExtrinsicBaseWeight;
-	type MaximumExtrinsicWeight = T::MaximumBlockWeight;
-	type MaximumBlockLength = T::MaximumBlockLength;
-	type AvailableBlockRatio = T::AvailableBlockRatio;
-	type Version = T::Version;
-	type PalletInfo = T::PalletInfo;
-	type OnNewAccount = T::OnNewAccount;
-	type OnKilledAccount = T::OnKilledAccount;
-	type AccountData = T::AccountData;
-	type SystemWeightInfo = T::SystemWeightInfo;
-}
-impl<T: Subtrait<I>, I: Instance> Trait<I> for ElevatedTrait<T, I> {
-	type Balance = T::Balance;
-	type Event = ();
-	type DustRemoval = ();
-	type ExistentialDeposit = T::ExistentialDeposit;
-	type AccountStore = T::AccountStore;
-	type WeightInfo = <T as Subtrait<I>>::WeightInfo;
-	type MaxLocks = T::MaxLocks;
-}
-
-impl<T: Trait<I>, I: Instance> Currency<T::AccountId> for Module<T, I> where
+impl<T: Trait<I>, I: 'static> Currency<T::AccountId> for Module<T, I> where
 	T::Balance: MaybeSerializeDeserialize + Debug
 {
 	type Balance = T::Balance;
@@ -1159,7 +1138,7 @@ impl<T: Trait<I>, I: Instance> Currency<T::AccountId> for Module<T, I> where
 	}
 }
 
-impl<T: Trait<I>, I: Instance> ReservableCurrency<T::AccountId> for Module<T, I>  where
+impl<T: Trait<I>, I: 'static> ReservableCurrency<T::AccountId> for Module<T, I>  where
 	T::Balance: MaybeSerializeDeserialize + Debug
 {
 	/// Check if `who` can reserve `value` from their free balance.
@@ -1274,7 +1253,7 @@ impl<T: Trait<I>, I: Instance> ReservableCurrency<T::AccountId> for Module<T, I>
 /// NOTE: You probably won't need to use this! This only needs to be "wired in" to System module
 /// if you're using the local balance storage. **If you're using the composite system account
 /// storage (which is the default in most examples and tests) then there's no need.**
-impl<T: Trait<I>, I: Instance> OnKilledAccount<T::AccountId> for Module<T, I> {
+impl<T: Trait<I>, I: 'static> OnKilledAccount<T::AccountId> for Module<T, I> {
 	fn on_killed_account(who: &T::AccountId) {
 		Account::<T, I>::mutate_exists(who, |account| {
 			let total = account.as_ref().map(|acc| acc.total()).unwrap_or_default();
@@ -1287,7 +1266,7 @@ impl<T: Trait<I>, I: Instance> OnKilledAccount<T::AccountId> for Module<T, I> {
 	}
 }
 
-impl<T: Trait<I>, I: Instance> LockableCurrency<T::AccountId> for Module<T, I>
+impl<T: Trait<I>, I: 'static> LockableCurrency<T::AccountId> for Module<T, I>
 where
 	T::Balance: MaybeSerializeDeserialize + Debug
 {
@@ -1352,7 +1331,7 @@ where
 	}
 }
 
-impl<T: Trait<I>, I: Instance> IsDeadAccount<T::AccountId> for Module<T, I> where
+impl<T: Trait<I>, I: 'static> IsDeadAccount<T::AccountId> for Module<T, I> where
 	T::Balance: MaybeSerializeDeserialize + Debug
 {
 	fn is_dead_account(who: &T::AccountId) -> bool {

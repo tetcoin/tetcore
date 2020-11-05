@@ -123,7 +123,7 @@ impl frame_system::Config for Test {
 parameter_types! {
 	pub MaximumSchedulerWeight: Weight = Perbill::from_percent(80) * MaximumBlockWeight::get();
 }
-impl pallet_scheduler::Trait for Test {
+impl pallet_scheduler::Config for Test {
 	type Event = Event;
 	type Origin = Origin;
 	type PalletsOrigin = OriginCaller;
@@ -136,7 +136,7 @@ impl pallet_scheduler::Trait for Test {
 parameter_types! {
 	pub const ExistentialDeposit: u64 = 1;
 }
-impl pallet_balances::Trait for Test {
+impl pallet_balances::Config for Test {
 	type MaxLocks = ();
 	type Balance = u64;
 	type Event = Event;
@@ -183,7 +183,7 @@ pub struct InstantAllowed;
 impl Get<bool> for InstantAllowed {
 	fn get() -> bool { INSTANT_ALLOWED.with(|v| *v.borrow()) }
 }
-impl super::Trait for Test {
+impl super::Config for Test {
 	type Proposal = Call;
 	type Event = Event;
 	type Currency = pallet_balances::Module<Self>;
@@ -218,7 +218,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	pallet_balances::GenesisConfig::<Test>{
 		balances: vec![(1, 10), (2, 20), (3, 30), (4, 40), (5, 50), (6, 60)],
 	}.assimilate_storage(&mut t).unwrap();
-	GenesisConfig::default().assimilate_storage(&mut t).unwrap();
+	GenesisConfig::default().assimilate_storage::<Test>(&mut t).unwrap();
 	let mut ext = sp_io::TestExternalities::new(t);
 	ext.execute_with(|| System::set_block_number(1));
 	ext
@@ -271,7 +271,7 @@ fn set_balance_proposal_hash_and_note(value: u64) -> H256 {
 	h
 }
 
-fn propose_set_balance(who: u64, value: u64, delay: u64) -> DispatchResult {
+fn propose_set_balance(who: u64, value: u64, delay: u64) -> DispatchResultWithPostInfo {
 	Democracy::propose(
 		Origin::signed(who),
 		set_balance_proposal_hash(value),
@@ -279,7 +279,7 @@ fn propose_set_balance(who: u64, value: u64, delay: u64) -> DispatchResult {
 	)
 }
 
-fn propose_set_balance_and_note(who: u64, value: u64, delay: u64) -> DispatchResult {
+fn propose_set_balance_and_note(who: u64, value: u64, delay: u64) -> DispatchResultWithPostInfo {
 	Democracy::propose(
 		Origin::signed(who),
 		set_balance_proposal_hash_and_note(value),

@@ -88,7 +88,7 @@
 //! ```
 //! use pallet_session as session;
 //!
-//! fn validators<T: pallet_session::Trait>() -> Vec<<T as pallet_session::Trait>::ValidatorId> {
+//! fn validators<T: pallet_session::Trait>() -> Vec<<T as pallet_session::Config>::ValidatorId> {
 //!	<pallet_session::Module<T>>::validators()
 //! }
 //! # fn main(){}
@@ -123,6 +123,282 @@ use frame_support::{
 };
 use frame_system::ensure_signed;
 pub use weights::WeightInfo;
+
+pub use pallet::*;
+
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
+
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// The overarching event type.
+		type Event: From<Event> + IsType<<Self as frame_system::Config>::Event>;
+
+		/// A stable ID for a validator.
+		type ValidatorId: Member + Parameter + MaybeSerializeDeserialize;
+
+		/// A conversion from account ID to validator ID.
+		///
+		/// Its cost must be at most one storage read.
+		type ValidatorIdOf: Convert<Self::AccountId, Option<Self::ValidatorId>>;
+
+		/// Indicator for when to end the session.
+		type ShouldEndSession: ShouldEndSession<Self::BlockNumber>;
+
+		/// Something that can predict the next session rotation. This should typically come from the
+		/// same logical unit that provides [`ShouldEndSession`], yet, it gives a best effort estimate.
+		/// It is helpful to implement [`EstimateNextNewSession`].
+		type NextSessionRotation: EstimateNextSessionRotation<Self::BlockNumber>;
+
+		/// Handler for managing new session.
+		type SessionManager: SessionManager<Self::ValidatorId>;
+
+		/// Handler when a session has changed.
+		type SessionHandler: SessionHandler<Self::ValidatorId>;
+
+		/// The keys.
+		type Keys: OpaqueKeys + Member + Parameter + Default + MaybeSerializeDeserialize;
+
+		/// The fraction of validators set that is safe to be disabled.
+		///
+		/// After the threshold is reached `disabled` method starts to return true,
+		/// which in combination with `pallet_staking` forces a new era.
+		type DisabledValidatorsThreshold: Get<Perbill>;
+
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
+	}
+
+	/// Deperacated name for Config
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+		/// Called when a block is initialized. Will rotate session if it is the last
+		/// block of the current session.
+		fn on_initialize(n: T::BlockNumber) -> Weight {
+			if T::ShouldEndSession::should_end_session(n) {
+				Self::rotate_session();
+				T::MaximumBlockWeight::get()
+			} else {
+				// NOTE: the non-database part of the weight for `should_end_session(n)` is
+				// included as weight for empty block, the database part is expected to be in
+				// cache.
+				0
+			}
+		}
+	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
+		/// Sets the session key(s) of the function caller to `keys`.
+		/// Allows an account to set its session key prior to becoming a validator.
+		/// This doesn't take effect until the next session.
+		///
+		/// The dispatch origin of this function must be signed.
+		///
+		/// # <weight>
+		/// - Complexity: `O(1)`
+		///   Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.
+		/// - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`
+		/// - DbWrites: `origin account`, `NextKeys`
+		/// - DbReads per key id: `KeyOwner`
+		/// - DbWrites per key id: `KeyOwner`
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::set_keys())]
+		pub fn set_keys(
+			origin: OriginFor<T>,
+			keys: T::Keys, proof: Vec<u8>
+		) -> DispatchResultWithPostInfo {
+			let who = ensure_signed(origin)?;
+
+			ensure!(keys.ownership_proof_is_valid(&proof), Error::<T>::InvalidProof);
+
+			Self::do_set_keys(&who, keys)?;
+
+			Ok(().into())
+		}
+
+		/// Removes any session key(s) of the function caller.
+		/// This doesn't take effect until the next session.
+		///
+		/// The dispatch origin of this function must be signed.
+		///
+		/// # <weight>
+		/// - Complexity: `O(1)` in number of key types.
+		///   Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.
+		/// - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`
+		/// - DbWrites: `NextKeys`, `origin account`
+		/// - DbWrites per key id: `KeyOwnder`
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::purge_keys())]
+		pub fn purge_keys(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
+			let who = ensure_signed(origin)?;
+			Self::do_purge_keys(&who)?;
+			Ok(().into())
+		}
+	}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event {
+		/// New session has happened. Note that the argument is the \[session_index\], not the block
+		/// number as the type might suggest.
+		NewSession(SessionIndex),
+	}
+
+	/// Deprecated name for event.
+	pub type RawEvent = Event;
+
+	/// Error for the session module.
+	#[pallet::error]
+	pub enum Error<T> {
+		/// Invalid ownership proof.
+		InvalidProof,
+		/// No associated validator ID for account.
+		NoAssociatedValidatorId,
+		/// Registered duplicate key.
+		DuplicatedKey,
+		/// No keys are associated with this account.
+		NoKeys,
+	}
+
+	/// The current set of validators.
+	#[pallet::storage]
+	#[pallet::getter(fn validators)]
+	pub(super) type Validators<T: Config> = StorageValue<_, Vec<T::ValidatorId>, ValueQuery>;
+
+	/// Current index of the session.
+	#[pallet::storage]
+	#[pallet::getter(fn current_index)]
+	pub(super) type CurrentIndex<T: Config> = StorageValue<_, SessionIndex, ValueQuery>;
+
+	/// True if the underlying economic identities or weighting behind the validators
+	/// has changed in the queued validator set.
+	#[pallet::storage]
+	pub(super) type QueuedChanged<T: Config> = StorageValue<_, bool, ValueQuery>;
+
+	/// The queued keys for the next session. When the next session begins, these keys
+	/// will be used to determine the validator's session keys.
+	#[pallet::storage]
+	#[pallet::getter(fn queued_keys)]
+	pub(super) type QueuedKeys<T: Config> = StorageValue<_, Vec<(T::ValidatorId, T::Keys)>, ValueQuery>;
+
+	/// Indices of disabled validators.
+	///
+	/// The set is cleared when `on_session_ending` returns a new set of identities.
+	#[pallet::storage]
+	#[pallet::getter(fn disabled_validators)]
+	pub(super) type DisabledValidators<T: Config> = StorageValue<_, Vec<u32>, ValueQuery>;
+
+	/// The next session keys for a validator.
+	#[pallet::storage]
+	pub(super) type NextKeys<T: Config> = StorageMap<_, Twox64Concat, T::ValidatorId, T::Keys>;
+
+	/// The owner of a key. The key is the `KeyTypeId` + the encoded key.
+	#[pallet::storage]
+	pub(super) type KeyOwner<T: Config> = StorageMap<_, Twox64Concat, (KeyTypeId, Vec<u8>), T::ValidatorId>;
+
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config> {
+		pub keys: Vec<(T::AccountId, T::ValidatorId, T::Keys)>,
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config> Default for GenesisConfig<T> {
+		fn default() -> Self {
+			Self {
+				keys: Default::default(),
+			}
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
+		fn build(&self) {
+			if T::SessionHandler::KEY_TYPE_IDS.len() != T::Keys::key_ids().len() {
+				panic!("Number of keys in session handler and session keys does not match");
+			}
+
+			T::SessionHandler::KEY_TYPE_IDS.iter().zip(T::Keys::key_ids()).enumerate()
+				.for_each(|(i, (sk, kk))| {
+					if sk != kk {
+						panic!(
+							"Session handler and session key expect different key type at index: {}",
+							i,
+						);
+					}
+				});
+
+			for (account, val, keys) in self.keys.iter().cloned() {
+				<Module<T>>::inner_set_keys(&val, keys)
+					.expect("genesis config must not contain duplicates; qed");
+				frame_system::Module::<T>::inc_ref(&account);
+			}
+
+			let initial_validators_0 = T::SessionManager::new_session(0)
+				.unwrap_or_else(|| {
+					frame_support::print("No initial validator provided by `SessionManager`, use \
+						session config keys to generate initial validator set.");
+					self.keys.iter().map(|x| x.1.clone()).collect()
+				});
+			assert!(!initial_validators_0.is_empty(), "Empty validator set for session 0 in genesis block!");
+
+			let initial_validators_1 = T::SessionManager::new_session(1)
+				.unwrap_or_else(|| initial_validators_0.clone());
+			assert!(!initial_validators_1.is_empty(), "Empty validator set for session 1 in genesis block!");
+
+			let queued_keys: Vec<_> = initial_validators_1
+				.iter()
+				.cloned()
+				.map(|v| (
+					v.clone(),
+					<Module<T>>::load_keys(&v).unwrap_or_default(),
+				))
+				.collect();
+
+			// Tell everyone about the genesis session keys
+			T::SessionHandler::on_genesis_session::<T::Keys>(&queued_keys);
+
+			<Validators<T>>::put(initial_validators_0);
+			<QueuedKeys<T>>::put(queued_keys);
+
+			T::SessionManager::start_session(0);
+		}
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config> GenesisConfig<T> {
+		/// Direct implementation of `GenesisBuild::build_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn build_storage(&self) -> Result<sp_runtime::Storage, String> {
+			<Self as GenesisBuild<T>>::build_storage(self)
+		}
+
+		/// Direct implementation of `GenesisBuild::assimilate_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn assimilate_storage(
+			&self,
+			storage: &mut sp_runtime::Storage
+		) -> Result<(), String> {
+			<Self as GenesisBuild<T>>::assimilate_storage(self, storage)
+		}
+	}
+}
 
 /// Decides whether the session should be ended.
 pub trait ShouldEndSession<BlockNumber> {
@@ -352,222 +628,14 @@ impl<T: Trait> ValidatorRegistration<T::ValidatorId> for Module<T> {
 	}
 }
 
-pub trait Trait: frame_system::Trait {
-	/// The overarching event type.
-	type Event: From<Event> + Into<<Self as frame_system::Config>::Event>;
-
-	/// A stable ID for a validator.
-	type ValidatorId: Member + Parameter;
-
-	/// A conversion from account ID to validator ID.
-	///
-	/// Its cost must be at most one storage read.
-	type ValidatorIdOf: Convert<Self::AccountId, Option<Self::ValidatorId>>;
-
-	/// Indicator for when to end the session.
-	type ShouldEndSession: ShouldEndSession<Self::BlockNumber>;
-
-	/// Something that can predict the next session rotation. This should typically come from the
-	/// same logical unit that provides [`ShouldEndSession`], yet, it gives a best effort estimate.
-	/// It is helpful to implement [`EstimateNextNewSession`].
-	type NextSessionRotation: EstimateNextSessionRotation<Self::BlockNumber>;
-
-	/// Handler for managing new session.
-	type SessionManager: SessionManager<Self::ValidatorId>;
-
-	/// Handler when a session has changed.
-	type SessionHandler: SessionHandler<Self::ValidatorId>;
-
-	/// The keys.
-	type Keys: OpaqueKeys + Member + Parameter + Default;
-
-	/// The fraction of validators set that is safe to be disabled.
-	///
-	/// After the threshold is reached `disabled` method starts to return true,
-	/// which in combination with `pallet_staking` forces a new era.
-	type DisabledValidatorsThreshold: Get<Perbill>;
-
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
-}
-
-decl_storage! {
-	trait Store for Module<T: Trait> as Session {
-		/// The current set of validators.
-		Validators get(fn validators): Vec<T::ValidatorId>;
-
-		/// Current index of the session.
-		CurrentIndex get(fn current_index): SessionIndex;
-
-		/// True if the underlying economic identities or weighting behind the validators
-		/// has changed in the queued validator set.
-		QueuedChanged: bool;
-
-		/// The queued keys for the next session. When the next session begins, these keys
-		/// will be used to determine the validator's session keys.
-		QueuedKeys get(fn queued_keys): Vec<(T::ValidatorId, T::Keys)>;
-
-		/// Indices of disabled validators.
-		///
-		/// The set is cleared when `on_session_ending` returns a new set of identities.
-		DisabledValidators get(fn disabled_validators): Vec<u32>;
-
-		/// The next session keys for a validator.
-		NextKeys: map hasher(twox_64_concat) T::ValidatorId => Option<T::Keys>;
-
-		/// The owner of a key. The key is the `KeyTypeId` + the encoded key.
-		KeyOwner: map hasher(twox_64_concat) (KeyTypeId, Vec<u8>) => Option<T::ValidatorId>;
-	}
-	add_extra_genesis {
-		config(keys): Vec<(T::AccountId, T::ValidatorId, T::Keys)>;
-		build(|config: &GenesisConfig<T>| {
-			if T::SessionHandler::KEY_TYPE_IDS.len() != T::Keys::key_ids().len() {
-				panic!("Number of keys in session handler and session keys does not match");
-			}
-
-			T::SessionHandler::KEY_TYPE_IDS.iter().zip(T::Keys::key_ids()).enumerate()
-				.for_each(|(i, (sk, kk))| {
-					if sk != kk {
-						panic!(
-							"Session handler and session key expect different key type at index: {}",
-							i,
-						);
-					}
-				});
-
-			for (account, val, keys) in config.keys.iter().cloned() {
-				<Module<T>>::inner_set_keys(&val, keys)
-					.expect("genesis config must not contain duplicates; qed");
-				frame_system::Module::<T>::inc_ref(&account);
-			}
-
-			let initial_validators_0 = T::SessionManager::new_session(0)
-				.unwrap_or_else(|| {
-					frame_support::print("No initial validator provided by `SessionManager`, use \
-						session config keys to generate initial validator set.");
-					config.keys.iter().map(|x| x.1.clone()).collect()
-				});
-			assert!(!initial_validators_0.is_empty(), "Empty validator set for session 0 in genesis block!");
-
-			let initial_validators_1 = T::SessionManager::new_session(1)
-				.unwrap_or_else(|| initial_validators_0.clone());
-			assert!(!initial_validators_1.is_empty(), "Empty validator set for session 1 in genesis block!");
-
-			let queued_keys: Vec<_> = initial_validators_1
-				.iter()
-				.cloned()
-				.map(|v| (
-					v.clone(),
-					<Module<T>>::load_keys(&v).unwrap_or_default(),
-				))
-				.collect();
-
-			// Tell everyone about the genesis session keys
-			T::SessionHandler::on_genesis_session::<T::Keys>(&queued_keys);
-
-			<Validators<T>>::put(initial_validators_0);
-			<QueuedKeys<T>>::put(queued_keys);
-
-			T::SessionManager::start_session(0);
-		});
-	}
-}
-
-decl_event!(
-	pub enum Event {
-		/// New session has happened. Note that the argument is the \[session_index\], not the block
-		/// number as the type might suggest.
-		NewSession(SessionIndex),
-	}
-);
-
-decl_error! {
-	/// Error for the session module.
-	pub enum Error for Module<T: Trait> {
-		/// Invalid ownership proof.
-		InvalidProof,
-		/// No associated validator ID for account.
-		NoAssociatedValidatorId,
-		/// Registered duplicate key.
-		DuplicatedKey,
-		/// No keys are associated with this account.
-		NoKeys,
-	}
-}
-
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		type Error = Error<T>;
-
-		fn deposit_event() = default;
-
-		/// Sets the session key(s) of the function caller to `keys`.
-		/// Allows an account to set its session key prior to becoming a validator.
-		/// This doesn't take effect until the next session.
-		///
-		/// The dispatch origin of this function must be signed.
-		///
-		/// # <weight>
-		/// - Complexity: `O(1)`
-		///   Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.
-		/// - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`
-		/// - DbWrites: `origin account`, `NextKeys`
-		/// - DbReads per key id: `KeyOwner`
-		/// - DbWrites per key id: `KeyOwner`
-		/// # </weight>
-		#[weight = T::WeightInfo::set_keys()]
-		pub fn set_keys(origin, keys: T::Keys, proof: Vec<u8>) -> dispatch::DispatchResult {
-			let who = ensure_signed(origin)?;
-
-			ensure!(keys.ownership_proof_is_valid(&proof), Error::<T>::InvalidProof);
-
-			Self::do_set_keys(&who, keys)?;
-
-			Ok(())
-		}
-
-		/// Removes any session key(s) of the function caller.
-		/// This doesn't take effect until the next session.
-		///
-		/// The dispatch origin of this function must be signed.
-		///
-		/// # <weight>
-		/// - Complexity: `O(1)` in number of key types.
-		///   Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.
-		/// - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`
-		/// - DbWrites: `NextKeys`, `origin account`
-		/// - DbWrites per key id: `KeyOwnder`
-		/// # </weight>
-		#[weight = T::WeightInfo::purge_keys()]
-		pub fn purge_keys(origin) {
-			let who = ensure_signed(origin)?;
-			Self::do_purge_keys(&who)?;
-		}
-
-		/// Called when a block is initialized. Will rotate session if it is the last
-		/// block of the current session.
-		fn on_initialize(n: T::BlockNumber) -> Weight {
-			if T::ShouldEndSession::should_end_session(n) {
-				Self::rotate_session();
-				T::MaximumBlockWeight::get()
-			} else {
-				// NOTE: the non-database part of the weight for `should_end_session(n)` is
-				// included as weight for empty block, the database part is expected to be in
-				// cache.
-				0
-			}
-		}
-	}
-}
-
 impl<T: Trait> Module<T> {
 	/// Move on to next session. Register new validator set and session keys. Changes
 	/// to the validator set have a session of delay to take effect. This allows for
 	/// equivocation punishment after a fork.
 	pub fn rotate_session() {
-		let session_index = CurrentIndex::get();
+		let session_index = CurrentIndex::<T>::get();
 
-		let changed = QueuedChanged::get();
+		let changed = QueuedChanged::<T>::get();
 
 		// Inform the session handlers that a session is going to end.
 		T::SessionHandler::on_before_session_ending();
@@ -583,12 +651,12 @@ impl<T: Trait> Module<T> {
 
 		if changed {
 			// reset disabled validators
-			DisabledValidators::take();
+			DisabledValidators::<T>::take();
 		}
 
 		// Increment session index.
 		let session_index = session_index + 1;
-		CurrentIndex::put(session_index);
+		CurrentIndex::<T>::put(session_index);
 
 		T::SessionManager::start_session(session_index);
 
@@ -636,7 +704,7 @@ impl<T: Trait> Module<T> {
 		};
 
 		<QueuedKeys<T>>::put(queued_amalgamated.clone());
-		QueuedChanged::put(next_changed);
+		QueuedChanged::<T>::put(next_changed);
 
 		// Record that this happened.
 		Self::deposit_event(Event::NewSession(session_index));
@@ -654,7 +722,7 @@ impl<T: Trait> Module<T> {
 	/// Returns `true` if this causes a `DisabledValidatorsThreshold` of validators
 	/// to be already disabled.
 	pub fn disable_index(i: usize) -> bool {
-		let (fire_event, threshold_reached) = DisabledValidators::mutate(|disabled| {
+		let (fire_event, threshold_reached) = DisabledValidators::<T>::mutate(|disabled| {
 			let i = i as u32;
 			if let Err(index) = disabled.binary_search(&i) {
 				let count = <Validators<T>>::decode_len().unwrap_or(0) as u32;

@@ -30,96 +30,65 @@ use frame_support::{
 };
 use frame_system::ensure_signed;
 
-pub trait Trait<I=DefaultInstance>: frame_system::Trait {
-	/// The overarching event type.
-	type Event: From<Event<Self, I>> + Into<<Self as frame_system::Config>::Event>;
+pub use pallet::*;
 
-	/// Required origin for adding a member (though can always be Root).
-	type AddOrigin: EnsureOrigin<Self::Origin>;
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-	/// Required origin for removing a member (though can always be Root).
-	type RemoveOrigin: EnsureOrigin<Self::Origin>;
+	#[pallet::config]
+	pub trait Config<I:'static = ()>: frame_system::Config {
+		/// The overarching event type.
+		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Config>::Event>;
 
-	/// Required origin for adding and removing a member in a single action.
-	type SwapOrigin: EnsureOrigin<Self::Origin>;
+		/// Required origin for adding a member (though can always be Root).
+		type AddOrigin: EnsureOrigin<Self::Origin>;
 
-	/// Required origin for resetting membership.
-	type ResetOrigin: EnsureOrigin<Self::Origin>;
+		/// Required origin for removing a member (though can always be Root).
+		type RemoveOrigin: EnsureOrigin<Self::Origin>;
 
-	/// Required origin for setting or resetting the prime member.
-	type PrimeOrigin: EnsureOrigin<Self::Origin>;
+		/// Required origin for adding and removing a member in a single action.
+		type SwapOrigin: EnsureOrigin<Self::Origin>;
 
-	/// The receiver of the signal for when the membership has been initialized. This happens pre-
-	/// genesis and will usually be the same as `MembershipChanged`. If you need to do something
-	/// different on initialization, then you can change this accordingly.
-	type MembershipInitialized: InitializeMembers<Self::AccountId>;
+		/// Required origin for resetting membership.
+		type ResetOrigin: EnsureOrigin<Self::Origin>;
 
-	/// The receiver of the signal for when the membership has changed.
-	type MembershipChanged: ChangeMembers<Self::AccountId>;
-}
+		/// Required origin for setting or resetting the prime member.
+		type PrimeOrigin: EnsureOrigin<Self::Origin>;
 
-decl_storage! {
-	trait Store for Module<T: Trait<I>, I: Instance=DefaultInstance> as Membership {
-		/// The current membership, stored as an ordered Vec.
-		Members get(fn members): Vec<T::AccountId>;
+		/// The receiver of the signal for when the membership has been initialized. This happens pre-
+		/// genesis and will usually be the same as `MembershipChanged`. If you need to do something
+		/// different on initialization, then you can change this accordingly.
+		type MembershipInitialized: InitializeMembers<Self::AccountId>;
 
-		/// The current prime member, if one exists.
-		Prime get(fn prime): Option<T::AccountId>;
+		/// The receiver of the signal for when the membership has changed.
+		type MembershipChanged: ChangeMembers<Self::AccountId>;
 	}
-	add_extra_genesis {
-		config(members): Vec<T::AccountId>;
-		config(phantom): sp_std::marker::PhantomData<I>;
-		build(|config: &Self| {
-			let mut members = config.members.clone();
-			members.sort();
-			T::MembershipInitialized::initialize_members(&members);
-			<Members<T, I>>::put(members);
-		})
+
+	/// Kind of alias for `Config` trait. Deprecated as `Trait` is renamed `Config`.
+	pub trait Trait<I:'static=()>: Config<I> {}
+	impl<T: Config<I>, I: 'static> Trait<I> for T {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T, I=()>(PhantomData<(T, I)>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T, I=()> = Pallet<T, I>;
+
+	#[pallet::interface]
+	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {
 	}
-}
 
-decl_event!(
-	pub enum Event<T, I=DefaultInstance> where
-		<T as frame_system::Config>::AccountId,
-		<T as Trait<I>>::Event,
-	{
-		/// The given member was added; see the transaction for who.
-		MemberAdded,
-		/// The given member was removed; see the transaction for who.
-		MemberRemoved,
-		/// Two members were swapped; see the transaction for who.
-		MembersSwapped,
-		/// The membership was reset; see the transaction for who the new set is.
-		MembersReset,
-		/// One of the members' keys changed.
-		KeyChanged,
-		/// Phantom member, never used.
-		Dummy(sp_std::marker::PhantomData<(AccountId, Event)>),
-	}
-);
-
-decl_error! {
-	/// Error for the nicks module.
-	pub enum Error for Module<T: Trait<I>, I: Instance> {
-		/// Already a member.
-		AlreadyMember,
-		/// Not a member.
-		NotMember,
-	}
-}
-
-decl_module! {
-	pub struct Module<T: Trait<I>, I: Instance=DefaultInstance>
-		for enum Call
-		where origin: T::Origin
-	{
-		fn deposit_event() = default;
-
+	#[pallet::call]
+	impl<T: Config<I>, I: 'static> Pallet<T, I> {
 		/// Add a member `who` to the set.
 		///
 		/// May only be called from `T::AddOrigin`.
-		#[weight = 50_000_000]
-		pub fn add_member(origin, who: T::AccountId) {
+		#[pallet::weight(50_000_000)]
+		pub fn add_member(origin: OriginFor<T>, who: T::AccountId) -> DispatchResultWithPostInfo {
 			T::AddOrigin::ensure_origin(origin)?;
 
 			let mut members = <Members<T, I>>::get();
@@ -130,13 +99,14 @@ decl_module! {
 			T::MembershipChanged::change_members_sorted(&[who], &[], &members[..]);
 
 			Self::deposit_event(RawEvent::MemberAdded);
+			Ok(().into())
 		}
 
 		/// Remove a member `who` from the set.
 		///
 		/// May only be called from `T::RemoveOrigin`.
-		#[weight = 50_000_000]
-		pub fn remove_member(origin, who: T::AccountId) {
+		#[pallet::weight(50_000_000)]
+		pub fn remove_member(origin: OriginFor<T>, who: T::AccountId) -> DispatchResultWithPostInfo {
 			T::RemoveOrigin::ensure_origin(origin)?;
 
 			let mut members = <Members<T, I>>::get();
@@ -148,6 +118,7 @@ decl_module! {
 			Self::rejig_prime(&members);
 
 			Self::deposit_event(RawEvent::MemberRemoved);
+			Ok(().into())
 		}
 
 		/// Swap out one member `remove` for another `add`.
@@ -155,11 +126,15 @@ decl_module! {
 		/// May only be called from `T::SwapOrigin`.
 		///
 		/// Prime membership is *not* passed from `remove` to `add`, if extant.
-		#[weight = 50_000_000]
-		pub fn swap_member(origin, remove: T::AccountId, add: T::AccountId) {
+		#[pallet::weight(50_000_000)]
+		pub fn swap_member(
+			origin: OriginFor<T>,
+			remove: T::AccountId,
+			add: T::AccountId
+		) -> DispatchResultWithPostInfo {
 			T::SwapOrigin::ensure_origin(origin)?;
 
-			if remove == add { return Ok(()) }
+			if remove == add { return Ok(().into()) }
 
 			let mut members = <Members<T, I>>::get();
 			let location = members.binary_search(&remove).ok().ok_or(Error::<T, I>::NotMember)?;
@@ -176,14 +151,18 @@ decl_module! {
 			Self::rejig_prime(&members);
 
 			Self::deposit_event(RawEvent::MembersSwapped);
+			Ok(().into())
 		}
 
 		/// Change the membership to a new set, disregarding the existing membership. Be nice and
 		/// pass `members` pre-sorted.
 		///
 		/// May only be called from `T::ResetOrigin`.
-		#[weight = 50_000_000]
-		pub fn reset_members(origin, members: Vec<T::AccountId>) {
+		#[pallet::weight(50_000_000)]
+		pub fn reset_members(
+			origin: OriginFor<T>,
+			members: Vec<T::AccountId>
+		) -> DispatchResultWithPostInfo {
 			T::ResetOrigin::ensure_origin(origin)?;
 
 			let mut members = members;
@@ -196,6 +175,7 @@ decl_module! {
 
 
 			Self::deposit_event(RawEvent::MembersReset);
+			Ok(().into())
 		}
 
 		/// Swap out the sending member for some other key `new`.
@@ -203,8 +183,8 @@ decl_module! {
 		/// May only be called from `Signed` origin of a current member.
 		///
 		/// Prime membership is passed from the origin account to `new`, if extant.
-		#[weight = 50_000_000]
-		pub fn change_key(origin, new: T::AccountId) {
+		#[pallet::weight(50_000_000)]
+		pub fn change_key(origin: OriginFor<T>, new: T::AccountId) -> DispatchResultWithPostInfo {
 			let remove = ensure_signed(origin)?;
 
 			if remove != new {
@@ -228,32 +208,121 @@ decl_module! {
 			}
 
 			Self::deposit_event(RawEvent::KeyChanged);
+			Ok(().into())
 		}
 
 		/// Set the prime member. Must be a current member.
 		///
 		/// May only be called from `T::PrimeOrigin`.
-		#[weight = 50_000_000]
-		pub fn set_prime(origin, who: T::AccountId) {
+		#[pallet::weight(50_000_000)]
+		pub fn set_prime(origin: OriginFor<T>, who: T::AccountId) -> DispatchResultWithPostInfo {
 			T::PrimeOrigin::ensure_origin(origin)?;
 			Self::members().binary_search(&who).ok().ok_or(Error::<T, I>::NotMember)?;
 			Prime::<T, I>::put(&who);
 			T::MembershipChanged::set_prime(Some(who));
+			Ok(().into())
 		}
 
 		/// Remove the prime member if it exists.
 		///
 		/// May only be called from `T::PrimeOrigin`.
-		#[weight = 50_000_000]
-		pub fn clear_prime(origin) {
+		#[pallet::weight(50_000_000)]
+		pub fn clear_prime(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
 			T::PrimeOrigin::ensure_origin(origin)?;
 			Prime::<T, I>::kill();
 			T::MembershipChanged::set_prime(None);
+			Ok(().into())
+		}
+	}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config<I>, I: 'static = ()> {
+		/// The given member was added; see the transaction for who.
+		MemberAdded,
+		/// The given member was removed; see the transaction for who.
+		MemberRemoved,
+		/// Two members were swapped; see the transaction for who.
+		MembersSwapped,
+		/// The membership was reset; see the transaction for who the new set is.
+		MembersReset,
+		/// One of the members' keys changed.
+		KeyChanged,
+	}
+
+	/// Deprecated name for event.
+	pub type RawEvent<T, I=()> = Event<T, I>;
+
+	/// Error for the nicks module.
+	#[pallet::error]
+	pub enum Error<T, I=()> {
+		/// Already a member.
+		AlreadyMember,
+		/// Not a member.
+		NotMember,
+	}
+
+	/// The current membership, stored as an ordered Vec.
+	#[pallet::storage]
+	#[pallet::getter(fn members)]
+	pub(super) type Members<T: Config<I>, I: 'static = ()> = StorageValue<
+		_, Vec<T::AccountId>, ValueQuery
+	>;
+
+	/// The current prime member, if one exists.
+	#[pallet::storage]
+	#[pallet::getter(fn prime)]
+	pub(super) type Prime<T: Config<I>, I: 'static = ()> = StorageValue<_, T::AccountId>;
+
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config<I>, I: 'static = ()> {
+		pub members: Vec<T::AccountId>,
+		pub phantom: sp_std::marker::PhantomData<I>,
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config<I>, I: 'static> Default for GenesisConfig<T, I> {
+		fn default() -> Self {
+			Self {
+				members: Default::default(),
+				phantom: Default::default(),
+			}
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config<I>, I: 'static> GenesisBuild<T, I> for GenesisConfig<T, I> {
+		fn build(&self) {
+			let mut members = self.members.clone();
+			members.sort();
+			T::MembershipInitialized::initialize_members(&members);
+			<Members<T, I>>::put(members);
+		}
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config<I>, I: 'static> GenesisConfig<T, I> {
+		/// Direct implementation of `GenesisBuild::build_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn build_storage(&self) -> Result<sp_runtime::Storage, String> {
+			<Self as GenesisBuild<T, I>>::build_storage(self)
+		}
+
+		/// Direct implementation of `GenesisBuild::assimilate_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn assimilate_storage(
+			&self,
+			storage: &mut sp_runtime::Storage
+		) -> Result<(), String> {
+			<Self as GenesisBuild<T, I>>::assimilate_storage(self, storage)
 		}
 	}
 }
 
-impl<T: Trait<I>, I: Instance> Module<T, I> {
+impl<T: Trait<I>, I: 'static> Module<T, I> {
 	fn rejig_prime(members: &[T::AccountId]) {
 		if let Some(prime) = Prime::<T, I>::get() {
 			match members.binary_search(&prime) {
@@ -264,7 +333,7 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 	}
 }
 
-impl<T: Trait<I>, I: Instance> Contains<T::AccountId> for Module<T, I> {
+impl<T: Trait<I>, I: 'static> Contains<T::AccountId> for Module<T, I> {
 	fn sorted_members() -> Vec<T::AccountId> {
 		Self::members()
 	}
@@ -363,7 +432,7 @@ mod tests {
 		}
 	}
 
-	impl Trait for Test {
+	impl Config for Test {
 		type Event = ();
 		type AddOrigin = EnsureSignedBy<One, u64>;
 		type RemoveOrigin = EnsureSignedBy<Two, u64>;

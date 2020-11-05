@@ -117,33 +117,65 @@ use sp_timestamp::{
 };
 pub use weights::WeightInfo;
 
-/// The module configuration trait
-pub trait Trait: frame_system::Trait {
-	/// Type used for expressing timestamp.
-	type Moment: Parameter + Default + AtLeast32Bit
-		+ Scale<Self::BlockNumber, Output = Self::Moment> + Copy;
+pub use pallet::*;
 
-	/// Something which can be notified when the timestamp is set. Set this to `()` if not needed.
-	type OnTimestampSet: OnTimestampSet<Self::Moment>;
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-	/// The minimum period between blocks. Beware that this is different to the *expected* period
-	/// that the block production apparatus provides. Your chosen consensus system will generally
-	/// work with this to determine a sensible block time. e.g. For Aura, it will be double this
-	/// period on default settings.
-	type MinimumPeriod: Get<Self::Moment>;
+	/// The module configuration trait
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// Type used for expressing timestamp.
+		type Moment: Parameter + Default + AtLeast32Bit
+			+ Scale<Self::BlockNumber, Output = Self::Moment> + Copy;
 
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
-}
+		/// Something which can be notified when the timestamp is set. Set this to `()` if not needed.
+		type OnTimestampSet: OnTimestampSet<Self::Moment>;
 
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
 		/// The minimum period between blocks. Beware that this is different to the *expected* period
 		/// that the block production apparatus provides. Your chosen consensus system will generally
 		/// work with this to determine a sensible block time. e.g. For Aura, it will be double this
 		/// period on default settings.
-		const MinimumPeriod: T::Moment = T::MinimumPeriod::get();
+		#[pallet::constant]
+		type MinimumPeriod: Get<Self::Moment>;
 
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
+	}
+
+	/// Deprecated old config name
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deprecated old pallet name
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+		/// dummy `on_initialize` to return the weight used in `on_finalize`.
+		fn on_initialize(_: T::BlockNumber) -> Weight {
+			// weight of `on_finalize`
+			T::WeightInfo::on_finalize()
+		}
+
+		/// # <weight>
+		/// - `O(1)`
+		/// - 1 storage deletion (codec `O(1)`).
+		/// # </weight>
+		fn on_finalize(_: T::BlockNumber) {
+			assert!(<Self as Store>::DidUpdate::take(), "Timestamp must be updated once in the block");
+		}
+	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
 		/// Set the current time.
 		///
 		/// This call should be invoked exactly once per block. It will panic at the finalization
@@ -159,11 +191,14 @@ decl_module! {
 		/// - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in `on_finalize`)
 		/// - 1 event handler `on_timestamp_set`. Must be `O(1)`.
 		/// # </weight>
-		#[weight = (
+		#[pallet::weight((
 			T::WeightInfo::set(),
 			DispatchClass::Mandatory
-		)]
-		fn set(origin, #[compact] now: T::Moment) {
+		))]
+		pub(super) fn set(
+			origin: OriginFor<T>,
+			#[pallet::compact] now: T::Moment
+		) -> DispatchResultWithPostInfo {
 			ensure_none(origin)?;
 			assert!(!<Self as Store>::DidUpdate::exists(), "Timestamp must be updated only once in the block");
 			let prev = Self::now();
@@ -171,37 +206,60 @@ decl_module! {
 				prev.is_zero() || now >= prev + T::MinimumPeriod::get(),
 				"Timestamp must increment by at least <MinimumPeriod> between sequential blocks"
 			);
-			<Self as Store>::Now::put(now);
-			<Self as Store>::DidUpdate::put(true);
+			<<Self as Store>::Now>::put(now);
+			<<Self as Store>::DidUpdate>::put(true);
 
 			<T::OnTimestampSet as OnTimestampSet<_>>::on_timestamp_set(now);
-		}
-
-		/// dummy `on_initialize` to return the weight used in `on_finalize`.
-		fn on_initialize() -> Weight {
-			// weight of `on_finalize`
-			T::WeightInfo::on_finalize()
-		}
-
-		/// # <weight>
-		/// - `O(1)`
-		/// - 1 storage deletion (codec `O(1)`).
-		/// # </weight>
-		fn on_finalize() {
-			assert!(<Self as Store>::DidUpdate::take(), "Timestamp must be updated once in the block");
+			Ok(().into())
 		}
 	}
-}
 
-decl_storage! {
-	trait Store for Module<T: Trait> as Timestamp {
-		/// Current time for the current block.
-		pub Now get(fn now): T::Moment;
+	#[pallet::inherent]
+	impl<T: Config> ProvideInherent for Pallet<T> {
+		type Call = Call<T>;
+		type Error = InherentError;
+		const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
 
-		/// Did the timestamp get updated in this block?
-		DidUpdate: bool;
+		fn create_inherent(data: &InherentData) -> Option<Self::Call> {
+			let data: T::Moment = extract_inherent_data(data)
+				.expect("Gets and decodes timestamp inherent data")
+				.saturated_into();
+
+			let next_time = cmp::max(data, Self::now() + T::MinimumPeriod::get());
+			Some(Call::set(next_time.into()))
+		}
+
+		fn check_inherent(call: &Self::Call, data: &InherentData) -> result::Result<(), Self::Error> {
+			const MAX_TIMESTAMP_DRIFT_MILLIS: u64 = 30 * 1000;
+
+			let t: u64 = match call {
+				Call::set(ref t) => t.clone().saturated_into::<u64>(),
+				_ => return Ok(()),
+			};
+
+			let data = extract_inherent_data(data).map_err(|e| InherentError::Other(e))?;
+
+			let minimum = (Self::now() + T::MinimumPeriod::get()).saturated_into::<u64>();
+			if t > data + MAX_TIMESTAMP_DRIFT_MILLIS {
+				Err(InherentError::Other("Timestamp too far in future to accept".into()))
+			} else if t < minimum {
+				Err(InherentError::ValidAtTimestamp(minimum))
+			} else {
+				Ok(())
+			}
+		}
 	}
+
+	/// Current time for the current block.
+	#[pallet::storage]
+	#[pallet::getter(fn now)]
+	pub type Now<T: Config> = StorageValue<_, T::Moment, ValueQuery>;
+
+	/// Did the timestamp get updated in this block?
+	#[pallet::storage]
+	pub(super) type DidUpdate<T: Config> = StorageValue<_, bool, ValueQuery>;
 }
+
 
 impl<T: Trait> Module<T> {
 	/// Get the current time for the current block.
@@ -223,41 +281,6 @@ fn extract_inherent_data(data: &InherentData) -> Result<InherentType, RuntimeStr
 	data.get_data::<InherentType>(&INHERENT_IDENTIFIER)
 		.map_err(|_| RuntimeString::from("Invalid timestamp inherent data encoding."))?
 		.ok_or_else(|| "Timestamp inherent data is not provided.".into())
-}
-
-impl<T: Trait> ProvideInherent for Module<T> {
-	type Call = Call<T>;
-	type Error = InherentError;
-	const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
-
-	fn create_inherent(data: &InherentData) -> Option<Self::Call> {
-		let data: T::Moment = extract_inherent_data(data)
-			.expect("Gets and decodes timestamp inherent data")
-			.saturated_into();
-
-		let next_time = cmp::max(data, Self::now() + T::MinimumPeriod::get());
-		Some(Call::set(next_time.into()))
-	}
-
-	fn check_inherent(call: &Self::Call, data: &InherentData) -> result::Result<(), Self::Error> {
-		const MAX_TIMESTAMP_DRIFT_MILLIS: u64 = 30 * 1000;
-
-		let t: u64 = match call {
-			Call::set(ref t) => t.clone().saturated_into::<u64>(),
-			_ => return Ok(()),
-		};
-
-		let data = extract_inherent_data(data).map_err(|e| InherentError::Other(e))?;
-
-		let minimum = (Self::now() + T::MinimumPeriod::get()).saturated_into::<u64>();
-		if t > data + MAX_TIMESTAMP_DRIFT_MILLIS {
-			Err(InherentError::Other("Timestamp too far in future to accept".into()))
-		} else if t < minimum {
-			Err(InherentError::ValidAtTimestamp(minimum))
-		} else {
-			Ok(())
-		}
-	}
 }
 
 impl<T: Trait> Time for Module<T> {
@@ -344,7 +367,7 @@ mod tests {
 	parameter_types! {
 		pub const MinimumPeriod: u64 = 5;
 	}
-	impl Trait for Test {
+	impl Config for Test {
 		type Moment = u64;
 		type OnTimestampSet = ();
 		type MinimumPeriod = MinimumPeriod;

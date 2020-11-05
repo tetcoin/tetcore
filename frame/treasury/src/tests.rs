@@ -89,7 +89,7 @@ impl frame_system::Config for Test {
 parameter_types! {
 	pub const ExistentialDeposit: u64 = 1;
 }
-impl pallet_balances::Trait for Test {
+impl pallet_balances::Config for Test {
 	type MaxLocks = ();
 	type Balance = u64;
 	type Event = Event;
@@ -140,7 +140,7 @@ parameter_types! {
 	pub const BountyCuratorDeposit: Permill = Permill::from_percent(50);
 	pub const BountyValueMinimum: u64 = 1;
 }
-impl Trait for Test {
+impl Config for Test {
 	type ModuleId = TreasuryModuleId;
 	type Currency = pallet_balances::Module<Test>;
 	type ApproveOrigin = frame_system::EnsureRoot<u128>;
@@ -179,7 +179,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	t.into()
 }
 
-fn last_event() -> RawEvent<u64, u128, H256, DefaultInstance> {
+fn last_event() -> RawEvent<Test, ()> {
 	System::events().into_iter().map(|r| r.event)
 		.filter_map(|e| {
 			if let Event::treasury(inner) = e { Some(inner) } else { None }

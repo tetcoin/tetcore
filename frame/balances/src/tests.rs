@@ -19,7 +19,7 @@
 
 #![cfg(test)]
 
-#[derive(Debug)]
+#[derive(Debug, codec::Encode, codec::Decode, Clone, Eq, PartialEq)]
 pub struct CallWithDispatchInfo;
 impl sp_runtime::traits::Dispatchable for CallWithDispatchInfo {
 	type Origin = ();
@@ -52,10 +52,7 @@ macro_rules! decl_tests {
 		const ID_1: LockIdentifier = *b"1       ";
 		const ID_2: LockIdentifier = *b"2       ";
 
-		pub type System = frame_system::Module<$test>;
-		pub type Balances = Module<$test>;
-
-		pub const CALL: &<$test as frame_system::Config>::Call = &$crate::tests::CallWithDispatchInfo;
+		pub const CALL: &<$test as frame_system::Config>::Call = &Call::System(system::Call::remark(vec![]));
 
 		/// create a transaction info struct from weight. Handy to avoid building the whole struct.
 		pub fn info_from_weight(w: Weight) -> DispatchInfo {
@@ -91,7 +88,7 @@ macro_rules! decl_tests {
 			<$ext_builder>::default().existential_deposit(1).monied(true).build().execute_with(|| {
 				assert_eq!(Balances::free_balance(1), 10);
 				assert_ok!(<Balances as Currency<_>>::transfer(&1, &2, 10, AllowDeath));
-				assert!(!<<Test as Trait>::AccountStore as StoredMap<u64, AccountData<u64>>>::is_explicit(&1));
+				assert!(!<<Test as Config>::AccountStore as StoredMap<u64, AccountData<u64>>>::is_explicit(&1));
 			});
 		}
 
@@ -634,7 +631,7 @@ macro_rules! decl_tests {
 		fn cannot_set_genesis_value_below_ed() {
 			($existential_deposit).with(|v| *v.borrow_mut() = 11);
 			let mut t = frame_system::GenesisConfig::default().build_storage::<$test>().unwrap();
-			let _ = GenesisConfig::<$test> {
+			let _ = balances::GenesisConfig::<$test> {
 				balances: vec![(1, 10)],
 			}.assimilate_storage(&mut t).unwrap();
 		}

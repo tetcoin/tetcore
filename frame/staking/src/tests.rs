@@ -689,7 +689,7 @@ fn forcing_new_era_works() {
 		assert_eq!(Staking::active_era().unwrap().index, 1);
 
 		// no era change.
-		ForceEra::put(Forcing::ForceNone);
+		ForceEra::<Test>::put(Forcing::ForceNone);
 		start_session(4);
 		assert_eq!(Staking::active_era().unwrap().index, 1);
 		start_session(5);
@@ -701,14 +701,14 @@ fn forcing_new_era_works() {
 
 		// back to normal.
 		// this immediately starts a new session.
-		ForceEra::put(Forcing::NotForcing);
+		ForceEra::<Test>::put(Forcing::NotForcing);
 		start_session(8);
 		assert_eq!(Staking::active_era().unwrap().index, 1); // There is one session delay
 		start_session(9);
 		assert_eq!(Staking::active_era().unwrap().index, 2);
 
 		// forceful change
-		ForceEra::put(Forcing::ForceAlways);
+		ForceEra::<Test>::put(Forcing::ForceAlways);
 		start_session(10);
 		assert_eq!(Staking::active_era().unwrap().index, 2); // There is one session delay
 		start_session(11);
@@ -717,10 +717,10 @@ fn forcing_new_era_works() {
 		assert_eq!(Staking::active_era().unwrap().index, 4);
 
 		// just one forceful change
-		ForceEra::put(Forcing::ForceNew);
+		ForceEra::<Test>::put(Forcing::ForceNew);
 		start_session(13);
 		assert_eq!(Staking::active_era().unwrap().index, 5);
-		assert_eq!(ForceEra::get(), Forcing::NotForcing);
+		assert_eq!(ForceEra::<Test>::get(), Forcing::NotForcing);
 		start_session(14);
 		assert_eq!(Staking::active_era().unwrap().index, 6);
 		start_session(15);
@@ -1990,7 +1990,7 @@ fn era_is_always_same_length() {
 		assert_eq!(Staking::eras_start_session_index(current_era()).unwrap(), session_per_era * 2u32);
 
 		let session = Session::current_index();
-		ForceEra::put(Forcing::ForceNew);
+		ForceEra::<Test>::put(Forcing::ForceNew);
 		advance_session();
 		advance_session();
 		assert_eq!(current_era(), 3);
@@ -2986,7 +2986,7 @@ mod offchain_election {
 			.build()
 			.execute_with(|| {
 				run_to_block(12);
-				ForceEra::put(Forcing::ForceNew);
+				ForceEra::<Test>::put(Forcing::ForceNew);
 				run_to_block(13);
 				assert_eq!(Staking::era_election_status(), ElectionStatus::Closed);
 
@@ -3007,7 +3007,7 @@ mod offchain_election {
 			.build()
 			.execute_with(|| {
 
-				ForceEra::put(Forcing::ForceAlways);
+				ForceEra::<Test>::put(Forcing::ForceAlways);
 				run_to_block(16);
 				assert_eq!(Staking::era_election_status(), ElectionStatus::Closed);
 
@@ -3033,7 +3033,7 @@ mod offchain_election {
 			.election_lookahead(3)
 			.build()
 			.execute_with(|| {
-				ForceEra::put(Forcing::ForceNone);
+				ForceEra::<Test>::put(Forcing::ForceNone);
 
 				run_to_block(36);
 				assert_session_era!(3, 0);
@@ -3479,9 +3479,9 @@ mod offchain_election {
 				build_offchain_election_test_ext();
 				run_to_block(12);
 
-				ValidatorCount::put(3);
+				ValidatorCount::<Test>::put(3);
 				let (compact, winners, score) = prepare_submission_with(true, true, 2, |_| {});
-				ValidatorCount::put(4);
+				ValidatorCount::<Test>::put(4);
 
 				assert_eq!(winners.len(), 3);
 
@@ -3533,9 +3533,9 @@ mod offchain_election {
 				build_offchain_election_test_ext();
 				run_to_block(12);
 
-				ValidatorCount::put(3);
+				ValidatorCount::<Test>::put(3);
 				let (compact, winners, score) = prepare_submission_with(true, true, 2, |_| {});
-				ValidatorCount::put(4);
+				ValidatorCount::<Test>::put(4);
 
 				assert_eq!(winners.len(), 3);
 
@@ -4340,7 +4340,7 @@ fn test_max_nominator_rewarded_per_validator_and_cant_steal_someone_else_reward(
 	//   then the nominator can't claim its reward
 	// * A nominator can't claim another nominator reward
 	ExtBuilder::default().build_and_execute(|| {
-		for i in 0..=<Test as Trait>::MaxNominatorRewardedPerValidator::get() {
+		for i in 0..=<Test as Config>::MaxNominatorRewardedPerValidator::get() {
 			let stash = 10_000 + i as AccountId;
 			let controller = 20_000 + i as AccountId;
 			let balance = 10_000 + i as Balance;
@@ -4366,7 +4366,7 @@ fn test_max_nominator_rewarded_per_validator_and_cant_steal_someone_else_reward(
 		mock::make_all_reward_payment(1);
 
 		// Assert only nominators from 1 to Max are rewarded
-		for i in 0..=<Test as Trait>::MaxNominatorRewardedPerValidator::get() {
+		for i in 0..=<Test as Config>::MaxNominatorRewardedPerValidator::get() {
 			let stash = 10_000 + i as AccountId;
 			let balance = 10_000 + i as Balance;
 			if stash == 10_000 {

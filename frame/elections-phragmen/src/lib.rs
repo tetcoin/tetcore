@@ -88,7 +88,7 @@ use frame_support::{
 	decl_error, decl_event, decl_module, decl_storage,
 	dispatch::{DispatchResultWithPostInfo, WithPostDispatchInfo},
 	ensure,
-	storage::{IterableStorageMap, StorageMap},
+	storage::{IterableStorageMap},
 	traits::{
 		BalanceStatus, ChangeMembers, Contains, ContainsLengthBound, Currency, CurrencyToVote, Get,
 		InitializeMembers, LockIdentifier, LockableCurrency, OnUnbalanced, ReservableCurrency,
@@ -112,9 +112,9 @@ pub use weights::WeightInfo;
 pub const MAXIMUM_VOTE: usize = 16;
 
 type BalanceOf<T> =
-	<<T as Trait>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+	<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 type NegativeImbalanceOf<T> =
-	<<T as Trait>::Currency as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance;
+	<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance;
 
 /// An indication that the renouncing account currently has which of the below roles.
 #[derive(Encode, Decode, Clone, PartialEq, RuntimeDebug)]
@@ -140,168 +140,95 @@ pub struct DefunctVoter<AccountId> {
 	pub candidate_count: u32
 }
 
-pub trait Trait: frame_system::Trait {
-	/// The overarching event type.c
-	type Event: From<Event<Self>> + Into<<Self as frame_system::Config>::Event>;
+pub use pallet::*;
 
-	/// Identifier for the elections-phragmen pallet's lock
-	type ModuleId: Get<LockIdentifier>;
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-	/// The currency that people are electing with.
-	type Currency:
-		LockableCurrency<Self::AccountId, Moment=Self::BlockNumber> +
-		ReservableCurrency<Self::AccountId>;
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// The overarching event type.c
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 
-	/// What to do when the members change.
-	type ChangeMembers: ChangeMembers<Self::AccountId>;
+		/// Identifier for the elections-phragmen pallet's lock
+		#[pallet::constant]
+		type ModuleId: Get<LockIdentifier>;
 
-	/// What to do with genesis members
-	type InitializeMembers: InitializeMembers<Self::AccountId>;
+		/// The currency that people are electing with.
+		type Currency:
+			LockableCurrency<Self::AccountId, Moment=Self::BlockNumber> +
+			ReservableCurrency<Self::AccountId>;
 
-	/// Convert a balance into a number used for election calculation.
-	/// This must fit into a `u64` but is allowed to be sensibly lossy.
-	type CurrencyToVote: CurrencyToVote<BalanceOf<Self>>;
+		/// What to do when the members change.
+		type ChangeMembers: ChangeMembers<Self::AccountId>;
 
-	/// How much should be locked up in order to submit one's candidacy.
-	type CandidacyBond: Get<BalanceOf<Self>>;
+		/// What to do with genesis members
+		type InitializeMembers: InitializeMembers<Self::AccountId>;
 
-	/// How much should be locked up in order to be able to submit votes.
-	type VotingBond: Get<BalanceOf<Self>>;
+		/// Convert a balance into a number used for election calculation.
+		/// This must fit into a `u64` but is allowed to be sensibly lossy.
+		type CurrencyToVote: CurrencyToVote<BalanceOf<Self>>;
 
-	/// Handler for the unbalanced reduction when a candidate has lost (and is not a runner-up)
-	type LoserCandidate: OnUnbalanced<NegativeImbalanceOf<Self>>;
+		/// How much should be locked up in order to submit one's candidacy.
+		#[pallet::constant]
+		type CandidacyBond: Get<BalanceOf<Self>>;
 
-	/// Handler for the unbalanced reduction when a reporter has submitted a bad defunct report.
-	type BadReport: OnUnbalanced<NegativeImbalanceOf<Self>>;
+		/// How much should be locked up in order to be able to submit votes.
+		#[pallet::constant]
+		type VotingBond: Get<BalanceOf<Self>>;
 
-	/// Handler for the unbalanced reduction when a member has been kicked.
-	type KickedMember: OnUnbalanced<NegativeImbalanceOf<Self>>;
+		/// Handler for the unbalanced reduction when a candidate has lost (and is not a runner-up)
+		type LoserCandidate: OnUnbalanced<NegativeImbalanceOf<Self>>;
 
-	/// Number of members to elect.
-	type DesiredMembers: Get<u32>;
+		/// Handler for the unbalanced reduction when a reporter has submitted a bad defunct report.
+		type BadReport: OnUnbalanced<NegativeImbalanceOf<Self>>;
 
-	/// Number of runners_up to keep.
-	type DesiredRunnersUp: Get<u32>;
+		/// Handler for the unbalanced reduction when a member has been kicked.
+		type KickedMember: OnUnbalanced<NegativeImbalanceOf<Self>>;
 
-	/// How long each seat is kept. This defines the next block number at which an election
-	/// round will happen. If set to zero, no elections are ever triggered and the module will
-	/// be in passive mode.
-	type TermDuration: Get<Self::BlockNumber>;
+		/// Number of members to elect.
+		#[pallet::constant]
+		type DesiredMembers: Get<u32>;
 
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
-}
+		/// Number of runners_up to keep.
+		#[pallet::constant]
+		type DesiredRunnersUp: Get<u32>;
 
-decl_storage! {
-	trait Store for Module<T: Trait> as PhragmenElection {
-		// ---- State
-		/// The current elected membership. Sorted based on account id.
-		pub Members get(fn members): Vec<(T::AccountId, BalanceOf<T>)>;
-		/// The current runners_up. Sorted based on low to high merit (worse to best).
-		pub RunnersUp get(fn runners_up): Vec<(T::AccountId, BalanceOf<T>)>;
-		/// The total number of vote rounds that have happened, excluding the upcoming one.
-		pub ElectionRounds get(fn election_rounds): u32 = Zero::zero();
+		/// How long each seat is kept. This defines the next block number at which an election
+		/// round will happen. If set to zero, no elections are ever triggered and the module will
+		/// be in passive mode.
+		#[pallet::constant]
+		type TermDuration: Get<Self::BlockNumber>;
 
-		/// Votes and locked stake of a particular voter.
-		///
-		/// TWOX-NOTE: SAFE as `AccountId` is a crypto hash
-		pub Voting get(fn voting): map hasher(twox_64_concat) T::AccountId => (BalanceOf<T>, Vec<T::AccountId>);
-
-		/// The present candidate list. Sorted based on account-id. A current member or runner-up
-		/// can never enter this vector and is always implicitly assumed to be a candidate.
-		pub Candidates get(fn candidates): Vec<T::AccountId>;
-	} add_extra_genesis {
-		config(members): Vec<(T::AccountId, BalanceOf<T>)>;
-		build(|config: &GenesisConfig<T>| {
-			let members = config.members.iter().map(|(ref member, ref stake)| {
-				// make sure they have enough stake
-				assert!(
-					T::Currency::free_balance(member) >= *stake,
-					"Genesis member does not have enough stake",
-				);
-
-				// reserve candidacy bond and set as members.
-				T::Currency::reserve(&member, T::CandidacyBond::get())
-					.expect("Genesis member does not have enough balance to be a candidate");
-
-				// Note: all members will only vote for themselves, hence they must be given exactly
-				// their own stake as total backing. Any sane election should behave as such.
-				// Nonetheless, stakes will be updated for term 1 onwards according to the election.
-				Members::<T>::mutate(|members| {
-					match members.binary_search_by(|(a, _b)| a.cmp(member)) {
-						Ok(_) => panic!("Duplicate member in elections phragmen genesis: {}", member),
-						Err(pos) => members.insert(pos, (member.clone(), *stake)),
-					}
-				});
-
-				// set self-votes to make persistent.
-				<Module<T>>::vote(
-					T::Origin::from(Some(member.clone()).into()),
-					vec![member.clone()],
-					*stake,
-				).expect("Genesis member could not vote.");
-
-				member.clone()
-			}).collect::<Vec<T::AccountId>>();
-
-			// report genesis members to upstream, if any.
-			T::InitializeMembers::initialize_members(&members);
-		})
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
 	}
-}
 
-decl_error! {
-	pub enum Error for Module<T: Trait> {
-		/// Cannot vote when no candidates or members exist.
-		UnableToVote,
-		/// Must vote for at least one candidate.
-		NoVotes,
-		/// Cannot vote more than candidates.
-		TooManyVotes,
-		/// Cannot vote more than maximum allowed.
-		MaximumVotesExceeded,
-		/// Cannot vote with stake less than minimum balance.
-		LowBalance,
-		/// Voter can not pay voting bond.
-		UnableToPayBond,
-		/// Must be a voter.
-		MustBeVoter,
-		/// Cannot report self.
-		ReportSelf,
-		/// Duplicated candidate submission.
-		DuplicatedCandidate,
-		/// Member cannot re-submit candidacy.
-		MemberSubmit,
-		/// Runner cannot re-submit candidacy.
-		RunnerSubmit,
-		/// Candidate does not have enough funds.
-		InsufficientCandidateFunds,
-		/// Not a member.
-		NotMember,
-		/// The provided count of number of candidates is incorrect.
-		InvalidCandidateCount,
-		/// The provided count of number of votes is incorrect.
-		InvalidVoteCount,
-		/// The renouncing origin presented a wrong `Renouncing` parameter.
-		InvalidRenouncing,
-		/// Prediction regarding replacement after member removal is wrong.
-		InvalidReplacement,
+	/// Kind of alias for `Config` trait. Deprecated as `Trait` is renamed `Config`.
+	pub trait Trait: Config {}
+	impl<T: Config> Trait for T {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+		/// What to do at the end of each block. Checks if an election needs to happen or not.
+		fn on_initialize(n: T::BlockNumber) -> Weight {
+			// returns the correct weight.
+			Self::end_block(n)
+		}
 	}
-}
 
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		type Error = Error<T>;
-
-		fn deposit_event() = default;
-
-		const CandidacyBond: BalanceOf<T> = T::CandidacyBond::get();
-		const VotingBond: BalanceOf<T> = T::VotingBond::get();
-		const DesiredMembers: u32 = T::DesiredMembers::get();
-		const DesiredRunnersUp: u32 = T::DesiredRunnersUp::get();
-		const TermDuration: T::BlockNumber = T::TermDuration::get();
-		const ModuleId: LockIdentifier  = T::ModuleId::get();
-
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
 		/// Vote for a set of candidates for the upcoming round of election. This can be called to
 		/// set the initial votes, or update already existing votes.
 		///
@@ -328,12 +255,12 @@ decl_module! {
 		/// 	- Lock
 		/// 	- [AccountBalance(who) (unreserve -- only when creating a new voter)]
 		/// # </weight>
-		#[weight = T::WeightInfo::vote(votes.len() as u32)]
-		fn vote(
-			origin,
+		#[pallet::weight(T::WeightInfo::vote(votes.len() as u32))]
+		pub(super) fn vote(
+			origin: OriginFor<T>,
 			votes: Vec<T::AccountId>,
-			#[compact] value: BalanceOf<T>,
-		) {
+			#[pallet::compact] value: BalanceOf<T>,
+		) -> DispatchResultWithPostInfo {
 			let who = ensure_signed(origin)?;
 
 			ensure!(votes.len() <= MAXIMUM_VOTE, Error::<T>::MaximumVotesExceeded);
@@ -369,6 +296,7 @@ decl_module! {
 			);
 
 			Voting::<T>::insert(&who, (locked_balance, votes));
+			Ok(().into())
 		}
 
 		/// Remove `origin` as a voter. This removes the lock and returns the bond.
@@ -384,12 +312,13 @@ decl_module! {
 		/// 	- Locks
 		/// 	- [AccountData(who)]
 		/// # </weight>
-		#[weight = T::WeightInfo::remove_voter()]
-		fn remove_voter(origin) {
+		#[pallet::weight(T::WeightInfo::remove_voter())]
+		pub(super) fn remove_voter(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
 			let who = ensure_signed(origin)?;
 			ensure!(Self::is_voter(&who), Error::<T>::MustBeVoter);
 
 			Self::do_remove_voter(&who, true);
+			Ok(().into())
 		}
 
 		/// Report `target` for being an defunct voter. In case of a valid report, the reporter is
@@ -419,12 +348,14 @@ decl_module! {
 		/// 	- Voting(reporter || target)
 		/// Note: the db access is worse with respect to db, which is when the report is correct.
 		/// # </weight>
-		#[weight = T::WeightInfo::report_defunct_voter_correct(
-			defunct.candidate_count,
-			defunct.vote_count,
+		#[pallet::weight(
+			T::WeightInfo::report_defunct_voter_correct(
+				defunct.candidate_count,
+				defunct.vote_count,
+			)
 		)]
-		fn report_defunct_voter(
-			origin,
+		pub(super) fn report_defunct_voter(
+			origin: OriginFor<T>,
 			defunct: DefunctVoter<<T::Lookup as StaticLookup>::Source>,
 		) -> DispatchResultWithPostInfo {
 			let reporter = ensure_signed(origin)?;
@@ -494,8 +425,11 @@ decl_module! {
 		/// 	- [AccountBalance(who)]
 		/// 	- Candidates
 		/// # </weight>
-		#[weight = T::WeightInfo::submit_candidacy(*candidate_count)]
-		fn submit_candidacy(origin, #[compact] candidate_count: u32) {
+		#[pallet::weight(T::WeightInfo::submit_candidacy(*candidate_count))]
+		pub(super) fn submit_candidacy(
+			origin: OriginFor<T>,
+			#[pallet::compact] candidate_count: u32
+		) -> DispatchResultWithPostInfo {
 			let who = ensure_signed(origin)?;
 
 			let actual_count = <Candidates<T>>::decode_len().unwrap_or(0);
@@ -517,6 +451,7 @@ decl_module! {
 				.map_err(|_| Error::<T>::InsufficientCandidateFunds)?;
 
 			<Candidates<T>>::mutate(|c| c.insert(index, who));
+			Ok(().into())
 		}
 
 		/// Renounce one's intention to be a candidate for the next election round. 3 potential
@@ -555,12 +490,17 @@ decl_module! {
 		/// 		- RunnersUp (remove_and_replace_member),
 		/// 		- [AccountData(who) (unreserve)]
 		/// </weight>
-		#[weight =  match *renouncing {
-			Renouncing::Candidate(count) => T::WeightInfo::renounce_candidacy_candidate(count),
-			Renouncing::Member => T::WeightInfo::renounce_candidacy_members(),
-			Renouncing::RunnerUp => T::WeightInfo::renounce_candidacy_runners_up(),
-		}]
-		fn renounce_candidacy(origin, renouncing: Renouncing) {
+		#[pallet::weight(
+			match *renouncing {
+				Renouncing::Candidate(count) => T::WeightInfo::renounce_candidacy_candidate(count),
+				Renouncing::Member => T::WeightInfo::renounce_candidacy_members(),
+				Renouncing::RunnerUp => T::WeightInfo::renounce_candidacy_runners_up(),
+			}
+		)]
+		pub(super) fn renounce_candidacy(
+			origin: OriginFor<T>,
+			renouncing: Renouncing
+		) -> DispatchResultWithPostInfo {
 			let who = ensure_signed(origin)?;
 			match renouncing {
 				Renouncing::Member => {
@@ -598,6 +538,7 @@ decl_module! {
 					}
 				}
 			};
+			Ok(().into())
 		}
 
 		/// Remove a particular member from the set. This is effective immediately and the bond of
@@ -618,13 +559,13 @@ decl_module! {
 		/// 		- Members, RunnersUp (remove_and_replace_member)
 		/// Else, since this is a root call and will go into phragmen, we assume full block for now.
 		/// # </weight>
-		#[weight = if *has_replacement {
+		#[pallet::weight(if *has_replacement {
 			T::WeightInfo::remove_member_with_replacement()
 		} else {
 			T::MaximumBlockWeight::get()
-		}]
-		fn remove_member(
-			origin,
+		})]
+		pub(super) fn remove_member(
+			origin: OriginFor<T>,
 			who: <T::Lookup as StaticLookup>::Source,
 			has_replacement: bool,
 		) -> DispatchResultWithPostInfo {
@@ -655,25 +596,16 @@ decl_module! {
 				None.into()
 			}).map_err(|e| e.into())
 		}
-
-		/// What to do at the end of each block. Checks if an election needs to happen or not.
-		fn on_initialize(n: T::BlockNumber) -> Weight {
-			// returns the correct weight.
-			Self::end_block(n)
-		}
 	}
-}
 
-decl_event!(
-	pub enum Event<T> where
-		Balance = BalanceOf<T>,
-		<T as frame_system::Config>::AccountId,
-	{
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config> {
 		/// A new term with \[new_members\]. This indicates that enough candidates existed to run the
 		/// election, not that enough have has been elected. The inner value must be examined for
 		/// this purpose. A `NewTerm(\[\])` indicates that some candidates got their bond slashed and
 		/// none were elected, whilst `EmptyTerm` means that no candidates existed to begin with.
-		NewTerm(Vec<(AccountId, Balance)>),
+		NewTerm(Vec<(T::AccountId, BalanceOf<T>)>),
 		/// No (or not enough) candidates existed for this round. This is different from
 		/// `NewTerm(\[\])`. See the description of `NewTerm`.
 		EmptyTerm,
@@ -681,14 +613,143 @@ decl_event!(
 		ElectionError,
 		/// A \[member\] has been removed. This should always be followed by either `NewTerm` or
 		/// `EmptyTerm`.
-		MemberKicked(AccountId),
+		MemberKicked(T::AccountId),
 		/// A \[member\] has renounced their candidacy.
-		MemberRenounced(AccountId),
+		MemberRenounced(T::AccountId),
 		/// A voter was reported with the the report being successful or not.
 		/// \[voter, reporter, success\]
-		VoterReported(AccountId, AccountId, bool),
+		VoterReported(T::AccountId, T::AccountId, bool),
 	}
-);
+
+	/// Deprecated name for event.
+	pub type RawEvent<T> = Event<T>;
+
+	#[pallet::error]
+	pub enum Error<T> {
+		/// Cannot vote when no candidates or members exist.
+		UnableToVote,
+		/// Must vote for at least one candidate.
+		NoVotes,
+		/// Cannot vote more than candidates.
+		TooManyVotes,
+		/// Cannot vote more than maximum allowed.
+		MaximumVotesExceeded,
+		/// Cannot vote with stake less than minimum balance.
+		LowBalance,
+		/// Voter can not pay voting bond.
+		UnableToPayBond,
+		/// Must be a voter.
+		MustBeVoter,
+		/// Cannot report self.
+		ReportSelf,
+		/// Duplicated candidate submission.
+		DuplicatedCandidate,
+		/// Member cannot re-submit candidacy.
+		MemberSubmit,
+		/// Runner cannot re-submit candidacy.
+		RunnerSubmit,
+		/// Candidate does not have enough funds.
+		InsufficientCandidateFunds,
+		/// Not a member.
+		NotMember,
+		/// The provided count of number of candidates is incorrect.
+		InvalidCandidateCount,
+		/// The provided count of number of votes is incorrect.
+		InvalidVoteCount,
+		/// The renouncing origin presented a wrong `Renouncing` parameter.
+		InvalidRenouncing,
+		/// Prediction regarding replacement after member removal is wrong.
+		InvalidReplacement,
+	}
+
+	/// The current elected membership. Sorted based on account id.
+	#[pallet::storage]
+	#[pallet::getter(fn members)]
+	pub type Members<T: Config> = StorageValue<_, Vec<(T::AccountId, BalanceOf<T>)>, ValueQuery>;
+
+	/// The current runners_up. Sorted based on low to high merit (worse to best).
+	#[pallet::storage]
+	#[pallet::getter(fn runners_up)]
+	pub type RunnersUp<T: Config> = StorageValue<_, Vec<(T::AccountId, BalanceOf<T>)>, ValueQuery>;
+
+	#[pallet::type_value]
+	pub fn DefaultForElectionRounds() -> u32 {
+		Zero::zero()
+	}
+
+	/// The total number of vote rounds that have happened, excluding the upcoming one.
+	#[pallet::storage]
+	#[pallet::getter(fn election_rounds)]
+	pub type ElectionRounds<T: Config> = StorageValue<_, u32, ValueQuery, DefaultForElectionRounds>;
+
+	/// Votes and locked stake of a particular voter.
+	///
+	/// TWOX-NOTE: SAFE as `AccountId` is a crypto hash
+	#[pallet::storage]
+	#[pallet::getter(fn voting)]
+	pub type Voting<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, (BalanceOf<T>, Vec<T::AccountId>), ValueQuery>;
+
+	/// The present candidate list. Sorted based on account-id. A current member or runner-up
+	/// can never enter this vector and is always implicitly assumed to be a candidate.
+	#[pallet::storage]
+	#[pallet::getter(fn candidates)]
+	pub type Candidates<T: Config> = StorageValue<_, Vec<T::AccountId>, ValueQuery>;
+
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config> {
+		pub members: Vec<(T::AccountId, BalanceOf<T>)>,
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config> Default for GenesisConfig<T> {
+		fn default() -> Self {
+			Self {
+				members: Default::default(),
+			}
+		}
+	}
+
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
+		fn build(&self) {
+			let members = self.members.iter().map(|(ref member, ref stake)| {
+				// make sure they have enough stake
+				assert!(
+					T::Currency::free_balance(member) >= *stake,
+					"Genesis member does not have enough stake",
+				);
+
+				// reserve candidacy bond and set as members.
+				T::Currency::reserve(&member, T::CandidacyBond::get())
+					.expect("Genesis member does not have enough balance to be a candidate");
+
+				// Note: all members will only vote for themselves, hence they must be given exactly
+				// their own stake as total backing. Any sane election should behave as such.
+				// Nonetheless, stakes will be updated for term 1 onwards according to the election.
+				Members::<T>::mutate(|members| {
+					match members.binary_search_by(|(a, _b)| a.cmp(member)) {
+						Ok(_) => panic!("Duplicate member in elections phragmen genesis: {}", member),
+						Err(pos) => members.insert(pos, (member.clone(), *stake)),
+					}
+				});
+
+				// set self-votes to make persistent.
+				<Module<T>>::vote(
+					T::Origin::from(Some(member.clone()).into()),
+					vec![member.clone()],
+					*stake,
+				).expect("Genesis member could not vote.");
+
+				member.clone()
+			}).collect::<Vec<T::AccountId>>();
+
+			// report genesis members to upstream, if any.
+			T::InitializeMembers::initialize_members(&members);
+		}
+	}
+}
 
 impl<T: Trait> Module<T> {
 	/// Attempts to remove a member `who`. If a runner-up exists, it is used as the replacement and
@@ -1013,7 +1074,7 @@ impl<T: Trait> Module<T> {
 			// clean candidates.
 			<Candidates<T>>::kill();
 
-			ElectionRounds::mutate(|v| *v += 1);
+			ElectionRounds::<T>::mutate(|v| *v += 1);
 		}).map_err(|e| {
 			frame_support::debug::error!("elections-phragmen: failed to run election [{:?}].", e);
 			Self::deposit_event(RawEvent::ElectionError);
@@ -1103,7 +1164,7 @@ mod tests {
 		pub const ExistentialDeposit: u64 = 1;
 	}
 
-	impl pallet_balances::Trait for Test {
+	impl pallet_balances::Config for Test {
 		type Balance = u64;
 		type Event = Event;
 		type DustRemoval = ();
@@ -1193,7 +1254,7 @@ mod tests {
 		pub const ElectionsPhragmenModuleId: LockIdentifier = *b"phrelect";
 	}
 
-	impl Trait for Test {
+	impl Config for Test {
 		type ModuleId = ElectionsPhragmenModuleId;
 		type Event = Event;
 		type Currency = Balances;
@@ -1367,11 +1428,11 @@ mod tests {
 		ensure_members_has_approval_stake();
 	}
 
-	fn submit_candidacy(origin: Origin) -> DispatchResult {
+	fn submit_candidacy(origin: Origin) -> DispatchResultWithPostInfo {
 		Elections::submit_candidacy(origin, Elections::candidates().len() as u32)
 	}
 
-	fn vote(origin: Origin, votes: Vec<u64>, stake: u64) -> DispatchResult {
+	fn vote(origin: Origin, votes: Vec<u64>, stake: u64) -> DispatchResultWithPostInfo {
 		// historical note: helper function was created in a period of time in which the API of vote
 		// call was changing. Currently it is a wrapper for the original call and does not do much.
 		// Nonetheless, totally harmless.

@@ -66,40 +66,290 @@ pub use equivocation::{
 	EquivocationHandler, GrandpaEquivocationOffence, GrandpaOffence, GrandpaTimeSlot,
 	HandleEquivocation,
 };
+pub use pallet::*;
 
-pub trait Trait: frame_system::Trait {
-	/// The event type of this module.
-	type Event: From<Event> + Into<<Self as frame_system::Config>::Event>;
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-	/// The function call.
-	type Call: From<Call<Self>>;
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// The event type of this module.
+		type Event: From<Event> + IsType<<Self as frame_system::Config>::Event>;
 
-	/// The proof of key ownership, used for validating equivocation reports.
-	/// The proof must include the session index and validator count of the
-	/// session at which the equivocation occurred.
-	type KeyOwnerProof: Parameter + GetSessionNumber + GetValidatorCount;
+		/// The function call.
+		type Call: From<Call<Self>>;
 
-	/// The identification of a key owner, used when reporting equivocations.
-	type KeyOwnerIdentification: Parameter;
+		/// The proof of key ownership, used for validating equivocation reports.
+		/// The proof must include the session index and validator count of the
+		/// session at which the equivocation occurred.
+		type KeyOwnerProof: Parameter + GetSessionNumber + GetValidatorCount;
 
-	/// A system for proving ownership of keys, i.e. that a given key was part
-	/// of a validator set, needed for validating equivocation reports.
-	type KeyOwnerProofSystem: KeyOwnerProofSystem<
-		(KeyTypeId, AuthorityId),
-		Proof = Self::KeyOwnerProof,
-		IdentificationTuple = Self::KeyOwnerIdentification,
+		/// The identification of a key owner, used when reporting equivocations.
+		type KeyOwnerIdentification: Parameter;
+
+		/// A system for proving ownership of keys, i.e. that a given key was part
+		/// of a validator set, needed for validating equivocation reports.
+		type KeyOwnerProofSystem: KeyOwnerProofSystem<
+			(KeyTypeId, AuthorityId),
+			Proof = Self::KeyOwnerProof,
+			IdentificationTuple = Self::KeyOwnerIdentification,
+		>;
+
+		/// The equivocation handling subsystem, defines methods to report an
+		/// offence (after the equivocation has been validated) and for submitting a
+		/// transaction to report an equivocation (from an offchain context).
+		/// NOTE: when enabling equivocation handling (i.e. this type isn't set to
+		/// `()`) you must use this pallet's `ValidateUnsigned` in the runtime
+		/// definition.
+		type HandleEquivocation: HandleEquivocation<Self>;
+
+		/// Weights for this pallet.
+		type WeightInfo: WeightInfo;
+	}
+
+	/// Deperacated name for Config
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+		fn on_finalize(block_number: T::BlockNumber) {
+			// check for scheduled pending authority set changes
+			if let Some(pending_change) = <PendingChange<T>>::get() {
+				// emit signal if we're at the block that scheduled the change
+				if block_number == pending_change.scheduled_at {
+					if let Some(median) = pending_change.forced {
+						Self::deposit_log(ConsensusLog::ForcedChange(
+							median,
+							ScheduledChange {
+								delay: pending_change.delay,
+								next_authorities: pending_change.next_authorities.clone(),
+							}
+						))
+					} else {
+						Self::deposit_log(ConsensusLog::ScheduledChange(
+							ScheduledChange {
+								delay: pending_change.delay,
+								next_authorities: pending_change.next_authorities.clone(),
+							}
+						));
+					}
+				}
+
+				// enact the change if we've reached the enacting block
+				if block_number == pending_change.scheduled_at + pending_change.delay {
+					Self::set_grandpa_authorities(&pending_change.next_authorities);
+					Self::deposit_event(
+						Event::NewAuthorities(pending_change.next_authorities)
+					);
+					<PendingChange<T>>::kill();
+				}
+			}
+
+			// check for scheduled pending state changes
+			match <State<T>>::get() {
+				StoredState::PendingPause { scheduled_at, delay } => {
+					// signal change to pause
+					if block_number == scheduled_at {
+						Self::deposit_log(ConsensusLog::Pause(delay));
+					}
+
+					// enact change to paused state
+					if block_number == scheduled_at + delay {
+						<State<T>>::put(StoredState::Paused);
+						Self::deposit_event(Event::Paused);
+					}
+				},
+				StoredState::PendingResume { scheduled_at, delay } => {
+					// signal change to resume
+					if block_number == scheduled_at {
+						Self::deposit_log(ConsensusLog::Resume(delay));
+					}
+
+					// enact change to live state
+					if block_number == scheduled_at + delay {
+						<State<T>>::put(StoredState::Live);
+						Self::deposit_event(Event::Resumed);
+					}
+				},
+				_ => {},
+			}
+		}
+	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
+		/// Report voter equivocation/misbehavior. This method will verify the
+		/// equivocation proof and validate the given key ownership proof
+		/// against the extracted offender. If both are valid, the offence
+		/// will be reported.
+		#[pallet::weight(T::WeightInfo::report_equivocation(key_owner_proof.validator_count()))]
+		pub(super) fn report_equivocation(
+			origin: OriginFor<T>,
+			equivocation_proof: EquivocationProof<T::Hash, T::BlockNumber>,
+			key_owner_proof: T::KeyOwnerProof,
+		) -> DispatchResultWithPostInfo {
+			let reporter = ensure_signed(origin)?;
+
+			Self::do_report_equivocation(
+				Some(reporter),
+				equivocation_proof,
+				key_owner_proof,
+			)
+		}
+
+		/// Report voter equivocation/misbehavior. This method will verify the
+		/// equivocation proof and validate the given key ownership proof
+		/// against the extracted offender. If both are valid, the offence
+		/// will be reported.
+		///
+		/// This extrinsic must be called unsigned and it is expected that only
+		/// block authors will call it (validated in `ValidateUnsigned`), as such
+		/// if the block author is defined it will be defined as the equivocation
+		/// reporter.
+		#[pallet::weight(T::WeightInfo::report_equivocation(key_owner_proof.validator_count()))]
+		pub(super) fn report_equivocation_unsigned(
+			origin: OriginFor<T>,
+			equivocation_proof: EquivocationProof<T::Hash, T::BlockNumber>,
+			key_owner_proof: T::KeyOwnerProof,
+		) -> DispatchResultWithPostInfo {
+			ensure_none(origin)?;
+
+			Self::do_report_equivocation(
+				T::HandleEquivocation::block_author(),
+				equivocation_proof,
+				key_owner_proof,
+			)
+		}
+
+		/// Note that the current authority set of the GRANDPA finality gadget has
+		/// stalled. This will trigger a forced authority set change at the beginning
+		/// of the next session, to be enacted `delay` blocks after that. The delay
+		/// should be high enough to safely assume that the block signalling the
+		/// forced change will not be re-orged (e.g. 1000 blocks). The GRANDPA voters
+		/// will start the new authority set using the given finalized block as base.
+		/// Only callable by root.
+		#[pallet::weight(T::WeightInfo::note_stalled())]
+		pub(super) fn note_stalled(
+			origin: OriginFor<T>,
+			delay: T::BlockNumber,
+			best_finalized_block_number: T::BlockNumber,
+		) -> DispatchResultWithPostInfo {
+			ensure_root(origin)?;
+
+			Self::on_stalled(delay, best_finalized_block_number);
+			Ok(().into())
+		}
+	}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event {
+		/// New authority set has been applied. \[authority_set\]
+		NewAuthorities(AuthorityList),
+		/// Current authority set has been paused.
+		Paused,
+		/// Current authority set has been resumed.
+		Resumed,
+	}
+
+	/// Deprecated name for event.
+	pub type RawEvent = Event;
+
+	#[pallet::error]
+	pub enum Error<T> {
+		/// Attempt to signal GRANDPA pause when the authority set isn't live
+		/// (either paused or already pending pause).
+		PauseFailed,
+		/// Attempt to signal GRANDPA resume when the authority set isn't paused
+		/// (either live or already pending resume).
+		ResumeFailed,
+		/// Attempt to signal GRANDPA change with one already pending.
+		ChangePending,
+		/// Cannot signal forced change so soon after last.
+		TooSoon,
+		/// A key ownership proof provided as part of an equivocation report is invalid.
+		InvalidKeyOwnershipProof,
+		/// An equivocation proof provided as part of an equivocation report is invalid.
+		InvalidEquivocationProof,
+		/// A given equivocation report is valid but already previously reported.
+		DuplicateOffenceReport,
+	}
+
+	#[pallet::type_value]
+	pub(super) fn DefaultForState<T: Config>() -> StoredState<T::BlockNumber> {
+		StoredState::Live
+	}
+
+	/// State of the current authority set.
+	#[pallet::storage]
+	#[pallet::getter(fn state)]
+	pub(super) type State<T: Config> = StorageValue<
+		_, StoredState<T::BlockNumber>, ValueQuery, DefaultForState<T>
 	>;
 
-	/// The equivocation handling subsystem, defines methods to report an
-	/// offence (after the equivocation has been validated) and for submitting a
-	/// transaction to report an equivocation (from an offchain context).
-	/// NOTE: when enabling equivocation handling (i.e. this type isn't set to
-	/// `()`) you must use this pallet's `ValidateUnsigned` in the runtime
-	/// definition.
-	type HandleEquivocation: HandleEquivocation<Self>;
+	/// Pending change: (signaled at, scheduled change).
+	#[pallet::storage]
+	#[pallet::getter(fn pending_change)]
+	pub(super) type PendingChange<T: Config> = StorageValue<_, StoredPendingChange<T::BlockNumber>>;
 
-	/// Weights for this pallet.
-	type WeightInfo: WeightInfo;
+	/// next block number where we can force a change.
+	#[pallet::storage]
+	#[pallet::getter(fn next_forced)]
+	pub(super) type NextForced<T: Config> = StorageValue<_, T::BlockNumber>;
+
+	/// `true` if we are currently stalled.
+	#[pallet::storage]
+	#[pallet::getter(fn stalled)]
+	pub(super) type Stalled<T: Config> = StorageValue<_, (T::BlockNumber, T::BlockNumber)>;
+
+	/// The number of changes (both in terms of keys and underlying economic responsibilities)
+	/// in the "set" of Grandpa validators from genesis.
+	#[pallet::storage]
+	#[pallet::getter(fn current_set_id)]
+	pub(super) type CurrentSetId<T: Config> = StorageValue<_, SetId, ValueQuery>;
+
+	/// A mapping from grandpa set ID to the index of the *most recent* session for which its
+	/// members were responsible.
+	///
+	/// TWOX-NOTE: `SetId` is not under user control.
+	#[pallet::storage]
+	#[pallet::getter(fn session_for_set)]
+	pub(super) type SetIdSession<T: Config> = StorageMap<_, Twox64Concat, SetId, SessionIndex>;
+
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig {
+		pub authorities: AuthorityList,
+	}
+
+	#[cfg(feature = "std")]
+	impl Default for GenesisConfig {
+		fn default() -> Self {
+			Self {
+				authorities: Default::default(),
+			}
+		}
+	}
+
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig {
+		fn build(&self) {
+			<CurrentSetId<T>>::put(fg_primitives::SetId::default());
+			Module::<T>::initialize(&self.authorities);
+		}
+	}
 }
 
 pub trait WeightInfo {
@@ -174,202 +424,6 @@ pub enum StoredState<N> {
 		/// Number of blocks after which the change will be enacted.
 		delay: N,
 	},
-}
-
-decl_event! {
-	pub enum Event {
-		/// New authority set has been applied. \[authority_set\]
-		NewAuthorities(AuthorityList),
-		/// Current authority set has been paused.
-		Paused,
-		/// Current authority set has been resumed.
-		Resumed,
-	}
-}
-
-decl_error! {
-	pub enum Error for Module<T: Trait> {
-		/// Attempt to signal GRANDPA pause when the authority set isn't live
-		/// (either paused or already pending pause).
-		PauseFailed,
-		/// Attempt to signal GRANDPA resume when the authority set isn't paused
-		/// (either live or already pending resume).
-		ResumeFailed,
-		/// Attempt to signal GRANDPA change with one already pending.
-		ChangePending,
-		/// Cannot signal forced change so soon after last.
-		TooSoon,
-		/// A key ownership proof provided as part of an equivocation report is invalid.
-		InvalidKeyOwnershipProof,
-		/// An equivocation proof provided as part of an equivocation report is invalid.
-		InvalidEquivocationProof,
-		/// A given equivocation report is valid but already previously reported.
-		DuplicateOffenceReport,
-	}
-}
-
-decl_storage! {
-	trait Store for Module<T: Trait> as GrandpaFinality {
-		/// State of the current authority set.
-		State get(fn state): StoredState<T::BlockNumber> = StoredState::Live;
-
-		/// Pending change: (signaled at, scheduled change).
-		PendingChange get(fn pending_change): Option<StoredPendingChange<T::BlockNumber>>;
-
-		/// next block number where we can force a change.
-		NextForced get(fn next_forced): Option<T::BlockNumber>;
-
-		/// `true` if we are currently stalled.
-		Stalled get(fn stalled): Option<(T::BlockNumber, T::BlockNumber)>;
-
-		/// The number of changes (both in terms of keys and underlying economic responsibilities)
-		/// in the "set" of Grandpa validators from genesis.
-		CurrentSetId get(fn current_set_id) build(|_| fg_primitives::SetId::default()): SetId;
-
-		/// A mapping from grandpa set ID to the index of the *most recent* session for which its
-		/// members were responsible.
-		///
-		/// TWOX-NOTE: `SetId` is not under user control.
-		SetIdSession get(fn session_for_set): map hasher(twox_64_concat) SetId => Option<SessionIndex>;
-	}
-	add_extra_genesis {
-		config(authorities): AuthorityList;
-		build(|config| {
-			Module::<T>::initialize(&config.authorities)
-		})
-	}
-}
-
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		type Error = Error<T>;
-
-		fn deposit_event() = default;
-
-		/// Report voter equivocation/misbehavior. This method will verify the
-		/// equivocation proof and validate the given key ownership proof
-		/// against the extracted offender. If both are valid, the offence
-		/// will be reported.
-		#[weight = T::WeightInfo::report_equivocation(key_owner_proof.validator_count())]
-		fn report_equivocation(
-			origin,
-			equivocation_proof: EquivocationProof<T::Hash, T::BlockNumber>,
-			key_owner_proof: T::KeyOwnerProof,
-		) -> DispatchResultWithPostInfo {
-			let reporter = ensure_signed(origin)?;
-
-			Self::do_report_equivocation(
-				Some(reporter),
-				equivocation_proof,
-				key_owner_proof,
-			)
-		}
-
-		/// Report voter equivocation/misbehavior. This method will verify the
-		/// equivocation proof and validate the given key ownership proof
-		/// against the extracted offender. If both are valid, the offence
-		/// will be reported.
-		///
-		/// This extrinsic must be called unsigned and it is expected that only
-		/// block authors will call it (validated in `ValidateUnsigned`), as such
-		/// if the block author is defined it will be defined as the equivocation
-		/// reporter.
-		#[weight = T::WeightInfo::report_equivocation(key_owner_proof.validator_count())]
-		fn report_equivocation_unsigned(
-			origin,
-			equivocation_proof: EquivocationProof<T::Hash, T::BlockNumber>,
-			key_owner_proof: T::KeyOwnerProof,
-		) -> DispatchResultWithPostInfo {
-			ensure_none(origin)?;
-
-			Self::do_report_equivocation(
-				T::HandleEquivocation::block_author(),
-				equivocation_proof,
-				key_owner_proof,
-			)
-		}
-
-		/// Note that the current authority set of the GRANDPA finality gadget has
-		/// stalled. This will trigger a forced authority set change at the beginning
-		/// of the next session, to be enacted `delay` blocks after that. The delay
-		/// should be high enough to safely assume that the block signalling the
-		/// forced change will not be re-orged (e.g. 1000 blocks). The GRANDPA voters
-		/// will start the new authority set using the given finalized block as base.
-		/// Only callable by root.
-		#[weight = T::WeightInfo::note_stalled()]
-		fn note_stalled(
-			origin,
-			delay: T::BlockNumber,
-			best_finalized_block_number: T::BlockNumber,
-		) {
-			ensure_root(origin)?;
-
-			Self::on_stalled(delay, best_finalized_block_number)
-		}
-
-		fn on_finalize(block_number: T::BlockNumber) {
-			// check for scheduled pending authority set changes
-			if let Some(pending_change) = <PendingChange<T>>::get() {
-				// emit signal if we're at the block that scheduled the change
-				if block_number == pending_change.scheduled_at {
-					if let Some(median) = pending_change.forced {
-						Self::deposit_log(ConsensusLog::ForcedChange(
-							median,
-							ScheduledChange {
-								delay: pending_change.delay,
-								next_authorities: pending_change.next_authorities.clone(),
-							}
-						))
-					} else {
-						Self::deposit_log(ConsensusLog::ScheduledChange(
-							ScheduledChange {
-								delay: pending_change.delay,
-								next_authorities: pending_change.next_authorities.clone(),
-							}
-						));
-					}
-				}
-
-				// enact the change if we've reached the enacting block
-				if block_number == pending_change.scheduled_at + pending_change.delay {
-					Self::set_grandpa_authorities(&pending_change.next_authorities);
-					Self::deposit_event(
-						Event::NewAuthorities(pending_change.next_authorities)
-					);
-					<PendingChange<T>>::kill();
-				}
-			}
-
-			// check for scheduled pending state changes
-			match <State<T>>::get() {
-				StoredState::PendingPause { scheduled_at, delay } => {
-					// signal change to pause
-					if block_number == scheduled_at {
-						Self::deposit_log(ConsensusLog::Pause(delay));
-					}
-
-					// enact change to paused state
-					if block_number == scheduled_at + delay {
-						<State<T>>::put(StoredState::Paused);
-						Self::deposit_event(Event::Paused);
-					}
-				},
-				StoredState::PendingResume { scheduled_at, delay } => {
-					// signal change to resume
-					if block_number == scheduled_at {
-						Self::deposit_log(ConsensusLog::Resume(delay));
-					}
-
-					// enact change to live state
-					if block_number == scheduled_at + delay {
-						<State<T>>::put(StoredState::Live);
-						Self::deposit_event(Event::Resumed);
-					}
-				},
-				_ => {},
-			}
-		}
-	}
 }
 
 impl<T: Trait> Module<T> {
@@ -482,7 +536,7 @@ impl<T: Trait> Module<T> {
 		// NOTE: initialize first session of first set. this is necessary for
 		// the genesis set and session since we only update the set -> session
 		// mapping whenever a new session starts, i.e. through `on_new_session`.
-		SetIdSession::insert(0, 0);
+		SetIdSession::<T>::insert(0, 0);
 	}
 
 	fn do_report_equivocation(
@@ -615,7 +669,7 @@ impl<T: Trait> pallet_session::OneSessionHandler<T::AccountId> for Module<T>
 			};
 
 			if res.is_ok() {
-				CurrentSetId::mutate(|s| {
+				CurrentSetId::<T>::mutate(|s| {
 					*s += 1;
 					*s
 				})
@@ -634,7 +688,7 @@ impl<T: Trait> pallet_session::OneSessionHandler<T::AccountId> for Module<T>
 		// if we didn't issue a change, we update the mapping to note that the current
 		// set corresponds to the latest equivalent session (i.e. now).
 		let session_index = <pallet_session::Module<T>>::current_index();
-		SetIdSession::insert(current_set_id, &session_index);
+		SetIdSession::<T>::insert(current_set_id, &session_index);
 	}
 
 	fn on_disabled(i: usize) {

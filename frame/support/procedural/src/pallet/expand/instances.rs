@@ -23,6 +23,7 @@ use crate::pallet::Def;
 pub fn expand_instances(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 	let inherent_ident = syn::Ident::new(crate::INHERENT_INSTANCE_NAME, Span::call_site());
+	let frame_support = &def.frame_support;
 	let instances = if def.config.has_instance {
 		(0..16).map(|i| syn::Ident::new(&format!("Instance{}", i), Span::call_site())).collect()
 	} else {

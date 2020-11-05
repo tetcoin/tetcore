@@ -38,79 +38,55 @@ use frame_system::{ensure_signed, ensure_root};
 use self::address::Address as RawAddress;
 pub use weights::WeightInfo;
 
-pub type Address<T> = RawAddress<<T as frame_system::Config>::AccountId, <T as Trait>::AccountIndex>;
-type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+pub type Address<T> = RawAddress<<T as frame_system::Config>::AccountId, <T as Config>::AccountIndex>;
+type BalanceOf<T> = <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 
-/// The module's config trait.
-pub trait Trait: frame_system::Trait {
-	/// Type used for storing an account's index; implies the maximum number of accounts the system
-	/// can hold.
-	type AccountIndex: Parameter + Member + Codec + Default + AtLeast32Bit + Copy;
+pub use pallet::*;
 
-	/// The currency trait.
-	type Currency: ReservableCurrency<Self::AccountId>;
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-	/// The deposit needed for reserving an index.
-	type Deposit: Get<BalanceOf<Self>>;
+	/// The module's config trait.
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// Type used for storing an account's index; implies the maximum number of accounts the system
+		/// can hold.
+		type AccountIndex: Parameter + Member + Codec + Default + AtLeast32Bit + Copy +
+			MaybeSerializeDeserialize;
 
-	/// The overarching event type.
-	type Event: From<Event<Self>> + Into<<Self as frame_system::Config>::Event>;
+		/// The currency trait.
+		type Currency: ReservableCurrency<Self::AccountId>;
 
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
-}
-
-decl_storage! {
-	trait Store for Module<T: Trait> as Indices {
-		/// The lookup from index to account.
-		pub Accounts build(|config: &GenesisConfig<T>|
-			config.indices.iter()
-				.cloned()
-				.map(|(a, b)| (a, (b, Zero::zero(), false)))
-				.collect::<Vec<_>>()
-		): map hasher(blake2_128_concat) T::AccountIndex => Option<(T::AccountId, BalanceOf<T>, bool)>;
-	}
-	add_extra_genesis {
-		config(indices): Vec<(T::AccountIndex, T::AccountId)>;
-	}
-}
-
-decl_event!(
-	pub enum Event<T> where
-		<T as frame_system::Config>::AccountId,
-		<T as Trait>::AccountIndex
-	{
-		/// A account index was assigned. \[who, index\]
-		IndexAssigned(AccountId, AccountIndex),
-		/// A account index has been freed up (unassigned). \[index\]
-		IndexFreed(AccountIndex),
-		/// A account index has been frozen to its current account ID. \[who, index\]
-		IndexFrozen(AccountIndex, AccountId),
-	}
-);
-
-decl_error! {
-	pub enum Error for Module<T: Trait> {
-		/// The index was not already assigned.
-		NotAssigned,
-		/// The index is assigned to another account.
-		NotOwner,
-		/// The index was not available.
-		InUse,
-		/// The source and destination accounts are identical.
-		NotTransfer,
-		/// The index is permanent and may not be freed/changed.
-		Permanent,
-	}
-}
-
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin, system = frame_system {
 		/// The deposit needed for reserving an index.
-		const Deposit: BalanceOf<T> = T::Deposit::get();
+		#[pallet::constant]
+		type Deposit: Get<BalanceOf<Self>>;
 
-		fn deposit_event() = default;
+		/// The overarching event type.
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
+	}
+
+	/// Deperacated name for Config
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
 		/// Assign an previously unassigned index.
 		///
 		/// Payment: `Deposit` is reserved from the sender account.
@@ -129,8 +105,11 @@ decl_module! {
 		/// -------------------
 		/// - DB Weight: 1 Read/Write (Accounts)
 		/// # </weight>
-		#[weight = T::WeightInfo::claim()]
-		fn claim(origin, index: T::AccountIndex) {
+		#[pallet::weight(T::WeightInfo::claim())]
+		pub(super) fn claim(
+			origin: OriginFor<T>,
+			index: T::AccountIndex,
+		) -> DispatchResultWithPostInfo {
 			let who = ensure_signed(origin)?;
 
 			Accounts::<T>::try_mutate(index, |maybe_value| {
@@ -139,6 +118,7 @@ decl_module! {
 				T::Currency::reserve(&who, T::Deposit::get())
 			})?;
 			Self::deposit_event(RawEvent::IndexAssigned(who, index));
+			Ok(().into())
 		}
 
 		/// Assign an index already owned by the sender to another account. The balance reservation
@@ -161,8 +141,12 @@ decl_module! {
 		///    - Reads: Indices Accounts, System Account (recipient)
 		///    - Writes: Indices Accounts, System Account (recipient)
 		/// # </weight>
-		#[weight = T::WeightInfo::transfer()]
-		fn transfer(origin, new: T::AccountId, index: T::AccountIndex) {
+		#[pallet::weight(T::WeightInfo::transfer())]
+		pub(super) fn transfer(
+			origin: OriginFor<T>,
+			new: T::AccountId,
+			index: T::AccountIndex
+		) -> DispatchResultWithPostInfo {
 			let who = ensure_signed(origin)?;
 			ensure!(who != new, Error::<T>::NotTransfer);
 
@@ -175,6 +159,7 @@ decl_module! {
 				Ok(())
 			})?;
 			Self::deposit_event(RawEvent::IndexAssigned(new, index));
+			Ok(().into())
 		}
 
 		/// Free up an index owned by the sender.
@@ -195,8 +180,11 @@ decl_module! {
 		/// -------------------
 		/// - DB Weight: 1 Read/Write (Accounts)
 		/// # </weight>
-		#[weight = T::WeightInfo::free()]
-		fn free(origin, index: T::AccountIndex) {
+		#[pallet::weight(T::WeightInfo::free())]
+		pub(super) fn free(
+			origin: OriginFor<T>,
+			index: T::AccountIndex,
+		) -> DispatchResultWithPostInfo {
 			let who = ensure_signed(origin)?;
 
 			Accounts::<T>::try_mutate(index, |maybe_value| -> DispatchResult {
@@ -207,6 +195,7 @@ decl_module! {
 				Ok(())
 			})?;
 			Self::deposit_event(RawEvent::IndexFreed(index));
+			Ok(().into())
 		}
 
 		/// Force an index to an account. This doesn't require a deposit. If the index is already
@@ -230,8 +219,13 @@ decl_module! {
 		///    - Reads: Indices Accounts, System Account (original owner)
 		///    - Writes: Indices Accounts, System Account (original owner)
 		/// # </weight>
-		#[weight = T::WeightInfo::force_transfer()]
-		fn force_transfer(origin, new: T::AccountId, index: T::AccountIndex, freeze: bool) {
+		#[pallet::weight(T::WeightInfo::force_transfer())]
+		pub(super) fn force_transfer(
+			origin: OriginFor<T>,
+			new: T::AccountId,
+			index: T::AccountIndex,
+			freeze: bool
+		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
 
 			Accounts::<T>::mutate(index, |maybe_value| {
@@ -241,6 +235,7 @@ decl_module! {
 				*maybe_value = Some((new.clone(), Zero::zero(), freeze));
 			});
 			Self::deposit_event(RawEvent::IndexAssigned(new, index));
+			Ok(().into())
 		}
 
 		/// Freeze an index so it will always point to the sender account. This consumes the deposit.
@@ -260,8 +255,11 @@ decl_module! {
 		/// -------------------
 		/// - DB Weight: 1 Read/Write (Accounts)
 		/// # </weight>
-		#[weight = T::WeightInfo::freeze()]
-		fn freeze(origin, index: T::AccountIndex) {
+		#[pallet::weight(T::WeightInfo::freeze())]
+		pub(super) fn freeze(
+			origin: OriginFor<T>,
+			index: T::AccountIndex
+		) -> DispatchResultWithPostInfo {
 			let who = ensure_signed(origin)?;
 
 			Accounts::<T>::try_mutate(index, |maybe_value| -> DispatchResult {
@@ -273,6 +271,62 @@ decl_module! {
 				Ok(())
 			})?;
 			Self::deposit_event(RawEvent::IndexFrozen(index, who));
+			Ok(().into())
+		}
+	}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config> {
+		/// A account index was assigned. \[who, index\]
+		IndexAssigned(T::AccountId, T::AccountIndex),
+		/// A account index has been freed up (unassigned). \[index\]
+		IndexFreed(T::AccountIndex),
+		/// A account index has been frozen to its current account ID. \[who, index\]
+		IndexFrozen(T::AccountIndex, T::AccountId),
+	}
+
+	/// Deprecated name for event.
+	pub type RawEvent<T> = Event<T>;
+
+	#[pallet::error]
+	pub enum Error<T> {
+		/// The index was not already assigned.
+		NotAssigned,
+		/// The index is assigned to another account.
+		NotOwner,
+		/// The index was not available.
+		InUse,
+		/// The source and destination accounts are identical.
+		NotTransfer,
+		/// The index is permanent and may not be freed/changed.
+		Permanent,
+	}
+
+	/// The lookup from index to account.
+	#[pallet::storage]
+	pub type Accounts<T: Config> = StorageMap<_, Blake2_128Concat, T::AccountIndex, (T::AccountId, BalanceOf<T>, bool)>;
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config> {
+		pub indices: Vec<(T::AccountIndex, T::AccountId)>,
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config> Default for GenesisConfig<T> {
+		fn default() -> Self {
+			Self {
+				indices: Default::default(),
+			}
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
+		fn build(&self) {
+			for (index, account) in &self.indices {
+				<Accounts<T>>::insert(index, (account, <BalanceOf<T>>::zero(), false));
+			}
 		}
 	}
 }

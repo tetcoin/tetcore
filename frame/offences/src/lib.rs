@@ -38,87 +38,44 @@ use sp_staking::{
 };
 use codec::{Encode, Decode};
 
-/// A binary blob which represents a SCALE codec-encoded `O::TimeSlot`.
-type OpaqueTimeSlot = Vec<u8>;
+// Template for pallet upgrade for Offences
 
-/// A type alias for a report identifier.
-type ReportIdOf<T> = <T as frame_system::Config>::Hash;
+pub use pallet::*;
 
-/// Type of data stored as a deferred offence
-pub type DeferredOffenceOf<T> = (
-	Vec<OffenceDetails<<T as frame_system::Config>::AccountId, <T as Trait>::IdentificationTuple>>,
-	Vec<Perbill>,
-	SessionIndex,
-);
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-pub trait WeightInfo {
-	fn report_offence_im_online(r: u32, o: u32, n: u32, ) -> Weight;
-	fn report_offence_grandpa(r: u32, n: u32, ) -> Weight;
-	fn report_offence_babe(r: u32, n: u32, ) -> Weight;
-	fn on_initialize(d: u32, ) -> Weight;
-}
-
-impl WeightInfo for () {
-	fn report_offence_im_online(_r: u32, _o: u32, _n: u32, ) -> Weight { 1_000_000_000 }
-	fn report_offence_grandpa(_r: u32, _n: u32, ) -> Weight { 1_000_000_000 }
-	fn report_offence_babe(_r: u32, _n: u32, ) -> Weight { 1_000_000_000 }
-	fn on_initialize(_d: u32, ) -> Weight { 1_000_000_000 }
-}
-
-/// Offences trait
-pub trait Trait: frame_system::Trait {
-	/// The overarching event type.
-	type Event: From<Event> + Into<<Self as frame_system::Config>::Event>;
-	/// Full identification of the validator.
-	type IdentificationTuple: Parameter + Ord;
-	/// A handler called for every offence report.
-	type OnOffenceHandler: OnOffenceHandler<Self::AccountId, Self::IdentificationTuple, Weight>;
-	/// The a soft limit on maximum weight that may be consumed while dispatching deferred offences in
-	/// `on_initialize`.
-	/// Note it's going to be exceeded before we stop adding to it, so it has to be set conservatively.
-	type WeightSoftLimit: Get<Weight>;
-}
-
-decl_storage! {
-	trait Store for Module<T: Trait> as Offences {
-		/// The primary structure that holds all offence records keyed by report identifiers.
-		Reports get(fn reports):
-			map hasher(twox_64_concat) ReportIdOf<T>
-			=> Option<OffenceDetails<T::AccountId, T::IdentificationTuple>>;
-
-		/// Deferred reports that have been rejected by the offence handler and need to be submitted
-		/// at a later time.
-		DeferredOffences get(fn deferred_offences): Vec<DeferredOffenceOf<T>>;
-
-		/// A vector of reports of the same kind that happened at the same time slot.
-		ConcurrentReportsIndex:
-			double_map hasher(twox_64_concat) Kind, hasher(twox_64_concat) OpaqueTimeSlot
-			=> Vec<ReportIdOf<T>>;
-
-		/// Enumerates all reports of a kind along with the time they happened.
-		///
-		/// All reports are sorted by the time of offence.
-		///
-		/// Note that the actual type of this mapping is `Vec<u8>`, this is because values of
-		/// different types are not supported at the moment so we are doing the manual serialization.
-		ReportsByKindIndex: map hasher(twox_64_concat) Kind => Vec<u8>; // (O::TimeSlot, ReportIdOf<T>)
+	/// Offences trait
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// The overarching event type.
+		type Event: From<Event> + IsType<<Self as frame_system::Config>::Event>;
+		/// Full identification of the validator.
+		type IdentificationTuple: Parameter + Ord;
+		/// A handler called for every offence report.
+		type OnOffenceHandler: OnOffenceHandler<Self::AccountId, Self::IdentificationTuple, Weight>;
+		/// The a soft limit on maximum weight that may be consumed while dispatching deferred offences in
+		/// `on_initialize`.
+		/// Note it's going to be exceeded before we stop adding to it, so it has to be set conservatively.
+		type WeightSoftLimit: Get<Weight>;
 	}
-}
 
-decl_event!(
-	pub enum Event {
-		/// There is an offence reported of the given `kind` happened at the `session_index` and
-		/// (kind-specific) time slot. This event is not deposited for duplicate slashes. last
-		/// element indicates of the offence was applied (true) or queued (false)
-		/// \[kind, timeslot, applied\].
-		Offence(Kind, OpaqueTimeSlot, bool),
-	}
-);
+	/// Deperacated name for Config
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
 
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		fn deposit_event() = default;
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
 
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
 		fn on_initialize(now: T::BlockNumber) -> Weight {
 			// only decode storage if we can actually submit anything again.
 			if !T::OnOffenceHandler::can_report() {
@@ -156,6 +113,73 @@ decl_module! {
 			consumed
 		}
 	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event {
+		/// There is an offence reported of the given `kind` happened at the `session_index` and
+		/// (kind-specific) time slot. This event is not deposited for duplicate slashes. last
+		/// element indicates of the offence was applied (true) or queued (false)
+		/// \[kind, timeslot, applied\].
+		Offence(Kind, OpaqueTimeSlot, bool),
+	}
+
+	/// Deprecated name for event.
+	pub type RawEvent = Event;
+
+	/// The primary structure that holds all offence records keyed by report identifiers.
+	#[pallet::storage]
+	#[pallet::getter(fn reports)]
+	pub(super) type Reports<T: Config> = StorageMap<_, Twox64Concat, ReportIdOf<T>, OffenceDetails<T::AccountId, T::IdentificationTuple>>;
+
+	/// Deferred reports that have been rejected by the offence handler and need to be submitted
+	/// at a later time.
+	#[pallet::storage]
+	#[pallet::getter(fn deferred_offences)]
+	pub(super) type DeferredOffences<T: Config> = StorageValue<_, Vec<DeferredOffenceOf<T>>, ValueQuery>;
+
+	/// A vector of reports of the same kind that happened at the same time slot.
+	#[pallet::storage]
+	pub(super) type ConcurrentReportsIndex<T: Config> = StorageDoubleMap<_, Twox64Concat, Kind, Twox64Concat, OpaqueTimeSlot, Vec<ReportIdOf<T>>, ValueQuery>;
+
+	/// Enumerates all reports of a kind along with the time they happened.
+	///
+	/// All reports are sorted by the time of offence.
+	///
+	/// Note that the actual type of this mapping is `Vec<u8>`, this is because values of
+	/// different types are not supported at the moment so we are doing the manual serialization.
+	#[pallet::storage]
+	pub(super) type ReportsByKindIndex<T: Config> = StorageMap<_, Twox64Concat, Kind, Vec<u8>, ValueQuery>;
+}
+
+/// A binary blob which represents a SCALE codec-encoded `O::TimeSlot`.
+type OpaqueTimeSlot = Vec<u8>;
+
+/// A type alias for a report identifier.
+type ReportIdOf<T> = <T as frame_system::Config>::Hash;
+
+/// Type of data stored as a deferred offence
+pub type DeferredOffenceOf<T> = (
+	Vec<OffenceDetails<<T as frame_system::Config>::AccountId, <T as Config>::IdentificationTuple>>,
+	Vec<Perbill>,
+	SessionIndex,
+);
+
+pub trait WeightInfo {
+	fn report_offence_im_online(r: u32, o: u32, n: u32, ) -> Weight;
+	fn report_offence_grandpa(r: u32, n: u32, ) -> Weight;
+	fn report_offence_babe(r: u32, n: u32, ) -> Weight;
+	fn on_initialize(d: u32, ) -> Weight;
+}
+
+impl WeightInfo for () {
+	fn report_offence_im_online(_r: u32, _o: u32, _n: u32, ) -> Weight { 1_000_000_000 }
+	fn report_offence_grandpa(_r: u32, _n: u32, ) -> Weight { 1_000_000_000 }
+	fn report_offence_babe(_r: u32, _n: u32, ) -> Weight { 1_000_000_000 }
+	fn on_initialize(_d: u32, ) -> Weight { 1_000_000_000 }
 }
 
 impl<T: Trait, O: Offence<T::IdentificationTuple>>
@@ -315,7 +339,7 @@ impl<T: Trait, O: Offence<T::IdentificationTuple>> ReportIndexStorage<T, O> {
 	fn load(time_slot: &O::TimeSlot) -> Self {
 		let opaque_time_slot = time_slot.encode();
 
-		let same_kind_reports = <ReportsByKindIndex>::get(&O::ID);
+		let same_kind_reports = <ReportsByKindIndex<T>>::get(&O::ID);
 		let same_kind_reports =
 			Vec::<(O::TimeSlot, ReportIdOf<T>)>::decode(&mut &same_kind_reports[..])
 				.unwrap_or_default();
@@ -349,7 +373,7 @@ impl<T: Trait, O: Offence<T::IdentificationTuple>> ReportIndexStorage<T, O> {
 
 	/// Dump the indexes to the storage.
 	fn save(self) {
-		<ReportsByKindIndex>::insert(&O::ID, self.same_kind_reports.encode());
+		<ReportsByKindIndex<T>>::insert(&O::ID, self.same_kind_reports.encode());
 		<ConcurrentReportsIndex<T>>::insert(
 			&O::ID,
 			&self.opaque_time_slot,

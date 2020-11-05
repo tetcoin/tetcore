@@ -84,7 +84,7 @@ pub fn create_validator_with_nominators<T: Trait>(
 		}
 	}
 
-	ValidatorCount::put(1);
+	ValidatorCount::<T>::put(1);
 
 	// Start a new Era
 	let new_validators = Staking::<T>::new_era(SessionIndex::one()).unwrap();
@@ -98,7 +98,7 @@ pub fn create_validator_with_nominators<T: Trait>(
 		individual: points_individual.into_iter().collect(),
 	};
 
-	let current_era = CurrentEra::get().unwrap();
+	let current_era = CurrentEra::<T>::get().unwrap();
 	ErasRewardPoints::<T>::insert(current_era, reward);
 
 	// Create reward pool
@@ -162,7 +162,7 @@ benchmarks! {
 		add_slashing_spans::<T>(&stash, s);
 		let amount = T::Currency::minimum_balance() * 5u32.into(); // Half of total
 		Staking::<T>::unbond(RawOrigin::Signed(controller.clone()).into(), amount)?;
-		CurrentEra::put(EraIndex::max_value());
+		CurrentEra::<T>::put(EraIndex::max_value());
 		let ledger = Ledger::<T>::get(&controller).ok_or("ledger not created before")?;
 		let original_total: BalanceOf<T> = ledger.total;
 		whitelist_account!(controller);
@@ -181,7 +181,7 @@ benchmarks! {
 		add_slashing_spans::<T>(&stash, s);
 		let amount = T::Currency::minimum_balance() * 10u32.into();
 		Staking::<T>::unbond(RawOrigin::Signed(controller.clone()).into(), amount)?;
-		CurrentEra::put(EraIndex::max_value());
+		CurrentEra::<T>::put(EraIndex::max_value());
 		let ledger = Ledger::<T>::get(&controller).ok_or("ledger not created before")?;
 		let original_total: BalanceOf<T> = ledger.total;
 		whitelist_account!(controller);
@@ -238,17 +238,17 @@ benchmarks! {
 		let validator_count = MAX_VALIDATORS;
 	}: _(RawOrigin::Root, validator_count)
 	verify {
-		assert_eq!(ValidatorCount::get(), validator_count);
+		assert_eq!(ValidatorCount::<T>::get(), validator_count);
 	}
 
 	force_no_eras {}: _(RawOrigin::Root)
-	verify { assert_eq!(ForceEra::get(), Forcing::ForceNone); }
+	verify { assert_eq!(ForceEra::<T>::get(), Forcing::ForceNone); }
 
 	force_new_era {}: _(RawOrigin::Root)
-	verify { assert_eq!(ForceEra::get(), Forcing::ForceNew); }
+	verify { assert_eq!(ForceEra::<T>::get(), Forcing::ForceNew); }
 
 	force_new_era_always {}: _(RawOrigin::Root)
-	verify { assert_eq!(ForceEra::get(), Forcing::ForceAlways); }
+	verify { assert_eq!(ForceEra::<T>::get(), Forcing::ForceAlways); }
 
 	// Worst case scenario, the list of invulnerables is very long.
 	set_invulnerables {
@@ -296,7 +296,7 @@ benchmarks! {
 			RewardDestination::Controller,
 		)?;
 
-		let current_era = CurrentEra::get().unwrap();
+		let current_era = CurrentEra::<T>::get().unwrap();
 		// set the commission for this particular era as well.
 		<ErasValidatorPrefs<T>>::insert(current_era, validator.clone(), <Staking<T>>::validators(&validator));
 
@@ -329,7 +329,7 @@ benchmarks! {
 			RewardDestination::Staked,
 		)?;
 
-		let current_era = CurrentEra::get().unwrap();
+		let current_era = CurrentEra::<T>::get().unwrap();
 		// set the commission for this particular era as well.
 		<ErasValidatorPrefs<T>>::insert(current_era, validator.clone(), <Staking<T>>::validators(&validator));
 
@@ -379,8 +379,8 @@ benchmarks! {
 
 	set_history_depth {
 		let e in 1 .. 100;
-		HistoryDepth::put(e);
-		CurrentEra::put(e);
+		HistoryDepth::<T>::put(e);
+		CurrentEra::<T>::put(e);
 		for i in 0 .. e {
 			<ErasStakers<T>>::insert(i, T::AccountId::default(), Exposure::<T::AccountId, BalanceOf<T>>::default());
 			<ErasStakersClipped<T>>::insert(i, T::AccountId::default(), Exposure::<T::AccountId, BalanceOf<T>>::default());
@@ -388,11 +388,11 @@ benchmarks! {
 			<ErasValidatorReward<T>>::insert(i, BalanceOf::<T>::one());
 			<ErasRewardPoints<T>>::insert(i, EraRewardPoints::<T::AccountId>::default());
 			<ErasTotalStake<T>>::insert(i, BalanceOf::<T>::one());
-			ErasStartSessionIndex::insert(i, i);
+			ErasStartSessionIndex::<T>::insert(i, i);
 		}
 	}: _(RawOrigin::Root, EraIndex::zero(), u32::max_value())
 	verify {
-		assert_eq!(HistoryDepth::get(), 0);
+		assert_eq!(HistoryDepth::<T>::get(), 0);
 	}
 
 	reap_stash {
@@ -426,7 +426,7 @@ benchmarks! {
 		let new_validators = Staking::<T>::new_era(SessionIndex::one()).unwrap();
 		assert!(new_validators.len() == v as usize);
 
-		let current_era = CurrentEra::get().unwrap();
+		let current_era = CurrentEra::<T>::get().unwrap();
 		let mut points_total = 0;
 		let mut points_individual = Vec::new();
 		let mut payout_calls_arg = Vec::new();
@@ -511,7 +511,7 @@ benchmarks! {
 		assert!(<Staking<T>>::create_stakers_snapshot().0);
 
 		// set number of winners
-		ValidatorCount::put(w);
+		ValidatorCount::<T>::put(w);
 
 		// create a assignments in total for the w winners.
 		let (winners, assignments) = create_assignments_for_offchain::<T>(a, winners)?;
@@ -577,7 +577,7 @@ benchmarks! {
 		assert!(<Staking<T>>::create_stakers_snapshot().0);
 
 		// set number of winners
-		ValidatorCount::put(w);
+		ValidatorCount::<T>::put(w);
 
 		// create a assignments in total for the w winners.
 		let (winners, assignments) = create_assignments_for_offchain::<T>(a, winners)?;
@@ -608,7 +608,7 @@ benchmarks! {
 		// submit a very bad solution on-chain
 		{
 			// this is needed to fool the chain to accept this solution.
-			ValidatorCount::put(1);
+			ValidatorCount::<T>::put(1);
 			let (winners, compact, score, size) = get_single_winner_solution::<T>(single_winner)?;
 			assert!(
 				<Staking<T>>::submit_election_solution(
@@ -622,7 +622,7 @@ benchmarks! {
 
 			// new solution has been accepted.
 			assert_eq!(<Staking<T>>::queued_score().unwrap(), score);
-			ValidatorCount::put(w);
+			ValidatorCount::<T>::put(w);
 		}
 	}: {
 		let result = <Staking<T>>::submit_election_solution(
@@ -729,14 +729,14 @@ mod tests {
 
 			let (validator_stash, nominators) = create_validator_with_nominators::<Test>(
 				n,
-				<Test as Trait>::MaxNominatorRewardedPerValidator::get() as u32,
+				<Test as Config>::MaxNominatorRewardedPerValidator::get() as u32,
 				false,
 				RewardDestination::Staked,
 			).unwrap();
 
 			assert_eq!(nominators.len() as u32, n);
 
-			let current_era = CurrentEra::get().unwrap();
+			let current_era = CurrentEra::<Test>::get().unwrap();
 
 			let original_free_balance = Balances::free_balance(&validator_stash);
 			assert_ok!(Staking::payout_stakers(Origin::signed(1337), validator_stash, current_era));
@@ -753,7 +753,7 @@ mod tests {
 
 			let (validator_stash, _nominators) = create_validator_with_nominators::<Test>(
 				n,
-				<Test as Trait>::MaxNominatorRewardedPerValidator::get() as u32,
+				<Test as Config>::MaxNominatorRewardedPerValidator::get() as u32,
 				false,
 				RewardDestination::Staked,
 			).unwrap();

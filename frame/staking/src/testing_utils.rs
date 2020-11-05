@@ -165,7 +165,7 @@ pub fn create_validators_with_nominators_for_era<T: Trait>(
 		Staking::<T>::nominate(RawOrigin::Signed(n_controller.clone()).into(), selected_validators)?;
 	}
 
-	ValidatorCount::put(validators);
+	ValidatorCount::<T>::put(validators);
 
 	Ok(validator_choosen)
 }
@@ -356,13 +356,13 @@ pub fn current_era<T: Trait>() -> EraIndex {
 	<Module<T>>::current_era().unwrap_or(0)
 }
 
-/// initialize the first era.
-pub fn init_active_era() {
-	ActiveEra::put(ActiveEraInfo {
-		index: 1,
-		start: None,
-	})
-}
+// /// initialize the first era.
+// pub fn init_active_era<T: Trait>() {
+// 	ActiveEra::<T>::put(ActiveEraInfo {
+// 		index: 1,
+// 		start: None,
+// 	})
+// }
 
 /// Create random assignments for the given list of winners. Each assignment will have
 /// MAX_NOMINATIONS edges.

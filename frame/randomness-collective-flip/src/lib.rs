@@ -57,10 +57,7 @@
 
 use sp_std::{prelude::*, convert::TryInto};
 use sp_runtime::traits::Hash;
-use frame_support::{
-	decl_module, decl_storage, traits::Randomness,
-	weights::Weight
-};
+use frame_support::traits::Randomness;
 use safe_mix::TripletMix;
 use codec::Encode;
 use frame_system::Trait;
@@ -73,8 +70,28 @@ fn block_number_to_index<T: Trait>(block_number: T::BlockNumber) -> usize {
 	index.try_into().ok().expect("Something % 81 is always smaller than usize; qed")
 }
 
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
+pub use pallet::*;
+
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
+
+	#[pallet::config]
+	pub trait Config: frame_system::Config {}
+
+	impl<R: frame_system::Config> Config for R {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deprecated old name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
 		fn on_initialize(block_number: T::BlockNumber) -> Weight {
 			let parent_hash = <frame_system::Module<T>>::parent_hash();
 
@@ -88,15 +105,16 @@ decl_module! {
 			0
 		}
 	}
-}
 
-decl_storage! {
-	trait Store for Module<T: Trait> as RandomnessCollectiveFlip {
-		/// Series of block headers from the last 81 blocks that acts as random seed material. This
-		/// is arranged as a ring buffer with `block_number % 81` being the index into the `Vec` of
-		/// the oldest hash.
-		RandomMaterial get(fn random_material): Vec<T::Hash>;
-	}
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {}
+
+	/// Series of block headers from the last 81 blocks that acts as random seed material. This
+	/// is arranged as a ring buffer with `block_number % 81` being the index into the `Vec` of
+	/// the oldest hash.
+	#[pallet::storage]
+	#[pallet::getter(fn random_material)]
+	pub(super) type RandomMaterial<T: Config> = StorageValue<_, Vec<T::Hash>, ValueQuery>;
 }
 
 impl<T: Trait> Randomness<T::Hash> for Module<T> {

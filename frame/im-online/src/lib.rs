@@ -140,6 +140,269 @@ pub mod ed25519 {
 	pub type AuthorityId = app_ed25519::Public;
 }
 
+pub use pallet::*;
+
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
+
+	#[pallet::config]
+	pub trait Config: SendTransactionTypes<Call<Self>> + pallet_session::historical::Config
+		+ frame_system::Config
+	{
+		/// The identifier type for an authority.
+		type AuthorityId: Member + Parameter + RuntimeAppPublic + Default + Ord +
+			MaybeSerializeDeserialize;
+
+		/// The overarching event type.
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
+
+		/// An expected duration of the session.
+		///
+		/// This parameter is used to determine the longevity of `heartbeat` transaction
+		/// and a rough time when we should start considering sending heartbeats,
+		/// since the workers avoids sending them at the very beginning of the session, assuming
+		/// there is a chance the authority will produce a block and they won't be necessary.
+		type SessionDuration: Get<Self::BlockNumber>;
+
+		/// A type that gives us the ability to submit unresponsiveness offence reports.
+		type ReportUnresponsiveness:
+			ReportOffence<
+				Self::AccountId,
+				IdentificationTuple<Self>,
+				UnresponsivenessOffence<IdentificationTuple<Self>>,
+			>;
+
+		/// A configuration for base priority of unsigned transactions.
+		///
+		/// This is exposed so that it can be tuned for particular runtime, when
+		/// multiple pallets send unsigned transactions.
+		type UnsignedPriority: Get<TransactionPriority>;
+
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
+	}
+
+	/// Deperacated name for Config
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+		// Runs after every block.
+		fn offchain_worker(now: T::BlockNumber) {
+			// Only send messages if we are a potential validator.
+			if sp_io::offchain::is_validator() {
+				for res in Self::send_heartbeats(now).into_iter().flatten() {
+					if let Err(e) = res {
+						debug::debug!(
+							target: "imonline",
+							"Skipping heartbeat at {:?}: {:?}",
+							now,
+							e,
+						)
+					}
+				}
+			} else {
+				debug::trace!(
+					target: "imonline",
+					"Skipping heartbeat at {:?}. Not a validator.",
+					now,
+				)
+			}
+		}
+	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
+		/// # <weight>
+		/// - Complexity: `O(K + E)` where K is length of `Keys` (heartbeat.validators_len)
+		///   and E is length of `heartbeat.network_state.external_address`
+		///   - `O(K)`: decoding of length `K`
+		///   - `O(E)`: decoding/encoding of length `E`
+		/// - DbReads: pallet_session `Validators`, pallet_session `CurrentIndex`, `Keys`,
+		///   `ReceivedHeartbeats`
+		/// - DbWrites: `ReceivedHeartbeats`
+		/// # </weight>
+		// NOTE: the weight includes the cost of validate_unsigned as it is part of the cost to
+		// import block with such an extrinsic.
+		#[pallet::weight(
+			<T as Config>::WeightInfo::validate_unsigned_and_then_heartbeat(
+				heartbeat.validators_len as u32,
+				heartbeat.network_state.external_addresses.len() as u32,
+			)
+		)]
+		pub(super) fn heartbeat(
+			origin: OriginFor<T>,
+			heartbeat: Heartbeat<T::BlockNumber>,
+			// since signature verification is done in `validate_unsigned`
+			// we can skip doing it here again.
+			_signature: <T::AuthorityId as RuntimeAppPublic>::Signature,
+		) -> DispatchResultWithPostInfo {
+			ensure_none(origin)?;
+
+			let current_session = <pallet_session::Module<T>>::current_index();
+			let exists = <ReceivedHeartbeats<T>>::contains_key(
+				&current_session,
+				&heartbeat.authority_index
+			);
+			let keys = Keys::<T>::get();
+			let public = keys.get(heartbeat.authority_index as usize);
+			if let (false, Some(public)) = (exists, public) {
+				Self::deposit_event(Event::<T>::HeartbeatReceived(public.clone()));
+
+				let network_state = heartbeat.network_state.encode();
+				<ReceivedHeartbeats<T>>::insert(
+					&current_session,
+					&heartbeat.authority_index,
+					&network_state
+				);
+			} else if exists {
+				Err(Error::<T>::DuplicatedHeartbeat)?
+			} else {
+				Err(Error::<T>::InvalidKey)?
+			}
+
+			Ok(().into())
+		}
+	}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config> {
+		/// A new heartbeat was received from `AuthorityId` \[authority_id\]
+		HeartbeatReceived(T::AuthorityId),
+		/// At the end of the session, no offence was committed.
+		AllGood,
+		/// At the end of the session, at least one validator was found to be \[offline\].
+		SomeOffline(Vec<IdentificationTuple<T>>),
+	}
+
+	/// Deprecated name for event.
+	pub type RawEvent<T> = Event<T>;
+
+	/// Error for the im-online module.
+	#[pallet::error]
+	pub enum Error<T> {
+		/// Non existent public key.
+		InvalidKey,
+		/// Duplicated heartbeat.
+		DuplicatedHeartbeat,
+	}
+
+	#[pallet::validate_unsigned]
+	impl<T: Config> frame_support::unsigned::ValidateUnsigned for Pallet<T> {
+		type Call = Call<T>;
+
+		fn validate_unsigned(
+			_source: TransactionSource,
+			call: &Self::Call,
+		) -> TransactionValidity {
+			if let Call::heartbeat(heartbeat, signature) = call {
+				if <Module<T>>::is_online(heartbeat.authority_index) {
+					// we already received a heartbeat for this authority
+					return InvalidTransaction::Stale.into();
+				}
+
+				// check if session index from heartbeat is recent
+				let current_session = <pallet_session::Module<T>>::current_index();
+				if heartbeat.session_index != current_session {
+					return InvalidTransaction::Stale.into();
+				}
+
+				// verify that the incoming (unverified) pubkey is actually an authority id
+				let keys = Keys::<T>::get();
+				if keys.len() as u32 != heartbeat.validators_len {
+					return InvalidTransaction::Custom(INVALID_VALIDATORS_LEN).into();
+				}
+				let authority_id = match keys.get(heartbeat.authority_index as usize) {
+					Some(id) => id,
+					None => return InvalidTransaction::BadProof.into(),
+				};
+
+				// check signature (this is expensive so we do it last).
+				let signature_valid = heartbeat.using_encoded(|encoded_heartbeat| {
+					authority_id.verify(&encoded_heartbeat, &signature)
+				});
+
+				if !signature_valid {
+					return InvalidTransaction::BadProof.into();
+				}
+
+				ValidTransaction::with_tag_prefix("ImOnline")
+					.priority(T::UnsignedPriority::get())
+					.and_provides((current_session, authority_id))
+					.longevity(TryInto::<u64>::try_into(
+						T::SessionDuration::get() / 2u32.into()
+					).unwrap_or(64_u64))
+					.propagate(true)
+					.build()
+			} else {
+				InvalidTransaction::Call.into()
+			}
+		}
+	}
+
+	/// The block number after which it's ok to send heartbeats in current session.
+	///
+	/// At the beginning of each session we set this to a value that should
+	/// fall roughly in the middle of the session duration.
+	/// The idea is to first wait for the validators to produce a block
+	/// in the current session, so that the heartbeat later on will not be necessary.
+	#[pallet::storage]
+	#[pallet::getter(fn heartbeat_after)]
+	pub(super) type HeartbeatAfter<T: Config> = StorageValue<_, T::BlockNumber, ValueQuery>;
+
+	/// The current set of keys that may issue a heartbeat.
+	#[pallet::storage]
+	#[pallet::getter(fn keys)]
+	pub(super) type Keys<T: Config> = StorageValue<_, Vec<T::AuthorityId>, ValueQuery>;
+
+	/// For each session index, we keep a mapping of `AuthIndex` to
+	/// `offchain::OpaqueNetworkState`.
+	#[pallet::storage]
+	#[pallet::getter(fn received_heartbeats)]
+	pub(super) type ReceivedHeartbeats<T: Config> = StorageDoubleMap<_, Twox64Concat, SessionIndex, Twox64Concat, AuthIndex, Vec<u8>>;
+
+	/// For each session index, we keep a mapping of `T::ValidatorId` to the
+	/// number of blocks authored by the given authority.
+	#[pallet::storage]
+	#[pallet::getter(fn authored_blocks)]
+	pub(super) type AuthoredBlocks<T: Config> = StorageDoubleMap<_, Twox64Concat, SessionIndex, Twox64Concat, T::ValidatorId, u32, ValueQuery>;
+
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config> {
+		pub keys: Vec<T::AuthorityId>,
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config> Default for GenesisConfig<T> {
+		fn default() -> Self {
+			Self {
+				keys: Default::default(),
+			}
+		}
+	}
+
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
+		fn build(&self) {
+			Module::<T>::initialize_keys(&self.keys);
+		}
+	}
+}
+
 const DB_PREFIX: &[u8] = b"parity/im-online-heartbeat/";
 /// How many blocks do we wait for heartbeat transaction to be included
 /// before sending another one.
@@ -227,172 +490,6 @@ pub struct Heartbeat<BlockNumber>
 	pub validators_len: u32,
 }
 
-pub trait Trait: SendTransactionTypes<Call<Self>> + pallet_session::historical::Trait {
-	/// The identifier type for an authority.
-	type AuthorityId: Member + Parameter + RuntimeAppPublic + Default + Ord;
-
-	/// The overarching event type.
-	type Event: From<Event<Self>> + Into<<Self as frame_system::Config>::Event>;
-
-	/// An expected duration of the session.
-	///
-	/// This parameter is used to determine the longevity of `heartbeat` transaction
-	/// and a rough time when we should start considering sending heartbeats,
-	/// since the workers avoids sending them at the very beginning of the session, assuming
-	/// there is a chance the authority will produce a block and they won't be necessary.
-	type SessionDuration: Get<Self::BlockNumber>;
-
-	/// A type that gives us the ability to submit unresponsiveness offence reports.
-	type ReportUnresponsiveness:
-		ReportOffence<
-			Self::AccountId,
-			IdentificationTuple<Self>,
-			UnresponsivenessOffence<IdentificationTuple<Self>>,
-		>;
-
-	/// A configuration for base priority of unsigned transactions.
-	///
-	/// This is exposed so that it can be tuned for particular runtime, when
-	/// multiple pallets send unsigned transactions.
-	type UnsignedPriority: Get<TransactionPriority>;
-
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
-}
-
-decl_event!(
-	pub enum Event<T> where
-		<T as Trait>::AuthorityId,
-		IdentificationTuple = IdentificationTuple<T>,
-	{
-		/// A new heartbeat was received from `AuthorityId` \[authority_id\]
-		HeartbeatReceived(AuthorityId),
-		/// At the end of the session, no offence was committed.
-		AllGood,
-		/// At the end of the session, at least one validator was found to be \[offline\].
-		SomeOffline(Vec<IdentificationTuple>),
-	}
-);
-
-decl_storage! {
-	trait Store for Module<T: Trait> as ImOnline {
-		/// The block number after which it's ok to send heartbeats in current session.
-		///
-		/// At the beginning of each session we set this to a value that should
-		/// fall roughly in the middle of the session duration.
-		/// The idea is to first wait for the validators to produce a block
-		/// in the current session, so that the heartbeat later on will not be necessary.
-		HeartbeatAfter get(fn heartbeat_after): T::BlockNumber;
-
-		/// The current set of keys that may issue a heartbeat.
-		Keys get(fn keys): Vec<T::AuthorityId>;
-
-		/// For each session index, we keep a mapping of `AuthIndex` to
-		/// `offchain::OpaqueNetworkState`.
-		ReceivedHeartbeats get(fn received_heartbeats):
-			double_map hasher(twox_64_concat) SessionIndex, hasher(twox_64_concat) AuthIndex
-			=> Option<Vec<u8>>;
-
-		/// For each session index, we keep a mapping of `T::ValidatorId` to the
-		/// number of blocks authored by the given authority.
-		AuthoredBlocks get(fn authored_blocks):
-			double_map hasher(twox_64_concat) SessionIndex, hasher(twox_64_concat) T::ValidatorId
-			=> u32;
-	}
-	add_extra_genesis {
-		config(keys): Vec<T::AuthorityId>;
-		build(|config| Module::<T>::initialize_keys(&config.keys))
-	}
-}
-
-decl_error! {
-	/// Error for the im-online module.
-	pub enum Error for Module<T: Trait> {
-		/// Non existent public key.
-		InvalidKey,
-		/// Duplicated heartbeat.
-		DuplicatedHeartbeat,
-	}
-}
-
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		type Error = Error<T>;
-
-		fn deposit_event() = default;
-
-		/// # <weight>
-		/// - Complexity: `O(K + E)` where K is length of `Keys` (heartbeat.validators_len)
-		///   and E is length of `heartbeat.network_state.external_address`
-		///   - `O(K)`: decoding of length `K`
-		///   - `O(E)`: decoding/encoding of length `E`
-		/// - DbReads: pallet_session `Validators`, pallet_session `CurrentIndex`, `Keys`,
-		///   `ReceivedHeartbeats`
-		/// - DbWrites: `ReceivedHeartbeats`
-		/// # </weight>
-		// NOTE: the weight includes the cost of validate_unsigned as it is part of the cost to
-		// import block with such an extrinsic.
-		#[weight = <T as Trait>::WeightInfo::validate_unsigned_and_then_heartbeat(
-			heartbeat.validators_len as u32,
-			heartbeat.network_state.external_addresses.len() as u32,
-		)]
-		fn heartbeat(
-			origin,
-			heartbeat: Heartbeat<T::BlockNumber>,
-			// since signature verification is done in `validate_unsigned`
-			// we can skip doing it here again.
-			_signature: <T::AuthorityId as RuntimeAppPublic>::Signature,
-		) {
-			ensure_none(origin)?;
-
-			let current_session = <pallet_session::Module<T>>::current_index();
-			let exists = <ReceivedHeartbeats>::contains_key(
-				&current_session,
-				&heartbeat.authority_index
-			);
-			let keys = Keys::<T>::get();
-			let public = keys.get(heartbeat.authority_index as usize);
-			if let (false, Some(public)) = (exists, public) {
-				Self::deposit_event(Event::<T>::HeartbeatReceived(public.clone()));
-
-				let network_state = heartbeat.network_state.encode();
-				<ReceivedHeartbeats>::insert(
-					&current_session,
-					&heartbeat.authority_index,
-					&network_state
-				);
-			} else if exists {
-				Err(Error::<T>::DuplicatedHeartbeat)?
-			} else {
-				Err(Error::<T>::InvalidKey)?
-			}
-		}
-
-		// Runs after every block.
-		fn offchain_worker(now: T::BlockNumber) {
-			// Only send messages if we are a potential validator.
-			if sp_io::offchain::is_validator() {
-				for res in Self::send_heartbeats(now).into_iter().flatten() {
-					if let Err(e) = res {
-						debug::debug!(
-							target: "imonline",
-							"Skipping heartbeat at {:?}: {:?}",
-							now,
-							e,
-						)
-					}
-				}
-			} else {
-				debug::trace!(
-					target: "imonline",
-					"Skipping heartbeat at {:?}. Not a validator.",
-					now,
-				)
-			}
-		}
-	}
-}
-
 type OffchainResult<T, A> = Result<A, OffchainErr<<T as frame_system::Config>::BlockNumber>>;
 
 /// Keep track of number of authored blocks per authority, uncles are counted as
@@ -427,7 +524,7 @@ impl<T: Trait> Module<T> {
 	fn is_online_aux(authority_index: AuthIndex, authority: &T::ValidatorId) -> bool {
 		let current_session = <pallet_session::Module<T>>::current_index();
 
-		<ReceivedHeartbeats>::contains_key(&current_session, &authority_index) ||
+		<ReceivedHeartbeats<T>>::contains_key(&current_session, &authority_index) ||
 			<AuthoredBlocks<T>>::get(
 				&current_session,
 				authority,
@@ -438,7 +535,7 @@ impl<T: Trait> Module<T> {
 	/// the authorities series, during the current session. Otherwise `false`.
 	pub fn received_heartbeat_in_current_session(authority_index: AuthIndex) -> bool {
 		let current_session = <pallet_session::Module<T>>::current_index();
-		<ReceivedHeartbeats>::contains_key(&current_session, &authority_index)
+		<ReceivedHeartbeats<T>>::contains_key(&current_session, &authority_index)
 	}
 
 	/// Note that the given authority has authored a block in the current session.
@@ -653,7 +750,7 @@ impl<T: Trait> pallet_session::OneSessionHandler<T::AccountId> for Module<T> {
 		// Remove all received heartbeats and number of authored blocks from the
 		// current session, they have already been processed and won't be needed
 		// anymore.
-		<ReceivedHeartbeats>::remove_prefix(&<pallet_session::Module<T>>::current_index());
+		<ReceivedHeartbeats<T>>::remove_prefix(&<pallet_session::Module<T>>::current_index());
 		<AuthoredBlocks<T>>::remove_prefix(&<pallet_session::Module<T>>::current_index());
 
 		if offenders.is_empty() {
@@ -676,58 +773,6 @@ impl<T: Trait> pallet_session::OneSessionHandler<T::AccountId> for Module<T> {
 
 /// Invalid transaction custom error. Returned when validators_len field in heartbeat is incorrect.
 const INVALID_VALIDATORS_LEN: u8 = 10;
-
-impl<T: Trait> frame_support::unsigned::ValidateUnsigned for Module<T> {
-	type Call = Call<T>;
-
-	fn validate_unsigned(
-		_source: TransactionSource,
-		call: &Self::Call,
-	) -> TransactionValidity {
-		if let Call::heartbeat(heartbeat, signature) = call {
-			if <Module<T>>::is_online(heartbeat.authority_index) {
-				// we already received a heartbeat for this authority
-				return InvalidTransaction::Stale.into();
-			}
-
-			// check if session index from heartbeat is recent
-			let current_session = <pallet_session::Module<T>>::current_index();
-			if heartbeat.session_index != current_session {
-				return InvalidTransaction::Stale.into();
-			}
-
-			// verify that the incoming (unverified) pubkey is actually an authority id
-			let keys = Keys::<T>::get();
-			if keys.len() as u32 != heartbeat.validators_len {
-				return InvalidTransaction::Custom(INVALID_VALIDATORS_LEN).into();
-			}
-			let authority_id = match keys.get(heartbeat.authority_index as usize) {
-				Some(id) => id,
-				None => return InvalidTransaction::BadProof.into(),
-			};
-
-			// check signature (this is expensive so we do it last).
-			let signature_valid = heartbeat.using_encoded(|encoded_heartbeat| {
-				authority_id.verify(&encoded_heartbeat, &signature)
-			});
-
-			if !signature_valid {
-				return InvalidTransaction::BadProof.into();
-			}
-
-			ValidTransaction::with_tag_prefix("ImOnline")
-				.priority(T::UnsignedPriority::get())
-				.and_provides((current_session, authority_id))
-				.longevity(TryInto::<u64>::try_into(
-					T::SessionDuration::get() / 2u32.into()
-				).unwrap_or(64_u64))
-				.propagate(true)
-				.build()
-		} else {
-			InvalidTransaction::Call.into()
-		}
-	}
-}
 
 /// An offence that is filed if a validator didn't send a heartbeat message.
 #[derive(RuntimeDebug)]

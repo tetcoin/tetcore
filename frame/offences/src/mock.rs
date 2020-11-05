@@ -20,7 +20,7 @@
 #![cfg(test)]
 
 use std::cell::RefCell;
-use crate::{Module, Trait};
+use crate::{Module, Trait, Config};
 use codec::Encode;
 use sp_runtime::Perbill;
 use sp_staking::{
@@ -127,7 +127,7 @@ parameter_types! {
 	pub OffencesWeightSoftLimit: Weight = Perbill::from_percent(60) * MaximumBlockWeight::get();
 }
 
-impl Trait for Runtime {
+impl Config for Runtime {
 	type Event = TestEvent;
 	type IdentificationTuple = u64;
 	type OnOffenceHandler = OnOffenceHandler;
@@ -141,7 +141,7 @@ mod offences {
 impl_outer_event! {
 	pub enum TestEvent for Runtime {
 		system<T>,
-		offences,
+		offences<T>,
 	}
 }
 

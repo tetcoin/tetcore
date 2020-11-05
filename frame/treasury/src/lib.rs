@@ -154,86 +154,999 @@ use codec::{Encode, Decode};
 use frame_system::{self as system, ensure_signed};
 pub use weights::WeightInfo;
 
-type BalanceOf<T, I> =
-	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
-type PositiveImbalanceOf<T, I> =
-	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::PositiveImbalance;
-type NegativeImbalanceOf<T, I> =
-	<<T as Trait<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance;
+pub use pallet::*;
 
-pub trait Trait<I=DefaultInstance>: frame_system::Trait {
-	/// The treasury's module id, used for deriving its sovereign account ID.
-	type ModuleId: Get<ModuleId>;
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-	/// The staking balance.
-	type Currency: Currency<Self::AccountId> + ReservableCurrency<Self::AccountId>;
+	#[pallet::config]
+	pub trait Config<I: 'static = ()>: frame_system::Config {
+		/// The treasury's module id, used for deriving its sovereign account ID.
+		#[pallet::constant]
+		type ModuleId: Get<ModuleId>;
 
-	/// Origin from which approvals must come.
-	type ApproveOrigin: EnsureOrigin<Self::Origin>;
+		/// The staking balance.
+		type Currency: Currency<Self::AccountId> + ReservableCurrency<Self::AccountId>;
 
-	/// Origin from which rejections must come.
-	type RejectOrigin: EnsureOrigin<Self::Origin>;
+		/// Origin from which approvals must come.
+		type ApproveOrigin: EnsureOrigin<Self::Origin>;
 
-	/// Origin from which tippers must come.
-	///
-	/// `ContainsLengthBound::max_len` must be cost free (i.e. no storage read or heavy operation).
-	type Tippers: Contains<Self::AccountId> + ContainsLengthBound;
+		/// Origin from which rejections must come.
+		type RejectOrigin: EnsureOrigin<Self::Origin>;
 
-	/// The period for which a tip remains open after is has achieved threshold tippers.
-	type TipCountdown: Get<Self::BlockNumber>;
+		/// Origin from which tippers must come.
+		///
+		/// `ContainsLengthBound::max_len` must be cost free (i.e. no storage read or heavy operation).
+		type Tippers: Contains<Self::AccountId> + ContainsLengthBound;
 
-	/// The percent of the final tip which goes to the original reporter of the tip.
-	type TipFindersFee: Get<Percent>;
+		/// The period for which a tip remains open after is has achieved threshold tippers.
+		#[pallet::constant]
+		type TipCountdown: Get<Self::BlockNumber>;
 
-	/// The amount held on deposit for placing a tip report.
-	type TipReportDepositBase: Get<BalanceOf<Self, I>>;
+		/// The percent of the final tip which goes to the original reporter of the tip.
+		#[pallet::constant]
+		type TipFindersFee: Get<Percent>;
 
-	/// The amount held on deposit per byte within the tip report reason or bounty description.
-	type DataDepositPerByte: Get<BalanceOf<Self, I>>;
+		/// The amount held on deposit for placing a tip report.
+		#[pallet::constant]
+		type TipReportDepositBase: Get<BalanceOf<Self, I>>;
 
-	/// The overarching event type.
-	type Event: From<Event<Self, I>> + Into<<Self as frame_system::Config>::Event>;
+		/// The amount held on deposit per byte within the tip report reason or bounty description.
+		#[pallet::constant]
+		type DataDepositPerByte: Get<BalanceOf<Self, I>>;
 
-	/// Handler for the unbalanced decrease when slashing for a rejected proposal or bounty.
-	type OnSlash: OnUnbalanced<NegativeImbalanceOf<Self, I>>;
+		/// The overarching event type.
+		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Config>::Event>;
 
-	/// Fraction of a proposal's value that should be bonded in order to place the proposal.
-	/// An accepted proposal gets these back. A rejected proposal does not.
-	type ProposalBond: Get<Permill>;
+		/// Handler for the unbalanced decrease when slashing for a rejected proposal or bounty.
+		type OnSlash: OnUnbalanced<NegativeImbalanceOf<Self, I>>;
 
-	/// Minimum amount of funds that should be placed in a deposit for making a proposal.
-	type ProposalBondMinimum: Get<BalanceOf<Self, I>>;
+		/// Fraction of a proposal's value that should be bonded in order to place the proposal.
+		/// An accepted proposal gets these back. A rejected proposal does not.
+		#[pallet::constant]
+		type ProposalBond: Get<Permill>;
 
-	/// Period between successive spends.
-	type SpendPeriod: Get<Self::BlockNumber>;
+		/// Minimum amount of funds that should be placed in a deposit for making a proposal.
+		#[pallet::constant]
+		type ProposalBondMinimum: Get<BalanceOf<Self, I>>;
 
-	/// Percentage of spare funds (if any) that are burnt per spend period.
-	type Burn: Get<Permill>;
+		/// Period between successive spends.
+		#[pallet::constant]
+		type SpendPeriod: Get<Self::BlockNumber>;
 
-	/// The amount held on deposit for placing a bounty proposal.
-	type BountyDepositBase: Get<BalanceOf<Self, I>>;
+		/// Percentage of spare funds (if any) that are burnt per spend period.
+		#[pallet::constant]
+		type Burn: Get<Permill>;
 
-	/// The delay period for which a bounty beneficiary need to wait before claim the payout.
-	type BountyDepositPayoutDelay: Get<Self::BlockNumber>;
+		/// The amount held on deposit for placing a bounty proposal.
+		#[pallet::constant]
+		type BountyDepositBase: Get<BalanceOf<Self, I>>;
 
-	/// Bounty duration in blocks.
-	type BountyUpdatePeriod: Get<Self::BlockNumber>;
+		/// The delay period for which a bounty beneficiary need to wait before claim the payout.
+		#[pallet::constant]
+		type BountyDepositPayoutDelay: Get<Self::BlockNumber>;
 
-	/// Percentage of the curator fee that will be reserved upfront as deposit for bounty curator.
-	type BountyCuratorDeposit: Get<Permill>;
+		/// Bounty duration in blocks.
+		type BountyUpdatePeriod: Get<Self::BlockNumber>;
 
-	/// Minimum value for a bounty.
-	type BountyValueMinimum: Get<BalanceOf<Self, I>>;
+		/// Percentage of the curator fee that will be reserved upfront as deposit for bounty curator.
+		#[pallet::constant]
+		type BountyCuratorDeposit: Get<Permill>;
 
-	/// Maximum acceptable reason length.
-	type MaximumReasonLength: Get<u32>;
+		/// Minimum value for a bounty.
+		#[pallet::constant]
+		type BountyValueMinimum: Get<BalanceOf<Self, I>>;
 
-	/// Handler for the unbalanced decrease when treasury funds are burned.
-	type BurnDestination: OnUnbalanced<NegativeImbalanceOf<Self, I>>;
+		/// Maximum acceptable reason length.
+		#[pallet::constant]
+		type MaximumReasonLength: Get<u32>;
 
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
+		/// Handler for the unbalanced decrease when treasury funds are burned.
+		type BurnDestination: OnUnbalanced<NegativeImbalanceOf<Self, I>>;
+
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
+	}
+
+	/// Kind of alias for `Config` trait. Deprecated as `Trait` is renamed `Config`.
+	pub trait Trait<I: 'static = ()>: Config<I> {}
+	impl<T: Config<I>, I: 'static> Trait<I> for T {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T, I=()>(PhantomData<(T, I)>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T, I=()> = Pallet<T, I>;
+
+	#[pallet::interface]
+	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {
+		/// # <weight>
+		/// - Complexity: `O(A)` where `A` is the number of approvals
+		/// - Db reads and writes: `Approvals`, `pot account data`
+		/// - Db reads and writes per approval:
+		///   `Proposals`, `proposer account data`, `beneficiary account data`
+		/// - The weight is overestimated if some approvals got missed.
+		/// # </weight>
+		fn on_initialize(n: T::BlockNumber) -> Weight {
+			// Check to see if we should spend some funds!
+			if (n % T::SpendPeriod::get()).is_zero() {
+				Self::spend_funds()
+			} else {
+				0
+			}
+		}
+	}
+
+	#[pallet::call]
+	impl<T: Config<I>, I: 'static> Pallet<T, I> {
+		/// Put forward a suggestion for spending. A deposit proportional to the value
+		/// is reserved and slashed if the proposal is rejected. It is returned once the
+		/// proposal is awarded.
+		///
+		/// # <weight>
+		/// - Complexity: O(1)
+		/// - DbReads: `ProposalCount`, `origin account`
+		/// - DbWrites: `ProposalCount`, `Proposals`, `origin account`
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::propose_spend())]
+		pub(super) fn propose_spend(
+			origin: OriginFor<T>,
+			#[pallet::compact] value: BalanceOf<T, I>,
+			beneficiary: <T::Lookup as StaticLookup>::Source
+		) -> DispatchResultWithPostInfo {
+			let proposer = ensure_signed(origin)?;
+			let beneficiary = T::Lookup::lookup(beneficiary)?;
+
+			let bond = Self::calculate_bond(value);
+			T::Currency::reserve(&proposer, bond)
+				.map_err(|_| Error::<T, I>::InsufficientProposersBalance)?;
+
+			let c = Self::proposal_count();
+			<ProposalCount<T, I>>::put(c + 1);
+			<Proposals<T, I>>::insert(c, Proposal { proposer, value, beneficiary, bond });
+
+			Self::deposit_event(RawEvent::Proposed(c));
+			Ok(().into())
+		}
+
+		/// Reject a proposed spend. The original deposit will be slashed.
+		///
+		/// May only be called from `T::RejectOrigin`.
+		///
+		/// # <weight>
+		/// - Complexity: O(1)
+		/// - DbReads: `Proposals`, `rejected proposer account`
+		/// - DbWrites: `Proposals`, `rejected proposer account`
+		/// # </weight>
+		#[pallet::weight((T::WeightInfo::reject_proposal(), DispatchClass::Operational))]
+		pub(super) fn reject_proposal(
+			origin: OriginFor<T>,
+			#[pallet::compact] proposal_id: ProposalIndex
+		) -> DispatchResultWithPostInfo {
+			T::RejectOrigin::ensure_origin(origin)?;
+
+			let proposal = <Proposals<T, I>>::take(&proposal_id).ok_or(Error::<T, I>::InvalidIndex)?;
+			let value = proposal.bond;
+			let imbalance = T::Currency::slash_reserved(&proposal.proposer, value).0;
+			T::OnSlash::on_unbalanced(imbalance);
+
+			Self::deposit_event(Event::<T, I>::Rejected(proposal_id, value));
+			Ok(().into())
+		}
+
+		/// Approve a proposal. At a later time, the proposal will be allocated to the beneficiary
+		/// and the original deposit will be returned.
+		///
+		/// May only be called from `T::ApproveOrigin`.
+		///
+		/// # <weight>
+		/// - Complexity: O(1).
+		/// - DbReads: `Proposals`, `Approvals`
+		/// - DbWrite: `Approvals`
+		/// # </weight>
+		#[pallet::weight((T::WeightInfo::approve_proposal(), DispatchClass::Operational))]
+		pub(super) fn approve_proposal(
+			origin: OriginFor<T>,
+			#[pallet::compact] proposal_id: ProposalIndex
+		) -> DispatchResultWithPostInfo {
+			T::ApproveOrigin::ensure_origin(origin)?;
+
+			ensure!(<Proposals<T, I>>::contains_key(proposal_id), Error::<T, I>::InvalidIndex);
+			Approvals::<T, I>::append(proposal_id);
+			Ok(().into())
+		}
+
+		/// Report something `reason` that deserves a tip and claim any eventual the finder's fee.
+		///
+		/// The dispatch origin for this call must be _Signed_.
+		///
+		/// Payment: `TipReportDepositBase` will be reserved from the origin account, as well as
+		/// `DataDepositPerByte` for each byte in `reason`.
+		///
+		/// - `reason`: The reason for, or the thing that deserves, the tip; generally this will be
+		///   a UTF-8-encoded URL.
+		/// - `who`: The account which should be credited for the tip.
+		///
+		/// Emits `NewTip` if successful.
+		///
+		/// # <weight>
+		/// - Complexity: `O(R)` where `R` length of `reason`.
+		///   - encoding and hashing of 'reason'
+		/// - DbReads: `Reasons`, `Tips`
+		/// - DbWrites: `Reasons`, `Tips`
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::report_awesome(reason.len() as u32))]
+		pub(super) fn report_awesome(
+			origin: OriginFor<T>,
+			reason: Vec<u8>,
+			who: T::AccountId
+		) -> DispatchResultWithPostInfo {
+			let finder = ensure_signed(origin)?;
+
+			ensure!(reason.len() <= T::MaximumReasonLength::get() as usize, Error::<T, I>::ReasonTooBig);
+
+			let reason_hash = T::Hashing::hash(&reason[..]);
+			ensure!(!Reasons::<T, I>::contains_key(&reason_hash), Error::<T, I>::AlreadyKnown);
+			let hash = T::Hashing::hash_of(&(&reason_hash, &who));
+			ensure!(!Tips::<T, I>::contains_key(&hash), Error::<T, I>::AlreadyKnown);
+
+			let deposit = T::TipReportDepositBase::get()
+				+ T::DataDepositPerByte::get() * (reason.len() as u32).into();
+			T::Currency::reserve(&finder, deposit)?;
+
+			Reasons::<T, I>::insert(&reason_hash, &reason);
+			let tip = OpenTip {
+				reason: reason_hash,
+				who,
+				finder,
+				deposit,
+				closes: None,
+				tips: vec![],
+				finders_fee: true
+			};
+			Tips::<T, I>::insert(&hash, tip);
+			Self::deposit_event(RawEvent::NewTip(hash));
+			Ok(().into())
+		}
+
+		/// Retract a prior tip-report from `report_awesome`, and cancel the process of tipping.
+		///
+		/// If successful, the original deposit will be unreserved.
+		///
+		/// The dispatch origin for this call must be _Signed_ and the tip identified by `hash`
+		/// must have been reported by the signing account through `report_awesome` (and not
+		/// through `tip_new`).
+		///
+		/// - `hash`: The identity of the open tip for which a tip value is declared. This is formed
+		///   as the hash of the tuple of the original tip `reason` and the beneficiary account ID.
+		///
+		/// Emits `TipRetracted` if successful.
+		///
+		/// # <weight>
+		/// - Complexity: `O(1)`
+		///   - Depends on the length of `T::Hash` which is fixed.
+		/// - DbReads: `Tips`, `origin account`
+		/// - DbWrites: `Reasons`, `Tips`, `origin account`
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::retract_tip())]
+		pub(super) fn retract_tip(
+			origin: OriginFor<T>,
+			hash: T::Hash
+		) -> DispatchResultWithPostInfo {
+			let who = ensure_signed(origin)?;
+			let tip = Tips::<T, I>::get(&hash).ok_or(Error::<T, I>::UnknownTip)?;
+			ensure!(tip.finder == who, Error::<T, I>::NotFinder);
+
+			Reasons::<T, I>::remove(&tip.reason);
+			Tips::<T, I>::remove(&hash);
+			if !tip.deposit.is_zero() {
+				let _ = T::Currency::unreserve(&who, tip.deposit);
+			}
+			Self::deposit_event(RawEvent::TipRetracted(hash));
+			Ok(().into())
+		}
+
+		/// Give a tip for something new; no finder's fee will be taken.
+		///
+		/// The dispatch origin for this call must be _Signed_ and the signing account must be a
+		/// member of the `Tippers` set.
+		///
+		/// - `reason`: The reason for, or the thing that deserves, the tip; generally this will be
+		///   a UTF-8-encoded URL.
+		/// - `who`: The account which should be credited for the tip.
+		/// - `tip_value`: The amount of tip that the sender would like to give. The median tip
+		///   value of active tippers will be given to the `who`.
+		///
+		/// Emits `NewTip` if successful.
+		///
+		/// # <weight>
+		/// - Complexity: `O(R + T)` where `R` length of `reason`, `T` is the number of tippers.
+		///   - `O(T)`: decoding `Tipper` vec of length `T`
+		///     `T` is charged as upper bound given by `ContainsLengthBound`.
+		///     The actual cost depends on the implementation of `T::Tippers`.
+		///   - `O(R)`: hashing and encoding of reason of length `R`
+		/// - DbReads: `Tippers`, `Reasons`
+		/// - DbWrites: `Reasons`, `Tips`
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::tip_new(reason.len() as u32, T::Tippers::max_len() as u32))]
+		pub(super) fn tip_new(
+			origin: OriginFor<T>,
+			reason: Vec<u8>,
+			who: T::AccountId,
+			#[pallet::compact] tip_value: BalanceOf<T, I>
+		) -> DispatchResultWithPostInfo {
+			let tipper = ensure_signed(origin)?;
+			ensure!(T::Tippers::contains(&tipper), BadOrigin);
+			let reason_hash = T::Hashing::hash(&reason[..]);
+			ensure!(!Reasons::<T, I>::contains_key(&reason_hash), Error::<T, I>::AlreadyKnown);
+			let hash = T::Hashing::hash_of(&(&reason_hash, &who));
+
+			Reasons::<T, I>::insert(&reason_hash, &reason);
+			Self::deposit_event(RawEvent::NewTip(hash.clone()));
+			let tips = vec![(tipper.clone(), tip_value)];
+			let tip = OpenTip {
+				reason: reason_hash,
+				who,
+				finder: tipper,
+				deposit: Zero::zero(),
+				closes: None,
+				tips,
+				finders_fee: false,
+			};
+			Tips::<T, I>::insert(&hash, tip);
+			Ok(().into())
+		}
+
+		/// Declare a tip value for an already-open tip.
+		///
+		/// The dispatch origin for this call must be _Signed_ and the signing account must be a
+		/// member of the `Tippers` set.
+		///
+		/// - `hash`: The identity of the open tip for which a tip value is declared. This is formed
+		///   as the hash of the tuple of the hash of the original tip `reason` and the beneficiary
+		///   account ID.
+		/// - `tip_value`: The amount of tip that the sender would like to give. The median tip
+		///   value of active tippers will be given to the `who`.
+		///
+		/// Emits `TipClosing` if the threshold of tippers has been reached and the countdown period
+		/// has started.
+		///
+		/// # <weight>
+		/// - Complexity: `O(T)` where `T` is the number of tippers.
+		///   decoding `Tipper` vec of length `T`, insert tip and check closing,
+		///   `T` is charged as upper bound given by `ContainsLengthBound`.
+		///   The actual cost depends on the implementation of `T::Tippers`.
+		///
+		///   Actually weight could be lower as it depends on how many tips are in `OpenTip` but it
+		///   is weighted as if almost full i.e of length `T-1`.
+		/// - DbReads: `Tippers`, `Tips`
+		/// - DbWrites: `Tips`
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::tip(T::Tippers::max_len() as u32))]
+		pub(super) fn tip(
+			origin: OriginFor<T>,
+			hash: T::Hash,
+			#[pallet::compact] tip_value: BalanceOf<T, I>
+		) -> DispatchResultWithPostInfo {
+			let tipper = ensure_signed(origin)?;
+			ensure!(T::Tippers::contains(&tipper), BadOrigin);
+
+			let mut tip = Tips::<T, I>::get(hash).ok_or(Error::<T, I>::UnknownTip)?;
+			if Self::insert_tip_and_check_closing(&mut tip, tipper, tip_value) {
+				Self::deposit_event(RawEvent::TipClosing(hash.clone()));
+			}
+			Tips::<T, I>::insert(&hash, tip);
+			Ok(().into())
+		}
+
+		/// Close and payout a tip.
+		///
+		/// The dispatch origin for this call must be _Signed_.
+		///
+		/// The tip identified by `hash` must have finished its countdown period.
+		///
+		/// - `hash`: The identity of the open tip for which a tip value is declared. This is formed
+		///   as the hash of the tuple of the original tip `reason` and the beneficiary account ID.
+		///
+		/// # <weight>
+		/// - Complexity: `O(T)` where `T` is the number of tippers.
+		///   decoding `Tipper` vec of length `T`.
+		///   `T` is charged as upper bound given by `ContainsLengthBound`.
+		///   The actual cost depends on the implementation of `T::Tippers`.
+		/// - DbReads: `Tips`, `Tippers`, `tip finder`
+		/// - DbWrites: `Reasons`, `Tips`, `Tippers`, `tip finder`
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::close_tip(T::Tippers::max_len() as u32))]
+		pub(super) fn close_tip(origin: OriginFor<T>, hash: T::Hash) -> DispatchResultWithPostInfo {
+			ensure_signed(origin)?;
+
+			let tip = Tips::<T, I>::get(hash).ok_or(Error::<T, I>::UnknownTip)?;
+			let n = tip.closes.as_ref().ok_or(Error::<T, I>::StillOpen)?;
+			ensure!(system::Module::<T>::block_number() >= *n, Error::<T, I>::Premature);
+			// closed.
+			Reasons::<T, I>::remove(&tip.reason);
+			Tips::<T, I>::remove(hash);
+			Self::payout_tip(hash, tip);
+			Ok(().into())
+		}
+
+		/// Propose a new bounty.
+		///
+		/// The dispatch origin for this call must be _Signed_.
+		///
+		/// Payment: `TipReportDepositBase` will be reserved from the origin account, as well as
+		/// `DataDepositPerByte` for each byte in `reason`. It will be unreserved upon approval,
+		/// or slashed when rejected.
+		///
+		/// - `curator`: The curator account whom will manage this bounty.
+		/// - `fee`: The curator fee.
+		/// - `value`: The total payment amount of this bounty, curator fee included.
+		/// - `description`: The description of this bounty.
+		#[pallet::weight(T::WeightInfo::propose_bounty(description.len() as u32))]
+		pub(super) fn propose_bounty(
+			origin: OriginFor<T>,
+			#[pallet::compact] value: BalanceOf<T, I>,
+			description: Vec<u8>,
+		) -> DispatchResultWithPostInfo {
+			let proposer = ensure_signed(origin)?;
+			Self::create_bounty(proposer, description, value)?;
+			Ok(().into())
+		}
+
+		/// Approve a bounty proposal. At a later time, the bounty will be funded and become active
+		/// and the original deposit will be returned.
+		///
+		/// May only be called from `T::ApproveOrigin`.
+		///
+		/// # <weight>
+		/// - O(1).
+		/// - Limited storage reads.
+		/// - One DB change.
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::approve_bounty())]
+		pub(super) fn approve_bounty(
+			origin: OriginFor<T>,
+			#[pallet::compact] bounty_id: ProposalIndex
+		) -> DispatchResultWithPostInfo {
+			T::ApproveOrigin::ensure_origin(origin)?;
+
+			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
+				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
+				ensure!(bounty.status == BountyStatus::Proposed, Error::<T, I>::UnexpectedStatus);
+
+				bounty.status = BountyStatus::Approved;
+
+				BountyApprovals::<T, I>::append(bounty_id);
+
+				Ok(())
+			})?;
+			Ok(().into())
+		}
+
+		/// Assign a curator to a funded bounty.
+		///
+		/// May only be called from `T::ApproveOrigin`.
+		///
+		/// # <weight>
+		/// - O(1).
+		/// - Limited storage reads.
+		/// - One DB change.
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::propose_curator())]
+		pub(super) fn propose_curator(
+			origin: OriginFor<T>,
+			#[pallet::compact] bounty_id: ProposalIndex,
+			curator: <T::Lookup as StaticLookup>::Source,
+			#[pallet::compact] fee: BalanceOf<T, I>,
+		) -> DispatchResultWithPostInfo {
+			T::ApproveOrigin::ensure_origin(origin)?;
+
+			let curator = T::Lookup::lookup(curator)?;
+			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
+				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
+				match bounty.status {
+					BountyStatus::Funded | BountyStatus::CuratorProposed { .. } => {},
+					_ => return Err(Error::<T, I>::UnexpectedStatus.into()),
+				};
+
+				ensure!(fee < bounty.value, Error::<T, I>::InvalidFee);
+
+				bounty.status = BountyStatus::CuratorProposed { curator };
+				bounty.fee = fee;
+
+				Ok(())
+			})?;
+			Ok(().into())
+		}
+
+		/// Unassign curator from a bounty.
+		///
+		/// This function can only be called by the `RejectOrigin` a signed origin.
+		///
+		/// If this function is called by the `RejectOrigin`, we assume that the curator is malicious
+		/// or inactive. As a result, we will slash the curator when possible.
+		///
+		/// If the origin is the curator, we take this as a sign they are unable to do their job and
+		/// they willingly give up. We could slash them, but for now we allow them to recover their
+		/// deposit and exit without issue. (We may want to change this if it is abused.)
+		///
+		/// Finally, the origin can be anyone if and only if the curator is "inactive". This allows
+		/// anyone in the community to call out that a curator is not doing their due diligence, and
+		/// we should pick a new curator. In this case the curator should also be slashed.
+		///
+		/// # <weight>
+		/// - O(1).
+		/// - Limited storage reads.
+		/// - One DB change.
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::unassign_curator())]
+		pub(super) fn unassign_curator(
+			origin: OriginFor<T>,
+			#[pallet::compact] bounty_id: ProposalIndex,
+		) -> DispatchResultWithPostInfo {
+			let maybe_sender = ensure_signed(origin.clone())
+				.map(Some)
+				.or_else(|_| T::RejectOrigin::ensure_origin(origin).map(|_| None))?;
+
+			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
+				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
+
+				let slash_curator = |curator: &T::AccountId, curator_deposit: &mut BalanceOf<T, I>| {
+					let imbalance = T::Currency::slash_reserved(curator, *curator_deposit).0;
+					T::OnSlash::on_unbalanced(imbalance);
+					*curator_deposit = Zero::zero();
+				};
+
+				match bounty.status {
+					BountyStatus::Proposed | BountyStatus::Approved | BountyStatus::Funded => {
+						// No curator to unassign at this point.
+						return Err(Error::<T, I>::UnexpectedStatus.into())
+					}
+					BountyStatus::CuratorProposed { ref curator } => {
+						// A curator has been proposed, but not accepted yet.
+						// Either `RejectOrigin` or the proposed curator can unassign the curator.
+						ensure!(maybe_sender.map_or(true, |sender| sender == *curator), BadOrigin);
+					},
+					BountyStatus::Active { ref curator, ref update_due } => {
+						// The bounty is active.
+						match maybe_sender {
+							// If the `RejectOrigin` is calling this function, slash the curator.
+							None => {
+								slash_curator(curator, &mut bounty.curator_deposit);
+								// Continue to change bounty status below...
+							},
+							Some(sender) => {
+								// If the sender is not the curator, and the curator is inactive,
+								// slash the curator.
+								if sender != *curator {
+									let block_number = system::Module::<T>::block_number();
+									if *update_due < block_number {
+										slash_curator(curator, &mut bounty.curator_deposit);
+										// Continue to change bounty status below...
+									} else {
+										// Curator has more time to give an update.
+										return Err(Error::<T, I>::Premature.into())
+									}
+								} else {
+									// Else this is the curator, willingly giving up their role.
+									// Give back their deposit.
+									let _ = T::Currency::unreserve(&curator, bounty.curator_deposit);
+									// Continue to change bounty status below...
+								}
+							},
+						}
+					},
+					BountyStatus::PendingPayout { ref curator, .. } => {
+						// The bounty is pending payout, so only council can unassign a curator.
+						// By doing so, they are claiming the curator is acting maliciously, so
+						// we slash the curator.
+						ensure!(maybe_sender.is_none(), BadOrigin);
+						slash_curator(curator, &mut bounty.curator_deposit);
+						// Continue to change bounty status below...
+					}
+				};
+
+				bounty.status = BountyStatus::Funded;
+				Ok(())
+			})?;
+			Ok(().into())
+		}
+
+		/// Accept the curator role for a bounty.
+		/// A deposit will be reserved from curator and refund upon successful payout.
+		///
+		/// May only be called from the curator.
+		///
+		/// # <weight>
+		/// - O(1).
+		/// - Limited storage reads.
+		/// - One DB change.
+		/// # </weight>
+		#[pallet::weight(T::WeightInfo::accept_curator())]
+		pub(super) fn accept_curator(
+			origin: OriginFor<T>,
+			#[pallet::compact] bounty_id: ProposalIndex
+		) -> DispatchResultWithPostInfo {
+			let signer = ensure_signed(origin)?;
+
+			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
+				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
+
+				match bounty.status {
+					BountyStatus::CuratorProposed { ref curator } => {
+						ensure!(signer == *curator, Error::<T, I>::RequireCurator);
+
+						let deposit = T::BountyCuratorDeposit::get() * bounty.fee;
+						T::Currency::reserve(curator, deposit)?;
+						bounty.curator_deposit = deposit;
+
+						let update_due = system::Module::<T>::block_number() + T::BountyUpdatePeriod::get();
+						bounty.status = BountyStatus::Active { curator: curator.clone(), update_due };
+
+						Ok(())
+					},
+					_ => Err(Error::<T, I>::UnexpectedStatus.into()),
+				}
+			})?;
+			Ok(().into())
+		}
+
+		/// Award bounty to a beneficiary account. The beneficiary will be able to claim the funds after a delay.
+		///
+		/// The dispatch origin for this call must be the curator of this bounty.
+		///
+		/// - `bounty_id`: Bounty ID to award.
+		/// - `beneficiary`: The beneficiary account whom will receive the payout.
+		#[pallet::weight(T::WeightInfo::award_bounty())]
+		pub(super) fn award_bounty(
+			origin: OriginFor<T>,
+			#[pallet::compact] bounty_id: ProposalIndex,
+			beneficiary: <T::Lookup as StaticLookup>::Source
+		) -> DispatchResultWithPostInfo {
+			let signer = ensure_signed(origin)?;
+			let beneficiary = T::Lookup::lookup(beneficiary)?;
+
+			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
+				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
+				match &bounty.status {
+					BountyStatus::Active {
+						curator,
+						..
+					} => {
+						ensure!(signer == *curator, Error::<T, I>::RequireCurator);
+					},
+					_ => return Err(Error::<T, I>::UnexpectedStatus.into()),
+				}
+				bounty.status = BountyStatus::PendingPayout {
+					curator: signer,
+					beneficiary: beneficiary.clone(),
+					unlock_at: system::Module::<T>::block_number() + T::BountyDepositPayoutDelay::get(),
+				};
+
+				Ok(())
+			})?;
+
+			Self::deposit_event(Event::<T, I>::BountyAwarded(bounty_id, beneficiary));
+			Ok(().into())
+		}
+
+		/// Claim the payout from an awarded bounty after payout delay.
+		///
+		/// The dispatch origin for this call must be the beneficiary of this bounty.
+		///
+		/// - `bounty_id`: Bounty ID to claim.
+		#[pallet::weight(T::WeightInfo::claim_bounty())]
+		pub(super) fn claim_bounty(
+			origin: OriginFor<T>,
+			#[pallet::compact] bounty_id: BountyIndex
+		) -> DispatchResultWithPostInfo {
+			let _ = ensure_signed(origin)?; // anyone can trigger claim
+
+			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
+				let bounty = maybe_bounty.take().ok_or(Error::<T, I>::InvalidIndex)?;
+				if let BountyStatus::PendingPayout { curator, beneficiary, unlock_at } = bounty.status {
+					ensure!(system::Module::<T>::block_number() >= unlock_at, Error::<T, I>::Premature);
+					let bounty_account = Self::bounty_account_id(bounty_id);
+					let balance = T::Currency::free_balance(&bounty_account);
+					let fee = bounty.fee.min(balance); // just to be safe
+					let payout = balance.saturating_sub(fee);
+					let _ = T::Currency::unreserve(&curator, bounty.curator_deposit);
+					let _ = T::Currency::transfer(&bounty_account, &curator, fee, AllowDeath); // should not fail
+					let _ = T::Currency::transfer(&bounty_account, &beneficiary, payout, AllowDeath); // should not fail
+					*maybe_bounty = None;
+
+					BountyDescriptions::<T, I>::remove(bounty_id);
+
+					Self::deposit_event(Event::<T, I>::BountyClaimed(bounty_id, payout, beneficiary));
+					Ok(())
+				} else {
+					Err(Error::<T, I>::UnexpectedStatus.into())
+				}
+			})?;
+			Ok(().into())
+		}
+
+		/// Cancel a proposed or active bounty. All the funds will be sent to treasury and
+		/// the curator deposit will be unreserved if possible.
+		///
+		/// Only `T::RejectOrigin` is able to cancel a bounty.
+		///
+		/// - `bounty_id`: Bounty ID to cancel.
+		#[pallet::weight(T::WeightInfo::close_bounty_proposed().max(T::WeightInfo::close_bounty_active()))]
+		pub(super) fn close_bounty(
+			origin: OriginFor<T>,
+			#[pallet::compact] bounty_id: BountyIndex
+		) -> DispatchResultWithPostInfo {
+			T::RejectOrigin::ensure_origin(origin)?;
+
+			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResultWithPostInfo {
+				let bounty = maybe_bounty.as_ref().ok_or(Error::<T, I>::InvalidIndex)?;
+
+				match &bounty.status {
+					BountyStatus::Proposed => {
+						// The reject origin would like to cancel a proposed bounty.
+						BountyDescriptions::<T, I>::remove(bounty_id);
+						let value = bounty.bond;
+						let imbalance = T::Currency::slash_reserved(&bounty.proposer, value).0;
+						T::OnSlash::on_unbalanced(imbalance);
+						*maybe_bounty = None;
+
+						Self::deposit_event(Event::<T, I>::BountyRejected(bounty_id, value));
+						// Return early, nothing else to do.
+						return Ok(Some(T::WeightInfo::close_bounty_proposed()).into())
+					},
+					BountyStatus::Approved => {
+						// For weight reasons, we don't allow a council to cancel in this phase.
+						// We ask for them to wait until it is funded before they can cancel.
+						return Err(Error::<T, I>::UnexpectedStatus.into())
+					},
+					BountyStatus::Funded |
+					BountyStatus::CuratorProposed { .. } => {
+						// Nothing extra to do besides the removal of the bounty below.
+					},
+					BountyStatus::Active { curator, .. } => {
+						// Cancelled by council, refund deposit of the working curator.
+						let _ = T::Currency::unreserve(&curator, bounty.curator_deposit);
+						// Then execute removal of the bounty below.
+					},
+					BountyStatus::PendingPayout { .. } => {
+						// Bounty is already pending payout. If council wants to cancel
+						// this bounty, it should mean the curator was acting maliciously.
+						// So the council should first unassign the curator, slashing their
+						// deposit.
+						return Err(Error::<T, I>::PendingPayout.into())
+					}
+				}
+
+				let bounty_account = Self::bounty_account_id(bounty_id);
+
+				BountyDescriptions::<T, I>::remove(bounty_id);
+
+				let balance = T::Currency::free_balance(&bounty_account);
+				let _ = T::Currency::transfer(&bounty_account, &Self::account_id(), balance, AllowDeath); // should not fail
+				*maybe_bounty = None;
+
+				Self::deposit_event(Event::<T, I>::BountyCanceled(bounty_id));
+				Ok(Some(T::WeightInfo::close_bounty_active()).into())
+			})
+		}
+
+		/// Extend the expiry time of an active bounty.
+		///
+		/// The dispatch origin for this call must be the curator of this bounty.
+		///
+		/// - `bounty_id`: Bounty ID to extend.
+		/// - `remark`: additional information.
+		#[pallet::weight(T::WeightInfo::extend_bounty_expiry())]
+		pub(super) fn extend_bounty_expiry(
+			origin: OriginFor<T>,
+			#[pallet::compact] bounty_id: BountyIndex,
+			_remark: Vec<u8>
+		) -> DispatchResultWithPostInfo {
+			let signer = ensure_signed(origin)?;
+
+			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
+				let bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
+
+				match bounty.status {
+					BountyStatus::Active { ref curator, ref mut update_due } => {
+						ensure!(*curator == signer, Error::<T, I>::RequireCurator);
+						*update_due = (system::Module::<T>::block_number() + T::BountyUpdatePeriod::get()).max(*update_due);
+					},
+					_ => return Err(Error::<T, I>::UnexpectedStatus.into()),
+				}
+
+				Ok(())
+			})?;
+
+			Self::deposit_event(Event::<T, I>::BountyExtended(bounty_id));
+			Ok(().into())
+		}
+	}
+
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config<I>, I: 'static = ()> {
+		/// New proposal. \[proposal_index\]
+		Proposed(ProposalIndex),
+		/// We have ended a spend period and will now allocate funds. \[budget_remaining\]
+		Spending(BalanceOf<T, I>),
+		/// Some funds have been allocated. \[proposal_index, award, beneficiary\]
+		Awarded(ProposalIndex, BalanceOf<T, I>, T::AccountId),
+		/// A proposal was rejected; funds were slashed. \[proposal_index, slashed\]
+		Rejected(ProposalIndex, BalanceOf<T, I>),
+		/// Some of our funds have been burnt. \[burn\]
+		Burnt(BalanceOf<T, I>),
+		/// Spending has finished; this is the amount that rolls over until next spend.
+		/// \[budget_remaining\]
+		Rollover(BalanceOf<T, I>),
+		/// Some funds have been deposited. \[deposit\]
+		Deposit(BalanceOf<T, I>),
+		/// A new tip suggestion has been opened. \[tip_hash\]
+		NewTip(T::Hash),
+		/// A tip suggestion has reached threshold and is closing. \[tip_hash\]
+		TipClosing(T::Hash),
+		/// A tip suggestion has been closed. \[tip_hash, who, payout\]
+		TipClosed(T::Hash, T::AccountId, BalanceOf<T, I>),
+		/// A tip suggestion has been retracted. \[tip_hash\]
+		TipRetracted(T::Hash),
+		/// New bounty proposal. [index]
+		BountyProposed(BountyIndex),
+		/// A bounty proposal was rejected; funds were slashed. [index, bond]
+		BountyRejected(BountyIndex, BalanceOf<T, I>),
+		/// A bounty proposal is funded and became active. [index]
+		BountyBecameActive(BountyIndex),
+		/// A bounty is awarded to a beneficiary. [index, beneficiary]
+		BountyAwarded(BountyIndex, T::AccountId),
+		/// A bounty is claimed by beneficiary. [index, payout, beneficiary]
+		BountyClaimed(BountyIndex, BalanceOf<T, I>, T::AccountId),
+		/// A bounty is cancelled. [index]
+		BountyCanceled(BountyIndex),
+		/// A bounty expiry is extended. [index]
+		BountyExtended(BountyIndex),
+	}
+
+	/// Deprecated name for event.
+	pub type RawEvent<T, I=()> = Event<T, I>;
+
+	/// Error for the treasury module.
+	#[pallet::error]
+	pub enum Error<T, I=()> {
+		/// Proposer's balance is too low.
+		InsufficientProposersBalance,
+		/// No proposal or bounty at that index.
+		InvalidIndex,
+		/// The reason given is just too big.
+		ReasonTooBig,
+		/// The tip was already found/started.
+		AlreadyKnown,
+		/// The tip hash is unknown.
+		UnknownTip,
+		/// The account attempting to retract the tip is not the finder of the tip.
+		NotFinder,
+		/// The tip cannot be claimed/closed because there are not enough tippers yet.
+		StillOpen,
+		/// The tip cannot be claimed/closed because it's still in the countdown period.
+		Premature,
+		/// The bounty status is unexpected.
+		UnexpectedStatus,
+		/// Require bounty curator.
+		RequireCurator,
+		/// Invalid bounty value.
+		InvalidValue,
+		/// Invalid bounty fee.
+		InvalidFee,
+		/// A bounty payout is pending.
+		/// To cancel the bounty, you must unassign and slash the curator.
+		PendingPayout,
+	}
+
+	/// Number of proposals that have been made.
+	#[pallet::storage]
+	#[pallet::getter(fn proposal_count)]
+	pub(super) type ProposalCount<T: Config<I>, I: 'static=()> = StorageValue<_, ProposalIndex, ValueQuery>;
+
+	/// Proposals that have been made.
+	#[pallet::storage]
+	#[pallet::getter(fn proposals)]
+	pub(super) type Proposals<T: Config<I>, I: 'static=()> = StorageMap<_, Twox64Concat, ProposalIndex, Proposal<T::AccountId, BalanceOf<T, I>>>;
+
+	/// Proposal indices that have been approved but not yet awarded.
+	#[pallet::storage]
+	#[pallet::getter(fn approvals)]
+	pub(super) type Approvals<T: Config<I>, I: 'static=()> = StorageValue<_, Vec<ProposalIndex>, ValueQuery>;
+
+	/// Tips that are not yet completed. Keyed by the hash of `(reason, who)` from the value.
+	/// This has the insecure enumerable hash function since the key itself is already
+	/// guaranteed to be a secure hash.
+	#[pallet::storage]
+	#[pallet::getter(fn tips)]
+	pub type Tips<T: Config<I>, I: 'static=()> = StorageMap<_, Twox64Concat, T::Hash, OpenTip<T::AccountId, BalanceOf<T, I>, T::BlockNumber, T::Hash>>;
+
+	/// Simple preimage lookup from the reason's hash to the original data. Again, has an
+	/// insecure enumerable hash since the key is guaranteed to be the result of a secure hash.
+	#[pallet::storage]
+	#[pallet::getter(fn reasons)]
+	pub type Reasons<T: Config<I>, I: 'static=()> = StorageMap<_, Identity, T::Hash, Vec<u8>>;
+
+	/// Number of bounty proposals that have been made.
+	#[pallet::storage]
+	#[pallet::getter(fn bounty_count)]
+	pub type BountyCount<T: Config<I>, I: 'static=()> = StorageValue<_, BountyIndex, ValueQuery>;
+
+	/// Bounties that have been made.
+	#[pallet::storage]
+	#[pallet::getter(fn bounties)]
+	pub type Bounties<T: Config<I>, I: 'static=()> = StorageMap<_, Twox64Concat, BountyIndex, Bounty<T::AccountId, BalanceOf<T, I>, T::BlockNumber>>;
+
+	/// The description of each bounty.
+	#[pallet::storage]
+	#[pallet::getter(fn bounty_descriptions)]
+	pub type BountyDescriptions<T: Config<I>, I: 'static=()> = StorageMap<_, Twox64Concat, BountyIndex, Vec<u8>>;
+
+	/// Bounty indices that have been approved but not yet funded.
+	#[pallet::storage]
+	#[pallet::getter(fn bounty_approvals)]
+	pub type BountyApprovals<T: Config<I>, I: 'static=()> = StorageValue<_, Vec<BountyIndex>, ValueQuery>;
+
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig {}
+
+	#[cfg(feature = "std")]
+	impl Default for GenesisConfig {
+		fn default() -> Self {
+			Self {}
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config<I>, I: 'static> GenesisBuild<T, I> for GenesisConfig {
+		fn build(&self) {
+			// Create Treasury account
+			let account_id = <Module<T, I>>::account_id();
+			let min = T::Currency::minimum_balance();
+			if T::Currency::free_balance(&account_id) < min {
+				let _ = T::Currency::make_free_balance_be(
+					&account_id,
+					min,
+				);
+			}
+		}
+	}
+
+	#[cfg(feature = "std")]
+	impl GenesisConfig {
+		/// Direct implementation of `GenesisBuild::build_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn build_storage<T: Config<I>, I: 'static>(&self) -> Result<sp_runtime::Storage, String> {
+			<Self as GenesisBuild<T, I>>::build_storage(self)
+		}
+
+		/// Direct implementation of `GenesisBuild::assimilate_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn assimilate_storage<T: Config<I>, I: 'static>(
+			&self,
+			storage: &mut sp_runtime::Storage
+		) -> Result<(), String> {
+			<Self as GenesisBuild<T, I>>::assimilate_storage(self, storage)
+		}
+	}
+
 }
+
+type BalanceOf<T, I> =
+	<<T as Config<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+type PositiveImbalanceOf<T, I> =
+	<<T as Config<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::PositiveImbalance;
+type NegativeImbalanceOf<T, I> =
+	<<T as Config<I>>::Currency as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance;
 
 /// An index of a proposal. Just a `u32`.
 pub type ProposalIndex = u32;
@@ -331,835 +1244,7 @@ pub enum BountyStatus<AccountId, BlockNumber> {
 	},
 }
 
-decl_storage! {
-	trait Store for Module<T: Trait<I>, I: Instance=DefaultInstance> as Treasury {
-		/// Number of proposals that have been made.
-		ProposalCount get(fn proposal_count): ProposalIndex;
-
-		/// Proposals that have been made.
-		Proposals get(fn proposals):
-			map hasher(twox_64_concat) ProposalIndex
-			=> Option<Proposal<T::AccountId, BalanceOf<T, I>>>;
-
-		/// Proposal indices that have been approved but not yet awarded.
-		Approvals get(fn approvals): Vec<ProposalIndex>;
-
-		/// Tips that are not yet completed. Keyed by the hash of `(reason, who)` from the value.
-		/// This has the insecure enumerable hash function since the key itself is already
-		/// guaranteed to be a secure hash.
-		pub Tips get(fn tips):
-			map hasher(twox_64_concat) T::Hash
-			=> Option<OpenTip<T::AccountId, BalanceOf<T, I>, T::BlockNumber, T::Hash>>;
-
-		/// Simple preimage lookup from the reason's hash to the original data. Again, has an
-		/// insecure enumerable hash since the key is guaranteed to be the result of a secure hash.
-		pub Reasons get(fn reasons): map hasher(identity) T::Hash => Option<Vec<u8>>;
-
-		/// Number of bounty proposals that have been made.
-		pub BountyCount get(fn bounty_count): BountyIndex;
-
-		/// Bounties that have been made.
-		pub Bounties get(fn bounties):
-			map hasher(twox_64_concat) BountyIndex
-			=> Option<Bounty<T::AccountId, BalanceOf<T, I>, T::BlockNumber>>;
-
-		/// The description of each bounty.
-		pub BountyDescriptions get(fn bounty_descriptions): map hasher(twox_64_concat) BountyIndex => Option<Vec<u8>>;
-
-		/// Bounty indices that have been approved but not yet funded.
-		pub BountyApprovals get(fn bounty_approvals): Vec<BountyIndex>;
-	}
-	add_extra_genesis {
-		build(|_config| {
-			// Create Treasury account
-			let account_id = <Module<T, I>>::account_id();
-			let min = T::Currency::minimum_balance();
-			if T::Currency::free_balance(&account_id) < min {
-				let _ = T::Currency::make_free_balance_be(
-					&account_id,
-					min,
-				);
-			}
-		});
-	}
-}
-
-decl_event!(
-	pub enum Event<T, I=DefaultInstance>
-	where
-		Balance = BalanceOf<T, I>,
-		<T as frame_system::Config>::AccountId,
-		<T as frame_system::Config>::Hash,
-	{
-		/// New proposal. \[proposal_index\]
-		Proposed(ProposalIndex),
-		/// We have ended a spend period and will now allocate funds. \[budget_remaining\]
-		Spending(Balance),
-		/// Some funds have been allocated. \[proposal_index, award, beneficiary\]
-		Awarded(ProposalIndex, Balance, AccountId),
-		/// A proposal was rejected; funds were slashed. \[proposal_index, slashed\]
-		Rejected(ProposalIndex, Balance),
-		/// Some of our funds have been burnt. \[burn\]
-		Burnt(Balance),
-		/// Spending has finished; this is the amount that rolls over until next spend.
-		/// \[budget_remaining\]
-		Rollover(Balance),
-		/// Some funds have been deposited. \[deposit\]
-		Deposit(Balance),
-		/// A new tip suggestion has been opened. \[tip_hash\]
-		NewTip(Hash),
-		/// A tip suggestion has reached threshold and is closing. \[tip_hash\]
-		TipClosing(Hash),
-		/// A tip suggestion has been closed. \[tip_hash, who, payout\]
-		TipClosed(Hash, AccountId, Balance),
-		/// A tip suggestion has been retracted. \[tip_hash\]
-		TipRetracted(Hash),
-		/// New bounty proposal. [index]
-		BountyProposed(BountyIndex),
-		/// A bounty proposal was rejected; funds were slashed. [index, bond]
-		BountyRejected(BountyIndex, Balance),
-		/// A bounty proposal is funded and became active. [index]
-		BountyBecameActive(BountyIndex),
-		/// A bounty is awarded to a beneficiary. [index, beneficiary]
-		BountyAwarded(BountyIndex, AccountId),
-		/// A bounty is claimed by beneficiary. [index, payout, beneficiary]
-		BountyClaimed(BountyIndex, Balance, AccountId),
-		/// A bounty is cancelled. [index]
-		BountyCanceled(BountyIndex),
-		/// A bounty expiry is extended. [index]
-		BountyExtended(BountyIndex),
-	}
-);
-
-decl_error! {
-	/// Error for the treasury module.
-	pub enum Error for Module<T: Trait<I>, I: Instance> {
-		/// Proposer's balance is too low.
-		InsufficientProposersBalance,
-		/// No proposal or bounty at that index.
-		InvalidIndex,
-		/// The reason given is just too big.
-		ReasonTooBig,
-		/// The tip was already found/started.
-		AlreadyKnown,
-		/// The tip hash is unknown.
-		UnknownTip,
-		/// The account attempting to retract the tip is not the finder of the tip.
-		NotFinder,
-		/// The tip cannot be claimed/closed because there are not enough tippers yet.
-		StillOpen,
-		/// The tip cannot be claimed/closed because it's still in the countdown period.
-		Premature,
-		/// The bounty status is unexpected.
-		UnexpectedStatus,
-		/// Require bounty curator.
-		RequireCurator,
-		/// Invalid bounty value.
-		InvalidValue,
-		/// Invalid bounty fee.
-		InvalidFee,
-		/// A bounty payout is pending.
-		/// To cancel the bounty, you must unassign and slash the curator.
-		PendingPayout,
-	}
-}
-
-decl_module! {
-	pub struct Module<T: Trait<I>, I: Instance=DefaultInstance>
-		for enum Call
-		where origin: T::Origin
-	{
-		/// Fraction of a proposal's value that should be bonded in order to place the proposal.
-		/// An accepted proposal gets these back. A rejected proposal does not.
-		const ProposalBond: Permill = T::ProposalBond::get();
-
-		/// Minimum amount of funds that should be placed in a deposit for making a proposal.
-		const ProposalBondMinimum: BalanceOf<T, I> = T::ProposalBondMinimum::get();
-
-		/// Period between successive spends.
-		const SpendPeriod: T::BlockNumber = T::SpendPeriod::get();
-
-		/// Percentage of spare funds (if any) that are burnt per spend period.
-		const Burn: Permill = T::Burn::get();
-
-		/// The period for which a tip remains open after is has achieved threshold tippers.
-		const TipCountdown: T::BlockNumber = T::TipCountdown::get();
-
-		/// The amount of the final tip which goes to the original reporter of the tip.
-		const TipFindersFee: Percent = T::TipFindersFee::get();
-
-		/// The amount held on deposit for placing a tip report.
-		const TipReportDepositBase: BalanceOf<T, I> = T::TipReportDepositBase::get();
-
-		/// The amount held on deposit per byte within the tip report reason or bounty description.
-		const DataDepositPerByte: BalanceOf<T, I> = T::DataDepositPerByte::get();
-
-		/// The treasury's module id, used for deriving its sovereign account ID.
-		const ModuleId: ModuleId = T::ModuleId::get();
-
-		/// The amount held on deposit for placing a bounty proposal.
-		const BountyDepositBase: BalanceOf<T, I> = T::BountyDepositBase::get();
-
-		/// The delay period for which a bounty beneficiary need to wait before claim the payout.
-		const BountyDepositPayoutDelay: T::BlockNumber = T::BountyDepositPayoutDelay::get();
-
-		/// Percentage of the curator fee that will be reserved upfront as deposit for bounty curator.
-		const BountyCuratorDeposit: Permill = T::BountyCuratorDeposit::get();
-
-		const BountyValueMinimum: BalanceOf<T, I> = T::BountyValueMinimum::get();
-
-		/// Maximum acceptable reason length.
-		const MaximumReasonLength: u32 = T::MaximumReasonLength::get();
-
-		type Error = Error<T, I>;
-
-		fn deposit_event() = default;
-
-		/// Put forward a suggestion for spending. A deposit proportional to the value
-		/// is reserved and slashed if the proposal is rejected. It is returned once the
-		/// proposal is awarded.
-		///
-		/// # <weight>
-		/// - Complexity: O(1)
-		/// - DbReads: `ProposalCount`, `origin account`
-		/// - DbWrites: `ProposalCount`, `Proposals`, `origin account`
-		/// # </weight>
-		#[weight = T::WeightInfo::propose_spend()]
-		fn propose_spend(
-			origin,
-			#[compact] value: BalanceOf<T, I>,
-			beneficiary: <T::Lookup as StaticLookup>::Source
-		) {
-			let proposer = ensure_signed(origin)?;
-			let beneficiary = T::Lookup::lookup(beneficiary)?;
-
-			let bond = Self::calculate_bond(value);
-			T::Currency::reserve(&proposer, bond)
-				.map_err(|_| Error::<T, I>::InsufficientProposersBalance)?;
-
-			let c = Self::proposal_count();
-			<ProposalCount<I>>::put(c + 1);
-			<Proposals<T, I>>::insert(c, Proposal { proposer, value, beneficiary, bond });
-
-			Self::deposit_event(RawEvent::Proposed(c));
-		}
-
-		/// Reject a proposed spend. The original deposit will be slashed.
-		///
-		/// May only be called from `T::RejectOrigin`.
-		///
-		/// # <weight>
-		/// - Complexity: O(1)
-		/// - DbReads: `Proposals`, `rejected proposer account`
-		/// - DbWrites: `Proposals`, `rejected proposer account`
-		/// # </weight>
-		#[weight = (T::WeightInfo::reject_proposal(), DispatchClass::Operational)]
-		fn reject_proposal(origin, #[compact] proposal_id: ProposalIndex) {
-			T::RejectOrigin::ensure_origin(origin)?;
-
-			let proposal = <Proposals<T, I>>::take(&proposal_id).ok_or(Error::<T, I>::InvalidIndex)?;
-			let value = proposal.bond;
-			let imbalance = T::Currency::slash_reserved(&proposal.proposer, value).0;
-			T::OnSlash::on_unbalanced(imbalance);
-
-			Self::deposit_event(Event::<T, I>::Rejected(proposal_id, value));
-		}
-
-		/// Approve a proposal. At a later time, the proposal will be allocated to the beneficiary
-		/// and the original deposit will be returned.
-		///
-		/// May only be called from `T::ApproveOrigin`.
-		///
-		/// # <weight>
-		/// - Complexity: O(1).
-		/// - DbReads: `Proposals`, `Approvals`
-		/// - DbWrite: `Approvals`
-		/// # </weight>
-		#[weight = (T::WeightInfo::approve_proposal(), DispatchClass::Operational)]
-		fn approve_proposal(origin, #[compact] proposal_id: ProposalIndex) {
-			T::ApproveOrigin::ensure_origin(origin)?;
-
-			ensure!(<Proposals<T, I>>::contains_key(proposal_id), Error::<T, I>::InvalidIndex);
-			Approvals::<I>::append(proposal_id);
-		}
-
-		/// Report something `reason` that deserves a tip and claim any eventual the finder's fee.
-		///
-		/// The dispatch origin for this call must be _Signed_.
-		///
-		/// Payment: `TipReportDepositBase` will be reserved from the origin account, as well as
-		/// `DataDepositPerByte` for each byte in `reason`.
-		///
-		/// - `reason`: The reason for, or the thing that deserves, the tip; generally this will be
-		///   a UTF-8-encoded URL.
-		/// - `who`: The account which should be credited for the tip.
-		///
-		/// Emits `NewTip` if successful.
-		///
-		/// # <weight>
-		/// - Complexity: `O(R)` where `R` length of `reason`.
-		///   - encoding and hashing of 'reason'
-		/// - DbReads: `Reasons`, `Tips`
-		/// - DbWrites: `Reasons`, `Tips`
-		/// # </weight>
-		#[weight = T::WeightInfo::report_awesome(reason.len() as u32)]
-		fn report_awesome(origin, reason: Vec<u8>, who: T::AccountId) {
-			let finder = ensure_signed(origin)?;
-
-			ensure!(reason.len() <= T::MaximumReasonLength::get() as usize, Error::<T, I>::ReasonTooBig);
-
-			let reason_hash = T::Hashing::hash(&reason[..]);
-			ensure!(!Reasons::<T, I>::contains_key(&reason_hash), Error::<T, I>::AlreadyKnown);
-			let hash = T::Hashing::hash_of(&(&reason_hash, &who));
-			ensure!(!Tips::<T, I>::contains_key(&hash), Error::<T, I>::AlreadyKnown);
-
-			let deposit = T::TipReportDepositBase::get()
-				+ T::DataDepositPerByte::get() * (reason.len() as u32).into();
-			T::Currency::reserve(&finder, deposit)?;
-
-			Reasons::<T, I>::insert(&reason_hash, &reason);
-			let tip = OpenTip {
-				reason: reason_hash,
-				who,
-				finder,
-				deposit,
-				closes: None,
-				tips: vec![],
-				finders_fee: true
-			};
-			Tips::<T, I>::insert(&hash, tip);
-			Self::deposit_event(RawEvent::NewTip(hash));
-		}
-
-		/// Retract a prior tip-report from `report_awesome`, and cancel the process of tipping.
-		///
-		/// If successful, the original deposit will be unreserved.
-		///
-		/// The dispatch origin for this call must be _Signed_ and the tip identified by `hash`
-		/// must have been reported by the signing account through `report_awesome` (and not
-		/// through `tip_new`).
-		///
-		/// - `hash`: The identity of the open tip for which a tip value is declared. This is formed
-		///   as the hash of the tuple of the original tip `reason` and the beneficiary account ID.
-		///
-		/// Emits `TipRetracted` if successful.
-		///
-		/// # <weight>
-		/// - Complexity: `O(1)`
-		///   - Depends on the length of `T::Hash` which is fixed.
-		/// - DbReads: `Tips`, `origin account`
-		/// - DbWrites: `Reasons`, `Tips`, `origin account`
-		/// # </weight>
-		#[weight = T::WeightInfo::retract_tip()]
-		fn retract_tip(origin, hash: T::Hash) {
-			let who = ensure_signed(origin)?;
-			let tip = Tips::<T, I>::get(&hash).ok_or(Error::<T, I>::UnknownTip)?;
-			ensure!(tip.finder == who, Error::<T, I>::NotFinder);
-
-			Reasons::<T, I>::remove(&tip.reason);
-			Tips::<T, I>::remove(&hash);
-			if !tip.deposit.is_zero() {
-				let _ = T::Currency::unreserve(&who, tip.deposit);
-			}
-			Self::deposit_event(RawEvent::TipRetracted(hash));
-		}
-
-		/// Give a tip for something new; no finder's fee will be taken.
-		///
-		/// The dispatch origin for this call must be _Signed_ and the signing account must be a
-		/// member of the `Tippers` set.
-		///
-		/// - `reason`: The reason for, or the thing that deserves, the tip; generally this will be
-		///   a UTF-8-encoded URL.
-		/// - `who`: The account which should be credited for the tip.
-		/// - `tip_value`: The amount of tip that the sender would like to give. The median tip
-		///   value of active tippers will be given to the `who`.
-		///
-		/// Emits `NewTip` if successful.
-		///
-		/// # <weight>
-		/// - Complexity: `O(R + T)` where `R` length of `reason`, `T` is the number of tippers.
-		///   - `O(T)`: decoding `Tipper` vec of length `T`
-		///     `T` is charged as upper bound given by `ContainsLengthBound`.
-		///     The actual cost depends on the implementation of `T::Tippers`.
-		///   - `O(R)`: hashing and encoding of reason of length `R`
-		/// - DbReads: `Tippers`, `Reasons`
-		/// - DbWrites: `Reasons`, `Tips`
-		/// # </weight>
-		#[weight = T::WeightInfo::tip_new(reason.len() as u32, T::Tippers::max_len() as u32)]
-		fn tip_new(origin, reason: Vec<u8>, who: T::AccountId, #[compact] tip_value: BalanceOf<T, I>) {
-			let tipper = ensure_signed(origin)?;
-			ensure!(T::Tippers::contains(&tipper), BadOrigin);
-			let reason_hash = T::Hashing::hash(&reason[..]);
-			ensure!(!Reasons::<T, I>::contains_key(&reason_hash), Error::<T, I>::AlreadyKnown);
-			let hash = T::Hashing::hash_of(&(&reason_hash, &who));
-
-			Reasons::<T, I>::insert(&reason_hash, &reason);
-			Self::deposit_event(RawEvent::NewTip(hash.clone()));
-			let tips = vec![(tipper.clone(), tip_value)];
-			let tip = OpenTip {
-				reason: reason_hash,
-				who,
-				finder: tipper,
-				deposit: Zero::zero(),
-				closes: None,
-				tips,
-				finders_fee: false,
-			};
-			Tips::<T, I>::insert(&hash, tip);
-		}
-
-		/// Declare a tip value for an already-open tip.
-		///
-		/// The dispatch origin for this call must be _Signed_ and the signing account must be a
-		/// member of the `Tippers` set.
-		///
-		/// - `hash`: The identity of the open tip for which a tip value is declared. This is formed
-		///   as the hash of the tuple of the hash of the original tip `reason` and the beneficiary
-		///   account ID.
-		/// - `tip_value`: The amount of tip that the sender would like to give. The median tip
-		///   value of active tippers will be given to the `who`.
-		///
-		/// Emits `TipClosing` if the threshold of tippers has been reached and the countdown period
-		/// has started.
-		///
-		/// # <weight>
-		/// - Complexity: `O(T)` where `T` is the number of tippers.
-		///   decoding `Tipper` vec of length `T`, insert tip and check closing,
-		///   `T` is charged as upper bound given by `ContainsLengthBound`.
-		///   The actual cost depends on the implementation of `T::Tippers`.
-		///
-		///   Actually weight could be lower as it depends on how many tips are in `OpenTip` but it
-		///   is weighted as if almost full i.e of length `T-1`.
-		/// - DbReads: `Tippers`, `Tips`
-		/// - DbWrites: `Tips`
-		/// # </weight>
-		#[weight = T::WeightInfo::tip(T::Tippers::max_len() as u32)]
-		fn tip(origin, hash: T::Hash, #[compact] tip_value: BalanceOf<T, I>) {
-			let tipper = ensure_signed(origin)?;
-			ensure!(T::Tippers::contains(&tipper), BadOrigin);
-
-			let mut tip = Tips::<T, I>::get(hash).ok_or(Error::<T, I>::UnknownTip)?;
-			if Self::insert_tip_and_check_closing(&mut tip, tipper, tip_value) {
-				Self::deposit_event(RawEvent::TipClosing(hash.clone()));
-			}
-			Tips::<T, I>::insert(&hash, tip);
-		}
-
-		/// Close and payout a tip.
-		///
-		/// The dispatch origin for this call must be _Signed_.
-		///
-		/// The tip identified by `hash` must have finished its countdown period.
-		///
-		/// - `hash`: The identity of the open tip for which a tip value is declared. This is formed
-		///   as the hash of the tuple of the original tip `reason` and the beneficiary account ID.
-		///
-		/// # <weight>
-		/// - Complexity: `O(T)` where `T` is the number of tippers.
-		///   decoding `Tipper` vec of length `T`.
-		///   `T` is charged as upper bound given by `ContainsLengthBound`.
-		///   The actual cost depends on the implementation of `T::Tippers`.
-		/// - DbReads: `Tips`, `Tippers`, `tip finder`
-		/// - DbWrites: `Reasons`, `Tips`, `Tippers`, `tip finder`
-		/// # </weight>
-		#[weight = T::WeightInfo::close_tip(T::Tippers::max_len() as u32)]
-		fn close_tip(origin, hash: T::Hash) {
-			ensure_signed(origin)?;
-
-			let tip = Tips::<T, I>::get(hash).ok_or(Error::<T, I>::UnknownTip)?;
-			let n = tip.closes.as_ref().ok_or(Error::<T, I>::StillOpen)?;
-			ensure!(system::Module::<T>::block_number() >= *n, Error::<T, I>::Premature);
-			// closed.
-			Reasons::<T, I>::remove(&tip.reason);
-			Tips::<T, I>::remove(hash);
-			Self::payout_tip(hash, tip);
-		}
-
-		/// Propose a new bounty.
-		///
-		/// The dispatch origin for this call must be _Signed_.
-		///
-		/// Payment: `TipReportDepositBase` will be reserved from the origin account, as well as
-		/// `DataDepositPerByte` for each byte in `reason`. It will be unreserved upon approval,
-		/// or slashed when rejected.
-		///
-		/// - `curator`: The curator account whom will manage this bounty.
-		/// - `fee`: The curator fee.
-		/// - `value`: The total payment amount of this bounty, curator fee included.
-		/// - `description`: The description of this bounty.
-		#[weight = T::WeightInfo::propose_bounty(description.len() as u32)]
-		fn propose_bounty(
-			origin,
-			#[compact] value: BalanceOf<T, I>,
-			description: Vec<u8>,
-		) {
-			let proposer = ensure_signed(origin)?;
-			Self::create_bounty(proposer, description, value)?;
-		}
-
-		/// Approve a bounty proposal. At a later time, the bounty will be funded and become active
-		/// and the original deposit will be returned.
-		///
-		/// May only be called from `T::ApproveOrigin`.
-		///
-		/// # <weight>
-		/// - O(1).
-		/// - Limited storage reads.
-		/// - One DB change.
-		/// # </weight>
-		#[weight = T::WeightInfo::approve_bounty()]
-		fn approve_bounty(origin, #[compact] bounty_id: ProposalIndex) {
-			T::ApproveOrigin::ensure_origin(origin)?;
-
-			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
-				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
-				ensure!(bounty.status == BountyStatus::Proposed, Error::<T, I>::UnexpectedStatus);
-
-				bounty.status = BountyStatus::Approved;
-
-				BountyApprovals::<I>::append(bounty_id);
-
-				Ok(())
-			})?;
-		}
-
-		/// Assign a curator to a funded bounty.
-		///
-		/// May only be called from `T::ApproveOrigin`.
-		///
-		/// # <weight>
-		/// - O(1).
-		/// - Limited storage reads.
-		/// - One DB change.
-		/// # </weight>
-		#[weight = T::WeightInfo::propose_curator()]
-		fn propose_curator(
-			origin,
-			#[compact] bounty_id: ProposalIndex,
-			curator: <T::Lookup as StaticLookup>::Source,
-			#[compact] fee: BalanceOf<T, I>,
-		) {
-			T::ApproveOrigin::ensure_origin(origin)?;
-
-			let curator = T::Lookup::lookup(curator)?;
-			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
-				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
-				match bounty.status {
-					BountyStatus::Funded | BountyStatus::CuratorProposed { .. } => {},
-					_ => return Err(Error::<T, I>::UnexpectedStatus.into()),
-				};
-
-				ensure!(fee < bounty.value, Error::<T, I>::InvalidFee);
-
-				bounty.status = BountyStatus::CuratorProposed { curator };
-				bounty.fee = fee;
-
-				Ok(())
-			})?;
-		}
-
-		/// Unassign curator from a bounty.
-		///
-		/// This function can only be called by the `RejectOrigin` a signed origin.
-		///
-		/// If this function is called by the `RejectOrigin`, we assume that the curator is malicious
-		/// or inactive. As a result, we will slash the curator when possible.
-		///
-		/// If the origin is the curator, we take this as a sign they are unable to do their job and
-		/// they willingly give up. We could slash them, but for now we allow them to recover their
-		/// deposit and exit without issue. (We may want to change this if it is abused.)
-		///
-		/// Finally, the origin can be anyone if and only if the curator is "inactive". This allows
-		/// anyone in the community to call out that a curator is not doing their due diligence, and
-		/// we should pick a new curator. In this case the curator should also be slashed.
-		///
-		/// # <weight>
-		/// - O(1).
-		/// - Limited storage reads.
-		/// - One DB change.
-		/// # </weight>
-		#[weight = T::WeightInfo::unassign_curator()]
-		fn unassign_curator(
-			origin,
-			#[compact] bounty_id: ProposalIndex,
-		) {
-			let maybe_sender = ensure_signed(origin.clone())
-				.map(Some)
-				.or_else(|_| T::RejectOrigin::ensure_origin(origin).map(|_| None))?;
-
-			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
-				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
-
-				let slash_curator = |curator: &T::AccountId, curator_deposit: &mut BalanceOf<T, I>| {
-					let imbalance = T::Currency::slash_reserved(curator, *curator_deposit).0;
-					T::OnSlash::on_unbalanced(imbalance);
-					*curator_deposit = Zero::zero();
-				};
-
-				match bounty.status {
-					BountyStatus::Proposed | BountyStatus::Approved | BountyStatus::Funded => {
-						// No curator to unassign at this point.
-						return Err(Error::<T, I>::UnexpectedStatus.into())
-					}
-					BountyStatus::CuratorProposed { ref curator } => {
-						// A curator has been proposed, but not accepted yet.
-						// Either `RejectOrigin` or the proposed curator can unassign the curator.
-						ensure!(maybe_sender.map_or(true, |sender| sender == *curator), BadOrigin);
-					},
-					BountyStatus::Active { ref curator, ref update_due } => {
-						// The bounty is active.
-						match maybe_sender {
-							// If the `RejectOrigin` is calling this function, slash the curator.
-							None => {
-								slash_curator(curator, &mut bounty.curator_deposit);
-								// Continue to change bounty status below...
-							},
-							Some(sender) => {
-								// If the sender is not the curator, and the curator is inactive,
-								// slash the curator.
-								if sender != *curator {
-									let block_number = system::Module::<T>::block_number();
-									if *update_due < block_number {
-										slash_curator(curator, &mut bounty.curator_deposit);
-										// Continue to change bounty status below...
-									} else {
-										// Curator has more time to give an update.
-										return Err(Error::<T, I>::Premature.into())
-									}
-								} else {
-									// Else this is the curator, willingly giving up their role.
-									// Give back their deposit.
-									let _ = T::Currency::unreserve(&curator, bounty.curator_deposit);
-									// Continue to change bounty status below...
-								}
-							},
-						}
-					},
-					BountyStatus::PendingPayout { ref curator, .. } => {
-						// The bounty is pending payout, so only council can unassign a curator.
-						// By doing so, they are claiming the curator is acting maliciously, so
-						// we slash the curator.
-						ensure!(maybe_sender.is_none(), BadOrigin);
-						slash_curator(curator, &mut bounty.curator_deposit);
-						// Continue to change bounty status below...
-					}
-				};
-
-				bounty.status = BountyStatus::Funded;
-				Ok(())
-			})?;
-		}
-
-		/// Accept the curator role for a bounty.
-		/// A deposit will be reserved from curator and refund upon successful payout.
-		///
-		/// May only be called from the curator.
-		///
-		/// # <weight>
-		/// - O(1).
-		/// - Limited storage reads.
-		/// - One DB change.
-		/// # </weight>
-		#[weight = T::WeightInfo::accept_curator()]
-		fn accept_curator(origin, #[compact] bounty_id: ProposalIndex) {
-			let signer = ensure_signed(origin)?;
-
-			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
-				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
-
-				match bounty.status {
-					BountyStatus::CuratorProposed { ref curator } => {
-						ensure!(signer == *curator, Error::<T, I>::RequireCurator);
-
-						let deposit = T::BountyCuratorDeposit::get() * bounty.fee;
-						T::Currency::reserve(curator, deposit)?;
-						bounty.curator_deposit = deposit;
-
-						let update_due = system::Module::<T>::block_number() + T::BountyUpdatePeriod::get();
-						bounty.status = BountyStatus::Active { curator: curator.clone(), update_due };
-
-						Ok(())
-					},
-					_ => Err(Error::<T, I>::UnexpectedStatus.into()),
-				}
-			})?;
-		}
-
-		/// Award bounty to a beneficiary account. The beneficiary will be able to claim the funds after a delay.
-		///
-		/// The dispatch origin for this call must be the curator of this bounty.
-		///
-		/// - `bounty_id`: Bounty ID to award.
-		/// - `beneficiary`: The beneficiary account whom will receive the payout.
-		#[weight = T::WeightInfo::award_bounty()]
-		fn award_bounty(origin, #[compact] bounty_id: ProposalIndex, beneficiary: <T::Lookup as StaticLookup>::Source) {
-			let signer = ensure_signed(origin)?;
-			let beneficiary = T::Lookup::lookup(beneficiary)?;
-
-			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
-				let mut bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
-				match &bounty.status {
-					BountyStatus::Active {
-						curator,
-						..
-					} => {
-						ensure!(signer == *curator, Error::<T, I>::RequireCurator);
-					},
-					_ => return Err(Error::<T, I>::UnexpectedStatus.into()),
-				}
-				bounty.status = BountyStatus::PendingPayout {
-					curator: signer,
-					beneficiary: beneficiary.clone(),
-					unlock_at: system::Module::<T>::block_number() + T::BountyDepositPayoutDelay::get(),
-				};
-
-				Ok(())
-			})?;
-
-			Self::deposit_event(Event::<T, I>::BountyAwarded(bounty_id, beneficiary));
-		}
-
-		/// Claim the payout from an awarded bounty after payout delay.
-		///
-		/// The dispatch origin for this call must be the beneficiary of this bounty.
-		///
-		/// - `bounty_id`: Bounty ID to claim.
-		#[weight = T::WeightInfo::claim_bounty()]
-		fn claim_bounty(origin, #[compact] bounty_id: BountyIndex) {
-			let _ = ensure_signed(origin)?; // anyone can trigger claim
-
-			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
-				let bounty = maybe_bounty.take().ok_or(Error::<T, I>::InvalidIndex)?;
-				if let BountyStatus::PendingPayout { curator, beneficiary, unlock_at } = bounty.status {
-					ensure!(system::Module::<T>::block_number() >= unlock_at, Error::<T, I>::Premature);
-					let bounty_account = Self::bounty_account_id(bounty_id);
-					let balance = T::Currency::free_balance(&bounty_account);
-					let fee = bounty.fee.min(balance); // just to be safe
-					let payout = balance.saturating_sub(fee);
-					let _ = T::Currency::unreserve(&curator, bounty.curator_deposit);
-					let _ = T::Currency::transfer(&bounty_account, &curator, fee, AllowDeath); // should not fail
-					let _ = T::Currency::transfer(&bounty_account, &beneficiary, payout, AllowDeath); // should not fail
-					*maybe_bounty = None;
-
-					BountyDescriptions::<I>::remove(bounty_id);
-
-					Self::deposit_event(Event::<T, I>::BountyClaimed(bounty_id, payout, beneficiary));
-					Ok(())
-				} else {
-					Err(Error::<T, I>::UnexpectedStatus.into())
-				}
-			})?;
-		}
-
-		/// Cancel a proposed or active bounty. All the funds will be sent to treasury and
-		/// the curator deposit will be unreserved if possible.
-		///
-		/// Only `T::RejectOrigin` is able to cancel a bounty.
-		///
-		/// - `bounty_id`: Bounty ID to cancel.
-		#[weight = T::WeightInfo::close_bounty_proposed().max(T::WeightInfo::close_bounty_active())]
-		fn close_bounty(origin, #[compact] bounty_id: BountyIndex) -> DispatchResultWithPostInfo {
-			T::RejectOrigin::ensure_origin(origin)?;
-
-			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResultWithPostInfo {
-				let bounty = maybe_bounty.as_ref().ok_or(Error::<T, I>::InvalidIndex)?;
-
-				match &bounty.status {
-					BountyStatus::Proposed => {
-						// The reject origin would like to cancel a proposed bounty.
-						BountyDescriptions::<I>::remove(bounty_id);
-						let value = bounty.bond;
-						let imbalance = T::Currency::slash_reserved(&bounty.proposer, value).0;
-						T::OnSlash::on_unbalanced(imbalance);
-						*maybe_bounty = None;
-
-						Self::deposit_event(Event::<T, I>::BountyRejected(bounty_id, value));
-						// Return early, nothing else to do.
-						return Ok(Some(T::WeightInfo::close_bounty_proposed()).into())
-					},
-					BountyStatus::Approved => {
-						// For weight reasons, we don't allow a council to cancel in this phase.
-						// We ask for them to wait until it is funded before they can cancel.
-						return Err(Error::<T, I>::UnexpectedStatus.into())
-					},
-					BountyStatus::Funded |
-					BountyStatus::CuratorProposed { .. } => {
-						// Nothing extra to do besides the removal of the bounty below.
-					},
-					BountyStatus::Active { curator, .. } => {
-						// Cancelled by council, refund deposit of the working curator.
-						let _ = T::Currency::unreserve(&curator, bounty.curator_deposit);
-						// Then execute removal of the bounty below.
-					},
-					BountyStatus::PendingPayout { .. } => {
-						// Bounty is already pending payout. If council wants to cancel
-						// this bounty, it should mean the curator was acting maliciously.
-						// So the council should first unassign the curator, slashing their
-						// deposit.
-						return Err(Error::<T, I>::PendingPayout.into())
-					}
-				}
-
-				let bounty_account = Self::bounty_account_id(bounty_id);
-
-				BountyDescriptions::<I>::remove(bounty_id);
-
-				let balance = T::Currency::free_balance(&bounty_account);
-				let _ = T::Currency::transfer(&bounty_account, &Self::account_id(), balance, AllowDeath); // should not fail
-				*maybe_bounty = None;
-
-				Self::deposit_event(Event::<T, I>::BountyCanceled(bounty_id));
-				Ok(Some(T::WeightInfo::close_bounty_active()).into())
-			})
-		}
-
-		/// Extend the expiry time of an active bounty.
-		///
-		/// The dispatch origin for this call must be the curator of this bounty.
-		///
-		/// - `bounty_id`: Bounty ID to extend.
-		/// - `remark`: additional information.
-		#[weight = T::WeightInfo::extend_bounty_expiry()]
-		fn extend_bounty_expiry(origin, #[compact] bounty_id: BountyIndex, _remark: Vec<u8>) {
-			let signer = ensure_signed(origin)?;
-
-			Bounties::<T, I>::try_mutate_exists(bounty_id, |maybe_bounty| -> DispatchResult {
-				let bounty = maybe_bounty.as_mut().ok_or(Error::<T, I>::InvalidIndex)?;
-
-				match bounty.status {
-					BountyStatus::Active { ref curator, ref mut update_due } => {
-						ensure!(*curator == signer, Error::<T, I>::RequireCurator);
-						*update_due = (system::Module::<T>::block_number() + T::BountyUpdatePeriod::get()).max(*update_due);
-					},
-					_ => return Err(Error::<T, I>::UnexpectedStatus.into()),
-				}
-
-				Ok(())
-			})?;
-
-			Self::deposit_event(Event::<T, I>::BountyExtended(bounty_id));
-		}
-
-		/// # <weight>
-		/// - Complexity: `O(A)` where `A` is the number of approvals
-		/// - Db reads and writes: `Approvals`, `pot account data`
-		/// - Db reads and writes per approval:
-		///   `Proposals`, `proposer account data`, `beneficiary account data`
-		/// - The weight is overestimated if some approvals got missed.
-		/// # </weight>
-		fn on_initialize(n: T::BlockNumber) -> Weight {
-			// Check to see if we should spend some funds!
-			if (n % T::SpendPeriod::get()).is_zero() {
-				Self::spend_funds()
-			} else {
-				0
-			}
-		}
-	}
-}
-
-impl<T: Trait<I>, I: Instance> Module<T, I> {
+impl<T: Trait<I>, I: 'static> Module<T, I> {
 	// Add public immutables and private mutables.
 
 	/// The account ID of the treasury pot.
@@ -1265,7 +1350,7 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 
 		let mut missed_any = false;
 		let mut imbalance = <PositiveImbalanceOf<T, I>>::zero();
-		let proposals_len = Approvals::<I>::mutate(|v| {
+		let proposals_len = Approvals::<T, I>::mutate(|v| {
 			let proposals_approvals_len = v.len() as u32;
 			v.retain(|&index| {
 				// Should always be true, but shouldn't panic if false or we're screwed.
@@ -1295,7 +1380,7 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 
 		total_weight += T::WeightInfo::on_initialize_proposals(proposals_len);
 
-		let bounties_len = BountyApprovals::<I>::mutate(|v| {
+		let bounties_len = BountyApprovals::<T, I>::mutate(|v| {
 			let bounties_approval_len = v.len() as u32;
 			v.retain(|&index| {
 				Bounties::<T, I>::mutate(index, |bounty| {
@@ -1383,7 +1468,7 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 		T::Currency::reserve(&proposer, bond)
 			.map_err(|_| Error::<T, I>::InsufficientProposersBalance)?;
 
-		BountyCount::<I>::put(index + 1);
+		BountyCount::<T, I>::put(index + 1);
 
 		let bounty = Bounty {
 			proposer,
@@ -1395,7 +1480,7 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 		};
 
 		Bounties::<T, I>::insert(index, &bounty);
-		BountyDescriptions::<I>::insert(index, description);
+		BountyDescriptions::<T, I>::insert(index, description);
 
 		Self::deposit_event(RawEvent::BountyProposed(index));
 
@@ -1428,11 +1513,12 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 
 		use frame_support::{Twox64Concat, migration::StorageKeyIterator};
 
+		use frame_support::traits::PalletInfo;
 		for (hash, old_tip) in StorageKeyIterator::<
 			T::Hash,
 			OldOpenTip<T::AccountId, BalanceOf<T, I>, T::BlockNumber, T::Hash>,
 			Twox64Concat,
-		>::new(I::PREFIX.as_bytes(), b"Tips").drain()
+		>::new(T::PalletInfo::name::<Pallet<T, I>>().unwrap().as_bytes(), b"Tips").drain()
 		{
 			let (finder, deposit, finders_fee) = match old_tip.finder {
 				Some((finder, deposit)) => (finder, deposit, true),
@@ -1452,7 +1538,7 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 	}
 }
 
-impl<T: Trait<I>, I: Instance> OnUnbalanced<NegativeImbalanceOf<T, I>> for Module<T, I> {
+impl<T: Trait<I>, I: 'static> OnUnbalanced<NegativeImbalanceOf<T, I>> for Module<T, I> {
 	fn on_nonzero_unbalanced(amount: NegativeImbalanceOf<T, I>) {
 		let numeric_amount = amount.peek();
 

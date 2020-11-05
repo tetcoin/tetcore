@@ -214,7 +214,7 @@ impl frame_system::Config for Test {
 	type OnKilledAccount = ();
 	type SystemWeightInfo = ();
 }
-impl pallet_balances::Trait for Test {
+impl pallet_balances::Config for Test {
 	type MaxLocks = MaxLocks;
 	type Balance = Balance;
 	type Event = MetaEvent;
@@ -250,7 +250,7 @@ impl pallet_session::historical::Trait for Test {
 	type FullIdentification = crate::Exposure<AccountId, Balance>;
 	type FullIdentificationOf = crate::ExposureOf<Test>;
 }
-impl pallet_authorship::Trait for Test {
+impl pallet_authorship::Config for Test {
 	type FindAuthor = Author11;
 	type UncleGenerations = UncleGenerations;
 	type FilterUncle = ();
@@ -259,7 +259,7 @@ impl pallet_authorship::Trait for Test {
 parameter_types! {
 	pub const MinimumPeriod: u64 = 5;
 }
-impl pallet_timestamp::Trait for Test {
+impl pallet_timestamp::Config for Test {
 	type Moment = u64;
 	type OnTimestampSet = ();
 	type MinimumPeriod = MinimumPeriod;
@@ -299,7 +299,7 @@ impl OnUnbalanced<NegativeImbalanceOf<Test>> for RewardRemainderMock {
 	}
 }
 
-impl Trait for Test {
+impl Config for Test {
 	type Currency = Balances;
 	type UnixTime = Timestamp;
 	type CurrencyToVote = frame_support::traits::SaturatingCurrencyToVote;
@@ -705,7 +705,7 @@ pub(crate) fn start_era(era_index: EraIndex) {
 
 pub(crate) fn current_total_payout_for_duration(duration: u64) -> Balance {
 	inflation::compute_total_payout(
-		<Test as Trait>::RewardCurve::get(),
+		<Test as Config>::RewardCurve::get(),
 		Staking::eras_total_stake(Staking::active_era().unwrap().index),
 		Balances::total_issuance(),
 		duration,
@@ -713,7 +713,7 @@ pub(crate) fn current_total_payout_for_duration(duration: u64) -> Balance {
 }
 
 pub(crate) fn reward_all_elected() {
-	let rewards = <Test as Trait>::SessionInterface::validators()
+	let rewards = <Test as Config>::SessionInterface::validators()
 		.into_iter()
 		.map(|v| (v, 1));
 
@@ -735,7 +735,7 @@ pub(crate) fn on_offence_in_era(
 	slash_fraction: &[Perbill],
 	era: EraIndex,
 ) {
-	let bonded_eras = crate::BondedEras::get();
+	let bonded_eras = crate::BondedEras::<Test>::get();
 	for &(bonded_era, start_session) in bonded_eras.iter() {
 		if bonded_era == era {
 			let _ = Staking::on_offence(offenders, slash_fraction, start_session).unwrap();

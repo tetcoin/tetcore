@@ -27,35 +27,92 @@ use sp_std::{collections::btree_set::BTreeSet, prelude::*};
 use frame_support::{decl_module, decl_storage};
 use sp_authority_discovery::AuthorityId;
 
-/// The module's config trait.
-pub trait Trait: frame_system::Trait + pallet_session::Trait {}
+pub use pallet::*;
 
-decl_storage! {
-	trait Store for Module<T: Trait> as AuthorityDiscovery {
-		/// Keys of the current and next authority set.
-		Keys get(fn keys): Vec<AuthorityId>;
-	}
-	add_extra_genesis {
-		config(keys): Vec<AuthorityId>;
-		build(|config| Module::<T>::initialize_keys(&config.keys))
-	}
-}
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
+	/// The module's config trait.
+	#[pallet::config]
+	pub trait Config: frame_system::Config + pallet_session::Config {}
+
+	/// Deperacated name for Config
+	pub trait Trait: Config {}
+	impl<R: Config> Trait for R {}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	/// Deperacated name for Pallet
+	pub type Module<T> = Pallet<T>;
+
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {}
+
+	/// Keys of the current and next authority set.
+	#[pallet::storage]
+	#[pallet::getter(fn keys)]
+	pub(super) type Keys<T: Config> = StorageValue<_, Vec<AuthorityId>, ValueQuery>;
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig {
+		pub keys: Vec<AuthorityId>,
+	}
+
+	#[cfg(feature = "std")]
+	impl Default for GenesisConfig {
+		fn default() -> Self {
+			Self {
+				keys: Default::default(),
+			}
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig {
+		fn build(&self) {
+			Module::<T>::initialize_keys(&self.keys);
+		}
+	}
+
+	#[cfg(feature = "std")]
+	impl GenesisConfig {
+		/// Direct implementation of `GenesisBuild::build_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn build_storage<T: Config>(&self) -> Result<sp_runtime::Storage, String> {
+			<Self as GenesisBuild<T>>::build_storage(self)
+		}
+
+		/// Direct implementation of `GenesisBuild::assimilate_storage`.
+		///
+		/// Kept in order not to break dependency.
+		pub fn assimilate_storage<T: Config>(
+			&self,
+			storage: &mut sp_runtime::Storage
+		) -> Result<(), String> {
+			<Self as GenesisBuild<T>>::assimilate_storage(self, storage)
+		}
 	}
 }
 
 impl<T: Trait> Module<T> {
 	/// Retrieve authority identifiers of the current and next authority set.
 	pub fn authorities() -> Vec<AuthorityId> {
-		Keys::get()
+		Keys::<T>::get()
 	}
 
 	fn initialize_keys(keys: &[AuthorityId]) {
 		if !keys.is_empty() {
-			assert!(Keys::get().is_empty(), "Keys are already initialized!");
-			Keys::put(keys);
+			assert!(Keys::<T>::get().is_empty(), "Keys are already initialized!");
+			Keys::<T>::put(keys);
 		}
 	}
 }
@@ -81,7 +138,7 @@ impl<T: Trait> pallet_session::OneSessionHandler<T::AccountId> for Module<T> {
 		// Remember who the authorities are for the new and next session.
 		if changed {
 			let keys = validators.chain(queued_validators).map(|x| x.1).collect::<BTreeSet<_>>();
-			Keys::put(keys.into_iter().collect::<Vec<_>>());
+			Keys::<T>::put(keys.into_iter().collect::<Vec<_>>());
 		}
 	}
 
@@ -107,13 +164,13 @@ mod tests {
 
 	#[derive(Clone, Eq, PartialEq)]
 	pub struct Test;
-	impl Trait for Test {}
+	impl Config for Test {}
 
 	parameter_types! {
 		pub const DisabledValidatorsThreshold: Perbill = Perbill::from_percent(33);
 	}
 
-	impl pallet_session::Trait for Test {
+	impl pallet_session::Config for Test {
 		type SessionManager = ();
 		type Keys = UintAuthorityId;
 		type ShouldEndSession = pallet_session::PeriodicSessions<Period, Offset>;
@@ -126,7 +183,7 @@ mod tests {
 		type WeightInfo = ();
 	}
 
-	impl pallet_session::historical::Trait for Test {
+	impl pallet_session::historical::Config for Test {
 		type FullIdentification = ();
 		type FullIdentificationOf = ();
 	}

@@ -18,7 +18,7 @@
 //! Test utilities
 
 use codec::Encode;
-use super::{Trait, Module, CurrentSlot};
+use super::{Trait, Config, Module, CurrentSlot};
 use sp_runtime::{
 	Perbill, impl_opaque_keys,
 	curve::PiecewiseLinear,
@@ -219,7 +219,7 @@ impl pallet_offences::Trait for Test {
 	type WeightSoftLimit = OffencesWeightSoftLimit;
 }
 
-impl Trait for Test {
+impl Config for Test {
 	type EpochDuration = EpochDuration;
 	type ExpectedBlockTime = ExpectedBlockTime;
 	type EpochChangeTrigger = crate::ExternalTrigger;
@@ -268,7 +268,7 @@ pub fn go_to_block(n: u64, s: u64) {
 	Timestamp::set_timestamp(n);
 
 	if s > 1 {
-		CurrentSlot::put(s);
+		CurrentSlot::<Test>::put(s);
 	}
 
 	System::on_initialize(n);
@@ -446,7 +446,7 @@ pub fn generate_equivocation_proof(
 	use sp_consensus_babe::digests::CompatibleDigestItem;
 
 	let current_block = System::block_number();
-	let current_slot = CurrentSlot::get();
+	let current_slot = CurrentSlot::<Test>::get();
 
 	let make_header = || {
 		let parent_hash = System::parent_hash();
