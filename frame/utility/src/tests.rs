@@ -127,7 +127,7 @@ impl frame_system::Config for Test {
 parameter_types! {
 	pub const ExistentialDeposit: u64 = 1;
 }
-impl pallet_balances::Trait for Test {
+impl pallet_balances::Config for Test {
 	type MaxLocks = ();
 	type Balance = u64;
 	type DustRemoval = ();
@@ -158,7 +158,7 @@ impl Filter<Call> for TestBaseCallFilter {
 		}
 	}
 }
-impl Trait for Test {
+impl Config for Test {
 	type Event = TestEvent;
 	type Call = Call;
 	type WeightInfo = ();
@@ -428,7 +428,7 @@ fn batch_handles_weight_refund() {
 		assert_eq!(
 			extract_actual_weight(&result, &info),
 			// Real weight is 2 calls at end_weight
-			<Test as Trait>::WeightInfo::batch(2) + end_weight * 2,
+			<Test as Config>::WeightInfo::batch(2) + end_weight * 2,
 		);
 	});
 }
@@ -465,7 +465,7 @@ fn batch_all_revert() {
 			]),
 			DispatchErrorWithPostInfo {
 				post_info: PostDispatchInfo {
-					actual_weight: Some(<Test as Trait>::WeightInfo::batch_all(2) + info.weight * 2),
+					actual_weight: Some(<Test as Config>::WeightInfo::batch_all(2) + info.weight * 2),
 					pays_fee: Pays::Yes
 				},
 				error: pallet_balances::Error::<Test, _>::InsufficientBalance.into()
@@ -536,7 +536,7 @@ fn batch_all_handles_weight_refund() {
 		assert_eq!(
 			extract_actual_weight(&result, &info),
 			// Real weight is 2 calls at end_weight
-			<Test as Trait>::WeightInfo::batch_all(2) + end_weight * 2,
+			<Test as Config>::WeightInfo::batch_all(2) + end_weight * 2,
 		);
 	});
 }

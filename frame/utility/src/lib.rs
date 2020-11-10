@@ -73,48 +73,49 @@ use frame_system::{ensure_signed, ensure_root};
 use sp_runtime::{DispatchError, traits::Dispatchable};
 pub use weights::WeightInfo;
 
-/// Configuration trait.
-pub trait Trait: frame_system::Trait {
-	/// The overarching event type.
-	type Event: From<Event> + Into<<Self as frame_system::Config>::Event>;
+// Template for pallet upgrade for Utility
 
-	/// The overarching call type.
-	type Call: Parameter + Dispatchable<Origin=Self::Origin, PostInfo=PostDispatchInfo>
-		+ GetDispatchInfo + From<frame_system::Call<Self>>
-		+ UnfilteredDispatchable<Origin=Self::Origin>;
+pub use pallet::*;
 
-	/// Weight information for extrinsics in this pallet.
-	type WeightInfo: WeightInfo;
-}
+#[frame_support::pallet]
+pub mod pallet {
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use super::*;
 
-decl_storage! {
-	trait Store for Module<T: Trait> as Utility {}
-}
+	/// Configuration trait.
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// The overarching event type.
+		type Event: From<Event> + IsType<<Self as frame_system::Config>::Event>;
 
-decl_event! {
-	/// Events type.
-	pub enum Event {
-		/// Batch of dispatches did not complete fully. Index of first failing dispatch given, as
-		/// well as the error. \[index, error\]
-		BatchInterrupted(u32, DispatchError),
-		/// Batch of dispatches completed fully with no error.
-		BatchCompleted,
+		/// The overarching call type.
+		type Call: Parameter + Dispatchable<Origin=Self::Origin, PostInfo=PostDispatchInfo>
+			+ GetDispatchInfo + From<frame_system::Call<Self>>
+			+ UnfilteredDispatchable<Origin=Self::Origin>;
+
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
 	}
-}
 
-/// A module identifier. These are per module and should be stored in a registry somewhere.
-#[derive(Clone, Copy, Eq, PartialEq, Encode, Decode)]
-struct IndexedUtilityModuleId(u16);
+	/// Kind of alias for `Config` trait. Deprecated as `Trait` is renamed `Config`.
+	pub trait Trait: Config {}
+	impl<T: Config> Trait for T {}
 
-impl TypeId for IndexedUtilityModuleId {
-	const TYPE_ID: [u8; 4] = *b"suba";
-}
+	#[pallet::pallet]
+	#[pallet::generate_store(pub(super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
 
-decl_module! {
-	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		/// Deposit one of this module's events by using the default implementation.
-		fn deposit_event() = default;
+	/// Old name for pallet.
+	pub type Module<T> = Pallet<T>;
 
+	#[pallet::interface]
+	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	}
+
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
 		/// Send a batch of dispatch calls.
 		///
 		/// May be called from any origin.
@@ -133,7 +134,7 @@ decl_module! {
 		/// `BatchInterrupted` event is deposited, along with the number of successful calls made
 		/// and the error of the failed call. If all were successful, then the `BatchCompleted`
 		/// event is deposited.
-		#[weight = (
+		#[pallet::weight((
 			calls.iter()
 				.map(|call| call.get_dispatch_info().weight)
 				.fold(0, |total: Weight, weight: Weight| total.saturating_add(weight))
@@ -148,8 +149,11 @@ decl_module! {
 					DispatchClass::Normal
 				}
 			},
-		)]
-		fn batch(origin, calls: Vec<<T as Trait>::Call>) -> DispatchResultWithPostInfo {
+		))]
+		pub(super) fn batch(
+			origin: OriginFor<T>,
+			calls: Vec<<T as Config>::Call>
+		) -> DispatchResultWithPostInfo {
 			let is_root = ensure_root(origin.clone()).is_ok();
 			let calls_len = calls.len();
 			// Track the actual weight of each of the batch calls.
@@ -190,14 +194,18 @@ decl_module! {
 		/// NOTE: Prior to version *12, this was called `as_limited_sub`.
 		///
 		/// The dispatch origin for this call must be _Signed_.
-		#[weight = (
+		#[pallet::weight((
 			T::WeightInfo::as_derivative()
 				.saturating_add(call.get_dispatch_info().weight)
 				 // AccountData for inner call origin accountdata.
 				.saturating_add(T::DbWeight::get().reads_writes(1, 1)),
 			call.get_dispatch_info().class,
-		)]
-		fn as_derivative(origin, index: u16, call: Box<<T as Trait>::Call>) -> DispatchResultWithPostInfo {
+		))]
+		pub(super) fn as_derivative(
+			origin: OriginFor<T>,
+			index: u16,
+			call: Box<<T as Config>::Call>
+		) -> DispatchResultWithPostInfo {
 			let mut origin = origin;
 			let who = ensure_signed(origin.clone())?;
 			let pseudonym = Self::derivative_account_id(who, index);
@@ -227,7 +235,7 @@ decl_module! {
 		/// # <weight>
 		/// - Complexity: O(C) where C is the number of calls to be batched.
 		/// # </weight>
-		#[weight = (
+		#[pallet::weight((
 			calls.iter()
 				.map(|call| call.get_dispatch_info().weight)
 				.fold(0, |total: Weight, weight: Weight| total.saturating_add(weight))
@@ -242,9 +250,12 @@ decl_module! {
 					DispatchClass::Normal
 				}
 			},
-		)]
+		))]
 		#[transactional]
-		fn batch_all(origin, calls: Vec<<T as Trait>::Call>) -> DispatchResultWithPostInfo {
+		pub(super) fn batch_all(
+			origin: OriginFor<T>,
+			calls: Vec<<T as Config>::Call>
+		) -> DispatchResultWithPostInfo {
 			let is_root = ensure_root(origin.clone()).is_ok();
 			let calls_len = calls.len();
 			// Track the actual weight of each of the batch calls.
@@ -272,6 +283,28 @@ decl_module! {
 			Ok(Some(base_weight + weight).into())
 		}
 	}
+
+	/// Events type.
+	#[pallet::event]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event {
+		/// Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+		/// well as the error. \[index, error\]
+		BatchInterrupted(u32, DispatchError),
+		/// Batch of dispatches completed fully with no error.
+		BatchCompleted,
+	}
+
+	/// Old name generated by `decl_event`.
+	pub type RawEvent = Event;
+}
+
+/// A module identifier. These are per module and should be stored in a registry somewhere.
+#[derive(Clone, Copy, Eq, PartialEq, Encode, Decode)]
+struct IndexedUtilityModuleId(u16);
+
+impl TypeId for IndexedUtilityModuleId {
+	const TYPE_ID: [u8; 4] = *b"suba";
 }
 
 impl<T: Trait> Module<T> {
