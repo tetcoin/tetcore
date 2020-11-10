@@ -40,6 +40,15 @@ pub fn pallet(
 		let span = proc_macro2::TokenStream::from(attr).span();
 		return syn::Error::new(span, msg).to_compile_error().into();
 	}
+	for tt in item.clone() {
+		if format!("{:?}", tt.span()) == "#0 bytes(0..0)" {
+			panic!("
+			AAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAA
+			The spans are lost 😱
+			");
+		}
+	}
 
 	let item = syn::parse_macro_input!(item as syn::ItemMod);
 	match parse::Def::try_from(item) {

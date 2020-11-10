@@ -109,8 +109,8 @@ pub mod pallet {
 	/// Old name for pallet.
 	pub type Module<T> = Pallet<T>;
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 	}
 
 

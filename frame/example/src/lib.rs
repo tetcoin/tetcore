@@ -273,7 +273,7 @@ use sp_runtime::{
 };
 
 /// A type alias for the balance type from this pallet's point of view.
-type BalanceOf<T> = <T as pallet_balances::Trait>::Balance;
+type BalanceOf<T> = <T as pallet_balances::Config>::Balance;
 
 // A custom weight calculator tailored for the dispatch call `set_dummy()`. This actually examines
 // the arguments and makes a decision based upon them.

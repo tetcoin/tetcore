@@ -488,8 +488,8 @@ pub mod pallet {
 	/// Deperacated name for Pallet
 	pub type Module<T> = Pallet<T>;
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		/// sets `ElectionStatus` to `Open(now)` where `now` is the block number at which the
 		/// election window has opened, if we are at the last session and less blocks than
 		/// `T::ElectionLookahead` is remaining until the next new session schedule. The offchain
@@ -572,6 +572,8 @@ pub mod pallet {
 		}
 
 		fn integrity_test() {
+			#[cfg(feature = "std")]
+			{
 			sp_io::TestExternalities::new_empty().execute_with(||
 				assert!(
 					T::SlashDeferDuration::get() < T::BondingDuration::get() || T::BondingDuration::get() == 0,
@@ -599,6 +601,7 @@ pub mod pallet {
 				.checked_mul(<OffchainAccuracy>::one().deconstruct().try_into().unwrap())
 				.is_some()
 			);
+			}
 		}
 
 	}
@@ -1481,7 +1484,7 @@ pub mod pallet {
 
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
-	#[pallet::metadata(BalanceOf<T> = Balance)]
+	#[pallet::metadata(BalanceOf<T> = "Balance")]
 	pub enum Event<T: Config> {
 		/// The era payout has been set; the first balance is the validator-payout; the second is
 		/// the remainder from the maximum amount of reward.

@@ -227,8 +227,8 @@ pub mod pallet {
 	/// Deperacated name for Pallet
 	pub type Module<T, I = ()> = Pallet<T, I>;
 
-	#[pallet::interface]
-	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {}
+	#[pallet::hooks]
+	impl<T: Config<I>, I: 'static> Hooks<BlockNumberFor<T>> for Pallet<T, I> {}
 
 	#[pallet::call]
 	impl<T: Config<I>, I: 'static> Pallet<T, I> {
@@ -881,7 +881,6 @@ mod imbalances {
 	impl<T: Trait<I>, I: 'static> Drop for NegativeImbalance<T, I> {
 		/// Basic drop handler will just square up the total issuance.
 		fn drop(&mut self) {
-			// TODO TODO TODO AAAAH THOSE ARE DIFFERENT TYPE ID ???
 			<super::TotalIssuance<T, I>>::mutate(
 				|v| *v = v.saturating_sub(self.0)
 			);

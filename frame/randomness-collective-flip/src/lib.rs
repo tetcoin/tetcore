@@ -90,8 +90,8 @@ pub mod pallet {
 	/// Deprecated old name for Pallet
 	pub type Module<T> = Pallet<T>;
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		fn on_initialize(block_number: T::BlockNumber) -> Weight {
 			let parent_hash = <frame_system::Module<T>>::parent_hash();
 

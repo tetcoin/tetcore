@@ -174,8 +174,8 @@ pub mod pallet {
 	/// Deperacated name for Pallet
 	pub type Module<T, I=()> = Pallet<T, I>;
 
-	#[pallet::interface]
-	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I>
+	#[pallet::hooks]
+	impl<T: Config<I>, I: 'static> Hooks<BlockNumberFor<T>> for Pallet<T, I>
 		// TODO_MAYBE_WHERE_CLAUSE
 	{
 		// TODO_ON_FINALIZE

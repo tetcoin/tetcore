@@ -99,8 +99,8 @@ pub mod pallet {
 	/// Deperacated name for Pallet
 	pub type Module<T> = Pallet<T>;
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		fn on_finalize(_: BlockNumberFor<T>) {
 			NextFeeMultiplier::<T>::mutate(|fm| {
 				*fm = T::FeeMultiplierUpdate::convert(*fm);
@@ -136,6 +136,8 @@ pub mod pallet {
 			}
 			target += addition;
 
+			#[cfg(feature="std")]
+			{
 			sp_io::TestExternalities::new_empty().execute_with(|| {
 				<frame_system::Module<T>>::set_block_limits(target, 0);
 				let next = T::FeeMultiplierUpdate::convert(min_value);
@@ -144,6 +146,7 @@ pub mod pallet {
 					the multiplier doesn't increase."
 				);
 			})
+			}
 		}
 	}
 

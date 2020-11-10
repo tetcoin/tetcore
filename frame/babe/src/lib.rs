@@ -129,8 +129,8 @@ pub mod pallet {
 	/// Deperacated name for Pallet
 	pub type Module<T> = Pallet<T>;
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 
 		/// Initialization
 		fn on_initialize(now: T::BlockNumber) -> Weight {
@@ -458,7 +458,7 @@ impl<T: Trait> Module<T> {
 	pub fn slot_duration() -> T::Moment {
 		// we double the minimum block-period so each author can always propose within
 		// the majority of their slot.
-		<T as pallet_timestamp::Trait>::MinimumPeriod::get().saturating_mul(2u32.into())
+		<T as pallet_timestamp::Config>::MinimumPeriod::get().saturating_mul(2u32.into())
 	}
 
 	/// Determine whether an epoch change should take place at this block.

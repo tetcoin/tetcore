@@ -262,8 +262,8 @@ pub mod pallet {
 	/// Deperacated name for Pallet
 	pub type Module<T, I=()> = Pallet<T, I>;
 
-	#[pallet::interface]
-	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {
+	#[pallet::hooks]
+	impl<T: Config<I>, I: 'static> Hooks<BlockNumberFor<T>> for Pallet<T, I> {
 		/// # <weight>
 		/// - Complexity: `O(A)` where `A` is the number of approvals
 		/// - Db reads and writes: `Approvals`, `pot account data`

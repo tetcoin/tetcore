@@ -157,8 +157,8 @@ pub mod pallet {
 	/// Deprecated old pallet name
 	pub type Module<T> = Pallet<T>;
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		/// dummy `on_initialize` to return the weight used in `on_finalize`.
 		fn on_initialize(_: T::BlockNumber) -> Weight {
 			// weight of `on_finalize`

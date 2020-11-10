@@ -659,9 +659,9 @@ pub mod pallet {
 
 	#[pallet::genesis_config]
 	pub struct GenesisConfig {
-		changes_trie_config: Option<ChangesTrieConfiguration>,
+		pub changes_trie_config: Option<ChangesTrieConfiguration>,
 		#[serde(with = "sp_core::bytes")]
-		code: Vec<u8>,
+		pub code: Vec<u8>,
 	}
 
 	#[cfg(feature = "std")]
