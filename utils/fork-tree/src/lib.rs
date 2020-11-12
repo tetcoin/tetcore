@@ -963,6 +963,7 @@ impl<H, N, V> Iterator for RemovedIterator<H, N, V> {
 #[cfg(test)]
 mod test {
 	use super::{FinalizationResult, ForkTree, Error};
+	use codec::{Encode, Decode};
 
 	#[derive(Debug, PartialEq)]
 	struct TestError;
@@ -975,7 +976,7 @@ mod test {
 
 	impl std::error::Error for TestError {}
 
-	fn test_fork_tree<'a>() -> (ForkTree<&'a str, u64, ()>, impl Fn(&&str, &&str) -> Result<bool, TestError>)  {
+	fn test_fork_tree<'a>() -> (ForkTree<&'a str, u64, u64>, impl Fn(&&str, &&str) -> Result<bool, TestError>)  {
 		let mut tree = ForkTree::new();
 
 		//
@@ -1014,26 +1015,109 @@ mod test {
 			}
 		};
 
-		tree.import("A", 1, (), &is_descendent_of).unwrap();
+		tree.import("A", 1, 10, &is_descendent_of).unwrap();
 
-		tree.import("B", 2, (), &is_descendent_of).unwrap();
-		tree.import("C", 3, (), &is_descendent_of).unwrap();
-		tree.import("D", 4, (), &is_descendent_of).unwrap();
-		tree.import("E", 5, (), &is_descendent_of).unwrap();
+		tree.import("B", 2, 9, &is_descendent_of).unwrap();
+		tree.import("C", 3, 8, &is_descendent_of).unwrap();
+		tree.import("D", 4, 7, &is_descendent_of).unwrap();
+		tree.import("E", 5, 6, &is_descendent_of).unwrap();
 
-		tree.import("F", 2, (), &is_descendent_of).unwrap();
-		tree.import("G", 3, (), &is_descendent_of).unwrap();
+		tree.import("F", 2, 5, &is_descendent_of).unwrap();
+		tree.import("G", 3, 4, &is_descendent_of).unwrap();
 
-		tree.import("H", 3, (), &is_descendent_of).unwrap();
-		tree.import("I", 4, (), &is_descendent_of).unwrap();
-		tree.import("L", 4, (), &is_descendent_of).unwrap();
-		tree.import("M", 5, (), &is_descendent_of).unwrap();
-		tree.import("O", 5, (), &is_descendent_of).unwrap();
+		tree.import("H", 3, 3, &is_descendent_of).unwrap();
+		tree.import("I", 4, 2, &is_descendent_of).unwrap();
+		tree.import("L", 4, 1, &is_descendent_of).unwrap();
+		tree.import("M", 5, 2, &is_descendent_of).unwrap();
+		tree.import("O", 5, 3, &is_descendent_of).unwrap();
 
-		tree.import("J", 2, (), &is_descendent_of).unwrap();
-		tree.import("K", 3, (), &is_descendent_of).unwrap();
+		tree.import("J", 2, 4, &is_descendent_of).unwrap();
+		tree.import("K", 3, 11, &is_descendent_of).unwrap();
 
 		(tree, is_descendent_of)
+	}
+
+	#[test]
+	fn find_node_index_where() {
+		let (tree, is_descendent_of) = test_fork_tree();
+
+		assert_eq!(
+			tree.find_node_index_where(&"B", &2, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"C", &3, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"D", &4, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0, 0, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"E", &5, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0, 0, 0, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"F", &2, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"G", &3, &is_descendent_of, &|_| true),
+			Ok(Some(vec![1, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"H", &3, &is_descendent_of, &|_| true),
+			Ok(Some(vec![1, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"I", &4, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0, 1, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"L", &4, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0, 1, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"M", &5, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0, 0, 1, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"O", &5, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0, 0, 1, 0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"J", &2, &is_descendent_of, &|_| true),
+			Ok(Some(vec![0]))
+		);
+
+		assert_eq!(
+			tree.find_node_index_where(&"K", &3, &is_descendent_of, &|_| true),
+			Ok(Some(vec![2, 0]))
+		);
+
+		for i in 0 .. 10 {
+			assert_eq!(
+				tree.find_node_index_where(&"A", &i, &is_descendent_of, &|_| true),
+				Ok(None),
+				"{}", i
+			);
+		}
+
+		assert_eq!(
+			tree.find_node_index_where(&"B", &0, &is_descendent_of, &|_| true),
+			Ok(None),
+		);
 	}
 
 	#[test]
@@ -1048,7 +1132,7 @@ mod test {
 		);
 
 		assert_eq!(
-			tree.import("A", 1, (), &is_descendent_of),
+			tree.import("A", 1, 1, &is_descendent_of),
 			Err(Error::Revert),
 		);
 	}
@@ -1058,22 +1142,22 @@ mod test {
 		let (mut tree, is_descendent_of) = test_fork_tree();
 
 		assert_eq!(
-			tree.import("A", 1, (), &is_descendent_of),
+			tree.import("A", 1, 1, &is_descendent_of),
 			Err(Error::Duplicate),
 		);
 
 		assert_eq!(
-			tree.import("I", 4, (), &is_descendent_of),
+			tree.import("I", 4, 1, &is_descendent_of),
 			Err(Error::Duplicate),
 		);
 
 		assert_eq!(
-			tree.import("G", 3, (), &is_descendent_of),
+			tree.import("G", 3, 1, &is_descendent_of),
 			Err(Error::Duplicate),
 		);
 
 		assert_eq!(
-			tree.import("K", 3, (), &is_descendent_of),
+			tree.import("K", 3, 1, &is_descendent_of),
 			Err(Error::Duplicate),
 		);
 	}
@@ -1147,7 +1231,7 @@ mod test {
 		// finalizing "A" opens up three possible forks
 		assert_eq!(
 			tree.finalize(&"A", 1, &is_descendent_of),
-			Ok(FinalizationResult::Changed(Some(()))),
+			Ok(FinalizationResult::Changed(Some(10))),
 		);
 
 		assert_eq!(
@@ -1175,17 +1259,17 @@ mod test {
 		// after finalizing "F" we can finalize "H"
 		assert_eq!(
 			tree.finalize(&"F", 2, &is_descendent_of),
-			Ok(FinalizationResult::Changed(Some(()))),
+			Ok(FinalizationResult::Changed(Some(5))),
 		);
 
 		assert_eq!(
 			tree.finalize(&"H", 3, &is_descendent_of),
-			Ok(FinalizationResult::Changed(Some(()))),
+			Ok(FinalizationResult::Changed(Some(3))),
 		);
 
 		assert_eq!(
 			tree.roots().map(|(h, n, _)| (h.clone(), n.clone())).collect::<Vec<_>>(),
-			vec![("I", 4), ("L", 4)],
+			vec![("L", 4), ("I", 4)],
 		);
 
 		// finalizing a node from another fork that isn't part of the tree clears the tree
@@ -1214,7 +1298,7 @@ mod test {
 		// finalizing "A" opens up three possible forks
 		assert_eq!(
 			tree.finalize_with_ancestors(&"A", 1, &is_descendent_of),
-			Ok(FinalizationResult::Changed(Some(()))),
+			Ok(FinalizationResult::Changed(Some(10))),
 		);
 
 		assert_eq!(
@@ -1228,12 +1312,12 @@ mod test {
 		// 3) finalizes the just opened root H (H -> I + L)
 		assert_eq!(
 			tree.finalize_with_ancestors(&"H", 3, &is_descendent_of),
-			Ok(FinalizationResult::Changed(Some(()))),
+			Ok(FinalizationResult::Changed(Some(3))),
 		);
 
 		assert_eq!(
 			tree.roots().map(|(h, n, _)| (h.clone(), n.clone())).collect::<Vec<_>>(),
-			vec![("I", 4), ("L", 4)],
+			vec![("L", 4), ("I", 4)],
 		);
 
 		assert_eq!(
@@ -1406,12 +1490,19 @@ mod test {
 			tree.iter().map(|(h, n, _)| (h.clone(), n.clone())).collect::<Vec<_>>(),
 			vec![
 				("A", 1),
-				("B", 2), ("C", 3), ("D", 4), ("E", 5),
-				("F", 2),
-				("G", 3),
-				("H", 3), ("I", 4),
-				("L", 4), ("M", 5), ("O", 5),
-				("J", 2), ("K", 3)
+					("B", 2),
+						("C", 3),
+							("D", 4),
+								("E", 5),
+					("F", 2),
+						("H", 3),
+							("L", 4),
+								("M", 5),
+								("O", 5),
+							("I", 4),
+						("G", 3),
+					("J", 2),
+						("K", 3),
 			],
 		);
 	}
@@ -1533,7 +1624,7 @@ mod test {
 
 		assert_eq!(
 			removed.map(|(hash, _, _)| hash).collect::<Vec<_>>(),
-			vec!["A", "F", "G", "H", "I", "L", "M", "O", "J", "K"]
+			vec!["A", "F", "H", "L", "M", "O", "I", "G", "J", "K"]
 		);
 
 		let removed = tree.prune(
@@ -1600,7 +1691,7 @@ mod test {
 
 		assert_eq!(
 			tree.iter().map(|(h, _, _)| *h).collect::<Vec<_>>(),
-			vec!["A", "B", "C", "D", "E", "F", "G", "H", "I", "L", "M", "O", "J", "K"],
+			vec!["A", "B", "C", "D", "E", "F", "H", "L", "M", "O", "I", "G", "J", "K"],
 		);
 
 		// after rebalancing the tree we should iterate in preorder exploring
@@ -1612,5 +1703,113 @@ mod test {
 			tree.iter().map(|(h, _, _)| *h).collect::<Vec<_>>(),
 			["A", "B", "C", "D", "E", "F", "H", "L", "M", "O", "I", "G", "J", "K"]
 		);
+	}
+
+	#[test]
+	fn find_node_where_value() {
+		let (tree, d) = test_fork_tree();
+		assert_eq!(
+			tree.find_node_where(&"M", &5, &d, &|&n| n == 1 || n == 2)
+				.map(|opt| opt.map(|node| node.hash)),
+			Ok(Some("L")),
+			"{:?}", tree.find_node_index_where(&"M", &5, &d, &|&n| n == 1 || n == 2)
+		);
+	}
+
+	#[test]
+	fn find_node_where_value_2() {
+		let mut tree = ForkTree::new();
+
+		//
+		// A - B
+		//  \
+		//   — C
+		//
+		let is_descendent_of = |base: &&str, block: &&str| -> Result<bool, TestError> {
+			match (*base, *block) {
+				("A", b) => Ok(b == "B" || b == "C" || b == "D"),
+				("B", b) | ("C", b) => Ok(b == "D"),
+				("0", _) => Ok(true),
+				_ => Ok(false),
+			}
+		};
+
+		tree.import("A", 1, 1, &is_descendent_of).unwrap();
+		tree.import("B", 2, 2, &is_descendent_of).unwrap();
+		tree.import("C", 2, 4, &is_descendent_of).unwrap();
+
+		assert_eq!(
+			tree.find_node_where(&"D", &3, &is_descendent_of, &|&n| n == 1)
+				.map(|opt| opt.map(|node| node.hash)),
+			Ok(Some("A"))
+		);
+	}
+
+	#[test]
+	fn encoding_and_decoding_works() {
+		let	tree = {
+			let mut tree = ForkTree::<String, u64, u64>::new();
+	
+			//
+			//     - B - C - D - E
+			//    /
+			//   /   - G
+			//  /   /
+			// A - F - H - I
+			//          \
+			//           - L - M
+			//              \
+			//               - O
+			//  \
+			//   — J - K
+			//
+			// (where N is not a part of fork tree)
+			let is_descendent_of = |base: &String, block: &String| -> Result<bool, TestError> {
+				let letters = vec!["B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "O"];
+				match (&base[..], &block[..]) {
+					("A", b) => Ok(letters.into_iter().any(|n| n == b)),
+					("B", b) => Ok(b == "C" || b == "D" || b == "E"),
+					("C", b) => Ok(b == "D" || b == "E"),
+					("D", b) => Ok(b == "E"),
+					("E", _) => Ok(false),
+					("F", b) => Ok(b == "G" || b == "H" || b == "I" || b == "L" || b == "M" || b == "O"),
+					("G", _) => Ok(false),
+					("H", b) => Ok(b == "I" || b == "L" || b == "M" || b == "O"),
+					("I", _) => Ok(false),
+					("J", b) => Ok(b == "K"),
+					("K", _) => Ok(false),
+					("L", b) => Ok(b == "M" || b == "O"),
+					("M", _) => Ok(false),
+					("O", _) => Ok(false),
+					("0", _) => Ok(true),
+					_ => Ok(false),
+				}
+			};
+	
+			tree.import("A".into(), 1, 10, &is_descendent_of).unwrap();
+	
+			tree.import("B".into(), 2, 9, &is_descendent_of).unwrap();
+			tree.import("C".into(), 3, 8, &is_descendent_of).unwrap();
+			tree.import("D".into(), 4, 7, &is_descendent_of).unwrap();
+			tree.import("E".into(), 5, 6, &is_descendent_of).unwrap();
+	
+			tree.import("F".into(), 2, 5, &is_descendent_of).unwrap();
+			tree.import("G".into(), 3, 4, &is_descendent_of).unwrap();
+	
+			tree.import("H".into(), 3, 3, &is_descendent_of).unwrap();
+			tree.import("I".into(), 4, 2, &is_descendent_of).unwrap();
+			tree.import("L".into(), 4, 1, &is_descendent_of).unwrap();
+			tree.import("M".into(), 5, 2, &is_descendent_of).unwrap();
+			tree.import("O".into(), 5, 3, &is_descendent_of).unwrap();
+	
+			tree.import("J".into(), 2, 4, &is_descendent_of).unwrap();
+			tree.import("K".into(), 3, 11, &is_descendent_of).unwrap();
+	
+			tree
+		};
+
+		let encoded = tree.encode();
+		let decoded = ForkTree::decode(&mut &encoded[..]).unwrap();
+		assert_eq!(tree, decoded);
 	}
 }
