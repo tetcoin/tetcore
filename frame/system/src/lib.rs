@@ -298,8 +298,8 @@ pub mod pallet {
 	#[pallet::generate_store(pub(super) trait Store)]
 	pub struct Pallet<T>(PhantomData<T>);
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		fn on_runtime_upgrade() -> Weight {
 			if !<UpgradedToU32RefCount<T>>::get() {
 				Account::<T>::translate::<(T::Index, u8, T::AccountData), _>(|_key, (nonce, rc, data)|

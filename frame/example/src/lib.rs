@@ -523,8 +523,8 @@ mod pallet {
 	}
 
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		// The signature could also look like: `fn on_initialize()`.
 		// This function could also very well have a weight annotation, similar to any other. The
 		// only difference is that it mut be returned, not annotated.
