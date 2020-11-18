@@ -1422,6 +1422,9 @@ pub mod pallet_prelude {
 /// I.e. a trait implementation with bound `T: Config`, of trait `ValidateUnsigned` for type
 /// `Pallet<T>`, and some optional where clause.
 ///
+/// NOTE: There is also `sp_runtime::traits::SignedExtension` that can be used to add some specific
+/// logic for transaction validation.
+///
 /// ### Macro expansion
 ///
 /// Macro make currenlty no use of this information, but it might use this information in the
