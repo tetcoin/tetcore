@@ -962,12 +962,11 @@ pub mod pallet_prelude {
 	};
 	pub use frame_support::{EqNoBound, PartialEqNoBound, RuntimeDebugNoBound, DebugNoBound, CloneNoBound};
 	pub use codec::{Encode, Decode};
-	pub use sp_inherents::ProvideInherent;
-	pub use sp_inherents::InherentData;
-	pub use sp_inherents::InherentIdentifier;
-	pub use crate::weights::Weight;
+	pub use sp_inherents::{InherentData, InherentIdentifier, ProvideInherent};
+	pub use crate::weights::{DispatchClass, Pays, Weight};
 	pub use crate::{
 		Twox256, Twox128, Blake2_256, Blake2_128, Identity, Twox64Concat, Blake2_128Concat,
+		debug, ensure, RuntimeDebug, storage
 	};
 	pub use sp_runtime::{
 		traits::{MaybeSerializeDeserialize, Member, ValidateUnsigned},
@@ -1159,7 +1158,7 @@ pub mod pallet_prelude {
 ///
 /// Item must be defined as:
 /// ```ignore
-/// #[pallet::call]
+/// #[pallet::extra_constants]
 /// impl<T: Config> Pallet<T> where $optional_where_clause {
 /// 	/// $some_doc
 /// 	$vis fn $fn_name() -> $some_return_type {
@@ -1882,7 +1881,7 @@ pub mod pallet_prelude {
 /// 12. **migrate validate_unsigned**: just move the ValidateUnsigned implementation to the pallet
 /// 	module under `#[pallet::validate_unsigned]`
 /// 13. **migrate provide_inherent**: just move the ValidateUnsigned implementation to the pallet
-/// 	module under `#[pallet::validate_unsigned]`
+/// 	module under `#[pallet::provide_inherent]`
 /// 14. rename the usage of Module to Pallet and the usage of Config to Trait inside the crate.
 /// 15. migration is done, now double check migration with the checking migration guidelines.
 ///
