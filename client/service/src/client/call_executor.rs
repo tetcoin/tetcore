@@ -86,7 +86,9 @@ where
 			.as_ref()
 			.map::<sp_blockchain::Result<Option<RuntimeCode>>, _>(|o| {
 				let spec = self.runtime_version(id)?.spec_version;
-				Ok(o.get(&spec, onchain_code.heap_pages))
+				let code = o.get(&spec, onchain_code.heap_pages);
+				log::debug!("CODE OVERRIDEN for version {}", spec);
+				Ok(code)
 			})
 			.transpose()?
 			.flatten()
