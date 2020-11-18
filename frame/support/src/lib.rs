@@ -953,7 +953,7 @@ mod tests {
 /// prelude to be used alongside pallet macro, for ease of use.
 pub mod pallet_prelude {
 	pub use sp_std::marker::PhantomData;
-	pub use frame_support::traits::{Get, Interface, IsType, GetPalletVersion};
+	pub use frame_support::traits::{Get, Interface, IsType, GetPalletVersion, EnsureOrigin};
 	#[cfg(feature = "std")]
 	pub use frame_support::traits::GenesisBuild;
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
