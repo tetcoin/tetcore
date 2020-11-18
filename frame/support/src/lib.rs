@@ -953,7 +953,7 @@ mod tests {
 /// prelude to be used alongside pallet macro, for ease of use.
 pub mod pallet_prelude {
 	pub use sp_std::marker::PhantomData;
-	pub use frame_support::traits::{Get, Interface, IsType, GetPalletVersion, EnsureOrigin};
+	pub use frame_support::traits::{Get, Hooks, IsType, GetPalletVersion, EnsureOrigin};
 	#[cfg(feature = "std")]
 	pub use frame_support::traits::GenesisBuild;
 	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter, DispatchError};
@@ -1087,26 +1087,26 @@ pub mod pallet_prelude {
 ///
 /// If attribute generate_store then macro create the trait `Store` and implement it on `Pallet`.
 ///
-/// # Interface: `#[pallet::interface]` mandatory
+/// # Hooks: `#[pallet::hooks]` mandatory
 ///
-/// Implementation of `Interface` on `Pallet` allowing to define some specific pallet logic.
+/// Implementation of `Hooks` on `Pallet` allowing to define some specific pallet logic.
 ///
 /// Item must be defined as
 /// ```ignore
-/// #[pallet::interface]
-/// impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> $optional_where_clause {
+/// #[pallet::hooks]
+/// impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> $optional_where_clause {
 /// }
 /// ```
 /// I.e. a regular trait implementation with generic bound: `T: Config`, for the trait
-/// `Interface<BlockNumberFor<T>>` (they are defined in preludes), for the type `Pallet<T>`
+/// `Hooks<BlockNumberFor<T>>` (they are defined in preludes), for the type `Pallet<T>`
 /// and with an optional where clause.
 ///
 /// ### Macro expansion:
 ///
-/// The macro implement the traits `OnInitialize`, `OnFinalize`, `OnRuntimeUpgrade`,
-/// `OffchainWorker`, `IntegrityTest` using `Interface` implementation.
+/// The macro implements the traits `OnInitialize`, `OnFinalize`, `OnRuntimeUpgrade`,
+/// `OffchainWorker`, `IntegrityTest` using `Hooks` implementation.
 ///
-/// NOTE: OnRuntimeUpgrade is implemented with `Interface::on_runtime_upgrade` and some additional
+/// NOTE: OnRuntimeUpgrade is implemented with `Hooks::on_runtime_upgrade` and some additional
 /// logic. E.g. logic to write pallet version into storage.
 ///
 /// # Call: `#[pallet::call]` mandatory
@@ -1497,12 +1497,12 @@ pub mod pallet_prelude {
 /// 	#[pallet::generate_store(pub(super) trait Store)]
 /// 	pub struct Pallet<T>(PhantomData<T>);
 ///
-/// 	// Implement on the pallet interface on pallet.
+/// 	// Implement on the pallet hooks on pallet.
 /// 	// The macro checks:
-/// 	// * trait is `Interface` (imported from pallet_prelude)
+/// 	// * trait is `Hooks` (imported from pallet_prelude)
 /// 	// * struct is `Pallet<T>` or `Pallet<T, I>`
-/// 	#[pallet::interface]
-/// 	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+/// 	#[pallet::hooks]
+/// 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 /// 	}
 ///
 /// 	// Declare Call struct and implement dispatchables.
@@ -1687,8 +1687,8 @@ pub mod pallet_prelude {
 /// 	#[pallet::generate_store(pub(super) trait Store)]
 /// 	pub struct Pallet<T, I = ()>(PhantomData<(T, I)>);
 ///
-/// 	#[pallet::interface]
-/// 	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {
+/// 	#[pallet::hooks]
+/// 	impl<T: Config<I>, I: 'static> Hooks<BlockNumberFor<T>> for Pallet<T, I> {
 /// 	}
 ///
 /// 	#[pallet::call]
@@ -1825,8 +1825,8 @@ pub mod pallet_prelude {
 /// 	* all const in decl_module to `#[pallet::constant]`
 /// 7. **migrate decl_module**: write:
 /// 	```ignore
-/// 	#[pallet::interface]
-/// 	impl<T: Trait> Interface for Pallet<T> {
+/// 	#[pallet::hooks]
+/// 	impl<T: Trait> Hooks for Pallet<T> {
 /// 	}
 /// 	```
 /// 	and write inside on_initialize/on_finalize/on_runtime_upgrade/offchain_worker/integrity_test
@@ -1920,7 +1920,7 @@ pub mod pallet_prelude {
 /// 	* Origin is moved inside macro unser `#[pallet::origin]` if it exists
 /// 	* ValidateUnsigned is moved inside macro under `#[pallet::validate_unsigned)]` if it exists
 /// 	* ProvideInherent is moved inside macro under `#[pallet::inherent)]` if it exists
-/// 	* on_initialize/on_finalize/on_runtime_upgrade/offchain_worker are moved to Interface
+/// 	* on_initialize/on_finalize/on_runtime_upgrade/offchain_worker are moved to Hooks
 /// 		implementation
 /// 	* storages with `config(..)` are converted to genesis_config field, and their default is
 /// 		`= $expr;` if the storage have default value

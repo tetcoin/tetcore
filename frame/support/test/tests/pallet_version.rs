@@ -88,8 +88,8 @@ mod pallet3 {
 	#[pallet::pallet]
 	pub struct Pallet<T>(PhantomData<T>);
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		fn on_runtime_upgrade() -> Weight {
 			return 3;
 		}
@@ -112,8 +112,8 @@ mod pallet4 {
 	#[pallet::pallet]
 	pub struct Pallet<T, I=()>(PhantomData<(T, I)>);
 
-	#[pallet::interface]
-	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {
+	#[pallet::hooks]
+	impl<T: Config<I>, I: 'static> Hooks<BlockNumberFor<T>> for Pallet<T, I> {
 		fn on_runtime_upgrade() -> Weight {
 			return 3;
 		}

@@ -21,7 +21,7 @@ mod call;
 mod error;
 mod event;
 mod storage;
-mod interface;
+mod hooks;
 mod store_trait;
 mod instances;
 mod genesis_build;
@@ -54,7 +54,7 @@ pub fn expand(mut def: Def) -> proc_macro2::TokenStream {
 	let storages = storage::expand_storages(&mut def);
 	let instances = instances::expand_instances(&mut def);
 	let store_trait = store_trait::expand_store_trait(&mut def);
-	let interface = interface::expand_interface(&mut def);
+	let hooks = hooks::expand_hooks(&mut def);
 	let genesis_build = genesis_build::expand_genesis_build(&mut def);
 	let genesis_config = genesis_config::expand_genesis_config(&mut def);
 	let type_values = type_value::expand_type_values(&mut def);
@@ -68,7 +68,7 @@ pub fn expand(mut def: Def) -> proc_macro2::TokenStream {
 		#storages
 		#instances
 		#store_trait
-		#interface
+		#hooks
 		#genesis_build
 		#genesis_config
 		#type_values

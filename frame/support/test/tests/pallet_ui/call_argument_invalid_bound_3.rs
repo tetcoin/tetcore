@@ -1,6 +1,6 @@
 #[frame_support::pallet]
 mod pallet {
-	use frame_support::pallet_prelude::{Interface, DispatchResultWithPostInfo};
+	use frame_support::pallet_prelude::{Hooks, DispatchResultWithPostInfo};
 	use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
 	use codec::{Encode, Decode};
 
@@ -10,8 +10,8 @@ mod pallet {
 	#[pallet::pallet]
 	pub struct Pallet<T>(core::marker::PhantomData<T>);
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T> {}
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {}
 
 	#[derive(Encode, Decode)]
 	struct Bar;

@@ -1856,8 +1856,8 @@ pub trait IsSubType<T> {
 	fn is_sub_type(&self) -> Option<&T>;
 }
 
-/// The pallet interface trait. Implementing this lets you express some logic to execute.
-pub trait Interface<BlockNumber> {
+/// The pallet hooks trait. Implementing this lets you express some logic to execute.
+pub trait Hooks<BlockNumber> {
 	/// The block is being finalized. Implement to have something happen.
 	fn on_finalize(_n: BlockNumber) {}
 

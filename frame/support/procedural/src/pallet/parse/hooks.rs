@@ -18,8 +18,8 @@
 use syn::spanned::Spanned;
 use super::helper;
 
-/// Implementation of the pallet interface.
-pub struct InterfaceDef {
+/// Implementation of the pallet hooks.
+pub struct HooksDef {
 	/// The index of item in pallet.
 	pub index: usize,
 	/// A set of usage of instance, must be check for consistency with trait.
@@ -28,12 +28,12 @@ pub struct InterfaceDef {
 	pub where_clause: Option<syn::WhereClause>,
 }
 
-impl InterfaceDef {
+impl HooksDef {
 	pub fn try_from(index: usize, item: &mut syn::Item) -> syn::Result<Self> {
 		let item = if let syn::Item::Impl(item) = item {
 			item
 		} else {
-			let msg = "Invalid pallet::interface, expect item impl";
+			let msg = "Invalid pallet::hooks, expect item impl";
 			return Err(syn::Error::new(item.span(), msg));
 		};
 
@@ -43,16 +43,16 @@ impl InterfaceDef {
 
 		let item_trait = &item.trait_.as_ref()
 			.ok_or_else(|| {
-				let msg = "Invalid pallet::interface, expect impl<..> Interface \
+				let msg = "Invalid pallet::hooks, expect impl<..> Hooks \
 					for Pallet<..>";
 				syn::Error::new(item.span(), msg)
 			})?.1;
 
 		if item_trait.segments.len() != 1
-			|| item_trait.segments[0].ident != "Interface"
+			|| item_trait.segments[0].ident != "Hooks"
 		{
 			let msg = format!(
-				"Invalid pallet::interface, expect trait to be `Interface` found `{}`\
+				"Invalid pallet::hooks, expect trait to be `Hooks` found `{}`\
 				, you can import from `frame_support::pallet_prelude`",
 				quote::quote!(#item_trait)
 			);

@@ -21,7 +21,7 @@
 
 pub mod config;
 pub mod pallet_struct;
-pub mod interface;
+pub mod hooks;
 pub mod call;
 pub mod error;
 pub mod origin;
@@ -45,7 +45,7 @@ pub struct Def {
 	pub item: syn::ItemMod,
 	pub config: config::ConfigDef,
 	pub pallet_struct: pallet_struct::PalletStructDef,
-	pub interface: interface::InterfaceDef,
+	pub hooks: hooks::HooksDef,
 	pub call: call::CallDef,
 	pub storages: Vec<storage::StorageDef>,
 	pub error: Option<error::ErrorDef>,
@@ -75,7 +75,7 @@ impl Def {
 
 		let mut config = None;
 		let mut pallet_struct = None;
-		let mut interface = None;
+		let mut hooks = None;
 		let mut call = None;
 		let mut error = None;
 		let mut event = None;
@@ -96,9 +96,9 @@ impl Def {
 					config = Some(config::ConfigDef::try_from(&frame_system, index, item)?),
 				Some(PalletAttr::Pallet(_)) if pallet_struct.is_none() =>
 					pallet_struct = Some(pallet_struct::PalletStructDef::try_from(index, item)?),
-				Some(PalletAttr::Interface(_)) if interface.is_none() => {
-					let m = interface::InterfaceDef::try_from(index, item)?;
-					interface = Some(m);
+				Some(PalletAttr::Hooks(_)) if hooks.is_none() => {
+					let m = hooks::HooksDef::try_from(index, item)?;
+					hooks = Some(m);
 				},
 				Some(PalletAttr::Call(span)) if call.is_none() =>
 					call = Some(call::CallDef::try_from(span, index, item)?),
@@ -152,8 +152,8 @@ impl Def {
 			config: config.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::config]`"))?,
 			pallet_struct: pallet_struct
 				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::pallet]`"))?,
-			interface: interface
-				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::interface]`"))?,
+			hooks: hooks
+				.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::hooks]`"))?,
 			call: call.ok_or_else(|| syn::Error::new(item_span, "Missing `#[pallet::call]"))?,
 			extra_constants,
 			genesis_config,
@@ -203,7 +203,7 @@ impl Def {
 		let mut instances = vec![];
 		instances.extend_from_slice(&self.call.instances[..]);
 		instances.extend_from_slice(&self.pallet_struct.instances[..]);
-		instances.extend_from_slice(&self.interface.instances[..]);
+		instances.extend_from_slice(&self.hooks.instances[..]);
 		instances.extend(&mut self.storages.iter().flat_map(|s| s.instances.clone()));
 		if let Some(event) = &self.event {
 			instances.extend_from_slice(&event.instances[..]);
@@ -314,7 +314,7 @@ mod keyword {
 	syn::custom_keyword!(call);
 	syn::custom_keyword!(event);
 	syn::custom_keyword!(config);
-	syn::custom_keyword!(interface);
+	syn::custom_keyword!(hooks);
 	syn::custom_keyword!(inherent);
 	syn::custom_keyword!(error);
 	syn::custom_keyword!(storage);
@@ -333,7 +333,7 @@ mod keyword {
 enum PalletAttr {
 	Config(proc_macro2::Span),
 	Pallet(proc_macro2::Span),
-	Interface(proc_macro2::Span),
+	Hooks(proc_macro2::Span),
 	Call(proc_macro2::Span),
 	Error(proc_macro2::Span),
 	Event(proc_macro2::Span),
@@ -352,7 +352,7 @@ impl PalletAttr {
 		match self {
 			Self::Config(span) => span.clone(),
 			Self::Pallet(span) => span.clone(),
-			Self::Interface(span) => span.clone(),
+			Self::Hooks(span) => span.clone(),
 			Self::Call(span) => span.clone(),
 			Self::Error(span) => span.clone(),
 			Self::Event(span) => span.clone(),
@@ -381,8 +381,8 @@ impl syn::parse::Parse for PalletAttr {
 			Ok(PalletAttr::Config(content.parse::<keyword::config>()?.span()))
 		} else if lookahead.peek(keyword::pallet) {
 			Ok(PalletAttr::Pallet(content.parse::<keyword::pallet>()?.span()))
-		} else if lookahead.peek(keyword::interface) {
-			Ok(PalletAttr::Interface(content.parse::<keyword::interface>()?.span()))
+		} else if lookahead.peek(keyword::hooks) {
+			Ok(PalletAttr::Hooks(content.parse::<keyword::hooks>()?.span()))
 		} else if lookahead.peek(keyword::call) {
 			Ok(PalletAttr::Call(content.parse::<keyword::call>()?.span()))
 		} else if lookahead.peek(keyword::error) {

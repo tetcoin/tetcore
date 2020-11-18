@@ -18,26 +18,26 @@
 use crate::pallet::Def;
 use syn::spanned::Spanned;
 
-/// * implement the individual traits using the Interface trait
-pub fn expand_interface(def: &mut Def) -> proc_macro2::TokenStream {
+/// * implement the individual traits using the Hooks trait
+pub fn expand_hooks(def: &mut Def) -> proc_macro2::TokenStream {
 	let frame_support = &def.frame_support;
 	let type_impl_gen = &def.type_impl_generics();
 	let type_use_gen = &def.type_use_generics();
 	let pallet_ident = &def.pallet_struct.pallet;
-	let where_clause = &def.interface.where_clause;
+	let where_clause = &def.hooks.where_clause;
 	let frame_system = &def.frame_system;
 
-	let interface_item_span = def.item.content.as_mut()
-		.expect("Checked by def parser").1[def.interface.index].span();
+	let hooks_item_span = def.item.content.as_mut()
+		.expect("Checked by def parser").1[def.hooks.index].span();
 
-	quote::quote_spanned!(interface_item_span =>
+	quote::quote_spanned!(hooks_item_span =>
 		impl<#type_impl_gen>
 			#frame_support::traits::OnFinalize<<T as #frame_system::Config>::BlockNumber>
 			for #pallet_ident<#type_use_gen> #where_clause
 		{
 			fn on_finalize(n: <T as #frame_system::Config>::BlockNumber) {
 				<
-					Self as #frame_support::traits::Interface<
+					Self as #frame_support::traits::Hooks<
 						<T as #frame_system::Config>::BlockNumber
 					>
 				>::on_finalize(n)
@@ -52,7 +52,7 @@ pub fn expand_interface(def: &mut Def) -> proc_macro2::TokenStream {
 				n: <T as #frame_system::Config>::BlockNumber
 			) -> #frame_support::weights::Weight {
 				<
-					Self as #frame_support::traits::Interface<
+					Self as #frame_support::traits::Hooks<
 						<T as #frame_system::Config>::BlockNumber
 					>
 				>::on_initialize(n)
@@ -65,7 +65,7 @@ pub fn expand_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		{
 			fn on_runtime_upgrade() -> #frame_support::weights::Weight {
 				let result = <
-					Self as #frame_support::traits::Interface<
+					Self as #frame_support::traits::Hooks<
 						<T as #frame_system::Config>::BlockNumber
 					>
 				>::on_runtime_upgrade();
@@ -87,7 +87,7 @@ pub fn expand_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		{
 			fn offchain_worker(n: <T as #frame_system::Config>::BlockNumber) {
 				<
-					Self as #frame_support::traits::Interface<
+					Self as #frame_support::traits::Hooks<
 						<T as #frame_system::Config>::BlockNumber
 					>
 				>::offchain_worker(n)
@@ -100,7 +100,7 @@ pub fn expand_interface(def: &mut Def) -> proc_macro2::TokenStream {
 		{
 			fn integrity_test() {
 				<
-					Self as #frame_support::traits::Interface<
+					Self as #frame_support::traits::Hooks<
 						<T as #frame_system::Config>::BlockNumber
 					>
 				>::integrity_test()

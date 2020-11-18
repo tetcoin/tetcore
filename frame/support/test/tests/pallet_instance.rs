@@ -44,8 +44,8 @@ pub mod pallet {
 	#[pallet::generate_store(pub(crate) trait Store)]
 	pub struct Pallet<T, I = ()>(PhantomData<(T, I)>);
 
-	#[pallet::interface]
-	impl<T: Config<I>, I: 'static> Interface<BlockNumberFor<T>> for Pallet<T, I> {
+	#[pallet::hooks]
+	impl<T: Config<I>, I: 'static> Hooks<BlockNumberFor<T>> for Pallet<T, I> {
 		fn on_initialize(_: BlockNumberFor<T>) -> Weight {
 			if TypeId::of::<I>() == TypeId::of::<()>() {
 				Self::deposit_event(Event::Something(10));
@@ -423,7 +423,7 @@ fn storage_expand() {
 }
 
 #[test]
-fn pallet_interface_expand() {
+fn pallet_hooks_expand() {
 	TestExternalities::default().execute_with(|| {
 		frame_system::Module::<Runtime>::set_block_number(1);
 

@@ -100,8 +100,8 @@ pub mod pallet {
 	#[pallet::generate_store(pub(crate) trait Store)]
 	pub struct Pallet<T>(PhantomData<T>);
 
-	#[pallet::interface]
-	impl<T: Config> Interface<BlockNumberFor<T>> for Pallet<T>
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T>
 	where T::AccountId: From<SomeType2> + From<SomeType1> + SomeAssociation1,
 	{
 		fn on_initialize(_: BlockNumberFor<T>) -> Weight {
@@ -425,7 +425,7 @@ fn storage_expand() {
 }
 
 #[test]
-fn pallet_interface_expand() {
+fn pallet_hooks_expand() {
 	TestExternalities::default().execute_with(|| {
 		frame_system::Pallet::<Runtime>::set_block_number(1);
 
