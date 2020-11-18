@@ -956,11 +956,13 @@ pub mod pallet_prelude {
 	pub use frame_support::traits::{Get, Interface, IsType, GetPalletVersion, EnsureOrigin};
 	#[cfg(feature = "std")]
 	pub use frame_support::traits::GenesisBuild;
-	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter};
+	pub use frame_support::dispatch::{DispatchResultWithPostInfo, Parameter, DispatchError};
 	pub use frame_support::storage::types::{
 		StorageValue, StorageMap, StorageDoubleMap, ValueQuery, OptionQuery,
 	};
-	pub use frame_support::{EqNoBound, PartialEqNoBound, RuntimeDebugNoBound, DebugNoBound, CloneNoBound};
+	pub use frame_support::{
+		EqNoBound, PartialEqNoBound, RuntimeDebugNoBound, DebugNoBound, CloneNoBound
+	};
 	pub use codec::{Encode, Decode};
 	pub use sp_inherents::{InherentData, InherentIdentifier, ProvideInherent};
 	pub use crate::weights::{DispatchClass, Pays, Weight};
@@ -1442,6 +1444,19 @@ pub mod pallet_prelude {
 /// might require some migration.
 ///
 /// NOTE: for instantiable pallet, origin must be generic over T and I.
+///
+/// # General notes on instantiable pallet
+///
+/// An instantiable pallet is one where Config is generic, i.e. `Config<I>`. This allow runtime to
+/// implement multiple instance of the pallet, by using different type for the generic.
+/// This is the sole purpose of the generic `I`.
+/// But because `PalletInfo` requires `Pallet` placeholder to be static it is important to bound
+/// `'static` whenever `PalletInfo` can be used.
+/// And in order to have instantiable pallet usable as a regular pallet without instance, it is
+/// important to bound `= ()` on every types.
+///
+/// Thus impl bound look like `impl<T: Config<I>, I: 'static>`, and types look like
+/// `SomeType<T, I=()>` or `SomeType<T: Config<I>, I: 'static = ()>`.
 ///
 /// # Example for pallet without instance.
 ///
