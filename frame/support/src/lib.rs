@@ -1892,6 +1892,11 @@ pub mod pallet_prelude {
 /// 		pub(super) type MyStorage<T> = StorageValue<u32, ValueQuery, MyStorageOnEmpty>;
 /// 		```
 ///
+/// 	NOTE: decl_storage also generates functions `assimilate_storage` and `build_storage`
+/// 	directly on GenesisConfig, those are sometimes used in tests. In order not to break they
+/// 	can be implemented manually, just implement those functions by calling `GenesisBuild`
+/// 	implementation.
+///
 /// 11. **migrate origin**: just move the origin to the pallet module under `#[pallet::origin]`
 /// 12. **migrate validate_unsigned**: just move the ValidateUnsigned implementation to the pallet
 /// 	module under `#[pallet::validate_unsigned]`
