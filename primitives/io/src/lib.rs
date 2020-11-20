@@ -1135,7 +1135,7 @@ mod tracing_setup {
 	pub fn init_tracing() {
 		if TRACING_SET.load(Ordering::SeqCst) == false {
 			set_global_default(Dispatch::new(PassingTracingSubsciber {}))
-				.expect("We only ever call this once");
+				.expect("We only ever call this once, ONCE");
 			TRACING_SET.store(true, Ordering::SeqCst);
 		}
 	}
