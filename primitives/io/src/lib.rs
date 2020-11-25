@@ -1133,7 +1133,7 @@ mod tracing_setup {
 	/// Can be called multiple times from within the same process and will only
 	/// set the global bridging subscriber once.
 	pub fn init_tracing() {
-		if TRACING_SET.load(Ordering::SeqCst) == false {
+		if TRACING_SET.load(Ordering::SeqCst) == true {
 			set_global_default(Dispatch::new(PassingTracingSubsciber {}))
 				.expect("We only ever call this once, ONCE");
 			TRACING_SET.store(true, Ordering::SeqCst);
