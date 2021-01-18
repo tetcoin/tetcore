@@ -448,20 +448,6 @@ impl<Block: BlockT> BlockchainDb<Block> {
 				header.digest().log(DigestItem::as_changes_trie_root)
 					.cloned()))
 	}
-
-	fn extrinsic(&self, hash: &Block::Hash) -> ClientResult<Option<Block::Extrinsic>> {
-		match self.db.get(columns::TRANSACTION, hash.as_ref()) {
-			Some(ex) => {
-				match Decode::decode(&mut &ex[..]) {
-					Ok(ex) => Ok(Some(ex)),
-					Err(err) => Err(sp_blockchain::Error::Backend(
-						format!("Error decoding extrinsic {}: {}", hash, err)
-					)),
-				}
-			},
-			None => Ok(None),
-		}
-	}
 }
 
 impl<Block: BlockT> sc_client_api::blockchain::HeaderBackend<Block> for BlockchainDb<Block> {
@@ -532,7 +518,7 @@ impl<Block: BlockT> sc_client_api::blockchain::Backend<Block> for BlockchainDb<B
 						match Vec::<Block::Hash>::decode(&mut &body[..]) {
 							Ok(hashes) => {
 								let extrinsics: ClientResult<Vec<Block::Extrinsic>> = hashes.into_iter().map(
-									|h| self.extrinsic(&h) .and_then(|maybe_ex| maybe_ex.ok_or_else(
+									|h| self.extrinsic(&h).and_then(|maybe_ex| maybe_ex.ok_or_else(
 										|| sp_blockchain::Error::Backend(
 											format!("Missing transaction: {}", h))))
 								).collect();
@@ -575,6 +561,24 @@ impl<Block: BlockT> sc_client_api::blockchain::Backend<Block> for BlockchainDb<B
 
 	fn children(&self, parent_hash: Block::Hash) -> ClientResult<Vec<Block::Hash>> {
 		children::read_children(&*self.db, columns::META, meta_keys::CHILDREN_PREFIX, parent_hash)
+	}
+
+	fn extrinsic(&self, hash: &Block::Hash) -> ClientResult<Option<Block::Extrinsic>> {
+		match self.db.get(columns::TRANSACTION, hash.as_ref()) {
+			Some(ex) => {
+				match Decode::decode(&mut &ex[..]) {
+					Ok(ex) => Ok(Some(ex)),
+					Err(err) => Err(sp_blockchain::Error::Backend(
+							format!("Error decoding extrinsic {}: {}", hash, err)
+					)),
+				}
+			},
+			None => Ok(None),
+		}
+	}
+
+	fn have_extrinsic(&self, hash: &Block::Hash) -> ClientResult<bool> {
+		Ok(self.db.contains(columns::TRANSACTION, hash.as_ref()))
 	}
 }
 
@@ -1233,7 +1237,16 @@ impl<Block: BlockT> Backend<Block> {
 							let extrinsic = extrinsic.encode();
 							let hash = HashFor::<Block>::hash(&extrinsic);
 							transaction.set(columns::TRANSACTION, &hash.as_ref(), &extrinsic);
+
+							let multihash = cid::multihash::MultihashGeneric::wrap(
+								0xb220 as u64,
+								hash.as_ref(),
+							).unwrap();
+							let cid = cid::Cid::new_v1(0x55, multihash);
+							let s = cid.to_string_of_base(cid::multibase::Base::Base58Btc).unwrap();
+							log::info!("IMPORTED {:?}: {}", hash, s);
 							hashes.push(hash);
+
 						}
 						transaction.set_from_vec(columns::BODY, &lookup_key, hashes.encode());
 					},

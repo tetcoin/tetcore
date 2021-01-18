@@ -50,6 +50,7 @@ use crate::{
 		sync::SyncState,
 	},
 	transport, ReputationChange,
+	bitswap_handler::BitswapHandler,
 };
 use futures::{channel::oneshot, prelude::*};
 use libp2p::{PeerId, multiaddr, Multiaddr};
@@ -136,7 +137,7 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkWorker<B, H> {
 	/// Returns a `NetworkWorker` that implements `Future` and must be regularly polled in order
 	/// for the network processing to advance. From it, you can extract a `NetworkService` using
 	/// `worker.service()`. The `NetworkService` can be shared through the codebase.
-	pub fn new(params: Params<B, H>) -> Result<NetworkWorker<B, H>, Error> {
+	pub fn new(mut params: Params<B, H>) -> Result<NetworkWorker<B, H>, Error> {
 		// Ensure the listen addresses are consistent with the transport.
 		ensure_addresses_consistent_with_transport(
 			params.network_config.listen_addresses.iter(),
@@ -243,6 +244,15 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkWorker<B, H> {
 
 		let num_connected = Arc::new(AtomicUsize::new(0));
 		let is_major_syncing = Arc::new(AtomicBool::new(false));
+
+		{
+			// Handles incoming bitswap requests.
+			let (handler, protocol_config) = BitswapHandler::new(params.chain.clone());
+			if let Some(spawner) = &params.executor {
+				spawner(Box::pin(handler.run()));
+				params.network_config.request_response_protocols.push(protocol_config);
+			}
+		};
 
 		// Build the swarm.
 		let (mut swarm, bandwidth): (Swarm<B, H>, _) = {

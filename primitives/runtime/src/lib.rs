@@ -718,6 +718,54 @@ impl<R> TransactionOutcome<R> {
 	}
 }
 
+/// An extrinsic that may reference other extrincic by hash.
+/// correctly.
+#[derive(PartialEq, Eq, Clone, Encode, Decode)]
+pub enum RefExtrinsic<E: traits::Extrinsic + Encode + Decode, H: traits::Hash> {
+	/// Self contained.
+	Extrinsic(E),
+	/// References other extrinsic.
+	Reference((H::Output, E)),
+}
+
+impl<E: traits::Extrinsic + Encode + Decode, H: traits::Hash> RefExtrinsic<E, H>  {
+	/// Convert an encoded extrinsic to an `RefExtrinsic`.
+	pub fn from_bytes(mut bytes: &[u8]) -> Result<Self, codec::Error> {
+		RefExtrinsic::decode(&mut bytes)
+	}
+}
+
+impl<E: traits::Extrinsic + Encode + Decode + sp_std::fmt::Debug, H: traits::Hash> sp_std::fmt::Debug for RefExtrinsic<E, H> {
+	#[cfg(feature = "std")]
+	fn fmt(&self, fmt: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+		match self {
+			RefExtrinsic::Extrinsic(e) => e.fmt(fmt),
+			RefExtrinsic::Reference((r, e)) =>
+				write!(fmt, "Ref ({:?}): {:?}", sp_core::hexdisplay::HexDisplay::from(&r.as_ref()), e),
+		}
+	}
+
+	#[cfg(not(feature = "std"))]
+	fn fmt(&self, _fmt: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+		Ok(())
+	}
+}
+
+#[cfg(feature = "std")]
+impl<E: traits::Extrinsic + Encode + Decode, H: traits::Hash>  parity_util_mem::MallocSizeOf for RefExtrinsic<E, H> {
+	fn size_of(&self, ops: &mut parity_util_mem::MallocSizeOfOps) -> usize {
+		match self {
+			RefExtrinsic::Extrinsic(e) => e.size_of(ops),
+			RefExtrinsic::Reference((r, e)) => (r, e).size_of(ops),
+		}
+	}
+}
+
+impl<E: traits::Extrinsic + Encode + Decode, H: traits::Hash>  traits::Extrinsic for RefExtrinsic<E, H> {
+	type Call = E::Call;
+	type SignaturePayload = E::SignaturePayload;
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
