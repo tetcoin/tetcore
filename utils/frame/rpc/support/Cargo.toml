@@ -13,8 +13,8 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 futures = { version = "0.3.0", features = ["compat"] }
-jsonrpc-client-transports = { version = "15.0.0", default-features = false, features = ["http"], git = "https://github.com/paritytech/jsonrpc.git" }
-jsonrpc-core = { version = "15.0.0", git = "https://github.com/paritytech/jsonrpc.git" }
+jsonrpc-client-transports = { version = "17.0.0", default-features = false, features = ["http"] }
+jsonrpc-core = "17.0.0"
 codec = { package = "parity-scale-codec", version = "1.3.6" }
 serde = "1"
 frame-support = { version = "2.0.0", path = "../../../../frame/support" }
