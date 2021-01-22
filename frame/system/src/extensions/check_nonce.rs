@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,32 +16,32 @@
 // limitations under the License.
 
 use codec::{Encode, Decode};
-use crate::Trait;
-use frame_support::{
-	weights::DispatchInfo,
-	StorageMap,
-};
+use crate::Config;
+use frame_support::weights::DispatchInfo;
 use sp_runtime::{
 	traits::{SignedExtension, DispatchInfoOf, Dispatchable, One},
 	transaction_validity::{
 		ValidTransaction, TransactionValidityError, InvalidTransaction, TransactionValidity,
-		TransactionLongevity, TransactionPriority,
+		TransactionLongevity,
 	},
 };
 use sp_std::vec;
 
 /// Nonce check and increment to give replay protection for transactions.
+///
+/// Note that this does not set any priority by default. Make sure that AT LEAST one of the signed
+/// extension sets some kind of priority upon validating transactions.
 #[derive(Encode, Decode, Clone, Eq, PartialEq)]
-pub struct CheckNonce<T: Trait>(#[codec(compact)] T::Index);
+pub struct CheckNonce<T: Config>(#[codec(compact)] T::Index);
 
-impl<T: Trait> CheckNonce<T> {
+impl<T: Config> CheckNonce<T> {
 	/// utility constructor. Used only in client/factory code.
 	pub fn from(nonce: T::Index) -> Self {
 		Self(nonce)
 	}
 }
 
-impl<T: Trait> sp_std::fmt::Debug for CheckNonce<T> {
+impl<T: Config> sp_std::fmt::Debug for CheckNonce<T> {
 	#[cfg(feature = "std")]
 	fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
 		write!(f, "CheckNonce({})", self.0)
@@ -53,7 +53,7 @@ impl<T: Trait> sp_std::fmt::Debug for CheckNonce<T> {
 	}
 }
 
-impl<T: Trait> SignedExtension for CheckNonce<T> where
+impl<T: Config> SignedExtension for CheckNonce<T> where
 	T::Call: Dispatchable<Info=DispatchInfo>
 {
 	type AccountId = T::AccountId;
@@ -90,7 +90,7 @@ impl<T: Trait> SignedExtension for CheckNonce<T> where
 		&self,
 		who: &Self::AccountId,
 		_call: &Self::Call,
-		info: &DispatchInfoOf<Self::Call>,
+		_info: &DispatchInfoOf<Self::Call>,
 		_len: usize,
 	) -> TransactionValidity {
 		// check index
@@ -107,7 +107,7 @@ impl<T: Trait> SignedExtension for CheckNonce<T> where
 		};
 
 		Ok(ValidTransaction {
-			priority: info.weight as TransactionPriority,
+			priority: 0,
 			requires,
 			provides,
 			longevity: TransactionLongevity::max_value(),
@@ -126,7 +126,8 @@ mod tests {
 		new_test_ext().execute_with(|| {
 			crate::Account::<Test>::insert(1, crate::AccountInfo {
 				nonce: 1,
-				refcount: 0,
+				consumers: 0,
+				providers: 0,
 				data: 0,
 			});
 			let info = DispatchInfo::default();

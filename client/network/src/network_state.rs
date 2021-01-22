@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@
 
 use libp2p::{core::ConnectedPoint, Multiaddr};
 use serde::{Deserialize, Serialize};
-use slog_derive::SerdeValue;
 use std::{collections::{HashMap, HashSet}, time::Duration};
 
 /// Returns general information about the networking.
@@ -30,7 +29,7 @@ use std::{collections::{HashMap, HashSet}, time::Duration};
 /// Meant for general diagnostic purposes.
 ///
 /// **Warning**: This API is not stable.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, SerdeValue)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkState {
 	/// PeerId of the local node.
@@ -43,10 +42,6 @@ pub struct NetworkState {
 	pub connected_peers: HashMap<String, Peer>,
 	/// List of node that we know of but that we're not connected to.
 	pub not_connected_peers: HashMap<String, NotConnectedPeer>,
-	/// Downloaded bytes per second averaged over the past few seconds.
-	pub average_download_per_sec: u64,
-	/// Uploaded bytes per second averaged over the past few seconds.
-	pub average_upload_per_sec: u64,
 	/// State of the peerset manager.
 	pub peerset: serde_json::Value,
 }
@@ -61,12 +56,6 @@ pub struct Peer {
 	pub version_string: Option<String>,
 	/// Latest ping duration with this node.
 	pub latest_ping_time: Option<Duration>,
-	/// If true, the peer is "enabled", which means that we try to open Substrate-related protocols
-	/// with this peer. If false, we stick to Kademlia and/or other network-only protocols.
-	pub enabled: bool,
-	/// If true, the peer is "open", which means that we have a Substrate-related protocol
-	/// with this peer.
-	pub open: bool,
 	/// List of addresses known for this node.
 	pub known_addresses: HashSet<Multiaddr>,
 }

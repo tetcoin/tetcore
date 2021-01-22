@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -21,9 +21,10 @@
 use crate::arg_enums::Database;
 use crate::error::Result;
 use crate::{
-	init_logger, DatabaseParams, ImportParams, KeystoreParams, NetworkParams, NodeKeyParams,
+	DatabaseParams, ImportParams, KeystoreParams, NetworkParams, NodeKeyParams,
 	OffchainWorkerParams, PruningParams, SharedParams, SubstrateCli,
 };
+use log::warn;
 use names::{Generator, Name};
 use sc_client_api::execution_extensions::ExecutionStrategies;
 use sc_service::config::{
@@ -31,18 +32,59 @@ use sc_service::config::{
 	NodeKeyConfig, OffchainWorkerConfig, PrometheusConfig, PruningMode, Role, RpcMethods,
 	TaskExecutor, TelemetryEndpoints, TransactionPoolOptions, WasmExecutionMethod,
 };
-use sc_service::{ChainSpec, TracingReceiver};
+use sc_service::{ChainSpec, TracingReceiver, KeepBlocks, TransactionStorageMode};
+use sc_telemetry::TelemetryHandle;
+use sc_tracing::logging::GlobalLoggerBuilder;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 
 /// The maximum number of characters for a node name.
 pub(crate) const NODE_NAME_MAX_LENGTH: usize = 64;
 
-/// default sub directory to store network config
+/// Default sub directory to store network config.
 pub(crate) const DEFAULT_NETWORK_CONFIG_PATH: &'static str = "network";
 
+/// The recommended open file descriptor limit to be configured for the process.
+const RECOMMENDED_OPEN_FILE_DESCRIPTOR_LIMIT: u64 = 10_000;
+
+/// Default configuration values used by Substrate
+///
+/// These values will be used by [`CliConfiguration`] to set
+/// default values for e.g. the listen port or the RPC port.
+pub trait DefaultConfigurationValues {
+	/// The port Substrate should listen on for p2p connections.
+	///
+	/// By default this is `30333`.
+	fn p2p_listen_port() -> u16 {
+		30333
+	}
+
+	/// The port Substrate should listen on for websocket connections.
+	///
+	/// By default this is `9944`.
+	fn rpc_ws_listen_port() -> u16 {
+		9944
+	}
+
+	/// The port Substrate should listen on for http connections.
+	///
+	/// By default this is `9933`.
+	fn rpc_http_listen_port() -> u16 {
+		9933
+	}
+
+	/// The port Substrate should listen on for prometheus connections.
+	///
+	/// By default this is `9615`.
+	fn prometheus_listen_port() -> u16 {
+		9615
+	}
+}
+
+impl DefaultConfigurationValues for () {}
+
 /// A trait that allows converting an object to a Configuration
-pub trait CliConfiguration: Sized {
+pub trait CliConfiguration<DCV: DefaultConfigurationValues = ()>: Sized {
 	/// Get the SharedParams for this object
 	fn shared_params(&self) -> &SharedParams;
 
@@ -122,6 +164,7 @@ pub trait CliConfiguration: Sized {
 		client_id: &str,
 		node_name: &str,
 		node_key: NodeKeyConfig,
+		default_listen_port: u16,
 	) -> Result<NetworkConfiguration> {
 		Ok(if let Some(network_params) = self.network_params() {
 			network_params.network_config(
@@ -131,6 +174,7 @@ pub trait CliConfiguration: Sized {
 				client_id,
 				node_name,
 				node_key,
+				default_listen_port,
 			)
 		} else {
 			NetworkConfiguration::new(
@@ -144,12 +188,12 @@ pub trait CliConfiguration: Sized {
 
 	/// Get the keystore configuration.
 	///
-	/// Bu default this is retrieved from `KeystoreParams` if it is available. Otherwise it uses
+	/// By default this is retrieved from `KeystoreParams` if it is available. Otherwise it uses
 	/// `KeystoreConfig::InMemory`.
-	fn keystore_config(&self, base_path: &PathBuf) -> Result<KeystoreConfig> {
+	fn keystore_config(&self, config_dir: &PathBuf) -> Result<(Option<String>, KeystoreConfig)> {
 		self.keystore_params()
-			.map(|x| x.keystore_config(base_path))
-			.unwrap_or(Ok(KeystoreConfig::InMemory))
+			.map(|x| x.keystore_config(config_dir))
+			.unwrap_or_else(|| Ok((None, KeystoreConfig::InMemory)))
 	}
 
 	/// Get the database cache size.
@@ -159,6 +203,13 @@ pub trait CliConfiguration: Sized {
 		Ok(self.database_params()
 			.map(|x| x.database_cache_size())
 			.unwrap_or_default())
+	}
+
+	/// Get the database transaction storage scheme.
+	fn database_transaction_storage(&self) -> Result<TransactionStorageMode> {
+		Ok(self.database_params()
+			.map(|x| x.transaction_storage())
+			.unwrap_or(TransactionStorageMode::BlockBody))
 	}
 
 	/// Get the database backend variant.
@@ -179,9 +230,6 @@ pub trait CliConfiguration: Sized {
 			Database::RocksDb => DatabaseConfig::RocksDb {
 				path: base_path.join("db"),
 				cache_size,
-			},
-			Database::SubDb => DatabaseConfig::SubDb {
-				path: base_path.join("subdb"),
 			},
 			Database::ParityDb => DatabaseConfig::ParityDb {
 				path: base_path.join("paritydb"),
@@ -205,14 +253,24 @@ pub trait CliConfiguration: Sized {
 		Ok(Default::default())
 	}
 
-	/// Get the pruning mode.
+	/// Get the state pruning mode.
 	///
 	/// By default this is retrieved from `PruningMode` if it is available. Otherwise its
 	/// `PruningMode::default()`.
-	fn pruning(&self, unsafe_pruning: bool, role: &Role) -> Result<PruningMode> {
+	fn state_pruning(&self, unsafe_pruning: bool, role: &Role) -> Result<PruningMode> {
 		self.pruning_params()
-			.map(|x| x.pruning(unsafe_pruning, role))
+			.map(|x| x.state_pruning(unsafe_pruning, role))
 			.unwrap_or_else(|| Ok(Default::default()))
+	}
+
+	/// Get the block pruning mode.
+	///
+	/// By default this is retrieved from `block_pruning` if it is available. Otherwise its
+	/// `KeepBlocks::All`.
+	fn keep_blocks(&self) -> Result<KeepBlocks> {
+		self.pruning_params()
+			.map(|x| x.keep_blocks())
+			.unwrap_or_else(|| Ok(KeepBlocks::All))
 	}
 
 	/// Get the chain ID (string).
@@ -239,6 +297,15 @@ pub trait CliConfiguration: Sized {
 			.unwrap_or_default())
 	}
 
+	/// Get the path where WASM overrides live.
+	///
+	/// By default this is `None`.
+	fn wasm_runtime_overrides(&self) -> Option<PathBuf> {
+		self.import_params()
+			.map(|x| x.wasm_runtime_overrides())
+			.unwrap_or_default()
+	}
+
 	/// Get the execution strategies.
 	///
 	/// By default this is retrieved from `ImportParams` if it is available. Otherwise its
@@ -257,22 +324,22 @@ pub trait CliConfiguration: Sized {
 	/// Get the RPC HTTP address (`None` if disabled).
 	///
 	/// By default this is `None`.
-	fn rpc_http(&self) -> Result<Option<SocketAddr>> {
-		Ok(Default::default())
+	fn rpc_http(&self, _default_listen_port: u16) -> Result<Option<SocketAddr>> {
+		Ok(None)
 	}
 
 	/// Get the RPC IPC path (`None` if disabled).
 	///
 	/// By default this is `None`.
 	fn rpc_ipc(&self) -> Result<Option<String>> {
-		Ok(Default::default())
+		Ok(None)
 	}
 
 	/// Get the RPC websocket address (`None` if disabled).
 	///
 	/// By default this is `None`.
-	fn rpc_ws(&self) -> Result<Option<SocketAddr>> {
-		Ok(Default::default())
+	fn rpc_ws(&self, _default_listen_port: u16) -> Result<Option<SocketAddr>> {
+		Ok(None)
 	}
 
 	/// Returns the RPC method set to expose.
@@ -287,12 +354,12 @@ pub trait CliConfiguration: Sized {
 	///
 	/// By default this is `None`.
 	fn rpc_ws_max_connections(&self) -> Result<Option<usize>> {
-		Ok(Default::default())
+		Ok(None)
 	}
 
 	/// Get the RPC cors (`None` if disabled)
 	///
-	/// By default this is `None`.
+	/// By default this is `Some(Vec::new())`.
 	fn rpc_cors(&self, _is_dev: bool) -> Result<Option<Vec<String>>> {
 		Ok(Some(Vec::new()))
 	}
@@ -300,8 +367,8 @@ pub trait CliConfiguration: Sized {
 	/// Get the prometheus configuration (`None` if disabled)
 	///
 	/// By default this is `None`.
-	fn prometheus_config(&self) -> Result<Option<PrometheusConfig>> {
-		Ok(Default::default())
+	fn prometheus_config(&self, _default_listen_port: u16) -> Result<Option<PrometheusConfig>> {
+		Ok(None)
 	}
 
 	/// Get the telemetry endpoints (if any)
@@ -318,14 +385,14 @@ pub trait CliConfiguration: Sized {
 	///
 	/// By default this is `None`.
 	fn telemetry_external_transport(&self) -> Result<Option<ExtTransport>> {
-		Ok(Default::default())
+		Ok(None)
 	}
 
 	/// Get the default value for heap pages
 	///
 	/// By default this is `None`.
 	fn default_heap_pages(&self) -> Result<Option<u64>> {
-		Ok(Default::default())
+		Ok(None)
 	}
 
 	/// Returns an offchain worker config wrapped in `Ok(_)`
@@ -360,22 +427,18 @@ pub trait CliConfiguration: Sized {
 
 	/// Get the tracing targets from the current object (if any)
 	///
-	/// By default this is retrieved from `ImportParams` if it is available. Otherwise its
+	/// By default this is retrieved from [`SharedParams`] if it is available. Otherwise its
 	/// `None`.
 	fn tracing_targets(&self) -> Result<Option<String>> {
-		Ok(self.import_params()
-			.map(|x| x.tracing_targets())
-			.unwrap_or_else(|| Default::default()))
+		Ok(self.shared_params().tracing_targets())
 	}
 
 	/// Get the TracingReceiver value from the current object
 	///
-	/// By default this is retrieved from `ImportParams` if it is available. Otherwise its
+	/// By default this is retrieved from [`SharedParams`] if it is available. Otherwise its
 	/// `TracingReceiver::default()`.
 	fn tracing_receiver(&self) -> Result<TracingReceiver> {
-		Ok(self.import_params()
-			.map(|x| x.tracing_receiver())
-			.unwrap_or_default())
+		Ok(self.shared_params().tracing_receiver())
 	}
 
 	/// Get the node key from the current object
@@ -407,18 +470,15 @@ pub trait CliConfiguration: Sized {
 		&self,
 		cli: &C,
 		task_executor: TaskExecutor,
+		telemetry_handle: Option<TelemetryHandle>,
 	) -> Result<Configuration> {
 		let is_dev = self.is_dev()?;
 		let chain_id = self.chain_id(is_dev)?;
-		let chain_spec = cli.load_spec(chain_id.as_str())?;
+		let chain_spec = cli.load_spec(&chain_id)?;
 		let base_path = self
 			.base_path()?
 			.unwrap_or_else(|| BasePath::from_project("", "", &C::executable_name()));
-		let config_dir = base_path
-			.path()
-			.to_path_buf()
-			.join("chains")
-			.join(chain_spec.id());
+		let config_dir = base_path.config_dir(chain_spec.id());
 		let net_config_dir = config_dir.join(DEFAULT_NETWORK_CONFIG_PATH);
 		let client_id = C::client_id();
 		let database_cache_size = self.database_cache_size()?.unwrap_or(128);
@@ -427,6 +487,7 @@ pub trait CliConfiguration: Sized {
 		let role = self.role(is_dev)?;
 		let max_runtime_instances = self.max_runtime_instances()?.unwrap_or(8);
 		let is_validator = role.is_network_authority();
+		let (keystore_remote, keystore) = self.keystore_config(&config_dir)?;
 
 		let unsafe_pruning = self
 			.import_params()
@@ -445,21 +506,26 @@ pub trait CliConfiguration: Sized {
 				client_id.as_str(),
 				self.node_name()?.as_str(),
 				node_key,
+				DCV::p2p_listen_port(),
 			)?,
-			keystore: self.keystore_config(&config_dir)?,
+			keystore_remote,
+			keystore,
 			database: self.database_config(&config_dir, database_cache_size, database)?,
 			state_cache_size: self.state_cache_size()?,
 			state_cache_child_ratio: self.state_cache_child_ratio()?,
-			pruning: self.pruning(unsafe_pruning, &role)?,
+			state_pruning: self.state_pruning(unsafe_pruning, &role)?,
+			keep_blocks: self.keep_blocks()?,
+			transaction_storage: self.database_transaction_storage()?,
 			wasm_method: self.wasm_method()?,
+			wasm_runtime_overrides: self.wasm_runtime_overrides(),
 			execution_strategies: self.execution_strategies(is_dev, is_validator)?,
-			rpc_http: self.rpc_http()?,
-			rpc_ws: self.rpc_ws()?,
+			rpc_http: self.rpc_http(DCV::rpc_http_listen_port())?,
+			rpc_ws: self.rpc_ws(DCV::rpc_ws_listen_port())?,
 			rpc_ipc: self.rpc_ipc()?,
 			rpc_methods: self.rpc_methods()?,
 			rpc_ws_max_connections: self.rpc_ws_max_connections()?,
 			rpc_cors: self.rpc_cors(is_dev)?,
-			prometheus_config: self.prometheus_config()?,
+			prometheus_config: self.prometheus_config(DCV::prometheus_listen_port())?,
 			telemetry_endpoints: self.telemetry_endpoints(&chain_spec)?,
 			telemetry_external_transport: self.telemetry_external_transport()?,
 			default_heap_pages: self.default_heap_pages()?,
@@ -469,12 +535,14 @@ pub trait CliConfiguration: Sized {
 			dev_key_seed: self.dev_key_seed(is_dev)?,
 			tracing_targets: self.tracing_targets()?,
 			tracing_receiver: self.tracing_receiver()?,
+			disable_log_reloading: self.is_log_filter_reloading_disabled()?,
 			chain_spec,
 			max_runtime_instances,
 			announce_block: self.announce_block()?,
 			role,
 			base_path: Some(base_path),
 			informant_output_format: Default::default(),
+			telemetry_handle,
 		})
 	}
 
@@ -488,22 +556,55 @@ pub trait CliConfiguration: Sized {
 		Ok(self.shared_params().log_filters().join(","))
 	}
 
-	/// Initialize substrate. This must be done only once.
+	/// Is log reloading disabled (enabled by default)
+	fn is_log_filter_reloading_disabled(&self) -> Result<bool> {
+		Ok(self.shared_params().is_log_filter_reloading_disabled())
+	}
+
+	/// Should the log color output be disabled?
+	fn disable_log_color(&self) -> Result<bool> {
+		Ok(self.shared_params().disable_log_color())
+	}
+
+	/// Initialize substrate. This must be done only once per process.
 	///
 	/// This method:
 	///
-	/// 1. Set the panic handler
-	/// 2. Raise the FD limit
-	/// 3. Initialize the logger
-	fn init<C: SubstrateCli>(&self) -> Result<()> {
-		let logger_pattern = self.log_filters()?;
-
+	/// 1. Sets the panic handler
+	/// 2. Initializes the logger
+	/// 3. Raises the FD limit
+	fn init<C: SubstrateCli>(&self) -> Result<sc_telemetry::TelemetryWorker> {
 		sp_panic_handler::set(&C::support_url(), &C::impl_version());
 
-		fdlimit::raise_fd_limit();
-		init_logger(&logger_pattern);
+		let mut logger = GlobalLoggerBuilder::new(self.log_filters()?);
+		logger.with_log_reloading(!self.is_log_filter_reloading_disabled()?);
 
-		Ok(())
+		if let Some(transport) = self.telemetry_external_transport()? {
+			logger.with_transport(transport);
+		}
+
+		if let Some(tracing_targets) = self.tracing_targets()? {
+			let tracing_receiver = self.tracing_receiver()?;
+			logger.with_profiling(tracing_receiver, tracing_targets);
+		}
+
+		if self.disable_log_color()? {
+			logger.with_colors(false);
+		}
+
+		let telemetry_worker = logger.init()?;
+
+		if let Some(new_limit) = fdlimit::raise_fd_limit() {
+			if new_limit < RECOMMENDED_OPEN_FILE_DESCRIPTOR_LIMIT {
+				warn!(
+					"Low open file descriptor limit configured for the process. \
+					Current value: {:?}, recommended value: {:?}.",
+					new_limit, RECOMMENDED_OPEN_FILE_DESCRIPTOR_LIMIT,
+				);
+			}
+		}
+
+		Ok(telemetry_worker)
 	}
 }
 

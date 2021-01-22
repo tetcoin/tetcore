@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ use sp_blockchain::{
 };
 pub use sc_client_api::{
 	backend::{
-		AuxStore, NewBlockState
+		AuxStore, NewBlockState, ProvideChtRoots,
 	},
 	blockchain::{
 		Backend as BlockchainBackend, BlockStatus, Cache as BlockchainCache,
@@ -171,5 +171,23 @@ impl<S, Block: BlockT> RemoteBlockchain<Block> for Blockchain<S>
 			block: number,
 			retry_count: None,
 		}))
+	}
+}
+
+impl<S: Storage<Block>, Block: BlockT> ProvideChtRoots<Block> for Blockchain<S> {
+	fn header_cht_root(
+		&self,
+		cht_size: NumberFor<Block>,
+		block: NumberFor<Block>,
+	) -> sp_blockchain::Result<Option<Block::Hash>> {
+		self.storage().header_cht_root(cht_size, block)
+	}
+
+	fn changes_trie_cht_root(
+		&self,
+		cht_size: NumberFor<Block>,
+		block: NumberFor<Block>,
+	) -> sp_blockchain::Result<Option<Block::Hash>> {
+		self.storage().changes_trie_cht_root(cht_size, block)
 	}
 }

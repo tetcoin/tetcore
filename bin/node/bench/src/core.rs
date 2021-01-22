@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -93,26 +93,26 @@ pub enum Mode {
 }
 
 impl std::str::FromStr for Mode {
-    type Err = &'static str;
-    fn from_str(day: &str) -> Result<Self, Self::Err> {
-        match day {
-            "regular" => Ok(Mode::Regular),
-            "profile" => Ok(Mode::Profile),
-            _ => Err("Could not parse mode"),
-        }
-    }
+	type Err = &'static str;
+	fn from_str(day: &str) -> Result<Self, Self::Err> {
+		match day {
+			"regular" => Ok(Mode::Regular),
+			"profile" => Ok(Mode::Profile),
+			_ => Err("Could not parse mode"),
+		}
+	}
 }
 
 impl fmt::Display for BenchmarkOutput {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(
 			f,
 			"{}: avg {}, w_avg {}",
 			self.name,
 			NsFormatter(self.raw_average),
 			NsFormatter(self.average),
 		)
-    }
+	}
 }
 
 pub fn run_benchmark(

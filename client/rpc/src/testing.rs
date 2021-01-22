@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ lazy_static::lazy_static! {
 
 type Boxed01Future01 = Box<dyn future01::Future<Item = (), Error = ()> + Send + 'static>;
 
+/// Executor for use in testing
 pub struct TaskExecutor;
 impl future01::Executor<Boxed01Future01> for TaskExecutor {
 	fn execute(

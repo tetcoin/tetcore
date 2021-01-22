@@ -1,34 +1,38 @@
-// Copyright 2019-2020 Parity Technologies (UK) Ltd.
 // This file is part of Substrate.
 
-// Substrate is free software: you can redistribute it and/or modify
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
+// This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-// Substrate is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use std::{
 	str::FromStr,
 	sync::Arc,
 	convert::TryFrom,
 	thread::sleep,
+	collections::HashSet,
 };
 
-use sp_core::offchain::OffchainStorage;
+use crate::NetworkProvider;
 use futures::Future;
 use log::error;
-use sc_network::{PeerId, Multiaddr, NetworkStateInfo};
+use sc_network::{PeerId, Multiaddr};
 use codec::{Encode, Decode};
+use sp_core::OpaquePeerId;
 use sp_core::offchain::{
 	Externalities as OffchainExt, HttpRequestId, Timestamp, HttpRequestStatus, HttpError,
-	OpaqueNetworkState, OpaquePeerId, OpaqueMultiaddr, StorageKind,
+	OffchainStorage, OpaqueNetworkState, OpaqueMultiaddr, StorageKind,
 };
 pub use sp_offchain::STORAGE_PREFIX;
 pub use http::SharedClient;
@@ -49,8 +53,8 @@ mod timestamp;
 pub(crate) struct Api<Storage> {
 	/// Offchain Workers database.
 	db: Storage,
-	/// A NetworkState provider.
-	network_state: Arc<dyn NetworkStateInfo + Send + Sync>,
+	/// A provider for substrate networking.
+	network_provider: Arc<dyn NetworkProvider + Send + Sync>,
 	/// Is this node a potential validator?
 	is_validator: bool,
 	/// Everything HTTP-related is handled by a different struct.
@@ -73,10 +77,10 @@ impl<Storage: OffchainStorage> OffchainExt for Api<Storage> {
 	}
 
 	fn network_state(&self) -> Result<OpaqueNetworkState, ()> {
-		let external_addresses = self.network_state.external_addresses();
+		let external_addresses = self.network_provider.external_addresses();
 
 		let state = NetworkState::new(
-			self.network_state.local_peer_id(),
+			self.network_provider.local_peer_id(),
 			external_addresses,
 		);
 		Ok(OpaqueNetworkState::from(state))
@@ -180,6 +184,15 @@ impl<Storage: OffchainStorage> OffchainExt for Api<Storage> {
 	) -> Result<usize, HttpError> {
 		self.http.response_read_body(request_id, buffer, deadline)
 	}
+
+	fn set_authorized_nodes(&mut self, nodes: Vec<OpaquePeerId>, authorized_only: bool) {
+		let peer_ids: HashSet<PeerId> = nodes.into_iter()
+			.filter_map(|node| PeerId::from_bytes(&node.0).ok())
+			.collect();
+
+		self.network_provider.set_authorized_peers(peer_ids);
+		self.network_provider.set_authorized_only(authorized_only);
+	}
 }
 
 /// Information about the local node's network state.
@@ -200,7 +213,7 @@ impl NetworkState {
 
 impl From<NetworkState> for OpaqueNetworkState {
 	fn from(state: NetworkState) -> OpaqueNetworkState {
-		let enc = Encode::encode(&state.peer_id.into_bytes());
+		let enc = Encode::encode(&state.peer_id.to_bytes());
 		let peer_id = OpaquePeerId::new(enc);
 
 		let external_addresses: Vec<OpaqueMultiaddr> = state
@@ -226,7 +239,7 @@ impl TryFrom<OpaqueNetworkState> for NetworkState {
 		let inner_vec = state.peer_id.0;
 
 		let bytes: Vec<u8> = Decode::decode(&mut &inner_vec[..]).map_err(|_| ())?;
-		let peer_id = PeerId::from_bytes(bytes).map_err(|_| ())?;
+		let peer_id = PeerId::from_bytes(&bytes).map_err(|_| ())?;
 
 		let external_addresses: Result<Vec<Multiaddr>, Self::Error> = state.external_addresses
 			.iter()
@@ -256,10 +269,10 @@ pub(crate) struct AsyncApi {
 }
 
 impl AsyncApi {
-	/// Creates new Offchain extensions API implementation  an the asynchronous processing part.
+	/// Creates new Offchain extensions API implementation an the asynchronous processing part.
 	pub fn new<S: OffchainStorage>(
 		db: S,
-		network_state: Arc<dyn NetworkStateInfo + Send + Sync>,
+		network_provider: Arc<dyn NetworkProvider + Send + Sync>,
 		is_validator: bool,
 		shared_client: SharedClient,
 	) -> (Api<S>, Self) {
@@ -267,7 +280,7 @@ impl AsyncApi {
 
 		let api = Api {
 			db,
-			network_state,
+			network_provider,
 			is_validator,
 			http: http_api,
 		};
@@ -292,11 +305,21 @@ mod tests {
 	use super::*;
 	use std::{convert::{TryFrom, TryInto}, time::SystemTime};
 	use sc_client_db::offchain::LocalStorage;
-	use sc_network::PeerId;
+	use sc_network::{NetworkStateInfo, PeerId};
 
-	struct MockNetworkStateInfo();
+	struct TestNetwork();
 
-	impl NetworkStateInfo for MockNetworkStateInfo {
+	impl NetworkProvider for TestNetwork {
+		fn set_authorized_peers(&self, _peers: HashSet<PeerId>) {
+			unimplemented!()
+		}
+
+		fn set_authorized_only(&self, _reserved_only: bool) {
+			unimplemented!()
+		}
+	}
+
+	impl NetworkStateInfo for TestNetwork {
 		fn external_addresses(&self) -> Vec<Multiaddr> {
 			Vec::new()
 		}
@@ -307,11 +330,10 @@ mod tests {
 	}
 
 	fn offchain_api() -> (Api<LocalStorage>, AsyncApi) {
-		let _ = env_logger::try_init();
+		sp_tracing::try_init_simple();
 		let db = LocalStorage::new_test();
-		let mock = Arc::new(MockNetworkStateInfo());
+		let mock = Arc::new(TestNetwork());
 		let shared_client = SharedClient::new();
-
 
 		AsyncApi::new(
 			db,

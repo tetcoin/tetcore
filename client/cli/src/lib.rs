@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,9 @@
 
 #![warn(missing_docs)]
 #![warn(unused_extern_crates)]
+#![warn(unused_imports)]
 
-mod arg_enums;
+pub mod arg_enums;
 mod commands;
 mod config;
 mod error;
@@ -32,13 +33,12 @@ pub use arg_enums::*;
 pub use commands::*;
 pub use config::*;
 pub use error::*;
-use lazy_static::lazy_static;
-use log::info;
 pub use params::*;
-use regex::Regex;
 pub use runner::*;
-use sc_service::{Configuration, TaskExecutor};
 pub use sc_service::{ChainSpec, Role};
+use sc_service::{Configuration, TaskExecutor};
+use sc_telemetry::TelemetryHandle;
+pub use sc_tracing::logging::GlobalLoggerBuilder;
 pub use sp_version::RuntimeVersion;
 use std::io::Write;
 pub use structopt;
@@ -70,7 +70,8 @@ pub trait SubstrateCli: Sized {
 	/// Extracts the file name from `std::env::current_exe()`.
 	/// Resorts to the env var `CARGO_PKG_NAME` in case of Error.
 	fn executable_name() -> String {
-		std::env::current_exe().ok()
+		std::env::current_exe()
+			.ok()
 			.and_then(|e| e.file_name().map(|s| s.to_os_string()))
 			.and_then(|w| w.into_string().ok())
 			.unwrap_or_else(|| env!("CARGO_PKG_NAME").into())
@@ -158,7 +159,7 @@ pub trait SubstrateCli: Sized {
 					let _ = std::io::stdout().write_all(e.message.as_bytes());
 					std::process::exit(0);
 				}
-			},
+			}
 		};
 
 		<Self as StructOpt>::from_clap(&matches)
@@ -209,98 +210,22 @@ pub trait SubstrateCli: Sized {
 	}
 
 	/// Only create a Configuration for the command provided in argument
-	fn create_configuration<T: CliConfiguration>(
+	fn create_configuration<T: CliConfiguration<DVC>, DVC: DefaultConfigurationValues>(
 		&self,
 		command: &T,
 		task_executor: TaskExecutor,
+		telemetry_handle: Option<TelemetryHandle>,
 	) -> error::Result<Configuration> {
-		command.create_configuration(self, task_executor)
+		command.create_configuration(self, task_executor, telemetry_handle)
 	}
 
 	/// Create a runner for the command provided in argument. This will create a Configuration and
 	/// a tokio runtime
 	fn create_runner<T: CliConfiguration>(&self, command: &T) -> error::Result<Runner<Self>> {
-		command.init::<Self>()?;
-		Runner::new(self, command)
+		let telemetry_worker = command.init::<Self>()?;
+		Runner::new(self, command, telemetry_worker)
 	}
 
 	/// Native runtime version.
 	fn native_runtime_version(chain_spec: &Box<dyn ChainSpec>) -> &'static RuntimeVersion;
-}
-
-/// Initialize the logger
-pub fn init_logger(pattern: &str) {
-	use ansi_term::Colour;
-
-	let mut builder = env_logger::Builder::new();
-	// Disable info logging by default for some modules:
-	builder.filter(Some("ws"), log::LevelFilter::Off);
-	builder.filter(Some("yamux"), log::LevelFilter::Off);
-	builder.filter(Some("cranelift_codegen"), log::LevelFilter::Off);
-	builder.filter(Some("hyper"), log::LevelFilter::Warn);
-	builder.filter(Some("cranelift_wasm"), log::LevelFilter::Warn);
-	// Always log the special target `sc_tracing`, overrides global level
-	builder.filter(Some("sc_tracing"), log::LevelFilter::Info);
-	// Enable info for others.
-	builder.filter(None, log::LevelFilter::Info);
-
-	if let Ok(lvl) = std::env::var("RUST_LOG") {
-		builder.parse_filters(&lvl);
-	}
-
-	builder.parse_filters(pattern);
-	let isatty = atty::is(atty::Stream::Stderr);
-	let enable_color = isatty;
-
-	builder.format(move |buf, record| {
-		let now = time::now();
-		let timestamp =
-			time::strftime("%Y-%m-%d %H:%M:%S", &now).expect("Error formatting log timestamp");
-
-		let mut output = if log::max_level() <= log::LevelFilter::Info {
-			format!(
-				"{} {}",
-				Colour::Black.bold().paint(timestamp),
-				record.args(),
-			)
-		} else {
-			let name = ::std::thread::current()
-				.name()
-				.map_or_else(Default::default, |x| {
-					format!("{}", Colour::Blue.bold().paint(x))
-				});
-			let millis = (now.tm_nsec as f32 / 1000000.0).floor() as usize;
-			let timestamp = format!("{}.{:03}", timestamp, millis);
-			format!(
-				"{} {} {} {}  {}",
-				Colour::Black.bold().paint(timestamp),
-				name,
-				record.level(),
-				record.target(),
-				record.args()
-			)
-		};
-
-		if !isatty && record.level() <= log::Level::Info && atty::is(atty::Stream::Stdout) {
-			// duplicate INFO/WARN output to console
-			println!("{}", output);
-		}
-
-		if !enable_color {
-			output = kill_color(output.as_ref());
-		}
-
-		writeln!(buf, "{}", output)
-	});
-
-	if builder.try_init().is_err() {
-		info!("💬 Not registering Substrate logger, as there is already a global logger registered!");
-	}
-}
-
-fn kill_color(s: &str) -> String {
-	lazy_static! {
-		static ref RE: Regex = Regex::new("\x1b\\[[^m]+m").expect("Error initializing color regex");
-	}
-	RE.replace_all(s, "").to_string()
 }

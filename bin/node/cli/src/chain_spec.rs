@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2018-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -218,7 +218,7 @@ pub fn testnet_genesis(
 	endowed_accounts: Option<Vec<AccountId>>,
 	enable_println: bool,
 ) -> GenesisConfig {
-	let endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
+	let mut endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
 		vec![
 			get_account_id_from_seed::<sr25519::Public>("Alice"),
 			get_account_id_from_seed::<sr25519::Public>("Bob"),
@@ -234,10 +234,16 @@ pub fn testnet_genesis(
 			get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
 		]
 	});
+	initial_authorities.iter().for_each(|x|
+		if !endowed_accounts.contains(&x.0) {
+			endowed_accounts.push(x.0.clone())
+		}
+	);
+
 	let num_endowed_accounts = endowed_accounts.len();
 
 	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
-	const STASH: Balance = 100 * DOLLARS;
+	const STASH: Balance = ENDOWMENT / 1000;
 
 	GenesisConfig {
 		frame_system: Some(SystemConfig {
@@ -246,9 +252,8 @@ pub fn testnet_genesis(
 		}),
 		pallet_balances: Some(BalancesConfig {
 			balances: endowed_accounts.iter().cloned()
-				.map(|k| (k, ENDOWMENT))
-				.chain(initial_authorities.iter().map(|x| (x.0.clone(), STASH)))
-				.collect(),
+				.map(|x| (x, ENDOWMENT))
+				.collect()
 		}),
 		pallet_indices: Some(IndicesConfig {
 			indices: vec![],
@@ -380,7 +385,7 @@ pub fn local_testnet_config() -> ChainSpec {
 #[cfg(test)]
 pub(crate) mod tests {
 	use super::*;
-	use crate::service::{new_full_base, new_light_base};
+	use crate::service::{new_full_base, new_light_base, NewFullBase};
 	use sc_service_test;
 	use sp_runtime::BuildStorage;
 
@@ -431,11 +436,12 @@ pub(crate) mod tests {
 		sc_service_test::connectivity(
 			integration_test_config_with_two_authorities(),
 			|config| {
-				let (keep_alive, _, client, network, transaction_pool) = new_full_base(config,|_, _| ())?;
-				Ok(sc_service_test::TestNetComponents::new(keep_alive, client, network, transaction_pool))
+				let NewFullBase { task_manager, client, network, transaction_pool, .. }
+					= new_full_base(config,|_, _| ())?;
+				Ok(sc_service_test::TestNetComponents::new(task_manager, client, network, transaction_pool))
 			},
 			|config| {
-				let (keep_alive, _, client, network, transaction_pool) = new_light_base(config)?;
+				let (keep_alive, _, _, client, network, transaction_pool) = new_light_base(config)?;
 				Ok(sc_service_test::TestNetComponents::new(keep_alive, client, network, transaction_pool))
 			}
 		);

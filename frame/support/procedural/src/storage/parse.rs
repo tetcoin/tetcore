@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ mod keyword {
 pub struct Opt<P> {
 	pub inner: Option<P>,
 }
-impl<P: syn::export::ToTokens> syn::export::ToTokens for Opt<P> {
+impl<P: quote::ToTokens> quote::ToTokens for Opt<P> {
 	fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
 		if let Some(ref p) = self.inner {
 			p.to_tokens(tokens);
@@ -324,7 +324,16 @@ fn get_module_instance(
 	instantiable: Option<syn::Ident>,
 	default_instance: Option<syn::Ident>,
 ) -> syn::Result<Option<super::ModuleInstanceDef>> {
-	let right_syntax = "Should be $Instance: $Instantiable = $DefaultInstance";
+	let right_syntax = "Should be $I: $Instance = $DefaultInstance";
+
+	if instantiable.as_ref().map_or(false, |i| i != "Instance") {
+		let msg = format!(
+			"Instance trait must be named `Instance`, other names are no longer supported, because \
+			it is now defined at frame_support::traits::Instance. Expect `Instance` found `{}`",
+			instantiable.as_ref().unwrap(),
+		);
+		return Err(syn::Error::new(instantiable.span(), msg));
+	}
 
 	match (instance, instantiable, default_instance) {
 		(Some(instance), Some(instantiable), default_instance) => {

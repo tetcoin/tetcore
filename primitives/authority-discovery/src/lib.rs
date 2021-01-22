@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2019-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,9 +45,9 @@ sp_api::decl_runtime_apis! {
 	/// The authority discovery api.
 	///
 	/// This api is used by the `client/authority-discovery` module to retrieve identifiers
-	/// of the current authority set.
+	/// of the current and next authority set.
 	pub trait AuthorityDiscoveryApi {
-		/// Retrieve authority identifiers of the current authority set.
+		/// Retrieve authority identifiers of the current and next authority set.
 		fn authorities() -> Vec<AuthorityId>;
 	}
 }

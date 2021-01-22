@@ -1,18 +1,20 @@
-// Copyright 2019-2020 Parity Technologies (UK) Ltd.
 // This file is part of Substrate.
 
-// Substrate is free software: you can redistribute it and/or modify
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
+// This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-// Substrate is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 //! Substrate light client interfaces
 
@@ -32,7 +34,7 @@ use sp_blockchain::{
 	HeaderMetadata, well_known_cache_keys, HeaderBackend, Cache as BlockchainCache,
 	Error as ClientError, Result as ClientResult,
 };
-use crate::{backend::{AuxStore, NewBlockState}, UsageInfo};
+use crate::{backend::{AuxStore, NewBlockState}, UsageInfo, ProvideChtRoots};
 
 /// Remote call request.
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
@@ -232,7 +234,9 @@ pub trait FetchChecker<Block: BlockT>: Send + Sync {
 
 
 /// Light client blockchain storage.
-pub trait Storage<Block: BlockT>: AuxStore + HeaderBackend<Block> + HeaderMetadata<Block, Error=ClientError> {
+pub trait Storage<Block: BlockT>: AuxStore + HeaderBackend<Block>
+	+ HeaderMetadata<Block, Error=ClientError> + ProvideChtRoots<Block>
+{
 	/// Store new header. Should refuse to revert any finalized blocks.
 	///
 	/// Takes new authorities, the leaf state of the new block, and
@@ -253,20 +257,6 @@ pub trait Storage<Block: BlockT>: AuxStore + HeaderBackend<Block> + HeaderMetada
 
 	/// Get last finalized header.
 	fn last_finalized(&self) -> ClientResult<Block::Hash>;
-
-	/// Get headers CHT root for given block. Returns None if the block is not pruned (not a part of any CHT).
-	fn header_cht_root(
-		&self,
-		cht_size: NumberFor<Block>,
-		block: NumberFor<Block>,
-	) -> ClientResult<Option<Block::Hash>>;
-
-	/// Get changes trie CHT root for given block. Returns None if the block is not pruned (not a part of any CHT).
-	fn changes_trie_cht_root(
-		&self,
-		cht_size: NumberFor<Block>,
-		block: NumberFor<Block>,
-	) -> ClientResult<Option<Block::Hash>>;
 
 	/// Get storage cache.
 	fn cache(&self) -> Option<Arc<dyn BlockchainCache<Block>>>;
@@ -324,13 +314,21 @@ pub mod tests {
 	use sp_test_primitives::{Block, Header, Extrinsic};
 	use super::*;
 
+	#[derive(Debug, thiserror::Error)]
+	#[error("Not implemented on test node")]
+	struct MockError;
+
+	impl Into<ClientError> for MockError {
+		fn into(self) -> ClientError {
+			ClientError::Application(Box::new(self))
+		}
+	}	
+	
 	pub type OkCallFetcher = Mutex<Vec<u8>>;
 
-	fn not_implemented_in_tests<T, E>() -> Ready<Result<T, E>>
-	where
-		E: std::convert::From<&'static str>,
+	fn not_implemented_in_tests<T>() -> Ready<Result<T, ClientError>>
 	{
-		futures::future::ready(Err("Not implemented on test node".into()))
+		futures::future::ready(Err(MockError.into()))
 	}
 
 	impl Fetcher<Block> for OkCallFetcher {

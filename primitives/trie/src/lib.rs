@@ -1,18 +1,19 @@
-// Copyright 2015-2020 Parity Technologies (UK) Ltd.
 // This file is part of Substrate.
 
-// Parity is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// Copyright (C) 2015-2021 Parity Technologies (UK) Ltd.
+// SPDX-License-Identifier: Apache-2.0
 
-// Parity is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-
-// You should have received a copy of the GNU General Public License
-// along with Parity.  If not, see <http://www.gnu.org/licenses/>.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 	http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 //! Utility functions to interact with Substrate's Base-16 Modified Merkle Patricia tree ("trie").
 
@@ -78,6 +79,11 @@ impl<H: Hasher> TrieConfiguration for Layout<H> {
 	}
 }
 
+#[cfg(not(feature = "memory-tracker"))]
+type MemTracker = memory_db::NoopTracker<trie_db::DBValue>;
+#[cfg(feature = "memory-tracker")]
+type MemTracker = memory_db::MemCounter<trie_db::DBValue>;
+
 /// TrieDB error over `TrieConfiguration` trait.
 pub type TrieError<L> = trie_db::TrieError<TrieHash<L>, CError<L>>;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
@@ -88,13 +94,19 @@ pub type HashDB<'a, H> = dyn hash_db::HashDB<H, trie_db::DBValue> + 'a;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 /// This uses a `KeyFunction` for prefixing keys internally (avoiding
 /// key conflict for non random keys).
-pub type PrefixedMemoryDB<H> = memory_db::MemoryDB<H, memory_db::PrefixedKey<H>, trie_db::DBValue>;
+pub type PrefixedMemoryDB<H> = memory_db::MemoryDB<
+	H, memory_db::PrefixedKey<H>, trie_db::DBValue, MemTracker
+>;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 /// This uses a noops `KeyFunction` (key addressing must be hashed or using
 /// an encoding scheme that avoid key conflict).
-pub type MemoryDB<H> = memory_db::MemoryDB<H, memory_db::HashKey<H>, trie_db::DBValue>;
+pub type MemoryDB<H> = memory_db::MemoryDB<
+	H, memory_db::HashKey<H>, trie_db::DBValue, MemTracker,
+>;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
-pub type GenericMemoryDB<H, KF> = memory_db::MemoryDB<H, KF, trie_db::DBValue>;
+pub type GenericMemoryDB<H, KF> = memory_db::MemoryDB<
+	H, KF, trie_db::DBValue, MemTracker
+>;
 
 /// Persistent trie database read-access interface for the a given hasher.
 pub type TrieDB<'a, L> = trie_db::TrieDB<'a, L>;
@@ -173,7 +185,10 @@ pub fn delta_trie_root<L: TrieConfiguration, I, A, B, DB, V>(
 	DB: hash_db::HashDB<L::Hash, trie_db::DBValue>,
 {
 	{
-		let mut trie = TrieDBMut::<L>::from_existing(&mut *db, &mut root)?;
+		let mut trie = TrieDBMut::<L>::from_existing(db, &mut root)?;
+
+		let mut delta = delta.into_iter().collect::<Vec<_>>();
+		delta.sort_by(|l, r| l.0.borrow().cmp(r.0.borrow()));
 
 		for (key, change) in delta {
 			match change.borrow() {
@@ -209,9 +224,13 @@ pub fn read_trie_value_with<
 	Ok(TrieDB::<L>::new(&*db, root)?.get_with(key, query).map(|x| x.map(|val| val.to_vec()))?)
 }
 
+/// Determine the empty trie root.
+pub fn empty_trie_root<L: TrieConfiguration>() -> <L::Hash as Hasher>::Out {
+	L::trie_root::<_, Vec<u8>, Vec<u8>>(core::iter::empty())
+}
+
 /// Determine the empty child trie root.
-pub fn empty_child_trie_root<L: TrieConfiguration>(
-) -> <L::Hash as Hasher>::Out {
+pub fn empty_child_trie_root<L: TrieConfiguration>() -> <L::Hash as Hasher>::Out {
 	L::trie_root::<_, Vec<u8>, Vec<u8>>(core::iter::empty())
 }
 
@@ -248,23 +267,17 @@ pub fn child_delta_trie_root<L: TrieConfiguration, I, A, B, DB, RD, V>(
 	// root is fetched from DB, not writable by runtime, so it's always valid.
 	root.as_mut().copy_from_slice(root_data.as_ref());
 
-	{
-		let mut db = KeySpacedDBMut::new(&mut *db, keyspace);
-		let mut trie = TrieDBMut::<L>::from_existing(&mut db, &mut root)?;
-
-		for (key, change) in delta {
-			match change.borrow() {
-				Some(val) => trie.insert(key.borrow(), val.borrow())?,
-				None => trie.remove(key.borrow())?,
-			};
-		}
-	}
-
-	Ok(root)
+	let mut db = KeySpacedDBMut::new(&mut *db, keyspace);
+	delta_trie_root::<L, _, _, _, _, _>(
+		&mut db,
+		root,
+		delta,
+	)
 }
 
 /// Call `f` for all keys in a child trie.
-pub fn for_keys_in_child_trie<L: TrieConfiguration, F: FnMut(&[u8]), DB>(
+/// Aborts as soon as `f` returns false.
+pub fn for_keys_in_child_trie<L: TrieConfiguration, F: FnMut(&[u8]) -> bool, DB>(
 	keyspace: &[u8],
 	db: &DB,
 	root_slice: &[u8],
@@ -283,7 +296,9 @@ pub fn for_keys_in_child_trie<L: TrieConfiguration, F: FnMut(&[u8]), DB>(
 
 	for x in iter {
 		let (key, _) = x?;
-		f(&key);
+		if !f(&key) {
+			break;
+		}
 	}
 
 	Ok(())
@@ -457,7 +472,7 @@ mod trie_constants {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use codec::{Encode, Compact};
+	use codec::{Encode, Decode, Compact};
 	use sp_core::Blake2Hasher;
 	use hash_db::{HashDB, Hasher};
 	use trie_db::{DBValue, TrieMut, Trie, NodeCodec as NodeCodecT};
@@ -566,7 +581,7 @@ mod tests {
 			count: 1000,
 		};
 		let mut d = st.make();
-		d.sort_unstable_by(|&(ref a, _), &(ref b, _)| a.cmp(b));
+		d.sort_by(|&(ref a, _), &(ref b, _)| a.cmp(b));
 		let dr = d.iter().map(|v| (&v.0[..], &v.1[..])).collect();
 		check_equivalent::<Layout>(&dr);
 		check_iteration::<Layout>(&dr);
@@ -844,5 +859,35 @@ mod tests {
 				&[(pairs[1].0.clone(), Some(pairs[1].1.clone()))]
 			).is_err()
 		);
+	}
+
+	#[test]
+	fn generate_storage_root_with_proof_works_independently_from_the_delta_order() {
+		let proof = StorageProof::decode(&mut &include_bytes!("../test-res/proof")[..]).unwrap();
+		let storage_root = sp_core::H256::decode(
+			&mut &include_bytes!("../test-res/storage_root")[..],
+		).unwrap();
+		// Delta order that is "invalid" so that it would require a different proof.
+		let invalid_delta = Vec::<(Vec<u8>, Option<Vec<u8>>)>::decode(
+			&mut &include_bytes!("../test-res/invalid-delta-order")[..],
+		).unwrap();
+		// Delta order that is "valid"
+		let valid_delta = Vec::<(Vec<u8>, Option<Vec<u8>>)>::decode(
+			&mut &include_bytes!("../test-res/valid-delta-order")[..],
+		).unwrap();
+
+		let proof_db = proof.into_memory_db::<Blake2Hasher>();
+		let first_storage_root = delta_trie_root::<Layout, _, _, _, _, _>(
+			&mut proof_db.clone(),
+			storage_root,
+			valid_delta,
+		).unwrap();
+		let second_storage_root = delta_trie_root::<Layout, _, _, _, _, _>(
+			&mut proof_db.clone(),
+			storage_root,
+			invalid_delta,
+		).unwrap();
+
+		assert_eq!(first_storage_root, second_storage_root);
 	}
 }

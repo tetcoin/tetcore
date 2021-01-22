@@ -1,22 +1,24 @@
-// Copyright 2019-2020 Parity Technologies (UK) Ltd.
 // This file is part of Substrate.
 
-// Substrate is free software: you can redistribute it and/or modify
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
+// This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-// Substrate is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 //! A set of APIs supported by the client along with their primitives.
 
-use std::{fmt, collections::HashSet, sync::Arc};
+use std::{fmt, collections::HashSet, sync::Arc, convert::TryFrom};
 use sp_core::storage::StorageKey;
 use sp_runtime::{
 	traits::{Block as BlockT, NumberFor},
@@ -252,13 +254,17 @@ pub struct FinalityNotification<Block: BlockT> {
 	pub header: Block::Header,
 }
 
-impl<B: BlockT> From<BlockImportNotification<B>> for sp_transaction_pool::ChainEvent<B> {
-	fn from(n: BlockImportNotification<B>) -> Self {
-		Self::NewBlock {
-			is_new_best: n.is_new_best,
-			hash: n.hash,
-			header: n.header,
-			tree_route: n.tree_route,
+impl<B: BlockT> TryFrom<BlockImportNotification<B>> for sp_transaction_pool::ChainEvent<B> {
+	type Error = ();
+
+	fn try_from(n: BlockImportNotification<B>) -> Result<Self, ()> {
+		if n.is_new_best {
+			Ok(Self::NewBestBlock {
+				hash: n.hash,
+				tree_route: n.tree_route,
+			})
+		} else {
+			Err(())
 		}
 	}
 }

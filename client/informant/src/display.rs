@@ -1,18 +1,20 @@
-// Copyright 2019-2020 Parity Technologies (UK) Ltd.
 // This file is part of Substrate.
 
-// Substrate is free software: you can redistribute it and/or modify
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
+// This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-// Substrate is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::OutputFormat;
 use ansi_term::Colour;
@@ -45,6 +47,10 @@ pub struct InformantDisplay<B: BlockT> {
 	last_number: Option<NumberFor<B>>,
 	/// The last time `display` or `new` has been called.
 	last_update: Instant,
+	/// The last seen total of bytes received.
+	last_total_bytes_inbound: u64,
+	/// The last seen total of bytes sent.
+	last_total_bytes_outbound: u64,
 	/// The format to print output in.
 	format: OutputFormat,
 }
@@ -55,6 +61,8 @@ impl<B: BlockT> InformantDisplay<B> {
 		InformantDisplay {
 			last_number: None,
 			last_update: Instant::now(),
+			last_total_bytes_inbound: 0,
+			last_total_bytes_outbound: 0,
 			format,
 		}
 	}
@@ -66,8 +74,24 @@ impl<B: BlockT> InformantDisplay<B> {
 		let finalized_number = info.chain.finalized_number;
 		let num_connected_peers = net_status.num_connected_peers;
 		let speed = speed::<B>(best_number, self.last_number, self.last_update);
-		self.last_update = Instant::now();
+		let total_bytes_inbound = net_status.total_bytes_inbound;
+		let total_bytes_outbound = net_status.total_bytes_outbound;
+
+		let now = Instant::now();
+		let elapsed = (now - self.last_update).as_secs();
+		self.last_update = now;
 		self.last_number = Some(best_number);
+
+		let diff_bytes_inbound = total_bytes_inbound - self.last_total_bytes_inbound;
+		let diff_bytes_outbound = total_bytes_outbound - self.last_total_bytes_outbound;
+		let (avg_bytes_per_sec_inbound, avg_bytes_per_sec_outbound) =
+			if elapsed > 0 {
+				self.last_total_bytes_inbound = total_bytes_inbound;
+				self.last_total_bytes_outbound = total_bytes_outbound;
+				(diff_bytes_inbound / elapsed, diff_bytes_outbound / elapsed)
+			} else {
+				(diff_bytes_inbound, diff_bytes_outbound)
+			};
 
 		let (level, status, target) = match (net_status.sync_state, net_status.best_seen_block) {
 			(SyncState::Idle, _) => ("💤", "Idle".into(), "".into()),
@@ -82,9 +106,8 @@ impl<B: BlockT> InformantDisplay<B> {
 		if self.format.enable_color {
 			info!(
 				target: "substrate",
-				"{} {}{}{} ({} peers), best: #{} ({}), finalized #{} ({}), {} {}",
+				"{} {}{} ({} peers), best: #{} ({}), finalized #{} ({}), {} {}",
 				level,
-				self.format.prefix,
 				Colour::White.bold().paint(&status),
 				target,
 				Colour::White.bold().paint(format!("{}", num_connected_peers)),
@@ -92,15 +115,14 @@ impl<B: BlockT> InformantDisplay<B> {
 				best_hash,
 				Colour::White.bold().paint(format!("{}", finalized_number)),
 				info.chain.finalized_hash,
-				Colour::Green.paint(format!("⬇ {}", TransferRateFormat(net_status.average_download_per_sec))),
-				Colour::Red.paint(format!("⬆ {}", TransferRateFormat(net_status.average_upload_per_sec))),
+				Colour::Green.paint(format!("⬇ {}", TransferRateFormat(avg_bytes_per_sec_inbound))),
+				Colour::Red.paint(format!("⬆ {}", TransferRateFormat(avg_bytes_per_sec_outbound))),
 			)
 		} else {
 			info!(
 				target: "substrate",
-				"{} {}{}{} ({} peers), best: #{} ({}), finalized #{} ({}), ⬇ {} ⬆ {}",
+				"{} {}{} ({} peers), best: #{} ({}), finalized #{} ({}), ⬇ {} ⬆ {}",
 				level,
-				self.format.prefix,
 				status,
 				target,
 				num_connected_peers,
@@ -108,8 +130,8 @@ impl<B: BlockT> InformantDisplay<B> {
 				best_hash,
 				finalized_number,
 				info.chain.finalized_hash,
-				TransferRateFormat(net_status.average_download_per_sec),
-				TransferRateFormat(net_status.average_upload_per_sec),
+				TransferRateFormat(avg_bytes_per_sec_inbound),
+				TransferRateFormat(avg_bytes_per_sec_outbound),
 			)
 		}
 	}
@@ -146,7 +168,7 @@ fn speed<B: BlockT>(
 	} else {
 		// If the number of blocks can't be converted to a regular integer, then we need a more
 		// algebraic approach and we stay within the realm of integers.
-		let one_thousand = NumberFor::<B>::from(1_000);
+		let one_thousand = NumberFor::<B>::from(1_000u32);
 		let elapsed = NumberFor::<B>::from(
 			<u32 as TryFrom<_>>::try_from(elapsed_ms).unwrap_or(u32::max_value())
 		);

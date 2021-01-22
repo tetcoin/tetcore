@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2018-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -36,13 +36,13 @@ use parking_lot::Mutex;
 use substrate_test_runtime_client::{
 	runtime::{Hash, Block, Header}, TestClient, ClientBlockImportExt,
 };
-use sp_api::{InitializeBlock, StorageTransactionCache, ProofRecorder, OffchainOverlayedChanges};
+use sp_api::{InitializeBlock, StorageTransactionCache, ProofRecorder};
 use sp_consensus::BlockOrigin;
 use sc_executor::{NativeExecutor, WasmExecutionMethod, RuntimeVersion, NativeVersion};
 use sp_core::{H256, NativeOrEncoded, testing::TaskExecutor};
 use sc_client_api::{
 	blockchain::Info, backend::NewBlockState, Backend as ClientBackend, ProofProvider,
-	in_mem::{Backend as InMemBackend, Blockchain as InMemoryBlockchain},
+	in_mem::{Backend as InMemBackend, Blockchain as InMemoryBlockchain}, ProvideChtRoots,
 	AuxStore, Storage, CallExecutor, cht, ExecutionStrategy, StorageProof, BlockImportOperation,
 	RemoteCallRequest, StorageProvider, ChangesProof, RemoteBodyRequest, RemoteReadRequest,
 	RemoteChangesRequest, FetchChecker, RemoteReadChildRequest, RemoteHeaderRequest, BlockBackend,
@@ -164,6 +164,16 @@ impl Storage<Block> for DummyStorage {
 		Err(ClientError::Backend("Test error".into()))
 	}
 
+	fn cache(&self) -> Option<Arc<dyn BlockchainCache<Block>>> {
+		None
+	}
+
+	fn usage_info(&self) -> Option<sc_client_api::UsageInfo> {
+		None
+	}
+}
+
+impl ProvideChtRoots<Block> for DummyStorage {
 	fn header_cht_root(&self, _cht_size: u64, _block: u64) -> ClientResult<Option<Hash>> {
 		Err(ClientError::Backend("Test error".into()))
 	}
@@ -176,14 +186,6 @@ impl Storage<Block> for DummyStorage {
 				format!("Test error: CHT for block #{} not found", block)
 			).into())
 			.map(Some)
-	}
-
-	fn cache(&self) -> Option<Arc<dyn BlockchainCache<Block>>> {
-		None
-	}
-
-	fn usage_info(&self) -> Option<sc_client_api::UsageInfo> {
-		None
 	}
 }
 
@@ -221,7 +223,6 @@ impl CallExecutor<Block> for DummyCallExecutor {
 		_method: &str,
 		_call_data: &[u8],
 		_changes: &RefCell<OverlayedChanges>,
-		_offchain_changes: &RefCell<OffchainOverlayedChanges>,
 		_storage_transaction_cache: Option<&RefCell<
 			StorageTransactionCache<
 				Block,
@@ -686,7 +687,7 @@ fn changes_proof_is_generated_and_checked_when_headers_are_not_pruned() {
 		match local_result == expected_result {
 			true => (),
 			false => panic!(format!("Failed test {}: local = {:?}, expected = {:?}",
-			                        index, local_result, expected_result)),
+									index, local_result, expected_result)),
 		}
 	}
 }
@@ -843,7 +844,7 @@ fn check_changes_tries_proof_fails_if_proof_is_wrong() {
 		Box::new(TaskExecutor::new()),
 	);
 	assert!(local_checker.check_changes_tries_proof(4, &remote_proof.roots,
-	                                                remote_proof.roots_proof.clone()).is_err());
+													remote_proof.roots_proof.clone()).is_err());
 
 	// fails when proof is broken
 	let mut local_storage = DummyStorage::new();

@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -162,5 +162,36 @@ fn reaping_imminent_preimage_should_fail() {
 		next_block();
 		next_block();
 		assert_noop!(Democracy::reap_preimage(Origin::signed(6), h, u32::max_value()), Error::<Test>::Imminent);
+	});
+}
+
+#[test]
+fn note_imminent_preimage_can_only_be_successful_once() {
+	new_test_ext().execute_with(|| {
+		PREIMAGE_BYTE_DEPOSIT.with(|v| *v.borrow_mut() = 1);
+
+		let r = Democracy::inject_referendum(
+			2,
+			set_balance_proposal_hash(2),
+			VoteThreshold::SuperMajorityApprove,
+			1
+		);
+		assert_ok!(Democracy::vote(Origin::signed(1), r, aye(1)));
+		next_block();
+
+		// First time works
+		assert_ok!(Democracy::note_imminent_preimage(Origin::signed(6), set_balance_proposal(2)));
+
+		// Second time fails
+		assert_noop!(
+			Democracy::note_imminent_preimage(Origin::signed(6), set_balance_proposal(2)),
+			Error::<Test>::DuplicatePreimage
+		);
+
+		// Fails from any user
+		assert_noop!(
+			Democracy::note_imminent_preimage(Origin::signed(5), set_balance_proposal(2)),
+			Error::<Test>::DuplicatePreimage
+		);
 	});
 }

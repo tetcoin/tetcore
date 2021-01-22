@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -294,7 +294,7 @@ fn into_wasmtime_val_type(val_ty: ValueType) -> wasmtime::ValType {
 /// Converts a `Val` into a substrate runtime interface `Value`.
 ///
 /// Panics if the given value doesn't have a corresponding variant in `Value`.
-fn into_value(val: Val) -> Value {
+pub fn into_value(val: Val) -> Value {
 	match val {
 		Val::I32(v) => Value::I32(v),
 		Val::I64(v) => Value::I64(v),
@@ -304,7 +304,7 @@ fn into_value(val: Val) -> Value {
 	}
 }
 
-fn into_wasmtime_val(value: Value) -> wasmtime::Val {
+pub fn into_wasmtime_val(value: Value) -> wasmtime::Val {
 	match value {
 		Value::I32(v) => Val::I32(v),
 		Value::I64(v) => Val::I64(v),

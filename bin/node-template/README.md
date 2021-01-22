@@ -55,7 +55,7 @@ RUST_LOG=debug RUST_BACKTRACE=1 ./target/release/node-template -lruntime=debug -
 ### Multi-Node Local Testnet
 
 To see the multi-node consensus algorithm in action, run a local testnet with two validator nodes,
-Alice and Bob, that have been [configured](/bin/node-template/node/src/chain_spec.rs) as the initial
+Alice and Bob, that have been [configured](./node/src/chain_spec.rs) as the initial
 authorities of the `local` testnet chain and endowed with testnet units.
 
 Note: this will require two terminal sessions (one for each node).
@@ -108,7 +108,8 @@ Substrate-based blockchain nodes expose a number of capabilities:
 -   Consensus: Blockchains must have a way to come to
     [consensus](https://substrate.dev/docs/en/knowledgebase/advanced/consensus) on the state of the
     network. Substrate makes it possible to supply custom consensus engines and also ships with
-    several consensus mechanisms that have been built on top of Web3 Foundation research.
+    several consensus mechanisms that have been built on top of
+    [Web3 Foundation research](https://research.web3.foundation/en/latest/polkadot/NPoS/index.html).
 -   RPC Server: A remote procedure call (RPC) server is used to interact with Substrate nodes.
 
 There are several files in the `node` directory - take special note of the following:
@@ -140,18 +141,23 @@ capabilities and configuration parameters that it exposes:
 
 ### Runtime
 
-The Substrate project in this repository uses the
-[FRAME](https://substrate.dev/docs/en/knowledgebase/runtime/frame) framework to construct a
+In Substrate, the terms
+"[runtime](https://substrate.dev/docs/en/knowledgebase/getting-started/glossary#runtime)" and
+"[state transition function](https://substrate.dev/docs/en/knowledgebase/getting-started/glossary#stf-state-transition-function)"
+are analogous - they refer to the core logic of the blockchain that is responsible for validating
+blocks and executing the state changes they define. The Substrate project in this repository uses
+the [FRAME](https://substrate.dev/docs/en/knowledgebase/runtime/frame) framework to construct a
 blockchain runtime. FRAME allows runtime developers to declare domain-specific logic in modules
 called "pallets". At the heart of FRAME is a helpful
 [macro language](https://substrate.dev/docs/en/knowledgebase/runtime/macros) that makes it easy to
-create pallets and flexibly compose them to create blockchains that can address a variety of needs.
+create pallets and flexibly compose them to create blockchains that can address
+[a variety of needs](https://www.substrate.io/substrate-users/).
 
 Review the [FRAME runtime implementation](./runtime/src/lib.rs) included in this template and note
 the following:
 
 -   This file configures several pallets to include in the runtime. Each pallet configuration is
-    defined by a code block that begins with `impl $PALLET_NAME::Trait for Runtime`.
+    defined by a code block that begins with `impl $PALLET_NAME::Config for Runtime`.
 -   The pallets are composed into a single runtime by way of the
     [`construct_runtime!`](https://crates.parity.io/frame_support/macro.construct_runtime.html)
     macro, which is part of the core
@@ -175,8 +181,8 @@ A FRAME pallet is compromised of a number of blockchain primitives:
 -   Events: Substrate uses [events](https://substrate.dev/docs/en/knowledgebase/runtime/events) to
     notify users of important changes in the runtime.
 -   Errors: When a dispatchable fails, it returns an error.
--   Trait: The `Trait` configuration interface is used to define the types and parameters upon which
-    a FRAME pallet depends.
+-   Config: The `Config` configuration interface is used to define the types and parameters upon
+    which a FRAME pallet depends.
 
 ## Generate a Custom Node Template
 

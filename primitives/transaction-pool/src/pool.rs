@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2019-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -248,14 +248,10 @@ pub trait TransactionPool: Send + Sync {
 
 /// Events that the transaction pool listens for.
 pub enum ChainEvent<B: BlockT> {
-	/// New blocks have been added to the chain
-	NewBlock {
-		/// Is this the new best block.
-		is_new_best: bool,
+	/// New best block have been added to the chain
+	NewBestBlock {
 		/// Hash of the block.
 		hash: B::Hash,
-		/// Header of the just imported block
-		header: B::Header,
 		/// Tree route from old best to new best parent that was calculated on import.
 		///
 		/// If `None`, no re-org happened on import.

@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 use crate::CliConfiguration;
 use crate::Result;
-use crate::Subcommand;
 use crate::SubstrateCli;
 use chrono::prelude::*;
 use futures::pin_mut;
@@ -26,21 +25,22 @@ use futures::select;
 use futures::{future, future::FutureExt, Future};
 use log::info;
 use sc_service::{Configuration, TaskType, TaskManager};
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
+use sc_telemetry::{TelemetryHandle, TelemetryWorker};
 use sp_utils::metrics::{TOKIO_THREADS_ALIVE, TOKIO_THREADS_TOTAL};
-use std::{fmt::Debug, marker::PhantomData, str::FromStr, sync::Arc};
-use sc_client_api::{UsageProvider, BlockBackend, StorageProvider};
+use std::marker::PhantomData;
+use sc_service::Error as ServiceError;
+use crate::error::Error as CliError;
 
 #[cfg(target_family = "unix")]
-async fn main<F, E>(func: F) -> std::result::Result<(), Box<dyn std::error::Error>>
+async fn main<F, E>(func: F) -> std::result::Result<(), E>
 where
 	F: Future<Output = std::result::Result<(), E>> + future::FusedFuture,
-	E: 'static + std::error::Error,
+	E: std::error::Error + Send + Sync + 'static + From<ServiceError>,
 {
 	use tokio::signal::unix::{signal, SignalKind};
 
-	let mut stream_int = signal(SignalKind::interrupt())?;
-	let mut stream_term = signal(SignalKind::terminate())?;
+	let mut stream_int = signal(SignalKind::interrupt()).map_err(ServiceError::Io)?;
+	let mut stream_term = signal(SignalKind::terminate()).map_err(ServiceError::Io)?;
 
 	let t1 = stream_int.recv().fuse();
 	let t2 = stream_term.recv().fuse();
@@ -58,10 +58,10 @@ where
 }
 
 #[cfg(not(unix))]
-async fn main<F, E>(func: F) -> std::result::Result<(), Box<dyn std::error::Error>>
+async fn main<F, E>(func: F) -> std::result::Result<(), E>
 where
 	F: Future<Output = std::result::Result<(), E>> + future::FusedFuture,
-	E: 'static + std::error::Error,
+	E: std::error::Error + Send + Sync + 'static + From<ServiceError>,
 {
 	use tokio::signal::ctrl_c;
 
@@ -93,22 +93,20 @@ pub fn build_runtime() -> std::result::Result<tokio::runtime::Runtime, std::io::
 		.build()
 }
 
-fn run_until_exit<FUT, ERR>(
+fn run_until_exit<F, E>(
 	mut tokio_runtime: tokio::runtime::Runtime,
-	future: FUT,
-	mut task_manager: TaskManager,
-) -> Result<()>
+	future: F,
+	task_manager: TaskManager,
+) -> std::result::Result<(), E>
 where
-	FUT: Future<Output = std::result::Result<(), ERR>> + future::Future,
-	ERR: 'static + std::error::Error,
+	F: Future<Output = std::result::Result<(), E>> + future::Future,
+	E: std::error::Error + Send + Sync + 'static + From<ServiceError>,
 {
 	let f = future.fuse();
 	pin_mut!(f);
 
-	tokio_runtime.block_on(main(f)).map_err(|e| e.to_string())?;
-
-	task_manager.terminate();
-	drop(tokio_runtime);
+	tokio_runtime.block_on(main(f))?;
+	tokio_runtime.block_on(task_manager.clean_shutdown());
 
 	Ok(())
 }
@@ -117,12 +115,17 @@ where
 pub struct Runner<C: SubstrateCli> {
 	config: Configuration,
 	tokio_runtime: tokio::runtime::Runtime,
+	telemetry_worker: TelemetryWorker,
 	phantom: PhantomData<C>,
 }
 
 impl<C: SubstrateCli> Runner<C> {
 	/// Create a new runtime with the command provided in argument
-	pub fn new<T: CliConfiguration>(cli: &C, command: &T) -> Result<Runner<C>> {
+	pub fn new<T: CliConfiguration>(
+		cli: &C,
+		command: &T,
+		telemetry_worker: TelemetryWorker,
+	) -> Result<Runner<C>> {
 		let tokio_runtime = build_runtime()?;
 		let runtime_handle = tokio_runtime.handle().clone();
 
@@ -135,9 +138,16 @@ impl<C: SubstrateCli> Runner<C> {
 			}
 		};
 
+		let telemetry_handle = telemetry_worker.handle();
+
 		Ok(Runner {
-			config: command.create_configuration(cli, task_executor.into())?,
+			config: command.create_configuration(
+				cli,
+				task_executor.into(),
+				Some(telemetry_handle),
+			)?,
 			tokio_runtime,
+			telemetry_worker,
 			phantom: PhantomData,
 		})
 	}
@@ -151,7 +161,7 @@ impl<C: SubstrateCli> Runner<C> {
 	/// 2020-06-03 16:14:21 ✌️  version 2.0.0-rc3-f4940588c-x86_64-linux-gnu
 	/// 2020-06-03 16:14:21 ❤️  by Parity Technologies <admin@parity.io>, 2017-2020
 	/// 2020-06-03 16:14:21 📋 Chain specification: Flaming Fir
-	/// 2020-06-03 16:14:21 🏷  Node name: jolly-rod-7462
+	/// 2020-06-03 16:14:21 🏷 Node name: jolly-rod-7462
 	/// 2020-06-03 16:14:21 👤 Role: FULL
 	/// 2020-06-03 16:14:21 💾 Database: RocksDb at /tmp/c/chains/flamingfir7/db
 	/// 2020-06-03 16:14:21 ⛓  Native runtime: node-251 (substrate-node-1.tx1.au10)
@@ -166,7 +176,7 @@ impl<C: SubstrateCli> Runner<C> {
 			Local::today().year(),
 		);
 		info!("📋 Chain specification: {}", self.config.chain_spec.name());
-		info!("🏷  Node name: {}", self.config.network.node_name);
+		info!("🏷 Node name: {}", self.config.network.node_name);
 		info!("👤 Role: {}", self.config.display_role());
 		info!("💾 Database: {} at {}",
 			self.config.database,
@@ -175,81 +185,46 @@ impl<C: SubstrateCli> Runner<C> {
 		info!("⛓  Native runtime: {}", C::native_runtime_version(&self.config.chain_spec));
 	}
 
-	/// A helper function that runs a future with tokio and stops if the process receives the signal
-	/// `SIGTERM` or `SIGINT`.
-	pub fn run_subcommand<BU, B, BA, IQ, CL>(self, subcommand: &Subcommand, builder: BU)
-		-> Result<()>
-	where
-		BU: FnOnce(Configuration)
-			-> sc_service::error::Result<(Arc<CL>, Arc<BA>, IQ, TaskManager)>,
-		B: BlockT + for<'de> serde::Deserialize<'de>,
-		BA: sc_client_api::backend::Backend<B> + 'static,
-		IQ: sc_service::ImportQueue<B> + 'static,
-		<B as BlockT>::Hash: FromStr,
-		<<B as BlockT>::Hash as FromStr>::Err: Debug,
-		<<<B as BlockT>::Header as HeaderT>::Number as FromStr>::Err: Debug,
-		CL: UsageProvider<B> + BlockBackend<B> + StorageProvider<B, BA> + Send + Sync +
-		'static,
-	{
-		let chain_spec = self.config.chain_spec.cloned_box();
-		let network_config = self.config.network.clone();
-		let db_config = self.config.database.clone();
-
-		match subcommand {
-			Subcommand::BuildSpec(cmd) => cmd.run(chain_spec, network_config),
-			Subcommand::ExportBlocks(cmd) => {
-				let (client, _, _, task_manager) = builder(self.config)?;
-				run_until_exit(self.tokio_runtime, cmd.run(client, db_config), task_manager)
-			}
-			Subcommand::ImportBlocks(cmd) => {
-				let (client, _, import_queue, task_manager) = builder(self.config)?;
-				run_until_exit(self.tokio_runtime, cmd.run(client, import_queue), task_manager)
-			}
-			Subcommand::CheckBlock(cmd) => {
-				let (client, _, import_queue, task_manager) = builder(self.config)?;
-				run_until_exit(self.tokio_runtime, cmd.run(client, import_queue), task_manager)
-			}
-			Subcommand::Revert(cmd) => {
-				let (client, backend, _, task_manager) = builder(self.config)?;
-				run_until_exit(self.tokio_runtime, cmd.run(client, backend), task_manager)
-			},
-			Subcommand::PurgeChain(cmd) => cmd.run(db_config),
-			Subcommand::ExportState(cmd) => {
-				let (client, _, _, task_manager) = builder(self.config)?;
-				run_until_exit(self.tokio_runtime, cmd.run(client, chain_spec), task_manager)
-			},
-		}
-	}
-
 	/// A helper function that runs a node with tokio and stops if the process receives the signal
 	/// `SIGTERM` or `SIGINT`.
-	pub fn run_node_until_exit(
+	pub fn run_node_until_exit<F, E>(
 		mut self,
-		initialise: impl FnOnce(Configuration) -> sc_service::error::Result<TaskManager>,
-	) -> Result<()> {
+		initialize: impl FnOnce(Configuration) -> F,
+	) -> std::result::Result<(), E>
+	where
+		F: Future<Output = std::result::Result<TaskManager, E>>,
+		E: std::error::Error + Send + Sync + 'static + From<ServiceError>,
+	{
 		self.print_node_infos();
-		let mut task_manager = initialise(self.config)?;
-		self.tokio_runtime.block_on(main(task_manager.future().fuse()))
-			.map_err(|e| e.to_string())?;
+		let mut task_manager = self.tokio_runtime.block_on(initialize(self.config))?;
+		task_manager.spawn_handle().spawn("telemetry_worker", self.telemetry_worker.run());
+		let res = self.tokio_runtime.block_on(main(task_manager.future().fuse()));
 		self.tokio_runtime.block_on(task_manager.clean_shutdown());
-		Ok(())
+		Ok(res?)
 	}
 
-	/// A helper function that runs a command with the configuration of this node
-	pub fn sync_run(self, runner: impl FnOnce(Configuration) -> Result<()>) -> Result<()> {
+	/// A helper function that runs a command with the configuration of this node.
+	pub fn sync_run<E>(
+		self,
+		runner: impl FnOnce(Configuration) -> std::result::Result<(), E>
+	) -> std::result::Result<(), E>
+	where
+		E: std::error::Error + Send + Sync + 'static + From<ServiceError>,
+	{
 		runner(self.config)
 	}
 
 	/// A helper function that runs a future with tokio and stops if the process receives
-	/// the signal SIGTERM or SIGINT
-	pub fn async_run<FUT>(
-		self, runner: impl FnOnce(Configuration) -> Result<(FUT, TaskManager)>,
-	) -> Result<()>
+	/// the signal `SIGTERM` or `SIGINT`.
+	pub fn async_run<F, E>(
+		self, runner: impl FnOnce(Configuration) -> std::result::Result<(F, TaskManager), E>,
+	) -> std::result::Result<(), E>
 	where
-		FUT: Future<Output = Result<()>>,
+		F: Future<Output = std::result::Result<(), E>>,
+		E: std::error::Error + Send + Sync + 'static + From<ServiceError> + From<CliError>,
 	{
 		let (future, task_manager) = runner(self.config)?;
-		run_until_exit(self.tokio_runtime, future, task_manager)
+		run_until_exit::<_, E>(self.tokio_runtime, future, task_manager)
 	}
 
 	/// Get an immutable reference to the node Configuration
@@ -260,5 +235,12 @@ impl<C: SubstrateCli> Runner<C> {
 	/// Get a mutable reference to the node Configuration
 	pub fn config_mut(&mut self) -> &mut Configuration {
 		&mut self.config
+	}
+
+	/// Get a new [`TelemetryHandle`].
+	///
+	/// This is used when you want to register a new telemetry for a Substrate node.
+	pub fn telemetry_handle(&self) -> TelemetryHandle {
+		self.telemetry_worker.handle()
 	}
 }

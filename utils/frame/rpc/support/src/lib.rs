@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2019-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,11 +38,11 @@ use sc_rpc_api::state::StateClient;
 /// # use codec::Encode;
 /// # use frame_support::{decl_storage, decl_module};
 /// # use substrate_frame_rpc_support::StorageQuery;
-/// # use frame_system::Trait;
+/// # use frame_system::Config;
 /// # use sc_rpc_api::state::StateClient;
 /// #
-/// # // Hash would normally be <TestRuntime as frame_system::Trait>::Hash, but we don't have
-/// # // frame_system::Trait implemented for TestRuntime. Here we just pretend.
+/// # // Hash would normally be <TestRuntime as frame_system::Config>::Hash, but we don't have
+/// # // frame_system::Config implemented for TestRuntime. Here we just pretend.
 /// # type Hash = ();
 /// #
 /// # fn main() -> Result<(), RpcError> {
@@ -52,7 +52,7 @@ use sc_rpc_api::state::StateClient;
 /// # struct TestRuntime;
 /// #
 /// # decl_module! {
-///	#     pub struct Module<T: Trait> for enum Call where origin: T::Origin {}
+///	#     pub struct Module<T: Config> for enum Call where origin: T::Origin {}
 /// # }
 /// #
 /// pub type Loc = (i64, i64, i64);
@@ -60,7 +60,7 @@ use sc_rpc_api::state::StateClient;
 ///
 /// // Note that all fields are marked pub.
 /// decl_storage! {
-///     trait Store for Module<T: Trait> as TestRuntime {
+///     trait Store for Module<T: Config> as TestRuntime {
 ///         pub LastActionId: u64;
 ///         pub Voxels: map hasher(blake2_128_concat) Loc => Block;
 ///         pub Actions: map hasher(blake2_128_concat) u64 => Loc;
@@ -123,7 +123,7 @@ impl<V: FullCodec> StorageQuery<V> {
 
 	/// Send this query over RPC, await the typed result.
 	///
-	/// Hash should be <YourRuntime as frame::Trait>::Hash.
+	/// Hash should be <YourRuntime as frame::Config>::Hash.
 	///
 	/// # Arguments
 	///

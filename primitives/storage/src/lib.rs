@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ use sp_debug_derive::RuntimeDebug;
 
 use sp_std::{vec::Vec, ops::{Deref, DerefMut}};
 use ref_cast::RefCast;
+use codec::{Encode, Decode};
 
 /// Storage key.
 #[derive(PartialEq, Eq, RuntimeDebug)]
@@ -33,6 +34,26 @@ pub struct StorageKey(
 	#[cfg_attr(feature = "std", serde(with="impl_serde::serialize"))]
 	pub Vec<u8>,
 );
+
+/// Storage key with read/write tracking information.
+#[derive(PartialEq, Eq, RuntimeDebug, Clone, Encode, Decode)]
+#[cfg_attr(feature = "std", derive(Hash, PartialOrd, Ord))]
+pub struct TrackedStorageKey {
+	pub key: Vec<u8>,
+	pub has_been_read: bool,
+	pub has_been_written: bool,
+}
+
+// Easily convert a key to a `TrackedStorageKey` that has been read and written to.
+impl From<Vec<u8>> for TrackedStorageKey {
+	fn from(key: Vec<u8>) -> Self {
+		Self {
+			key: key,
+			has_been_read: true,
+			has_been_written: true,
+		}
+	}
+}
 
 /// Storage key of a child trie, it contains the prefix to the key.
 #[derive(PartialEq, Eq, RuntimeDebug)]
@@ -159,6 +180,16 @@ pub mod well_known_keys {
 		// Other code might depend on this, so be careful changing this.
 		key.starts_with(CHILD_STORAGE_KEY_PREFIX)
 	}
+
+	/// Returns if the given `key` starts with [`CHILD_STORAGE_KEY_PREFIX`] or collides with it.
+	pub fn starts_with_child_storage_key(key: &[u8]) -> bool {
+		if key.len() > CHILD_STORAGE_KEY_PREFIX.len() {
+			key.starts_with(CHILD_STORAGE_KEY_PREFIX)
+		} else {
+			CHILD_STORAGE_KEY_PREFIX.starts_with(key)
+		}
+	}
+
 }
 
 /// Information related to a child state.

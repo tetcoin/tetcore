@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,9 @@
 
 use proc_macro2::{TokenStream, Span};
 use quote::quote;
-use super::{DeclStorageDefExt, instance_trait::DEFAULT_INSTANTIABLE_TRAIT_NAME};
-use genesis_config_def::GenesisConfigDef;
-use builder_def::BuilderDef;
+use super::DeclStorageDefExt;
+pub use genesis_config_def::GenesisConfigDef;
+pub use builder_def::BuilderDef;
 
 mod genesis_config_def;
 mod builder_def;
@@ -104,10 +104,9 @@ fn impl_build_storage(
 		let name = syn::Ident::new(DEFAULT_INSTANCE_NAME, Span::call_site());
 		quote!( #name )
 	});
-	let inherent_instance_bound = def.optional_instance_bound.clone().unwrap_or_else(|| {
-		let bound = syn::Ident::new(DEFAULT_INSTANTIABLE_TRAIT_NAME, Span::call_site());
-		quote!( #inherent_instance: #bound )
-	});
+	let inherent_instance_bound = quote!(
+		#inherent_instance: #scrate::traits::Instance
+	);
 
 	let build_storage_impl = quote!(
 		<#runtime_generic: #runtime_trait, #inherent_instance_bound>

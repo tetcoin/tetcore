@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -26,10 +26,7 @@ use rpc::futures::Future;
 use sp_core::traits::SpawnNamed;
 use std::sync::Arc;
 
-mod metadata;
-
-pub use sc_rpc_api::DenyUnsafe;
-pub use self::metadata::Metadata;
+pub use sc_rpc_api::{DenyUnsafe, Metadata};
 pub use rpc::IoHandlerExtension as RpcExtension;
 
 pub mod author;
@@ -37,8 +34,9 @@ pub mod chain;
 pub mod offchain;
 pub mod state;
 pub mod system;
-#[cfg(test)]
-mod testing;
+
+#[cfg(any(test, feature = "test-helpers"))]
+pub mod testing;
 
 /// Task executor that is being used by RPC subscriptions.
 #[derive(Clone)]

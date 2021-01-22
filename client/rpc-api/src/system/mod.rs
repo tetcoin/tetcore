@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ use jsonrpc_derive::rpc;
 
 use self::error::Result as SystemResult;
 
-pub use self::helpers::{SystemInfo, Health, PeerInfo, NodeRole};
+pub use self::helpers::{SystemInfo, Health, PeerInfo, NodeRole, SyncState};
 pub use self::gen_client::Client as SystemClient;
 
 /// Substrate system RPC API
@@ -98,4 +98,23 @@ pub trait SystemApi<Hash, Number> {
 	/// Returns the roles the node is running as.
 	#[rpc(name = "system_nodeRoles")]
 	fn system_node_roles(&self) -> BoxFuture<RpcResult<Vec<NodeRole>>>;
+
+	/// Returns the state of the syncing of the node: starting block, current best block, highest
+	/// known block.
+	#[rpc(name = "system_syncState")]
+	fn system_sync_state(&self) -> BoxFuture<RpcResult<<SyncState<Number>>>>;
+
+	/// Adds the supplied directives to the current log filter
+	///
+	/// The syntax is identical to the CLI `<target>=<level>`:
+	///
+	/// `sync=debug,state=trace`
+	#[rpc(name = "system_addLogFilter")]
+	fn system_add_log_filter(&self, directives: String)
+		-> BoxFuture<RpcResult<()>>;
+
+	/// Resets the log filter to Substrate defaults
+	#[rpc(name = "system_resetLogFilter")]
+	fn system_reset_log_filter(&self)
+		-> BoxFuture<RpcResult<()>>;
 }
