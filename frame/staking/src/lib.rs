@@ -1319,6 +1319,8 @@ decl_module! {
 				set_check_offchain_execution_status, compute_save_and_submit, submit_queued,
 				OFFCHAIN_REPEAT,
 			};
+
+			log!(trace, "running OCW at {:?}", now);
 			// ensure that we don't run OCW in any case more at least with 5 blocks delay.
 			let threshold: T::BlockNumber = OFFCHAIN_REPEAT.into();
 
