@@ -21,7 +21,7 @@
 #[cfg(test)]
 mod tests;
 
-use futures::{FutureExt, TryFutureExt, channel::oneshot};
+use futures::{future, FutureExt, TryFutureExt, channel::oneshot};
 use sc_rpc_api::{DenyUnsafe, Receiver};
 use sc_tracing::logging;
 use sp_utils::mpsc::TracingUnboundedSender;
@@ -188,20 +188,20 @@ impl<B: traits::Block> SystemApi<B::Hash, <B::Header as HeaderT>::Number> for Sy
 		Box::pin(Receiver(rx))
 	}
 
-	fn system_sync_state(&self) -> Receiver<SyncState<<B::Header as HeaderT>::Number>> {
+	fn system_sync_state(&self) -> BoxFuture<rpc::Result<SyncState<<B::Header as HeaderT>::Number>>> {
 		let (tx, rx) = oneshot::channel();
 		let _ = self.send_back.unbounded_send(Request::SyncState(tx));
-		Receiver(Compat::new(rx))
+		Box::pin(Receiver(rx))
 	}
 
-	fn system_add_log_filter(&self, directives: String) -> std::result::Result<(), rpc::Error> {
-		self.deny_unsafe.check_if_safe()?;
+	fn system_add_log_filter(&self, directives: String) -> BoxFuture<rpc::Result<()>> {
+		bail_if_unsafe!(self.deny_unsafe);
 		logging::add_directives(&directives);
-		logging::reload_filter().map_err(|_e| rpc::Error::internal_error())
+		Box::pin(future::ready(logging::reload_filter().map_err(|_e| rpc::Error::internal_error())))
 	}
 
-	fn system_reset_log_filter(&self)-> std::result::Result<(), rpc::Error> {
-		self.deny_unsafe.check_if_safe()?;
-		logging::reset_log_filter().map_err(|_e| rpc::Error::internal_error())
+	fn system_reset_log_filter(&self)-> BoxFuture<rpc::Result<()>> {
+		bail_if_unsafe!(self.deny_unsafe);
+		Box::pin(future::ready(logging::reset_log_filter().map_err(|_e| rpc::Error::internal_error())))
 	}
 }

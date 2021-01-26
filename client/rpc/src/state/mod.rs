@@ -26,7 +26,7 @@ mod tests;
 
 use std::sync::Arc;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
-use rpc::{Result as RpcResult, futures::{FutureExt, future}};
+use rpc::{Result as RpcResult, futures::{FutureExt, TryFutureExt, future}};
 
 use sc_rpc_api::{DenyUnsafe, state::ReadProof};
 use sc_client_api::light::{RemoteBlockchain, Fetcher};
