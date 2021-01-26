@@ -124,7 +124,7 @@ pub(crate) fn set_check_offchain_execution_status<T: Trait>(
 pub(crate) const OFFCHAIN_QUEUED_CALL: &[u8] = b"parity/staking-election/call";
 
 /// Save a given call OCW storage.
-pub(crate) fn save_solution<T: Config>(call: Call<T>) -> Result<(), OffchainElectionError> {
+pub(crate) fn save_solution<T: Trait>(call: Call<T>) -> Result<(), OffchainElectionError> {
 	let storage = StorageValueRef::persistent(&OFFCHAIN_QUEUED_CALL);
 	let set_outcome = storage.mutate::<_, OffchainElectionError, _>(|maybe_call| {
 		match maybe_call {
@@ -146,19 +146,19 @@ pub(crate) fn save_solution<T: Config>(call: Call<T>) -> Result<(), OffchainElec
 }
 
 /// Get a saved OCW solution, if it exists.
-pub(crate) fn get_solution<T: Config>() -> Option<Call<T>> {
+pub(crate) fn get_solution<T: Trait>() -> Option<Call<T>> {
 	StorageValueRef::persistent(&OFFCHAIN_QUEUED_CALL).get().flatten()
 }
 
 /// Submit a given solution as an unsigned transaction.
-pub(crate) fn submit_solution<T: Config>(call: Call<T>) -> Result<(), OffchainElectionError> {
+pub(crate) fn submit_solution<T: Trait>(call: Call<T>) -> Result<(), OffchainElectionError> {
 	SubmitTransaction::<T, Call<T>>::submit_unsigned_transaction(call.into())
 		.map_err(|_| OffchainElectionError::PoolSubmissionFailed)
 }
 
 /// Ensure that the given solution call belongs to the current era. Returns `Ok(call)` if so to be
 /// used with `Result::and`.
-pub(crate) fn ensure_solution_is_recent<T: Config>(
+pub(crate) fn ensure_solution_is_recent<T: Trait>(
 	call: Call<T>,
 ) -> Result<Call<T>, OffchainElectionError> {
 	let current_era = <Module<T>>::current_era().unwrap_or_default();
@@ -169,14 +169,14 @@ pub(crate) fn ensure_solution_is_recent<T: Config>(
 }
 
 /// Compute a new solution and save it to the OCW storage.
-pub(crate) fn compute_and_save<T: Config>() -> Result<Call<T>, OffchainElectionError> {
+pub(crate) fn compute_and_save<T: Trait>() -> Result<Call<T>, OffchainElectionError> {
 	let call = compute_offchain_election::<T>()?;
 	save_solution::<T>(call.clone())?;
 	Ok(call)
 }
 
 /// Compute the solution, save it, and submit it.
-pub(crate) fn restore_or_compute_then_submit<T: Config>() -> Result<(), OffchainElectionError> {
+pub(crate) fn restore_or_compute_then_submit<T: Trait>() -> Result<(), OffchainElectionError> {
 	let call = get_solution::<T>()
 		.ok_or(OffchainElectionError::SolutionUnavailable)
 		.and_then(ensure_solution_is_recent)
@@ -185,7 +185,7 @@ pub(crate) fn restore_or_compute_then_submit<T: Config>() -> Result<(), Offchain
 }
 
 /// Compute the solution, save it, and submit it.
-pub(crate) fn compute_save_and_submit<T: Config>() -> Result<(), OffchainElectionError> {
+pub(crate) fn compute_save_and_submit<T: Trait>() -> Result<(), OffchainElectionError> {
 	let call = compute_and_save::<T>()?;
 	submit_solution::<T>(call)
 }
@@ -193,7 +193,7 @@ pub(crate) fn compute_save_and_submit<T: Config>() -> Result<(), OffchainElectio
 /// The internal logic of the offchain worker of this module. This runs the phragmen election,
 /// compacts and reduces the solution, computes the score and submits it back to the chain as an
 /// unsigned transaction, without any signature.
-pub(crate) fn compute_offchain_election<T: Trait>() -> Result<(), OffchainElectionError> {
+pub(crate) fn compute_offchain_election<T: Trait>() -> Result<Call<T>, OffchainElectionError> {
 	let iters = get_balancing_iters::<T>();
 	// compute raw solution. Note that we use `OffchainAccuracy`.
 	let ElectionResult {
