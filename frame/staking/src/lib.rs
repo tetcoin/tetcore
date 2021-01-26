@@ -1349,6 +1349,7 @@ decl_module! {
 			let threshold: T::BlockNumber = OFFCHAIN_REPEAT.into();
 
 			let election_status = Self::era_election_status();
+			log!(trace, "Running OCW at {:?}, election status = {:?}, getSolution = {:?}", now, election_status, offchain_election::get_solution::<T>());
 			log!(trace, "Running OCW at {:?}, election status = {:?}", now, election_status);
 			match Self::era_election_status() {
 				ElectionStatus::Open(opened) if opened == now => {
