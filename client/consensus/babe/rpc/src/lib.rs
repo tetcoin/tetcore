@@ -20,10 +20,9 @@
 
 use sc_consensus_babe::{Epoch, authorship, Config};
 use jsonrpc_core::{
-	Error as RpcError,
 	Result as RpcResult,
 	BoxFuture,
-	futures::{future, FutureExt, TryFutureExt},
+	futures::future,
 };
 use jsonrpc_derive::rpc;
 use sc_consensus_epochs::{descendent_query, Epoch as EpochT, SharedEpochChanges};
@@ -242,7 +241,11 @@ mod tests {
 
 	use std::sync::Arc;
 	use sc_consensus_babe::{Config, block_import, AuthorityPair};
-	use jsonrpc_core::IoHandler;
+	use jsonrpc_core::{
+		IoHandler,
+		Error as RpcError,
+		futures::FutureExt,
+	};
 
 	/// creates keystore backed by a temp file
 	fn create_temp_keystore<P: AppPair>(

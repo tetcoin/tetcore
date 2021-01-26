@@ -24,7 +24,7 @@ use std::ops::Range;
 use log::warn;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use rpc::Result as RpcResult;
-use rpc::futures::{future, stream, Future, Sink, Stream, StreamExt, TryStreamExt, TryFutureExt, SinkExt};
+use rpc::futures::{future, stream, StreamExt, TryStreamExt, TryFutureExt, SinkExt};
 
 use sc_rpc_api::state::ReadProof;
 use sc_client_api::backend::Backend;
@@ -307,16 +307,16 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 	) -> FutureResult<Option<u64>> {
 		let block = match self.block_or_best(block) {
 			Ok(b) => b,
-			Err(e) => return Box::new(result(Err(client_err(e)))),
+			Err(e) => return Box::new(future::ready(Err(client_err(e)))),
 		};
 
 		match self.client.storage(&BlockId::Hash(block), &key) {
-			Ok(Some(d)) => return Box::new(result(Ok(Some(d.0.len() as u64)))),
-			Err(e) => return Box::new(result(Err(client_err(e)))),
+			Ok(Some(d)) => return Box::new(future::ready(Ok(Some(d.0.len() as u64)))),
+			Err(e) => return Box::new(future::ready(Err(client_err(e)))),
 			Ok(None) => {},
 		}
 
-		Box::new(result(
+		Box::new(future::ready(
 			self.client.storage_pairs(&BlockId::Hash(block), &key)
 				.map(|kv| {
 					let item_sum = kv.iter().map(|(_, v)| v.0.len() as u64).sum::<u64>();

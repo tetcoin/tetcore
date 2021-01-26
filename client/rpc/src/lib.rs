@@ -35,9 +35,6 @@ pub mod offchain;
 pub mod state;
 pub mod system;
 
-#[cfg(any(test, feature = "test-helpers"))]
-pub mod testing;
-
 /// Task executor that is being used by RPC subscriptions.
 #[derive(Clone)]
 pub struct SubscriptionTaskExecutor(Arc<dyn SpawnNamed>);

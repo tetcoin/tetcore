@@ -104,7 +104,7 @@ pub trait StateBackend<Block: BlockT, Client>: Send + Sync + 'static
 		&self,
 		block: Option<Block::Hash>,
 		key: StorageKey,
-	) -> FutureResult<Option<u64>> {
+	) -> FutureResult<Option<u64>>;
 
 	/// Returns the runtime metadata as an opaque blob.
 	fn metadata(&self, block: Option<Block::Hash>) -> FutureResult<Bytes>;
@@ -254,7 +254,7 @@ impl<Block, Client> StateApi<Block::Hash> for State<Block, Client>
 		block: Option<Block::Hash>,
 	) -> FutureResult<Vec<(StorageKey, StorageData)>> {
 		if let Err(err) = self.deny_unsafe.check_if_safe() {
-			return Box::new(result(Err(err.into())))
+			return Box::pin(future::ready(Err(err.into())))
 		}
 
 		self.backend.storage_pairs(block, key_prefix)
@@ -301,7 +301,7 @@ impl<Block, Client> StateApi<Block::Hash> for State<Block, Client>
 		to: Option<Block::Hash>
 	) -> FutureResult<Vec<StorageChangeSet<Block::Hash>>> {
 		if let Err(err) = self.deny_unsafe.check_if_safe() {
-			return Box::new(result(Err(err.into())))
+			return Box::pin(future::ready(Err(err.into())))
 		}
 
 		self.backend.query_storage(from, to, keys)
