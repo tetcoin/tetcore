@@ -20,14 +20,13 @@
 
 use jsonrpc_core::{
 	Middleware as RequestMiddleware, Metadata,
-	Request, Response, FutureResponse, FutureOutput
+	Request, Response, FutureResponse, FutureOutput,
+	futures::{future::Either, Future}
 };
 use prometheus_endpoint::{
 	Registry, CounterVec, PrometheusError,
 	Opts, register, U64
 };
-
-use futures::{future::Either, Future};
 
 /// Metrics for RPC middleware
 #[derive(Debug, Clone)]
@@ -81,12 +80,12 @@ impl<M: Metadata> RequestMiddleware<M> for RpcMiddleware {
 	fn on_request<F, X>(&self, request: Request, meta: M, next: F) -> Either<FutureResponse, X>
 	where
 		F: Fn(Request, M) -> X + Send + Sync,
-		X: Future<Item = Option<Response>, Error = ()> + Send + 'static,
+		X: Future<Output = Option<Response>> + Send + 'static,
 	{
 		if let Some(ref rpc_calls) = self.metrics.rpc_calls {
 			rpc_calls.with_label_values(&[self.transport_label.as_str()]).inc();
 		}
 
-		Either::B(next(request, meta))
+		Either::Left(Box::pin(next(request, meta)))
 	}
 }

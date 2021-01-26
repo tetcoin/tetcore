@@ -77,7 +77,7 @@ mod inner {
 	/// Start HTTP server listening on given address.
 	///
 	/// **Note**: Only available if `not(target_os = "unknown")`.
-	pub fn start_http<M: pubsub::PubSubMetadata + Default>(
+	pub fn start_http<M: pubsub::PubSubMetadata + Default + Unpin>(
 		addr: &std::net::SocketAddr,
 		cors: Option<&Vec<String>>,
 		io: RpcHandler<M>,

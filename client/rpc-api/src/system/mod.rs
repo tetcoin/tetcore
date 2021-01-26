@@ -102,7 +102,7 @@ pub trait SystemApi<Hash, Number> {
 	/// Returns the state of the syncing of the node: starting block, current best block, highest
 	/// known block.
 	#[rpc(name = "system_syncState")]
-	fn system_sync_state(&self) -> BoxFuture<RpcResult<<SyncState<Number>>>>;
+	fn system_sync_state(&self) -> BoxFuture<RpcResult<SyncState<Number>>>;
 
 	/// Adds the supplied directives to the current log filter
 	///

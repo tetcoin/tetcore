@@ -19,7 +19,7 @@
 //! RPC Metadata
 use std::sync::Arc;
 
-use jsonrpc_core::futures::sync::mpsc;
+use jsonrpc_core::futures::channel::mpsc;
 use jsonrpc_pubsub::{Session, PubSubMetadata};
 
 /// RPC Metadata.

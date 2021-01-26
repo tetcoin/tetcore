@@ -139,6 +139,6 @@ impl<V: FullCodec> StorageQuery<V> {
 		let opt: Option<StorageData> = state_client.storage(self.key, block_index).await?;
 		opt.map(|encoded| V::decode_all(&encoded.0))
 			.transpose()
-			.map_err(|decode_err| RpcError::Other(decode_err.into()))
+			.map_err(|decode_err| RpcError::Other(Box::new(decode_err)))
 	}
 }
