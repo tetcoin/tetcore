@@ -129,6 +129,7 @@ pub fn create_runtime(
 ) -> std::result::Result<WasmtimeRuntime, WasmError> {
 	// Create the engine, store and finally the module from the given code.
 	let mut config = Config::new();
+	config.cache_config_load_default().unwrap();
 	config.cranelift_opt_level(wasmtime::OptLevel::SpeedAndSize);
 
 	let engine = Engine::new(&config);
