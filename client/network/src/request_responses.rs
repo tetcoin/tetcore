@@ -949,6 +949,7 @@ mod tests {
 							protocol_name,
 							b"this is a request".to_vec(),
 							sender,
+							false,
 						);
 						assert!(response_receiver.is_none());
 						response_receiver = Some(receiver);
@@ -1037,6 +1038,7 @@ mod tests {
 							protocol_name,
 							b"this is a request".to_vec(),
 							sender,
+							false,
 						);
 						assert!(response_receiver.is_none());
 						response_receiver = Some(receiver);
@@ -1179,12 +1181,14 @@ mod tests {
 								protocol_name_1,
 								b"this is a request".to_vec(),
 								sender_1,
+								false,
 							);
 							swarm_1.send_request(
 								&peer_id,
 								protocol_name_2,
 								b"this is a request".to_vec(),
 								sender_2,
+								false,
 							);
 							assert!(response_receivers.is_none());
 							response_receivers = Some((receiver_1, receiver_2));
