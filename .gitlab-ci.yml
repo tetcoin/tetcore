@@ -448,7 +448,7 @@ build-linux-tetkey:                &build-tetkey
     - SKIP_WASM_BUILD=1 time cargo build --release --verbose
     - cd -
     - mv ./target/release/tetkey ./artifacts/tetkey/.
-    - echo -n "Subkey version = "
+    - echo -n "Tetkey version = "
     - ./artifacts/tetkey/tetkey --version |
         sed -n -E 's/^tetkey ([0-9.]+.*)/\1/p' |
           tee ./artifacts/tetkey/VERSION;

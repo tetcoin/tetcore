@@ -18,7 +18,7 @@ Putting all these components together we have:
 * Integration Tests
 * Node
 * Node template
-* Subkey
+* Tetkey
 
 === Runtime
 
@@ -92,7 +92,7 @@ We also provide a template to get you started building your own node.
 * _found in_: `/bin/utils`
 
 - **tetkey**
-  Subkey is a client library to generate keys and sign transactions to send to a tetcore node.
+  Tetkey is a client library to generate keys and sign transactions to send to a tetcore node.
 - **chain-spec-builder**
   The chain spec builder builds a chain specification that includes a Tetcore runtime compiled as WASM. To ensure proper functioning of the included runtime compile (or run) the chain spec builder binary in `--release` mode.
 

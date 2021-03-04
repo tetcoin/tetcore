@@ -432,7 +432,7 @@ frame-executive,  pallet-session, pallet-staking, pallet-timestamp, pallet-treas
 * Node
 [source, shell]
 node-cli, node-consensus, node-executor, node-network, node-primitives, node-runtime
-* Subkey
+* Tetkey
 [source, shell]
 tetkey
 

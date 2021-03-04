@@ -86,7 +86,7 @@ Runtime
 Client
 ------
 
-* Merge Subkey into sc-cli (#4954)
+* Merge Tetkey into sc-cli (#4954)
 * RpcHandlers Refactorings (#6846)
 * client/authority-discovery: Introduce AuthorityDiscoveryService (#6760)
 * Implement tracing::Event handling & parent_id for spans and events (#6672)

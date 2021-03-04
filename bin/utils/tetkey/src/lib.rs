@@ -28,7 +28,7 @@ use sc_cli::{
 	author = "Parity Team <admin@parity.io>",
 	about = "Utility for generating and restoring with Tetcore keys",
 )]
-pub enum Subkey {
+pub enum Tetkey {
 	/// Generate a random node libp2p key, save it to file or print it to stdout
 	/// and print its peer ID to stderr.
 	GenerateNodeKey(GenerateNodeKeyCmd),
@@ -54,13 +54,13 @@ pub enum Subkey {
 
 /// Run the tetkey command, given the apropriate runtime.
 pub fn run() -> Result<(), Error> {
-	match Subkey::from_args() {
-		Subkey::GenerateNodeKey(cmd) => cmd.run(),
-		Subkey::Generate(cmd) => cmd.run(),
-		Subkey::Inspect(cmd) => cmd.run(),
-		Subkey::InspectNodeKey(cmd) => cmd.run(),
-		Subkey::Vanity(cmd) => cmd.run(),
-		Subkey::Verify(cmd) => cmd.run(),
-		Subkey::Sign(cmd) => cmd.run(),
+	match Tetkey::from_args() {
+		Tetkey::GenerateNodeKey(cmd) => cmd.run(),
+		Tetkey::Generate(cmd) => cmd.run(),
+		Tetkey::Inspect(cmd) => cmd.run(),
+		Tetkey::InspectNodeKey(cmd) => cmd.run(),
+		Tetkey::Vanity(cmd) => cmd.run(),
+		Tetkey::Verify(cmd) => cmd.run(),
+		Tetkey::Sign(cmd) => cmd.run(),
 	}
 }

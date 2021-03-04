@@ -7,7 +7,7 @@ ARG BUILD_DATE
 LABEL io.tetsy.image.authors="devops-team@parity.io" \
 	io.tetsy.image.vendor="Tetsy Technologies" \
 	io.tetsy.image.title="tetsy/tetkey" \
-	io.tetsy.image.description="Subkey: key generating utility for Tetcore." \
+	io.tetsy.image.description="Tetkey: key generating utility for Tetcore." \
 	io.tetsy.image.source="https://github.com/tetcoin/tetcore/blob/${VCS_REF}/.maintain/docker/tetkey.Dockerfile" \
 	io.tetsy.image.revision="${VCS_REF}" \
 	io.tetsy.image.created="${BUILD_DATE}" \
