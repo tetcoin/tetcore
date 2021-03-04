@@ -26,7 +26,7 @@ use syn::{Error, Expr, Ident, ItemFn};
 ///
 /// This prefixes all the log lines with `[<name>]` (after the timestamp). It works by making a
 /// tracing's span that is propagated to all the child calls and child tasks (futures) if they are
-/// spawned properly with the `SpawnHandle` (see `TaskManager` in sc-cli) or if the futures use
+/// spawned properly with the `SpawnHandle` (see `TaskManager` in tc-cli) or if the futures use
 /// `.in_current_span()` (see tracing-futures).
 ///
 /// See Tokio's [tracing documentation](https://docs.rs/tracing-core/) and
@@ -120,11 +120,11 @@ pub fn prefix_logs_with(arg: TokenStream, item: TokenStream) -> TokenStream {
 
 	let crate_name = if std::env::var("CARGO_PKG_NAME")
 		.expect("cargo env var always there when compiling; qed")
-		== "sc-tracing"
+		== "tc-tracing"
 	{
 		Ident::from(Ident::new("sc_tracing", Span::call_site()))
 	} else {
-		let crate_name = match crate_name("sc-tracing") {
+		let crate_name = match crate_name("tc-tracing") {
 			Ok(x) => x,
 			Err(err) => return Error::new(Span::call_site(), err).to_compile_error().into(),
 		};

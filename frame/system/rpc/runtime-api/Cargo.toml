@@ -13,12 +13,12 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-api = { version = "2.0.0", default-features = false, path = "../../../../primitives/api" }
+tp-api = { version = "2.0.0", default-features = false, path = "../../../../primitives/api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
 
 [features]
 default = ["std"]
 std = [
-	"tc-api/std",
+	"tp-api/std",
 	"codec/std",
 ]

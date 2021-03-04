@@ -1,5 +1,5 @@
 [package]
-name = "tc-core"
+name = "tp-core"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,13 +7,13 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Shareable Tetcore types."
-documentation = "https://docs.rs/tc-core"
+documentation = "https://docs.rs/tp-core"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 log = { version = "0.4.11", default-features = false }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
@@ -33,9 +33,9 @@ zeroize = { version = "1.2.0", default-features = false }
 secrecy = { version = "0.7.0", default-features = false }
 lazy_static = { version = "1.4.0", default-features = false, optional = true }
 parking_lot = { version = "0.11.1", optional = true }
-tc-debug-derive = { version = "2.0.0", path = "../debug-derive" }
-tc-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
-tc-storage = { version = "2.0.0", default-features = false, path = "../storage" }
+tp-debug-derive = { version = "2.0.0", path = "../debug-derive" }
+tp-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
+tp-storage = { version = "2.0.0", default-features = false, path = "../storage" }
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["primitive-types"] }
 futures = { version = "0.3.1", optional = true }
 dyn-clonable = { version = "0.9.0", optional = true }
@@ -52,10 +52,10 @@ twox-hash = { version = "1.5.0", default-features = false, optional = true }
 libsecp256k1 = { version = "0.3.2", default-features = false, features = ["hmac"], optional = true }
 merlin = { version = "2.0", default-features = false, optional = true }
 
-tc-runtime-interface = { version = "2.0.0", default-features = false, path = "../runtime-interface" }
+tp-runtime-interface = { version = "2.0.0", default-features = false, path = "../runtime-interface" }
 
 [dev-dependencies]
-tc-serializer = { version = "2.0.0", path = "../serializer" }
+tp-serializer = { version = "2.0.0", path = "../serializer" }
 pretty_assertions = "0.6.1"
 hex-literal = "0.3.1"
 rand = "0.7.2"
@@ -87,7 +87,7 @@ std = [
 	"codec/std",
 	"hash256-std-hasher/std",
 	"hash-db/std",
-	"tc-std/std",
+	"tp-std/std",
 	"serde",
 	"twox-hash/std",
 	"blake2-rfc/std",
@@ -104,10 +104,10 @@ std = [
 	"regex",
 	"num-traits/std",
 	"tiny-keccak",
-	"tc-debug-derive/std",
-	"tc-externalities",
-	"tc-storage/std",
-	"tc-runtime-interface/std",
+	"tp-debug-derive/std",
+	"tp-externalities",
+	"tp-storage/std",
+	"tp-runtime-interface/std",
 	"zeroize/alloc",
 	"secrecy/alloc",
 	"futures",
@@ -128,6 +128,6 @@ full_crypto = [
 	"sha2",
 	"twox-hash",
 	"libsecp256k1",
-	"tc-runtime-interface/disable_target_static_assertions",
+	"tp-runtime-interface/disable_target_static_assertions",
 	"merlin",
 ]

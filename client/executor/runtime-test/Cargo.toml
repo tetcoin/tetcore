@@ -1,5 +1,5 @@
 [package]
-name = "sc-runtime-test"
+name = "tc-runtime-test"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -13,13 +13,13 @@ repository = "https://github.com/tetcoin/tetcore/"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-allocator = { version = "2.0.0", default-features = false, path = "../../../primitives/allocator" }
-tc-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
-tc-io = { version = "2.0.0", default-features = false, path = "../../../primitives/io" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
-tc-sandbox = { version = "0.8.0", default-features = false, path = "../../../primitives/sandbox" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
-tc-tasks = { version = "2.0.0", default-features = false, path = "../../../primitives/tasks" }
+tp-allocator = { version = "2.0.0", default-features = false, path = "../../../primitives/allocator" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tp-sandbox = { version = "0.8.0", default-features = false, path = "../../../primitives/sandbox" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tp-tasks = { version = "2.0.0", default-features = false, path = "../../../primitives/tasks" }
 
 [build-dependencies]
 tetcore-wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
@@ -27,11 +27,11 @@ tetcore-wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder"
 [features]
 default = [ "std" ]
 std = [
-	"tc-allocator/std",
-	"tc-core/std",
-	"tc-io/std",
-	"tc-runtime/std",
-	"tc-sandbox/std",
-	"tc-std/std",
- 	"tc-tasks/std",
+	"tp-allocator/std",
+	"tp-core/std",
+	"tp-io/std",
+	"tp-runtime/std",
+	"tp-sandbox/std",
+	"tp-std/std",
+ 	"tp-tasks/std",
 ]

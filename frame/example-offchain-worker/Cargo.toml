@@ -17,11 +17,11 @@ codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = f
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 serde = { version = "1.0.101", optional = true }
-tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tc-keystore = { version = "0.8.0", path = "../../primitives/keystore", optional = true }
-tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-keystore = { version = "0.8.0", path = "../../primitives/keystore", optional = true }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 lite-json = { version = "0.1", default-features = false }
 
 [features]
@@ -32,9 +32,9 @@ std = [
 	"frame-system/std",
 	"serde",
 	"lite-json/std",
-	"tc-core/std",
-	"tc-io/std",
-	"tc-keystore",
-	"tc-runtime/std",
-	"tc-std/std",
+	"tp-core/std",
+	"tp-io/std",
+	"tp-keystore",
+	"tp-runtime/std",
+	"tp-std/std",
 ]

@@ -1,5 +1,5 @@
 [package]
-name = "tc-api-proc-macro"
+name = "tp-api-proc-macro"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Macros for declaring and implementing runtime apis."
-documentation = "https://docs.rs/tc-api-proc-macro"
+documentation = "https://docs.rs/tp-api-proc-macro"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

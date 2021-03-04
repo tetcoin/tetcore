@@ -1,5 +1,5 @@
 [package]
-name = "sc-finality-grandpa-rpc"
+name = "tc-finality-grandpa-rpc"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "RPC extensions for the GRANDPA finality gadget"
@@ -9,11 +9,11 @@ license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 readme = "README.md"
 
 [dependencies]
-sc-finality-grandpa = { version = "0.8.0", path = "../" }
-sc-rpc = { version = "2.0.0", path = "../../rpc" }
-tc-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tc-finality-grandpa = { version = "0.8.0", path = "../" }
+tc-rpc = { version = "2.0.0", path = "../../rpc" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 finality-grandpa = { version = "0.13.0", features = ["derive-codec"] }
 jsonrpc-core = "15.1.0"
 jsonrpc-core-client = "15.1.0"
@@ -25,15 +25,15 @@ serde_json = "1.0.50"
 log = "0.4.8"
 derive_more = "0.99.2"
 tetsy-scale-codec = { version = "2.0.0", features = ["derive"] }
-sc-client-api = { version = "2.0.0", path = "../../api" }
+tc-client-api = { version = "2.0.0", path = "../../api" }
 
 [dev-dependencies]
-sc-block-builder = { version = "0.8.0", path = "../../block-builder" }
-sc-network-test = { version = "0.8.0", path = "../../network/test" }
-sc-rpc = { version = "2.0.0", path = "../../rpc", features = ["test-helpers"] }
-tc-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-finality-grandpa = { version = "2.0.0", path = "../../../primitives/finality-grandpa" }
-tc-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
+tc-block-builder = { version = "0.8.0", path = "../../block-builder" }
+tc-network-test = { version = "0.8.0", path = "../../network/test" }
+tc-rpc = { version = "2.0.0", path = "../../rpc", features = ["test-helpers"] }
+tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-finality-grandpa = { version = "2.0.0", path = "../../../primitives/finality-grandpa" }
+tp-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
 tetcore-test-runtime-client = { version = "2.0.0",  path = "../../../test-utils/runtime/client" }
 lazy_static = "1.4"

@@ -1069,8 +1069,8 @@ mod tests {
 	/// See [`ProtocolRequestId`] for additional information.
 	#[test]
 	fn request_id_collision() {
-		let protocol_name_1 = "/test/req-retc-1/1";
-		let protocol_name_2 = "/test/req-retc-2/1";
+		let protocol_name_1 = "/test/req-retp-1/1";
+		let protocol_name_2 = "/test/req-retp-2/1";
 		let mut pool = LocalPool::new();
 
 		let mut swarm_1 = {

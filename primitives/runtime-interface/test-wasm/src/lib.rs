@@ -132,8 +132,8 @@ pub trait TestApi {
 	}
 }
 
-/// This function is not used, but we require it for the compiler to include `tc-io`.
-/// `tc-io` is required for its panic and oom handler.
+/// This function is not used, but we require it for the compiler to include `tp-io`.
+/// `tp-io` is required for its panic and oom handler.
 #[no_mangle]
 pub fn import_sp_io() {
 	sp_io::misc::print_utf8(&[]);
@@ -261,7 +261,7 @@ wasm_export_functions! {
 
 	fn test_versionning_works() {
 		// we fix new api to accept only 42 as a proper input
-		// as opposed to tc-runtime-interface-test-wasm-deprecated::test_api::verify_input
+		// as opposed to tp-runtime-interface-test-wasm-deprecated::test_api::verify_input
 		// which accepted 42 and 50.
 		assert!(test_api::test_versionning(42));
 

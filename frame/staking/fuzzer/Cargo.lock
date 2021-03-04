@@ -369,11 +369,11 @@ dependencies = [
  "frame-system",
  "linregress",
  "tetsy-scale-codec",
- "tc-api",
- "tc-io",
- "tc-runtime",
- "tc-runtime-interface",
- "tc-std",
+ "tp-api",
+ "tp-io",
+ "tp-runtime",
+ "tp-runtime-interface",
+ "tp-std",
 ]
 
 [[package]]
@@ -382,8 +382,8 @@ version = "11.0.0-alpha.5"
 dependencies = [
  "tetsy-scale-codec",
  "serde",
- "tc-core",
- "tc-std",
+ "tp-core",
+ "tp-std",
 ]
 
 [[package]]
@@ -399,13 +399,13 @@ dependencies = [
  "tetsy-scale-codec",
  "paste",
  "serde",
- "tc-arithmetic",
- "tc-core",
- "tc-inherents",
- "tc-io",
- "tc-runtime",
- "tc-state-machine",
- "tc-std",
+ "tp-arithmetic",
+ "tp-core",
+ "tp-inherents",
+ "tp-io",
+ "tp-runtime",
+ "tp-state-machine",
+ "tp-std",
  "tracing",
 ]
 
@@ -447,11 +447,11 @@ dependencies = [
  "impl-trait-for-tuples",
  "tetsy-scale-codec",
  "serde",
- "tc-core",
- "tc-io",
- "tc-runtime",
- "tc-std",
- "tc-version",
+ "tp-core",
+ "tp-io",
+ "tp-runtime",
+ "tp-std",
+ "tp-version",
 ]
 
 [[package]]
@@ -934,12 +934,12 @@ dependencies = [
  "frame-system",
  "impl-trait-for-tuples",
  "tetsy-scale-codec",
- "tc-authorship",
- "tc-core",
- "tc-inherents",
- "tc-io",
- "tc-runtime",
- "tc-std",
+ "tp-authorship",
+ "tp-core",
+ "tp-inherents",
+ "tp-io",
+ "tp-runtime",
+ "tp-std",
 ]
 
 [[package]]
@@ -951,9 +951,9 @@ dependencies = [
  "frame-system",
  "tetsy-scale-codec",
  "serde",
- "tc-io",
- "tc-runtime",
- "tc-std",
+ "tp-io",
+ "tp-runtime",
+ "tp-std",
 ]
 
 [[package]]
@@ -964,11 +964,11 @@ dependencies = [
  "frame-system",
  "tetsy-scale-codec",
  "serde",
- "tc-core",
- "tc-io",
- "tc-keyring",
- "tc-runtime",
- "tc-std",
+ "tp-core",
+ "tp-io",
+ "tp-keyring",
+ "tp-runtime",
+ "tp-std",
 ]
 
 [[package]]
@@ -981,11 +981,11 @@ dependencies = [
  "pallet-timestamp",
  "tetsy-scale-codec",
  "serde",
- "tc-io",
- "tc-runtime",
- "tc-staking",
- "tc-std",
- "tc-trie",
+ "tp-io",
+ "tp-runtime",
+ "tp-staking",
+ "tp-std",
+ "tp-trie",
 ]
 
 [[package]]
@@ -1000,13 +1000,13 @@ dependencies = [
  "tetsy-scale-codec",
  "rand 0.7.3",
  "serde",
- "tc-application-crypto",
- "tc-core",
- "tc-io",
- "tc-npos-elections",
- "tc-runtime",
- "tc-staking",
- "tc-std",
+ "tp-application-crypto",
+ "tp-core",
+ "tp-io",
+ "tp-npos-elections",
+ "tp-runtime",
+ "tp-staking",
+ "tp-std",
  "static_assertions",
 ]
 
@@ -1025,11 +1025,11 @@ dependencies = [
  "pallet-timestamp",
  "tetsy-scale-codec",
  "rand 0.7.3",
- "tc-core",
- "tc-io",
- "tc-npos-elections",
- "tc-runtime",
- "tc-std",
+ "tp-core",
+ "tp-io",
+ "tp-npos-elections",
+ "tp-runtime",
+ "tp-std",
 ]
 
 [[package]]
@@ -1052,10 +1052,10 @@ dependencies = [
  "impl-trait-for-tuples",
  "tetsy-scale-codec",
  "serde",
- "tc-inherents",
- "tc-runtime",
- "tc-std",
- "tc-timestamp",
+ "tp-inherents",
+ "tp-runtime",
+ "tp-std",
+ "tp-timestamp",
 ]
 
 [[package]]
@@ -1590,21 +1590,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5c2fb2ec9bcd216a5b0d0ccf31ab17b5ed1d627960edff65bbe95d3ce221cefc"
 
 [[package]]
-name = "tc-api"
+name = "tp-api"
 version = "2.0.0-alpha.5"
 dependencies = [
  "hash-db",
  "tetsy-scale-codec",
- "tc-api-proc-macro",
- "tc-core",
- "tc-runtime",
- "tc-state-machine",
- "tc-std",
- "tc-version",
+ "tp-api-proc-macro",
+ "tp-core",
+ "tp-runtime",
+ "tp-state-machine",
+ "tp-std",
+ "tp-version",
 ]
 
 [[package]]
-name = "tc-api-proc-macro"
+name = "tp-api-proc-macro"
 version = "2.0.0-alpha.5"
 dependencies = [
  "blake2-rfc",
@@ -1615,40 +1615,40 @@ dependencies = [
 ]
 
 [[package]]
-name = "tc-application-crypto"
+name = "tp-application-crypto"
 version = "2.0.0-alpha.5"
 dependencies = [
  "tetsy-scale-codec",
  "serde",
- "tc-core",
- "tc-io",
- "tc-std",
+ "tp-core",
+ "tp-io",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-arithmetic"
+name = "tp-arithmetic"
 version = "2.0.0-alpha.5"
 dependencies = [
  "integer-sqrt",
  "num-traits",
  "tetsy-scale-codec",
  "serde",
- "tc-debug-derive",
- "tc-std",
+ "tp-debug-derive",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-authorship"
+name = "tp-authorship"
 version = "2.0.0-alpha.5"
 dependencies = [
  "tetsy-scale-codec",
- "tc-inherents",
- "tc-runtime",
- "tc-std",
+ "tp-inherents",
+ "tp-runtime",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-core"
+name = "tp-core"
 version = "2.0.0-alpha.5"
 dependencies = [
  "base58",
@@ -1673,11 +1673,11 @@ dependencies = [
  "schnorrkel",
  "serde",
  "sha2",
- "tc-debug-derive",
- "tc-externalities",
- "tc-runtime-interface",
- "tc-std",
- "tc-storage",
+ "tp-debug-derive",
+ "tp-externalities",
+ "tp-runtime-interface",
+ "tp-std",
+ "tp-storage",
  "tetcore-bip39",
  "tiny-bip39",
  "tiny-keccak",
@@ -1687,7 +1687,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tc-debug-derive"
+name = "tp-debug-derive"
 version = "2.0.0-alpha.5"
 dependencies = [
  "proc-macro2",
@@ -1696,54 +1696,54 @@ dependencies = [
 ]
 
 [[package]]
-name = "tc-externalities"
+name = "tp-externalities"
 version = "0.8.0-alpha.5"
 dependencies = [
  "environmental",
- "tc-std",
- "tc-storage",
+ "tp-std",
+ "tp-storage",
 ]
 
 [[package]]
-name = "tc-inherents"
+name = "tp-inherents"
 version = "2.0.0-alpha.5"
 dependencies = [
  "derive_more",
  "tetsy-scale-codec",
  "parking_lot 0.10.0",
- "tc-core",
- "tc-std",
+ "tp-core",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-io"
+name = "tp-io"
 version = "2.0.0-alpha.5"
 dependencies = [
  "hash-db",
  "libsecp256k1",
  "log",
  "tetsy-scale-codec",
- "tc-core",
- "tc-externalities",
- "tc-runtime-interface",
- "tc-state-machine",
- "tc-std",
- "tc-trie",
- "tc-wasm-interface",
+ "tp-core",
+ "tp-externalities",
+ "tp-runtime-interface",
+ "tp-state-machine",
+ "tp-std",
+ "tp-trie",
+ "tp-wasm-interface",
 ]
 
 [[package]]
-name = "tc-keyring"
+name = "tp-keyring"
 version = "2.0.0-alpha.5"
 dependencies = [
  "lazy_static",
- "tc-core",
- "tc-runtime",
+ "tp-core",
+ "tp-runtime",
  "strum",
 ]
 
 [[package]]
-name = "tc-panic-handler"
+name = "tp-panic-handler"
 version = "2.0.0-alpha.5"
 dependencies = [
  "backtrace",
@@ -1751,18 +1751,18 @@ dependencies = [
 ]
 
 [[package]]
-name = "tc-npos-elections"
+name = "tp-npos-elections"
 version = "2.0.0-alpha.5"
 dependencies = [
  "tetsy-scale-codec",
  "serde",
- "tc-npos-elections-compact",
- "tc-runtime",
- "tc-std",
+ "tp-npos-elections-compact",
+ "tp-runtime",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-npos-elections-compact"
+name = "tp-npos-elections-compact"
 version = "2.0.0-rc3"
 dependencies = [
  "proc-macro-crate",
@@ -1772,7 +1772,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tc-runtime"
+name = "tp-runtime"
 version = "2.0.0-alpha.5"
 dependencies = [
  "hash256-std-hasher",
@@ -1783,29 +1783,29 @@ dependencies = [
  "paste",
  "rand 0.7.3",
  "serde",
- "tc-application-crypto",
- "tc-arithmetic",
- "tc-core",
- "tc-inherents",
- "tc-io",
- "tc-std",
+ "tp-application-crypto",
+ "tp-arithmetic",
+ "tp-core",
+ "tp-inherents",
+ "tp-io",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-runtime-interface"
+name = "tp-runtime-interface"
 version = "2.0.0-alpha.5"
 dependencies = [
  "tetsy-scale-codec",
  "primitive-types",
- "tc-externalities",
- "tc-runtime-interface-proc-macro",
- "tc-std",
- "tc-wasm-interface",
+ "tp-externalities",
+ "tp-runtime-interface-proc-macro",
+ "tp-std",
+ "tp-wasm-interface",
  "static_assertions",
 ]
 
 [[package]]
-name = "tc-runtime-interface-proc-macro"
+name = "tp-runtime-interface-proc-macro"
 version = "2.0.0-alpha.5"
 dependencies = [
  "Inflector",
@@ -1816,16 +1816,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "tc-staking"
+name = "tp-staking"
 version = "2.0.0-alpha.5"
 dependencies = [
  "tetsy-scale-codec",
- "tc-runtime",
- "tc-std",
+ "tp-runtime",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-state-machine"
+name = "tp-state-machine"
 version = "0.8.0-alpha.5"
 dependencies = [
  "hash-db",
@@ -1834,72 +1834,72 @@ dependencies = [
  "tetsy-scale-codec",
  "parking_lot 0.10.0",
  "rand 0.7.3",
- "tc-core",
- "tc-externalities",
- "tc-panic-handler",
- "tc-trie",
+ "tp-core",
+ "tp-externalities",
+ "tp-panic-handler",
+ "tp-trie",
  "trie-db",
  "trie-root",
 ]
 
 [[package]]
-name = "tc-std"
+name = "tp-std"
 version = "2.0.0-alpha.5"
 
 [[package]]
-name = "tc-storage"
+name = "tp-storage"
 version = "2.0.0-alpha.5"
 dependencies = [
  "impl-serde 0.2.3",
  "serde",
- "tc-debug-derive",
- "tc-std",
+ "tp-debug-derive",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-timestamp"
+name = "tp-timestamp"
 version = "2.0.0-alpha.5"
 dependencies = [
  "impl-trait-for-tuples",
  "tetsy-scale-codec",
- "tc-api",
- "tc-inherents",
- "tc-runtime",
- "tc-std",
+ "tp-api",
+ "tp-inherents",
+ "tp-runtime",
+ "tp-std",
  "wasm-timer",
 ]
 
 [[package]]
-name = "tc-trie"
+name = "tp-trie"
 version = "2.0.0-alpha.5"
 dependencies = [
  "hash-db",
  "memory-db",
  "tetsy-scale-codec",
- "tc-core",
- "tc-std",
+ "tp-core",
+ "tp-std",
  "trie-db",
  "trie-root",
 ]
 
 [[package]]
-name = "tc-version"
+name = "tp-version"
 version = "2.0.0-alpha.5"
 dependencies = [
  "impl-serde 0.2.3",
  "tetsy-scale-codec",
  "serde",
- "tc-runtime",
- "tc-std",
+ "tp-runtime",
+ "tp-std",
 ]
 
 [[package]]
-name = "tc-wasm-interface"
+name = "tp-wasm-interface"
 version = "2.0.0-alpha.5"
 dependencies = [
  "impl-trait-for-tuples",
  "tetsy-scale-codec",
- "tc-std",
+ "tp-std",
  "wasmi",
 ]
 

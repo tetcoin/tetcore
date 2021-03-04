@@ -23,7 +23,7 @@ Putting all these components together we have:
 === Runtime
 
 * _found in_: `/primitives`
-* _crates prefix_: `tc-`
+* _crates prefix_: `tp-`
 * _constraints_:
 ** must be `[no_std]`
 ** crates may not (dev-)depend on crates in other subfolders of this repo
@@ -33,7 +33,7 @@ In the lowest level, Tetcore defines primitives, interfaces and traits to implem
 === Client
 
 * _found in_: `/client`
-* _crates prefix_: `sc-`
+* _crates prefix_: `tc-`
 * _constraints_:
 ** crates may not (dev-)depend on any `frame-`-crates
 

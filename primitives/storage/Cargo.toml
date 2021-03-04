@@ -1,5 +1,5 @@
 [package]
-name = "tc-storage"
+name = "tp-storage"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,20 +7,20 @@ description = "Storage related primitives"
 license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
-documentation = "https://docs.rs/tc-storage/"
+documentation = "https://docs.rs/tp-storage/"
 readme = "README.md"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 impl-serde = { version = "0.3.1", optional = true }
 ref-cast = "1.0.0"
-tc-debug-derive = { version = "2.0.0", path = "../debug-derive" }
+tp-debug-derive = { version = "2.0.0", path = "../debug-derive" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 
 [features]
 default = [ "std" ]
-std = [ "tc-std/std", "serde", "impl-serde", "codec/std" ]
+std = [ "tp-std/std", "serde", "impl-serde", "codec/std" ]

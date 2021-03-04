@@ -41,7 +41,7 @@ use tempfile::TempDir;
 pub struct Configuration {
 	/// Implementation name
 	pub impl_name: String,
-	/// Implementation version (see sc-cli to see an example of format)
+	/// Implementation version (see tc-cli to see an example of format)
 	pub impl_version: String,
 	/// Node role.
 	pub role: Role,

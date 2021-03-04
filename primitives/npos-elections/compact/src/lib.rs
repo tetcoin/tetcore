@@ -43,7 +43,7 @@ pub(crate) fn syn_err(message: &'static str) -> syn::Error {
 /// - The identifier of the target. This can be any type that supports `tetsy-scale-codec`'s
 ///   compact encoding.
 /// - The accuracy of the ratios. This must be one of the `PerThing` types defined in
-///   `tc-arithmetic`.
+///   `tp-arithmetic`.
 ///
 /// Moreover, the maximum number of edges per voter (distribution per assignment) also need to be
 /// specified. Attempting to convert from/to an assignment with more distributions will fail.
@@ -348,12 +348,12 @@ fn unique_targets_impl(count: usize) -> TokenStream2 {
 }
 
 fn imports() -> Result<TokenStream2> {
-	if std::env::var("CARGO_PKG_NAME").unwrap() == "tc-npos-elections" {
+	if std::env::var("CARGO_PKG_NAME").unwrap() == "tp-npos-elections" {
 		Ok(quote! {
 			use crate as _npos;
 		})
 	} else {
-		match crate_name("tc-npos-elections") {
+		match crate_name("tp-npos-elections") {
 			Ok(sp_npos_elections) => {
 				let ident = syn::Ident::new(&sp_npos_elections, Span::call_site());
 				Ok(quote!( extern crate #ident as _npos; ))

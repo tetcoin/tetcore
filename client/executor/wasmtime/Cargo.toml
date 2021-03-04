@@ -1,5 +1,5 @@
 [package]
-name = "sc-executor-wasmtime"
+name = "tc-executor-wasmtime"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -17,11 +17,11 @@ log = "0.4.8"
 scoped-tls = "1.0"
 tetsy-wasm = "0.41.0"
 codec = { package = "tetsy-scale-codec", version = "2.0.0" }
-sc-executor-common = { version = "0.8.0", path = "../common" }
-tc-wasm-interface = { version = "2.0.0", path = "../../../primitives/wasm-interface" }
-tc-runtime-interface = { version = "2.0.0", path = "../../../primitives/runtime-interface" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-allocator = { version = "2.0.0", path = "../../../primitives/allocator" }
+tc-executor-common = { version = "0.8.0", path = "../common" }
+tp-wasm-interface = { version = "2.0.0", path = "../../../primitives/wasm-interface" }
+tp-runtime-interface = { version = "2.0.0", path = "../../../primitives/runtime-interface" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-allocator = { version = "2.0.0", path = "../../../primitives/allocator" }
 wasmtime = "0.19"
 pwasm-utils = "0.14.0"
 

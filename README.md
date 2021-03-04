@@ -23,8 +23,8 @@ The security policy and procedures can be found in [`docs/SECURITY.md`](docs/SEC
 
 ## License
 
-- Tetcore Primitives (`tc-*`), Frame (`frame-*`) and the pallets (`pallets-*`), binaries (`/bin`) and all other utilities are licensed under [Apache 2.0](LICENSE-APACHE2).
-- Tetcore Client (`/client/*` / `sc-*`) is licensed under [GPL v3.0 with a classpath linking exception](LICENSE-GPL3).
+- Tetcore Primitives (`tp-*`), Frame (`frame-*`) and the pallets (`pallets-*`), binaries (`/bin`) and all other utilities are licensed under [Apache 2.0](LICENSE-APACHE2).
+- Tetcore Client (`/client/*` / `tc-*`) is licensed under [GPL v3.0 with a classpath linking exception](LICENSE-GPL3).
 
 The reason for the split-licensing is to ensure that for the vast majority of teams using Tetcore to create feature-chains, then all changes can be made entirely in Apache2-licensed code, allowing teams full freedom over what and how they release and giving licensing clarity to commercial teams.
 

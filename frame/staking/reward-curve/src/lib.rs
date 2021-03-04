@@ -81,7 +81,7 @@ pub fn build(input: TokenStream) -> TokenStream {
 	let declaration = generate_piecewise_linear(points);
 	let test_module = generate_test_module(&input);
 
-	let imports = match crate_name("tc-runtime") {
+	let imports = match crate_name("tp-runtime") {
 		Ok(sp_runtime) => {
 			let ident = syn::Ident::new(&sp_runtime, Span::call_site());
 			quote!( extern crate #ident as _sp_runtime; )

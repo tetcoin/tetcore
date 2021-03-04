@@ -1141,7 +1141,7 @@ mod score {
 mod solution_type {
 	use super::AccountId;
 	use codec::{Decode, Encode};
-	// these need to come from the same dev-dependency `tc-npos-elections`, not from the crate.
+	// these need to come from the same dev-dependency `tp-npos-elections`, not from the crate.
 	use crate::{generate_solution_type, Assignment, CompactSolution, Error as PhragmenError};
 	use sp_arithmetic::Percent;
 	use sp_std::{convert::TryInto, fmt::Debug};

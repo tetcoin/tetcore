@@ -1,5 +1,5 @@
 [package]
-name = "sc-consensus-babe-rpc"
+name = "tc-consensus-babe-rpc"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "RPC extensions for the BABE consensus algorithm"
@@ -13,28 +13,28 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-sc-consensus-babe = { version = "0.8.0", path = "../" }
-sc-rpc-api = { version = "0.8.0", path = "../../../rpc-api" }
+tc-consensus-babe = { version = "0.8.0", path = "../" }
+tc-rpc-api = { version = "0.8.0", path = "../../../rpc-api" }
 jsonrpc-core = "15.1.0"
 jsonrpc-core-client = "15.1.0"
 jsonrpc-derive = "15.1.0"
-tc-consensus-babe = { version = "0.8.0", path = "../../../../primitives/consensus/babe" }
+tp-consensus-babe = { version = "0.8.0", path = "../../../../primitives/consensus/babe" }
 serde = { version = "1.0.104", features=["derive"] }
-tc-blockchain = { version = "2.0.0", path = "../../../../primitives/blockchain" }
-tc-runtime = { version = "2.0.0", path = "../../../../primitives/runtime" }
-sc-consensus-epochs = { version = "0.8.0", path = "../../epochs" }
+tp-blockchain = { version = "2.0.0", path = "../../../../primitives/blockchain" }
+tp-runtime = { version = "2.0.0", path = "../../../../primitives/runtime" }
+tc-consensus-epochs = { version = "0.8.0", path = "../../epochs" }
 futures = { version = "0.3.4", features = ["compat"] }
 derive_more = "0.99.2"
-tc-api = { version = "2.0.0", path = "../../../../primitives/api" }
-tc-consensus = { version = "0.8.0", path = "../../../../primitives/consensus/common" }
-tc-core = { version = "2.0.0", path = "../../../../primitives/core" }
-tc-application-crypto = { version = "2.0.0", path = "../../../../primitives/application-crypto" }
-tc-keystore = { version = "0.8.0", path = "../../../../primitives/keystore" }
+tp-api = { version = "2.0.0", path = "../../../../primitives/api" }
+tp-consensus = { version = "0.8.0", path = "../../../../primitives/consensus/common" }
+tp-core = { version = "2.0.0", path = "../../../../primitives/core" }
+tp-application-crypto = { version = "2.0.0", path = "../../../../primitives/application-crypto" }
+tp-keystore = { version = "0.8.0", path = "../../../../primitives/keystore" }
 
 [dev-dependencies]
-sc-consensus = { version = "0.8.0", path = "../../../consensus/common" }
+tc-consensus = { version = "0.8.0", path = "../../../consensus/common" }
 serde_json = "1.0.50"
-tc-keyring = { version = "2.0.0", path = "../../../../primitives/keyring" }
-sc-keystore = { version = "2.0.0", path = "../../../keystore" }
+tp-keyring = { version = "2.0.0", path = "../../../../primitives/keyring" }
+tc-keystore = { version = "2.0.0", path = "../../../keystore" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../../../test-utils/runtime/client" }
 tempfile = "3.1.0"

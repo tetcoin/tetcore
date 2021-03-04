@@ -19,7 +19,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-/// Copied from `tc-runtime` and documented there.
+/// Copied from `tp-runtime` and documented there.
 #[macro_export]
 macro_rules! assert_eq_error_rate {
 	($x:expr, $y:expr, $error:expr $(,)?) => {

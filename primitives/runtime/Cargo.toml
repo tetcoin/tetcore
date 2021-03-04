@@ -1,5 +1,5 @@
 [package]
-name = "tc-runtime"
+name = "tp-runtime"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Runtime Modules shared primitive types."
-documentation = "https://docs.rs/tc-runtime"
+documentation = "https://docs.rs/tp-runtime"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -17,11 +17,11 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-core = { version = "2.0.0", default-features = false, path = "../core" }
-tc-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
-tc-arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
-tc-io = { version = "2.0.0", default-features = false, path = "../io" }
+tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
+tp-arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../io" }
 log = { version = "0.4.8", optional = true }
 paste = "0.1.6"
 rand = { version = "0.7.2", optional = true }
@@ -33,21 +33,21 @@ either = { version = "1.5", default-features = false }
 [dev-dependencies]
 serde_json = "1.0.41"
 rand = "0.7.2"
-tc-state-machine = { version = "0.8.0", path = "../state-machine" }
+tp-state-machine = { version = "0.8.0", path = "../state-machine" }
 
 [features]
 bench = []
 runtime-benchmarks = []
 default = ["std"]
 std = [
-	"tc-application-crypto/std",
-	"tc-arithmetic/std",
+	"tp-application-crypto/std",
+	"tp-arithmetic/std",
 	"codec/std",
 	"log",
-	"tc-core/std",
+	"tp-core/std",
 	"rand",
-	"tc-std/std",
-	"tc-io/std",
+	"tp-std/std",
+	"tp-io/std",
 	"serde",
 	"tetsy-util-mem/std",
 	"hash256-std-hasher/std",

@@ -28,17 +28,17 @@ default-features = false
 version = "2.0.0"
 path = "../../../../frame/system"
 
-[dev-dependencies.tc-core]
+[dev-dependencies.tp-core]
 default-features = false
 version = "2.0.0"
 path = "../../../../primitives/core"
 
-[dev-dependencies.tc-io]
+[dev-dependencies.tp-io]
 default-features = false
 version = "2.0.0"
 path = "../../../../primitives/io"
 
-[dev-dependencies.tc-runtime]
+[dev-dependencies.tp-runtime]
 default-features = false
 version = "2.0.0"
 path = "../../../../primitives/runtime"

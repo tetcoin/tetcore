@@ -1,5 +1,5 @@
 [package]
-name = "sc-client-db"
+name = "tc-client-db"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -24,23 +24,23 @@ tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["std
 codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
 blake2-rfc = "0.2.18"
 
-sc-client-api = { version = "2.0.0", path = "../api" }
-tc-arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tc-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
-sc-executor = { version = "0.8.0", path = "../executor" }
-sc-state-db = { version = "0.8.0", path = "../state-db" }
-tc-trie = { version = "2.0.0", path = "../../primitives/trie" }
-tc-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-tc-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tc-database = { version = "2.0.0", path = "../../primitives/database" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tp-arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tc-executor = { version = "0.8.0", path = "../executor" }
+tc-state-db = { version = "0.8.0", path = "../state-db" }
+tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
+tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tp-database = { version = "2.0.0", path = "../../primitives/database" }
 tetsy-db = { version = "0.1.2", optional = true }
 prometheus-endpoint = { package = "tetcore-prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
 
 [dev-dependencies]
-tc-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
-tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 quickcheck = "0.9"
 kvdb-rocksdb = "0.11.0"

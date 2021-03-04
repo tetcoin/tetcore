@@ -1,5 +1,5 @@
 [package]
-name = "tc-consensus-vrf"
+name = "tp-consensus-vrf"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Primitives for VRF based consensus"
@@ -15,16 +15,16 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 codec = { version = "2.0.0", package = "tetsy-scale-codec", default-features = false }
 schnorrkel = { version = "0.9.1", features = ["preaudit_deprecated", "u64_backend"], default-features = false }
-tc-std = { version = "2.0.0", path = "../../std", default-features = false }
-tc-core = { version = "2.0.0", path = "../../core", default-features = false }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../runtime" }
+tp-std = { version = "2.0.0", path = "../../std", default-features = false }
+tp-core = { version = "2.0.0", path = "../../core", default-features = false }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../runtime" }
 
 [features]
 default = ["std"]
 std = [
 	"codec/std",
 	"schnorrkel/std",
-	"tc-std/std",
-	"tc-core/std",
-	"tc-runtime/std",
+	"tp-std/std",
+	"tp-core/std",
+	"tp-runtime/std",
 ]

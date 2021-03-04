@@ -196,7 +196,7 @@ impl Error {
 
 	/// Construct from a state db error.
 	// Can not be done directly, since that would make cargo run out of stack if
-	// `sc-state-db` is lib is added as dependency.
+	// `tc-state-db` is lib is added as dependency.
 	pub fn from_state_db<E>(e: E) -> Self where E: std::fmt::Debug {
 		Error::StateDatabase(format!("{:?}", e))
 	}

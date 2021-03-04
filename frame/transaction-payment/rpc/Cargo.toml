@@ -17,9 +17,9 @@ codec = { package = "tetsy-scale-codec", version = "2.0.0" }
 jsonrpc-core = "15.1.0"
 jsonrpc-core-client = "15.1.0"
 jsonrpc-derive = "15.1.0"
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-rpc = { version = "2.0.0", path = "../../../primitives/rpc" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tc-api = { version = "2.0.0", path = "../../../primitives/api" }
-tc-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-rpc = { version = "2.0.0", path = "../../../primitives/rpc" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-api = { version = "2.0.0", path = "../../../primitives/api" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
 pallet-transaction-payment-rpc-runtime-api = { version = "2.0.0", path = "./runtime-api" }

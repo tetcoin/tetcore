@@ -32,7 +32,7 @@
 //! [`Backend`](sc_client_api::backend::Backend) and an
 //! [`Executor`](sc_client_api::call_executor::CallExecutor).
 //!
-//! The former is typically provided by the `sc-client-db` crate.
+//! The former is typically provided by the `tc-client-db` crate.
 //!
 //! The latter typically requires passing one of:
 //!

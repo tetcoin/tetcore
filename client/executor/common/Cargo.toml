@@ -1,5 +1,5 @@
 [package]
-name = "sc-executor-common"
+name = "tc-executor-common"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "A set of common definitions that are needed for defining execution engines."
-documentation = "https://docs.rs/sc-executor-common/"
+documentation = "https://docs.rs/tc-executor-common/"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -18,10 +18,10 @@ derive_more = "0.99.2"
 tetsy-wasm = "0.41.0"
 codec = { package = "tetsy-scale-codec", version = "2.0.0" }
 wasmi = "0.6.2"
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-allocator = { version = "2.0.0", path = "../../../primitives/allocator" }
-tc-wasm-interface = { version = "2.0.0", path = "../../../primitives/wasm-interface" }
-tc-serializer = { version = "2.0.0", path = "../../../primitives/serializer" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-allocator = { version = "2.0.0", path = "../../../primitives/allocator" }
+tp-wasm-interface = { version = "2.0.0", path = "../../../primitives/wasm-interface" }
+tp-serializer = { version = "2.0.0", path = "../../../primitives/serializer" }
 thiserror = "1.0.21"
 
 [features]

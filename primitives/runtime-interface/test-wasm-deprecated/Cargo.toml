@@ -1,5 +1,5 @@
 [package]
-name = "tc-runtime-interface-test-wasm-deprecated"
+name = "tp-runtime-interface-test-wasm-deprecated"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -13,14 +13,14 @@ publish = false
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-runtime-interface = { version = "2.0.0", default-features = false, path = "../" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../std" }
-tc-io = { version = "2.0.0", default-features = false, path = "../../io" }
-tc-core = { version = "2.0.0", default-features = false, path = "../../core" }
+tp-runtime-interface = { version = "2.0.0", default-features = false, path = "../" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../io" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../core" }
 
 [build-dependencies]
 tetcore-wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
 
 [features]
 default = [ "std" ]
-std = [ "tc-runtime-interface/std", "tc-std/std", "tc-core/std", "tc-io/std" ]
+std = [ "tp-runtime-interface/std", "tp-std/std", "tp-core/std", "tp-io/std" ]

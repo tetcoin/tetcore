@@ -15,8 +15,8 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 pallet-balances = { version = "2.0.0", default-features = false, path = "../balances" }
@@ -25,17 +25,17 @@ impl-trait-for-tuples = "0.2.0"
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 
 [dev-dependencies]
-tc-io ={ version = "2.0.0", path = "../../primitives/io" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tp-io ={ version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-storage = { version = "2.0.0", path = "../../primitives/storage" }
 
 [features]
 default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"tc-std/std",
-	"tc-runtime/std",
+	"tp-std/std",
+	"tp-runtime/std",
 	"frame-support/std",
 	"frame-system/std",
 	"pallet-balances/std",

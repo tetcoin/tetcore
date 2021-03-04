@@ -42,7 +42,7 @@
 //!
 //! The `GossipEngine` will automatically use `Network::add_set_reserved` and
 //! `Network::remove_set_reserved` to maintain a set of peers equal to the set of peers the
-//! node is syncing from. See the documentation of `sc-network` for more explanations about the
+//! node is syncing from. See the documentation of `tc-network` for more explanations about the
 //! concepts of peer sets.
 //!
 //! # What is a validator?

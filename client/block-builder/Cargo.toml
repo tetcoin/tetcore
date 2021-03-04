@@ -1,5 +1,5 @@
 [package]
-name = "sc-block-builder"
+name = "tc-block-builder"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -14,17 +14,17 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 
 [dependencies]
-tc-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tc-api = { version = "2.0.0", path = "../../primitives/api" }
-tc-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-tc-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-block-builder = { version = "2.0.0", path = "../../primitives/block-builder" }
-tc-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
-sc-client-api = { version = "2.0.0", path = "../api" }
+tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-api = { version = "2.0.0", path = "../../primitives/api" }
+tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-block-builder = { version = "2.0.0", path = "../../primitives/block-builder" }
+tp-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
+tc-client-api = { version = "2.0.0", path = "../api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
 
 [dev-dependencies]
 tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
-tc-trie = { version = "2.0.0", path = "../../primitives/trie" }
+tp-trie = { version = "2.0.0", path = "../../primitives/trie" }

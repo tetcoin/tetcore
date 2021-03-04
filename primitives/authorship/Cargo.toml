@@ -1,5 +1,5 @@
 [package]
-name = "tc-authorship"
+name = "tp-authorship"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Authorship primitives"
@@ -13,16 +13,16 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 
 [features]
 default = [ "std" ]
 std = [
 	"codec/std",
-	"tc-std/std",
-	"tc-inherents/std",
-	"tc-runtime/std",
+	"tp-std/std",
+	"tp-inherents/std",
+	"tp-runtime/std",
 ]

@@ -33,8 +33,8 @@ pub fn wasm_binary_unwrap() -> &'static [u8] {
 						supported with the flag disabled.")
 }
 
-/// This function is not used, but we require it for the compiler to include `tc-io`.
-/// `tc-io` is required for its panic and oom handler.
+/// This function is not used, but we require it for the compiler to include `tp-io`.
+/// `tp-io` is required for its panic and oom handler.
 #[cfg(not(feature = "std"))]
 #[no_mangle]
 pub fn import_sp_io() {

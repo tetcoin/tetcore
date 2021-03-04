@@ -25,11 +25,11 @@ pallet-contracts-proc-macro = { version = "0.1.0", path = "proc-macro" }
 tetsy-wasm = { version = "0.41.0", default-features = false }
 pwasm-utils = { version = "0.16", default-features = false }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-sandbox = { version = "0.8.0", default-features = false, path = "../../primitives/sandbox" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-sandbox = { version = "0.8.0", default-features = false, path = "../../primitives/sandbox" }
 wasmi-validation = { version = "0.3.0", default-features = false }
 
 # Only used in benchmarking to generate random contract code
@@ -51,11 +51,11 @@ default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"tc-core/std",
-	"tc-runtime/std",
-	"tc-io/std",
-	"tc-std/std",
-	"tc-sandbox/std",
+	"tp-core/std",
+	"tp-runtime/std",
+	"tp-io/std",
+	"tp-std/std",
+	"tp-sandbox/std",
 	"frame-support/std",
 	"frame-system/std",
 	"tetsy-wasm/std",

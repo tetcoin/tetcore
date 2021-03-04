@@ -44,37 +44,37 @@ structopt = { version = "0.3.8", optional = true }
 parking_lot = "0.11.1"
 
 # primitives
-tc-authority-discovery = { version = "2.0.0",  path = "../../../primitives/authority-discovery" }
-tc-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
-grandpa-primitives = { version = "2.0.0", package = "tc-finality-grandpa", path = "../../../primitives/finality-grandpa" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tc-timestamp = { version = "2.0.0", default-features = false, path = "../../../primitives/timestamp" }
-tc-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
-tc-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
-tc-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
-tc-io = { version = "2.0.0", path = "../../../primitives/io" }
-tc-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
-tc-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
+tp-authority-discovery = { version = "2.0.0",  path = "../../../primitives/authority-discovery" }
+tp-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
+grandpa-primitives = { version = "2.0.0", package = "tp-finality-grandpa", path = "../../../primitives/finality-grandpa" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-timestamp = { version = "2.0.0", default-features = false, path = "../../../primitives/timestamp" }
+tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
+tp-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
+tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
+tp-io = { version = "2.0.0", path = "../../../primitives/io" }
+tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
 
 # client dependencies
-sc-client-api = { version = "2.0.0", path = "../../../client/api" }
-sc-chain-spec = { version = "2.0.0", path = "../../../client/chain-spec" }
-sc-consensus = { version = "0.8.0", path = "../../../client/consensus/common" }
-sc-transaction-pool = { version = "2.0.0", path = "../../../client/transaction-pool" }
-sc-network = { version = "0.8.0", path = "../../../client/network" }
-sc-consensus-slots = { version = "0.8.0", path = "../../../client/consensus/slots" }
-sc-consensus-babe = { version = "0.8.0", path = "../../../client/consensus/babe" }
-grandpa = { version = "0.8.0", package = "sc-finality-grandpa", path = "../../../client/finality-grandpa" }
-sc-client-db = { version = "0.8.0", default-features = false, path = "../../../client/db" }
-sc-offchain = { version = "2.0.0", path = "../../../client/offchain" }
-sc-rpc = { version = "2.0.0", path = "../../../client/rpc" }
-sc-basic-authorship = { version = "0.8.0", path = "../../../client/basic-authorship" }
-sc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
-sc-tracing = { version = "2.0.0", path = "../../../client/tracing" }
-sc-telemetry = { version = "2.0.0", path = "../../../client/telemetry" }
-sc-authority-discovery = { version = "0.8.0",  path = "../../../client/authority-discovery" }
-sc-finality-grandpa-warp-sync = { version = "0.8.0", path = "../../../client/finality-grandpa-warp-sync", optional = true }
+tc-client-api = { version = "2.0.0", path = "../../../client/api" }
+tc-chain-spec = { version = "2.0.0", path = "../../../client/chain-spec" }
+tc-consensus = { version = "0.8.0", path = "../../../client/consensus/common" }
+tc-transaction-pool = { version = "2.0.0", path = "../../../client/transaction-pool" }
+tc-network = { version = "0.8.0", path = "../../../client/network" }
+tc-consensus-slots = { version = "0.8.0", path = "../../../client/consensus/slots" }
+tc-consensus-babe = { version = "0.8.0", path = "../../../client/consensus/babe" }
+grandpa = { version = "0.8.0", package = "tc-finality-grandpa", path = "../../../client/finality-grandpa" }
+tc-client-db = { version = "0.8.0", default-features = false, path = "../../../client/db" }
+tc-offchain = { version = "2.0.0", path = "../../../client/offchain" }
+tc-rpc = { version = "2.0.0", path = "../../../client/rpc" }
+tc-basic-authorship = { version = "0.8.0", path = "../../../client/basic-authorship" }
+tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
+tc-tracing = { version = "2.0.0", path = "../../../client/tracing" }
+tc-telemetry = { version = "2.0.0", path = "../../../client/telemetry" }
+tc-authority-discovery = { version = "0.8.0",  path = "../../../client/authority-discovery" }
+tc-finality-grandpa-warp-sync = { version = "0.8.0", path = "../../../client/finality-grandpa-warp-sync", optional = true }
 
 # frame dependencies
 pallet-indices = { version = "2.0.0", path = "../../../frame/indices" }
@@ -96,7 +96,7 @@ node-primitives = { version = "2.0.0", path = "../primitives" }
 node-executor = { version = "2.0.0", path = "../executor" }
 
 # CLI-specific dependencies
-sc-cli = { version = "0.8.0", optional = true, path = "../../../client/cli" }
+tc-cli = { version = "0.8.0", optional = true, path = "../../../client/cli" }
 frame-benchmarking-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/benchmarking-cli" }
 node-inspect = { version = "0.8.0", optional = true, path = "../inspect" }
 
@@ -107,16 +107,16 @@ browser-utils = { package = "tetcore-browser-utils", path = "../../../utils/brow
 
 [target.'cfg(target_arch="x86_64")'.dependencies]
 node-executor = { version = "2.0.0", path = "../executor", features = [ "wasmtime" ] }
-sc-cli = { version = "0.8.0", optional = true, path = "../../../client/cli", features = [ "wasmtime" ] }
-sc-service = { version = "0.8.0", default-features = false, path = "../../../client/service", features = [ "wasmtime" ] }
-tc-trie = { version = "2.0.0", default-features = false, path = "../../../primitives/trie", features = ["memory-tracker"] }
+tc-cli = { version = "0.8.0", optional = true, path = "../../../client/cli", features = [ "wasmtime" ] }
+tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service", features = [ "wasmtime" ] }
+tp-trie = { version = "2.0.0", default-features = false, path = "../../../primitives/trie", features = ["memory-tracker"] }
 
 [dev-dependencies]
-sc-keystore = { version = "2.0.0", path = "../../../client/keystore" }
-sc-consensus = { version = "0.8.0", path = "../../../client/consensus/common" }
-sc-consensus-babe = { version = "0.8.0", features = ["test-helpers"], path = "../../../client/consensus/babe" }
-sc-consensus-epochs = { version = "0.8.0", path = "../../../client/consensus/epochs" }
-sc-service-test = { version = "2.0.0", path = "../../../client/service/test" }
+tc-keystore = { version = "2.0.0", path = "../../../client/keystore" }
+tc-consensus = { version = "0.8.0", path = "../../../client/consensus/common" }
+tc-consensus-babe = { version = "0.8.0", features = ["test-helpers"], path = "../../../client/consensus/babe" }
+tc-consensus-epochs = { version = "0.8.0", path = "../../../client/consensus/epochs" }
+tc-service-test = { version = "2.0.0", path = "../../../client/service/test" }
 futures = "0.3.9"
 tempfile = "3.1.0"
 assert_cmd = "1.0"
@@ -132,9 +132,9 @@ frame-benchmarking-cli = { version = "2.0.0", optional = true, path = "../../../
 tetcore-build-script-utils = { version = "2.0.0", optional = true, path = "../../../utils/build-script-utils" }
 tetcore-frame-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/frame-utilities-cli" }
 
-[build-dependencies.sc-cli]
+[build-dependencies.tc-cli]
 version = "0.8.0"
-package = "sc-cli"
+package = "tc-cli"
 path = "../../../client/cli"
 optional = true
 
@@ -148,11 +148,11 @@ browser = [
 cli = [
 	"node-executor/wasmi-errno",
 	"node-inspect",
-	"sc-cli",
+	"tc-cli",
 	"frame-benchmarking-cli",
 	"tetcore-frame-cli",
-	"sc-service/db",
-	"sc-finality-grandpa-warp-sync",
+	"tc-service/db",
+	"tc-finality-grandpa-warp-sync",
 	"structopt",
 	"tetcore-build-script-utils",
 ]

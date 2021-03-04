@@ -133,7 +133,7 @@ impl<T> __OrInvalidIndex<T> for Option<T> {
 
 /// A common interface for all compact solutions.
 ///
-/// See [`tc-npos-elections-compact`] for more info.
+/// See [`tp-npos-elections-compact`] for more info.
 pub trait CompactSolution: Sized {
 	/// The maximum number of votes that are allowed.
 	const LIMIT: usize;

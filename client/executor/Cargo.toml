@@ -1,5 +1,5 @@
 [package]
-name = "sc-executor"
+name = "tc-executor"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "A crate that provides means of executing/dispatching calls into the runtime."
-documentation = "https://docs.rs/sc-executor"
+documentation = "https://docs.rs/tc-executor"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -16,23 +16,23 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 derive_more = "0.99.2"
 codec = { package = "tetsy-scale-codec", version = "2.0.0" }
-tc-io = { version = "2.0.0", path = "../../primitives/io" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-tasks = { version = "2.0.0", path = "../../primitives/tasks" }
-tc-trie = { version = "2.0.0", path = "../../primitives/trie" }
-tc-serializer = { version = "2.0.0", path = "../../primitives/serializer" }
-tc-version = { version = "2.0.0", path = "../../primitives/version" }
-tc-panic-handler = { version = "2.0.0", path = "../../primitives/panic-handler" }
+tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-tasks = { version = "2.0.0", path = "../../primitives/tasks" }
+tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
+tp-serializer = { version = "2.0.0", path = "../../primitives/serializer" }
+tp-version = { version = "2.0.0", path = "../../primitives/version" }
+tp-panic-handler = { version = "2.0.0", path = "../../primitives/panic-handler" }
 wasmi = "0.6.2"
 tetsy-wasm = "0.41.0"
 lazy_static = "1.4.0"
-tc-api = { version = "2.0.0", path = "../../primitives/api" }
-tc-wasm-interface = { version = "2.0.0", path = "../../primitives/wasm-interface" }
-tc-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface" }
-tc-externalities = { version = "0.8.0", path = "../../primitives/externalities" }
-sc-executor-common = { version = "0.8.0", path = "common" }
-sc-executor-wasmi = { version = "0.8.0", path = "wasmi" }
-sc-executor-wasmtime = { version = "0.8.0", path = "wasmtime", optional = true }
+tp-api = { version = "2.0.0", path = "../../primitives/api" }
+tp-wasm-interface = { version = "2.0.0", path = "../../primitives/wasm-interface" }
+tp-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface" }
+tp-externalities = { version = "0.8.0", path = "../../primitives/externalities" }
+tc-executor-common = { version = "0.8.0", path = "common" }
+tc-executor-wasmi = { version = "0.8.0", path = "wasmi" }
+tc-executor-wasmtime = { version = "0.8.0", path = "wasmtime", optional = true }
 parking_lot = "0.11.1"
 log = "0.4.8"
 libsecp256k1 = "0.3.4"
@@ -41,12 +41,12 @@ libsecp256k1 = "0.3.4"
 assert_matches = "1.3.0"
 wat = "1.0"
 hex-literal = "0.3.1"
-sc-runtime-test = { version = "2.0.0", path = "runtime-test" }
+tc-runtime-test = { version = "2.0.0", path = "runtime-test" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime" }
-tc-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
-sc-tracing = { version = "2.0.0", path = "../tracing" }
+tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tc-tracing = { version = "2.0.0", path = "../tracing" }
 tracing = "0.1.22"
 tracing-subscriber = "0.2.15"
 paste = "0.1.6"
@@ -57,7 +57,7 @@ default = [ "std" ]
 std = []
 wasm-extern-trace = []
 wasmtime = [
-	"sc-executor-wasmtime",
+	"tc-executor-wasmtime",
 ]
 wasmi-errno = [
 	"wasmi/errno"

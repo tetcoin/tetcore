@@ -15,13 +15,13 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
-tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tc-finality-grandpa = { version = "2.0.0", default-features = false, path = "../../primitives/finality-grandpa" }
-tc-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-finality-grandpa = { version = "2.0.0", default-features = false, path = "../../primitives/finality-grandpa" }
+tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
@@ -31,8 +31,8 @@ pallet-session = { version = "2.0.0", default-features = false, path = "../sessi
 [dev-dependencies]
 frame-benchmarking = { version = "2.0.0", path = "../benchmarking" }
 grandpa = { package = "finality-grandpa", version = "0.13.0", features = ["derive-codec"] }
-tc-io = { version = "2.0.0", path = "../../primitives/io" }
-tc-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-offences = { version = "2.0.0", path = "../offences" }
 pallet-staking = { version = "2.0.0", path = "../staking" }
@@ -45,14 +45,14 @@ std = [
 	"serde",
 	"codec/std",
 	"frame-benchmarking/std",
-	"tc-application-crypto/std",
-	"tc-core/std",
-	"tc-finality-grandpa/std",
-	"tc-session/std",
-	"tc-std/std",
+	"tp-application-crypto/std",
+	"tp-core/std",
+	"tp-finality-grandpa/std",
+	"tp-session/std",
+	"tp-std/std",
 	"frame-support/std",
-	"tc-runtime/std",
-	"tc-staking/std",
+	"tp-runtime/std",
+	"tp-staking/std",
 	"frame-system/std",
 	"pallet-authorship/std",
 	"pallet-session/std",

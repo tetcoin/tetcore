@@ -34,11 +34,11 @@ fn generate_hidden_includes_mod_name(unique_id: &'static str) -> Ident {
 
 /// Generates the hidden includes that are required to make the macro independent from its scope.
 pub fn generate_hidden_includes(unique_id: &'static str) -> TokenStream {
-	if env::var("CARGO_PKG_NAME").unwrap() == "tc-api" {
+	if env::var("CARGO_PKG_NAME").unwrap() == "tp-api" {
 		TokenStream::new()
 	} else {
 		let mod_name = generate_hidden_includes_mod_name(unique_id);
-		match crate_name("tc-api") {
+		match crate_name("tp-api") {
 			Ok(client_name) => {
 				let client_name = Ident::new(&client_name, Span::call_site());
 				quote!(
@@ -59,7 +59,7 @@ pub fn generate_hidden_includes(unique_id: &'static str) -> TokenStream {
 
 /// Generates the access to the `sc_client` crate.
 pub fn generate_crate_access(unique_id: &'static str) -> TokenStream {
-	if env::var("CARGO_PKG_NAME").unwrap() == "tc-api" {
+	if env::var("CARGO_PKG_NAME").unwrap() == "tp-api" {
 		quote!( sp_api )
 	} else {
 		let mod_name = generate_hidden_includes_mod_name(unique_id);

@@ -15,18 +15,18 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 
 [dev-dependencies]
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-scheduler = { version = "2.0.0", path = "../scheduler" }
-tc-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tp-storage = { version = "2.0.0", path = "../../primitives/storage" }
 tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
 hex-literal = "0.3.1"
 
@@ -35,16 +35,16 @@ default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"tc-std/std",
-	"tc-io/std",
+	"tp-std/std",
+	"tp-io/std",
 	"frame-benchmarking/std",
 	"frame-support/std",
-	"tc-runtime/std",
+	"tp-runtime/std",
 	"frame-system/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking",
 	"frame-system/runtime-benchmarks",
 	"frame-support/runtime-benchmarks",
-	"tc-runtime/runtime-benchmarks",
+	"tp-runtime/runtime-benchmarks",
 ]

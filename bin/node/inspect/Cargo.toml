@@ -14,10 +14,10 @@ targets = ["x86_64-unknown-linux-gnu"]
 codec = { package = "tetsy-scale-codec", version = "2.0.0" }
 derive_more = "0.99"
 log = "0.4.8"
-sc-cli = { version = "0.8.0", path = "../../../client/cli" }
-sc-client-api = { version = "2.0.0", path = "../../../client/api" }
-sc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
-tc-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tc-cli = { version = "0.8.0", path = "../../../client/cli" }
+tc-client-api = { version = "2.0.0", path = "../../../client/api" }
+tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 structopt = "0.3.8"

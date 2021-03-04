@@ -26,7 +26,7 @@
 //! remote telemetry servers.
 //!
 //! If multiple tetcore nodes are running in the same process, it uses a `tracing::Span` to
-//! identify which tetcore node is reporting the telemetry. Every task spawned using sc-service's
+//! identify which tetcore node is reporting the telemetry. Every task spawned using tc-service's
 //! `TaskManager` automatically inherit this span.
 //!
 //! Tetcore's nodes initialize/register with the [`TelemetryWorker`] using a [`TelemetryHandle`].

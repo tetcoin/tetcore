@@ -14,18 +14,18 @@ publish = false
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-api = { version = "2.0.0", default-features = false, path = "../../../../primitives/api" }
+tp-api = { version = "2.0.0", default-features = false, path = "../../../../primitives/api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-std = { version = "2.0.0", default-features = false, path = "../../../../primitives/std" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../../../primitives/std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../../../primitives/runtime" }
 pallet-contracts-primitives = { version = "2.0.0", default-features = false, path = "../../common" }
 
 [features]
 default = ["std"]
 std = [
-	"tc-api/std",
+	"tp-api/std",
 	"codec/std",
-	"tc-std/std",
-	"tc-runtime/std",
+	"tp-std/std",
+	"tp-runtime/std",
 	"pallet-contracts-primitives/std",
 ]

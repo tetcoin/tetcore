@@ -1,5 +1,5 @@
 [package]
-name = "tc-panic-handler"
+name = "tp-panic-handler"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Custom panic hook with bug report link"
-documentation = "https://docs.rs/tc-panic-handler"
+documentation = "https://docs.rs/tp-panic-handler"
 readme = "README.md"
 
 [package.metadata.docs.rs]

@@ -17,31 +17,31 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io", optional = true }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io", optional = true }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-tc-timestamp = { version = "2.0.0", default-features = false, path = "../../primitives/timestamp" }
+tp-timestamp = { version = "2.0.0", default-features = false, path = "../../primitives/timestamp" }
 impl-trait-for-tuples = "0.2.0"
 
 [dev-dependencies]
-tc-io ={ version = "2.0.0", path = "../../primitives/io" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-io ={ version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
 
 [features]
 default = ["std"]
 std = [
-	"tc-inherents/std",
+	"tp-inherents/std",
 	"codec/std",
-	"tc-std/std",
-	"tc-runtime/std",
+	"tp-std/std",
+	"tp-runtime/std",
 	"frame-benchmarking/std",
 	"frame-support/std",
 	"serde",
 	"frame-system/std",
-	"tc-timestamp/std"
+	"tp-timestamp/std"
 ]
-runtime-benchmarks = ["frame-benchmarking", "tc-io"]
+runtime-benchmarks = ["frame-benchmarking", "tp-io"]

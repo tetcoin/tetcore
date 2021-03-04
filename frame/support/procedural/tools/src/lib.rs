@@ -28,7 +28,7 @@ use quote::quote;
 
 pub mod syn_ext;
 
-// FIXME #1569, remove the following functions, which are copied from tc-api-macros
+// FIXME #1569, remove the following functions, which are copied from tp-api-macros
 use proc_macro2::{TokenStream, Span};
 use syn::Ident;
 

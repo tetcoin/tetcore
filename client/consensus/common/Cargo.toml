@@ -1,5 +1,5 @@
 [package]
-name = "sc-consensus"
+name = "tc-consensus"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -13,7 +13,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-sc-client-api = { version = "2.0.0", path = "../../api" }
-tc-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tc-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tc-client-api = { version = "2.0.0", path = "../../api" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }

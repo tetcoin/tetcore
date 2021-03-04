@@ -1,5 +1,5 @@
 [package]
-name = "sc-authority-discovery"
+name = "tc-authority-discovery"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -28,18 +28,18 @@ log = "0.4.8"
 prometheus-endpoint = { package = "tetcore-prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
 prost = "0.7"
 rand = "0.7.2"
-sc-client-api = { version = "2.0.0", path = "../api" }
-sc-network = { version = "0.8.0", path = "../network" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tc-network = { version = "0.8.0", path = "../network" }
 serde_json = "1.0.41"
-tc-authority-discovery = { version = "2.0.0", path = "../../primitives/authority-discovery" }
-tc-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tc-api = { version = "2.0.0", path = "../../primitives/api" }
+tp-authority-discovery = { version = "2.0.0", path = "../../primitives/authority-discovery" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-api = { version = "2.0.0", path = "../../primitives/api" }
 
 [dev-dependencies]
 quickcheck = "0.9.0"
-tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
-sc-peerset = { version = "2.0.0", path = "../peerset" }
+tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tc-peerset = { version = "2.0.0", path = "../peerset" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client"}

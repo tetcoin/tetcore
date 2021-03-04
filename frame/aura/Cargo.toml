@@ -13,38 +13,38 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
-tc-consensus-aura = { version = "0.8.0", path = "../../primitives/consensus/aura", default-features = false }
+tp-consensus-aura = { version = "0.8.0", path = "../../primitives/consensus/aura", default-features = false }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-tc-timestamp = { version = "2.0.0", default-features = false, path = "../../primitives/timestamp" }
+tp-timestamp = { version = "2.0.0", default-features = false, path = "../../primitives/timestamp" }
 pallet-timestamp = { version = "2.0.0", default-features = false, path = "../timestamp" }
 
 
 [dev-dependencies]
-tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tc-io ={ version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-io ={ version = "2.0.0", path = "../../primitives/io" }
 lazy_static = "1.4.0"
 parking_lot = "0.11.1"
 
 [features]
 default = ["std"]
 std = [
-	"tc-application-crypto/std",
+	"tp-application-crypto/std",
 	"codec/std",
-	"tc-inherents/std",
-	"tc-std/std",
+	"tp-inherents/std",
+	"tp-std/std",
 	"serde",
-	"tc-runtime/std",
+	"tp-runtime/std",
 	"frame-support/std",
-	"tc-consensus-aura/std",
+	"tp-consensus-aura/std",
 	"frame-system/std",
-	"tc-timestamp/std",
+	"tp-timestamp/std",
 	"pallet-timestamp/std",
 ]

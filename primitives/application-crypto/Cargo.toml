@@ -1,5 +1,5 @@
 [package]
-name = "tc-application-crypto"
+name = "tp-application-crypto"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ description = "Provides facilities for generating application specific crypto wr
 license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
-documentation = "https://docs.rs/tc-application-crypto"
+documentation = "https://docs.rs/tp-application-crypto"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -15,23 +15,23 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 
 [dependencies]
-tc-core = { version = "2.0.0", default-features = false, path = "../core" }
+tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
-tc-io = { version = "2.0.0", default-features = false, path = "../io" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../io" }
 
 [features]
 default = [ "std" ]
-std = [ "full_crypto", "tc-core/std", "codec/std", "serde", "tc-std/std", "tc-io/std" ]
+std = [ "full_crypto", "tp-core/std", "codec/std", "serde", "tp-std/std", "tp-io/std" ]
 
 # This feature enables all crypto primitives for `no_std` builds like microcontrollers
 # or Intel SGX.
 # For the regular wasm runtime builds this should not be used.
 full_crypto = [
-	"tc-core/full_crypto",
+	"tp-core/full_crypto",
 	# Don't add `panic_handler` and `alloc_error_handler` since they are expected to be provided
 	# by the user anyway.
-	"tc-io/disable_panic_handler",
-	"tc-io/disable_oom",
+	"tp-io/disable_panic_handler",
+	"tp-io/disable_oom",
 ]

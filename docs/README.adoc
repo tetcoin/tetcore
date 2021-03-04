@@ -417,7 +417,7 @@ tetcore-executor, tetcore-finality-grandpa, tetcore-keyring, tetcore-keystore, t
 tetcore-network-libp2p, tetcore-primitives, tetcore-rpc, tetcore-rpc-servers,
 tetcore-serializer, tetcore-service, tetcore-service-test, tetcore-state-db,
 tetcore-state-machine, tetcore-telemetry, tetcore-test-client,
-tetcore-test-runtime, tetcore-transaction-graph, tc-transaction-pool,
+tetcore-test-runtime, tetcore-transaction-graph, tp-transaction-pool,
 tetcore-trie
 * Tetcore Runtime
 [source, shell]

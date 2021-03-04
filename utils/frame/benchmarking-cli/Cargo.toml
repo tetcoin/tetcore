@@ -14,15 +14,15 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 frame-benchmarking = { version = "2.0.0", path = "../../../frame/benchmarking" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-sc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
-sc-cli = { version = "0.8.0", path = "../../../client/cli" }
-sc-client-db = { version = "0.8.0", path = "../../../client/db" }
-sc-executor = { version = "0.8.0", path = "../../../client/executor" }
-tc-externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
-tc-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tc-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
+tc-cli = { version = "0.8.0", path = "../../../client/cli" }
+tc-client-db = { version = "0.8.0", path = "../../../client/db" }
+tc-executor = { version = "0.8.0", path = "../../../client/executor" }
+tp-externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
+tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
 codec = { version = "2.0.0", package = "tetsy-scale-codec" }
 structopt = "0.3.8"
 chrono = "0.4"
@@ -32,4 +32,4 @@ Inflector = "0.11.4"
 
 [features]
 default = ["db"]
-db = ["sc-client-db/with-kvdb-rocksdb", "sc-client-db/with-tetsy-db"]
+db = ["tc-client-db/with-kvdb-rocksdb", "tc-client-db/with-tetsy-db"]

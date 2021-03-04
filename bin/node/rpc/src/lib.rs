@@ -19,7 +19,7 @@
 //!
 //! Since `tetcore` core functionality makes no assumptions
 //! about the modules used inside the runtime, so do
-//! RPC methods defined in `sc-rpc` crate.
+//! RPC methods defined in `tc-rpc` crate.
 //! It means that `client/rpc` can't have any methods that
 //! need some strong assumptions about the particular runtime.
 //!

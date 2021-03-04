@@ -1,5 +1,5 @@
 [package]
-name = "tc-runtime-interface"
+name = "tp-runtime-interface"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,40 +7,40 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Tetcore runtime interface"
-documentation = "https://docs.rs/tc-runtime-interface/"
+documentation = "https://docs.rs/tp-runtime-interface/"
 readme = "README.md"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-wasm-interface = { version = "2.0.0", path = "../wasm-interface", default-features = false }
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
-tc-tracing = { version = "2.0.0", default-features = false, path = "../tracing" }
-tc-runtime-interface-proc-macro = { version = "2.0.0", path = "proc-macro" }
-tc-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
+tp-wasm-interface = { version = "2.0.0", path = "../wasm-interface", default-features = false }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-tracing = { version = "2.0.0", default-features = false, path = "../tracing" }
+tp-runtime-interface-proc-macro = { version = "2.0.0", path = "proc-macro" }
+tp-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
 static_assertions = "1.0.0"
 primitive-types = { version = "0.9.0", default-features = false }
-tc-storage = { version = "2.0.0", default-features = false, path = "../storage" }
+tp-storage = { version = "2.0.0", default-features = false, path = "../storage" }
 impl-trait-for-tuples = "0.2.0"
 
 [dev-dependencies]
-tc-runtime-interface-test-wasm = { version = "2.0.0", path = "test-wasm" }
-tc-state-machine = { version = "0.8.0", path = "../state-machine" }
-tc-core = { version = "2.0.0", path = "../core" }
-tc-io = { version = "2.0.0", path = "../io" }
+tp-runtime-interface-test-wasm = { version = "2.0.0", path = "test-wasm" }
+tp-state-machine = { version = "0.8.0", path = "../state-machine" }
+tp-core = { version = "2.0.0", path = "../core" }
+tp-io = { version = "2.0.0", path = "../io" }
 rustversion = "1.0.0"
 trybuild = "1.0.38"
 
 [features]
 default = [ "std" ]
 std = [
-	"tc-wasm-interface/std",
-	"tc-std/std",
-	"tc-tracing/std",
+	"tp-wasm-interface/std",
+	"tp-std/std",
+	"tp-tracing/std",
 	"codec/std",
-	"tc-externalities",
+	"tp-externalities",
 	"primitive-types/std",
 ]
 

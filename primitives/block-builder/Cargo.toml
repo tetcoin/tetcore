@@ -1,5 +1,5 @@
 [package]
-name = "tc-block-builder"
+name = "tp-block-builder"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -13,18 +13,18 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
-tc-api = { version = "2.0.0", default-features = false, path = "../api" }
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
+tp-api = { version = "2.0.0", default-features = false, path = "../api" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
-tc-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
 
 [features]
 default = [ "std" ]
 std = [
-	"tc-runtime/std",
+	"tp-runtime/std",
 	"codec/std",
-	"tc-inherents/std",
-	"tc-api/std",
-	"tc-std/std",
+	"tp-inherents/std",
+	"tp-api/std",
+	"tp-std/std",
 ]

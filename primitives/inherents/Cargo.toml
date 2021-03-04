@@ -1,5 +1,5 @@
 [package]
-name = "tc-inherents"
+name = "tp-inherents"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Provides types and traits for creating and checking inherents."
-documentation = "https://docs.rs/tc-inherents"
+documentation = "https://docs.rs/tp-inherents"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -16,8 +16,8 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 parking_lot = { version = "0.11.1", optional = true }
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
-tc-core = { version = "2.0.0", default-features = false, path = "../core" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 thiserror = { version = "1.0.21", optional = true }
 
@@ -25,8 +25,8 @@ thiserror = { version = "1.0.21", optional = true }
 default = [ "std" ]
 std = [
 	"parking_lot",
-	"tc-std/std",
+	"tp-std/std",
 	"codec/std",
-	"tc-core/std",
+	"tp-core/std",
 	"thiserror",
 ]

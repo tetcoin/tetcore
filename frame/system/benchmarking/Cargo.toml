@@ -14,25 +14,25 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
-tc-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../../benchmarking" }
 frame-system = { version = "2.0.0", default-features = false, path = "../../system" }
 frame-support = { version = "2.0.0", default-features = false, path = "../../support" }
-tc-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
 
 [dev-dependencies]
 serde = { version = "1.0.101" }
-tc-io ={ version = "2.0.0", path = "../../../primitives/io" }
+tp-io ={ version = "2.0.0", path = "../../../primitives/io" }
 
 [features]
 default = ["std"]
 std = [
 	"codec/std",
-	"tc-runtime/std",
-	"tc-std/std",
+	"tp-runtime/std",
+	"tp-std/std",
 	"frame-benchmarking/std",
 	"frame-system/std",
 	"frame-support/std",
-	"tc-core/std",
+	"tp-core/std",
 ]

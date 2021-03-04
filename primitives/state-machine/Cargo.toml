@@ -1,5 +1,5 @@
 [package]
-name = "tc-state-machine"
+name = "tp-state-machine"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Tetcore State Machine"
@@ -7,7 +7,7 @@ edition = "2018"
 license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
-documentation = "https://docs.rs/tc-state-machine"
+documentation = "https://docs.rs/tp-state-machine"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -20,19 +20,19 @@ parking_lot = { version = "0.11.1", optional = true }
 hash-db = { version = "0.15.2", default-features = false }
 trie-db = { version = "0.22.2", default-features = false }
 trie-root = { version = "0.16.0", default-features = false }
-tc-trie = { version = "2.0.0", path = "../trie", default-features = false }
-tc-core = { version = "2.0.0", path = "../core", default-features = false }
-tc-panic-handler = { version = "2.0.0", path = "../panic-handler", optional = true }
+tp-trie = { version = "2.0.0", path = "../trie", default-features = false }
+tp-core = { version = "2.0.0", path = "../core", default-features = false }
+tp-panic-handler = { version = "2.0.0", path = "../panic-handler", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
 num-traits = { version = "0.2.8", default-features = false }
 rand = { version = "0.7.2", optional = true }
-tc-externalities = { version = "0.8.0", path = "../externalities", default-features = false }
+tp-externalities = { version = "0.8.0", path = "../externalities", default-features = false }
 smallvec = "1.4.1"
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
 
 [dev-dependencies]
 hex-literal = "0.3.1"
-tc-runtime = { version = "2.0.0", path = "../runtime" }
+tp-runtime = { version = "2.0.0", path = "../runtime" }
 pretty_assertions = "0.6.1"
 
 [features]
@@ -41,15 +41,15 @@ std = [
 	"codec/std",
 	"hash-db/std",
 	"num-traits/std",
-	"tc-core/std",
-	"tc-externalities/std",
-	"tc-std/std",
-	"tc-trie/std",
+	"tp-core/std",
+	"tp-externalities/std",
+	"tp-std/std",
+	"tp-trie/std",
 	"trie-db/std",
 	"trie-root/std",
 	"log",
 	"thiserror",
 	"parking_lot",
 	"rand",
-	"tc-panic-handler",
+	"tp-panic-handler",
 ]

@@ -16,12 +16,12 @@ targets = ["x86_64-unknown-linux-gnu"]
 linregress = { version = "0.4.0", optional = true }
 paste = "0.1"
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
-tc-api = { version = "2.0.0", path = "../../primitives/api", default-features = false }
-tc-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface", default-features = false }
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime", default-features = false }
-tc-std = { version = "2.0.0", path = "../../primitives/std", default-features = false }
-tc-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
-tc-storage = { version = "2.0.0", path = "../../primitives/storage", default-features = false }
+tp-api = { version = "2.0.0", path = "../../primitives/api", default-features = false }
+tp-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface", default-features = false }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime", default-features = false }
+tp-std = { version = "2.0.0", path = "../../primitives/std", default-features = false }
+tp-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
+tp-storage = { version = "2.0.0", path = "../../primitives/storage", default-features = false }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 
@@ -32,10 +32,10 @@ hex-literal = "0.3.1"
 default = [ "std" ]
 std = [
 	"codec/std",
-	"tc-runtime-interface/std",
-	"tc-runtime/std",
-	"tc-api/std",
-	"tc-std/std",
+	"tp-runtime-interface/std",
+	"tp-runtime/std",
+	"tp-api/std",
+	"tp-std/std",
 	"frame-support/std",
 	"frame-system/std",
 	"linregress",

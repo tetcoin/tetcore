@@ -16,10 +16,10 @@ codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = f
 frame-support = { version = "2.0.0", default-features = false, path = "../../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../../system" }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-tc-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
-tc-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tp-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 
 [dev-dependencies]
 hex-literal = "0.3"
@@ -31,8 +31,8 @@ std = [
 	"frame-support/std",
 	"frame-system/std",
 	"serde",
-	"tc-api/std",
-	"tc-core/std",
-	"tc-runtime/std",
-	"tc-std/std",
+	"tp-api/std",
+	"tp-core/std",
+	"tp-runtime/std",
+	"tp-std/std",
 ]

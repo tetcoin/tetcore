@@ -1,5 +1,5 @@
 [package]
-name = "tc-consensus-pow"
+name = "tp-consensus-pow"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Primitives for Aura consensus"
@@ -13,18 +13,18 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-api = { version = "2.0.0", default-features = false, path = "../../api" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../std" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../runtime" }
-tc-core = { version = "2.0.0", default-features = false, path = "../../core" }
+tp-api = { version = "2.0.0", default-features = false, path = "../../api" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../runtime" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../core" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 
 [features]
 default = ["std"]
 std = [
-	"tc-std/std",
-	"tc-api/std",
-	"tc-runtime/std",
-	"tc-core/std",
+	"tp-std/std",
+	"tp-api/std",
+	"tp-runtime/std",
+	"tp-core/std",
 	"codec/std",
 ]

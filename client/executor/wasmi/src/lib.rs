@@ -190,7 +190,7 @@ impl<'a> Sandbox for FunctionExecutor<'a> {
 		return_val_len: WordSize,
 		state: u32,
 	) -> WResult<u32> {
-		trace!(target: "tc-sandbox", "invoke, instance_idx={}", instance_id);
+		trace!(target: "tp-sandbox", "invoke, instance_idx={}", instance_id);
 
 		// Deserialize arguments and convert them into wasmi types.
 		let args = Vec::<sp_wasm_interface::Value>::decode(&mut &args[..])

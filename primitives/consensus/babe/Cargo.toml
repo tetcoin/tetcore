@@ -1,5 +1,5 @@
 [package]
-name = "tc-consensus-babe"
+name = "tp-consensus-babe"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Primitives for BABE consensus"
@@ -13,34 +13,34 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-application-crypto = { version = "2.0.0", default-features = false, path = "../../application-crypto" }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
 merlin = { version = "2.0", default-features = false }
-tc-std = { version = "2.0.0", default-features = false, path = "../../std" }
-tc-api = { version = "2.0.0", default-features = false, path = "../../api" }
-tc-consensus = { version = "0.8.0", optional = true, path = "../common" }
-tc-consensus-slots = { version = "0.8.0", default-features = false, path = "../slots" }
-tc-consensus-vrf = { version = "0.8.0", path = "../vrf", default-features = false }
-tc-core = { version = "2.0.0", default-features = false, path = "../../core" }
-tc-inherents = { version = "2.0.0", default-features = false, path = "../../inherents" }
-tc-keystore = { version = "0.8.0", default-features = false, path = "../../keystore", optional = true }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../runtime" }
-tc-timestamp = { version = "2.0.0", default-features = false, path = "../../timestamp" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../std" }
+tp-api = { version = "2.0.0", default-features = false, path = "../../api" }
+tp-consensus = { version = "0.8.0", optional = true, path = "../common" }
+tp-consensus-slots = { version = "0.8.0", default-features = false, path = "../slots" }
+tp-consensus-vrf = { version = "0.8.0", path = "../vrf", default-features = false }
+tp-core = { version = "2.0.0", default-features = false, path = "../../core" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../../inherents" }
+tp-keystore = { version = "0.8.0", default-features = false, path = "../../keystore", optional = true }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../runtime" }
+tp-timestamp = { version = "2.0.0", default-features = false, path = "../../timestamp" }
 
 [features]
 default = ["std"]
 std = [
-	"tc-application-crypto/std",
+	"tp-application-crypto/std",
 	"codec/std",
 	"merlin/std",
-	"tc-std/std",
-	"tc-api/std",
-	"tc-consensus",
-	"tc-consensus-slots/std",
-	"tc-consensus-vrf/std",
-	"tc-core/std",
-	"tc-inherents/std",
-	"tc-keystore",
-	"tc-runtime/std",
-	"tc-timestamp/std",
+	"tp-std/std",
+	"tp-api/std",
+	"tp-consensus",
+	"tp-consensus-slots/std",
+	"tp-consensus-vrf/std",
+	"tp-core/std",
+	"tp-inherents/std",
+	"tp-keystore",
+	"tp-runtime/std",
+	"tp-timestamp/std",
 ]

@@ -19,10 +19,10 @@ frame-system = { version = "2.0.0", default-features = false, path = "../system"
 mmr-lib = { package = "ckb-merkle-mountain-range", default-features = false, version = "0.3.1" }
 pallet-mmr-primitives = { version = "2.0.0", default-features = false, path = "./primitives" }
 serde = { version = "1.0.101", optional = true }
-tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 
 [dev-dependencies]
 env_logger = "0.5"
@@ -38,9 +38,9 @@ std = [
 	"mmr-lib/std",
 	"pallet-mmr-primitives/std",
 	"serde",
-	"tc-core/std",
-	"tc-io/std",
-	"tc-runtime/std",
-	"tc-std/std",
+	"tp-core/std",
+	"tp-io/std",
+	"tp-runtime/std",
+	"tp-std/std",
 ]
 runtime-benchmarks = ["frame-benchmarking"]

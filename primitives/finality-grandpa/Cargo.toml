@@ -1,5 +1,5 @@
 [package]
-name = "tc-finality-grandpa"
+name = "tp-finality-grandpa"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Primitives for GRANDPA integration, suitable for WASM compilation."
-documentation = "https://docs.rs/tc-finality-grandpa"
+documentation = "https://docs.rs/tp-finality-grandpa"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -19,12 +19,12 @@ codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = f
 grandpa = { package = "finality-grandpa", version = "0.13.0", default-features = false, features = ["derive-codec"] }
 log = { version = "0.4.8", optional = true }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-tc-api = { version = "2.0.0", default-features = false, path = "../api" }
-tc-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
-tc-core = { version = "2.0.0", default-features = false, path = "../core" }
-tc-keystore = { version = "0.8.0", default-features = false, path = "../keystore", optional = true }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-api = { version = "2.0.0", default-features = false, path = "../api" }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
+tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+tp-keystore = { version = "0.8.0", default-features = false, path = "../keystore", optional = true }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
 
 [features]
 default = ["std"]
@@ -33,10 +33,10 @@ std = [
 	"serde",
 	"codec/std",
 	"grandpa/std",
-	"tc-api/std",
-	"tc-application-crypto/std",
-	"tc-core/std",
-	"tc-keystore",
-	"tc-runtime/std",
-	"tc-std/std",
+	"tp-api/std",
+	"tp-application-crypto/std",
+	"tp-core/std",
+	"tp-keystore",
+	"tp-runtime/std",
+	"tp-std/std",
 ]

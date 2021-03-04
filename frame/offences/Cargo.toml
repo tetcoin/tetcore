@@ -15,26 +15,26 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 pallet-balances = { version = "2.0.0", default-features = false, path = "../balances" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 
 [dev-dependencies]
-tc-io = { version = "2.0.0", path = "../../primitives/io" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
 
 [features]
 default = ["std"]
 std = [
 	"pallet-balances/std",
 	"codec/std",
-	"tc-std/std",
+	"tp-std/std",
 	"serde",
-	"tc-runtime/std",
-	"tc-staking/std",
+	"tp-runtime/std",
+	"tp-staking/std",
 	"frame-support/std",
 	"frame-system/std",
 ]

@@ -211,7 +211,7 @@ pub use sp_std;
 ///             .expect("`set_or_clear` called outside of an Externalities-provided environment.")
 ///     }
 ///
-///     /// This type implements the `HostFunctions` trait (from `tc-wasm-interface`) and
+///     /// This type implements the `HostFunctions` trait (from `tp-wasm-interface`) and
 ///     /// provides the host implementation for the wasm side. The host implementation converts the
 ///     /// arguments from wasm to native and calls the corresponding native function.
 ///     ///
@@ -242,7 +242,7 @@ pub use sp_std;
 ///         }
 ///     }
 ///
-///     /// The type is actually `ExchangeableFunction` (from `tc-runtime-interface`).
+///     /// The type is actually `ExchangeableFunction` (from `tp-runtime-interface`).
 ///     ///
 ///     /// This can be used to replace the implementation of the `call` function.
 ///     /// Instead of calling into the host, the callee will automatically call the other
@@ -284,11 +284,11 @@ pub use sp_std;
 ///
 /// 1. The generated functions are not callable from the native side.
 /// 2. The trait as shown above is not implemented for `Externalities` and is instead implemented
-///    for `FunctionExecutor` (from `tc-wasm-interface`).
+///    for `FunctionExecutor` (from `tp-wasm-interface`).
 ///
 /// # Disable tracing
 /// By addding `no_tracing` to the list of options you can prevent the wasm-side interface from
-/// generating the default `tc-tracing`-calls. Note that this is rarely needed but only meant for
+/// generating the default `tp-tracing`-calls. Note that this is rarely needed but only meant for
 /// the case when that would create a circular dependency. You usually _do not_ want to add this
 /// flag, as tracing doesn't cost you anything by default anyways (it is added as a no-op) but is
 /// super useful for debugging later.

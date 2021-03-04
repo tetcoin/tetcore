@@ -13,12 +13,12 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 frame-system = { version = "2.0.0", default-features = false, path = "../../../frame/system" }
-tc-application-crypto = { version = "2.0.0", default-features = false, path = "../../../primitives/application-crypto" }
-tc-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../../primitives/application-crypto" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
 
 [dev-dependencies]
-tc-serializer = { version = "2.0.0", path = "../../../primitives/serializer" }
+tp-serializer = { version = "2.0.0", path = "../../../primitives/serializer" }
 pretty_assertions = "0.6.1"
 
 [features]
@@ -26,7 +26,7 @@ default = ["std"]
 std = [
 	"codec/std",
 	"frame-system/std",
-	"tc-application-crypto/std",
-	"tc-core/std",
-	"tc-runtime/std",
+	"tp-application-crypto/std",
+	"tp-core/std",
+	"tp-runtime/std",
 ]

@@ -18,7 +18,7 @@
 
 //! A consensus proposer for "basic" chains which use the primitive inherent-data.
 
-// FIXME #1021 move this into tc-consensus
+// FIXME #1021 move this into tp-consensus
 
 use std::{pin::Pin, time, sync::Arc};
 use sc_client_api::backend;

@@ -1,5 +1,5 @@
 [package]
-name = "sc-transaction-graph"
+name = "tc-transaction-graph"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -20,11 +20,11 @@ log = "0.4.8"
 parking_lot = "0.11.1"
 serde = { version = "1.0.101", features = ["derive"] }
 wasm-timer = "0.2"
-tc-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tc-utils = { version = "2.0.0", path = "../../../primitives/utils" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tc-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-utils = { version = "2.0.0", path = "../../../primitives/utils" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["primitive-types"] }
 linked-hash-map = "0.5.2"
 retain_mut = "0.1.2"

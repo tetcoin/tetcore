@@ -1,5 +1,5 @@
 [package]
-name = "tc-keyring"
+name = "tp-keyring"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Keyring support code for the runtime. A set of test accounts."
-documentation = "https://docs.rs/tc-keyring"
+documentation = "https://docs.rs/tp-keyring"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -15,7 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 
 [dependencies]
-tc-core = { version = "2.0.0", path = "../core" }
-tc-runtime = { version = "2.0.0", path = "../runtime" }
+tp-core = { version = "2.0.0", path = "../core" }
+tp-runtime = { version = "2.0.0", path = "../runtime" }
 lazy_static = "1.4.0"
 strum = { version = "0.16.0", features = ["derive"] }

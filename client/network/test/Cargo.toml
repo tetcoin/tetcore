@@ -1,6 +1,6 @@
 [package]
 description = "Integration tests for Tetcore network protocol"
-name = "sc-network-test"
+name = "tc-network-test"
 version = "0.8.0"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 authors = ["Parity Technologies <admin@parity.io>"]
@@ -14,23 +14,23 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 async-std = "1.6.5"
-sc-network = { version = "0.8.0", path = "../" }
+tc-network = { version = "0.8.0", path = "../" }
 log = "0.4.8"
 parking_lot = "0.11.1"
 futures = "0.3.9"
 futures-timer = "3.0.1"
 rand = "0.7.2"
 libp2p = { version = "0.34.0", default-features = false }
-tc-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
-sc-consensus = { version = "0.8.0", path = "../../consensus/common" }
-sc-client-api = { version = "2.0.0", path = "../../api" }
-tc-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-sc-block-builder = { version = "0.8.0", path = "../../block-builder" }
-tc-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
+tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tc-consensus = { version = "0.8.0", path = "../../consensus/common" }
+tc-client-api = { version = "2.0.0", path = "../../api" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tc-block-builder = { version = "0.8.0", path = "../../block-builder" }
+tp-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../../test-utils/runtime" }
 tempfile = "3.1.0"
-tc-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
-sc-service = { version = "0.8.0", default-features = false, features = ["test-helpers"],  path = "../../service" }
+tp-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
+tc-service = { version = "0.8.0", default-features = false, features = ["test-helpers"],  path = "../../service" }

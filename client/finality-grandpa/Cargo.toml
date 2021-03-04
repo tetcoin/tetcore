@@ -1,5 +1,5 @@
 [package]
-name = "sc-finality-grandpa"
+name = "tc-finality-grandpa"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Integration of the GRANDPA finality gadget into tetcore."
-documentation = "https://docs.rs/sc-finality-grandpa"
+documentation = "https://docs.rs/tc-finality-grandpa"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -23,26 +23,26 @@ log = "0.4.8"
 parking_lot = "0.11.1"
 rand = "0.7.2"
 tetsy-scale-codec = { version = "2.0.0", features = ["derive"] }
-tc-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
-tc-arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tc-utils = { version = "2.0.0", path = "../../primitives/utils" }
-tc-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-sc-consensus = { version = "0.8.0", path = "../consensus/common" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
-tc-api = { version = "2.0.0", path = "../../primitives/api" }
-sc-telemetry = { version = "2.0.0", path = "../telemetry" }
-sc-keystore = { version = "2.0.0", path = "../keystore" }
+tp-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
+tp-arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
+tc-consensus = { version = "0.8.0", path = "../consensus/common" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
+tp-api = { version = "2.0.0", path = "../../primitives/api" }
+tc-telemetry = { version = "2.0.0", path = "../telemetry" }
+tc-keystore = { version = "2.0.0", path = "../keystore" }
 serde_json = "1.0.41"
-sc-client-api = { version = "2.0.0", path = "../api" }
-tc-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
-tc-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-sc-network = { version = "0.8.0", path = "../network" }
-sc-network-gossip = { version = "0.8.0", path = "../network-gossip" }
-tc-finality-grandpa = { version = "2.0.0", path = "../../primitives/finality-grandpa" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tp-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tc-network = { version = "0.8.0", path = "../network" }
+tc-network-gossip = { version = "0.8.0", path = "../network-gossip" }
+tp-finality-grandpa = { version = "2.0.0", path = "../../primitives/finality-grandpa" }
 prometheus-endpoint = { package = "tetcore-prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
-sc-block-builder = { version = "0.8.0", path = "../block-builder" }
+tc-block-builder = { version = "0.8.0", path = "../block-builder" }
 finality-grandpa = { version = "0.13.0", features = ["derive-codec"] }
 pin-project = "0.4.6"
 linked-hash-map = "0.5.2"
@@ -50,13 +50,13 @@ linked-hash-map = "0.5.2"
 [dev-dependencies]
 assert_matches = "1.3.0"
 finality-grandpa = { version = "0.13.0", features = ["derive-codec", "test-helpers"] }
-sc-network = { version = "0.8.0", path = "../network" }
-sc-network-test = { version = "0.8.0", path = "../network/test" }
-tc-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+tc-network = { version = "0.8.0", path = "../network" }
+tc-network-test = { version = "0.8.0", path = "../network/test" }
+tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
 tetcore-test-runtime-client = { version = "2.0.0",  path = "../../test-utils/runtime/client" }
-tc-consensus-babe = { version = "0.8.0", path = "../../primitives/consensus/babe" }
-tc-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
-tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tp-consensus-babe = { version = "0.8.0", path = "../../primitives/consensus/babe" }
+tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 tokio = { version = "0.2", features = ["rt-core"] }
 tempfile = "3.1.0"
-tc-api = { version = "2.0.0", path = "../../primitives/api" }
+tp-api = { version = "2.0.0", path = "../../primitives/api" }

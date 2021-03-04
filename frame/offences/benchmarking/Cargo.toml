@@ -24,16 +24,16 @@ pallet-im-online = { version = "2.0.0", default-features = false, path = "../../
 pallet-offences = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../offences" }
 pallet-session = { version = "2.0.0", default-features = false, path = "../../session" }
 pallet-staking = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../staking" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
-tc-staking = { version = "2.0.0", default-features = false, path = "../../../primitives/staking" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tp-staking = { version = "2.0.0", default-features = false, path = "../../../primitives/staking" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 
 [dev-dependencies]
 pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 serde = { version = "1.0.101" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-io = { version = "2.0.0", path = "../../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-io = { version = "2.0.0", path = "../../../primitives/io" }
 
 [features]
 default = ["std"]
@@ -48,8 +48,8 @@ std = [
 	"pallet-offences/std",
 	"pallet-session/std",
 	"pallet-staking/std",
-	"tc-runtime/std",
-	"tc-staking/std",
-	"tc-std/std",
+	"tp-runtime/std",
+	"tp-staking/std",
+	"tp-std/std",
 	"codec/std",
 ]

@@ -15,15 +15,15 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 rand_chacha = { version = "0.2", default-features = false }
 
 [dev-dependencies]
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-io ={ version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-io ={ version = "2.0.0", path = "../../primitives/io" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 
 [features]
@@ -31,13 +31,13 @@ default = ["std"]
 std = [
 	"codec/std",
 	"serde",
-	"tc-runtime/std",
+	"tp-runtime/std",
 	"rand_chacha/std",
-	"tc-std/std",
+	"tp-std/std",
 	"frame-support/std",
 	"frame-system/std",
 ]
 runtime-benchmarks = [
-	"tc-runtime/runtime-benchmarks",
+	"tp-runtime/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
 ]

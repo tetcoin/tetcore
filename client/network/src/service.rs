@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Main entry point of the sc-network crate.
+//! Main entry point of the tc-network crate.
 //!
 //! There are two main structs in this module: [`NetworkWorker`] and [`NetworkService`].
 //! The [`NetworkWorker`] *is* the network and implements the `Future` trait. It must be polled in
@@ -743,7 +743,7 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkService<B, H> {
 	/// malfunctioning peer could intentionally process notifications at a very slow rate.
 	///
 	/// Instead, you are encouraged to maintain your own buffer of notifications on top of the one
-	/// maintained by `sc-network`, and use `notification_sender` to progressively send out
+	/// maintained by `tc-network`, and use `notification_sender` to progressively send out
 	/// elements from your buffer. If this additional buffer is full (which will happen at some
 	/// point if the peer is too slow to process notifications), appropriate measures can be taken,
 	/// such as removing non-critical notifications from the buffer or disconnecting the peer
@@ -753,7 +753,7 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkService<B, H> {
 	/// Notifications              Per-peer buffer
 	///   broadcast    +------->   of notifications   +-->  `notification_sender`  +-->  Internet
 	///                    ^       (not covered by
-	///                    |         sc-network)
+	///                    |         tc-network)
 	///                    +
 	///      Notifications should be dropped
 	///             if buffer is full

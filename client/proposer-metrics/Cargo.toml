@@ -1,5 +1,5 @@
 [package]
-name = "sc-proposer-metrics"
+name = "tc-proposer-metrics"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"

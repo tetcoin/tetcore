@@ -1,5 +1,5 @@
 [package]
-name = "sc-service"
+name = "tc-service"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -16,9 +16,9 @@ targets = ["x86_64-unknown-linux-gnu"]
 default = ["db"]
 # The RocksDB feature activates the RocksDB database backend. If it is not activated, and you pass
 # a path to a database, an error will be produced at runtime.
-db = ["sc-client-db/with-kvdb-rocksdb", "sc-client-db/with-tetsy-db"]
+db = ["tc-client-db/with-kvdb-rocksdb", "tc-client-db/with-tetsy-db"]
 wasmtime = [
-	"sc-executor/wasmtime",
+	"tc-executor/wasmtime",
 ]
 # exposes the client type
 test-helpers = []
@@ -40,41 +40,41 @@ pin-project = "0.4.8"
 hash-db = "0.15.2"
 serde = "1.0.101"
 serde_json = "1.0.41"
-sc-keystore = { version = "2.0.0", path = "../keystore" }
-tc-io = { version = "2.0.0", path = "../../primitives/io" }
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tc-trie = { version = "2.0.0", path = "../../primitives/trie" }
-tc-externalities = { version = "0.8.0", path = "../../primitives/externalities" }
-tc-utils = { version = "2.0.0", path = "../../primitives/utils" }
-tc-version = { version = "2.0.0", path = "../../primitives/version" }
-tc-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
-tc-session = { version = "2.0.0", path = "../../primitives/session" }
-tc-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
-tc-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
-tc-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-tc-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
-sc-network = { version = "0.8.0", path = "../network" }
-sc-chain-spec = { version = "2.0.0", path = "../chain-spec" }
-sc-light = { version = "2.0.0", path = "../light" }
-sc-client-api = { version = "2.0.0", path = "../api" }
-tc-api = { version = "2.0.0", path = "../../primitives/api" }
-sc-client-db = { version = "0.8.0", default-features = false, path = "../db" }
+tc-keystore = { version = "2.0.0", path = "../keystore" }
+tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
+tp-externalities = { version = "0.8.0", path = "../../primitives/externalities" }
+tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tp-version = { version = "2.0.0", path = "../../primitives/version" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
+tp-session = { version = "2.0.0", path = "../../primitives/session" }
+tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tp-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
+tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
+tp-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
+tc-network = { version = "0.8.0", path = "../network" }
+tc-chain-spec = { version = "2.0.0", path = "../chain-spec" }
+tc-light = { version = "2.0.0", path = "../light" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tp-api = { version = "2.0.0", path = "../../primitives/api" }
+tc-client-db = { version = "0.8.0", default-features = false, path = "../db" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0" }
-sc-executor = { version = "0.8.0", path = "../executor" }
-sc-transaction-pool = { version = "2.0.0", path = "../transaction-pool" }
-tc-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
-sc-rpc-server = { version = "2.0.0", path = "../rpc-servers" }
-sc-rpc = { version = "2.0.0", path = "../rpc" }
-sc-block-builder = { version = "0.8.0", path = "../block-builder" }
-tc-block-builder = { version = "2.0.0", path = "../../primitives/block-builder" }
-sc-informant = { version = "0.8.0", path = "../informant" }
-sc-telemetry = { version = "2.0.0", path = "../telemetry" }
-sc-offchain = { version = "2.0.0", path = "../offchain" }
+tc-executor = { version = "0.8.0", path = "../executor" }
+tc-transaction-pool = { version = "2.0.0", path = "../transaction-pool" }
+tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
+tc-rpc-server = { version = "2.0.0", path = "../rpc-servers" }
+tc-rpc = { version = "2.0.0", path = "../rpc" }
+tc-block-builder = { version = "0.8.0", path = "../block-builder" }
+tp-block-builder = { version = "2.0.0", path = "../../primitives/block-builder" }
+tc-informant = { version = "0.8.0", path = "../informant" }
+tc-telemetry = { version = "2.0.0", path = "../telemetry" }
+tc-offchain = { version = "2.0.0", path = "../offchain" }
 prometheus-endpoint = { package = "tetcore-prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
-sc-tracing = { version = "2.0.0", path = "../tracing" }
-tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tc-tracing = { version = "2.0.0", path = "../tracing" }
+tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 tracing = "0.1.22"
 tracing-futures = { version = "0.2.4" }
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["primitive-types"] }
@@ -86,8 +86,8 @@ directories = "3.0.1"
 [dev-dependencies]
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime/" }
-tc-consensus-babe = { version = "0.8.0", path = "../../primitives/consensus/babe" }
-grandpa = { version = "0.8.0", package = "sc-finality-grandpa", path = "../finality-grandpa" }
-grandpa-primitives = { version = "2.0.0", package = "tc-finality-grandpa", path = "../../primitives/finality-grandpa" }
+tp-consensus-babe = { version = "0.8.0", path = "../../primitives/consensus/babe" }
+grandpa = { version = "0.8.0", package = "tc-finality-grandpa", path = "../finality-grandpa" }
+grandpa-primitives = { version = "2.0.0", package = "tp-finality-grandpa", path = "../../primitives/finality-grandpa" }
 tokio = { version = "0.2", default-features = false }
 async-std = { version = "1.6.5", default-features = false }

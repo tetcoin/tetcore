@@ -1,5 +1,5 @@
 [package]
-name = "sc-telemetry"
+name = "tc-telemetry"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Telemetry utils"
@@ -7,7 +7,7 @@ edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
-documentation = "https://docs.rs/sc-telemetry"
+documentation = "https://docs.rs/tc-telemetry"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -28,5 +28,5 @@ void = "1.0.2"
 tracing = "0.1.10"
 tracing-subscriber = "0.2.13"
 serde_json = "1.0.41"
-tc-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
 chrono = "0.4.19"

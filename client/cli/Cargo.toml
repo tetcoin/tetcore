@@ -1,5 +1,5 @@
 [package]
-name = "sc-cli"
+name = "tc-cli"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Tetcore CLI interface."
@@ -24,22 +24,22 @@ hex = "0.4.2"
 rand = "0.7.3"
 tiny-bip39 = "0.8.0"
 serde_json = "1.0.41"
-sc-keystore = { version = "2.0.0", path = "../keystore" }
-tc-panic-handler = { version = "2.0.0", path = "../../primitives/panic-handler" }
-sc-client-api = { version = "2.0.0", path = "../api" }
-tc-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-sc-network = { version = "0.8.0", path = "../network" }
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tc-utils = { version = "2.0.0", path = "../../primitives/utils" }
-tc-version = { version = "2.0.0", path = "../../primitives/version" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
-sc-service = { version = "0.8.0", default-features = false, path = "../service" }
-sc-telemetry = { version = "2.0.0", path = "../telemetry" }
-tc-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+tc-keystore = { version = "2.0.0", path = "../keystore" }
+tp-panic-handler = { version = "2.0.0", path = "../../primitives/panic-handler" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tc-network = { version = "0.8.0", path = "../network" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tp-version = { version = "2.0.0", path = "../../primitives/version" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
+tc-service = { version = "0.8.0", default-features = false, path = "../service" }
+tc-telemetry = { version = "2.0.0", path = "../telemetry" }
+tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
 names = "0.11.0"
 structopt = "0.3.8"
-sc-tracing = { version = "2.0.0", path = "../tracing" }
+tc-tracing = { version = "2.0.0", path = "../tracing" }
 chrono = "0.4.10"
 serde = "1.0.111"
 thiserror = "1.0.21"
@@ -52,5 +52,5 @@ tempfile = "3.1.0"
 
 [features]
 wasmtime = [
-	"sc-service/wasmtime",
+	"tc-service/wasmtime",
 ]

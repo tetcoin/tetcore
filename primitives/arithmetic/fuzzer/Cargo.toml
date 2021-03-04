@@ -1,5 +1,5 @@
 [package]
-name = "tc-arithmetic-fuzzer"
+name = "tp-arithmetic-fuzzer"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -7,14 +7,14 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Fuzzer for fixed point arithmetic primitives."
-documentation = "https://docs.rs/tc-arithmetic-fuzzer"
+documentation = "https://docs.rs/tp-arithmetic-fuzzer"
 publish = false
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-arithmetic = { version = "2.0.0", path = ".." }
+tp-arithmetic = { version = "2.0.0", path = ".." }
 honggfuzz = "0.5.49"
 primitive-types = "0.9.0"
 num-bigint = "0.2"

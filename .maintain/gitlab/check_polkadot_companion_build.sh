@@ -90,7 +90,7 @@ diener --tetcore --branch $CI_COMMIT_REF_NAME --git https://gitlab.tetcoin.org/t
 cd polkadot
 
 # Test Polkadot pr or master branch with this Tetcore commit.
-cargo update -p tc-io
+cargo update -p tp-io
 time cargo test --all --release --verbose --features=real-overseer
 
 cd parachain/test-parachains/adder/collator/

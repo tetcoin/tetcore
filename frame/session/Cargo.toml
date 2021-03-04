@@ -15,35 +15,35 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
-tc-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
+tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 pallet-timestamp = { version = "2.0.0", default-features = false, path = "../timestamp" }
-tc-trie = { version = "2.0.0", optional = true, default-features = false, path = "../../primitives/trie" }
+tp-trie = { version = "2.0.0", optional = true, default-features = false, path = "../../primitives/trie" }
 impl-trait-for-tuples = "0.1"
 
 [dev-dependencies]
-tc-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
+tp-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
 lazy_static = "1.4.0"
 
 [features]
 default = ["std", "historical"]
-historical = ["tc-trie"]
+historical = ["tp-trie"]
 std = [
 	"serde",
 	"codec/std",
-	"tc-std/std",
-	"tc-io/std",
+	"tp-std/std",
+	"tp-io/std",
 	"frame-support/std",
-	"tc-core/std",
-	"tc-runtime/std",
-	"tc-session/std",
-	"tc-staking/std",
+	"tp-core/std",
+	"tp-runtime/std",
+	"tp-session/std",
+	"tp-staking/std",
 	"pallet-timestamp/std",
-	"tc-trie/std",
+	"tp-trie/std",
 ]

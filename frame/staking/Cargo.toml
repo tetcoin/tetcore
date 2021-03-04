@@ -16,25 +16,25 @@ targets = ["x86_64-unknown-linux-gnu"]
 static_assertions = "1.1.0"
 serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-npos-elections = { version = "2.0.0", default-features = false, path = "../../primitives/npos-elections" }
-tc-io ={ version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-npos-elections = { version = "2.0.0", default-features = false, path = "../../primitives/npos-elections" }
+tp-io ={ version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 pallet-session = { version = "2.0.0", default-features = false, features = ["historical"], path = "../session" }
 pallet-authorship = { version = "2.0.0", default-features = false, path = "../authorship" }
-tc-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 
 # Optional imports for benchmarking
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 rand_chacha = { version = "0.2", default-features = false, optional = true }
 
 [dev-dependencies]
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-storage = { version = "2.0.0", path = "../../primitives/storage" }
-tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-timestamp = { version = "2.0.0", path = "../timestamp" }
 pallet-staking-reward-curve = { version = "2.0.0",  path = "../staking/reward-curve" }
@@ -49,16 +49,16 @@ default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"tc-std/std",
-	"tc-npos-elections/std",
-	"tc-io/std",
+	"tp-std/std",
+	"tp-npos-elections/std",
+	"tp-io/std",
 	"frame-support/std",
-	"tc-runtime/std",
-	"tc-staking/std",
+	"tp-runtime/std",
+	"tp-staking/std",
 	"pallet-session/std",
 	"frame-system/std",
 	"pallet-authorship/std",
-	"tc-application-crypto/std",
+	"tp-application-crypto/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking",

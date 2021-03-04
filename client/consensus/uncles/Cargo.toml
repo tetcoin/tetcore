@@ -1,5 +1,5 @@
 [package]
-name = "sc-consensus-uncles"
+name = "tc-consensus-uncles"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Generic uncle inclusion utilities for consensus"
@@ -13,10 +13,10 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-sc-client-api = { version = "2.0.0", path = "../../api" }
-tc-core = { version = "2.0.0", path = "../../../primitives/core" }
-tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tc-authorship = { version = "2.0.0", path = "../../../primitives/authorship" }
-tc-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
-tc-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
+tc-client-api = { version = "2.0.0", path = "../../api" }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-authorship = { version = "2.0.0", path = "../../../primitives/authorship" }
+tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
 log = "0.4.8"

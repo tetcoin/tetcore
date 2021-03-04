@@ -1,6 +1,6 @@
 [package]
 description = "Tetcore offchain workers"
-name = "sc-offchain"
+name = "tc-offchain"
 version = "2.0.1"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 authors = ["Parity Technologies <admin@parity.io>"]
@@ -14,35 +14,35 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 bytes = "0.5"
-sc-client-api = { version = "2.0.0", path = "../api" }
-tc-api = { version = "2.0.0", path = "../../primitives/api" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tp-api = { version = "2.0.0", path = "../../primitives/api" }
 fnv = "1.0.6"
 futures = "0.3.9"
 futures-timer = "3.0.1"
 log = "0.4.8"
 threadpool = "1.7"
 num_cpus = "1.10"
-tc-offchain = { version = "2.0.0", path = "../../primitives/offchain" }
+tp-offchain = { version = "2.0.0", path = "../../primitives/offchain" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
 parking_lot = "0.11.1"
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
 rand = "0.7.2"
-tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tc-utils = { version = "2.0.0", path = "../../primitives/utils" }
-sc-network = { version = "0.8.0", path = "../network" }
-sc-keystore = { version = "2.0.0", path = "../keystore" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tc-network = { version = "0.8.0", path = "../network" }
+tc-keystore = { version = "2.0.0", path = "../keystore" }
 
 [target.'cfg(not(target_os = "unknown"))'.dependencies]
 hyper = "0.13.9"
 hyper-rustls = "0.21.0"
 
 [dev-dependencies]
-sc-client-db = { version = "0.8.0", default-features = true, path = "../db" }
-sc-block-builder = { version = "0.8.0", path = "../block-builder" }
-sc-transaction-pool = { version = "2.0.0", path = "../transaction-pool" }
-tc-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
-tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
-tc-consensus = { version = "0.8.1", path = "../../primitives/consensus/common" }
+tc-client-db = { version = "0.8.0", default-features = true, path = "../db" }
+tc-block-builder = { version = "0.8.0", path = "../block-builder" }
+tc-transaction-pool = { version = "2.0.0", path = "../transaction-pool" }
+tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
+tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tp-consensus = { version = "0.8.1", path = "../../primitives/consensus/common" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 tokio = "0.2"
 lazy_static = "1.4.0"

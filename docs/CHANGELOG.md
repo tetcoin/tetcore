@@ -43,7 +43,7 @@ Client
 * Support hex encoded secret key for `--node-key` (#7052)
 * Update the service tasks Grafana dashboard (#7038)
 * manual seal is now consensus agnostic (#7010)
-* Move subcommands from sc-cli to nodes (#6948)
+* Move subcommands from tc-cli to nodes (#6948)
 * Implement request-responses protocols (#6634)
 * fix bench db wipe (#6965)
 * Fix benchmark read/write key tracker for keys in child storages. (#6905)
@@ -86,7 +86,7 @@ Runtime
 Client
 ------
 
-* Merge Tetkey into sc-cli (#4954)
+* Merge Tetkey into tc-cli (#4954)
 * RpcHandlers Refactorings (#6846)
 * client/authority-discovery: Introduce AuthorityDiscoveryService (#6760)
 * Implement tracing::Event handling & parent_id for spans and events (#6672)
@@ -109,7 +109,7 @@ API
 * seal: Fix and improve error reporting (#6773)
 * Allow blacklisting blocks from being finalized again after block revert (#6301)
 * BABE slot and epoch event notifications (#6563)
-* Add `memory-tracker` feature to `tc-trie` to fix wasm panic (#6745)
+* Add `memory-tracker` feature to `tp-trie` to fix wasm panic (#6745)
 
 ## 2.0.0-rc4 -> 2.0.0-rc5 – River Dolphin
 
@@ -166,7 +166,7 @@ Runtime
 
 * Staking Payout Creates Controller (#6496)
 * `pallet-scheduler`: Check that `when` is not in the past (#6480)
-* Fix `tc-api` handling of multiple arguments (#6484)
+* Fix `tp-api` handling of multiple arguments (#6484)
 * Fix issues with `Operational` transactions validity and prioritization. (#6435)
 * pallet-atomic-swap: generialized swap action (#6421)
 * Avoid multisig reentrancy (#6445)
@@ -196,7 +196,7 @@ Client
 * Split the service initialisation up into seperate functions (#6332)
 * Fix transaction pool event sending (#6341)
 * Add a [prefix]_process_start_time_seconds metric (#6315)
-* new crate sc-light (#6235)
+* new crate tc-light (#6235)
 * Allow adding a prefix to the informant (#6174)
 
 API
@@ -256,7 +256,7 @@ Client
 ## 2.0.0-alpha.7 -> 2.0.0-alpha.8
 
 **License Changed**
-From this release forward, the code is released under a new – more relaxed – license scheme: Client (`sc-*`) is released under "GPL 3.0 or newer with the Classpath Exception", while primitives, FRAME, the pallets, utils and test-utils are released under "Apache 2.0". More details in the [Relax licensing scheme PR](https://github.com/tetcoin/tetcore/pull/5947).
+From this release forward, the code is released under a new – more relaxed – license scheme: Client (`tc-*`) is released under "GPL 3.0 or newer with the Classpath Exception", while primitives, FRAME, the pallets, utils and test-utils are released under "Apache 2.0". More details in the [Relax licensing scheme PR](https://github.com/tetcoin/tetcore/pull/5947).
 
 Runtime
 -------
@@ -297,7 +297,7 @@ Client
 * Drop ClientProvider (#5823)
 * Move spawning tasks from thread pools to Service's TaskManager for block importing (#5647)
 * Reputation penalty for sending empty block response (#5814)
-* Move sc-client into sc-service (#5502)
+* Move tc-client into tc-service (#5502)
 * Use new block requests protocol (#5760)
 * Fix leak in stream notifications (#5739)
 * network: Only insert global addresses into the DHT. (#5735)
@@ -388,7 +388,7 @@ Client
 * Use CLI to configure max instances cache (#5177)
 * client/service/src/builder.rs: Add build_info metric (#5192)
 * Remove tetcore-ui.tetcoin.org from CORS whitelist (#5142)
-* removes use of sc_client::Client from sc-rpc (#5063)
+* removes use of sc_client::Client from tc-rpc (#5063)
 * Use 128mb for db cache default (#5134)
 * Drop db-cache default from 1gig to 32mb (#5128)
 * Add more metrics to prometheus (#5034)

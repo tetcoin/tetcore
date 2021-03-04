@@ -153,7 +153,7 @@
 //! if necessary and open a unique substream for Tetcore-based communications. If the PSM decides
 //! that we should disconnect a node, then that substream is closed.
 //!
-//! For more information about the PSM, see the *sc-peerset* crate.
+//! For more information about the PSM, see the *tc-peerset* crate.
 //!
 //! Note that at the moment there is no mechanism in place to solve the issues that arise where the
 //! two sides of a connection open the unique substream simultaneously. In order to not run into
@@ -208,11 +208,11 @@
 //! - Either party can signal that it doesn't want a notifications substream anymore by closing
 //! its writing side. The other party should respond by closing its own writing side soon after.
 //!
-//! The API of `sc-network` allows one to register user-defined notification protocols.
-//! `sc-network` automatically tries to open a substream towards each node for which the legacy
+//! The API of `tc-network` allows one to register user-defined notification protocols.
+//! `tc-network` automatically tries to open a substream towards each node for which the legacy
 //! Substream substream is open. The handshake is then performed automatically.
 //!
-//! For example, the `sc-finality-grandpa` crate registers the `/tetcoin/grandpa/1`
+//! For example, the `tc-finality-grandpa` crate registers the `/tetcoin/grandpa/1`
 //! notifications protocol.
 //!
 //! At the moment, for backwards-compatibility, notification protocols are tied to the legacy
@@ -227,7 +227,7 @@
 //!
 //! # Usage
 //!
-//! Using the `sc-network` crate is done through the [`NetworkWorker`] struct. Create this
+//! Using the `tc-network` crate is done through the [`NetworkWorker`] struct. Create this
 //! struct by passing a [`config::Params`], then poll it as if it was a `Future`. You can extract an
 //! `Arc<NetworkService>` from the `NetworkWorker`, which can be shared amongst multiple places
 //! in order to give orders to the networking.

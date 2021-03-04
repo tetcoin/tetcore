@@ -1,5 +1,5 @@
 [package]
-name = "tc-rpc"
+name = "tp-rpc"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -14,7 +14,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 serde = { version = "1.0.101", features = ["derive"] }
-tc-core = { version = "2.0.0", path = "../core" }
+tp-core = { version = "2.0.0", path = "../core" }
 
 [dev-dependencies]
 serde_json = "1.0.41"

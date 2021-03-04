@@ -1,4 +1,4 @@
-# sc-telemetry
+# tc-telemetry
 
 Tetcore's client telemetry is a part of tetcore that allows ingesting telemetry data
 with for example [Polkadot telemetry](https://github.com/tetcoin/tetcore-telemetry).
@@ -10,7 +10,7 @@ background task called [`TelemetryWorker`] which will send the information to th
 remote telemetry servers.
 
 If multiple tetcore nodes are running in the same process, it uses a `tracing::Span` to
-identify which tetcore node is reporting the telemetry. Every task spawned using sc-service's
+identify which tetcore node is reporting the telemetry. Every task spawned using tc-service's
 `TaskManager` automatically inherit this span.
 
 Tetcore's nodes initialize/register with the [`TelemetryWorker`] using a [`TelemetryHandle`].

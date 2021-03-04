@@ -1,5 +1,5 @@
 [package]
-name = "sc-tracing"
+name = "tc-tracing"
 version = "2.0.1"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 authors = ["Parity Technologies <admin@parity.io>"]
@@ -29,9 +29,9 @@ tracing = "0.1.22"
 tracing-core = "0.1.17"
 tracing-log = "0.1.1"
 tracing-subscriber = "0.2.15"
-tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
-sc-telemetry = { version = "2.0.0", path = "../telemetry" }
-sc-tracing-proc-macro = { version = "2.0.0", path = "./proc-macro" }
+tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tc-telemetry = { version = "2.0.0", path = "../telemetry" }
+tc-tracing-proc-macro = { version = "2.0.0", path = "./proc-macro" }
 
 [target.'cfg(target_os = "unknown")'.dependencies]
 wasm-bindgen = "0.2.67"

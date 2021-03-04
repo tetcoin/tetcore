@@ -1,5 +1,5 @@
 [package]
-name = "sc-state-db"
+name = "tc-state-db"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -16,8 +16,8 @@ targets = ["x86_64-unknown-linux-gnu"]
 thiserror = "1.0.21"
 parking_lot = "0.11.1"
 log = "0.4.11"
-sc-client-api = { version = "2.0.0", path = "../api" }
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["primitive-types"] }
 tetsy-util-mem-derive = "0.1.0"

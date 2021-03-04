@@ -14,27 +14,27 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
-tc-authorship = { version = "2.0.0", default-features = false, path = "../../primitives/authorship" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
+tp-authorship = { version = "2.0.0", default-features = false, path = "../../primitives/authorship" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 impl-trait-for-tuples = "0.2.0"
 
 [dev-dependencies]
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-io ={ version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-io ={ version = "2.0.0", path = "../../primitives/io" }
 serde = { version = "1.0.101" }
 
 [features]
 default = ["std"]
 std = [
 	"codec/std",
-	"tc-inherents/std",
-	"tc-runtime/std",
-	"tc-std/std",
+	"tp-inherents/std",
+	"tp-runtime/std",
+	"tp-std/std",
 	"frame-support/std",
 	"frame-system/std",
-	"tc-authorship/std",
+	"tp-authorship/std",
 ]

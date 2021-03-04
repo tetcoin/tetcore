@@ -13,31 +13,31 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-authority-discovery = { version = "2.0.0", default-features = false, path = "../../primitives/authority-discovery" }
-tc-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tp-authority-discovery = { version = "2.0.0", default-features = false, path = "../../primitives/authority-discovery" }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 pallet-session = { version = "2.0.0", features = ["historical" ], path = "../session", default-features = false }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 
 [dev-dependencies]
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-io = { version = "2.0.0", path = "../../primitives/io" }
-tc-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
 
 [features]
 default = ["std"]
 std = [
-	"tc-application-crypto/std",
-	"tc-authority-discovery/std",
+	"tp-application-crypto/std",
+	"tp-authority-discovery/std",
 	"codec/std",
-	"tc-std/std",
+	"tp-std/std",
 	"serde",
 	"pallet-session/std",
-	"tc-runtime/std",
+	"tp-runtime/std",
 	"frame-support/std",
 	"frame-system/std",
 ]

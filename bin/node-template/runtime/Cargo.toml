@@ -24,17 +24,17 @@ pallet-timestamp = { version = "2.0.0", default-features = false, path = "../../
 pallet-transaction-payment = { version = "2.0.0", default-features = false, path = "../../../frame/transaction-payment" }
 frame-executive = { version = "2.0.0", default-features = false, path = "../../../frame/executive" }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-tc-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
-tc-block-builder = { path = "../../../primitives/block-builder", default-features = false, version = "2.0.0"}
-tc-consensus-aura = { version = "0.8.0", default-features = false, path = "../../../primitives/consensus/aura" }
-tc-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
-tc-inherents = { path = "../../../primitives/inherents", default-features = false, version = "2.0.0"}
-tc-offchain = { version = "2.0.0", default-features = false, path = "../../../primitives/offchain" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
-tc-session = { version = "2.0.0", default-features = false, path = "../../../primitives/session" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
-tc-transaction-pool = { version = "2.0.0", default-features = false, path = "../../../primitives/transaction-pool" }
-tc-version = { version = "2.0.0", default-features = false, path = "../../../primitives/version" }
+tp-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
+tp-block-builder = { path = "../../../primitives/block-builder", default-features = false, version = "2.0.0"}
+tp-consensus-aura = { version = "0.8.0", default-features = false, path = "../../../primitives/consensus/aura" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tp-inherents = { path = "../../../primitives/inherents", default-features = false, version = "2.0.0"}
+tp-offchain = { version = "2.0.0", default-features = false, path = "../../../primitives/offchain" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tp-session = { version = "2.0.0", default-features = false, path = "../../../primitives/session" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tp-transaction-pool = { version = "2.0.0", default-features = false, path = "../../../primitives/transaction-pool" }
+tp-version = { version = "2.0.0", default-features = false, path = "../../../primitives/version" }
 
 # Used for the node template's RPCs
 frame-system-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../../frame/system/rpc/runtime-api/" }
@@ -65,23 +65,23 @@ std = [
 	"pallet-transaction-payment/std",
 	"pallet-transaction-payment-rpc-runtime-api/std",
 	"serde",
-	"tc-api/std",
-	"tc-block-builder/std",
-	"tc-consensus-aura/std",
-	"tc-core/std",
-	"tc-inherents/std",
-	"tc-offchain/std",
-	"tc-runtime/std",
-	"tc-session/std",
-	"tc-std/std",
-	"tc-transaction-pool/std",
-	"tc-version/std",
+	"tp-api/std",
+	"tp-block-builder/std",
+	"tp-consensus-aura/std",
+	"tp-core/std",
+	"tp-inherents/std",
+	"tp-offchain/std",
+	"tp-runtime/std",
+	"tp-session/std",
+	"tp-std/std",
+	"tp-transaction-pool/std",
+	"tp-version/std",
 	"frame-system/std",
 	"frame-system-rpc-runtime-api/std",
 	"template/std",
 ]
 runtime-benchmarks = [
-	"tc-runtime/runtime-benchmarks",
+	"tp-runtime/runtime-benchmarks",
 	"frame-benchmarking",
 	"frame-support/runtime-benchmarks",
 	"frame-system-benchmarking",

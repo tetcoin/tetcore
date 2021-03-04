@@ -15,14 +15,14 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 safe-mix = { version = "1.0", default-features = false }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 
 [dev-dependencies]
-tc-core = { version = "2.0.0", path = "../../primitives/core" }
-tc-io = { version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-io = { version = "2.0.0", path = "../../primitives/io" }
 serde = { version = "1.0.101" }
 
 [features]
@@ -32,6 +32,6 @@ std = [
 	"frame-system/std",
 	"codec/std",
 	"frame-support/std",
-	"tc-runtime/std",
-	"tc-std/std",
+	"tp-runtime/std",
+	"tp-std/std",
 ]

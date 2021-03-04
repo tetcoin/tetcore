@@ -1,5 +1,5 @@
 [package]
-name = "tc-timestamp"
+name = "tp-timestamp"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
@@ -13,21 +13,21 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-api = { version = "2.0.0", default-features = false, path = "../api" }
-tc-std = { version = "2.0.0", default-features = false, path = "../std" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
+tp-api = { version = "2.0.0", default-features = false, path = "../api" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tc-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
 impl-trait-for-tuples = "0.2.0"
 wasm-timer = { version = "0.2", optional = true }
 
 [features]
 default = [ "std" ]
 std = [
-	"tc-api/std",
-	"tc-std/std",
-	"tc-runtime/std",
+	"tp-api/std",
+	"tp-std/std",
+	"tp-runtime/std",
 	"codec/std",
-	"tc-inherents/std",
+	"tp-inherents/std",
 	"wasm-timer",
 ]

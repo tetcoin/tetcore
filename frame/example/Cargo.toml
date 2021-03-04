@@ -18,26 +18,26 @@ codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = f
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 pallet-balances = { version = "2.0.0", default-features = false, path = "../balances" }
-tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 
 [dev-dependencies]
-tc-core = { version = "2.0.0", path = "../../primitives/core", default-features = false }
+tp-core = { version = "2.0.0", path = "../../primitives/core", default-features = false }
 
 [features]
 default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"tc-runtime/std",
+	"tp-runtime/std",
 	"frame-benchmarking/std",
 	"frame-support/std",
 	"frame-system/std",
 	"pallet-balances/std",
-	"tc-io/std",
-	"tc-std/std"
+	"tp-io/std",
+	"tp-std/std"
 ]
 runtime-benchmarks = ["frame-benchmarking"]
