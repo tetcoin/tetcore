@@ -35,7 +35,7 @@ tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
 tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tp-database = { version = "2.0.0", path = "../../primitives/database" }
-tetsy-db = { version = "0.1.2", optional = true }
+tetsy-db = { version = "0.1.2", optional = true, registry = "tetcoin" }
 prometheus-endpoint = { package = "tetcore-prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
 
 [dev-dependencies]
