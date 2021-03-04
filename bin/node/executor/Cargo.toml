@@ -48,8 +48,8 @@ wat = "1.0"
 wasmtime = [
 	"tc-executor/wasmtime",
 ]
-wasmi-errno = [
-	"tc-executor/wasmi-errno",
+twasmi-errno = [
+	"tc-executor/twasmi-errno",
 ]
 stress-test = []
 

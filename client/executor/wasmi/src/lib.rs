@@ -16,10 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! This crate provides an implementation of `WasmModule` that is baked by wasmi.
+//! This crate provides an implementation of `WasmModule` that is baked by twasmi.
 
 use std::{str, cell::RefCell, sync::Arc};
-use wasmi::{
+use twasmi::{
 	Module, ModuleInstance, MemoryInstance, MemoryRef, TableRef, ImportsBuilder, ModuleRef,
 	FuncInstance, memory_units::Pages,
 	RuntimeValue::{I32, I64, self},
@@ -39,7 +39,7 @@ use sc_executor_common::{
 use sc_executor_common::util::{DataSegmentsSnapshot, WasmModuleInfo};
 
 struct FunctionExecutor<'a> {
-	sandbox_store: sandbox::Store<wasmi::FuncRef>,
+	sandbox_store: sandbox::Store<twasmi::FuncRef>,
 	heap: sp_allocator::FreeingBumpHeapAllocator,
 	memory: MemoryRef,
 	table: Option<TableRef>,
@@ -70,7 +70,7 @@ impl<'a> FunctionExecutor<'a> {
 }
 
 impl<'a> sandbox::SandboxCapabilities for FunctionExecutor<'a> {
-	type SupervisorFuncRef = wasmi::FuncRef;
+	type SupervisorFuncRef = twasmi::FuncRef;
 
 	fn invoke(
 		&mut self,
@@ -80,7 +80,7 @@ impl<'a> sandbox::SandboxCapabilities for FunctionExecutor<'a> {
 		state: u32,
 		func_idx: sandbox::SupervisorFuncIndex,
 	) -> Result<i64, Error> {
-		let result = wasmi::FuncInstance::invoke(
+		let result = twasmi::FuncInstance::invoke(
 			dispatch_thunk,
 			&[
 				RuntimeValue::I32(u32::from(invoke_args_ptr) as i32),
@@ -192,7 +192,7 @@ impl<'a> Sandbox for FunctionExecutor<'a> {
 	) -> WResult<u32> {
 		trace!(target: "tp-sandbox", "invoke, instance_idx={}", instance_id);
 
-		// Deserialize arguments and convert them into wasmi types.
+		// Deserialize arguments and convert them into twasmi types.
 		let args = Vec::<sp_wasm_interface::Value>::decode(&mut &args[..])
 			.map_err(|_| "Can't decode serialized arguments for the invocation")?
 			.into_iter()
@@ -302,19 +302,19 @@ impl<'a> Resolver<'a> {
 	}
 }
 
-impl<'a> wasmi::ModuleImportResolver for Resolver<'a> {
-	fn resolve_func(&self, name: &str, signature: &wasmi::Signature)
-		-> std::result::Result<wasmi::FuncRef, wasmi::Error>
+impl<'a> twasmi::ModuleImportResolver for Resolver<'a> {
+	fn resolve_func(&self, name: &str, signature: &twasmi::Signature)
+		-> std::result::Result<twasmi::FuncRef, twasmi::Error>
 	{
 		let signature = sp_wasm_interface::Signature::from(signature);
 		for (function_index, function) in self.host_functions.iter().enumerate() {
 			if name == function.name() {
 				if signature == function.signature() {
 					return Ok(
-						wasmi::FuncInstance::alloc_host(signature.into(), function_index),
+						twasmi::FuncInstance::alloc_host(signature.into(), function_index),
 					)
 				} else {
-					return Err(wasmi::Error::Instantiation(
+					return Err(twasmi::Error::Instantiation(
 						format!(
 							"Invalid signature for function `{}` expected `{:?}`, got `{:?}`",
 							function.name(),
@@ -331,9 +331,9 @@ impl<'a> wasmi::ModuleImportResolver for Resolver<'a> {
 			let id = self.missing_functions.borrow().len() + self.host_functions.len();
 			self.missing_functions.borrow_mut().push(name.to_string());
 
-			Ok(wasmi::FuncInstance::alloc_host(signature.into(), id))
+			Ok(twasmi::FuncInstance::alloc_host(signature.into(), id))
 		} else {
-			Err(wasmi::Error::Instantiation(
+			Err(twasmi::Error::Instantiation(
 				format!("Export {} not found", name),
 			))
 		}
@@ -342,11 +342,11 @@ impl<'a> wasmi::ModuleImportResolver for Resolver<'a> {
 	fn resolve_memory(
 		&self,
 		field_name: &str,
-		memory_type: &wasmi::MemoryDescriptor,
-	) -> Result<MemoryRef, wasmi::Error> {
+		memory_type: &twasmi::MemoryDescriptor,
+	) -> Result<MemoryRef, twasmi::Error> {
 		if field_name == "memory" {
 			match &mut *self.import_memory.borrow_mut() {
-				Some(_) => Err(wasmi::Error::Instantiation(
+				Some(_) => Err(twasmi::Error::Instantiation(
 					"Memory can not be imported twice!".into(),
 				)),
 				memory_ref @ None => {
@@ -356,7 +356,7 @@ impl<'a> wasmi::ModuleImportResolver for Resolver<'a> {
 							.map(|m| self.heap_pages > m as usize)
 							.unwrap_or(false)
 					{
-						Err(wasmi::Error::Instantiation(format!(
+						Err(twasmi::Error::Instantiation(format!(
 							"Heap pages ({}) is greater than imported memory maximum ({}).",
 							self.heap_pages,
 							memory_type
@@ -375,23 +375,23 @@ impl<'a> wasmi::ModuleImportResolver for Resolver<'a> {
 				}
 			}
 		} else {
-			Err(wasmi::Error::Instantiation(
+			Err(twasmi::Error::Instantiation(
 				format!("Unknown memory reference with name: {}", field_name),
 			))
 		}
 	}
 }
 
-impl<'a> wasmi::Externals for FunctionExecutor<'a> {
-	fn invoke_index(&mut self, index: usize, args: wasmi::RuntimeArgs)
-		-> Result<Option<wasmi::RuntimeValue>, wasmi::Trap>
+impl<'a> twasmi::Externals for FunctionExecutor<'a> {
+	fn invoke_index(&mut self, index: usize, args: twasmi::RuntimeArgs)
+		-> Result<Option<twasmi::RuntimeValue>, twasmi::Trap>
 	{
 		let mut args = args.as_ref().iter().copied().map(Into::into);
 
 		if let Some(function) = self.host_functions.get(index) {
 			function.execute(self, &mut args)
 				.map_err(|msg| Error::FunctionExecution(function.name().to_string(), msg))
-				.map_err(wasmi::Trap::from)
+				.map_err(twasmi::Trap::from)
 				.map(|v| v.map(Into::into))
 		} else if self.allow_missing_func_imports
 			&& index >= self.host_functions.len()
@@ -427,7 +427,7 @@ fn get_heap_base(module: &ModuleRef) -> Result<u32, Error> {
 		.get();
 
 	match heap_base_val {
-		wasmi::RuntimeValue::I32(v) => Ok(v as u32),
+		twasmi::RuntimeValue::I32(v) => Ok(v as u32),
 		_ => Err(Error::HeapBaseNotFoundOrInvalid),
 	}
 }

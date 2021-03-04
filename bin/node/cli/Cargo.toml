@@ -146,7 +146,7 @@ browser = [
 	"wasm-bindgen-futures",
 ]
 cli = [
-	"node-executor/wasmi-errno",
+	"node-executor/twasmi-errno",
 	"node-inspect",
 	"tc-cli",
 	"frame-benchmarking-cli",

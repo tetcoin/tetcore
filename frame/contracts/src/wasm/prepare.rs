@@ -51,7 +51,7 @@ impl<'a, T: Config> ContractModule<'a, T> {
 		original_code: &[u8],
 		schedule: &'a Schedule<T>,
 	) -> Result<Self, &'static str> {
-		use wasmi_validation::{validate_module, PlainValidator};
+		use twasmi_validation::{validate_module, PlainValidator};
 
 		let module =
 			elements::deserialize_buffer(original_code).map_err(|_| "Can't decode wasm code")?;

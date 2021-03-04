@@ -1,13 +1,13 @@
 [package]
-name = "tc-executor-wasmi"
+name = "tc-executor-twasmi"
 version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
-description = "This crate provides an implementation of `WasmRuntime` that is baked by wasmi."
-documentation = "https://docs.rs/tc-executor-wasmi"
+description = "This crate provides an implementation of `WasmRuntime` that is baked by twasmi."
+documentation = "https://docs.rs/tc-executor-twasmi"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -15,7 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 log = "0.4.8"
-wasmi = "0.6.2"
+twasmi = "0.6.2"
 codec = { package = "tetsy-scale-codec", version = "2.0.0" }
 tc-executor-common = { version = "0.8.0", path = "../common" }
 tp-wasm-interface = { version = "2.0.0", path = "../../../primitives/wasm-interface" }

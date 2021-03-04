@@ -25,7 +25,7 @@ use sp_std::{
 };
 
 #[cfg(feature = "std")]
-mod wasmi_impl;
+mod twasmi_impl;
 
 /// Result type used by traits in this crate.
 #[cfg(feature = "std")]

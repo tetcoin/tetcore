@@ -18,12 +18,12 @@
 use sp_std::collections::btree_map::BTreeMap;
 use sp_std::fmt;
 
-use wasmi::{
+use twasmi::{
 	Externals, FuncInstance, FuncRef, GlobalDescriptor, GlobalRef, ImportResolver,
 	MemoryDescriptor, MemoryInstance, MemoryRef, Module, ModuleInstance, ModuleRef,
 	RuntimeArgs, RuntimeValue, Signature, TableDescriptor, TableRef, Trap, TrapKind
 };
-use wasmi::memory_units::Pages;
+use twasmi::memory_units::Pages;
 use super::{Error, Value, ReturnValue, HostFuncType, HostError};
 
 #[derive(Clone)]
@@ -89,7 +89,7 @@ impl fmt::Display for DummyHostError {
 	}
 }
 
-impl wasmi::HostError for DummyHostError {}
+impl twasmi::HostError for DummyHostError {}
 
 struct GuestExternals<'a, T: 'a> {
 	state: &'a mut T,
@@ -163,18 +163,18 @@ impl<T> ImportResolver for EnvironmentDefinitionBuilder<T> {
 		module_name: &str,
 		field_name: &str,
 		signature: &Signature,
-	) -> Result<FuncRef, wasmi::Error> {
+	) -> Result<FuncRef, twasmi::Error> {
 		let key = (
 			module_name.as_bytes().to_owned(),
 			field_name.as_bytes().to_owned(),
 		);
 		let externval = self.map.get(&key).ok_or_else(|| {
-			wasmi::Error::Instantiation(format!("Export {}:{} not found", module_name, field_name))
+			twasmi::Error::Instantiation(format!("Export {}:{} not found", module_name, field_name))
 		})?;
 		let host_func_idx = match *externval {
 			ExternVal::HostFunc(ref idx) => idx,
 			_ => {
-				return Err(wasmi::Error::Instantiation(format!(
+				return Err(twasmi::Error::Instantiation(format!(
 					"Export {}:{} is not a host func",
 					module_name, field_name
 				)))
@@ -188,8 +188,8 @@ impl<T> ImportResolver for EnvironmentDefinitionBuilder<T> {
 		_module_name: &str,
 		_field_name: &str,
 		_global_type: &GlobalDescriptor,
-	) -> Result<GlobalRef, wasmi::Error> {
-		Err(wasmi::Error::Instantiation(format!(
+	) -> Result<GlobalRef, twasmi::Error> {
+		Err(twasmi::Error::Instantiation(format!(
 			"Importing globals is not supported yet"
 		)))
 	}
@@ -199,18 +199,18 @@ impl<T> ImportResolver for EnvironmentDefinitionBuilder<T> {
 		module_name: &str,
 		field_name: &str,
 		_memory_type: &MemoryDescriptor,
-	) -> Result<MemoryRef, wasmi::Error> {
+	) -> Result<MemoryRef, twasmi::Error> {
 		let key = (
 			module_name.as_bytes().to_owned(),
 			field_name.as_bytes().to_owned(),
 		);
 		let externval = self.map.get(&key).ok_or_else(|| {
-			wasmi::Error::Instantiation(format!("Export {}:{} not found", module_name, field_name))
+			twasmi::Error::Instantiation(format!("Export {}:{} not found", module_name, field_name))
 		})?;
 		let memory = match *externval {
 			ExternVal::Memory(ref m) => m,
 			_ => {
-				return Err(wasmi::Error::Instantiation(format!(
+				return Err(twasmi::Error::Instantiation(format!(
 					"Export {}:{} is not a memory",
 					module_name, field_name
 				)))
@@ -224,8 +224,8 @@ impl<T> ImportResolver for EnvironmentDefinitionBuilder<T> {
 		_module_name: &str,
 		_field_name: &str,
 		_table_type: &TableDescriptor,
-	) -> Result<TableRef, wasmi::Error> {
-		Err(wasmi::Error::Instantiation(format!(
+	) -> Result<TableRef, twasmi::Error> {
+		Err(twasmi::Error::Instantiation(format!(
 			"Importing tables is not supported yet"
 		)))
 	}

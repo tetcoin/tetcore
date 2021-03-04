@@ -18,14 +18,14 @@
 
 //! This module implements sandboxing support in the runtime.
 //!
-//! Sandboxing is baked by wasmi at the moment. In future, however, we would like to add/switch to
+//! Sandboxing is baked by twasmi at the moment. In future, however, we would like to add/switch to
 //! a compiled execution engine.
 
 use crate::error::{Result, Error};
 use std::{collections::HashMap, rc::Rc};
 use codec::{Decode, Encode};
 use sp_core::sandbox as sandbox_primitives;
-use wasmi::{
+use twasmi::{
 	Externals, ImportResolver, MemoryInstance, MemoryRef, Module, ModuleInstance,
 	ModuleRef, RuntimeArgs, RuntimeValue, Trap, TrapKind, memory_units::Pages,
 };
@@ -81,27 +81,27 @@ impl ImportResolver for Imports {
 		&self,
 		module_name: &str,
 		field_name: &str,
-		signature: &::wasmi::Signature,
-	) -> std::result::Result<wasmi::FuncRef, wasmi::Error> {
+		signature: &::twasmi::Signature,
+	) -> std::result::Result<twasmi::FuncRef, twasmi::Error> {
 		let key = (
 			module_name.as_bytes().to_owned(),
 			field_name.as_bytes().to_owned(),
 		);
 		let idx = *self.func_map.get(&key).ok_or_else(|| {
-			wasmi::Error::Instantiation(format!(
+			twasmi::Error::Instantiation(format!(
 				"Export {}:{} not found",
 				module_name, field_name
 			))
 		})?;
-		Ok(wasmi::FuncInstance::alloc_host(signature.clone(), idx.0))
+		Ok(twasmi::FuncInstance::alloc_host(signature.clone(), idx.0))
 	}
 
 	fn resolve_memory(
 		&self,
 		module_name: &str,
 		field_name: &str,
-		_memory_type: &::wasmi::MemoryDescriptor,
-	) -> std::result::Result<MemoryRef, wasmi::Error> {
+		_memory_type: &::twasmi::MemoryDescriptor,
+	) -> std::result::Result<MemoryRef, twasmi::Error> {
 		let key = (
 			module_name.as_bytes().to_vec(),
 			field_name.as_bytes().to_vec(),
@@ -109,7 +109,7 @@ impl ImportResolver for Imports {
 		let mem = self.memories_map
 			.get(&key)
 			.ok_or_else(|| {
-				wasmi::Error::Instantiation(format!(
+				twasmi::Error::Instantiation(format!(
 					"Export {}:{} not found",
 					module_name, field_name
 				))
@@ -122,9 +122,9 @@ impl ImportResolver for Imports {
 		&self,
 		module_name: &str,
 		field_name: &str,
-		_global_type: &::wasmi::GlobalDescriptor,
-	) -> std::result::Result<wasmi::GlobalRef, wasmi::Error> {
-		Err(wasmi::Error::Instantiation(format!(
+		_global_type: &::twasmi::GlobalDescriptor,
+	) -> std::result::Result<twasmi::GlobalRef, twasmi::Error> {
+		Err(twasmi::Error::Instantiation(format!(
 			"Export {}:{} not found",
 			module_name, field_name
 		)))
@@ -134,9 +134,9 @@ impl ImportResolver for Imports {
 		&self,
 		module_name: &str,
 		field_name: &str,
-		_table_type: &::wasmi::TableDescriptor,
-	) -> std::result::Result<wasmi::TableRef, wasmi::Error> {
-		Err(wasmi::Error::Instantiation(format!(
+		_table_type: &::twasmi::TableDescriptor,
+	) -> std::result::Result<twasmi::TableRef, twasmi::Error> {
+		Err(twasmi::Error::Instantiation(format!(
 			"Export {}:{} not found",
 			module_name, field_name
 		)))
@@ -176,7 +176,7 @@ pub trait SandboxCapabilities: FunctionContext {
 /// Implementation of [`Externals`] that allows execution of guest module with
 /// [externals][`Externals`] that might refer functions defined by supervisor.
 ///
-/// [`Externals`]: ../wasmi/trait.Externals.html
+/// [`Externals`]: ../twasmi/trait.Externals.html
 pub struct GuestExternals<'a, FE: SandboxCapabilities + 'a> {
 	supervisor_externals: &'a mut FE,
 	sandbox_instance: &'a SandboxInstance<FE::SupervisorFuncRef>,
@@ -338,7 +338,7 @@ impl<FR> SandboxInstance<FR> {
 		args: &[RuntimeValue],
 		supervisor_externals: &mut FE,
 		state: u32,
-	) -> std::result::Result<Option<wasmi::RuntimeValue>, wasmi::Error> {
+	) -> std::result::Result<Option<twasmi::RuntimeValue>, twasmi::Error> {
 		with_guest_externals(
 			supervisor_externals,
 			self,

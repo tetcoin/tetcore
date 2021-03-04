@@ -15,11 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Implementation of conversions between Tetcore and wasmi types.
+//! Implementation of conversions between Tetcore and twasmi types.
 
 use crate::{Value, ValueType, Signature};
 
-impl From<Value> for wasmi::RuntimeValue {
+impl From<Value> for twasmi::RuntimeValue {
 	fn from(value: Value) -> Self {
 		match value {
 			Value::I32(val) => Self::I32(val),
@@ -30,18 +30,18 @@ impl From<Value> for wasmi::RuntimeValue {
 	}
 }
 
-impl From<wasmi::RuntimeValue> for Value {
-	fn from(value: wasmi::RuntimeValue) -> Self {
+impl From<twasmi::RuntimeValue> for Value {
+	fn from(value: twasmi::RuntimeValue) -> Self {
 		match value {
-			wasmi::RuntimeValue::I32(val) => Self::I32(val),
-			wasmi::RuntimeValue::I64(val) => Self::I64(val),
-			wasmi::RuntimeValue::F32(val) => Self::F32(val.into()),
-			wasmi::RuntimeValue::F64(val) => Self::F64(val.into()),
+			twasmi::RuntimeValue::I32(val) => Self::I32(val),
+			twasmi::RuntimeValue::I64(val) => Self::I64(val),
+			twasmi::RuntimeValue::F32(val) => Self::F32(val.into()),
+			twasmi::RuntimeValue::F64(val) => Self::F64(val.into()),
 		}
 	}
 }
 
-impl From<ValueType> for wasmi::ValueType {
+impl From<ValueType> for twasmi::ValueType {
 	fn from(value: ValueType) -> Self {
 		match value {
 			ValueType::I32 => Self::I32,
@@ -52,26 +52,26 @@ impl From<ValueType> for wasmi::ValueType {
 	}
 }
 
-impl From<wasmi::ValueType> for ValueType {
-	fn from(value: wasmi::ValueType) -> Self {
+impl From<twasmi::ValueType> for ValueType {
+	fn from(value: twasmi::ValueType) -> Self {
 		match value {
-			wasmi::ValueType::I32 => Self::I32,
-			wasmi::ValueType::I64 => Self::I64,
-			wasmi::ValueType::F32 => Self::F32,
-			wasmi::ValueType::F64 => Self::F64,
+			twasmi::ValueType::I32 => Self::I32,
+			twasmi::ValueType::I64 => Self::I64,
+			twasmi::ValueType::F32 => Self::F32,
+			twasmi::ValueType::F64 => Self::F64,
 		}
 	}
 }
 
-impl From<Signature> for wasmi::Signature {
+impl From<Signature> for twasmi::Signature {
 	fn from(sig: Signature) -> Self {
 		let args = sig.args.iter().map(|a| (*a).into()).collect::<Vec<_>>();
-		wasmi::Signature::new(args, sig.return_value.map(Into::into))
+		twasmi::Signature::new(args, sig.return_value.map(Into::into))
 	}
 }
 
-impl From<&wasmi::Signature> for Signature {
-	fn from(sig: &wasmi::Signature) -> Self {
+impl From<&twasmi::Signature> for Signature {
+	fn from(sig: &twasmi::Signature) -> Self {
 		Signature::new(
 			sig.params().into_iter().copied().map(Into::into).collect::<Vec<_>>(),
 			sig.return_type().map(Into::into),

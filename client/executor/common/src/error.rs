@@ -19,7 +19,7 @@
 //! Rust executor possible errors.
 
 use sp_serializer;
-use wasmi;
+use twasmi;
 
 /// Result type alias.
 pub type Result<T> = std::result::Result<T, Error>;
@@ -32,10 +32,10 @@ pub enum Error {
 	InvalidData(#[from] sp_serializer::Error),
 
 	#[error(transparent)]
-	Trap(#[from] wasmi::Trap),
+	Trap(#[from] twasmi::Trap),
 
 	#[error(transparent)]
-	Wasmi(#[from] wasmi::Error),
+	Wasmi(#[from] twasmi::Error),
 
 	#[error("API Error: {0}")]
 	ApiError(String),
@@ -96,21 +96,21 @@ pub enum Error {
 
 	#[error(transparent)]
 	RuntimeConstruction(#[from] WasmError),
-	
+
 	#[error("Shared memory is not supported")]
 	SharedMemUnsupported,
-	
+
 	#[error("Imported globals are not supported yet")]
 	ImportedGlobalsUnsupported,
-	
+
 	#[error("initializer expression can have only up to 2 expressions in wasm 1.0")]
 	InitializerHasTooManyExpressions,
-	
+
 	#[error("Invalid initializer expression provided {0}")]
 	InvalidInitializerExpression(String),
 }
 
-impl wasmi::HostError for Error {}
+impl twasmi::HostError for Error {}
 
 impl From<&'static str> for Error {
 	fn from(err: &'static str) -> Error {

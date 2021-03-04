@@ -40,7 +40,7 @@ Instantiation of a sandbox module consists of the following steps:
 
 In order to start the process of instantiation, the supervisor should provide the wasm module code being instantiated and the environment definition (a set of functions, memories (and maybe globals and tables in the future) available for import by the guest module) for that module. While the environment definition typically is of the constant size (unless mechanisms like dynamic linking are used), the size of wasm is not.
 
-Validation and instantiation in WebAssembly are designed to be able to be performed in linear time. The allocation and computational complexity of loading a wasm module depend on the underlying wasm VM being used. For example, for JIT compilers it can and probably will be non-linear because of compilation. However, for wasmi, it should be linear. We can try to use other VMs that are able to compile code with memory and time consumption proportional to the size of the code.
+Validation and instantiation in WebAssembly are designed to be able to be performed in linear time. The allocation and computational complexity of loading a wasm module depend on the underlying wasm VM being used. For example, for JIT compilers it can and probably will be non-linear because of compilation. However, for twasmi, it should be linear. We can try to use other VMs that are able to compile code with memory and time consumption proportional to the size of the code.
 
 Since the module itself requests memory, the amount of allocation depends on the module code itself. If untrusted code is being instantiated, it's up to the supervisor to limit the amount of memory available to allocate.
 

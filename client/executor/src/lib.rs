@@ -37,7 +37,7 @@ mod wasm_runtime;
 #[cfg(test)]
 mod integration_tests;
 
-pub use wasmi;
+pub use twasmi;
 pub use native_executor::{with_externalities_safe, NativeExecutor, WasmExecutor, NativeExecutionDispatch};
 pub use sp_version::{RuntimeVersion, NativeVersion};
 pub use codec::Codec;

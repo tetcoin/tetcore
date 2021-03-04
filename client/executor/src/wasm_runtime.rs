@@ -274,7 +274,7 @@ pub fn create_wasm_runtime_with_code(
 ) -> Result<Arc<dyn WasmModule>, WasmError> {
 	match wasm_method {
 		WasmExecutionMethod::Interpreted =>
-			sc_executor_wasmi::create_runtime(
+			sc_executor_twasmi::create_runtime(
 				code,
 				heap_pages,
 				host_functions,
