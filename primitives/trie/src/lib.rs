@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2015-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Utility functions to interact with Substrate's Base-16 Modified Merkle Patricia tree ("trie").
+//! Utility functions to interact with Tetcore's Base-16 Modified Merkle Patricia tree ("trie").
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -31,9 +31,9 @@ use trie_db::proof::{generate_proof, verify_proof};
 pub use trie_db::proof::VerifyError;
 /// Our `NodeCodec`-specific error.
 pub use error::Error;
-/// The Substrate format implementation of `TrieStream`.
+/// The Tetcore format implementation of `TrieStream`.
 pub use trie_stream::TrieStream;
-/// The Substrate format implementation of `NodeCodec`.
+/// The Tetcore format implementation of `NodeCodec`.
 pub use node_codec::NodeCodec;
 pub use storage_proof::StorageProof;
 /// Various re-exports from the `trie-db` crate.
@@ -47,7 +47,7 @@ pub use memory_db::prefixed_key;
 pub use hash_db::{HashDB as HashDBT, EMPTY_PREFIX};
 
 #[derive(Default)]
-/// substrate trie layout
+/// tetcore trie layout
 pub struct Layout<H>(sp_std::marker::PhantomData<H>);
 
 impl<H: Hasher> TrieLayout for Layout<H> {

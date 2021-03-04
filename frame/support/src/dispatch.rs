@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -223,7 +223,7 @@ impl<T> Parameter for T where T: Codec + EncodeLike + Clone + Eq + fmt::Debug {}
 ///
 /// ## Multiple Module Instances Example
 ///
-/// A Substrate module can be built such that multiple instances of the same module can be used within a single
+/// A Tetcore module can be built such that multiple instances of the same module can be used within a single
 /// runtime. For example, the [Balances module](../pallet_balances/index.html) can be added multiple times to your
 /// runtime in order to support multiple, independent currencies for your blockchain. Here is an example of how
 /// you would declare such a module using the `decl_module!` macro:
@@ -275,7 +275,7 @@ impl<T> Parameter for T where T: Codec + EncodeLike + Clone + Eq + fmt::Debug {}
 ///
 /// The following are reserved function signatures:
 ///
-/// * `deposit_event`: Helper function for depositing an [event](https://docs.substrate.dev/docs/event-enum).
+/// * `deposit_event`: Helper function for depositing an [event](https://docs.tetcoin.org/docs/event-enum).
 /// The default behavior is to call `deposit_event` from the [System module](../frame_system/index.html).
 /// However, you can write your own implementation for events in your runtime. To use the default behavior,
 /// add `fn deposit_event() = default;` to your `Module`.

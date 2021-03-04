@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -340,7 +340,7 @@ enum Releases {
 decl_storage! {
 	trait Store for Module<T: Config> as Democracy {
 		// TODO: Refactor public proposal queue into its own pallet.
-		// https://github.com/paritytech/substrate/issues/5322
+		// https://github.com/tetcoin/tetcore/issues/5322
 		/// The number of (public) proposals that have been made so far.
 		pub PublicPropCount get(fn public_prop_count) build(|_| 0 as PropIndex) : PropIndex;
 		/// The public proposals. Unsorted. The second item is the proposal's hash.
@@ -354,7 +354,7 @@ decl_storage! {
 		/// Map of hashes to the proposal preimage, along with who registered it and their deposit.
 		/// The block number is the block at which it was deposited.
 		// TODO: Refactor Preimages into its own pallet.
-		// https://github.com/paritytech/substrate/issues/5322
+		// https://github.com/tetcoin/tetcore/issues/5322
 		pub Preimages:
 			map hasher(identity) T::Hash
 			=> Option<PreimageStatus<T::AccountId, BalanceOf<T>, T::BlockNumber>>;
@@ -387,7 +387,7 @@ decl_storage! {
 		/// True if the last referendum tabled was submitted externally. False if it was a public
 		/// proposal.
 		// TODO: There should be any number of tabling origins, not just public and "external" (council).
-		// https://github.com/paritytech/substrate/issues/5322
+		// https://github.com/tetcoin/tetcore/issues/5322
 		pub LastTabledWasExternal: bool;
 
 		/// The referendum to be tabled whenever it would be valid to table an external proposal.

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -18,7 +18,7 @@
 
 use crate::CliConfiguration;
 use crate::Result;
-use crate::SubstrateCli;
+use crate::TetcoreCli;
 use chrono::prelude::*;
 use futures::pin_mut;
 use futures::select;
@@ -111,15 +111,15 @@ where
 	Ok(())
 }
 
-/// A Substrate CLI runtime that can be used to run a node or a command
-pub struct Runner<C: SubstrateCli> {
+/// A Tetcore CLI runtime that can be used to run a node or a command
+pub struct Runner<C: TetcoreCli> {
 	config: Configuration,
 	tokio_runtime: tokio::runtime::Runtime,
 	telemetry_worker: TelemetryWorker,
 	phantom: PhantomData<C>,
 }
 
-impl<C: SubstrateCli> Runner<C> {
+impl<C: TetcoreCli> Runner<C> {
 	/// Create a new runtime with the command provided in argument
 	pub fn new<T: CliConfiguration>(
 		cli: &C,
@@ -157,14 +157,14 @@ impl<C: SubstrateCli> Runner<C> {
 	/// # Example:
 	///
 	/// ```text
-	/// 2020-06-03 16:14:21 Substrate Node
+	/// 2020-06-03 16:14:21 Tetcore Node
 	/// 2020-06-03 16:14:21 ✌️  version 2.0.0-rc3-f4940588c-x86_64-linux-gnu
 	/// 2020-06-03 16:14:21 ❤️  by Parity Technologies <admin@parity.io>, 2017-2020
 	/// 2020-06-03 16:14:21 📋 Chain specification: Flaming Fir
 	/// 2020-06-03 16:14:21 🏷 Node name: jolly-rod-7462
 	/// 2020-06-03 16:14:21 👤 Role: FULL
 	/// 2020-06-03 16:14:21 💾 Database: RocksDb at /tmp/c/chains/flamingfir7/db
-	/// 2020-06-03 16:14:21 ⛓  Native runtime: node-251 (substrate-node-1.tx1.au10)
+	/// 2020-06-03 16:14:21 ⛓  Native runtime: node-251 (tetcore-node-1.tx1.au10)
 	/// ```
 	fn print_node_infos(&self) {
 		info!("{}", C::impl_name());

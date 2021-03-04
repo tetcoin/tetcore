@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -27,7 +27,7 @@ use sp_core::{storage::ChildInfo, ChangesTrieConfiguration};
 use sp_core::hash::H256;
 use sc_block_builder::BlockBuilderProvider;
 use sp_io::hashing::blake2_256;
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	prelude::*,
 	sp_consensus::BlockOrigin,
 	runtime,
@@ -97,7 +97,7 @@ fn should_return_storage() {
 #[test]
 fn should_return_child_storage() {
 	let child_info = ChildInfo::new_default(STORAGE_KEY);
-	let client = Arc::new(substrate_test_runtime_client::TestClientBuilder::new()
+	let client = Arc::new(tetcore_test_runtime_client::TestClientBuilder::new()
 		.add_child_storage(&child_info, "key", vec![42_u8])
 		.build());
 	let genesis_hash = client.genesis_hash();
@@ -138,7 +138,7 @@ fn should_return_child_storage() {
 
 #[test]
 fn should_call_contract() {
-	let client = Arc::new(substrate_test_runtime_client::new());
+	let client = Arc::new(tetcore_test_runtime_client::new());
 	let genesis_hash = client.genesis_hash();
 	let (client, _child) = new_full(
 		client,
@@ -157,7 +157,7 @@ fn should_notify_about_storage_changes() {
 	let (subscriber, id, transport) = Subscriber::new_test("test");
 
 	{
-		let mut client = Arc::new(substrate_test_runtime_client::new());
+		let mut client = Arc::new(tetcore_test_runtime_client::new());
 		let (api, _child) = new_full(
 			client.clone(),
 			SubscriptionManager::new(Arc::new(TaskExecutor)),
@@ -195,7 +195,7 @@ fn should_send_initial_storage_changes_and_notifications() {
 	let (subscriber, id, transport) = Subscriber::new_test("test");
 
 	{
-		let mut client = Arc::new(substrate_test_runtime_client::new());
+		let mut client = Arc::new(tetcore_test_runtime_client::new());
 		let (api, _child) = new_full(
 			client.clone(),
 			SubscriptionManager::new(Arc::new(TaskExecutor)),
@@ -435,7 +435,7 @@ fn should_query_storage() {
 		);
 	}
 
-	run_tests(Arc::new(substrate_test_runtime_client::new()), false);
+	run_tests(Arc::new(tetcore_test_runtime_client::new()), false);
 	run_tests(
 		Arc::new(
 			TestClientBuilder::new()
@@ -458,14 +458,14 @@ fn should_split_ranges() {
 
 #[test]
 fn should_return_runtime_version() {
-	let client = Arc::new(substrate_test_runtime_client::new());
+	let client = Arc::new(tetcore_test_runtime_client::new());
 	let (api, _child) = new_full(
 		client.clone(),
 		SubscriptionManager::new(Arc::new(TaskExecutor)),
 		DenyUnsafe::No,
 	);
 
-	let result = "{\"specName\":\"test\",\"implName\":\"parity-test\",\"authoringVersion\":1,\
+	let result = "{\"specName\":\"test\",\"implName\":\"tetsy-test\",\"authoringVersion\":1,\
 		\"specVersion\":2,\"implVersion\":2,\"apis\":[[\"0xdf6acb689907609b\",3],\
 		[\"0x37e397fc7c91f5e4\",1],[\"0xd2bc9897eed08f15\",2],[\"0x40fe3ad401f8959a\",4],\
 		[\"0xc6e9a76309f39b09\",1],[\"0xdd718d5cc53262d4\",1],[\"0xcbca25e39f142387\",2],\
@@ -485,7 +485,7 @@ fn should_notify_on_runtime_version_initially() {
 	let (subscriber, id, transport) = Subscriber::new_test("test");
 
 	{
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let (api, _child) = new_full(
 			client.clone(),
 			SubscriptionManager::new(Arc::new(TaskExecutor)),

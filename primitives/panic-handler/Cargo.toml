@@ -1,13 +1,13 @@
 [package]
-name = "sp-panic-handler"
+name = "tc-panic-handler"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Custom panic hook with bug report link"
-documentation = "https://docs.rs/sp-panic-handler"
+documentation = "https://docs.rs/tc-panic-handler"
 readme = "README.md"
 
 [package.metadata.docs.rs]

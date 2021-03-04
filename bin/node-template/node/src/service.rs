@@ -1,4 +1,4 @@
-//! Service and ServiceFactory implementation. Specialized wrapper over substrate service.
+//! Service and ServiceFactory implementation. Specialized wrapper over tetcore service.
 
 use std::sync::Arc;
 use std::time::Duration;

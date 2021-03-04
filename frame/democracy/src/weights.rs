@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -16,12 +16,12 @@
 // limitations under the License.
 
 //! Weights for pallet_democracy
-//! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 2.0.0
+//! THIS FILE WAS AUTO-GENERATED USING THE TETCORE BENCHMARK CLI VERSION 2.0.0
 //! DATE: 2020-10-28, STEPS: [50, ], REPEAT: 20, LOW RANGE: [], HIGH RANGE: []
 //! EXECUTION: Some(Wasm), WASM-EXECUTION: Compiled, CHAIN: Some("dev"), DB CACHE: 128
 
 // Executed Command:
-// target/release/substrate
+// target/release/tetcore
 // benchmark
 // --chain=dev
 // --steps=50
@@ -70,9 +70,9 @@ pub trait WeightInfo {
 	fn remove_other_vote(r: u32, ) -> Weight;
 }
 
-/// Weights for pallet_democracy using the Substrate node and recommended hardware.
-pub struct SubstrateWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
+/// Weights for pallet_democracy using the Tetcore node and recommended hardware.
+pub struct TetcoreWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 	fn propose() -> Weight {
 		(87_883_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(3 as Weight))

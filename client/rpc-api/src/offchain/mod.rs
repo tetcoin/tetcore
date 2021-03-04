@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate offchain API.
+//! Tetcore offchain API.
 
 pub mod error;
 
@@ -26,7 +26,7 @@ use sp_core::{Bytes, offchain::StorageKind};
 
 pub use self::gen_client::Client as OffchainClient;
 
-/// Substrate offchain RPC API
+/// Tetcore offchain RPC API
 #[rpc]
 pub trait OffchainApi {
 	/// Set offchain local storage under given key and prefix.

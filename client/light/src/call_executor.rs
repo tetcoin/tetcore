@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -271,7 +271,7 @@ pub fn check_execution_proof_with_make_header<Header, E, H, MakeNextHeader>(
 	let trie_backend = create_proof_check_backend(root, remote_proof)?;
 	let next_header = make_next_header(&request.header);
 
-	// TODO: Remove when solved: https://github.com/paritytech/substrate/issues/5047
+	// TODO: Remove when solved: https://github.com/tetcoin/tetcore/issues/5047
 	let backend_runtime_code = sp_state_machine::backend::BackendRuntimeCode::new(&trie_backend);
 	let runtime_code = backend_runtime_code.runtime_code()
 		.map_err(|_e| ClientError::RuntimeCodeMissing)?;

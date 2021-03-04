@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -309,7 +309,7 @@ mod tests {
 	use std::borrow::Cow;
 	use std::convert::TryInto;
 	use std::sync::{Arc, Mutex};
-	use substrate_test_runtime_client::runtime::Block;
+	use tetcore_test_runtime_client::runtime::Block;
 	use super::*;
 
 	#[derive(Clone, Default)]
@@ -367,7 +367,7 @@ mod tests {
 	/// Regression test for the case where the `GossipEngine.network_event_stream` closes. One
 	/// should not ignore a `Poll::Ready(None)` as `poll_next_unpin` will panic on subsequent calls.
 	///
-	/// See https://github.com/paritytech/substrate/issues/5000 for details.
+	/// See https://github.com/tetcoin/tetcore/issues/5000 for details.
 	#[test]
 	fn returns_when_network_event_stream_closes() {
 		let network = TestNetwork::default();

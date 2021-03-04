@@ -4,7 +4,7 @@
 # pip install toml
 # sudo apt-get install graphviz
 # the first parameter is the runtime folder
-# python ./.maintain/runtime-dep.py ./substrate/runtime | dot -Tpng -o output.png
+# python ./.maintain/runtime-dep.py ./tetcore/runtime | dot -Tpng -o output.png
 import sys
 import os
 import toml
@@ -20,7 +20,7 @@ files = [os.path.join(runtime_dir, f, 'Cargo.toml') for f in os.listdir(runtime_
 print("digraph G {")
 
 
-PREFIX = "substrate-runtime-"
+PREFIX = "tetcore-runtime-"
 
 for f in files:
     manifest = toml.load(f)

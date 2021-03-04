@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -49,12 +49,12 @@ where
 }
 
 #[cfg(feature = "std")]
-impl<Address, Call, Signature, Extra> parity_util_mem::MallocSizeOf
+impl<Address, Call, Signature, Extra> tetsy_util_mem::MallocSizeOf
 	for UncheckedExtrinsic<Address, Call, Signature, Extra>
 where
 	Extra: SignedExtension
 {
-	fn size_of(&self, _ops: &mut parity_util_mem::MallocSizeOfOps) -> usize {
+	fn size_of(&self, _ops: &mut tetsy_util_mem::MallocSizeOfOps) -> usize {
 		// Instantiated only in runtime.
 		0
 	}
@@ -225,7 +225,7 @@ where
 {
 	fn decode<I: Input>(input: &mut I) -> Result<Self, Error> {
 		// This is a little more complicated than usual since the binary format must be compatible
-		// with substrate's generic `Vec<u8>` type. Basically this just means accepting that there
+		// with tetcore's generic `Vec<u8>` type. Basically this just means accepting that there
 		// will be a prefix of vector length (we don't need
 		// to use this).
 		let _length_do_not_remove_me_see_above: Vec<()> = Decode::decode(input)?;

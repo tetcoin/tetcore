@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! The Substrate test primitives to share
+//! The Tetcore test primitives to share
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -29,7 +29,7 @@ use sp_runtime::traits::{BlakeTwo256, Verify, Extrinsic as ExtrinsicT,};
 
 /// Extrinsic for test-runtime.
 #[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug)]
-#[cfg_attr(feature = "std", derive(parity_util_mem::MallocSizeOf))]
+#[cfg_attr(feature = "std", derive(tetsy_util_mem::MallocSizeOf))]
 pub enum Extrinsic {
 	IncludeData(Vec<u8>),
 	StorageChange(Vec<u8>, Option<Vec<u8>>),

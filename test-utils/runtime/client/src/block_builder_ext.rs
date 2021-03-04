@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -27,7 +27,7 @@ use sc_block_builder::BlockBuilderApi;
 /// Extension trait for test block builder.
 pub trait BlockBuilderExt {
 	/// Add transfer extrinsic to the block.
-	fn push_transfer(&mut self, transfer: substrate_test_runtime::Transfer) -> Result<(), sp_blockchain::Error>;
+	fn push_transfer(&mut self, transfer: tetcore_test_runtime::Transfer) -> Result<(), sp_blockchain::Error>;
 	/// Add storage change extrinsic to the block.
 	fn push_storage_change(
 		&mut self,
@@ -41,19 +41,19 @@ pub trait BlockBuilderExt {
 	) -> Result<(), sp_blockchain::Error>;
 }
 
-impl<'a, A, B> BlockBuilderExt for sc_block_builder::BlockBuilder<'a, substrate_test_runtime::Block, A, B> where
-	A: ProvideRuntimeApi<substrate_test_runtime::Block> + 'a,
-	A::Api: BlockBuilderApi<substrate_test_runtime::Block, Error = sp_blockchain::Error> +
+impl<'a, A, B> BlockBuilderExt for sc_block_builder::BlockBuilder<'a, tetcore_test_runtime::Block, A, B> where
+	A: ProvideRuntimeApi<tetcore_test_runtime::Block> + 'a,
+	A::Api: BlockBuilderApi<tetcore_test_runtime::Block, Error = sp_blockchain::Error> +
 		ApiExt<
-			substrate_test_runtime::Block,
-			StateBackend = backend::StateBackendFor<B, substrate_test_runtime::Block>
+			tetcore_test_runtime::Block,
+			StateBackend = backend::StateBackendFor<B, tetcore_test_runtime::Block>
 		>,
-	B: backend::Backend<substrate_test_runtime::Block>,
+	B: backend::Backend<tetcore_test_runtime::Block>,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
-	backend::StateBackendFor<B, substrate_test_runtime::Block>:
-		sp_api::StateBackend<HashFor<substrate_test_runtime::Block>>,
+	backend::StateBackendFor<B, tetcore_test_runtime::Block>:
+		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
-	fn push_transfer(&mut self, transfer: substrate_test_runtime::Transfer) -> Result<(), sp_blockchain::Error> {
+	fn push_transfer(&mut self, transfer: tetcore_test_runtime::Transfer) -> Result<(), sp_blockchain::Error> {
 		self.push(transfer.into_signed_tx())
 	}
 
@@ -62,13 +62,13 @@ impl<'a, A, B> BlockBuilderExt for sc_block_builder::BlockBuilder<'a, substrate_
 		key: Vec<u8>,
 		value: Option<Vec<u8>>,
 	) -> Result<(), sp_blockchain::Error> {
-		self.push(substrate_test_runtime::Extrinsic::StorageChange(key, value))
+		self.push(tetcore_test_runtime::Extrinsic::StorageChange(key, value))
 	}
 
 	fn push_changes_trie_configuration_update(
 		&mut self,
 		new_config: Option<ChangesTrieConfiguration>,
 	) -> Result<(), sp_blockchain::Error> {
-		self.push(substrate_test_runtime::Extrinsic::ChangesTrieConfigUpdate(new_config))
+		self.push(tetcore_test_runtime::Extrinsic::ChangesTrieConfigUpdate(new_config))
 	}
 }

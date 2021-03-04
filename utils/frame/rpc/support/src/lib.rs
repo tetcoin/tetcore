@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -39,7 +39,7 @@ use sc_rpc_api::state::StateClient;
 /// # use jsonrpc_client_transports::transports::http;
 /// # use codec::Encode;
 /// # use frame_support::{decl_storage, decl_module};
-/// # use substrate_frame_rpc_support::StorageQuery;
+/// # use tetcore_frame_rpc_support::StorageQuery;
 /// # use frame_system::Config;
 /// # use sc_rpc_api::state::StateClient;
 /// #

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2015-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! `TrieStream` implementation for Substrate's trie format.
+//! `TrieStream` implementation for Tetcore's trie format.
 
 use hash_db::Hasher;
 use trie_root;

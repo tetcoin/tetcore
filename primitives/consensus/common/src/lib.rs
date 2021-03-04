@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Common utilities for building and using consensus engines in substrate.
+//! Common utilities for building and using consensus engines in tetcore.
 //!
 //! Much of this crate is _unstable_ and thus the API is likely to undergo
 //! change. Implementors of traits should not rely on the interfaces to remain

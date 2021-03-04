@@ -1,4 +1,4 @@
-Substrate externalities abstraction
+Tetcore externalities abstraction
 
 The externalities mainly provide access to storage and to registered extensions. Extensions
 are for example the keystore or the offchain externalities. These externalities are used to

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -20,7 +20,7 @@ use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
 use sp_blockchain::{Error as ClientError, HeaderBackend};
-use parity_scale_codec::{Encode, Decode};
+use tetsy_scale_codec::{Encode, Decode};
 use finality_grandpa::voter_set::VoterSet;
 use finality_grandpa::{Error as GrandpaError};
 use sp_runtime::generic::BlockId;

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -29,14 +29,14 @@ pub use futures;
 /// # Example
 ///
 /// ```
-/// #[substrate_test_utils::test]
+/// #[tetcore_test_utils::test]
 /// async fn basic_test(task_executor: TaskExecutor) {
 ///     assert!(true);
 ///     // create your node in here and use task_executor
 ///     // then don't forget to gracefully shutdown your node before exit
 /// }
 /// ```
-pub use substrate_test_utils_derive::test;
+pub use tetcore_test_utils_derive::test;
 #[doc(hidden)]
 pub use tokio;
 
@@ -46,7 +46,7 @@ pub use tokio;
 ///
 /// ```rust
 /// #[macro_use]
-/// # use substrate_test_utils::{assert_eq_uvec};
+/// # use tetcore_test_utils::{assert_eq_uvec};
 /// # fn main() {
 /// assert_eq_uvec!(vec![1,2], vec![2,1]);
 /// # }
@@ -54,7 +54,7 @@ pub use tokio;
 ///
 /// ```rust,should_panic
 /// #[macro_use]
-/// # use substrate_test_utils::{assert_eq_uvec};
+/// # use tetcore_test_utils::{assert_eq_uvec};
 /// # fn main() {
 /// assert_eq_uvec!(vec![1,2,3], vec![2,1]);
 /// # }

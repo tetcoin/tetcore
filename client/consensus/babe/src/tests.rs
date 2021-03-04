@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -19,7 +19,7 @@
 //! BABE testsuite
 
 // FIXME #2532: need to allow deprecated until refactor is done
-// https://github.com/paritytech/substrate/issues/2532
+// https://github.com/tetcoin/tetcore/issues/2532
 #![allow(deprecated)]
 use super::*;
 use authorship::claim_slot;
@@ -54,11 +54,11 @@ type Item = DigestItem<Hash>;
 
 type Error = sp_blockchain::Error;
 
-type TestClient = substrate_test_runtime_client::client::Client<
-	substrate_test_runtime_client::Backend,
-	substrate_test_runtime_client::Executor,
+type TestClient = tetcore_test_runtime_client::client::Client<
+	tetcore_test_runtime_client::Backend,
+	tetcore_test_runtime_client::Executor,
 	TestBlock,
-	substrate_test_runtime_client::runtime::RuntimeApi,
+	tetcore_test_runtime_client::runtime::RuntimeApi,
 >;
 
 #[derive(Copy, Clone, PartialEq)]
@@ -112,7 +112,7 @@ impl DummyProposer {
 			Result<
 				Proposal<
 					TestBlock,
-					sc_client_api::TransactionFor<substrate_test_runtime_client::Backend, TestBlock>
+					sc_client_api::TransactionFor<tetcore_test_runtime_client::Backend, TestBlock>
 				>,
 				Error
 			>
@@ -169,7 +169,7 @@ impl DummyProposer {
 
 impl Proposer<TestBlock> for DummyProposer {
 	type Error = Error;
-	type Transaction = sc_client_api::TransactionFor<substrate_test_runtime_client::Backend, TestBlock>;
+	type Transaction = sc_client_api::TransactionFor<tetcore_test_runtime_client::Backend, TestBlock>;
 	type Proposal = future::Ready<Result<Proposal<TestBlock, Self::Transaction>, Error>>;
 
 	fn propose(
@@ -217,8 +217,8 @@ pub struct BabeTestNet {
 type TestHeader = <TestBlock as BlockT>::Header;
 type TestExtrinsic = <TestBlock as BlockT>::Extrinsic;
 
-type TestSelectChain = substrate_test_runtime_client::LongestChain<
-	substrate_test_runtime_client::Backend,
+type TestSelectChain = tetcore_test_runtime_client::LongestChain<
+	tetcore_test_runtime_client::Backend,
 	TestBlock,
 >;
 
@@ -248,7 +248,7 @@ pub struct PeerData {
 	link: BabeLink<TestBlock>,
 	inherent_data_providers: InherentDataProviders,
 	block_import: Mutex<
-		Option<BoxBlockImport<TestBlock, TransactionFor<substrate_test_runtime_client::Backend, TestBlock>>>
+		Option<BoxBlockImport<TestBlock, TransactionFor<tetcore_test_runtime_client::Backend, TestBlock>>>
 	>,
 }
 
@@ -301,7 +301,7 @@ impl TestNetFactory for BabeTestNet {
 	)
 		-> Self::Verifier
 	{
-		use substrate_test_runtime_client::DefaultTestClientBuilderExt;
+		use tetcore_test_runtime_client::DefaultTestClientBuilderExt;
 
 		let client = client.as_full().expect("only full clients are used in test");
 		trace!(target: "babe", "Creating a verifier");

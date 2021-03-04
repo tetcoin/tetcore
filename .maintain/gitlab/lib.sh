@@ -76,7 +76,7 @@ has_label(){
 
 # Formats a message into a JSON string for posting to Matrix
 # message: 'any plaintext message'
-# formatted_message: '<strong>optional message formatted in <em>html</em></strong>' 
+# formatted_message: '<strong>optional message formatted in <em>html</em></strong>'
 # Usage: structure_message $content $formatted_content (optional)
 structure_message() {
   if [ -z "$2" ]; then
@@ -89,9 +89,9 @@ structure_message() {
 
 # Post a message to a matrix room
 # body: '{body: "JSON string produced by structure_message"}'
-# room_id: !fsfSRjgjBWEWffws:matrix.parity.io
+# room_id: !fsfSRjgjBWEWffws:matrix.tetcoin.org
 # access_token: see https://matrix.org/docs/guides/client-server-api/
 # Usage: send_message $body (json formatted) $room_id $access_token
 send_message() {
-curl -XPOST -d "$1" "https://matrix.parity.io/_matrix/client/r0/rooms/$2/send/m.room.message?access_token=$3"
+curl -XPOST -d "$1" "https://matrix.tetcoin.org/_matrix/client/r0/rooms/$2/send/m.room.message?access_token=$3"
 }

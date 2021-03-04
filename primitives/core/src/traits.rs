@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Shareable Substrate traits.
+//! Shareable Tetcore traits.
 
 use std::{
 	borrow::Cow,
@@ -72,7 +72,7 @@ impl FetchRuntimeCode for NoneFetchRuntimeCode {
 	}
 }
 
-/// The Wasm code of a Substrate runtime.
+/// The Wasm code of a Tetcore runtime.
 #[derive(Clone)]
 pub struct RuntimeCode<'a> {
 	/// The code fetcher that can be used to lazily fetch the code.

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -17,10 +17,10 @@
 
 #![warn(missing_docs)]
 
-//! Example substrate RPC client code.
+//! Example tetcore RPC client code.
 //!
 //! This module shows how you can write a Rust RPC client that connects to a running
-//! substrate node and use statically typed RPC wrappers.
+//! tetcore node and use statically typed RPC wrappers.
 
 use futures::Future;
 use hyper::rt;

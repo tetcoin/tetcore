@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -28,7 +28,7 @@ use frame_support::{
 	traits::{Currency, ReservableCurrency, OnInitialize, OnFinalize},
 };
 use pallet_balances::Error as BalancesError;
-use substrate_test_utils::assert_eq_uvec;
+use tetcore_test_utils::assert_eq_uvec;
 
 #[test]
 fn force_unstake_works() {
@@ -2923,7 +2923,7 @@ mod offchain_election {
 	use sp_npos_elections::StakedAssignment;
 	use frame_support::traits::OffchainWorker;
 	use std::sync::Arc;
-	use substrate_test_utils::assert_eq_uvec;
+	use tetcore_test_utils::assert_eq_uvec;
 
 	fn percent(x: u16) -> OffchainAccuracy {
 		OffchainAccuracy::from_percent(x)

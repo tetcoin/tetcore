@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -21,7 +21,7 @@ use std::{convert::TryFrom, time::SystemTime};
 use crate::{NetworkStatus, NetworkState, NetworkStatusSinks, config::Configuration};
 use futures_timer::Delay;
 use prometheus_endpoint::{register, Gauge, U64, Registry, PrometheusError, Opts, GaugeVec};
-use sc_telemetry::{telemetry, SUBSTRATE_INFO};
+use sc_telemetry::{telemetry, TETCORE_INFO};
 use sp_api::ProvideRuntimeApi;
 use sp_runtime::traits::{NumberFor, Block, SaturatedConversion, UniqueSaturatedInto};
 use sp_transaction_pool::{PoolStatus, MaintainedTransactionPool};
@@ -246,7 +246,7 @@ impl MetricsService {
 
 		// Update/send metrics that are always available.
 		telemetry!(
-			SUBSTRATE_INFO;
+			TETCORE_INFO;
 			"system.interval";
 			"height" => best_number,
 			"best" => ?best_hash,
@@ -308,7 +308,7 @@ impl MetricsService {
 				};
 
 			telemetry!(
-				SUBSTRATE_INFO;
+				TETCORE_INFO;
 				"system.interval";
 				"peers" => num_peers,
 				"bandwidth_download" => avg_bytes_per_sec_inbound,
@@ -329,7 +329,7 @@ impl MetricsService {
 		// Send network state information, if any.
 		if let Some(net_state) = net_state {
 			telemetry!(
-				SUBSTRATE_INFO;
+				TETCORE_INFO;
 				"system.network_state";
 				"state" => net_state,
 			);

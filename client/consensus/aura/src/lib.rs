@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Aura (Authority-round) consensus in substrate.
+//! Aura (Authority-round) consensus in tetcore.
 //!
 //! Aura works by having a list of authorities A who are expected to roughly
 //! agree on the current time. Time is divided up into discrete slots of t
@@ -886,7 +886,7 @@ mod tests {
 	use std::task::Poll;
 	use sc_block_builder::BlockBuilderProvider;
 	use sp_runtime::traits::Header as _;
-	use substrate_test_runtime_client::{TestClient, runtime::{Header, H256}};
+	use tetcore_test_runtime_client::{TestClient, runtime::{Header, H256}};
 	use sc_keystore::LocalKeystore;
 	use sp_application_crypto::key_types::AURA;
 
@@ -910,7 +910,7 @@ mod tests {
 	impl Proposer<TestBlock> for DummyProposer {
 		type Error = Error;
 		type Transaction = sc_client_api::TransactionFor<
-			substrate_test_runtime_client::Backend,
+			tetcore_test_runtime_client::Backend,
 			TestBlock
 		>;
 		type Proposal = future::Ready<Result<Proposal<TestBlock, Self::Transaction>, Error>>;
@@ -1060,7 +1060,7 @@ mod tests {
 
 	#[test]
 	fn authorities_call_works() {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 
 		assert_eq!(client.chain_info().best_number, 0);
 		assert_eq!(authorities(&client, &BlockId::Number(0)).unwrap(), vec![

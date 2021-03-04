@@ -1,13 +1,13 @@
 [package]
-name = "sp-io"
+name = "tc-io"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
-description = "I/O for Substrate runtimes"
-documentation = "https://docs.rs/sp-io"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "I/O for Tetcore runtimes"
+documentation = "https://docs.rs/tc-io"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -15,18 +15,18 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
 hash-db = { version = "0.15.2", default-features = false }
-sp-core = { version = "2.0.0", default-features = false, path = "../core" }
-sp-keystore = { version = "0.8.0", default-features = false, optional = true, path = "../keystore" }
-sp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tc-core = { version = "2.0.0", default-features = false, path = "../core" }
+tc-keystore = { version = "0.8.0", default-features = false, optional = true, path = "../keystore" }
+tc-std = { version = "2.0.0", default-features = false, path = "../std" }
 libsecp256k1 = { version = "0.3.4", optional = true }
-sp-state-machine = { version = "0.8.0", optional = true, path = "../state-machine" }
-sp-wasm-interface = { version = "2.0.0", path = "../wasm-interface", default-features = false }
-sp-runtime-interface = { version = "2.0.0", default-features = false, path = "../runtime-interface" }
-sp-trie = { version = "2.0.0", optional = true, path = "../trie" }
-sp-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
-sp-tracing = { version = "2.0.0", default-features = false, path = "../tracing" }
+tc-state-machine = { version = "0.8.0", optional = true, path = "../state-machine" }
+tc-wasm-interface = { version = "2.0.0", path = "../wasm-interface", default-features = false }
+tc-runtime-interface = { version = "2.0.0", default-features = false, path = "../runtime-interface" }
+tc-trie = { version = "2.0.0", optional = true, path = "../trie" }
+tc-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
+tc-tracing = { version = "2.0.0", default-features = false, path = "../tracing" }
 log = { version = "0.4.8", optional = true }
 futures = { version = "0.3.1", features = ["thread-pool"], optional = true }
 parking_lot = { version = "0.11.1", optional = true }
@@ -36,18 +36,18 @@ tracing-core = { version = "0.1.17", default-features = false}
 [features]
 default = ["std"]
 std = [
-	"sp-core/std",
-	"sp-keystore",
+	"tc-core/std",
+	"tc-keystore",
 	"codec/std",
-	"sp-std/std",
+	"tc-std/std",
 	"hash-db/std",
-	"sp-trie",
-	"sp-state-machine",
+	"tc-trie",
+	"tc-state-machine",
 	"libsecp256k1",
-	"sp-runtime-interface/std",
-	"sp-externalities",
-	"sp-wasm-interface/std",
-	"sp-tracing/std",
+	"tc-runtime-interface/std",
+	"tc-externalities",
+	"tc-wasm-interface/std",
+	"tc-tracing/std",
 	"tracing/std",
 	"tracing-core/std",
 	"log",
@@ -56,7 +56,7 @@ std = [
 ]
 
 with-tracing = [
-	"sp-tracing/with-tracing"
+	"tc-tracing/with-tracing"
 ]
 
 # These two features are used for `no_std` builds for the environments which already provides

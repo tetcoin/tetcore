@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -17,17 +17,17 @@
 
 use crate::{chain_spec, service};
 use crate::cli::{Cli, Subcommand};
-use sc_cli::{SubstrateCli, RuntimeVersion, Role, ChainSpec};
+use sc_cli::{TetcoreCli, RuntimeVersion, Role, ChainSpec};
 use sc_service::PartialComponents;
 use node_template_runtime::Block;
 
-impl SubstrateCli for Cli {
+impl TetcoreCli for Cli {
 	fn impl_name() -> String {
-		"Substrate Node".into()
+		"Tetcore Node".into()
 	}
 
 	fn impl_version() -> String {
-		env!("SUBSTRATE_CLI_IMPL_VERSION").into()
+		env!("TETCORE_CLI_IMPL_VERSION").into()
 	}
 
 	fn description() -> String {

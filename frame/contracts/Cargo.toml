@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME pallet for WASM contracts"
 readme = "README.md"
 
@@ -16,20 +16,20 @@ publish = false
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 pallet-contracts-primitives = { version = "2.0.0", default-features = false, path = "common" }
 pallet-contracts-proc-macro = { version = "0.1.0", path = "proc-macro" }
-parity-wasm = { version = "0.41.0", default-features = false }
+tetsy-wasm = { version = "0.41.0", default-features = false }
 pwasm-utils = { version = "0.16", default-features = false }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-sp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-sp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-sp-sandbox = { version = "0.8.0", default-features = false, path = "../../primitives/sandbox" }
+tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-sandbox = { version = "0.8.0", default-features = false, path = "../../primitives/sandbox" }
 wasmi-validation = { version = "0.3.0", default-features = false }
 
 # Only used in benchmarking to generate random contract code
@@ -51,14 +51,14 @@ default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"sp-core/std",
-	"sp-runtime/std",
-	"sp-io/std",
-	"sp-std/std",
-	"sp-sandbox/std",
+	"tc-core/std",
+	"tc-runtime/std",
+	"tc-io/std",
+	"tc-std/std",
+	"tc-sandbox/std",
 	"frame-support/std",
 	"frame-system/std",
-	"parity-wasm/std",
+	"tetsy-wasm/std",
 	"pwasm-utils/std",
 	"wasmi-validation/std",
 	"pallet-contracts-primitives/std",

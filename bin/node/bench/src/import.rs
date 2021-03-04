@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -81,7 +81,7 @@ impl core::BenchmarkDescription for ImportBenchmarkDescription {
 
 		match self.database_type {
 			DatabaseType::RocksDb => path.push("rocksdb"),
-			DatabaseType::ParityDb => path.push("paritydb"),
+			DatabaseType::TetsyDb => path.push("tetsydb"),
 		}
 
 		path.push(&format!("{}", self.size));

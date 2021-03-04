@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -30,7 +30,7 @@ pub trait Size {
 /// Map with size tracking.
 ///
 /// Size reported might be slightly off and only approximately true.
-#[derive(Debug, parity_util_mem::MallocSizeOf)]
+#[derive(Debug, tetsy_util_mem::MallocSizeOf)]
 pub struct TrackedMap<K, V> {
 	index: Arc<RwLock<HashMap<K, V>>>,
 	bytes: AtomicIsize,

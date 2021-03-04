@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -116,7 +116,7 @@ type BalanceOf<T> =
 /// - in a fully congested chain: `p >= v * k * (1 - s')`.
 /// - in an empty chain: `p >= v * k * (-s')`.
 ///
-/// For example, when all blocks are full and there are 28800 blocks per day (default in `substrate-node`)
+/// For example, when all blocks are full and there are 28800 blocks per day (default in `tetcore-node`)
 /// and v == 0.00001, s' == 0.1875, we'd have:
 ///
 /// p >= 0.00001 * 28800 * 0.8125

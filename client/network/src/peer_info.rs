@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -86,7 +86,7 @@ impl PeerInfoBehaviour {
 		local_public_key: PublicKey,
 	) -> Self {
 		let identify = {
-			let proto_version = "/substrate/1.0".to_string();
+			let proto_version = "/tetcore/1.0".to_string();
 			Identify::new(proto_version, user_agent, local_public_key)
 		};
 

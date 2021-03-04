@@ -13,13 +13,13 @@ A project that should be compiled as a Wasm binary needs to:
 The `build.rs` file needs to contain the following code:
 
 ```rust
-use substrate_wasm_builder::WasmBuilder;
+use tetcore_wasm_builder::WasmBuilder;
 
 fn main() {
     WasmBuilder::new()
         // Tell the builder to build the project (crate) this `build.rs` is part of.
         .with_current_project()
-        // Make sure to export the `heap_base` global, this is required by Substrate
+        // Make sure to export the `heap_base` global, this is required by Tetcore
         .export_heap_base()
         // Build the Wasm file so that it imports the memory (need to be provided by at instantiation)
         .import_memory()

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -192,7 +192,7 @@ mod tests {
 	use std::{collections::HashSet, convert::TryInto, sync::Arc};
 	use jsonrpc_core::{Notification, Output, types::Params};
 
-	use parity_scale_codec::{Encode, Decode};
+	use tetsy_scale_codec::{Encode, Decode};
 	use sc_block_builder::BlockBuilder;
 	use sc_finality_grandpa::{
 		report, AuthorityId, GrandpaJustificationSender, GrandpaJustification,
@@ -203,7 +203,7 @@ mod tests {
 	use sp_core::crypto::Public;
 	use sp_keyring::Ed25519Keyring;
 	use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
-	use substrate_test_runtime_client::{
+	use tetcore_test_runtime_client::{
 		runtime::{Block, Header, H256},
 		DefaultTestClientBuilderExt,
 		TestClientBuilderExt,

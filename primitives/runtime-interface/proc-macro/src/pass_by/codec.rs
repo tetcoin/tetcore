@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -17,7 +17,7 @@
 
 //! Derive macro implementation of `PassBy` with the associated type set to `Codec`.
 //!
-//! It is required that the type implements `Encode` and `Decode` from the `parity-scale-codec`
+//! It is required that the type implements `Encode` and `Decode` from the `tetsy-scale-codec`
 //! crate.
 
 use crate::utils::{generate_crate_access, generate_runtime_interface_include};

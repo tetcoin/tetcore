@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -20,7 +20,7 @@
 //! and outgoing substreams for all gossiping protocols.
 //!
 //! This is the main implementation of `ProtocolsHandler` in this crate, that handles all the
-//! gossiping protocols that are Substrate-related and outside of the scope of libp2p.
+//! gossiping protocols that are Tetcore-related and outside of the scope of libp2p.
 //!
 //! # Usage
 //!

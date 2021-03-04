@@ -1,15 +1,15 @@
 = Subkey
 
-Subkey is a commandline utility included with Substrate that generates or restores Substrate keys. 
+Subkey is a commandline utility included with Tetcore that generates or restores Tetcore keys. 
 
-`subkey` will use the http://wiki.polkadot.network/en/latest/polkadot/learn/cryptography/#keypairs-and-signing[sr25519] cryptography by default. If you need to use the older ed25519 cryptography to generate or restore your key pass the `--ed25519` flag to any of the commands.
+`tetkey` will use the http://wiki.polkadot.network/en/latest/polkadot/learn/cryptography/#keypairs-and-signing[sr25519] cryptography by default. If you need to use the older ed25519 cryptography to generate or restore your key pass the `--ed25519` flag to any of the commands.
 
 == Usage
 
 === Generate a random account
 
 ```bash
-subkey generate
+tetkey generate
 ```
 
 Will output a mnemonic phrase and give you the seed, public key, and address of a new account. DO NOT SHARE your mnemonic or seed with ANYONE it will give them access to your funds. If someone is making a transfer to you they will only need your **Address**.
@@ -19,7 +19,7 @@ Will output a mnemonic phrase and give you the seed, public key, and address of 
 You can inspect a given URI (mnemonic, seed, public key, or address) and recover the public key and the address.
 
 ```bash
-subkey inspect <mnemonic,seed,pubkey,address>
+tetkey inspect <mnemonic,seed,pubkey,address>
 
 OUTPUT:
   Public key (hex): 0x461edcf1ba99e43f50dec4bdeb3d1a2cf521ad7c3cd0eeee5cd3314e50fd424c
@@ -28,10 +28,10 @@ OUTPUT:
 
 === Signing
 
-`subkey` expects a message to come in on STDIN, one way to sign a message would look like this:
+`tetkey` expects a message to come in on STDIN, one way to sign a message would look like this:
 
 ```bash
-echo -n <msg> | subkey sign --suri <seed,mnemonic>
+echo -n <msg> | tetkey sign --suri <seed,mnemonic>
 
 OUTPUT:
 a69da4a6ccbf81dbbbfad235fa12cf8528c18012b991ae89214de8d20d29c1280576ced6eb38b7406d1b7e03231df6dd4a5257546ddad13259356e1c3adfb509
@@ -40,7 +40,7 @@ a69da4a6ccbf81dbbbfad235fa12cf8528c18012b991ae89214de8d20d29c1280576ced6eb38b740
 === Verifying a signature
 
 ```bash
-echo -n <msg> | subkey verify <sig> <address>
+echo -n <msg> | tetkey verify <sig> <address>
 
 OUTPUT:
 Signature verifies correctly.
@@ -51,7 +51,7 @@ Signature verifies correctly.
 You can use the included vanity generator to find a seed that provides an address which includes the desired pattern. Be warned, depending on your hardware this may take a while.
 
 ```bash
-subkey vanity 1337
+tetkey vanity 1337
 ```
 
 === Signing a transaction
@@ -59,7 +59,7 @@ subkey vanity 1337
 Sign a transaction from an encoded `Call`.
 
 ```bash
-subkey sign-transaction \
+tetkey sign-transaction \
 	--call <call-as-hex> \
 	--nonce 0 \
 	--suri <secret-uri> \
@@ -72,7 +72,7 @@ Will output a signed and encoded `UncheckedMortalCompactExtrinsic` as hex.
 === Inspecting a module ID
 
 ```bash
-subkey module-id "py/trsry" --network kusama
+tetkey module-id "py/trsry" --network kusama
 
 OUTPUT:
 Public Key URI `F3opxRbN5ZbjJNU511Kj2TLuzFcDq9BGduA9TgiECafpg29` is account:

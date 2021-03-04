@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME's I'm online pallet"
 readme = "README.md"
 
@@ -13,16 +13,16 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-sp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tc-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 pallet-authorship = { version = "2.0.0", default-features = false, path = "../authorship" }
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-sp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
-sp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-sp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tc-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 
@@ -31,16 +31,16 @@ frame-benchmarking = { version = "2.0.0", default-features = false, path = "../b
 [features]
 default = ["std", "pallet-session/historical"]
 std = [
-	"sp-application-crypto/std",
+	"tc-application-crypto/std",
 	"pallet-authorship/std",
 	"codec/std",
-	"sp-core/std",
-	"sp-std/std",
+	"tc-core/std",
+	"tc-std/std",
 	"serde",
 	"pallet-session/std",
-	"sp-io/std",
-	"sp-runtime/std",
-	"sp-staking/std",
+	"tc-io/std",
+	"tc-runtime/std",
+	"tc-staking/std",
 	"frame-support/std",
 	"frame-system/std",
 ]

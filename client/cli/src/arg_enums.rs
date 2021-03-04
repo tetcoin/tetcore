@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -53,7 +53,7 @@ impl Into<sc_service::config::WasmExecutionMethod> for WasmExecutionMethod {
 			WasmExecutionMethod::Compiled => sc_service::config::WasmExecutionMethod::Compiled,
 			#[cfg(not(feature = "wasmtime"))]
 			WasmExecutionMethod::Compiled => panic!(
-				"Substrate must be compiled with \"wasmtime\" feature for compiled Wasm execution"
+				"Tetcore must be compiled with \"wasmtime\" feature for compiled Wasm execution"
 			),
 		}
 	}
@@ -172,8 +172,8 @@ arg_enum! {
 	pub enum Database {
 		// Facebooks RocksDB
 		RocksDb,
-		// ParityDb. https://github.com/paritytech/parity-db/
-		ParityDb,
+		// TetsyDb. https://github.com/tetcoin/tetsy-db/
+		TetsyDb,
 	}
 }
 

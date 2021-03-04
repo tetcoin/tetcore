@@ -1,16 +1,16 @@
-# Substrate Runtime Benchmarking Framework
+# Tetcore Runtime Benchmarking Framework
 
 This crate contains a set of utilities that can be used to benchmark and weigh FRAME pallets that
-you develop for your Substrate Runtime.
+you develop for your Tetcore Runtime.
 
 ## Overview
 
-Substrate's FRAME framework allows you to develop custom logic for your blockchain that can be
+Tetcore's FRAME framework allows you to develop custom logic for your blockchain that can be
 included in your runtime. This flexibility is key to help you design complex and interactive
 pallets, but without accurate weights assigned to dispatchables, your blockchain may become
 vulnerable to denial of service (DoS) attacks by malicious actors.
 
-The Substrate Runtime Benchmarking Framework is a tool you can use to mitigate DoS attacks against
+The Tetcore Runtime Benchmarking Framework is a tool you can use to mitigate DoS attacks against
 your blockchain network by benchmarking the computational resources required to execute different
 functions in the runtime, for example extrinsics, `on_initialize`, `verify_unsigned`, etc...
 
@@ -52,7 +52,7 @@ More details about this below.
 
 ### Weight
 
-Substrate represents computational resources using a generic unit of measurement called "Weight". It
+Tetcore represents computational resources using a generic unit of measurement called "Weight". It
 defines 10^12 Weight as 1 second of computation on the physical machine used for benchmarking. This
 means that the weight of a function may change based on the specific hardware used to benchmark the
 runtime functions.
@@ -85,7 +85,7 @@ be a hint that you should enforce sane boundaries for how a user can use your pa
 limiting the number of elements in a vector, limiting the number of iterations in a `for` loop,
 etc...
 
-Examples of end-to-end benchmarks can be found in the [pallets provided by Substrate](../), and the
+Examples of end-to-end benchmarks can be found in the [pallets provided by Tetcore](../), and the
 specific details on how to use the `benchmarks!` macro can be found in [its
 documentation](./src/lib.rs).
 
@@ -112,14 +112,14 @@ runtime.
 These additional `verify` blocks will not affect the results of your final benchmarking process.
 
 To run the tests, you need to enable the `runtime-benchmarks` feature flag. This may also mean you
-need to move into your node's binary folder. For example, with the Substrate repository, this is how
+need to move into your node's binary folder. For example, with the Tetcore repository, this is how
 you would test the Balances pallet's benchmarks:
 
 ```bash
 cargo test -p pallet-balances --features runtime-benchmarks
 ```
 
-> NOTE: Substrate uses a virtual workspace which does not allow you to compile with feature flags.
+> NOTE: Tetcore uses a virtual workspace which does not allow you to compile with feature flags.
 > ```
 > error: --features is not allowed in the root of a virtual workspace`
 > ```
@@ -129,7 +129,7 @@ cargo test -p pallet-balances --features runtime-benchmarks
 
 The benchmarks included with each pallet are not automatically added to your node. To actually
 execute these benchmarks, you need to implement the `frame_benchmarking::Benchmark` trait. You can
-see an example of how to do this in the [included Substrate
+see an example of how to do this in the [included Tetcore
 node](../../bin/node/runtime/src/lib.rs).
 
 Assuming there are already some benchmarks set up on your node, you just need to add another
@@ -161,13 +161,13 @@ benchmarks.
 You can get a list of the available benchmarks by running:
 
 ```bash
-./target/release/substrate benchmark --chain dev --pallet "*" --extrinsic "*" --repeat 0
+./target/release/tetcore benchmark --chain dev --pallet "*" --extrinsic "*" --repeat 0
 ```
 
 Then you can run a benchmark like so:
 
 ```bash
-./target/release/substrate benchmark \
+./target/release/tetcore benchmark \
     --chain dev \                  # Configurable Chain Spec
     --execution=wasm \             # Always test with Wasm
     --wasm-execution=compiled \    # Always used `wasm-time`
@@ -181,7 +181,7 @@ Then you can run a benchmark like so:
 This will output a file `pallet_name.rs` which implements the `WeightInfo` trait you should include
 in your pallet. Each blockchain should generate their own benchmark file with their custom
 implementation of the `WeightInfo` trait. This means that you will be able to use these modular
-Substrate pallets while still keeping your network safe for your specific configuration and
+Tetcore pallets while still keeping your network safe for your specific configuration and
 requirements.
 
 The benchmarking CLI uses a Handlebars template to format the final output file. You can optionally
@@ -200,7 +200,7 @@ used for joining all the arguments passed to the CLI.
 To get a full list of available options when running benchmarks, run:
 
 ```bash
-./target/release/substrate benchmark --help
+./target/release/tetcore benchmark --help
 ```
 
 License: Apache-2.0

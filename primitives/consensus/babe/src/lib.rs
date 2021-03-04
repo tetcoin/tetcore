@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -45,7 +45,7 @@ mod app {
 }
 
 /// The prefix used by BABE for its VRF keys.
-pub const BABE_VRF_PREFIX: &[u8] = b"substrate-babe-vrf";
+pub const BABE_VRF_PREFIX: &[u8] = b"tetcore-babe-vrf";
 
 /// BABE VRFInOut context.
 pub static BABE_VRF_INOUT_CONTEXT: &[u8] = b"BabeVRFInOutContext";

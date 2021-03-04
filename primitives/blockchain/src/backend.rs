@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Substrate blockchain trait
+//! Tetcore blockchain trait
 
 use std::sync::Arc;
 
@@ -109,7 +109,7 @@ pub trait Backend<Block: BlockT>: HeaderBackend<Block> + HeaderMetadata<Block, E
 	/// the search is limited to block `numbers <= max_block_number`.
 	/// in other words as if there were no blocks greater `max_block_number`.
 	/// Returns `Ok(None)` if `target_hash` is not found in search space.
-	/// TODO: document time complexity of this, see [#1444](https://github.com/paritytech/substrate/issues/1444)
+	/// TODO: document time complexity of this, see [#1444](https://github.com/tetcoin/tetcore/issues/1444)
 	fn best_containing(
 		&self,
 		target_hash: Block::Hash,

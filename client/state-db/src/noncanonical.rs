@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -32,7 +32,7 @@ const NON_CANONICAL_JOURNAL: &[u8] = b"noncanonical_journal";
 const LAST_CANONICAL: &[u8] = b"last_canonical";
 
 /// See module documentation.
-#[derive(parity_util_mem_derive::MallocSizeOf)]
+#[derive(tetsy_util_mem_derive::MallocSizeOf)]
 pub struct NonCanonicalOverlay<BlockHash: Hash, Key: Hash> {
 	last_canonicalized: Option<(BlockHash, u64)>,
 	levels: VecDeque<Vec<BlockOverlay<BlockHash, Key>>>,
@@ -58,7 +58,7 @@ fn to_journal_key(block: u64, index: u64) -> Vec<u8> {
 }
 
 #[cfg_attr(test, derive(PartialEq, Debug))]
-#[derive(parity_util_mem_derive::MallocSizeOf)]
+#[derive(tetsy_util_mem_derive::MallocSizeOf)]
 struct BlockOverlay<BlockHash: Hash, Key: Hash> {
 	hash: BlockHash,
 	journal_key: Vec<u8>,

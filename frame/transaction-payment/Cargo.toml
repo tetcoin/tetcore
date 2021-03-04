@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME pallet to manage transaction payments"
 readme = "README.md"
 
@@ -13,30 +13,30 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 serde = { version = "1.0.101", optional = true }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 smallvec = "1.4.1"
-sp-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
-sp-core = { version = "2.0.0", path = "../../primitives/core", default-features = false }
+tc-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
+tc-core = { version = "2.0.0", path = "../../primitives/core", default-features = false }
 
 [dev-dependencies]
 serde_json = "1.0.41"
 pallet-balances = { version = "2.0.0", path = "../balances" }
-sp-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tc-storage = { version = "2.0.0", path = "../../primitives/storage" }
 
 [features]
 default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"sp-std/std",
-	"sp-runtime/std",
+	"tc-std/std",
+	"tc-runtime/std",
 	"frame-support/std",
 	"frame-system/std",
-	"sp-io/std",
-	"sp-core/std",
+	"tc-io/std",
+	"tc-core/std",
 ]

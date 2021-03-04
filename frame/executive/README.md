@@ -27,7 +27,7 @@ The Executive module provides the following implementations:
 
 ## Usage
 
-The default Substrate node template declares the [`Executive`](https://docs.rs/frame-executive/latest/frame_executive/struct.Executive.html) type in its library.
+The default Tetcore node template declares the [`Executive`](https://docs.rs/frame-executive/latest/frame_executive/struct.Executive.html) type in its library.
 
 ### Example
 

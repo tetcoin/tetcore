@@ -19,7 +19,7 @@ use tar;
 
 use flate2::{write::GzEncoder, Compression};
 
-const SUBSTRATE_GIT_URL: &str = "https://github.com/paritytech/substrate.git";
+const TETCORE_GIT_URL: &str = "https://github.com/tetcoin/tetcore.git";
 
 type CargoToml = HashMap<String, toml::Value>;
 
@@ -82,7 +82,7 @@ fn parse_cargo_toml(file: &Path) -> CargoToml {
 	toml::from_str(&content).expect("Cargo.toml is a valid toml file")
 }
 
-/// Replaces all substrate path dependencies with a git dependency.
+/// Replaces all tetcore path dependencies with a git dependency.
 fn replace_path_dependencies_with_git(cargo_toml_path: &Path, commit_id: &str, cargo_toml: &mut CargoToml) {
 	let mut cargo_toml_path = cargo_toml_path.to_path_buf();
 	// remove `Cargo.toml`
@@ -107,7 +107,7 @@ fn replace_path_dependencies_with_git(cargo_toml_path: &Path, commit_id: &str, c
 			.map(|(k, mut v)| {
 				// remove `path` and add `git` and `rev`
 				v.remove("path");
-				v.insert("git".into(), SUBSTRATE_GIT_URL.into());
+				v.insert("git".into(), TETCORE_GIT_URL.into());
 				v.insert("rev".into(), commit_id.into());
 
 				(k.clone(), v.into())
@@ -249,6 +249,6 @@ fn main() {
 	let output = GzEncoder::new(File::create(&options.output)
 		.expect("Creates output file"), Compression::default());
 	let mut tar = tar::Builder::new(output);
-	tar.append_dir_all("substrate-node-template", node_template_path)
-		.expect("Writes substrate-node-template archive");
+	tar.append_dir_all("tetcore-node-template", node_template_path)
+		.expect("Writes tetcore-node-template archive");
 }

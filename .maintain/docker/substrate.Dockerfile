@@ -4,14 +4,14 @@ FROM debian:stretch-slim
 ARG VCS_REF
 ARG BUILD_DATE
 
-LABEL io.parity.image.authors="devops-team@parity.io" \
-	io.parity.image.vendor="Parity Technologies" \
-	io.parity.image.title="parity/substrate" \
-	io.parity.image.description="Substrate: The platform for blockchain innovators." \
-	io.parity.image.source="https://github.com/paritytech/substrate/blob/${VCS_REF}/.maintain/docker/Dockerfile" \
-	io.parity.image.revision="${VCS_REF}" \
-	io.parity.image.created="${BUILD_DATE}" \
-	io.parity.image.documentation="https://wiki.parity.io/Parity-Substrate"
+LABEL io.tetsy.image.authors="devops-team@parity.io" \
+	io.tetsy.image.vendor="Tetsy Technologies" \
+	io.tetsy.image.title="tetcoin/tetcore" \
+	io.tetsy.image.description="Tetcore: The platform for blockchain innovators." \
+	io.tetsy.image.source="https://github.com/tetcoin/tetcore/blob/${VCS_REF}/.maintain/docker/Dockerfile" \
+	io.tetsy.image.revision="${VCS_REF}" \
+	io.tetsy.image.created="${BUILD_DATE}" \
+	io.tetsy.image.documentation="https://wiki.tetcoin.org/Tetcoin-Tetcore"
 
 # show backtraces
 ENV RUST_BACKTRACE 1
@@ -28,18 +28,18 @@ RUN apt-get update && \
 	apt-get clean && \
 	find /var/lib/apt/lists/ -type f -not -name lock -delete; \
 # add user
-	useradd -m -u 1000 -U -s /bin/sh -d /substrate substrate
+	useradd -m -u 1000 -U -s /bin/sh -d /tetcore tetcore
 
-# add substrate binary to docker image
-COPY ./substrate /usr/local/bin
+# add tetcore binary to docker image
+COPY ./tetcore /usr/local/bin
 
-USER substrate
+USER tetcore
 
 # check if executable works in this container
-RUN /usr/local/bin/substrate --version
+RUN /usr/local/bin/tetcore --version
 
 EXPOSE 30333 9933 9944
-VOLUME ["/substrate"]
+VOLUME ["/tetcore"]
 
-ENTRYPOINT ["/usr/local/bin/substrate"]
+ENTRYPOINT ["/usr/local/bin/tetcore"]
 

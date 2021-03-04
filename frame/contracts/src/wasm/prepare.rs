@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -24,7 +24,7 @@ use crate::{
 	chain_extension::ChainExtension,
 	wasm::{PrefabWasmModule, env_def::ImportSatisfyCheck},
 };
-use parity_wasm::elements::{self, Internal, External, MemoryType, Type, ValueType};
+use tetsy_wasm::elements::{self, Internal, External, MemoryType, Type, ValueType};
 use pwasm_utils;
 use sp_std::prelude::*;
 
@@ -109,7 +109,7 @@ impl<'a, T: Config> ContractModule<'a, T> {
 			return Ok(());
 		};
 		for instr in code_section.bodies().iter().flat_map(|body| body.code().elements()) {
-			use parity_wasm::elements::Instruction::BrTable;
+			use tetsy_wasm::elements::Instruction::BrTable;
 			if let BrTable(table) = instr {
 				if table.table.len() > limit as usize {
 					return Err("BrTable's immediate value is too big.")
@@ -462,7 +462,7 @@ pub mod benchmarking {
 	use super::{
 		Config, ContractModule, PrefabWasmModule, ImportSatisfyCheck, Schedule, get_memory_limits
 	};
-	use parity_wasm::elements::FunctionType;
+	use tetsy_wasm::elements::FunctionType;
 
 	impl ImportSatisfyCheck for () {
 		fn can_satisfy(_name: &[u8], _func_type: &FunctionType) -> bool {

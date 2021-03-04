@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Integration of the GRANDPA finality gadget into substrate.
+//! Integration of the GRANDPA finality gadget into tetcore.
 //!
 //! This crate is unstable and the API and usage may change.
 //!
@@ -66,7 +66,7 @@ use sc_client_api::{
 	LockImportRun, BlockchainEvents, CallExecutor,
 	ExecutionStrategy, Finalizer, TransactionFor, ExecutorProvider,
 };
-use parity_scale_codec::{Decode, Encode};
+use tetsy_scale_codec::{Decode, Encode};
 use prometheus_endpoint::{PrometheusError, Registry};
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::{HeaderBackend, Error as ClientError, HeaderMetadata};
@@ -145,7 +145,7 @@ use std::marker::PhantomData;
 #[cfg(test)]
 mod tests;
 
-/// A GRANDPA message for a substrate chain.
+/// A GRANDPA message for a tetcore chain.
 pub type Message<Block> = finality_grandpa::Message<<Block as BlockT>::Hash, NumberFor<Block>>;
 
 /// A signed message.

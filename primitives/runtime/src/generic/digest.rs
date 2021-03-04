@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -28,7 +28,7 @@ use sp_core::{ChangesTrieConfiguration, RuntimeDebug};
 
 /// Generic header digest.
 #[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize, parity_util_mem::MallocSizeOf))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize, tetsy_util_mem::MallocSizeOf))]
 pub struct Digest<Hash> {
 	/// A list of logs in the digest.
 	#[cfg_attr(
@@ -79,7 +79,7 @@ impl<Hash> Digest<Hash> {
 /// Digest item that is able to encode/decode 'system' digest items and
 /// provide opaque access to other items.
 #[derive(PartialEq, Eq, Clone, RuntimeDebug)]
-#[cfg_attr(feature = "std", derive(parity_util_mem::MallocSizeOf))]
+#[cfg_attr(feature = "std", derive(tetsy_util_mem::MallocSizeOf))]
 pub enum DigestItem<Hash> {
 	/// System digest item that contains the root of changes trie at given
 	/// block. It is created for every block iff runtime supports changes
@@ -119,7 +119,7 @@ pub enum DigestItem<Hash> {
 
 /// Available changes trie signals.
 #[derive(PartialEq, Eq, Clone, Encode, Decode)]
-#[cfg_attr(feature = "std", derive(Debug, parity_util_mem::MallocSizeOf))]
+#[cfg_attr(feature = "std", derive(Debug, tetsy_util_mem::MallocSizeOf))]
 pub enum ChangesTrieSignal {
 	/// New changes trie configuration is enacted, starting from **next block**.
 	///

@@ -426,7 +426,7 @@ version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1be51a921b067b0eaca2fad532d9400041561aa922221cc65f95a85641c6bf53"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
 ]
 
 [[package]]
@@ -547,7 +547,7 @@ dependencies = [
  "ahash",
  "hash-db",
  "hashbrown",
- "parity-util-mem",
+ "tetsy-util-mem",
 ]
 
 [[package]]
@@ -632,7 +632,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2839e79665f131bdb5782e51f2c6c9599c133c6098982a54c794358bf432529c"
 
 [[package]]
-name = "parity-scale-codec"
+name = "tetsy-scale-codec"
 version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f509c5e67ca0605ee17dcd3f91ef41cadd685c75a298fb6261b781a5acb3f910"
@@ -640,12 +640,12 @@ dependencies = [
  "arrayvec 0.5.1",
  "bitvec",
  "byte-slice-cast",
- "parity-scale-codec-derive",
+ "tetsy-scale-codec-derive",
  "serde",
 ]
 
 [[package]]
-name = "parity-scale-codec-derive"
+name = "tetsy-scale-codec-derive"
 version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a0ec292e92e8ec7c58e576adacc1e3f399c597c8f263c42f18420abe58e7245"
@@ -657,21 +657,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "parity-util-mem"
+name = "tetsy-util-mem"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ef1476e40bf8f5c6776e9600983435821ca86eb9819d74a6207cca69d091406a"
 dependencies = [
  "cfg-if",
  "impl-trait-for-tuples",
- "parity-util-mem-derive",
+ "tetsy-util-mem-derive",
  "parking_lot 0.10.0",
  "primitive-types",
  "winapi",
 ]
 
 [[package]]
-name = "parity-util-mem-derive"
+name = "tetsy-util-mem-derive"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f557c32c6d268a07c921471619c0295f5efad3a0e76d4f97a05c091a51d110b2"
@@ -682,7 +682,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "parity-wasm"
+name = "tetsy-wasm"
 version = "0.41.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ddfc878dac00da22f8f61e7af3157988424567ab01d9920b962ef7dcbd7cd865"
@@ -1118,30 +1118,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5c2fb2ec9bcd216a5b0d0ccf31ab17b5ed1d627960edff65bbe95d3ce221cefc"
 
 [[package]]
-name = "sp-application-crypto"
+name = "tc-application-crypto"
 version = "2.0.0-alpha.3"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-core",
- "sp-io",
- "sp-std",
+ "tc-core",
+ "tc-io",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-arithmetic"
+name = "tc-arithmetic"
 version = "2.0.0-alpha.3"
 dependencies = [
  "integer-sqrt",
  "num-traits",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-debug-derive",
- "sp-std",
+ "tc-debug-derive",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-core"
+name = "tc-core"
 version = "2.0.0-alpha.3"
 dependencies = [
  "base58",
@@ -1156,8 +1156,8 @@ dependencies = [
  "libsecp256k1",
  "log",
  "num-traits",
- "parity-scale-codec",
- "parity-util-mem",
+ "tetsy-scale-codec",
+ "tetsy-util-mem",
  "parking_lot 0.10.0",
  "primitive-types",
  "rand 0.7.3",
@@ -1166,12 +1166,12 @@ dependencies = [
  "schnorrkel",
  "serde",
  "sha2",
- "sp-debug-derive",
- "sp-externalities",
- "sp-runtime-interface",
- "sp-std",
- "sp-storage",
- "substrate-bip39",
+ "tc-debug-derive",
+ "tc-externalities",
+ "tc-runtime-interface",
+ "tc-std",
+ "tc-storage",
+ "tetcore-bip39",
  "tiny-bip39",
  "tiny-keccak",
  "twox-hash",
@@ -1180,7 +1180,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-debug-derive"
+name = "tc-debug-derive"
 version = "2.0.0-alpha.3"
 dependencies = [
  "proc-macro2",
@@ -1189,44 +1189,44 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-externalities"
+name = "tc-externalities"
 version = "0.8.0-alpha.3"
 dependencies = [
  "environmental",
- "sp-std",
- "sp-storage",
+ "tc-std",
+ "tc-storage",
 ]
 
 [[package]]
-name = "sp-inherents"
+name = "tc-inherents"
 version = "2.0.0-alpha.3"
 dependencies = [
  "derive_more",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "parking_lot 0.10.0",
- "sp-core",
- "sp-std",
+ "tc-core",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-io"
+name = "tc-io"
 version = "2.0.0-alpha.3"
 dependencies = [
  "hash-db",
  "libsecp256k1",
  "log",
- "parity-scale-codec",
- "sp-core",
- "sp-externalities",
- "sp-runtime-interface",
- "sp-state-machine",
- "sp-std",
- "sp-trie",
- "sp-wasm-interface",
+ "tetsy-scale-codec",
+ "tc-core",
+ "tc-externalities",
+ "tc-runtime-interface",
+ "tc-state-machine",
+ "tc-std",
+ "tc-trie",
+ "tc-wasm-interface",
 ]
 
 [[package]]
-name = "sp-panic-handler"
+name = "tc-panic-handler"
 version = "2.0.0-alpha.3"
 dependencies = [
  "backtrace",
@@ -1234,19 +1234,19 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-npos-elections"
+name = "tc-npos-elections"
 version = "2.0.0-alpha.3"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-core",
- "sp-npos-elections-compact",
- "sp-runtime",
- "sp-std",
+ "tc-core",
+ "tc-npos-elections-compact",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-npos-elections-compact"
+name = "tc-npos-elections-compact"
 version = "2.0.0-rc3"
 dependencies = [
  "proc-macro-crate",
@@ -1256,49 +1256,49 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-npos-elections-fuzzer"
+name = "tc-npos-elections-fuzzer"
 version = "2.0.0"
 dependencies = [
  "honggfuzz",
  "rand 0.7.3",
- "sp-npos-elections",
+ "tc-npos-elections",
 ]
 
 [[package]]
-name = "sp-runtime"
+name = "tc-runtime"
 version = "2.0.0-alpha.3"
 dependencies = [
  "hash256-std-hasher",
  "impl-trait-for-tuples",
  "log",
- "parity-scale-codec",
- "parity-util-mem",
+ "tetsy-scale-codec",
+ "tetsy-util-mem",
  "paste",
  "rand 0.7.3",
  "serde",
- "sp-application-crypto",
- "sp-arithmetic",
- "sp-core",
- "sp-inherents",
- "sp-io",
- "sp-std",
+ "tc-application-crypto",
+ "tc-arithmetic",
+ "tc-core",
+ "tc-inherents",
+ "tc-io",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-runtime-interface"
+name = "tc-runtime-interface"
 version = "2.0.0-alpha.3"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "primitive-types",
- "sp-externalities",
- "sp-runtime-interface-proc-macro",
- "sp-std",
- "sp-wasm-interface",
+ "tc-externalities",
+ "tc-runtime-interface-proc-macro",
+ "tc-std",
+ "tc-wasm-interface",
  "static_assertions",
 ]
 
 [[package]]
-name = "sp-runtime-interface-proc-macro"
+name = "tc-runtime-interface-proc-macro"
 version = "2.0.0-alpha.3"
 dependencies = [
  "Inflector",
@@ -1309,57 +1309,57 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-state-machine"
+name = "tc-state-machine"
 version = "0.8.0-alpha.3"
 dependencies = [
  "hash-db",
  "log",
  "num-traits",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "parking_lot 0.10.0",
  "rand 0.7.3",
- "sp-core",
- "sp-externalities",
- "sp-panic-handler",
- "sp-trie",
+ "tc-core",
+ "tc-externalities",
+ "tc-panic-handler",
+ "tc-trie",
  "trie-db",
  "trie-root",
 ]
 
 [[package]]
-name = "sp-std"
+name = "tc-std"
 version = "2.0.0-alpha.3"
 
 [[package]]
-name = "sp-storage"
+name = "tc-storage"
 version = "2.0.0-alpha.3"
 dependencies = [
  "impl-serde 0.2.3",
  "serde",
- "sp-debug-derive",
- "sp-std",
+ "tc-debug-derive",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-trie"
+name = "tc-trie"
 version = "2.0.0-alpha.3"
 dependencies = [
  "hash-db",
  "memory-db",
- "parity-scale-codec",
- "sp-core",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-core",
+ "tc-std",
  "trie-db",
  "trie-root",
 ]
 
 [[package]]
-name = "sp-wasm-interface"
+name = "tc-wasm-interface"
 version = "2.0.0-alpha.3"
 dependencies = [
  "impl-trait-for-tuples",
- "parity-scale-codec",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-std",
  "wasmi",
 ]
 
@@ -1370,7 +1370,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
-name = "substrate-bip39"
+name = "tetcore-bip39"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3be511be555a3633e71739a79e4ddff6a6aaa6579fa6114182a51d72c3eb93c5"
@@ -1539,7 +1539,7 @@ dependencies = [
  "memory_units",
  "num-rational",
  "num-traits",
- "parity-wasm",
+ "tetsy-wasm",
  "wasmi-validation",
 ]
 
@@ -1549,7 +1549,7 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea78c597064ba73596099281e2f4cfc019075122a65cdda3205af94f0b264d93"
 dependencies = [
- "parity-wasm",
+ "tetsy-wasm",
 ]
 
 [[package]]

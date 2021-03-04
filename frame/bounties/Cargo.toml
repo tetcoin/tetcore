@@ -4,8 +4,8 @@ version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME pallet to manage bounties"
 readme = "README.md"
 
@@ -14,9 +14,9 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 pallet-treasury = { version = "2.0.0", default-features = false, path = "../treasury" }
@@ -24,9 +24,9 @@ pallet-treasury = { version = "2.0.0", default-features = false, path = "../trea
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 
 [dev-dependencies]
-sp-io ={ version = "2.0.0", path = "../../primitives/io" }
-sp-core = { version = "2.0.0", path = "../../primitives/core" }
-sp-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tc-io ={ version = "2.0.0", path = "../../primitives/io" }
+tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tc-storage = { version = "2.0.0", path = "../../primitives/storage" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 
 [features]
@@ -34,8 +34,8 @@ default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"sp-std/std",
-	"sp-runtime/std",
+	"tc-std/std",
+	"tc-runtime/std",
 	"frame-support/std",
 	"frame-system/std",
 	"pallet-treasury/std",

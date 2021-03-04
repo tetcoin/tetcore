@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -24,11 +24,11 @@ use sp_runtime::{
 	generic::BlockId,
 	transaction_validity::{ValidTransaction, TransactionSource, InvalidTransaction},
 };
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	runtime::{Block, Hash, Index, Header, Extrinsic, Transfer}, AccountKeyring::*,
 	ClientBlockImportExt,
 };
-use substrate_test_runtime_transaction_pool::{TestApi, uxt};
+use tetcore_test_runtime_transaction_pool::{TestApi, uxt};
 use futures::{prelude::*, task::Poll};
 use codec::Encode;
 use std::collections::BTreeSet;
@@ -456,7 +456,7 @@ fn can_track_heap_size() {
 	block_on(pool.submit_one(&BlockId::number(0), SOURCE, uxt(Alice, 211))).expect("1. Imported");
 	block_on(pool.submit_one(&BlockId::number(0), SOURCE, uxt(Alice, 212))).expect("1. Imported");
 
-	assert!(parity_util_mem::malloc_size(&pool) > 3000);
+	assert!(tetsy_util_mem::malloc_size(&pool) > 3000);
 }
 
 #[test]
@@ -932,7 +932,7 @@ fn ready_set_should_eventually_resolve_when_block_update_arrives() {
 fn should_not_accept_old_signatures() {
 	use std::convert::TryFrom;
 
-	let client = Arc::new(substrate_test_runtime_client::new());
+	let client = Arc::new(tetcore_test_runtime_client::new());
 
 	let pool = Arc::new(
 		BasicPool::new_test(Arc::new(FullChainApi::new(client, None))).0
@@ -968,7 +968,7 @@ fn should_not_accept_old_signatures() {
 
 #[test]
 fn import_notification_to_pool_maintain_works() {
-	let mut client = Arc::new(substrate_test_runtime_client::new());
+	let mut client = Arc::new(tetcore_test_runtime_client::new());
 
 	let pool = Arc::new(
 		BasicPool::new_test(Arc::new(FullChainApi::new(client.clone(), None))).0

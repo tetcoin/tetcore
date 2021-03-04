@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -20,7 +20,7 @@
 //! remote and then allows any communication with them.
 //!
 //! The `Protocol` struct uses `GenericProto` in order to open substreams with the rest of the
-//! network, then performs the Substrate protocol handling on top.
+//! network, then performs the Tetcore protocol handling on top.
 
 pub use self::behaviour::{GenericProto, GenericProtoOut};
 pub use self::handler::{NotifsHandlerError, NotificationsSink, Ready};

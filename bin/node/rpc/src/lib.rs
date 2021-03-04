@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -17,7 +17,7 @@
 
 //! A collection of node-specific RPC methods.
 //!
-//! Since `substrate` core functionality makes no assumptions
+//! Since `tetcore` core functionality makes no assumptions
 //! about the modules used inside the runtime, so do
 //! RPC methods defined in `sc-rpc` crate.
 //! It means that `client/rpc` can't have any methods that
@@ -114,7 +114,7 @@ pub fn create_full<C, P, SC, B>(
 ) -> jsonrpc_core::IoHandler<sc_rpc_api::Metadata> where
 	C: ProvideRuntimeApi<Block> + HeaderBackend<Block> + AuxStore +
 		HeaderMetadata<Block, Error=BlockChainError> + Sync + Send + 'static,
-	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
+	C::Api: tetcore_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
 	C::Api: pallet_contracts_rpc::ContractsRuntimeApi<Block, AccountId, Balance, BlockNumber>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: BabeApi<Block>,
@@ -124,7 +124,7 @@ pub fn create_full<C, P, SC, B>(
 	B: sc_client_api::Backend<Block> + Send + Sync + 'static,
 	B::State: sc_client_api::backend::StateBackend<sp_runtime::traits::HashFor<Block>>,
 {
-	use substrate_frame_rpc_system::{FullSystem, SystemApi};
+	use tetcore_frame_rpc_system::{FullSystem, SystemApi};
 	use pallet_contracts_rpc::{Contracts, ContractsApi};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
 
@@ -156,7 +156,7 @@ pub fn create_full<C, P, SC, B>(
 		SystemApi::to_delegate(FullSystem::new(client.clone(), pool, deny_unsafe))
 	);
 	// Making synchronous calls in light client freezes the browser currently,
-	// more context: https://github.com/paritytech/substrate/pull/3480
+	// more context: https://github.com/tetcoin/tetcore/pull/3480
 	// These RPCs should use an asynchronous caller instead.
 	io.extend_with(
 		ContractsApi::to_delegate(Contracts::new(client.clone()))
@@ -213,7 +213,7 @@ pub fn create_light<C, P, M, F>(
 	P: TransactionPool + 'static,
 	M: jsonrpc_core::Metadata + Default,
 {
-	use substrate_frame_rpc_system::{LightSystem, SystemApi};
+	use tetcore_frame_rpc_system::{LightSystem, SystemApi};
 
 	let LightDeps {
 		client,

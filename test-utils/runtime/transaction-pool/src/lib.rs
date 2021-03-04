@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -30,7 +30,7 @@ use sp_runtime::{
 	},
 };
 use std::collections::{HashSet, HashMap, BTreeMap};
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	runtime::{Index, AccountId, Block, BlockNumber, Extrinsic, Hash, Header, Transfer},
 	AccountKeyring::{self, *},
 };

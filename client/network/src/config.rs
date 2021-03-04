@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -419,7 +419,7 @@ pub struct NetworkConfiguration {
 	///
 	/// It is recommended to leave this to `None`, and use a request-response protocol instead if
 	/// a large amount of data must be transferred. The reason why the value is configurable is
-	/// that some Substrate users mis-use notification protocols to send large amounts of data.
+	/// that some Tetcore users mis-use notification protocols to send large amounts of data.
 	/// As such, this option isn't designed to stay and will likely get removed in the future.
 	///
 	/// Note that configuring a value here isn't a modification of the Yamux protocol, but rather

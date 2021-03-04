@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Support code for the runtime."
 readme = "README.md"
 
@@ -15,19 +15,19 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 log = "0.4"
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 frame-metadata = { version = "12.0.0", default-features = false, path = "../metadata" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-sp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-sp-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
-sp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-sp-arithmetic = { version = "2.0.0", default-features = false, path = "../../primitives/arithmetic" }
-sp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tc-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
+tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tc-arithmetic = { version = "2.0.0", default-features = false, path = "../../primitives/arithmetic" }
+tc-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
 frame-support-procedural = { version = "2.0.1", default-features = false, path = "./procedural" }
 paste = "0.1.6"
 once_cell = { version = "1", default-features = false, optional = true }
-sp-state-machine = { version = "0.8.0", optional = true, path = "../../primitives/state-machine" }
+tc-state-machine = { version = "0.8.0", optional = true, path = "../../primitives/state-machine" }
 bitflags = "1.2"
 impl-trait-for-tuples = "0.2.0"
 smallvec = "1.4.1"
@@ -35,24 +35,24 @@ smallvec = "1.4.1"
 [dev-dependencies]
 pretty_assertions = "0.6.1"
 frame-system = { version = "2.0.0", path = "../system" }
-parity-util-mem = { version = "0.9.0", default-features = false, features = ["primitive-types"] }
-substrate-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
-sp-api = { version = "2.0.0", default-features = false, path = "../../primitives/api" }
+tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["primitive-types"] }
+tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+tc-api = { version = "2.0.0", default-features = false, path = "../../primitives/api" }
 
 [features]
 default = ["std"]
 std = [
 	"once_cell",
 	"serde",
-	"sp-io/std",
+	"tc-io/std",
 	"codec/std",
-	"sp-std/std",
-	"sp-runtime/std",
-	"sp-tracing/std",
-	"sp-arithmetic/std",
+	"tc-std/std",
+	"tc-runtime/std",
+	"tc-tracing/std",
+	"tc-arithmetic/std",
 	"frame-metadata/std",
-	"sp-inherents/std",
-	"sp-state-machine",
+	"tc-inherents/std",
+	"tc-state-machine",
 	"frame-support-procedural/std",
 ]
 nightly = []

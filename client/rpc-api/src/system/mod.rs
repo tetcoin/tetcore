@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate system API.
+//! Tetcore system API.
 
 pub mod error;
 pub mod helpers;
@@ -30,7 +30,7 @@ use self::error::Result as SystemResult;
 pub use self::helpers::{SystemInfo, Health, PeerInfo, NodeRole, SyncState};
 pub use self::gen_client::Client as SystemClient;
 
-/// Substrate system RPC API
+/// Tetcore system RPC API
 #[rpc]
 pub trait SystemApi<Hash, Number> {
 	/// Get the node's implementation name. Plain old string.
@@ -80,7 +80,7 @@ pub trait SystemApi<Hash, Number> {
 	/// Returns current state of the network.
 	///
 	/// **Warning**: This API is not stable.
-	// TODO: make this stable and move structs https://github.com/paritytech/substrate/issues/1890
+	// TODO: make this stable and move structs https://github.com/tetcoin/tetcore/issues/1890
 	#[rpc(name = "system_networkState", returns = "jsonrpc_core::Value")]
 	fn system_network_state(&self)
 		-> Compat<BoxFuture<'static, jsonrpc_core::Result<jsonrpc_core::Value>>>;
@@ -118,7 +118,7 @@ pub trait SystemApi<Hash, Number> {
 	fn system_add_log_filter(&self, directives: String)
 		-> Result<(), jsonrpc_core::Error>;
 
-	/// Resets the log filter to Substrate defaults
+	/// Resets the log filter to Tetcore defaults
 	#[rpc(name = "system_resetLogFilter", returns = "()")]
 	fn system_reset_log_filter(&self)
 		-> Result<(), jsonrpc_core::Error>;

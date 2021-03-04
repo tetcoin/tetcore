@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -733,7 +733,7 @@ mod tests {
 		traits::{BlakeTwo256, IdentityLookup},
 	};
 	use frame_system::{EnsureOneOf, EnsureRoot, EnsureSignedBy};
-	use substrate_test_utils::assert_eq_uvec;
+	use tetcore_test_utils::assert_eq_uvec;
 	use crate as scheduler;
 
 	mod logger {

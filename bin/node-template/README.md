@@ -1,10 +1,10 @@
-# Substrate Node Template
+# Tetcore Node Template
 
-A new FRAME-based Substrate node, ready for hacking :rocket:
+A new FRAME-based Tetcore node, ready for hacking :rocket:
 
 ## Local Development
 
-Follow these steps to prepare a local Substrate development environment :hammer_and_wrench:
+Follow these steps to prepare a local Tetcore development environment :hammer_and_wrench:
 
 ### Simple Setup
 
@@ -12,19 +12,19 @@ Install all the required dependencies with a single command (be patient, this ca
 minutes).
 
 ```bash
-curl https://getsubstrate.io -sSf | bash -s -- --fast
+curl https://gettetcore.io -sSf | bash -s -- --fast
 ```
 
 ### Manual Setup
 
 Find manual setup instructions at the
-[Substrate Developer Hub](https://substrate.dev/docs/en/knowledgebase/getting-started/#manual-installation).
+[Tetcore Developer Hub](https://tetcoin.org/docs/en/knowledgebase/getting-started/#manual-installation).
 
 ### Build
 
 Once the development environment is set up, build the node template. This command will build the
-[Wasm](https://substrate.dev/docs/en/knowledgebase/advanced/executor#wasm-execution) and
-[native](https://substrate.dev/docs/en/knowledgebase/advanced/executor#native-execution) code:
+[Wasm](https://tetcoin.org/docs/en/knowledgebase/advanced/executor#wasm-execution) and
+[native](https://tetcoin.org/docs/en/knowledgebase/advanced/executor#native-execution) code:
 
 ```bash
 cargo build --release
@@ -95,41 +95,41 @@ Execute `cargo run -- --help` to learn more about the template node's CLI option
 
 ## Template Structure
 
-A Substrate project such as this consists of a number of components that are spread across a few
+A Tetcore project such as this consists of a number of components that are spread across a few
 directories.
 
 ### Node
 
 A blockchain node is an application that allows users to participate in a blockchain network.
-Substrate-based blockchain nodes expose a number of capabilities:
+Tetcore-based blockchain nodes expose a number of capabilities:
 
--   Networking: Substrate nodes use the [`libp2p`](https://libp2p.io/) networking stack to allow the
+-   Networking: Tetcore nodes use the [`libp2p`](https://libp2p.io/) networking stack to allow the
     nodes in the network to communicate with one another.
 -   Consensus: Blockchains must have a way to come to
-    [consensus](https://substrate.dev/docs/en/knowledgebase/advanced/consensus) on the state of the
-    network. Substrate makes it possible to supply custom consensus engines and also ships with
+    [consensus](https://tetcoin.org/docs/en/knowledgebase/advanced/consensus) on the state of the
+    network. Tetcore makes it possible to supply custom consensus engines and also ships with
     several consensus mechanisms that have been built on top of
     [Web3 Foundation research](https://research.web3.foundation/en/latest/polkadot/NPoS/index.html).
--   RPC Server: A remote procedure call (RPC) server is used to interact with Substrate nodes.
+-   RPC Server: A remote procedure call (RPC) server is used to interact with Tetcore nodes.
 
 There are several files in the `node` directory - take special note of the following:
 
 -   [`chain_spec.rs`](./node/src/chain_spec.rs): A
-    [chain specification](https://substrate.dev/docs/en/knowledgebase/integrate/chain-spec) is a
-    source code file that defines a Substrate chain's initial (genesis) state. Chain specifications
+    [chain specification](https://tetcoin.org/docs/en/knowledgebase/integrate/chain-spec) is a
+    source code file that defines a Tetcore chain's initial (genesis) state. Chain specifications
     are useful for development and testing, and critical when architecting the launch of a
     production chain. Take note of the `development_config` and `testnet_genesis` functions, which
     are used to define the genesis state for the local development chain configuration. These
     functions identify some
-    [well-known accounts](https://substrate.dev/docs/en/knowledgebase/integrate/subkey#well-known-keys)
+    [well-known accounts](https://tetcoin.org/docs/en/knowledgebase/integrate/tetkey#well-known-keys)
     and use them to configure the blockchain's initial state.
 -   [`service.rs`](./node/src/service.rs): This file defines the node implementation. Take note of
     the libraries that this file imports and the names of the functions it invokes. In particular,
     there are references to consensus-related topics, such as the
-    [longest chain rule](https://substrate.dev/docs/en/knowledgebase/advanced/consensus#longest-chain-rule),
-    the [Aura](https://substrate.dev/docs/en/knowledgebase/advanced/consensus#aura) block authoring
+    [longest chain rule](https://tetcoin.org/docs/en/knowledgebase/advanced/consensus#longest-chain-rule),
+    the [Aura](https://tetcoin.org/docs/en/knowledgebase/advanced/consensus#aura) block authoring
     mechanism and the
-    [GRANDPA](https://substrate.dev/docs/en/knowledgebase/advanced/consensus#grandpa) finality
+    [GRANDPA](https://tetcoin.org/docs/en/knowledgebase/advanced/consensus#grandpa) finality
     gadget.
 
 After the node has been [built](#build), refer to the embedded documentation to learn more about the
@@ -141,17 +141,17 @@ capabilities and configuration parameters that it exposes:
 
 ### Runtime
 
-In Substrate, the terms
-"[runtime](https://substrate.dev/docs/en/knowledgebase/getting-started/glossary#runtime)" and
-"[state transition function](https://substrate.dev/docs/en/knowledgebase/getting-started/glossary#stf-state-transition-function)"
+In Tetcore, the terms
+"[runtime](https://tetcoin.org/docs/en/knowledgebase/getting-started/glossary#runtime)" and
+"[state transition function](https://tetcoin.org/docs/en/knowledgebase/getting-started/glossary#stf-state-transition-function)"
 are analogous - they refer to the core logic of the blockchain that is responsible for validating
-blocks and executing the state changes they define. The Substrate project in this repository uses
-the [FRAME](https://substrate.dev/docs/en/knowledgebase/runtime/frame) framework to construct a
+blocks and executing the state changes they define. The Tetcore project in this repository uses
+the [FRAME](https://tetcoin.org/docs/en/knowledgebase/runtime/frame) framework to construct a
 blockchain runtime. FRAME allows runtime developers to declare domain-specific logic in modules
 called "pallets". At the heart of FRAME is a helpful
-[macro language](https://substrate.dev/docs/en/knowledgebase/runtime/macros) that makes it easy to
+[macro language](https://tetcoin.org/docs/en/knowledgebase/runtime/macros) that makes it easy to
 create pallets and flexibly compose them to create blockchains that can address
-[a variety of needs](https://www.substrate.io/substrate-users/).
+[a variety of needs](https://www.tetcore.io/tetcore-users/).
 
 Review the [FRAME runtime implementation](./runtime/src/lib.rs) included in this template and note
 the following:
@@ -159,26 +159,26 @@ the following:
 -   This file configures several pallets to include in the runtime. Each pallet configuration is
     defined by a code block that begins with `impl $PALLET_NAME::Config for Runtime`.
 -   The pallets are composed into a single runtime by way of the
-    [`construct_runtime!`](https://crates.parity.io/frame_support/macro.construct_runtime.html)
+    [`construct_runtime!`](https://crates.tetcoin.org/frame_support/macro.construct_runtime.html)
     macro, which is part of the core
-    [FRAME Support](https://substrate.dev/docs/en/knowledgebase/runtime/frame#support-library)
+    [FRAME Support](https://tetcoin.org/docs/en/knowledgebase/runtime/frame#support-library)
     library.
 
 ### Pallets
 
 The runtime in this project is constructed using many FRAME pallets that ship with the
-[core Substrate repository](https://github.com/paritytech/substrate/tree/master/frame) and a
+[core Tetcore repository](https://github.com/tetcoin/tetcore/tree/master/frame) and a
 template pallet that is [defined in the `pallets`](./pallets/template/src/lib.rs) directory.
 
 A FRAME pallet is compromised of a number of blockchain primitives:
 
 -   Storage: FRAME defines a rich set of powerful
-    [storage abstractions](https://substrate.dev/docs/en/knowledgebase/runtime/storage) that makes
-    it easy to use Substrate's efficient key-value database to manage the evolving state of a
+    [storage abstractions](https://tetcoin.org/docs/en/knowledgebase/runtime/storage) that makes
+    it easy to use Tetcore's efficient key-value database to manage the evolving state of a
     blockchain.
 -   Dispatchables: FRAME pallets define special types of functions that can be invoked (dispatched)
     from outside of the runtime in order to update its state.
--   Events: Substrate uses [events](https://substrate.dev/docs/en/knowledgebase/runtime/events) to
+-   Events: Tetcore uses [events](https://tetcoin.org/docs/en/knowledgebase/runtime/events) to
     notify users of important changes in the runtime.
 -   Errors: When a dispatchable fails, it returns an error.
 -   Config: The `Config` configuration interface is used to define the types and parameters upon
@@ -186,22 +186,22 @@ A FRAME pallet is compromised of a number of blockchain primitives:
 
 ## Generate a Custom Node Template
 
-Generate a Substrate node template based on a particular commit by running the following commands:
+Generate a Tetcore node template based on a particular commit by running the following commands:
 
 ```bash
-# Clone from the main Substrate repo
-git clone https://github.com/paritytech/substrate.git
-cd substrate
+# Clone from the main Tetcore repo
+git clone https://github.com/tetcoin/tetcore.git
+cd tetcore
 
 # Switch to the branch or commit to base the template on
 git checkout <branch/tag/sha1>
 
-# Run the helper script to generate a node template. This script compiles Substrate, so it will take
+# Run the helper script to generate a node template. This script compiles Tetcore, so it will take
 # a while to complete. It expects a single parameter: the location for the script's output expressed
 # as a relative path.
 .maintain/node-template-release.sh ../node-template.tar.gz
 ```
 
 Custom node templates are not supported. Please use a recently tagged version of the
-[Substrate Developer Node Template](https://github.com/substrate-developer-hub/substrate-node-template)
+[Tetcore Developer Node Template](https://github.com/tetcore-developer-hub/tetcore-node-template)
 in order to receive support.

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! The Substrate runtime. This can be compiled with `#[no_std]`, ready for Wasm.
+//! The Tetcore runtime. This can be compiled with `#[no_std]`, ready for Wasm.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -79,7 +79,7 @@ pub fn wasm_binary_unwrap() -> &'static [u8] {
 /// Test runtime version.
 pub const VERSION: RuntimeVersion = RuntimeVersion {
 	spec_name: create_runtime_str!("test"),
-	impl_name: create_runtime_str!("parity-test"),
+	impl_name: create_runtime_str!("tetsy-test"),
 	authoring_version: 1,
 	spec_version: 2,
 	impl_version: 2,
@@ -153,7 +153,7 @@ pub enum Extrinsic {
 	OffchainIndexClear(Vec<u8>),
 }
 
-parity_util_mem::malloc_size_of_is_0!(Extrinsic); // non-opaque extrinsic does not need this
+tetsy_util_mem::malloc_size_of_is_0!(Extrinsic); // non-opaque extrinsic does not need this
 
 #[cfg(feature = "std")]
 impl serde::Serialize for Extrinsic {
@@ -1172,7 +1172,7 @@ fn test_witness(proof: StorageProof, root: crate::Hash) {
 
 #[cfg(test)]
 mod tests {
-	use substrate_test_runtime_client::{
+	use tetcore_test_runtime_client::{
 		prelude::*,
 		sp_consensus::BlockOrigin,
 		DefaultTestClientBuilderExt, TestClientBuilder,

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -18,7 +18,7 @@
 
 //! A consensus proposer for "basic" chains which use the primitive inherent-data.
 
-// FIXME #1021 move this into sp-consensus
+// FIXME #1021 move this into tc-consensus
 
 use std::{pin::Pin, time, sync::Arc};
 use sc_client_api::backend;
@@ -371,7 +371,7 @@ mod tests {
 
 	use parking_lot::Mutex;
 	use sp_consensus::{BlockOrigin, Proposer};
-	use substrate_test_runtime_client::{
+	use tetcore_test_runtime_client::{
 		prelude::*, TestClientBuilder, runtime::{Extrinsic, Transfer}, TestClientBuilderExt,
 	};
 	use sp_transaction_pool::{ChainEvent, MaintainedTransactionPool, TransactionSource};
@@ -404,7 +404,7 @@ mod tests {
 	#[test]
 	fn should_cease_building_block_when_deadline_is_reached() {
 		// given
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let spawner = sp_core::testing::TaskExecutor::new();
 		let txpool = BasicPool::new_full(
 			Default::default(),
@@ -462,7 +462,7 @@ mod tests {
 
 	#[test]
 	fn should_not_panic_when_deadline_is_reached() {
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let spawner = sp_core::testing::TaskExecutor::new();
 		let txpool = BasicPool::new_full(
 			Default::default(),
@@ -569,7 +569,7 @@ mod tests {
 	#[test]
 	fn should_not_remove_invalid_transactions_when_skipping() {
 		// given
-		let mut client = Arc::new(substrate_test_runtime_client::new());
+		let mut client = Arc::new(tetcore_test_runtime_client::new());
 		let spawner = sp_core::testing::TaskExecutor::new();
 		let txpool = BasicPool::new_full(
 			Default::default(),

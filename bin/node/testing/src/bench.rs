@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -223,8 +223,8 @@ pub struct BlockContent {
 pub enum DatabaseType {
 	/// RocksDb backend.
 	RocksDb,
-	/// Parity DB backend.
-	ParityDb,
+	/// Tetsy DB backend.
+	TetsyDb,
 }
 
 impl DatabaseType {
@@ -234,7 +234,7 @@ impl DatabaseType {
 				path,
 				cache_size: 512,
 			},
-			Self::ParityDb => sc_client_db::DatabaseSettingsSrc::ParityDb {
+			Self::TetsyDb => sc_client_db::DatabaseSettingsSrc::TetsyDb {
 				path,
 			}
 		}

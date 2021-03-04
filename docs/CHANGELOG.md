@@ -11,11 +11,11 @@ The format is based on [Keep a Changelog].
 Patch release with backports to fix broken nightly builds.
 Namely contains backports of
 
-* [#7381: Make Substrate compile with latest nightly](https://github.com/paritytech/substrate/pull/7381)
-* [#7238: Fix compilation with environmental on latest nightly](https://github.com/paritytech/substrate/pull/7238)
-* [#7395: Make benchmarks compile with latest nightly](https://github.com/paritytech/substrate/pull/7395)
-* [#7838: Fix incorrect use of syn::exports](https://github.com/paritytech/substrate/pull/7838) (partially)
-* [#7854: Update to futures 0.3.9](https://github.com/paritytech/substrate/pull/7854)
+* [#7381: Make Tetcore compile with latest nightly](https://github.com/tetcoin/tetcore/pull/7381)
+* [#7238: Fix compilation with environmental on latest nightly](https://github.com/tetcoin/tetcore/pull/7238)
+* [#7395: Make benchmarks compile with latest nightly](https://github.com/tetcoin/tetcore/pull/7395)
+* [#7838: Fix incorrect use of syn::exports](https://github.com/tetcoin/tetcore/pull/7838) (partially)
+* [#7854: Update to futures 0.3.9](https://github.com/tetcoin/tetcore/pull/7854)
 
 
 ## 2.0.0-rc6 -> 2.0.0 – two dot 😮
@@ -109,7 +109,7 @@ API
 * seal: Fix and improve error reporting (#6773)
 * Allow blacklisting blocks from being finalized again after block revert (#6301)
 * BABE slot and epoch event notifications (#6563)
-* Add `memory-tracker` feature to `sp-trie` to fix wasm panic (#6745)
+* Add `memory-tracker` feature to `tc-trie` to fix wasm panic (#6745)
 
 ## 2.0.0-rc4 -> 2.0.0-rc5 – River Dolphin
 
@@ -139,7 +139,7 @@ Client
 * Update to latest sysinfo prevents leaking fd-handlers (#6708)
 * Tracing values (#6679)
 * Graceful shutdown for the task manager (#6654)
-* Update substrate-networking Grafana dashboard (#6649)
+* Update tetcore-networking Grafana dashboard (#6649)
 * *: Update to libp2p v0.21.1 (#6559)
 * Send Status message on all newly-opened legacy substreams (#6593)
 * babe: report equivocations (#6362)
@@ -166,7 +166,7 @@ Runtime
 
 * Staking Payout Creates Controller (#6496)
 * `pallet-scheduler`: Check that `when` is not in the past (#6480)
-* Fix `sp-api` handling of multiple arguments (#6484)
+* Fix `tc-api` handling of multiple arguments (#6484)
 * Fix issues with `Operational` transactions validity and prioritization. (#6435)
 * pallet-atomic-swap: generialized swap action (#6421)
 * Avoid multisig reentrancy (#6445)
@@ -231,8 +231,8 @@ Client
 * Sentry nodes and validator nodes also imply reserved (#6251)
 * Fix peerset not filtering incoming connections in reserved-only (#6249)
 * Use Subscription Manager from `jsonrpc-pubsub` (#6208)
-* Add a Substrate networking Grafana dashboard template (#6171)
-* Add subkey inspect-node-key (#6153)
+* Add a Tetcore networking Grafana dashboard template (#6171)
+* Add tetkey inspect-node-key (#6153)
 
 ## 2.0.0-rc1 -> 2.0.0-rc2
 
@@ -256,7 +256,7 @@ Client
 ## 2.0.0-alpha.7 -> 2.0.0-alpha.8
 
 **License Changed**
-From this release forward, the code is released under a new – more relaxed – license scheme: Client (`sc-*`) is released under "GPL 3.0 or newer with the Classpath Exception", while primitives, FRAME, the pallets, utils and test-utils are released under "Apache 2.0". More details in the [Relax licensing scheme PR](https://github.com/paritytech/substrate/pull/5947).
+From this release forward, the code is released under a new – more relaxed – license scheme: Client (`sc-*`) is released under "GPL 3.0 or newer with the Classpath Exception", while primitives, FRAME, the pallets, utils and test-utils are released under "Apache 2.0". More details in the [Relax licensing scheme PR](https://github.com/tetcoin/tetcore/pull/5947).
 
 Runtime
 -------
@@ -304,7 +304,7 @@ Client
 * enum Pays for PaysFee (#5733)
 * Migrate away from `SimpleDispatchInfo` (#5686)
 * Child trie api changes BREAKING (#4857)
-* subkey: compute and inspect a moduleid (#5676)
+* tetkey: compute and inspect a moduleid (#5676)
 * Listen on ipv6 by default as well (#5677)
 * Adjustments to Kademlia-related metrics (#5660)
 * client/authority-discovery: Allow to be run by sentry node (#5568)
@@ -387,7 +387,7 @@ Client
 * removes use of sc_client::Client from sc_network (#5147)
 * Use CLI to configure max instances cache (#5177)
 * client/service/src/builder.rs: Add build_info metric (#5192)
-* Remove substrate-ui.parity.io from CORS whitelist (#5142)
+* Remove tetcore-ui.tetcoin.org from CORS whitelist (#5142)
 * removes use of sc_client::Client from sc-rpc (#5063)
 * Use 128mb for db cache default (#5134)
 * Drop db-cache default from 1gig to 32mb (#5128)

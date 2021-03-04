@@ -1,3 +1,3 @@
-Substrate blockchain traits and primitives.
+Tetcore blockchain traits and primitives.
 
 License: Apache-2.0

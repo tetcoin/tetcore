@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -48,7 +48,7 @@ impl RegisteredProtocol {
 	pub fn new(protocol: impl Into<ProtocolId>, versions: &[u8], handshake_message: Arc<RwLock<Vec<u8>>>)
 		-> Self {
 		let protocol = protocol.into();
-		let mut base_name = b"/substrate/".to_vec();
+		let mut base_name = b"/tetcore/".to_vec();
 		base_name.extend_from_slice(protocol.as_ref().as_bytes());
 		base_name.extend_from_slice(b"/");
 

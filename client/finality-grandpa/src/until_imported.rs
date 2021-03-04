@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -546,7 +546,7 @@ pub(crate) type UntilGlobalMessageBlocksImported<Block, BlockStatus, BlockSyncRe
 mod tests {
 	use super::*;
 	use crate::{CatchUp, CompactCommit};
-	use substrate_test_runtime_client::runtime::{Block, Hash, Header};
+	use tetcore_test_runtime_client::runtime::{Block, Hash, Header};
 	use sp_consensus::BlockOrigin;
 	use sc_client_api::BlockImportNotification;
 	use futures::future::Either;

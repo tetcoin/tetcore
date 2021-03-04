@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -55,7 +55,7 @@ pub fn with_externalities_safe<F, U>(ext: &mut dyn Externalities, f: F) -> Resul
 	sp_externalities::set_and_run_with_externalities(
 		ext,
 		move || {
-			// Substrate uses custom panic hook that terminates process on panic. Disable
+			// Tetcore uses custom panic hook that terminates process on panic. Disable
 			// termination for the native call.
 			let _guard = sp_panic_handler::AbortGuard::force_unwind();
 			std::panic::catch_unwind(f).map_err(|e| {
@@ -76,7 +76,7 @@ pub fn with_externalities_safe<F, U>(ext: &mut dyn Externalities, f: F) -> Resul
 /// By dispatching we mean that we execute a runtime function specified by it's name.
 pub trait NativeExecutionDispatch: Send + Sync {
 	/// Host functions for custom runtime interfaces that should be callable from within the runtime
-	/// besides the default Substrate runtime interfaces.
+	/// besides the default Tetcore runtime interfaces.
 	type ExtendHostFunctions: HostFunctions;
 
 	/// Dispatch a method in the runtime.
@@ -261,7 +261,7 @@ impl<D: NativeExecutionDispatch> NativeExecutor<D> {
 		let mut host_functions = D::ExtendHostFunctions::host_functions();
 
 		// Add the custom host functions provided by the user.
-		host_functions.extend(sp_io::SubstrateHostFunctions::host_functions());
+		host_functions.extend(sp_io::TetcoreHostFunctions::host_functions());
 		let wasm_executor = WasmExecutor::new(
 			fallback_method,
 			default_heap_pages,
@@ -355,7 +355,7 @@ impl RuntimeSpawn for RuntimeInstanceSpawn {
 					// Instantiating wasm here every time is suboptimal at the moment, shared
 					// pool of instances should be used.
 					//
-					// https://github.com/paritytech/substrate/issues/7354
+					// https://github.com/tetcoin/tetcore/issues/7354
 					let instance = module.new_instance()
 						.expect("Failed to create new instance from module");
 
@@ -551,8 +551,8 @@ impl<D: NativeExecutionDispatch> sp_core::traits::CallInWasm for NativeExecutor<
 /// ```
 /// sc_executor::native_executor_instance!(
 ///     pub MyExecutor,
-///     substrate_test_runtime::api::dispatch,
-///     substrate_test_runtime::native_version,
+///     tetcore_test_runtime::api::dispatch,
+///     tetcore_test_runtime::native_version,
 /// );
 /// ```
 ///
@@ -573,8 +573,8 @@ impl<D: NativeExecutionDispatch> sp_core::traits::CallInWasm for NativeExecutor<
 ///
 /// sc_executor::native_executor_instance!(
 ///     pub MyExecutor,
-///     substrate_test_runtime::api::dispatch,
-///     substrate_test_runtime::native_version,
+///     tetcore_test_runtime::api::dispatch,
+///     tetcore_test_runtime::native_version,
 ///     my_interface::HostFunctions,
 /// );
 /// ```
@@ -632,8 +632,8 @@ mod tests {
 
 	native_executor_instance!(
 		pub MyExecutor,
-		substrate_test_runtime::api::dispatch,
-		substrate_test_runtime::native_version,
+		tetcore_test_runtime::api::dispatch,
+		tetcore_test_runtime::native_version,
 		(my_interface::HostFunctions, my_interface::HostFunctions),
 	);
 

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Traits and accessor functions for calling into the Substrate Wasm runtime.
+//! Traits and accessor functions for calling into the Tetcore Wasm runtime.
 //!
 //! The primary means of accessing the runtimes is through a cache which saves the reusable
 //! components of the runtime that are expensive to initialize.
@@ -373,12 +373,12 @@ mod tests {
 	use super::*;
 	use sp_wasm_interface::HostFunctions;
 	use sp_api::{Core, RuntimeApiInfo};
-	use substrate_test_runtime::Block;
+	use tetcore_test_runtime::Block;
 	use codec::Encode;
 
 	#[test]
 	fn host_functions_are_equal() {
-		let host_functions = sp_io::SubstrateHostFunctions::host_functions();
+		let host_functions = sp_io::TetcoreHostFunctions::host_functions();
 
 		let equal = &host_functions[..] == &host_functions[..];
 		assert!(equal, "Host functions are not equal");

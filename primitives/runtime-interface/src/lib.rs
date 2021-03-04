@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,10 +15,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Substrate runtime interface
+//! Tetcore runtime interface
 //!
 //! This crate provides types, traits and macros around runtime interfaces. A runtime interface is
-//! a fixed interface between a Substrate runtime and a Substrate node. For a native runtime the
+//! a fixed interface between a Tetcore runtime and a Tetcore node. For a native runtime the
 //! interface maps to a direct function call of the implementation. For a wasm runtime the interface
 //! maps to an external function call. These external functions are exported by the wasm executor
 //! and they map to the same implementation as the native calls.
@@ -119,7 +119,7 @@ pub use sp_std;
 
 /// Attribute macro for transforming a trait declaration into a runtime interface.
 ///
-/// A runtime interface is a fixed interface between a Substrate compatible runtime and the native
+/// A runtime interface is a fixed interface between a Tetcore compatible runtime and the native
 /// node. This interface is callable from a native and a wasm runtime. The macro will generate the
 /// corresponding code for the native implementation and the code for calling from the wasm
 /// side to the native implementation.
@@ -211,7 +211,7 @@ pub use sp_std;
 ///             .expect("`set_or_clear` called outside of an Externalities-provided environment.")
 ///     }
 ///
-///     /// This type implements the `HostFunctions` trait (from `sp-wasm-interface`) and
+///     /// This type implements the `HostFunctions` trait (from `tc-wasm-interface`) and
 ///     /// provides the host implementation for the wasm side. The host implementation converts the
 ///     /// arguments from wasm to native and calls the corresponding native function.
 ///     ///
@@ -242,7 +242,7 @@ pub use sp_std;
 ///         }
 ///     }
 ///
-///     /// The type is actually `ExchangeableFunction` (from `sp-runtime-interface`).
+///     /// The type is actually `ExchangeableFunction` (from `tc-runtime-interface`).
 ///     ///
 ///     /// This can be used to replace the implementation of the `call` function.
 ///     /// Instead of calling into the host, the callee will automatically call the other
@@ -284,11 +284,11 @@ pub use sp_std;
 ///
 /// 1. The generated functions are not callable from the native side.
 /// 2. The trait as shown above is not implemented for `Externalities` and is instead implemented
-///    for `FunctionExecutor` (from `sp-wasm-interface`).
+///    for `FunctionExecutor` (from `tc-wasm-interface`).
 ///
 /// # Disable tracing
 /// By addding `no_tracing` to the list of options you can prevent the wasm-side interface from
-/// generating the default `sp-tracing`-calls. Note that this is rarely needed but only meant for
+/// generating the default `tc-tracing`-calls. Note that this is rarely needed but only meant for
 /// the case when that would create a circular dependency. You usually _do not_ want to add this
 /// flag, as tracing doesn't cost you anything by default anyways (it is added as a no-op) but is
 /// super useful for debugging later.

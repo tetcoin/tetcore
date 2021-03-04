@@ -1,31 +1,31 @@
 [package]
-name = "sp-allocator"
+name = "tc-allocator"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Collection of allocator implementations."
-documentation = "https://docs.rs/sp-allocator"
+documentation = "https://docs.rs/tc-allocator"
 readme = "README.md"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-sp-std = { version = "2.0.0", path = "../std", default-features = false }
-sp-core = { version = "2.0.0", path = "../core", default-features = false }
-sp-wasm-interface = { version = "2.0.0", path = "../wasm-interface", default-features = false }
+tc-std = { version = "2.0.0", path = "../std", default-features = false }
+tc-core = { version = "2.0.0", path = "../core", default-features = false }
+tc-wasm-interface = { version = "2.0.0", path = "../wasm-interface", default-features = false }
 log = { version = "0.4.11", optional = true }
 thiserror = { version = "1.0.21", optional = true }
 
 [features]
 default = [ "std" ]
 std = [
-	"sp-std/std",
-	"sp-core/std",
-	"sp-wasm-interface/std",
+	"tc-std/std",
+	"tc-core/std",
+	"tc-wasm-interface/std",
 	"log",
 	"thiserror",
 ]

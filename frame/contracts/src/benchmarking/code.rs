@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -27,7 +27,7 @@
 use crate::Config;
 use crate::Module as Contracts;
 
-use parity_wasm::elements::{Instruction, Instructions, FuncBody, ValueType, BlockType};
+use tetsy_wasm::elements::{Instruction, Instructions, FuncBody, ValueType, BlockType};
 use pwasm_utils::stack_height::inject_limiter;
 use sp_core::crypto::UncheckedFrom;
 use sp_runtime::traits::Hash;
@@ -37,7 +37,7 @@ use sp_std::{prelude::*, convert::TryFrom};
 /// Pass to `create_code` in order to create a compiled `WasmModule`.
 ///
 /// This exists to have a more declarative way to describe a wasm module than to use
-/// parity-wasm directly. It is tailored to fit the structure of contracts that are
+/// tetsy-wasm directly. It is tailored to fit the structure of contracts that are
 /// needed for benchmarking.
 #[derive(Default)]
 pub struct ModuleDefinition {
@@ -121,7 +121,7 @@ where
 		let func_offset = u32::try_from(def.imported_functions.len()).unwrap();
 
 		// Every contract must export "deploy" and "call" functions
-		let mut contract = parity_wasm::builder::module()
+		let mut contract = tetsy_wasm::builder::module()
 			// deploy function (first internal function)
 			.function()
 				.signature().with_return_type(None).build()
@@ -160,7 +160,7 @@ where
 
 		// Import supervisor functions. They start with idx 0.
 		for func in def.imported_functions {
-			let sig = parity_wasm::builder::signature()
+			let sig = tetsy_wasm::builder::signature()
 				.with_params(func.params)
 				.with_return_type(func.return_type)
 				.build_sig();
@@ -168,7 +168,7 @@ where
 			contract = contract.import()
 				.module("seal0")
 				.field(func.name)
-				.with_external(parity_wasm::elements::External::Function(sig))
+				.with_external(tetsy_wasm::elements::External::Function(sig))
 				.build();
 		}
 
@@ -248,7 +248,7 @@ where
 	/// `put_code` for different sizes of wasm modules. The generated module maximizes
 	/// instrumentation runtime by nesting blocks as deeply as possible given the byte budget.
 	pub fn sized(target_bytes: u32) -> Self {
-		use parity_wasm::elements::Instruction::{If, I32Const, Return, End};
+		use tetsy_wasm::elements::Instruction::{If, I32Const, Return, End};
 		// Base size of a contract is 47 bytes and each expansion adds 6 bytes.
 		// We do one expansion less to account for the code section and function body
 		// size fields inside the binary wasm module representation which are leb128 encoded
@@ -477,7 +477,7 @@ pub mod body {
 
 	/// Replace the locals of the supplied `body` with `num` i64 locals.
 	pub fn inject_locals(body: &mut FuncBody, num: u32) {
-		use parity_wasm::elements::Local;
+		use tetsy_wasm::elements::Local;
 		*body.locals_mut() = (0..num).map(|i| Local::new(i, ValueType::I64)).collect()
 	}
 }

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -138,7 +138,7 @@ mod test {
 	use sp_core::{sr25519, Pair};
 	use sp_core::hash::H256;
 	use sp_runtime::testing::{Header as HeaderTest, Digest as DigestTest};
-	use substrate_test_runtime_client;
+	use tetcore_test_runtime_client;
 
 	use super::{MAX_SLOT_CAPACITY, PRUNING_BOUND, check_equivocation};
 
@@ -159,7 +159,7 @@ mod test {
 
 	#[test]
 	fn check_equivocation_works() {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 		let (pair, _seed) = sr25519::Pair::generate();
 		let public = pair.public();
 

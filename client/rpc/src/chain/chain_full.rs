@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -31,7 +31,7 @@ use sp_blockchain::HeaderBackend;
 
 /// Blockchain API backend for full nodes. Reads all the data from local database.
 pub struct FullChain<Block: BlockT, Client> {
-	/// Substrate client.
+	/// Tetcore client.
 	client: Arc<Client>,
 	/// Current subscriptions.
 	subscriptions: SubscriptionManager,

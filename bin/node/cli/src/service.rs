@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -18,7 +18,7 @@
 
 #![warn(unused_extern_crates)]
 
-//! Service implementation. Specialized wrapper over substrate service.
+//! Service implementation. Specialized wrapper over tetcore service.
 
 use std::sync::Arc;
 use sc_consensus_babe;

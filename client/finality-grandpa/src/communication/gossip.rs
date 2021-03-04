@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -87,7 +87,7 @@
 use sp_runtime::traits::{NumberFor, Block as BlockT, Zero};
 use sc_network_gossip::{MessageIntent, ValidatorContext};
 use sc_network::{ObservedRole, PeerId, ReputationChange};
-use parity_scale_codec::{Encode, Decode};
+use tetsy_scale_codec::{Encode, Decode};
 use sp_finality_grandpa::AuthorityId;
 
 use sc_telemetry::{telemetry, CONSENSUS_DEBUG};

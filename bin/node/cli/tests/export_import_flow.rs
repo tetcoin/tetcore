@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -98,7 +98,7 @@ impl<'a> ExportImportRevertExecutor<'a> {
 		};
 
 		// Running the command and capturing the output.
-		let output = Command::new(cargo_bin("substrate"))
+		let output = Command::new(cargo_bin("tetcore"))
 			.args(&arguments)
 			.arg(&base_path)
 			.arg(&self.exported_blocks_file)
@@ -165,7 +165,7 @@ impl<'a> ExportImportRevertExecutor<'a> {
 
 	/// Runs the `revert` command.
 	fn run_revert(&self) {
-		let output = Command::new(cargo_bin("substrate"))
+		let output = Command::new(cargo_bin("tetcore"))
 			.args(&["revert", "--dev", "--pruning", "archive", "-d"])
 			.arg(&self.base_path.path())
 			.output()

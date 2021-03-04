@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -1043,7 +1043,7 @@ mod tests {
 	use frame_support::{assert_ok, assert_noop, parameter_types,
 		traits::OnInitialize,
 	};
-	use substrate_test_utils::assert_eq_uvec;
+	use tetcore_test_utils::assert_eq_uvec;
 	use sp_core::H256;
 	use sp_runtime::{
 		testing::Header, BuildStorage, DispatchResult,

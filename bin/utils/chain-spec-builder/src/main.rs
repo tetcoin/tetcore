@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -222,7 +222,7 @@ fn print_seeds(
 fn main() -> Result<(), String> {
 	#[cfg(build_type="debug")]
 	println!(
-		"The chain spec builder builds a chain specification that includes a Substrate runtime compiled as WASM. To \
+		"The chain spec builder builds a chain specification that includes a Tetcore runtime compiled as WASM. To \
 		 ensure proper functioning of the included runtime compile (or run) the chain spec builder binary in \
 		 `--release` mode.\n",
 	);

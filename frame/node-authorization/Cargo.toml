@@ -4,8 +4,8 @@ version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME pallet for node authorization"
 
 [package.metadata.docs.rs]
@@ -13,13 +13,13 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 serde = { version = "1.0.101", optional = true }
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-sp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-sp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 
 [features]
 default = ["std"]
@@ -28,8 +28,8 @@ std = [
 	"codec/std",
 	"frame-support/std",
 	"frame-system/std",
-	"sp-core/std",
-	"sp-io/std",
-	"sp-runtime/std",
-	"sp-std/std",
+	"tc-core/std",
+	"tc-io/std",
+	"tc-runtime/std",
+	"tc-std/std",
 ]

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -524,7 +524,7 @@ sp_core::impl_maybe_marker!(
 	trait MaybeSerializeDeserialize: DeserializeOwned, Serialize;
 
 	/// A type that implements MallocSizeOf.
-	trait MaybeMallocSizeOf: parity_util_mem::MallocSizeOf;
+	trait MaybeMallocSizeOf: tetsy_util_mem::MallocSizeOf;
 );
 
 /// A type that can be used in runtime structures.
@@ -537,7 +537,7 @@ pub trait IsMember<MemberId> {
 	fn is_member(member_id: &MemberId) -> bool;
 }
 
-/// Something which fulfills the abstract idea of a Substrate header. It has types for a `Number`,
+/// Something which fulfills the abstract idea of a Tetcore header. It has types for a `Number`,
 /// a `Hash` and a `Hashing`. It provides access to an `extrinsics_root`, `state_root` and
 /// `parent_hash`, as well as a `digest` and a block `number`.
 ///
@@ -596,7 +596,7 @@ pub trait Header:
 	}
 }
 
-/// Something which fulfills the abstract idea of a Substrate block. It has types for
+/// Something which fulfills the abstract idea of a Tetcore block. It has types for
 /// `Extrinsic` pieces of information as well as a `Header`.
 ///
 /// You can get an iterator over each of the `extrinsics` and retrieve the `header`.
@@ -671,7 +671,7 @@ pub type DigestFor<B> = Digest<<<B as Block>::Header as Header>::Hash>;
 /// Extract the digest item type for a block.
 pub type DigestItemFor<B> = DigestItem<<<B as Block>::Header as Header>::Hash>;
 
-/// A "checkable" piece of information, used by the standard Substrate Executive in order to
+/// A "checkable" piece of information, used by the standard Tetcore Executive in order to
 /// check the validity of a piece of extrinsic information, usually by verifying the signature.
 /// Implement for pieces of information that require some additional context `Context` in order to be
 /// checked.
@@ -683,7 +683,7 @@ pub trait Checkable<Context>: Sized {
 	fn check(self, c: &Context) -> Result<Self::Checked, TransactionValidityError>;
 }
 
-/// A "checkable" piece of information, used by the standard Substrate Executive in order to
+/// A "checkable" piece of information, used by the standard Tetcore Executive in order to
 /// check the validity of a piece of extrinsic information, usually by verifying the signature.
 /// Implement for pieces of information that don't require additional context in order to be
 /// checked.
@@ -714,7 +714,7 @@ pub trait Dispatchable {
 	/// ...
 	type Config;
 	/// An opaque set of information attached to the transaction. This could be constructed anywhere
-	/// down the line in a runtime. The current Substrate runtime uses a struct with the same name
+	/// down the line in a runtime. The current Tetcore runtime uses a struct with the same name
 	/// to represent the dispatch class and weight.
 	type Info;
 	/// Additional information that is returned by `dispatch`. Can be used to supply the caller
@@ -951,7 +951,7 @@ impl SignedExtension for () {
 	fn additional_signed(&self) -> sp_std::result::Result<(), TransactionValidityError> { Ok(()) }
 }
 
-/// An "executable" piece of information, used by the standard Substrate Executive in order to
+/// An "executable" piece of information, used by the standard Tetcore Executive in order to
 /// enact a piece of extrinsic information by marshalling and dispatching to a named function
 /// call.
 ///

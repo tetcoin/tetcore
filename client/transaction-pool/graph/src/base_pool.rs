@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -87,7 +87,7 @@ pub struct PruneStatus<Hash, Ex> {
 
 /// Immutable transaction
 #[cfg_attr(test, derive(Clone))]
-#[derive(PartialEq, Eq, parity_util_mem::MallocSizeOf)]
+#[derive(PartialEq, Eq, tetsy_util_mem::MallocSizeOf)]
 pub struct Transaction<Hash, Extrinsic> {
 	/// Raw extrinsic representing that transaction.
 	pub data: Extrinsic,
@@ -217,7 +217,7 @@ const RECENTLY_PRUNED_TAGS: usize = 2;
 /// Most likely it is required to revalidate them and recompute set of
 /// required tags.
 #[derive(Debug)]
-#[cfg_attr(not(target_os = "unknown"), derive(parity_util_mem::MallocSizeOf))]
+#[cfg_attr(not(target_os = "unknown"), derive(tetsy_util_mem::MallocSizeOf))]
 pub struct BasePool<Hash: hash::Hash + Eq, Ex> {
 	reject_future_transactions: bool,
 	future: FutureTransactions<Hash, Ex>,
@@ -903,7 +903,7 @@ mod tests {
 			source: Source::External,
 		}).expect("import 2 should be ok");
 
-		assert!(parity_util_mem::malloc_size(&pool) > 5000);
+		assert!(tetsy_util_mem::malloc_size(&pool) > 5000);
 	}
 
 	#[test]

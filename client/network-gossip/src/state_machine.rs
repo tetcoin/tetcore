@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -31,7 +31,7 @@ use sp_runtime::traits::{Block as BlockT, Hash, HashFor};
 use sc_network::ObservedRole;
 use wasm_timer::Instant;
 
-// FIXME: Add additional spam/DoS attack protection: https://github.com/paritytech/substrate/issues/1115
+// FIXME: Add additional spam/DoS attack protection: https://github.com/tetcoin/tetcore/issues/1115
 // NOTE: The current value is adjusted based on largest production network deployment (Kusama) and
 // the current main gossip user (GRANDPA). Currently there are ~800 validators on Kusama, as such,
 // each GRANDPA round should generate ~1600 messages, and we currently keep track of the last 2

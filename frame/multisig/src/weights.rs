@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -16,12 +16,12 @@
 // limitations under the License.
 
 //! Weights for pallet_multisig
-//! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 2.0.0
+//! THIS FILE WAS AUTO-GENERATED USING THE TETCORE BENCHMARK CLI VERSION 2.0.0
 //! DATE: 2020-10-27, STEPS: [50, ], REPEAT: 20, LOW RANGE: [], HIGH RANGE: []
 //! EXECUTION: Some(Wasm), WASM-EXECUTION: Compiled, CHAIN: Some("dev"), DB CACHE: 128
 
 // Executed Command:
-// target/release/substrate
+// target/release/tetcore
 // benchmark
 // --chain=dev
 // --steps=50
@@ -56,9 +56,9 @@ pub trait WeightInfo {
 	
 }
 
-/// Weights for pallet_multisig using the Substrate node and recommended hardware.
-pub struct SubstrateWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
+/// Weights for pallet_multisig using the Tetcore node and recommended hardware.
+pub struct TetcoreWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 	fn as_multi_threshold_1(z: u32, ) -> Weight {
 		(14_183_000 as Weight)
 			.saturating_add((1_000 as Weight).saturating_mul(z as Weight))

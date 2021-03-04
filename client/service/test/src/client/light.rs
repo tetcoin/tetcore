@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -33,7 +33,7 @@ use sp_runtime::{
 };
 use std::collections::HashMap;
 use parking_lot::Mutex;
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	runtime::{Hash, Block, Header}, TestClient, ClientBlockImportExt,
 };
 use sp_api::{InitializeBlock, StorageTransactionCache, ProofRecorder};
@@ -56,9 +56,9 @@ use sp_blockchain::{
 use std::panic::UnwindSafe;
 use std::cell::RefCell;
 use sp_state_machine::{OverlayedChanges, ExecutionManager};
-use parity_scale_codec::{Decode, Encode};
+use tetsy_scale_codec::{Decode, Encode};
 use super::prepare_client_with_key_changes;
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	AccountKeyring, runtime::{self, Extrinsic},
 };
 
@@ -194,7 +194,7 @@ struct DummyCallExecutor;
 impl CallExecutor<Block> for DummyCallExecutor {
 	type Error = ClientError;
 
-	type Backend = substrate_test_runtime_client::Backend;
+	type Backend = tetcore_test_runtime_client::Backend;
 
 	fn call(
 		&self,
@@ -257,14 +257,14 @@ impl CallExecutor<Block> for DummyCallExecutor {
 	}
 }
 
-fn local_executor() -> NativeExecutor<substrate_test_runtime_client::LocalExecutor> {
+fn local_executor() -> NativeExecutor<tetcore_test_runtime_client::LocalExecutor> {
 	NativeExecutor::new(WasmExecutionMethod::Interpreted, None, 8)
 }
 
 #[test]
 fn local_state_is_created_when_genesis_state_is_available() {
 	let def = Default::default();
-	let header0 = substrate_test_runtime_client::runtime::Header::new(0, def, def, def, Default::default());
+	let header0 = tetcore_test_runtime_client::runtime::Header::new(0, def, def, def, Default::default());
 
 	let backend: Backend<_, BlakeTwo256> = Backend::new(
 		Arc::new(DummyBlockchain::new(DummyStorage::new())),
@@ -320,7 +320,7 @@ fn execution_proof_is_generated_and_checked() {
 			&local_executor(),
 			Box::new(TaskExecutor::new()),
 			&RemoteCallRequest {
-				block: substrate_test_runtime_client::runtime::Hash::default(),
+				block: tetcore_test_runtime_client::runtime::Hash::default(),
 				header: remote_header,
 				method: method.into(),
 				call_data: vec![],
@@ -348,7 +348,7 @@ fn execution_proof_is_generated_and_checked() {
 			&local_executor(),
 			Box::new(TaskExecutor::new()),
 			&RemoteCallRequest {
-				block: substrate_test_runtime_client::runtime::Hash::default(),
+				block: tetcore_test_runtime_client::runtime::Hash::default(),
 				header: remote_header,
 				method: method.into(),
 				call_data: vec![],
@@ -370,7 +370,7 @@ fn execution_proof_is_generated_and_checked() {
 	}
 
 	// prepare remote client
-	let mut remote_client = substrate_test_runtime_client::new();
+	let mut remote_client = tetcore_test_runtime_client::new();
 	for i in 1u32..3u32 {
 		let mut digest = Digest::default();
 		digest.push(sp_runtime::generic::DigestItem::Other::<H256>(i.to_le_bytes().to_vec()));
@@ -409,9 +409,9 @@ fn execution_proof_is_generated_and_checked() {
 fn code_is_executed_at_genesis_only() {
 	let backend = Arc::new(InMemBackend::<Block>::new());
 	let def = H256::default();
-	let header0 = substrate_test_runtime_client::runtime::Header::new(0, def, def, def, Default::default());
+	let header0 = tetcore_test_runtime_client::runtime::Header::new(0, def, def, def, Default::default());
 	let hash0 = header0.hash();
-	let header1 = substrate_test_runtime_client::runtime::Header::new(1, def, def, hash0, Default::default());
+	let header1 = tetcore_test_runtime_client::runtime::Header::new(1, def, def, hash0, Default::default());
 	let hash1 = header1.hash();
 	backend.blockchain().insert(hash0, header0, None, None, NewBlockState::Final).unwrap();
 	backend.blockchain().insert(hash1, header1, None, None, NewBlockState::Final).unwrap();
@@ -444,7 +444,7 @@ fn code_is_executed_at_genesis_only() {
 
 
 type TestChecker = LightDataChecker<
-	NativeExecutor<substrate_test_runtime_client::LocalExecutor>,
+	NativeExecutor<tetcore_test_runtime_client::LocalExecutor>,
 	BlakeTwo256,
 	Block,
 	DummyStorage,
@@ -452,7 +452,7 @@ type TestChecker = LightDataChecker<
 
 fn prepare_for_read_proof_check() -> (TestChecker, Header, StorageProof, u32) {
 	// prepare remote client
-	let remote_client = substrate_test_runtime_client::new();
+	let remote_client = tetcore_test_runtime_client::new();
 	let remote_block_id = BlockId::Number(0);
 	let remote_block_hash = remote_client.block_hash(0).unwrap().unwrap();
 	let mut remote_block_header = remote_client.header(&remote_block_id).unwrap().unwrap();
@@ -486,12 +486,12 @@ fn prepare_for_read_proof_check() -> (TestChecker, Header, StorageProof, u32) {
 }
 
 fn prepare_for_read_child_proof_check() -> (TestChecker, Header, StorageProof, Vec<u8>) {
-	use substrate_test_runtime_client::DefaultTestClientBuilderExt;
-	use substrate_test_runtime_client::TestClientBuilderExt;
+	use tetcore_test_runtime_client::DefaultTestClientBuilderExt;
+	use tetcore_test_runtime_client::TestClientBuilderExt;
 	let child_info = ChildInfo::new_default(b"child1");
 	let child_info = &child_info;
 	// prepare remote client
-	let remote_client = substrate_test_runtime_client::TestClientBuilder::new()
+	let remote_client = tetcore_test_runtime_client::TestClientBuilder::new()
 		.add_extra_child_storage(
 			child_info,
 			b"key1".to_vec(),
@@ -535,7 +535,7 @@ fn prepare_for_read_child_proof_check() -> (TestChecker, Header, StorageProof, V
 
 fn prepare_for_header_proof_check(insert_cht: bool) -> (TestChecker, Hash, Header, StorageProof) {
 	// prepare remote client
-	let mut remote_client = substrate_test_runtime_client::new();
+	let mut remote_client = tetcore_test_runtime_client::new();
 	let mut local_headers_hashes = Vec::new();
 	for i in 0..4 {
 		let block = remote_client.new_block(Default::default()).unwrap().build().unwrap().block;

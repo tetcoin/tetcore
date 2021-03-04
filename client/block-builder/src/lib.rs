@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate block builder
+//! Tetcore block builder
 //!
 //! This crate provides the [`BlockBuilder`] utility and the corresponding runtime api
 //! [`BlockBuilder`](sp_block_builder::BlockBuilder).
@@ -247,11 +247,11 @@ mod tests {
 	use sp_blockchain::HeaderBackend;
 	use sp_core::Blake2Hasher;
 	use sp_state_machine::Backend;
-	use substrate_test_runtime_client::{DefaultTestClientBuilderExt, TestClientBuilderExt};
+	use tetcore_test_runtime_client::{DefaultTestClientBuilderExt, TestClientBuilderExt};
 
 	#[test]
 	fn block_building_storage_proof_does_not_include_runtime_by_default() {
-		let builder = substrate_test_runtime_client::TestClientBuilder::new();
+		let builder = tetcore_test_runtime_client::TestClientBuilder::new();
 		let backend = builder.backend();
 		let client = builder.build();
 

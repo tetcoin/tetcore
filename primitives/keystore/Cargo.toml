@@ -1,13 +1,13 @@
 [package]
-name = "sp-keystore"
+name = "tc-keystore"
 version = "0.8.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Keystore primitives."
-documentation = "https://docs.rs/sp-core"
+documentation = "https://docs.rs/tc-core"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
@@ -15,14 +15,14 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 async-trait = "0.1.30"
 derive_more = "0.99.2"
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 futures = { version = "0.3.1" }
 schnorrkel = { version = "0.9.1", features = ["preaudit_deprecated", "u64_backend"], default-features = false }
 merlin = { version = "2.0", default-features = false }
 parking_lot = { version = "0.11.1", default-features = false }
 serde = { version = "1.0", optional = true}
-sp-core = { version = "2.0.0", path = "../core" }
-sp-externalities = { version = "0.8.0", path = "../externalities", default-features = false }
+tc-core = { version = "2.0.0", path = "../core" }
+tc-externalities = { version = "0.8.0", path = "../externalities", default-features = false }
 
 [dev-dependencies]
 rand = "0.7.2"

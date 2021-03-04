@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -99,7 +99,7 @@ where
 		disable_grandpa: Default::default(),
 		execution_strategies: Default::default(),
 		force_authoring: Default::default(),
-		impl_name: String::from("parity-substrate"),
+		impl_name: String::from("tetsy-tetcore"),
 		impl_version: String::from("0.0.0"),
 		offchain_worker: Default::default(),
 		prometheus_config: Default::default(),

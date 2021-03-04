@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -19,16 +19,16 @@
 #![warn(unused_extern_crates)]
 #![warn(missing_docs)]
 
-//! Substrate-specific P2P networking.
+//! Tetcore-specific P2P networking.
 //!
 //! **Important**: This crate is unstable and the API and usage may change.
 //!
 //! # Node identities and addresses
 //!
 //! In a decentralized network, each node possesses a network private key and a network public key.
-//! In Substrate, the keys are based on the ed25519 curve.
+//! In Tetcore, the keys are based on the ed25519 curve.
 //!
-//! From a node's public key, we can derive its *identity*. In Substrate and libp2p, a node's
+//! From a node's public key, we can derive its *identity*. In Tetcore and libp2p, a node's
 //! identity is represented with the [`PeerId`] struct. All network communications between nodes on
 //! the network use encryption derived from both sides's keys, which means that **identities cannot
 //! be faked**.
@@ -36,9 +36,9 @@
 //! A node's identity uniquely identifies a machine on the network. If you start two or more
 //! clients using the same network key, large interferences will happen.
 //!
-//! # Substrate's network protocol
+//! # Tetcore's network protocol
 //!
-//! Substrate's networking protocol is based upon libp2p. It is at the moment not possible and not
+//! Tetcore's networking protocol is based upon libp2p. It is at the moment not possible and not
 //! planned to permit using something else than the libp2p network stack and the rust-libp2p
 //! library. However the libp2p framework is very flexible and the rust-libp2p library could be
 //! extended to support a wider range of protocols than what is offered by libp2p.
@@ -48,7 +48,7 @@
 //! In order for our node to join a peer-to-peer network, it has to know a list of nodes that are
 //! part of said network. This includes nodes identities and their address (how to reach them).
 //! Building such a list is called the **discovery** mechanism. There are three mechanisms that
-//! Substrate uses:
+//! Tetcore uses:
 //!
 //! - Bootstrap nodes. These are hard-coded node identities and addresses passed alongside with
 //! the network configuration.
@@ -71,7 +71,7 @@
 //! The connection establishment mechanism is called the **transport**.
 //!
 //! As of the writing of this documentation, the following base-layer protocols are supported by
-//! Substrate:
+//! Tetcore:
 //!
 //! - TCP/IP for addresses of the form `/ip4/1.2.3.4/tcp/5`. Once the TCP connection is open, an
 //! encryption and a multiplexing layer are negotiated on top.
@@ -106,7 +106,7 @@
 //! >           one can use both the `/dot/sync/2` and `/sub/sync/2` protocols on the same
 //! >           connection, provided that the remote supports them.
 //!
-//! Substrate uses the following standard libp2p protocols:
+//! Tetcore uses the following standard libp2p protocols:
 //!
 //! - **`/ipfs/ping/1.0.0`**. We periodically open an ephemeral substream in order to ping the
 //! remote and check whether the connection is still alive. Failure for the remote to reply leads
@@ -117,13 +117,13 @@
 //! ephemeral substreams for Kademlia random walk queries. Each Kademlia query is done in a
 //! separate substream.
 //!
-//! Additionally, Substrate uses the following non-libp2p-standard protocols:
+//! Additionally, Tetcore uses the following non-libp2p-standard protocols:
 //!
-//! - **`/substrate/<protocol-id>/<version>`** (where `<protocol-id>` must be replaced with the
+//! - **`/tetcore/<protocol-id>/<version>`** (where `<protocol-id>` must be replaced with the
 //! protocol ID of the targeted chain, and `<version>` is a number between 2 and 6). For each
-//! connection we optionally keep an additional substream for all Substrate-based communications alive.
+//! connection we optionally keep an additional substream for all Tetcore-based communications alive.
 //! This protocol is considered legacy, and is progressively being replaced with alternatives.
-//! This is designated as "The legacy Substrate substream" in this documentation. See below for
+//! This is designated as "The legacy Tetcore substream" in this documentation. See below for
 //! more details.
 //! - **`/<protocol-id>/sync/2`** is a request-response protocol (see below) that lets one perform
 //! requests for information about blocks. Each request is the encoding of a `BlockRequest` and
@@ -142,15 +142,15 @@
 //! format is a SCALE-encoded tuple containing a block header followed with an opaque list of
 //! bytes containing some data associated with this block announcement, e.g. a candidate message.
 //! - Notifications protocols that are registered using
-//! `NetworkConfiguration::notifications_protocols`. For example: `/paritytech/grandpa/1`. See
+//! `NetworkConfiguration::notifications_protocols`. For example: `/tetcoin/grandpa/1`. See
 //! below for more information.
 //!
-//! ## The legacy Substrate substream
+//! ## The legacy Tetcore substream
 //!
-//! Substrate uses a component named the **peerset manager (PSM)**. Through the discovery
+//! Tetcore uses a component named the **peerset manager (PSM)**. Through the discovery
 //! mechanism, the PSM is aware of the nodes that are part of the network and decides which nodes
-//! we should perform Substrate-based communications with. For these nodes, we open a connection
-//! if necessary and open a unique substream for Substrate-based communications. If the PSM decides
+//! we should perform Tetcore-based communications with. For these nodes, we open a connection
+//! if necessary and open a unique substream for Tetcore-based communications. If the PSM decides
 //! that we should disconnect a node, then that substream is closed.
 //!
 //! For more information about the PSM, see the *sc-peerset* crate.
@@ -161,8 +161,8 @@
 //! substream is closed, the entire connection is closed as well. This is a bug that will be
 //! resolved by deprecating the protocol entirely.
 //!
-//! Within the unique Substrate substream, messages encoded using
-//! [*parity-scale-codec*](https://github.com/paritytech/parity-scale-codec) are exchanged.
+//! Within the unique Tetcore substream, messages encoded using
+//! [*tetsy-scale-codec*](https://github.com/tetcoin/tetsy-scale-codec) are exchanged.
 //! The detail of theses messages is not totally in place, but they can be found in the
 //! `message.rs` file.
 //!
@@ -212,11 +212,11 @@
 //! `sc-network` automatically tries to open a substream towards each node for which the legacy
 //! Substream substream is open. The handshake is then performed automatically.
 //!
-//! For example, the `sc-finality-grandpa` crate registers the `/paritytech/grandpa/1`
+//! For example, the `sc-finality-grandpa` crate registers the `/tetcoin/grandpa/1`
 //! notifications protocol.
 //!
 //! At the moment, for backwards-compatibility, notification protocols are tied to the legacy
-//! Substrate substream. Additionally, the handshake message is hardcoded to be a single 8-bits
+//! Tetcore substream. Additionally, the handshake message is hardcoded to be a single 8-bits
 //! integer representing the role of the node:
 //!
 //! - 1 for a full node.

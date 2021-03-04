@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -20,7 +20,7 @@
 
 use crate::error::{self, Error};
 use std::mem;
-use parity_wasm::elements::{deserialize_buffer, DataSegment, Instruction, Module as RawModule};
+use tetsy_wasm::elements::{deserialize_buffer, DataSegment, Instruction, Module as RawModule};
 
 /// A bunch of information collected from a WebAssembly module.
 pub struct WasmModuleInfo {
@@ -100,7 +100,7 @@ impl DataSegmentsSnapshot {
 						// In a valid wasm file, initializer expressions can only refer imported
 						// globals.
 						//
-						// At the moment of writing the Substrate Runtime Interface does not provide
+						// At the moment of writing the Tetcore Runtime Interface does not provide
 						// any globals. There is nothing that prevents us from supporting this
 						// if/when we gain those.
 						return Err(Error::ImportedGlobalsUnsupported);

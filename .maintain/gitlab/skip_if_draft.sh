@@ -1,5 +1,5 @@
 #!/bin/sh
-url="https://api.github.com/repos/paritytech/substrate/pulls/${CI_COMMIT_REF_NAME}"
+url="https://api.github.com/repos/tetcoin/tetcore/pulls/${CI_COMMIT_REF_NAME}"
 echo "[+] API URL: $url"
 
 draft_state=$(curl -H "Authorization: token ${GITHUB_PR_TOKEN}" "$url" | jq -r .draft)

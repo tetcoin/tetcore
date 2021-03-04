@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -22,7 +22,7 @@ use sp_api::{
 };
 use sp_runtime::{traits::{GetNodeBlockType, Block as BlockT}, generic::BlockId};
 use sp_core::NativeOrEncoded;
-use substrate_test_runtime_client::runtime::Block;
+use tetcore_test_runtime_client::runtime::Block;
 use sp_blockchain::Result;
 
 /// The declaration of the `Runtime` type and the implementation of the `GetNodeBlockType`
@@ -134,9 +134,9 @@ mock_impl_runtime_apis! {
 	}
 }
 
-type TestClient = substrate_test_runtime_client::client::Client<
-	substrate_test_runtime_client::Backend,
-	substrate_test_runtime_client::Executor,
+type TestClient = tetcore_test_runtime_client::client::Client<
+	tetcore_test_runtime_client::Backend,
+	tetcore_test_runtime_client::Executor,
 	Block,
 	RuntimeApi,
 >;

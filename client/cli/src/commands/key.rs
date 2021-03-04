@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -17,7 +17,7 @@
 
 //! Key related CLI utilities
 
-use crate::{Error, SubstrateCli};
+use crate::{Error, TetcoreCli};
 use structopt::StructOpt;
 
 use super::{
@@ -50,7 +50,7 @@ pub enum KeySubcommand {
 
 impl KeySubcommand {
 	/// run the key subcommands
-	pub fn run<C: SubstrateCli>(&self, cli: &C) -> Result<(), Error> {
+	pub fn run<C: TetcoreCli>(&self, cli: &C) -> Result<(), Error> {
 		match self {
 			KeySubcommand::GenerateNodeKey(cmd) => cmd.run(),
 			KeySubcommand::Generate(cmd) => cmd.run(),

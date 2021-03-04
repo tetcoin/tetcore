@@ -1,12 +1,12 @@
-name: substrate
+name: tetcore
 version: 0.2
 appVersion: 0.9.1
-description: "Substrate: The platform for blockchain innovators"
-home: https://substrate.network/
-icon: https://substrate.network/favicon.ico
+description: "Tetcore: The platform for blockchain innovators"
+home: https://tetcore.network/
+icon: https://tetcore.network/favicon.ico
 sources:
-  - https://github.com/paritytech/substrate/
+  - https://github.com/tetcoin/tetcore/
 maintainers:
-  - name: Paritytech Devops Team
-    email: devops-team@parity.io
+  - name: Tetcoin Devops Team
+    email: devops-team@tetcoin.org
 tillerVersion: ">=2.8.0"

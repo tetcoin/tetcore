@@ -1,13 +1,13 @@
 [package]
-name = "sp-tasks"
+name = "tc-tasks"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Runtime asynchronous, pure computational tasks"
-documentation = "https://docs.rs/sp-tasks"
+documentation = "https://docs.rs/tc-tasks"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -15,22 +15,22 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 log = { version = "0.4.8", optional = true }
-sp-core = { version = "2.0.0", default-features = false, path = "../core" }
-sp-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
-sp-io = { version = "2.0.0", default-features = false, path = "../io" }
-sp-runtime-interface = { version = "2.0.0", default-features = false, path = "../runtime-interface" }
-sp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tc-core = { version = "2.0.0", default-features = false, path = "../core" }
+tc-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
+tc-io = { version = "2.0.0", default-features = false, path = "../io" }
+tc-runtime-interface = { version = "2.0.0", default-features = false, path = "../runtime-interface" }
+tc-std = { version = "2.0.0", default-features = false, path = "../std" }
 
 [dev-dependencies]
-codec = { package = "parity-scale-codec", default-features = false, version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", default-features = false, version = "2.0.0" }
 
 [features]
 default = ["std"]
 std = [
 	"log",
-	"sp-core/std",
-	"sp-externalities",
-	"sp-io/std",
-	"sp-runtime-interface/std",
-	"sp-std/std",
+	"tc-core/std",
+	"tc-externalities",
+	"tc-io/std",
+	"tc-runtime-interface/std",
+	"tc-std/std",
 ]

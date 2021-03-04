@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -23,11 +23,11 @@ use crate::{config,  Event, NetworkService, NetworkWorker};
 use futures::prelude::*;
 use sp_runtime::traits::{Block as BlockT, Header as _};
 use std::{borrow::Cow, sync::Arc, time::Duration};
-use substrate_test_runtime_client::{TestClientBuilder, TestClientBuilderExt as _};
+use tetcore_test_runtime_client::{TestClientBuilder, TestClientBuilderExt as _};
 
 type TestNetworkService = NetworkService<
-	substrate_test_runtime_client::runtime::Block,
-	substrate_test_runtime_client::runtime::Hash,
+	tetcore_test_runtime_client::runtime::Block,
+	tetcore_test_runtime_client::runtime::Hash,
 >;
 
 /// Builds a full node to be used for testing. Returns the node service and its associated events

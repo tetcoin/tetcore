@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -960,7 +960,7 @@ impl<'ast> Visit<'ast> for CheckTraitDecl {
 						input.span(),
 						"`Block: BlockT` generic parameter will be added automatically by the \
 						`decl_runtime_apis!` macro! If you try to use a different trait than the \
-						substrate `Block` trait, please rename it locally."
+						tetcore `Block` trait, please rename it locally."
 					)
 				)
 			}

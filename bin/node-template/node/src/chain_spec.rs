@@ -11,7 +11,7 @@ use sc_service::ChainType;
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
-/// Specialized `ChainSpec`. This is a specialization of the general Substrate ChainSpec type.
+/// Specialized `ChainSpec`. This is a specialization of the general Tetcore ChainSpec type.
 pub type ChainSpec = sc_service::GenericChainSpec<GenesisConfig>;
 
 /// Generate a crypto pair from seed.

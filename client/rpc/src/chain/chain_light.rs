@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -36,7 +36,7 @@ use sc_client_api::BlockchainEvents;
 /// Blockchain API backend for light nodes. Reads all the data from local
 /// database, if available, or fetches it from remote node otherwise.
 pub struct LightChain<Block: BlockT, Client, F> {
-	/// Substrate client.
+	/// Tetcore client.
 	client: Arc<Client>,
 	/// Current subscriptions.
 	subscriptions: SubscriptionManager,

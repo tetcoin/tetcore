@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,10 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use parity_scale_codec::{Encode, Decode, Joiner};
+use tetsy_scale_codec::{Encode, Decode, Joiner};
 use sc_executor::native_executor_instance;
 use sp_state_machine::{StateMachine, OverlayedChanges, ExecutionStrategy, InMemoryBackend};
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	prelude::*,
 	runtime::{
 		self, genesismap::{GenesisConfig, insert_genesis_block},
@@ -39,7 +39,7 @@ use sc_service::client::{self, Client, LocalCallExecutor, new_in_mem};
 use sp_runtime::traits::{
 	BlakeTwo256, Block as BlockT, Header as HeaderT,
 };
-use substrate_test_runtime::TestAPI;
+use tetcore_test_runtime::TestAPI;
 use sp_state_machine::backend::Backend as _;
 use sp_api::ProvideRuntimeApi;
 use sp_core::{H256, ChangesTrieConfiguration, blake2_256, testing::TaskExecutor};
@@ -59,8 +59,8 @@ mod db;
 
 native_executor_instance!(
 	Executor,
-	substrate_test_runtime_client::runtime::api::dispatch,
-	substrate_test_runtime_client::runtime::native_version,
+	tetcore_test_runtime_client::runtime::api::dispatch,
+	tetcore_test_runtime_client::runtime::native_version,
 );
 
 fn executor() -> sc_executor::NativeExecutor<Executor> {
@@ -73,8 +73,8 @@ fn executor() -> sc_executor::NativeExecutor<Executor> {
 
 pub fn prepare_client_with_key_changes() -> (
 	client::Client<
-		substrate_test_runtime_client::Backend,
-		substrate_test_runtime_client::Executor,
+		tetcore_test_runtime_client::Backend,
+		tetcore_test_runtime_client::Executor,
 		Block,
 		RuntimeApi
 	>,
@@ -336,7 +336,7 @@ fn construct_genesis_with_bad_transaction_should_panic() {
 
 #[test]
 fn client_initializes_from_genesis_ok() {
-	let client = substrate_test_runtime_client::new();
+	let client = tetcore_test_runtime_client::new();
 
 	assert_eq!(
 		client.runtime_api().balance_of(
@@ -356,7 +356,7 @@ fn client_initializes_from_genesis_ok() {
 
 #[test]
 fn block_builder_works_with_no_transactions() {
-	let mut client = substrate_test_runtime_client::new();
+	let mut client = tetcore_test_runtime_client::new();
 
 	let block = client.new_block(Default::default()).unwrap().build().unwrap().block;
 
@@ -367,7 +367,7 @@ fn block_builder_works_with_no_transactions() {
 
 #[test]
 fn block_builder_works_with_transactions() {
-	let mut client = substrate_test_runtime_client::new();
+	let mut client = tetcore_test_runtime_client::new();
 
 	let mut builder = client.new_block(Default::default()).unwrap();
 
@@ -404,7 +404,7 @@ fn block_builder_works_with_transactions() {
 
 #[test]
 fn block_builder_does_not_include_invalid() {
-	let mut client = substrate_test_runtime_client::new();
+	let mut client = tetcore_test_runtime_client::new();
 
 	let mut builder = client.new_block(Default::default()).unwrap();
 
@@ -469,7 +469,7 @@ fn best_containing_with_hash_not_found() {
 fn uncles_with_only_ancestors() {
 	// block tree:
 	// G -> A1 -> A2
-	let mut client = substrate_test_runtime_client::new();
+	let mut client = tetcore_test_runtime_client::new();
 
 	// G -> A1
 	let a1 = client.new_block(Default::default()).unwrap().build().unwrap().block;
@@ -489,7 +489,7 @@ fn uncles_with_multiple_forks() {
 	//      A1 -> B2 -> B3 -> B4
 	//	          B2 -> C3
 	//	    A1 -> D2
-	let mut client = substrate_test_runtime_client::new();
+	let mut client = tetcore_test_runtime_client::new();
 
 	// G -> A1
 	let a1 = client.new_block(Default::default()).unwrap().build().unwrap().block;
@@ -998,7 +998,7 @@ fn key_changes_works() {
 
 #[test]
 fn import_with_justification() {
-	let mut client = substrate_test_runtime_client::new();
+	let mut client = tetcore_test_runtime_client::new();
 
 	// G -> A1
 	let a1 = client.new_block(Default::default()).unwrap().build().unwrap().block;
@@ -1044,7 +1044,7 @@ fn import_with_justification() {
 
 #[test]
 fn importing_diverged_finalized_block_should_trigger_reorg() {
-	let mut client = substrate_test_runtime_client::new();
+	let mut client = tetcore_test_runtime_client::new();
 
 	// G -> A1 -> A2
 	//   \
@@ -1188,7 +1188,7 @@ fn finalizing_diverged_block_should_trigger_reorg() {
 
 #[test]
 fn get_header_by_block_number_doesnt_panic() {
-	let client = substrate_test_runtime_client::new();
+	let client = tetcore_test_runtime_client::new();
 
 	// backend uses u32 for block numbers, make sure we don't panic when
 	// trying to convert
@@ -1199,9 +1199,9 @@ fn get_header_by_block_number_doesnt_panic() {
 #[test]
 fn state_reverted_on_reorg() {
 	sp_tracing::try_init_simple();
-	let mut client = substrate_test_runtime_client::new();
+	let mut client = tetcore_test_runtime_client::new();
 
-	let current_balance = |client: &substrate_test_runtime_client::TestClient|
+	let current_balance = |client: &tetcore_test_runtime_client::TestClient|
 		client.runtime_api().balance_of(
 			&BlockId::number(client.chain_info().best_number), AccountKeyring::Alice.into(),
 		).unwrap();
@@ -1666,7 +1666,7 @@ fn imports_blocks_with_changes_tries_config_change() {
 
 #[test]
 fn storage_keys_iter_prefix_and_start_key_works() {
-	let client = substrate_test_runtime_client::new();
+	let client = tetcore_test_runtime_client::new();
 
 	let prefix = StorageKey(hex!("3a").to_vec());
 
@@ -1691,7 +1691,7 @@ fn storage_keys_iter_prefix_and_start_key_works() {
 
 #[test]
 fn storage_keys_iter_works() {
-	let client = substrate_test_runtime_client::new();
+	let client = tetcore_test_runtime_client::new();
 
 	let prefix = StorageKey(hex!("").to_vec());
 
@@ -1723,7 +1723,7 @@ fn storage_keys_iter_works() {
 
 #[test]
 fn cleans_up_closed_notification_sinks_on_block_import() {
-	use substrate_test_runtime_client::GenesisInit;
+	use tetcore_test_runtime_client::GenesisInit;
 
 	// NOTE: we need to build the client here instead of using the client
 	// provided by test_runtime_client otherwise we can't access the private
@@ -1731,12 +1731,12 @@ fn cleans_up_closed_notification_sinks_on_block_import() {
 	let mut client =
 		new_in_mem::<
 			_,
-			substrate_test_runtime_client::runtime::Block,
+			tetcore_test_runtime_client::runtime::Block,
 			_,
-			substrate_test_runtime_client::runtime::RuntimeApi,
+			tetcore_test_runtime_client::runtime::RuntimeApi,
 		>(
-			substrate_test_runtime_client::new_native_executor(),
-			&substrate_test_runtime_client::GenesisParameters::default().genesis_storage(),
+			tetcore_test_runtime_client::new_native_executor(),
+			&tetcore_test_runtime_client::GenesisParameters::default().genesis_storage(),
 			None,
 			None,
 			Box::new(TaskExecutor::new()),
@@ -1747,8 +1747,8 @@ fn cleans_up_closed_notification_sinks_on_block_import() {
 	type TestClient = Client<
 		in_mem::Backend<Block>,
 		LocalCallExecutor<in_mem::Backend<Block>, sc_executor::NativeExecutor<LocalExecutor>>,
-		substrate_test_runtime_client::runtime::Block,
-		substrate_test_runtime_client::runtime::RuntimeApi,
+		tetcore_test_runtime_client::runtime::Block,
+		tetcore_test_runtime_client::runtime::RuntimeApi,
 	>;
 
 	let import_notif1 = client.import_notification_stream();

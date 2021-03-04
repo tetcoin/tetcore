@@ -1,4 +1,4 @@
-## Substrate Dashboard
+## Tetcore Dashboard
 
 Shared templated Grafana dashboards.
 

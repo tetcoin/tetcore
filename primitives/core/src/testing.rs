@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -93,7 +93,7 @@ macro_rules! wasm_export_functions {
 				$( $fn_impl )*
 			}
 
-			$crate::to_substrate_wasm_fn_return_value(&())
+			$crate::to_tetcore_wasm_fn_return_value(&())
 		}
 	};
 	(@IMPL
@@ -121,7 +121,7 @@ macro_rules! wasm_export_functions {
 				$( $fn_impl )*
 			};
 
-			$crate::to_substrate_wasm_fn_return_value(&output)
+			$crate::to_tetcore_wasm_fn_return_value(&output)
 		}
 	};
 }

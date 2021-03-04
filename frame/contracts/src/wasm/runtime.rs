@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -23,7 +23,7 @@ use crate::{
 	gas::{Gas, GasMeter, Token, GasMeterResult, ChargedAmount},
 	wasm::env_def::ConvertibleToWasm,
 };
-use parity_wasm::elements::ValueType;
+use tetsy_wasm::elements::ValueType;
 use frame_support::{dispatch::DispatchError, ensure};
 use sp_std::prelude::*;
 use codec::{Decode, DecodeAll, Encode};

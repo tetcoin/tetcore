@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -36,7 +36,7 @@ use crate::{DatabaseSettings, DatabaseSettingsSrc, Database, DbHash};
 
 /// Number of columns in the db. Must be the same for both full && light dbs.
 /// Otherwise RocksDb will fail to open database && check its type.
-#[cfg(any(feature = "with-kvdb-rocksdb", feature = "with-parity-db", feature = "test-helpers", test))]
+#[cfg(any(feature = "with-kvdb-rocksdb", feature = "with-tetsy-db", feature = "test-helpers", test))]
 pub const NUM_COLUMNS: u32 = 12;
 /// Meta column. The set of keys in the column is shared by full && light storages.
 pub const COLUMN_META: u32 = 0;
@@ -275,14 +275,14 @@ pub fn open_database<Block: BlockT>(
 		DatabaseSettingsSrc::RocksDb { .. } => {
 			return Err(db_open_error("with-kvdb-rocksdb"));
 		},
-		#[cfg(feature = "with-parity-db")]
-		DatabaseSettingsSrc::ParityDb { path } => {
-			crate::parity_db::open(&path, db_type)
+		#[cfg(feature = "with-tetsy-db")]
+		DatabaseSettingsSrc::TetsyDb { path } => {
+			crate::tetsy_db::open(&path, db_type)
 				.map_err(|e| sp_blockchain::Error::Backend(format!("{:?}", e)))?
 		},
-		#[cfg(not(feature = "with-parity-db"))]
-		DatabaseSettingsSrc::ParityDb { .. } => {
-			return Err(db_open_error("with-parity-db"))
+		#[cfg(not(feature = "with-tetsy-db"))]
+		DatabaseSettingsSrc::TetsyDb { .. } => {
+			return Err(db_open_error("with-tetsy-db"))
 		},
 		DatabaseSettingsSrc::Custom(db) => db.clone(),
 	};

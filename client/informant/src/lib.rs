@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -21,7 +21,7 @@
 use ansi_term::Colour;
 use futures::prelude::*;
 use log::{info, trace, warn};
-use parity_util_mem::MallocSizeOf;
+use tetsy_util_mem::MallocSizeOf;
 use sc_client_api::{BlockchainEvents, UsageProvider};
 use sc_network::NetworkStatus;
 use sp_blockchain::HeaderMetadata;
@@ -95,7 +95,7 @@ where
 			trace!(
 				target: "usage",
 				"Subsystems memory [txpool: {} kB]",
-				parity_util_mem::malloc_size(&*pool) / 1024,
+				tetsy_util_mem::malloc_size(&*pool) / 1024,
 			);
 			display.display(&info, net_status);
 			future::ready(())
@@ -159,7 +159,7 @@ where
 			}
 
 			info!(
-				target: "substrate",
+				target: "tetcore",
 				"✨ Imported #{} ({})",
 				Colour::White.bold().paint(format!("{}", n.header.number())),
 				n.hash,

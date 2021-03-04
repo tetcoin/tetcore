@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd. SPDX-License-Identifier: Apache-2.0
 
@@ -12,7 +12,7 @@
 // or implied. See the License for the specific language governing permissions and limitations under
 // the License.
 
-//! A set of election algorithms to be used with a substrate runtime, typically within the staking
+//! A set of election algorithms to be used with a tetcore runtime, typically within the staking
 //! sub-system. Notable implementation include:
 //!
 //! - [`seq_phragmen`]: Implements the Phragmén Sequential Method. An un-ranked, relatively fast
@@ -133,7 +133,7 @@ impl<T> __OrInvalidIndex<T> for Option<T> {
 
 /// A common interface for all compact solutions.
 ///
-/// See [`sp-npos-elections-compact`] for more info.
+/// See [`tc-npos-elections-compact`] for more info.
 pub trait CompactSolution: Sized {
 	/// The maximum number of votes that are allowed.
 	const LIMIT: usize;
@@ -221,7 +221,7 @@ pub trait CompactSolution: Sized {
 pub use sp_npos_elections_compact::generate_solution_type;
 
 /// an aggregator trait for a generic type of a voter/target identifier. This usually maps to
-/// substrate's account id.
+/// tetcore's account id.
 pub trait IdentifierT: Clone + Eq + Default + Ord + Debug + codec::Codec {}
 impl<T: Clone + Eq + Default + Ord + Debug + codec::Codec> IdentifierT for T {}
 

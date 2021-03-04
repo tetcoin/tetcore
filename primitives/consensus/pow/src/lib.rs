@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Primitives for Substrate Proof-of-Work (PoW) consensus.
+//! Primitives for Tetcore Proof-of-Work (PoW) consensus.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 

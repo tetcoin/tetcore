@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -19,5 +19,5 @@
 //! Subkey utility, based on node_runtime.
 
 fn main() -> Result<(), sc_cli::Error> {
-	subkey::run()
+	tetkey::run()
 }

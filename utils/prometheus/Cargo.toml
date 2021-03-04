@@ -1,12 +1,12 @@
 [package]
 description = "Endpoint to expose Prometheus metrics"
-name = "substrate-prometheus-endpoint"
+name = "tetcore-prometheus-endpoint"
 version = "0.8.1"
 license = "Apache-2.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 readme = "README.md"
 
 [package.metadata.docs.rs]

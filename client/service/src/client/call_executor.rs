@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -224,7 +224,7 @@ where
 					&runtime_code,
 					self.spawn_handle.clone(),
 				);
-				// TODO: https://github.com/paritytech/substrate/issues/4455
+				// TODO: https://github.com/tetcoin/tetcore/issues/4455
 				// .with_storage_transaction_cache(storage_transaction_cache.as_mut().map(|c| &mut **c))
 				state_machine.execute_using_consensus_failure_handler(execution_manager, native_call)
 			},
@@ -320,7 +320,7 @@ impl<B, E, Block> sp_version::GetRuntimeVersion<Block> for LocalCallExecutor<B, 
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use substrate_test_runtime_client::{LocalExecutor, GenesisInit, runtime};
+	use tetcore_test_runtime_client::{LocalExecutor, GenesisInit, runtime};
 	use sc_executor::{NativeExecutor, WasmExecutionMethod};
 	use sp_core::{traits::{WrappedRuntimeCode, FetchRuntimeCode}, testing::TaskExecutor};
 	use sc_client_api::in_mem;
@@ -331,7 +331,7 @@ mod tests {
 			NativeExecutor::<LocalExecutor>::new(WasmExecutionMethod::Interpreted, Some(128), 1);
 
 		let overrides = crate::client::wasm_override::dummy_overrides(&executor);
-		let onchain_code = WrappedRuntimeCode(substrate_test_runtime::wasm_binary_unwrap().into());
+		let onchain_code = WrappedRuntimeCode(tetcore_test_runtime::wasm_binary_unwrap().into());
 		let onchain_code = RuntimeCode {
 			code_fetcher: &onchain_code,
 			heap_pages: Some(128),
@@ -349,7 +349,7 @@ mod tests {
 		};
 
 		// client is used for the convenience of creating and inserting the genesis block.
-		let _client = substrate_test_runtime_client::client::new_with_backend::<
+		let _client = tetcore_test_runtime_client::client::new_with_backend::<
 			_,
 			_,
 			runtime::Block,
@@ -358,7 +358,7 @@ mod tests {
 		>(
 			backend.clone(),
 			executor.clone(),
-			&substrate_test_runtime_client::GenesisParameters::default().genesis_storage(),
+			&tetcore_test_runtime_client::GenesisParameters::default().genesis_storage(),
 			None,
 			Box::new(TaskExecutor::new()),
 			None,

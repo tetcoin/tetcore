@@ -1,18 +1,18 @@
 // Copyright 2021 Parity Technologies (UK) Ltd.
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
-// Substrate is free software: you can redistribute it and/or modify
+// Tetcore is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-// Substrate is distributed in the hope that it will be useful,
+// Tetcore is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+// along with Tetcore.  If not, see <http://www.gnu.org/licenses/>.
 
 use once_cell::sync::OnceCell;
 use parking_lot::Mutex;
@@ -96,7 +96,7 @@ pub fn reload_filter() -> Result<(), String> {
 
 /// Resets the log filter back to the original state when the node was started.
 ///
-/// Includes substrate defaults and CLI supplied directives.
+/// Includes tetcore defaults and CLI supplied directives.
 pub fn reset_log_filter() -> Result<(), String> {
 	let directive = DEFAULT_DIRECTIVES
 		.get_or_init(|| Mutex::new(Vec::new()))

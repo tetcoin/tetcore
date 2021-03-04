@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -30,13 +30,13 @@ macro_rules! convert_args {
 macro_rules! gen_signature {
 	( ( $( $params: ty ),* ) ) => (
 		{
-			parity_wasm::elements::FunctionType::new(convert_args!($($params),*), None)
+			tetsy_wasm::elements::FunctionType::new(convert_args!($($params),*), None)
 		}
 	);
 
 	( ( $( $params: ty ),* ) -> $returns: ty ) => (
 		{
-			parity_wasm::elements::FunctionType::new(convert_args!($($params),*), Some({
+			tetsy_wasm::elements::FunctionType::new(convert_args!($($params),*), Some({
 				use $crate::wasm::env_def::ConvertibleToWasm; <$returns>::VALUE_TYPE
 			}))
 		}
@@ -188,7 +188,7 @@ macro_rules! define_env {
 		pub struct $init_name;
 
 		impl $crate::wasm::env_def::ImportSatisfyCheck for $init_name {
-			fn can_satisfy(name: &[u8], func_type: &parity_wasm::elements::FunctionType) -> bool {
+			fn can_satisfy(name: &[u8], func_type: &tetsy_wasm::elements::FunctionType) -> bool {
 				gen_signature_dispatch!( name, func_type ; $( $name ( $ctx $(, $names : $params )* ) $( -> $returns )* , )* );
 
 				return false;
@@ -210,8 +210,8 @@ macro_rules! define_env {
 
 #[cfg(test)]
 mod tests {
-	use parity_wasm::elements::FunctionType;
-	use parity_wasm::elements::ValueType;
+	use tetsy_wasm::elements::FunctionType;
+	use tetsy_wasm::elements::ValueType;
 	use sp_runtime::traits::Zero;
 	use sp_sandbox::{ReturnValue, Value};
 	use crate::{

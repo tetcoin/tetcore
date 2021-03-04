@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -190,7 +190,7 @@ impl<'a> Sandbox for FunctionExecutor<'a> {
 		return_val_len: WordSize,
 		state: u32,
 	) -> WResult<u32> {
-		trace!(target: "sp-sandbox", "invoke, instance_idx={}", instance_id);
+		trace!(target: "tc-sandbox", "invoke, instance_idx={}", instance_id);
 
 		// Deserialize arguments and convert them into wasmi types.
 		let args = Vec::<sp_wasm_interface::Value>::decode(&mut &args[..])

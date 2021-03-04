@@ -4,8 +4,8 @@ version = "0.8.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Client backend that uses RocksDB database as storage."
 readme = "README.md"
 
@@ -20,28 +20,28 @@ kvdb-rocksdb = { version = "0.11.0", optional = true }
 kvdb-memorydb = "0.9.0"
 linked-hash-map = "0.5.2"
 hash-db = "0.15.2"
-parity-util-mem = { version = "0.9.0", default-features = false, features = ["std"] }
-codec = { package = "parity-scale-codec", version = "2.0.0", features = ["derive"] }
+tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["std"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
 blake2-rfc = "0.2.18"
 
 sc-client-api = { version = "2.0.0", path = "../api" }
-sp-arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
-sp-core = { version = "2.0.0", path = "../../primitives/core" }
-sp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-sp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tc-arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
+tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tc-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
 sc-executor = { version = "0.8.0", path = "../executor" }
 sc-state-db = { version = "0.8.0", path = "../state-db" }
-sp-trie = { version = "2.0.0", path = "../../primitives/trie" }
-sp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-sp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-sp-database = { version = "2.0.0", path = "../../primitives/database" }
-parity-db = { version = "0.1.2", optional = true }
-prometheus-endpoint = { package = "substrate-prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
+tc-trie = { version = "2.0.0", path = "../../primitives/trie" }
+tc-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
+tc-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tc-database = { version = "2.0.0", path = "../../primitives/database" }
+tetsy-db = { version = "0.1.2", optional = true }
+prometheus-endpoint = { package = "tetcore-prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
 
 [dev-dependencies]
-sp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
-sp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
-substrate-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+tc-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 quickcheck = "0.9"
 kvdb-rocksdb = "0.11.0"
 tempfile = "3"
@@ -50,4 +50,4 @@ tempfile = "3"
 default = []
 test-helpers = []
 with-kvdb-rocksdb = ["kvdb-rocksdb"]
-with-parity-db = ["parity-db"]
+with-tetsy-db = ["tetsy-db"]

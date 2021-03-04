@@ -1,3 +1,3 @@
-Substrate transaction pool implementation.
+Tetcore transaction pool implementation.
 
 License: GPL-3.0-or-later WITH Classpath-exception-2.0

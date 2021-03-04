@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -83,7 +83,7 @@ pub type InherentIdentifier = [u8; 8];
 /// Inherent data to include in a block.
 #[derive(Clone, Default, Encode, Decode)]
 pub struct InherentData {
-	/// All inherent data encoded with parity-scale-codec and an identifier.
+	/// All inherent data encoded with tetsy-scale-codec and an identifier.
 	data: BTreeMap<InherentIdentifier, Vec<u8>>
 }
 
@@ -424,7 +424,7 @@ pub trait ProvideInherent {
 	/// - `Err(_)` indicates that this function failed and further operations should be aborted.
 	///
 	/// CAUTION: This check has a bug when used in pallets that also provide unsigned transactions.
-	/// See https://github.com/paritytech/substrate/issues/6243 for details.
+	/// See https://github.com/tetcoin/tetcore/issues/6243 for details.
 	fn is_inherent_required(_: &InherentData) -> Result<Option<Self::Error>, Self::Error> { Ok(None) }
 
 	/// Check whether the given inherent is valid. Checking the inherent is optional and can be

@@ -1,12 +1,12 @@
 [package]
-name = "substrate-frame-rpc-system"
+name = "tetcore-frame-rpc-system"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
-description = "FRAME's system exposed over Substrate RPC"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FRAME's system exposed over Tetcore RPC"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -14,23 +14,23 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 sc-client-api = { version = "2.0.0", path = "../../../../client/api" }
-codec = { package = "parity-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0" }
 futures = { version = "0.3.4", features = ["compat"] }
 jsonrpc-core = "15.1.0"
 jsonrpc-core-client = "15.1.0"
 jsonrpc-derive = "15.1.0"
 log = "0.4.8"
 serde = { version = "1.0.101", features = ["derive"] }
-sp-runtime = { version = "2.0.0", path = "../../../../primitives/runtime" }
-sp-api = { version = "2.0.0", path = "../../../../primitives/api" }
+tc-runtime = { version = "2.0.0", path = "../../../../primitives/runtime" }
+tc-api = { version = "2.0.0", path = "../../../../primitives/api" }
 frame-system-rpc-runtime-api = { version = "2.0.0", path = "../../../../frame/system/rpc/runtime-api" }
-sp-core = { version = "2.0.0", path = "../../../../primitives/core" }
-sp-blockchain = { version = "2.0.0", path = "../../../../primitives/blockchain" }
-sp-transaction-pool = { version = "2.0.0", path = "../../../../primitives/transaction-pool" }
-sp-block-builder = { version = "2.0.0", path = "../../../../primitives/block-builder" }
+tc-core = { version = "2.0.0", path = "../../../../primitives/core" }
+tc-blockchain = { version = "2.0.0", path = "../../../../primitives/blockchain" }
+tc-transaction-pool = { version = "2.0.0", path = "../../../../primitives/transaction-pool" }
+tc-block-builder = { version = "2.0.0", path = "../../../../primitives/block-builder" }
 sc-rpc-api = { version = "0.8.0", path = "../../../../client/rpc-api" }
 
 [dev-dependencies]
-substrate-test-runtime-client = { version = "2.0.0", path = "../../../../test-utils/runtime/client" }
-sp-tracing = { version = "2.0.0", path = "../../../../primitives/tracing" }
+tetcore-test-runtime-client = { version = "2.0.0", path = "../../../../test-utils/runtime/client" }
+tc-tracing = { version = "2.0.0", path = "../../../../primitives/tracing" }
 sc-transaction-pool = { version = "2.0.0", path = "../../../../client/transaction-pool" }

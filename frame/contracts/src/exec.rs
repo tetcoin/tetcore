@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -272,7 +272,7 @@ where
 		// eviction by returning `None`. We cannot evict eagerly here because those
 		// changes would be rolled back in case this contract is called by another
 		// contract.
-		// See: https://github.com/paritytech/substrate/issues/6439#issuecomment-648754324
+		// See: https://github.com/tetcoin/tetcore/issues/6439#issuecomment-648754324
 		let contract = if let Ok(Some(ContractInfo::Alive(info))) = Rent::<T>::charge(&dest) {
 			info
 		} else {

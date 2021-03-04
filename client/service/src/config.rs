@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -99,7 +99,7 @@ pub struct Configuration {
 	/// Telemetry handle.
 	///
 	/// This is a handle to a `TelemetryWorker` instance. It is used to initialize the telemetry for
-	/// a substrate node.
+	/// a tetcore node.
 	pub telemetry_handle: Option<sc_telemetry::TelemetryHandle>,
 	/// Telemetry span.
 	///
@@ -190,11 +190,11 @@ pub struct PrometheusConfig {
 impl PrometheusConfig {
 	/// Create a new config using the default registry.
 	///
-	/// The default registry prefixes metrics with `substrate`.
+	/// The default registry prefixes metrics with `tetcore`.
 	pub fn new_with_default_registry(port: SocketAddr) -> Self {
 		Self {
 			port,
-			registry: Registry::new_custom(Some("substrate".into()), None)
+			registry: Registry::new_custom(Some("tetcore".into()), None)
 				.expect("this can only fail if the prefix is empty")
 		}
 	}
@@ -255,7 +255,7 @@ pub enum BasePath {
 }
 
 impl BasePath {
-	/// Create a `BasePath` instance using a temporary directory prefixed with "substrate" and use
+	/// Create a `BasePath` instance using a temporary directory prefixed with "tetcore" and use
 	/// it as base path.
 	///
 	/// Note: the temporary directory will be created automatically and deleted when the `BasePath`
@@ -263,7 +263,7 @@ impl BasePath {
 	#[cfg(not(target_os = "unknown"))]
 	pub fn new_temp_dir() -> io::Result<BasePath> {
 		Ok(BasePath::Temporary(
-			tempfile::Builder::new().prefix("substrate").tempdir()?,
+			tempfile::Builder::new().prefix("tetcore").tempdir()?,
 		))
 	}
 

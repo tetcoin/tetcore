@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Substrate state machine implementation.
+//! Tetcore state machine implementation.
 
 #![warn(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -288,7 +288,7 @@ mod execution {
 		ExecutionManager::AlwaysWasm(BackendTrustLevel::Untrusted)
 	}
 
-	/// The substrate state machine.
+	/// The tetcore state machine.
 	pub struct StateMachine<'a, B, H, N, Exec>
 		where
 			H: Hasher,
@@ -324,7 +324,7 @@ mod execution {
 		B: Backend<H>,
 		N: crate::changes_trie::BlockNumber,
 	{
-		/// Creates new substrate state machine.
+		/// Creates new tetcore state machine.
 		pub fn new(
 			backend: &'a B,
 			changes_trie_state: Option<ChangesTrieState<'a, H, N>>,

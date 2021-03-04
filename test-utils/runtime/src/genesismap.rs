@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -26,7 +26,7 @@ use sp_core::storage::{well_known_keys, Storage};
 use sp_runtime::traits::{Block as BlockT, Hash as HashT, Header as HeaderT};
 use sc_service::client::genesis;
 
-/// Configuration of a general Substrate test genesis block.
+/// Configuration of a general Tetcore test genesis block.
 pub struct GenesisConfig {
 	changes_trie_config: Option<ChangesTrieConfiguration>,
 	authorities: Vec<AuthorityId>,

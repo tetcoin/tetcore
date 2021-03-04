@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -81,7 +81,7 @@ pub fn build(input: TokenStream) -> TokenStream {
 	let declaration = generate_piecewise_linear(points);
 	let test_module = generate_test_module(&input);
 
-	let imports = match crate_name("sp-runtime") {
+	let imports = match crate_name("tc-runtime") {
 		Ok(sp_runtime) => {
 			let ident = syn::Ident::new(&sp_runtime, Span::call_site());
 			quote!( extern crate #ident as _sp_runtime; )

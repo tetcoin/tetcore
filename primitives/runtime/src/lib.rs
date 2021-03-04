@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -637,8 +637,8 @@ impl OpaqueExtrinsic {
 }
 
 #[cfg(feature = "std")]
-impl parity_util_mem::MallocSizeOf for OpaqueExtrinsic {
-	fn size_of(&self, ops: &mut parity_util_mem::MallocSizeOfOps) -> usize {
+impl tetsy_util_mem::MallocSizeOf for OpaqueExtrinsic {
+	fn size_of(&self, ops: &mut tetsy_util_mem::MallocSizeOfOps) -> usize {
 		self.0.size_of(ops)
 	}
 }

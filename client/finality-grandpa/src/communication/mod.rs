@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -40,7 +40,7 @@ use finality_grandpa::Message::{Prevote, Precommit, PrimaryPropose};
 use finality_grandpa::{voter, voter_set::VoterSet};
 use sc_network::{NetworkService, ReputationChange};
 use sc_network_gossip::{GossipEngine, Network as GossipNetwork};
-use parity_scale_codec::{Encode, Decode};
+use tetsy_scale_codec::{Encode, Decode};
 use sp_runtime::traits::{Block as BlockT, Hash as HashT, Header as HeaderT, NumberFor};
 use sc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_INFO};
 
@@ -70,7 +70,7 @@ pub(crate) mod tests;
 
 /// Name of the notifications protocol used by Grandpa. Must be registered towards the networking
 /// in order for Grandpa to properly function.
-pub const GRANDPA_PROTOCOL_NAME: &'static str = "/paritytech/grandpa/1";
+pub const GRANDPA_PROTOCOL_NAME: &'static str = "/tetcoin/grandpa/1";
 
 // cost scalars for reporting peers.
 mod cost {

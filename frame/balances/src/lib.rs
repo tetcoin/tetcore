@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -694,7 +694,7 @@ impl<T: Config<I>, I: Instance> Module<T, I> {
 			Locks::<T, I>::remove(who);
 			if existed {
 				// TODO: use Locks::<T, I>::hashed_key
-				// https://github.com/paritytech/substrate/issues/4969
+				// https://github.com/tetcoin/tetcore/issues/4969
 				system::Module::<T>::dec_consumers(who);
 			}
 		} else {

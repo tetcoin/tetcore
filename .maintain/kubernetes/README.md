@@ -1,9 +1,9 @@
 
 
-# Substrate Kubernetes Helm Chart
+# Tetcore Kubernetes Helm Chart
 
 This [Helm Chart](https://helm.sh/) can be used for deploying containerized 
-**Substrate** to a [Kubernetes](https://kubernetes.io/) cluster.
+**Tetcore** to a [Kubernetes](https://kubernetes.io/) cluster.
 
 
 ## Prerequisites
@@ -19,7 +19,7 @@ To install the chart with the release name `my-release` into namespace
 $ helm install --namespace my-namespace --name my-release --values values.yaml ./
 ```
 
-The command deploys Substrate on the Kubernetes cluster in the configuration 
+The command deploys Tetcore on the Kubernetes cluster in the configuration 
 given in `values.yaml`. When the namespace is omitted it'll be installed in 
 the default one.
 

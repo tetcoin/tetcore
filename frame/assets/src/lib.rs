@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -58,7 +58,7 @@
 //!
 //! ### Goals
 //!
-//! The assets system in Substrate is designed to make the following possible:
+//! The assets system in Tetcore is designed to make the following possible:
 //!
 //! * Issue a new assets in a permissioned or permissionless way, if permissionless, then with a
 //!   deposit required.

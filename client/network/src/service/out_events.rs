@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -19,7 +19,7 @@
 //! Registering events streams.
 //!
 //! This code holds the logic that is used for the network service to inform other parts of
-//! Substrate about what is happening.
+//! Tetcore about what is happening.
 //!
 //! # Usage
 //!

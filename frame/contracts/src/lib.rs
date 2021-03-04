@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -70,7 +70,7 @@
 //! The Contract module is a work in progress. The following examples show how this Contract module
 //! can be used to instantiate and call contracts.
 //!
-//! * [`ink`](https://github.com/paritytech/ink) is
+//! * [`pro`](https://github.com/tetcoin/pro) is
 //! an [`eDSL`](https://wiki.haskell.org/Embedded_domain_specific_language) that enables writing
 //! WebAssembly based smart contracts in the Rust programming language. This is a work in progress.
 //!

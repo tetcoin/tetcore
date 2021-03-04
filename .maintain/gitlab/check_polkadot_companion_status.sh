@@ -4,8 +4,8 @@
 # mergeable
 #
 
-github_api_substrate_pull_url="https://api.github.com/repos/paritytech/substrate/pulls"
-github_api_polkadot_pull_url="https://api.github.com/repos/paritytech/polkadot/pulls"
+github_api_tetcore_pull_url="https://api.github.com/repos/tetcoin/tetcore/pulls"
+github_api_polkadot_pull_url="https://api.github.com/repos/tetcoin/polkadot/pulls"
 # use github api v3 in order to access the data without authentication
 github_header="Authorization: token ${GITHUB_PR_TOKEN}"
 
@@ -22,7 +22,7 @@ check_polkadot_companion_status
 
 this job checks if there is a string in the description of the pr like
 
-polkadot companion: paritytech/polkadot#567
+polkadot companion: tetcoin/polkadot#567
 
 and checks its status.
 
@@ -38,13 +38,13 @@ fi
 
 boldprint "this is pull request no ${CI_COMMIT_REF_NAME}"
 
-pr_body="$(curl -H "${github_header}" -s ${github_api_substrate_pull_url}/${CI_COMMIT_REF_NAME} \
+pr_body="$(curl -H "${github_header}" -s ${github_api_tetcore_pull_url}/${CI_COMMIT_REF_NAME} \
   | sed -n -r 's/^[[:space:]]+"body": (".*")[^"]+$/\1/p')"
 
 # get companion if explicitly specified
 pr_companion="$(echo "${pr_body}" | sed -n -r \
-    -e 's;^.*[Cc]ompanion.*paritytech/polkadot#([0-9]+).*$;\1;p' \
-    -e 's;^.*[Cc]ompanion.*https://github.com/paritytech/polkadot/pull/([0-9]+).*$;\1;p' \
+    -e 's;^.*[Cc]ompanion.*tetcoin/polkadot#([0-9]+).*$;\1;p' \
+    -e 's;^.*[Cc]ompanion.*https://github.com/tetcoin/polkadot/pull/([0-9]+).*$;\1;p' \
   | tail -n 1)"
 
 if [ -z "${pr_companion}" ]

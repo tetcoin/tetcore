@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -30,13 +30,13 @@
 //! The `build.rs` file needs to contain the following code:
 //!
 //! ```no_run
-//! use substrate_wasm_builder::WasmBuilder;
+//! use tetcore_wasm_builder::WasmBuilder;
 //!
 //! fn main() {
 //!     WasmBuilder::new()
 //!         // Tell the builder to build the project (crate) this `build.rs` is part of.
 //!         .with_current_project()
-//!         // Make sure to export the `heap_base` global, this is required by Substrate
+//!         // Make sure to export the `heap_base` global, this is required by Tetcore
 //!         .export_heap_base()
 //!         // Build the Wasm file so that it imports the memory (need to be provided by at instantiation)
 //!         .import_memory()

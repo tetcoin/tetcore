@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Shareable Substrate types.
+//! Shareable Tetcore types.
 
 #![warn(missing_docs)]
 
@@ -329,12 +329,12 @@ impl From<LogLevel> for log::Level {
 
 /// Encodes the given value into a buffer and returns the pointer and the length as a single `u64`.
 ///
-/// When Substrate calls into Wasm it expects a fixed signature for functions exported
+/// When Tetcore calls into Wasm it expects a fixed signature for functions exported
 /// from the Wasm blob. The return value of this signature is always a `u64`.
 /// This `u64` stores the pointer to the encoded return value and the length of this encoded value.
 /// The low `32bits` are reserved for the pointer, followed by `32bit` for the length.
 #[cfg(not(feature = "std"))]
-pub fn to_substrate_wasm_fn_return_value(value: &impl Encode) -> u64 {
+pub fn to_tetcore_wasm_fn_return_value(value: &impl Encode) -> u64 {
 	let encoded = value.encode();
 
 	let ptr = encoded.as_ptr() as u64;

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate chain configurations.
+//! Tetcore chain configurations.
 
 use sc_chain_spec::ChainSpecExtension;
 use sp_core::{Pair, Public, crypto::UncheckedInto, sr25519};
@@ -47,7 +47,7 @@ const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
 /// Node `ChainSpec` extensions.
 ///
-/// Additional parameters for some Substrate core modules,
+/// Additional parameters for some Tetcore core modules,
 /// customizable from the chain spec.
 #[derive(Default, Clone, Serialize, Deserialize, ChainSpecExtension)]
 #[serde(rename_all = "camelCase")]
@@ -80,9 +80,9 @@ fn session_keys(
 fn staging_testnet_config_genesis() -> GenesisConfig {
 	// stash, controller, session-key
 	// generated with secret:
-	// for i in 1 2 3 4 ; do for j in stash controller; do subkey inspect "$secret"/fir/$j/$i; done; done
+	// for i in 1 2 3 4 ; do for j in stash controller; do tetkey inspect "$secret"/fir/$j/$i; done; done
 	// and
-	// for i in 1 2 3 4 ; do for j in session; do subkey --ed25519 inspect "$secret"//fir//$j//$i; done; done
+	// for i in 1 2 3 4 ; do for j in session; do tetkey --ed25519 inspect "$secret"//fir//$j//$i; done; done
 
 	let initial_authorities: Vec<(AccountId, AccountId, GrandpaId, BabeId, ImOnlineId, AuthorityDiscoveryId)> = vec![(
 		// 5Fbsd6WXDGiLTxunqeK5BATNiocfCqu9bS1yArVjCgeBLkVy
@@ -138,7 +138,7 @@ fn staging_testnet_config_genesis() -> GenesisConfig {
 		hex!["00299981a2b92f878baaf5dbeba5c18d4e70f2a1fcd9c61b32ea18daf38f4378"].unchecked_into(),
 	)];
 
-	// generated with secret: subkey inspect "$secret"/fir
+	// generated with secret: tetkey inspect "$secret"/fir
 	let root_key: AccountId = hex![
 		// 5Ff3iXP75ruzroPWRP2FYBHWnmGGBSb63857BgnzCoXNxfPo
 		"9ee5e5bdc0ec239eb164f865ecc345ce4c88e76ee002e0f7e318097347471809"

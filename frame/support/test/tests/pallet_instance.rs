@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -497,7 +497,7 @@ fn pallet_hooks_expand() {
 			Some(pallet::Pallet::<Runtime, pallet::Instance1>::current_version()),
 		);
 
-		// The order is indeed reversed due to https://github.com/paritytech/substrate/issues/6280
+		// The order is indeed reversed due to https://github.com/tetcoin/tetcore/issues/6280
 		assert_eq!(
 			frame_system::Module::<Runtime>::events()[0].event,
 			Event::pallet_Instance1(pallet::Event::Something(11)),

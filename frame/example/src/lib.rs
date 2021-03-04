@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -27,7 +27,7 @@
 //! ### Documentation Guidelines:
 //!
 //! <!-- Original author of paragraph: Various. Based on collation of review comments to PRs addressing issues with -->
-//! <!-- label 'S3-FRAME' in https://github.com/paritytech/substrate-developer-hub/issues -->
+//! <!-- label 'S3-FRAME' in https://github.com/tetcoin/tetcore-developer-hub/issues -->
 //! <ul>
 //!     <li>Documentation comments (i.e. <code>/// comment</code>) - should
 //!         accompany pallet functions and be restricted to the pallet interface,
@@ -36,7 +36,7 @@
 //!         requires root, but without repeating the source code details.
 //!         Capitalize the first word of each documentation comment and end it with
 //!         a full stop. See
-//!         <a href="https://github.com/paritytech/substrate#72-contributing-to-documentation-for-substrate-packages"
+//!         <a href="https://github.com/tetcoin/tetcore#72-contributing-to-documentation-for-tetcore-packages"
 //!         target="_blank"> Generic example of annotating source code with documentation comments</a></li>
 //!     <li>Self-documenting code - Try to refactor code to be self-documenting.</li>
 //!     <li>Code comments - Supplement complex code with a brief explanation, not every line of code.</li>
@@ -69,7 +69,7 @@
 //!
 //! \## Overview
 //!
-//! <!-- Original author of paragraph: Various. See https://github.com/paritytech/substrate-developer-hub/issues/44 -->
+//! <!-- Original author of paragraph: Various. See https://github.com/tetcoin/tetcore-developer-hub/issues/44 -->
 //! // Short description of pallet's purpose.
 //! // Links to Traits that should be implemented.
 //! // What this pallet is for.
@@ -79,8 +79,8 @@
 //! // Inputs it uses and the source of each input.
 //! // Outputs it produces.
 //!
-//! <!-- Original author of paragraph: @Kianenigma in PR https://github.com/paritytech/substrate/pull/1951 -->
-//! <!-- and comment https://github.com/paritytech/substrate-developer-hub/issues/44#issuecomment-471982710 -->
+//! <!-- Original author of paragraph: @Kianenigma in PR https://github.com/tetcoin/tetcore/pull/1951 -->
+//! <!-- and comment https://github.com/tetcoin/tetcore-developer-hub/issues/44#issuecomment-471982710 -->
 //!
 //! \## Terminology
 //!
@@ -91,17 +91,17 @@
 //! // "free balance" and "reserved balance" should be noted to give context to the pallet.
 //! // Please do not link to outside resources. The reference docs should be the ultimate source of truth.
 //!
-//! <!-- Original author of heading: @Kianenigma in PR https://github.com/paritytech/substrate/pull/1951 -->
+//! <!-- Original author of heading: @Kianenigma in PR https://github.com/tetcoin/tetcore/pull/1951 -->
 //!
 //! \## Goals
 //!
 //! // Add goals that the custom pallet is designed to achieve.
 //!
-//! <!-- Original author of heading: @Kianenigma in PR https://github.com/paritytech/substrate/pull/1951 -->
+//! <!-- Original author of heading: @Kianenigma in PR https://github.com/tetcoin/tetcore/pull/1951 -->
 //!
 //! \### Scenarios
 //!
-//! <!-- Original author of paragraph: @Kianenigma. Based on PR https://github.com/paritytech/substrate/pull/1951 -->
+//! <!-- Original author of paragraph: @Kianenigma. Based on PR https://github.com/tetcoin/tetcore/pull/1951 -->
 //!
 //! \#### <INSERT_SCENARIO_NAME>
 //!
@@ -120,7 +120,7 @@
 //! <code>\`inherent\`</code> <INSERT_DESCRIPTION>
 //!
 //! <!-- Original author of paragraph: @Kianenigma in comment -->
-//! <!-- https://github.com/paritytech/substrate-developer-hub/issues/44#issuecomment-471982710 -->
+//! <!-- https://github.com/tetcoin/tetcore-developer-hub/issues/44#issuecomment-471982710 -->
 //!
 //! \### Types
 //!
@@ -131,7 +131,7 @@
 //! <!-- Original author of paragraph: ??? -->
 //!
 //! // Reference documentation of aspects such as `storageItems` and `dispatchable` functions should only be
-//! // included in the <https://docs.rs> Rustdocs for Substrate and not repeated in the README file.
+//! // included in the <https://docs.rs> Rustdocs for Tetcore and not repeated in the README file.
 //!
 //! \### Dispatchable Functions
 //!
@@ -224,8 +224,8 @@
 //! // Show a usage example in an actual runtime
 //!
 //! // See:
-//! // - Substrate TCR <https://github.com/parity-samples/substrate-tcr>
-//! // - Substrate Kitties <https://shawntabrizi.github.io/substrate-collectables-workshop/#/>
+//! // - Tetcore TCR <https://github.com/tetsy-samples/tetcore-tcr>
+//! // - Tetcore Kitties <https://shawntabrizi.github.io/tetcore-collectables-workshop/#/>
 //!
 //! \## Genesis Config
 //!
@@ -327,7 +327,7 @@ pub trait Config: pallet_balances::Config {
 
 decl_storage! {
 	// A macro for the Storage trait, and its implementation, for this pallet.
-	// This allows for type-safe usage of the Substrate storage database, so you can
+	// This allows for type-safe usage of the Tetcore storage database, so you can
 	// keep things around between blocks.
 	//
 	// It is important to update your storage name so that your pallet's
@@ -589,9 +589,9 @@ impl<T: Config> Module<T> {
 // sender of the transaction (if signed) are also provided.
 //
 // The full list of hooks that can be added to a signed extension can be found
-// [here](https://crates.parity.io/sp_runtime/traits/trait.SignedExtension.html).
+// [here](https://crates.tetcoin.org/sp_runtime/traits/trait.SignedExtension.html).
 //
-// The signed extensions are aggregated in the runtime file of a substrate chain. All extensions
+// The signed extensions are aggregated in the runtime file of a tetcore chain. All extensions
 // should be aggregated in a tuple and passed to the `CheckedExtrinsic` and `UncheckedExtrinsic`
 // types defined in the runtime. Lookup `pub type SignedExtra = (...)` in `node/runtime` and
 // `node-template` for an example of this.

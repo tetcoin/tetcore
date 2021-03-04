@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -24,9 +24,9 @@ use sc_cli::{
 
 #[derive(Debug, StructOpt)]
 #[structopt(
-	name = "subkey",
+	name = "tetkey",
 	author = "Parity Team <admin@parity.io>",
-	about = "Utility for generating and restoring with Substrate keys",
+	about = "Utility for generating and restoring with Tetcore keys",
 )]
 pub enum Subkey {
 	/// Generate a random node libp2p key, save it to file or print it to stdout
@@ -52,7 +52,7 @@ pub enum Subkey {
 	Verify(VerifyCmd),
 }
 
-/// Run the subkey command, given the apropriate runtime.
+/// Run the tetkey command, given the apropriate runtime.
 pub fn run() -> Result<(), Error> {
 	match Subkey::from_args() {
 		Subkey::GenerateNodeKey(cmd) => cmd.run(),

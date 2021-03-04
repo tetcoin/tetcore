@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -40,7 +40,7 @@ use crate::{
 /// An in-pool transaction reference.
 ///
 /// Should be cheap to clone.
-#[derive(Debug, parity_util_mem::MallocSizeOf)]
+#[derive(Debug, tetsy_util_mem::MallocSizeOf)]
 pub struct TransactionRef<Hash, Ex> {
 	/// The actual transaction data.
 	pub transaction: Arc<Transaction<Hash, Ex>>,
@@ -78,7 +78,7 @@ impl<Hash, Ex> PartialEq for TransactionRef<Hash, Ex> {
 }
 impl<Hash, Ex> Eq for TransactionRef<Hash, Ex> {}
 
-#[derive(Debug, parity_util_mem::MallocSizeOf)]
+#[derive(Debug, tetsy_util_mem::MallocSizeOf)]
 pub struct ReadyTx<Hash, Ex> {
 	/// A reference to a transaction
 	pub transaction: TransactionRef<Hash, Ex>,
@@ -108,7 +108,7 @@ Hence every hash retrieved from `provided_tags` is always present in `ready`;
 qed
 "#;
 
-#[derive(Debug, parity_util_mem::MallocSizeOf)]
+#[derive(Debug, tetsy_util_mem::MallocSizeOf)]
 pub struct ReadyTransactions<Hash: hash::Hash + Eq, Ex> {
 	/// Insertion id
 	insertion_id: u64,
@@ -703,7 +703,7 @@ mod tests {
 		};
 		import(&mut ready, tx).unwrap();
 
-		assert!(parity_util_mem::malloc_size(&ready) > 200);
+		assert!(tetsy_util_mem::malloc_size(&ready) > 200);
 	}
 
 	#[test]

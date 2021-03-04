@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -140,7 +140,7 @@ pub mod ed25519 {
 	pub type AuthorityId = app_ed25519::Public;
 }
 
-const DB_PREFIX: &[u8] = b"parity/im-online-heartbeat/";
+const DB_PREFIX: &[u8] = b"tetsy/im-online-heartbeat/";
 /// How many blocks do we wait for heartbeat transaction to be included
 /// before sending another one.
 const INCLUDE_THRESHOLD: u32 = 3;

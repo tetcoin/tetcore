@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -25,12 +25,12 @@
 //! # use sp_consensus::{Environment, Proposer, RecordProof};
 //! # use sp_runtime::generic::BlockId;
 //! # use std::{sync::Arc, time::Duration};
-//! # use substrate_test_runtime_client::{
+//! # use tetcore_test_runtime_client::{
 //! #     runtime::{Extrinsic, Transfer}, AccountKeyring,
 //! #     DefaultTestClientBuilderExt, TestClientBuilderExt,
 //! # };
 //! # use sc_transaction_pool::{BasicPool, FullChainApi};
-//! # let client = Arc::new(substrate_test_runtime_client::new());
+//! # let client = Arc::new(tetcore_test_runtime_client::new());
 //! # let spawner = sp_core::testing::TaskExecutor::new();
 //! # let txpool = BasicPool::new_full(
 //! #     Default::default(),

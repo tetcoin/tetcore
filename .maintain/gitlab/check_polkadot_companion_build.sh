@@ -6,12 +6,12 @@
 # to override one that was just mentioned mark companion pr in the body of the
 # polkadot pr like
 #
-# polkadot companion: paritytech/polkadot#567
+# polkadot companion: tetcoin/polkadot#567
 #
 
 set -e
 
-github_api_substrate_pull_url="https://api.github.com/repos/paritytech/substrate/pulls"
+github_api_tetcore_pull_url="https://api.github.com/repos/tetcoin/tetcore/pulls"
 # use github api v3 in order to access the data without authentication
 github_header="Authorization: token ${GITHUB_PR_TOKEN}"
 
@@ -28,10 +28,10 @@ check_polkadot_companion_build
 
 this job checks if there is a string in the description of the pr like
 
-polkadot companion: paritytech/polkadot#567
+polkadot companion: tetcoin/polkadot#567
 
 
-it will then run cargo check from this polkadot's branch with substrate code
+it will then run cargo check from this polkadot's branch with tetcore code
 from this pull request. otherwise, it will uses master instead
 
 
@@ -49,7 +49,7 @@ git merge origin/master
 # Clone the current Polkadot master branch into ./polkadot.
 # NOTE: we need to pull enough commits to be able to find a common
 # ancestor for successfully performing merges below.
-git clone --depth 20 https://github.com/paritytech/polkadot.git
+git clone --depth 20 https://github.com/tetcoin/polkadot.git
 
 cd polkadot
 
@@ -62,13 +62,13 @@ then
   pr_data_file="$(mktemp)"
   # get the last reference to a pr in polkadot
   curl -sSL -H "${github_header}" -o "${pr_data_file}" \
-    "${github_api_substrate_pull_url}/${CI_COMMIT_REF_NAME}"
+    "${github_api_tetcore_pull_url}/${CI_COMMIT_REF_NAME}"
 
   pr_body="$(sed -n -r 's/^[[:space:]]+"body": (".*")[^"]+$/\1/p' "${pr_data_file}")"
 
   pr_companion="$(echo "${pr_body}" | sed -n -r \
-      -e 's;^.*[Cc]ompanion.*paritytech/polkadot#([0-9]+).*$;\1;p' \
-      -e 's;^.*[Cc]ompanion.*https://github.com/paritytech/polkadot/pull/([0-9]+).*$;\1;p' \
+      -e 's;^.*[Cc]ompanion.*tetcoin/polkadot#([0-9]+).*$;\1;p' \
+      -e 's;^.*[Cc]ompanion.*https://github.com/tetcoin/polkadot/pull/([0-9]+).*$;\1;p' \
     | tail -n 1)"
 
   if [ "${pr_companion}" ]
@@ -86,11 +86,11 @@ else
 fi
 
 cd ..
-diener --substrate --branch $CI_COMMIT_REF_NAME --git https://gitlab.parity.io/parity/substrate.git --path polkadot
+diener --tetcore --branch $CI_COMMIT_REF_NAME --git https://gitlab.tetcoin.org/tetcoin/tetcore.git --path polkadot
 cd polkadot
 
-# Test Polkadot pr or master branch with this Substrate commit.
-cargo update -p sp-io
+# Test Polkadot pr or master branch with this Tetcore commit.
+cargo update -p tc-io
 time cargo test --all --release --verbose --features=real-overseer
 
 cd parachain/test-parachains/adder/collator/

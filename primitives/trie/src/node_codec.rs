@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2015-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! `NodeCodec` implementation for Substrate's trie format.
+//! `NodeCodec` implementation for Tetcore's trie format.
 
 use sp_std::marker::PhantomData;
 use sp_std::ops::Range;
@@ -31,7 +31,7 @@ use super::{node_header::{NodeHeader, NodeKind}};
 
 /// Helper struct for trie node decoder. This implements `codec::Input` on a byte slice, while
 /// tracking the absolute position. This is similar to `std::io::Cursor` but does not implement
-/// `Read` and `io` is not in `sp-std`.
+/// `Read` and `io` is not in `tc-std`.
 struct ByteSliceInput<'a> {
 	data: &'a [u8],
 	offset: usize,

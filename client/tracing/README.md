@@ -1,10 +1,10 @@
-Instrumentation implementation for substrate.
+Instrumentation implementation for tetcore.
 
 This crate is unstable and the API and usage may change.
 
 # Usage
 
-See `sp-tracing` for examples on how to use tracing.
+See `tc-tracing` for examples on how to use tracing.
 
 Currently we provide `Log` (default), `Telemetry` variants for `Receiver`
 

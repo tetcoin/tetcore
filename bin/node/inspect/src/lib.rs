@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 //
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! A CLI extension for substrate node, adding sub-command to pretty print debug info
+//! A CLI extension for tetcore node, adding sub-command to pretty print debug info
 //! about blocks and extrinsics.
 //!
 //! The blocks and extrinsics can either be retrieved from the database (on-chain),

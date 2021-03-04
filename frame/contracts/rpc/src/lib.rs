@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -49,7 +49,7 @@ const CONTRACT_IS_A_TOMBSTONE: i64 = 3;
 ///
 /// As 1 gas is equal to 1 weight we base this on the conducted benchmarks which
 /// determined runtime weights:
-/// https://github.com/paritytech/substrate/pull/5446
+/// https://github.com/tetcoin/tetcore/pull/5446
 const GAS_PER_SECOND: u64 = 1_000_000_000_000;
 
 /// A private newtype for converting `ContractAccessError` into an RPC error.

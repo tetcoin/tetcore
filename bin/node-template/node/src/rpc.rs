@@ -1,6 +1,6 @@
 //! A collection of node-specific RPC methods.
-//! Substrate provides the `sc-rpc` crate, which defines the core RPC layer
-//! used by Substrate nodes. This file extends those RPC definitions with
+//! Tetcore provides the `sc-rpc` crate, which defines the core RPC layer
+//! used by Tetcore nodes. This file extends those RPC definitions with
 //! capabilities that are specific to this project's runtime configuration.
 
 #![warn(missing_docs)]
@@ -32,12 +32,12 @@ pub fn create_full<C, P>(
 	C: ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error=BlockChainError> + 'static,
 	C: Send + Sync + 'static,
-	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
+	C::Api: tetcore_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: BlockBuilder<Block>,
 	P: TransactionPool + 'static,
 {
-	use substrate_frame_rpc_system::{FullSystem, SystemApi};
+	use tetcore_frame_rpc_system::{FullSystem, SystemApi};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
 
 	let mut io = jsonrpc_core::IoHandler::default();

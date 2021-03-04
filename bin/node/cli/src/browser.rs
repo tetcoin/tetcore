@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -50,9 +50,9 @@ async fn start_inner(
 		Some(telemetry_handle),
 	).await?;
 
-	info!("Substrate browser node");
+	info!("Tetcore browser node");
 	info!("✌️  version {}", config.impl_version);
-	info!("❤️  by Parity Technologies, 2017-2021");
+	info!("❤️  by Tetcoin, 2017-2021");
 	info!("📋 Chain specification: {}", config.chain_spec.name());
 	info!("🏷 Node name: {}", config.network.node_name);
 	info!("👤 Role: {:?}", config.role);

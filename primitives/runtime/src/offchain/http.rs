@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -17,7 +17,7 @@
 
 //! A high-level helpers for making HTTP requests from Offchain Workers.
 //!
-//! `sp-io` crate exposes a low level methods to make and control HTTP requests
+//! `tc-io` crate exposes a low level methods to make and control HTTP requests
 //! available only for Offchain Workers. Those might be hard to use
 //! and usually that level of control is not really necessary.
 //! This module aims to provide high-level wrappers for those APIs
@@ -112,7 +112,7 @@ mod header {
 		/// Returns the name of this header.
 		pub fn name(&self) -> &str {
 			// Header keys are always produced from `&str` so this is safe.
-			// we don't store them as `Strings` to avoid bringing `alloc::String` to sp-std
+			// we don't store them as `Strings` to avoid bringing `alloc::String` to tc-std
 			// or here.
 			unsafe { str::from_utf8_unchecked(&self.name) }
 		}
@@ -120,7 +120,7 @@ mod header {
 		/// Returns the value of this header.
 		pub fn value(&self) -> &str {
 			// Header values are always produced from `&str` so this is safe.
-			// we don't store them as `Strings` to avoid bringing `alloc::String` to sp-std
+			// we don't store them as `Strings` to avoid bringing `alloc::String` to tc-std
 			// or here.
 			unsafe { str::from_utf8_unchecked(&self.value) }
 		}

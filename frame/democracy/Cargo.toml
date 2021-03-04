@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME pallet for democracy"
 readme = "README.md"
 
@@ -14,20 +14,20 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-sp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 
 [dev-dependencies]
-sp-core = { version = "2.0.0", path = "../../primitives/core" }
+tc-core = { version = "2.0.0", path = "../../primitives/core" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-scheduler = { version = "2.0.0", path = "../scheduler" }
-sp-storage = { version = "2.0.0", path = "../../primitives/storage" }
-substrate-test-utils = { version = "2.0.0", path = "../../test-utils" }
+tc-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
 hex-literal = "0.3.1"
 
 [features]
@@ -35,16 +35,16 @@ default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"sp-std/std",
-	"sp-io/std",
+	"tc-std/std",
+	"tc-io/std",
 	"frame-benchmarking/std",
 	"frame-support/std",
-	"sp-runtime/std",
+	"tc-runtime/std",
 	"frame-system/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking",
 	"frame-system/runtime-benchmarks",
 	"frame-support/runtime-benchmarks",
-	"sp-runtime/runtime-benchmarks",
+	"tc-runtime/runtime-benchmarks",
 ]

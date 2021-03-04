@@ -899,8 +899,8 @@
       {
         "current": {
           "selected": false,
-          "text": "prometheus.parity-mgmt",
-          "value": "prometheus.parity-mgmt"
+          "text": "prometheus.tetsy-mgmt",
+          "value": "prometheus.tetsy-mgmt"
         },
         "error": null,
         "hide": 0,
@@ -936,7 +936,7 @@
     ]
   },
   "timezone": "utc",
-  "title": "Substrate Service Tasks",
+  "title": "Tetcore Service Tasks",
   "uid": "3LA6XNqZz",
   "version": 59
 }

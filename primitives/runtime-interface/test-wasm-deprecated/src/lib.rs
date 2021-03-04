@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -33,8 +33,8 @@ pub fn wasm_binary_unwrap() -> &'static [u8] {
 						supported with the flag disabled.")
 }
 
-/// This function is not used, but we require it for the compiler to include `sp-io`.
-/// `sp-io` is required for its panic and oom handler.
+/// This function is not used, but we require it for the compiler to include `tc-io`.
+/// `tc-io` is required for its panic and oom handler.
 #[cfg(not(feature = "std"))]
 #[no_mangle]
 pub fn import_sp_io() {

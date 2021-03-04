@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use criterion::{Criterion, criterion_group, criterion_main};
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	DefaultTestClientBuilderExt, TestClientBuilder,
 	TestClientBuilderExt, runtime::TestAPI,
 };
@@ -26,7 +26,7 @@ use sp_api::ProvideRuntimeApi;
 
 fn sp_api_benchmark(c: &mut Criterion) {
 	c.bench_function("add one with same runtime api", |b| {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 		let runtime_api = client.runtime_api();
 		let block_id = BlockId::Number(client.chain_info().best_number);
 
@@ -34,14 +34,14 @@ fn sp_api_benchmark(c: &mut Criterion) {
 	});
 
 	c.bench_function("add one with recreating runtime api", |b| {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 		let block_id = BlockId::Number(client.chain_info().best_number);
 
 		b.iter(|| client.runtime_api().benchmark_add_one(&block_id, &1))
 	});
 
 	c.bench_function("vector add one with same runtime api", |b| {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 		let runtime_api = client.runtime_api();
 		let block_id = BlockId::Number(client.chain_info().best_number);
 		let data = vec![0; 1000];
@@ -50,7 +50,7 @@ fn sp_api_benchmark(c: &mut Criterion) {
 	});
 
 	c.bench_function("vector add one with recreating runtime api", |b| {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 		let block_id = BlockId::Number(client.chain_info().best_number);
 		let data = vec![0; 1000];
 

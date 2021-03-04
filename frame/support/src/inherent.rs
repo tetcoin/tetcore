@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -219,7 +219,7 @@ mod tests {
 			Some(CallTest2::Something)
 		}
 
-		fn is_inherent_required(_: &InherentData) -> Result<Option<Self::Error>, Self::Error> { 
+		fn is_inherent_required(_: &InherentData) -> Result<Option<Self::Error>, Self::Error> {
 			Ok(Some(().into()))
 		}
 	}
@@ -240,7 +240,7 @@ mod tests {
 		}
 	}
 
-	parity_util_mem::malloc_size_of_is_0!(Extrinsic);
+	tetsy_util_mem::malloc_size_of_is_0!(Extrinsic);
 
 	impl_outer_inherent! {
 		impl Inherents where Block = Block, UncheckedExtrinsic = Extrinsic {

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -19,7 +19,7 @@ use super::Runtime;
 use crate::exec::Ext;
 
 use sp_sandbox::Value;
-use parity_wasm::elements::{FunctionType, ValueType};
+use tetsy_wasm::elements::{FunctionType, ValueType};
 
 #[macro_use]
 pub(crate) mod macros;

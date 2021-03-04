@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -19,7 +19,7 @@
 use std::{sync::Arc, collections::HashMap};
 
 use log::debug;
-use parity_scale_codec::Encode;
+use tetsy_scale_codec::Encode;
 use parking_lot::RwLockWriteGuard;
 
 use sp_blockchain::{BlockStatus, well_known_cache_keys};

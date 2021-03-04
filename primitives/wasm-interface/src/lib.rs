@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -33,7 +33,7 @@ pub type Result<T> = result::Result<T, String>;
 #[cfg(not(feature = "std"))]
 pub type Result<T> = result::Result<T, &'static str>;
 
-/// Value types supported by Substrate on the boundary between host/Wasm.
+/// Value types supported by Tetcore on the boundary between host/Wasm.
 #[derive(Copy, Clone, PartialEq, Debug, Eq)]
 pub enum ValueType {
 	/// An `i32` value type.
@@ -71,7 +71,7 @@ impl sp_std::convert::TryFrom<u8> for ValueType {
 	}
 }
 
-/// Values supported by Substrate on the boundary between host/Wasm.
+/// Values supported by Tetcore on the boundary between host/Wasm.
 #[derive(PartialEq, Debug, Clone, Copy, codec::Encode, codec::Decode)]
 pub enum Value {
 	/// A 32-bit integer.

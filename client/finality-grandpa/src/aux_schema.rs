@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -19,7 +19,7 @@
 //! Schema for stuff in the aux-db.
 
 use std::fmt::Debug;
-use parity_scale_codec::{Encode, Decode};
+use tetsy_scale_codec::{Encode, Decode};
 use sc_client_api::backend::AuxStore;
 use sp_blockchain::{Result as ClientResult, Error as ClientError};
 use fork_tree::ForkTree;
@@ -137,7 +137,7 @@ struct V2AuthoritySet<H, N> {
 }
 
 pub(crate) fn load_decode<B: AuxStore, T: Decode>(
-	backend: &B, 
+	backend: &B,
 	key: &[u8]
 ) -> ClientResult<Option<T>> {
 	match backend.get_aux(key)? {
@@ -527,12 +527,12 @@ pub(crate) fn load_authorities<B: AuxStore, H: Decode, N: Decode + Clone + Ord>(
 mod test {
 	use sp_finality_grandpa::AuthorityId;
 	use sp_core::H256;
-	use substrate_test_runtime_client;
+	use tetcore_test_runtime_client;
 	use super::*;
 
 	#[test]
 	fn load_decode_from_v0_migrates_data_format() {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 
 		let authorities = vec![(AuthorityId::default(), 100)];
 		let set_id = 3;
@@ -568,7 +568,7 @@ mod test {
 		);
 
 		// should perform the migration
-		load_persistent::<substrate_test_runtime_client::runtime::Block, _, _>(
+		load_persistent::<tetcore_test_runtime_client::runtime::Block, _, _>(
 			&client,
 			H256::random(),
 			0,
@@ -584,7 +584,7 @@ mod test {
 			authority_set,
 			set_state,
 			..
-		} = load_persistent::<substrate_test_runtime_client::runtime::Block, _, _>(
+		} = load_persistent::<tetcore_test_runtime_client::runtime::Block, _, _>(
 			&client,
 			H256::random(),
 			0,
@@ -625,7 +625,7 @@ mod test {
 
 	#[test]
 	fn load_decode_from_v1_migrates_data_format() {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 
 		let authorities = vec![(AuthorityId::default(), 100)];
 		let set_id = 3;
@@ -664,7 +664,7 @@ mod test {
 		);
 
 		// should perform the migration
-		load_persistent::<substrate_test_runtime_client::runtime::Block, _, _>(
+		load_persistent::<tetcore_test_runtime_client::runtime::Block, _, _>(
 			&client,
 			H256::random(),
 			0,
@@ -680,7 +680,7 @@ mod test {
 			authority_set,
 			set_state,
 			..
-		} = load_persistent::<substrate_test_runtime_client::runtime::Block, _, _>(
+		} = load_persistent::<tetcore_test_runtime_client::runtime::Block, _, _>(
 			&client,
 			H256::random(),
 			0,
@@ -721,7 +721,7 @@ mod test {
 
 	#[test]
 	fn load_decode_from_v2_migrates_data_format() {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 
 		let authorities = vec![(AuthorityId::default(), 100)];
 		let set_id = 3;
@@ -735,7 +735,7 @@ mod test {
 			};
 
 			let genesis_state = (H256::random(), 32);
-			let voter_set_state: VoterSetState<substrate_test_runtime_client::runtime::Block> =
+			let voter_set_state: VoterSetState<tetcore_test_runtime_client::runtime::Block> =
 				VoterSetState::live(
 					set_id,
 					&authority_set.clone().into(), // Note the conversion!
@@ -758,7 +758,7 @@ mod test {
 		);
 
 		// should perform the migration
-		load_persistent::<substrate_test_runtime_client::runtime::Block, _, _>(
+		load_persistent::<tetcore_test_runtime_client::runtime::Block, _, _>(
 			&client,
 			H256::random(),
 			0,
@@ -773,7 +773,7 @@ mod test {
 		let PersistentData {
 			authority_set,
 			..
-		 } = load_persistent::<substrate_test_runtime_client::runtime::Block, _, _>(
+		 } = load_persistent::<tetcore_test_runtime_client::runtime::Block, _, _>(
 			&client,
 			H256::random(),
 			0,
@@ -794,11 +794,11 @@ mod test {
 
 	#[test]
 	fn write_read_concluded_rounds() {
-		let client = substrate_test_runtime_client::new();
+		let client = tetcore_test_runtime_client::new();
 		let hash = H256::random();
 		let round_state = RoundState::genesis((hash, 0));
 
-		let completed_round = CompletedRound::<substrate_test_runtime_client::runtime::Block> {
+		let completed_round = CompletedRound::<tetcore_test_runtime_client::runtime::Block> {
 			number: 42,
 			state: round_state.clone(),
 			base: round_state.prevote_ghost.unwrap(),
@@ -812,7 +812,7 @@ mod test {
 		round_number.using_encoded(|n| key.extend(n));
 
 		assert_eq!(
-			load_decode::<_, CompletedRound::<substrate_test_runtime_client::runtime::Block>>(
+			load_decode::<_, CompletedRound::<tetcore_test_runtime_client::runtime::Block>>(
 				&client, &key
 			).unwrap(),
 			Some(completed_round),

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -21,7 +21,7 @@
 use fork_tree::ForkTree;
 use parking_lot::RwLock;
 use finality_grandpa::voter_set::VoterSet;
-use parity_scale_codec::{Encode, Decode};
+use tetsy_scale_codec::{Encode, Decode};
 use log::debug;
 use sc_telemetry::{telemetry, CONSENSUS_INFO};
 use sp_finality_grandpa::{AuthorityId, AuthorityList};
@@ -625,7 +625,7 @@ pub struct PendingChange<H, N> {
 }
 
 impl<H: Decode, N: Decode> Decode for PendingChange<H, N> {
-	fn decode<I: parity_scale_codec::Input>(value: &mut I) -> Result<Self, parity_scale_codec::Error> {
+	fn decode<I: tetsy_scale_codec::Input>(value: &mut I) -> Result<Self, tetsy_scale_codec::Error> {
 		let next_authorities = Decode::decode(value)?;
 		let delay = Decode::decode(value)?;
 		let canon_height = Decode::decode(value)?;

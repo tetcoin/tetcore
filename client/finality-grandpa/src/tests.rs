@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -33,7 +33,7 @@ use sp_keyring::Ed25519Keyring;
 use sc_client_api::backend::TransactionFor;
 use sp_blockchain::Result;
 use sp_api::{ApiRef, ProvideRuntimeApi};
-use substrate_test_runtime_client::runtime::BlockNumber;
+use tetcore_test_runtime_client::runtime::BlockNumber;
 use sp_consensus::{
 	BlockOrigin, ForkChoiceStrategy, ImportedAux, BlockImportParams, ImportResult, BlockImport,
 	import_queue::BoxJustificationImport,
@@ -52,7 +52,7 @@ use sc_keystore::LocalKeystore;
 use sp_application_crypto::key_types::GRANDPA;
 
 type TestLinkHalf =
-	LinkHalf<Block, PeersFullClient, LongestChain<substrate_test_runtime_client::Backend, Block>>;
+	LinkHalf<Block, PeersFullClient, LongestChain<tetcore_test_runtime_client::Backend, Block>>;
 type PeerData = Mutex<Option<TestLinkHalf>>;
 type GrandpaPeer = Peer<PeerData>;
 
@@ -800,7 +800,7 @@ fn allows_reimporting_change_blocks() {
 
 	let client = net.peer(0).client().clone();
 	let (mut block_import, ..) = net.make_block_import::<
-		TransactionFor<substrate_test_runtime_client::Backend, Block>
+		TransactionFor<tetcore_test_runtime_client::Backend, Block>
 	>(
 		client.clone(),
 	);
@@ -849,7 +849,7 @@ fn test_bad_justification() {
 
 	let client = net.peer(0).client().clone();
 	let (mut block_import, ..) = net.make_block_import::<
-		TransactionFor<substrate_test_runtime_client::Backend, Block>
+		TransactionFor<tetcore_test_runtime_client::Backend, Block>
 	>(
 		client.clone(),
 	);
@@ -929,7 +929,7 @@ fn voter_persists_its_votes() {
 			let bob_client = net.peer(1).client().clone();
 			let (_, _, link) = net
 				.make_block_import::<
-					TransactionFor<substrate_test_runtime_client::Backend, Block>
+					TransactionFor<tetcore_test_runtime_client::Backend, Block>
 				>(bob_client);
 			let LinkHalf { persistent_data, .. } = link.lock().take().unwrap();
 			let PersistentData { set_state, .. } = persistent_data;
@@ -996,7 +996,7 @@ fn voter_persists_its_votes() {
 
 		let (_block_import, _, link) = net
 			.make_block_import::<
-				TransactionFor<substrate_test_runtime_client::Backend, Block>
+				TransactionFor<tetcore_test_runtime_client::Backend, Block>
 			>(alice_client);
 		let link = link.lock().take().unwrap();
 
@@ -1299,11 +1299,11 @@ fn voter_catches_up_to_latest_round_when_behind() {
 }
 
 type TestEnvironment<N, VR> = Environment<
-	substrate_test_runtime_client::Backend,
+	tetcore_test_runtime_client::Backend,
 	Block,
 	TestClient,
 	N,
-	LongestChain<substrate_test_runtime_client::Backend, Block>,
+	LongestChain<tetcore_test_runtime_client::Backend, Block>,
 	VR,
 >;
 
@@ -1528,7 +1528,7 @@ fn imports_justification_for_regular_blocks_on_import() {
 
 	let client = net.peer(0).client().clone();
 	let (mut block_import, ..) = net.make_block_import::<
-		TransactionFor<substrate_test_runtime_client::Backend, Block>
+		TransactionFor<tetcore_test_runtime_client::Backend, Block>
 	>(client.clone());
 
 	let full_client = client.as_full().expect("only full clients are used in test");

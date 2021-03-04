@@ -1,5 +1,5 @@
 = Structure
-:Author: Substrate developers
+:Author: Tetcore developers
 :Revision: 0.3.0
 :toc:
 :sectnums:
@@ -7,7 +7,7 @@
 
 == Overview
 
-Substrate is split into multiple levels with increasing opinion and decreasing flexibility:
+Tetcore is split into multiple levels with increasing opinion and decreasing flexibility:
 
 * primitives
 * client
@@ -23,12 +23,12 @@ Putting all these components together we have:
 === Runtime
 
 * _found in_: `/primitives`
-* _crates prefix_: `sp-`
+* _crates prefix_: `tc-`
 * _constraints_:
 ** must be `[no_std]`
 ** crates may not (dev-)depend on crates in other subfolders of this repo
 
-In the lowest level, Substrate defines primitives, interfaces and traits to implement any on-chain Substrate transition system and its interactions with the outside world. This is the lowest level of abstraction and opinion that everything else builds upon.
+In the lowest level, Tetcore defines primitives, interfaces and traits to implement any on-chain Tetcore transition system and its interactions with the outside world. This is the lowest level of abstraction and opinion that everything else builds upon.
 
 === Client
 
@@ -37,7 +37,7 @@ In the lowest level, Substrate defines primitives, interfaces and traits to impl
 * _constraints_:
 ** crates may not (dev-)depend on any `frame-`-crates
 
-In the client you can find a set of crates to construct the outer substrate-node, implementing outer runtime interfaces, thus it depends on `runtime`. It provides the outer building blocks like transaction queue, networking layer, database backend, full* and light-client support.
+In the client you can find a set of crates to construct the outer tetcore-node, implementing outer runtime interfaces, thus it depends on `runtime`. It provides the outer building blocks like transaction queue, networking layer, database backend, full* and light-client support.
 
 === FRAME (formerly `srml`)
 
@@ -62,7 +62,7 @@ There are a few crates with the `frame-` prefix. These do not contain domain-spe
 === Integration Tests
 
 * _found in_: `/test`
-* _crates prefix_: `substrate-test`
+* _crates prefix_: `tetcore-test`
 * _constraints_:
 ** only helpers may be published
 ** purely testing crates must be `publish = false`
@@ -79,7 +79,7 @@ We also provide some binaries pulling from the components creating full applicat
 
 * _found in_: `/bin/node`
 
-The default (testing) application pulling together our recommended setup of substrate-client with a wasm-contracts-supporting frame-runtime.  The node pulls it all together, constructs the (upgradable) runtime, and wires up the client around it. You can find an example client, which includes a full wasm-contracts chain in  `node`. This is also what is being built and run if you do `cargo run`.
+The default (testing) application pulling together our recommended setup of tetcore-client with a wasm-contracts-supporting frame-runtime.  The node pulls it all together, constructs the (upgradable) runtime, and wires up the client around it. You can find an example client, which includes a full wasm-contracts chain in  `node`. This is also what is being built and run if you do `cargo run`.
 
 ==== Node Template
 
@@ -91,10 +91,10 @@ We also provide a template to get you started building your own node.
 
 * _found in_: `/bin/utils`
 
-- **subkey**
-  Subkey is a client library to generate keys and sign transactions to send to a substrate node.
+- **tetkey**
+  Subkey is a client library to generate keys and sign transactions to send to a tetcore node.
 - **chain-spec-builder**
-  The chain spec builder builds a chain specification that includes a Substrate runtime compiled as WASM. To ensure proper functioning of the included runtime compile (or run) the chain spec builder binary in `--release` mode.
+  The chain spec builder builds a chain specification that includes a Tetcore runtime compiled as WASM. To ensure proper functioning of the included runtime compile (or run) the chain spec builder binary in `--release` mode.
 
 == Internal Dependency Tree
 

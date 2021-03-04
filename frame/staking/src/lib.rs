@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -49,7 +49,7 @@
 //! ### Goals
 //! <!-- Original author of paragraph: @gavofyork -->
 //!
-//! The staking system in Substrate NPoS is designed to make the following possible:
+//! The staking system in Tetcore NPoS is designed to make the following possible:
 //!
 //! - Stake funds that are controlled by a cold wallet.
 //! - Withdraw some, or deposit more, funds without interrupting the role of an entity.
@@ -789,7 +789,7 @@ pub trait Config: frame_system::Config + SendTransactionTypes<Call<Self>> {
 	/// Convert a balance into a number used for election calculation. This must fit into a `u64`
 	/// but is allowed to be sensibly lossy. The `u64` is used to communicate with the
 	/// [`sp_npos_elections`] crate which accepts u64 numbers and does operations in 128.
-	/// Consequently, the backward convert is used convert the u128s from sp-elections back to a
+	/// Consequently, the backward convert is used convert the u128s from tc-elections back to a
 	/// [`BalanceOf`].
 	type CurrencyToVote: CurrencyToVote<BalanceOf<Self>>;
 

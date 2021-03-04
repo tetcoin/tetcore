@@ -13,7 +13,7 @@ members = [
 	"bin/node/runtime",
 	"bin/node/testing",
 	"bin/utils/chain-spec-builder",
-	"bin/utils/subkey",
+	"bin/utils/tetkey",
 	"client/api",
 	"client/authority-discovery",
 	"client/basic-authorship",
@@ -198,10 +198,10 @@ members = [
 # dependencies with `opt-level=3` even in "dev" mode in order to make "dev" mode more usable.
 # The majority of these crates are cryptographic libraries.
 #
-# Note that this does **not** affect crates that depend on Substrate. In other words, if you add
-# a dependency on Substrate, you have to copy-paste this list in your own `Cargo.toml` (assuming
+# Note that this does **not** affect crates that depend on Tetcore. In other words, if you add
+# a dependency on Tetcore, you have to copy-paste this list in your own `Cargo.toml` (assuming
 # that you want the same list). This list is only relevant when running `cargo build` from within
-# the Substrate workspace.
+# the Tetcore workspace.
 #
 # If you see an error mentioning "profile package spec ... did not match any packages", it
 # probably concerns this list.
@@ -256,5 +256,5 @@ yamux = { opt-level = 3 }
 zeroize = { opt-level = 3 }
 
 [profile.release]
-# Substrate runtime requires unwinding.
+# Tetcore runtime requires unwinding.
 panic = "unwind"

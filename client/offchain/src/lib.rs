@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate offchain workers.
+//! Tetcore offchain workers.
 //!
 //! The offchain workers is a special function of the runtime that
 //! gets executed after block is imported. During execution
@@ -56,7 +56,7 @@ use api::SharedClient;
 pub use sp_offchain::{OffchainWorkerApi, STORAGE_PREFIX};
 
 /// NetworkProvider provides [`OffchainWorkers`] with all necessary hooks into the
-/// underlying Substrate networking.
+/// underlying Tetcore networking.
 pub trait NetworkProvider: NetworkStateInfo {
 	/// Set the authorized peers.
 	fn set_authorized_peers(&self, peers: HashSet<PeerId>);
@@ -238,7 +238,7 @@ mod tests {
 	use super::*;
 	use std::sync::Arc;
 	use sc_network::{Multiaddr, PeerId};
-	use substrate_test_runtime_client::{
+	use tetcore_test_runtime_client::{
 		TestClient, runtime::Block, TestClientBuilderExt,
 		DefaultTestClientBuilderExt, ClientBlockImportExt,
 	};
@@ -291,7 +291,7 @@ mod tests {
 	fn should_call_into_runtime_and_produce_extrinsic() {
 		sp_tracing::try_init_simple();
 
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let spawner = sp_core::testing::TaskExecutor::new();
 		let pool = TestPool(BasicPool::new_full(
 			Default::default(),
@@ -319,7 +319,7 @@ mod tests {
 		sp_tracing::try_init_simple();
 
 		let (client, backend) =
-			substrate_test_runtime_client::TestClientBuilder::new()
+			tetcore_test_runtime_client::TestClientBuilder::new()
 				.enable_offchain_indexing_api()
 				.build_with_backend();
 		let mut client = Arc::new(client);
@@ -329,7 +329,7 @@ mod tests {
 		let value = &b"world"[..];
 		let mut block_builder = client.new_block(Default::default()).unwrap();
 		block_builder.push(
-			substrate_test_runtime_client::runtime::Extrinsic::OffchainIndexSet(
+			tetcore_test_runtime_client::runtime::Extrinsic::OffchainIndexSet(
 				key.to_vec(),
 				value.to_vec(),
 			),
@@ -342,7 +342,7 @@ mod tests {
 
 		let mut block_builder = client.new_block(Default::default()).unwrap();
 		block_builder.push(
-			substrate_test_runtime_client::runtime::Extrinsic::OffchainIndexClear(key.to_vec()),
+			tetcore_test_runtime_client::runtime::Extrinsic::OffchainIndexClear(key.to_vec()),
 		).unwrap();
 
 		let block = block_builder.build().unwrap().block;

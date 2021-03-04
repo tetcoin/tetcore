@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -288,7 +288,7 @@ mod tests {
 	use super::*;
 
 	use futures::executor::block_on;
-	use substrate_test_runtime_client::{runtime::Transfer, AccountKeyring};
+	use tetcore_test_runtime_client::{runtime::Transfer, AccountKeyring};
 	use sc_transaction_pool::BasicPool;
 	use sp_runtime::{ApplyExtrinsicResult, transaction_validity::{TransactionValidityError, InvalidTransaction}};
 
@@ -297,7 +297,7 @@ mod tests {
 		sp_tracing::try_init_simple();
 
 		// given
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let spawner = sp_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
@@ -336,7 +336,7 @@ mod tests {
 		sp_tracing::try_init_simple();
 
 		// given
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let spawner = sp_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
@@ -359,7 +359,7 @@ mod tests {
 		sp_tracing::try_init_simple();
 
 		// given
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let spawner = sp_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
@@ -391,7 +391,7 @@ mod tests {
 		sp_tracing::try_init_simple();
 
 		// given
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let spawner = sp_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),

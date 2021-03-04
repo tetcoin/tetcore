@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -388,7 +388,7 @@ mod tests {
 	use assert_matches::assert_matches;
 	use sp_utils::mpsc::tracing_unbounded;
 	use crate::{aux_schema,	communication::tests::{Event, make_test_network}};
-	use substrate_test_runtime_client::{TestClientBuilder, TestClientBuilderExt};
+	use tetcore_test_runtime_client::{TestClientBuilder, TestClientBuilderExt};
 	use sc_network::PeerId;
 	use sp_blockchain::HeaderBackend as _;
 

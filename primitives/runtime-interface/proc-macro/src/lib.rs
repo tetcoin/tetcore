@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! This crate provides procedural macros for usage within the context of the Substrate runtime
+//! This crate provides procedural macros for usage within the context of the Tetcore runtime
 //! interface.
 //!
 //! The following macros are provided:

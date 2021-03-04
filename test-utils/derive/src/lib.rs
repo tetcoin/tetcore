@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -55,10 +55,10 @@ fn parse_knobs(
 		}
 	};
 
-	let crate_name = if env::var("CARGO_PKG_NAME").unwrap() == "substrate-test-utils" {
-		syn::Ident::new("substrate_test_utils", Span::call_site().into())
+	let crate_name = if env::var("CARGO_PKG_NAME").unwrap() == "tetcore-test-utils" {
+		syn::Ident::new("tetcore_test_utils", Span::call_site().into())
 	} else {
-		let crate_name = crate_name("substrate-test-utils")
+		let crate_name = crate_name("tetcore-test-utils")
 			.map_err(|e| syn::Error::new_spanned(&sig, e))?;
 
 		syn::Ident::new(&crate_name, Span::call_site().into())
@@ -82,7 +82,7 @@ fn parse_knobs(
 			.into();
 			let timeout_task = #crate_name::tokio::time::delay_for(
 				std::time::Duration::from_secs(
-					std::env::var("SUBSTRATE_TEST_TIMEOUT")
+					std::env::var("TETCORE_TEST_TIMEOUT")
 						.ok()
 						.and_then(|x| x.parse().ok())
 						.unwrap_or(600))

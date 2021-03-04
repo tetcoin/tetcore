@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -27,7 +27,7 @@ use sp_keystore::{
 	SyncCryptoStore,
 	testing::KeyStore,
 };
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	TestClientBuilder, DefaultTestClientBuilderExt, TestClientBuilderExt,
 	runtime::TestAPI,
 };

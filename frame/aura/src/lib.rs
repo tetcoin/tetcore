@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -38,7 +38,7 @@
 //! ## References
 //!
 //! If you're interested in hacking on this module, it is useful to understand the interaction with
-//! `substrate/primitives/inherents/src/lib.rs` and, specifically, the required implementation of
+//! `tetcore/primitives/inherents/src/lib.rs` and, specifically, the required implementation of
 //! [`ProvideInherent`](../sp_inherents/trait.ProvideInherent.html) and
 //! [`ProvideInherentData`](../sp_inherents/trait.ProvideInherentData.html) to create and check inherents.
 

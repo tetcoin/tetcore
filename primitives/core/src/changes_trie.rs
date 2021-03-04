@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,15 +15,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Substrate changes trie configuration.
+//! Tetcore changes trie configuration.
 
 #[cfg(any(feature = "std", test))]
 use serde::{Serialize, Deserialize};
 use codec::{Encode, Decode};
 use num_traits::Zero;
 
-/// Substrate changes trie configuration.
-#[cfg_attr(any(feature = "std", test), derive(Serialize, Deserialize, parity_util_mem::MallocSizeOf))]
+/// Tetcore changes trie configuration.
+#[cfg_attr(any(feature = "std", test), derive(Serialize, Deserialize, tetsy_util_mem::MallocSizeOf))]
 #[derive(Debug, Clone, PartialEq, Eq, Default, Encode, Decode)]
 pub struct ChangesTrieConfiguration {
 	/// Interval (in blocks) at which level1-digests are created. Digests are not
@@ -39,7 +39,7 @@ pub struct ChangesTrieConfiguration {
 	pub digest_levels: u32,
 }
 
-/// Substrate changes trie configuration range.
+/// Tetcore changes trie configuration range.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChangesTrieConfigurationRange<Number, Hash> {
 	/// Zero block of configuration.

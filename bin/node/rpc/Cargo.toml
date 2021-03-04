@@ -4,8 +4,8 @@ version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
@@ -27,12 +27,12 @@ sc-keystore = { version = "2.0.0", path = "../../../client/keystore" }
 sc-rpc-api = { version = "0.8.0", path = "../../../client/rpc-api" }
 sc-rpc = { version = "2.0.0", path = "../../../client/rpc" }
 sc-sync-state-rpc = { version = "0.8.0", path = "../../../client/sync-state-rpc" }
-sp-api = { version = "2.0.0", path = "../../../primitives/api" }
-sp-block-builder = { version = "2.0.0", path = "../../../primitives/block-builder" }
-sp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-sp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
-sp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
-sp-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
-sp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-sp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
-substrate-frame-rpc-system = { version = "2.0.0", path = "../../../utils/frame/rpc/system" }
+tc-api = { version = "2.0.0", path = "../../../primitives/api" }
+tc-block-builder = { version = "2.0.0", path = "../../../primitives/block-builder" }
+tc-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tc-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
+tc-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tc-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
+tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tc-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
+tetcore-frame-rpc-system = { version = "2.0.0", path = "../../../utils/frame/rpc/system" }

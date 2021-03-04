@@ -4,22 +4,22 @@ version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME Merkle Mountain Range primitives."
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
 frame-support = { version = "2.0.0", default-features = false, path = "../../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../../system" }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-sp-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
-sp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tc-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
+tc-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 
 [dev-dependencies]
 hex-literal = "0.3"
@@ -31,8 +31,8 @@ std = [
 	"frame-support/std",
 	"frame-system/std",
 	"serde",
-	"sp-api/std",
-	"sp-core/std",
-	"sp-runtime/std",
-	"sp-std/std",
+	"tc-api/std",
+	"tc-core/std",
+	"tc-runtime/std",
+	"tc-std/std",
 ]

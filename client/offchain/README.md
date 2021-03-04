@@ -1,4 +1,4 @@
-Substrate offchain workers.
+Tetcore offchain workers.
 
 The offchain workers is a special function of the runtime that
 gets executed after block is imported. During execution

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -270,7 +270,7 @@ pub fn decl_storage(input: TokenStream) -> TokenStream {
 /// ```
 ///
 /// The identifier `System` is the name of the pallet and the lower case identifier `system` is the
-/// name of the Rust module/crate for this Substrate module. The identifiers between the braces are
+/// name of the Rust module/crate for this Tetcore module. The identifiers between the braces are
 /// the module parts provided by the pallet. It is important to list these parts here to export
 /// them correctly in the metadata or to make the pallet usable in the runtime.
 ///

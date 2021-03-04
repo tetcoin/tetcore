@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -32,7 +32,7 @@ use sp_std::{
 	fmt::Debug,
 };
 
-/// Abstraction over a block header for a substrate chain.
+/// Abstraction over a block header for a tetcore chain.
 #[derive(PartialEq, Eq, Clone, sp_core::RuntimeDebug)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "std", serde(rename_all = "camelCase"))]
@@ -54,13 +54,13 @@ pub struct Header<Number: Copy + Into<U256> + TryFrom<U256>, Hash: HashT> {
 }
 
 #[cfg(feature = "std")]
-impl<Number, Hash> parity_util_mem::MallocSizeOf for Header<Number, Hash>
+impl<Number, Hash> tetsy_util_mem::MallocSizeOf for Header<Number, Hash>
 where
-	Number: Copy + Into<U256> + TryFrom<U256> + parity_util_mem::MallocSizeOf,
+	Number: Copy + Into<U256> + TryFrom<U256> + tetsy_util_mem::MallocSizeOf,
 	Hash: HashT,
-	Hash::Output: parity_util_mem::MallocSizeOf,
+	Hash::Output: tetsy_util_mem::MallocSizeOf,
 {
-	fn size_of(&self, ops: &mut parity_util_mem::MallocSizeOfOps) -> usize {
+	fn size_of(&self, ops: &mut tetsy_util_mem::MallocSizeOfOps) -> usize {
 		self.parent_hash.size_of(ops) +
 			self.number.size_of(ops) +
 			self.state_root.size_of(ops) +

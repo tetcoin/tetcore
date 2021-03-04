@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -65,9 +65,9 @@ impl<Block: BlockT> fmt::Display for BlockId<Block> {
 	}
 }
 
-/// Abstraction over a substrate block.
+/// Abstraction over a tetcore block.
 #[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize, parity_util_mem::MallocSizeOf))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize, tetsy_util_mem::MallocSizeOf))]
 #[cfg_attr(feature = "std", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "std", serde(deny_unknown_fields))]
 pub struct Block<Header, Extrinsic: MaybeSerialize> {
@@ -103,7 +103,7 @@ where
 	}
 }
 
-/// Abstraction over a substrate block and justification.
+/// Abstraction over a tetcore block and justification.
 #[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "std", serde(rename_all = "camelCase"))]

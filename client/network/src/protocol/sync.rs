@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -1899,7 +1899,7 @@ mod test {
 	use sc_block_builder::BlockBuilderProvider;
 	use sp_blockchain::HeaderBackend;
 	use sp_consensus::block_validation::DefaultBlockAnnounceValidator;
-	use substrate_test_runtime_client::{
+	use tetcore_test_runtime_client::{
 		runtime::{Block, Hash, Header},
 		ClientBlockImportExt, DefaultTestClientBuilderExt, TestClientBuilder, TestClientBuilderExt,
 		BlockBuilderExt, TestClient, ClientExt,

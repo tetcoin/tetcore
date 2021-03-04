@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -709,9 +709,9 @@ impl<T: Config> Module<T> {
 pub mod migration {
 	use super::*;
 
-	/// Migration code for <https://github.com/paritytech/substrate/pull/6770>
+	/// Migration code for <https://github.com/tetcoin/tetcore/pull/6770>
 	///
-	/// Details: This migration was introduced between Substrate 2.0-RC6 and Substrate 2.0 releases.
+	/// Details: This migration was introduced between Tetcore 2.0-RC6 and Tetcore 2.0 releases.
 	/// Before this migration, the `Proxies` storage item used a tuple of `AccountId` and
 	/// `ProxyType` to represent the proxy definition. After #6770, we switched to use a struct
 	/// `ProxyDefinition` which additionally included a `BlockNumber` delay value. This function,

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -28,17 +28,17 @@ use crate::{
 use sc_client_api::backend;
 use sc_client_api::blockchain::{Backend as BlockChainBackendT, HeaderBackend};
 use sp_consensus::BlockOrigin;
-use substrate_test_runtime::{self, Transfer};
+use tetcore_test_runtime::{self, Transfer};
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::{Block as BlockT, HashFor};
 use sc_block_builder::BlockBuilderProvider;
 
 /// helper to test the `leaves` implementation for various backends
 pub fn test_leaves_for_backend<B: 'static>(backend: Arc<B>) where
-	B: backend::Backend<substrate_test_runtime::Block>,
+	B: backend::Backend<tetcore_test_runtime::Block>,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
-	backend::StateBackendFor<B, substrate_test_runtime::Block>:
-		sp_api::StateBackend<HashFor<substrate_test_runtime::Block>>,
+	backend::StateBackendFor<B, tetcore_test_runtime::Block>:
+		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
 	// block tree:
 	// G -> A1 -> A2 -> A3 -> A4 -> A5
@@ -204,10 +204,10 @@ pub fn test_leaves_for_backend<B: 'static>(backend: Arc<B>) where
 
 /// helper to test the `children` implementation for various backends
 pub fn test_children_for_backend<B: 'static>(backend: Arc<B>) where
-	B: backend::LocalBackend<substrate_test_runtime::Block>,
+	B: backend::LocalBackend<tetcore_test_runtime::Block>,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
-	<B as backend::Backend<substrate_test_runtime::Block>>::State:
-		sp_api::StateBackend<HashFor<substrate_test_runtime::Block>>,
+	<B as backend::Backend<tetcore_test_runtime::Block>>::State:
+		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
 	// block tree:
 	// G -> A1 -> A2 -> A3 -> A4 -> A5
@@ -334,10 +334,10 @@ pub fn test_children_for_backend<B: 'static>(backend: Arc<B>) where
 }
 
 pub fn test_blockchain_query_by_number_gets_canonical<B: 'static>(backend: Arc<B>) where
-	B: backend::LocalBackend<substrate_test_runtime::Block>,
+	B: backend::LocalBackend<tetcore_test_runtime::Block>,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
-	<B as backend::Backend<substrate_test_runtime::Block>>::State:
-		sp_api::StateBackend<HashFor<substrate_test_runtime::Block>>,
+	<B as backend::Backend<tetcore_test_runtime::Block>>::State:
+		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
 	// block tree:
 	// G -> A1 -> A2 -> A3 -> A4 -> A5

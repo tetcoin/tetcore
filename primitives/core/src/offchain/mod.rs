@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -375,7 +375,7 @@ pub trait Externalities: Send {
 
 	/// Initiates a http request given HTTP verb and the URL.
 	///
-	/// Meta is a future-reserved field containing additional, parity-scale-codec encoded parameters.
+	/// Meta is a future-reserved field containing additional, tetsy-scale-codec encoded parameters.
 	/// Returns the id of newly started request.
 	///
 	/// Returns an error if:
@@ -707,7 +707,7 @@ impl<T: Externalities> Externalities for LimitedExternalities<T> {
 
 #[cfg(feature = "std")]
 sp_externalities::decl_extension! {
-	/// The offchain extension that will be registered at the Substrate externalities.
+	/// The offchain extension that will be registered at the Tetcore externalities.
 	pub struct OffchainExt(Box<dyn Externalities>);
 }
 

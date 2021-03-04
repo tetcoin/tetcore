@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -1069,8 +1069,8 @@ mod tests {
 	/// See [`ProtocolRequestId`] for additional information.
 	#[test]
 	fn request_id_collision() {
-		let protocol_name_1 = "/test/req-resp-1/1";
-		let protocol_name_2 = "/test/req-resp-2/1";
+		let protocol_name_1 = "/test/req-retc-1/1";
+		let protocol_name_2 = "/test/req-retc-2/1";
 		let mut pool = LocalPool::new();
 
 		let mut swarm_1 = {

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -30,7 +30,7 @@ fn running_the_node_works_and_can_be_interrupted() {
 
 	fn run_command_and_kill(signal: Signal) {
 		let base_path = tempdir().expect("could not create a temp dir");
-		let mut cmd = Command::new(cargo_bin("substrate"))
+		let mut cmd = Command::new(cargo_bin("tetcore"))
 			.args(&["--dev", "-d"])
 			.arg(base_path.path())
 			.spawn()

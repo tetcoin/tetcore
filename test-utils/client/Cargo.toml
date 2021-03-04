@@ -1,18 +1,18 @@
 [package]
-name = "substrate-test-client"
+name = "tetcore-test-client"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 publish = false
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0" }
 futures = "0.3.9"
 futures01 = { package = "futures", version = "0.1.29" }
 hash-db = "0.15.2"
@@ -25,10 +25,10 @@ sc-consensus = { version = "0.8.0", path = "../../client/consensus/common" }
 sc-executor = { version = "0.8.0", path = "../../client/executor" }
 sc-light = { version = "2.0.0", path = "../../client/light" }
 sc-service = { version = "0.8.0", default-features = false, features = ["test-helpers"],  path = "../../client/service" }
-sp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-sp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-sp-core = { version = "2.0.0", path = "../../primitives/core" }
-sp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
-sp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
-sp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-sp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tc-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tc-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
+tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tc-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
+tc-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tc-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }

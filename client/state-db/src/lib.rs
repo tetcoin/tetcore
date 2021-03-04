@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -43,7 +43,7 @@ use std::collections::{HashMap, hash_map::Entry};
 use noncanonical::NonCanonicalOverlay;
 use pruning::RefWindow;
 use log::trace;
-use parity_util_mem::{MallocSizeOf, malloc_size};
+use tetsy_util_mem::{MallocSizeOf, malloc_size};
 use sc_client_api::{StateDbMemoryInfo, MemorySize};
 
 const PRUNING_MODE: &[u8] = b"mode";

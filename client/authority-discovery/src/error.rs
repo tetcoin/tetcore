@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -34,7 +34,7 @@ pub enum Error {
 	VerifyingDhtPayload,
 	/// Failed to hash the authority id to be used as a dht key.
 	HashingAuthorityId(libp2p::core::multiaddr::multihash::Error),
-	/// Failed calling into the Substrate runtime.
+	/// Failed calling into the Tetcore runtime.
 	CallingRuntime(sp_blockchain::Error),
 	/// Received a dht record with a key that does not match any in-flight awaited keys.
 	ReceivingUnexpectedRecord,

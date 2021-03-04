@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -109,7 +109,7 @@ pub trait WeightInfo {
 
 /// A stored pending change, old format.
 // TODO: remove shim
-// https://github.com/paritytech/substrate/issues/1614
+// https://github.com/tetcoin/tetcore/issues/1614
 #[derive(Encode, Decode)]
 pub struct OldStoredPendingChange<N> {
 	/// The block number this was scheduled at.

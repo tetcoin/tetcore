@@ -1,11 +1,11 @@
 [package]
-name = "sp-session"
+name = "tc-session"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Primitives for sessions"
 readme = "README.md"
 
@@ -13,20 +13,20 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-sp-api = { version = "2.0.0", default-features = false, path = "../api" }
-sp-core = { version = "2.0.0", default-features = false, path = "../core" }
-sp-std = { version = "2.0.0", default-features = false, path = "../std" }
-sp-staking = { version = "2.0.0", default-features = false, path = "../staking" }
-sp-runtime = { version = "2.0.0", optional = true, path = "../runtime" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+tc-api = { version = "2.0.0", default-features = false, path = "../api" }
+tc-core = { version = "2.0.0", default-features = false, path = "../core" }
+tc-std = { version = "2.0.0", default-features = false, path = "../std" }
+tc-staking = { version = "2.0.0", default-features = false, path = "../staking" }
+tc-runtime = { version = "2.0.0", optional = true, path = "../runtime" }
 
 [features]
 default = [ "std" ]
 std = [
 	"codec/std",
-	"sp-api/std",
-	"sp-core/std",
-	"sp-std/std",
-	"sp-staking/std",
-	"sp-runtime/std",
+	"tc-api/std",
+	"tc-core/std",
+	"tc-std/std",
+	"tc-staking/std",
+	"tc-runtime/std",
 ]

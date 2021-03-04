@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -50,8 +50,8 @@ pub use crate::request_responses::{
 #[derive(NetworkBehaviour)]
 #[behaviour(out_event = "BehaviourOut<B>", poll_method = "poll")]
 pub struct Behaviour<B: BlockT, H: ExHashT> {
-	/// All the substrate-specific protocols.
-	substrate: Protocol<B, H>,
+	/// All the tetcore-specific protocols.
+	tetcore: Protocol<B, H>,
 	/// Periodically pings and identifies the nodes we are connected to, and store information in a
 	/// cache.
 	peer_info: peer_info::PeerInfoBehaviour,
@@ -170,7 +170,7 @@ pub enum BehaviourOut<B: BlockT> {
 impl<B: BlockT, H: ExHashT> Behaviour<B, H> {
 	/// Builds a new `Behaviour`.
 	pub fn new(
-		substrate: Protocol<B, H>,
+		tetcore: Protocol<B, H>,
 		role: Role,
 		user_agent: String,
 		local_public_key: PublicKey,
@@ -186,7 +186,7 @@ impl<B: BlockT, H: ExHashT> Behaviour<B, H> {
 		request_response_protocols.push(block_request_protocol_config);
 
 		Ok(Behaviour {
-			substrate,
+			tetcore,
 			peer_info: peer_info::PeerInfoBehaviour::new(user_agent, local_public_key),
 			discovery: disco_config.finish(),
 			request_responses:
@@ -249,12 +249,12 @@ impl<B: BlockT, H: ExHashT> Behaviour<B, H> {
 
 	/// Returns a shared reference to the user protocol.
 	pub fn user_protocol(&self) -> &Protocol<B, H> {
-		&self.substrate
+		&self.tetcore
 	}
 
 	/// Returns a mutable reference to the user protocol.
 	pub fn user_protocol_mut(&mut self) -> &mut Protocol<B, H> {
-		&mut self.substrate
+		&mut self.tetcore
 	}
 
 	/// Start querying a record from the DHT. Will later produce either a `ValueFound` or a `ValueNotFound` event.
@@ -371,7 +371,7 @@ impl<B: BlockT, H: ExHashT> NetworkBehaviourEventProcess<request_responses::Even
 			},
 			request_responses::Event::ReputationChanges { peer, changes } => {
 				for change in changes {
-					self.substrate.report_peer(peer, change);
+					self.tetcore.report_peer(peer, change);
 				}
 			}
 		}
@@ -404,7 +404,7 @@ impl<B: BlockT, H: ExHashT> NetworkBehaviourEventProcess<peer_info::PeerInfoEven
 		for addr in listen_addrs {
 			self.discovery.add_self_reported_address(&peer_id, protocols.iter(), addr);
 		}
-		self.substrate.add_default_set_discovered_nodes(iter::once(peer_id));
+		self.tetcore.add_default_set_discovered_nodes(iter::once(peer_id));
 	}
 }
 
@@ -419,7 +419,7 @@ impl<B: BlockT, H: ExHashT> NetworkBehaviourEventProcess<DiscoveryOut>
 				// implementation for `PeerInfoEvent`.
 			}
 			DiscoveryOut::Discovered(peer_id) => {
-				self.substrate.add_default_set_discovered_nodes(iter::once(peer_id));
+				self.tetcore.add_default_set_discovered_nodes(iter::once(peer_id));
 			}
 			DiscoveryOut::ValueFound(results, duration) => {
 				self.events.push_back(BehaviourOut::Dht(DhtEvent::ValueFound(results), duration));

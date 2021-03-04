@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -19,7 +19,7 @@
 #[allow(unused_imports)]
 use sc_service::TaskExecutor;
 
-#[substrate_test_utils::test]
+#[tetcore_test_utils::test]
 async fn too_many_func_parameters(task_executor_1: TaskExecutor, task_executor_2: TaskExecutor) {
 	assert!(true);
 }

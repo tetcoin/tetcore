@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -21,7 +21,7 @@
 use sp_runtime::BuildStorage;
 use sc_service::client;
 /// Re-export test-client utilities.
-pub use substrate_test_client::*;
+pub use tetcore_test_client::*;
 
 /// Call executor for `node-runtime` `TestClient`.
 pub type Executor = sc_executor::NativeExecutor<node_executor::Executor>;
@@ -46,7 +46,7 @@ pub struct GenesisParameters {
 	support_changes_trie: bool,
 }
 
-impl substrate_test_client::GenesisInit for GenesisParameters {
+impl tetcore_test_client::GenesisInit for GenesisParameters {
 	fn genesis_storage(&self) -> Storage {
 		crate::genesis::config(self.support_changes_trie, None).build_storage().unwrap()
 	}
@@ -61,7 +61,7 @@ pub trait TestClientBuilderExt: Sized {
 	fn build(self) -> Client;
 }
 
-impl TestClientBuilderExt for substrate_test_client::TestClientBuilder<
+impl TestClientBuilderExt for tetcore_test_client::TestClientBuilder<
 	node_primitives::Block,
 	client::LocalCallExecutor<Backend, Executor>,
 	Backend,

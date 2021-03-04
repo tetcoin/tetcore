@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -104,11 +104,11 @@ pub struct ValidatedPool<B: ChainApi> {
 }
 
 #[cfg(not(target_os = "unknown"))]
-impl<B: ChainApi> parity_util_mem::MallocSizeOf for ValidatedPool<B>
+impl<B: ChainApi> tetsy_util_mem::MallocSizeOf for ValidatedPool<B>
 where
-	ExtrinsicFor<B>: parity_util_mem::MallocSizeOf,
+	ExtrinsicFor<B>: tetsy_util_mem::MallocSizeOf,
 {
-	fn size_of(&self, ops: &mut parity_util_mem::MallocSizeOfOps) -> usize {
+	fn size_of(&self, ops: &mut tetsy_util_mem::MallocSizeOfOps) -> usize {
 		// other entries insignificant or non-primary references
 		self.pool.size_of(ops)
 	}

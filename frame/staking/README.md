@@ -32,7 +32,7 @@ its duties properly.
 ### Goals
 <!-- Original author of paragraph: @gavofyork -->
 
-The staking system in Substrate NPoS is designed to make the following possible:
+The staking system in Tetcore NPoS is designed to make the following possible:
 
 - Stake funds that are controlled by a cold wallet.
 - Withdraw some, or deposit more, funds without interrupting the role of an entity.

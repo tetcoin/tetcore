@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -361,14 +361,14 @@ fn set_code_checks_works() {
 
 #[test]
 fn set_code_with_real_wasm_blob() {
-	let executor = substrate_test_runtime_client::new_native_executor();
+	let executor = tetcore_test_runtime_client::new_native_executor();
 	let mut ext = new_test_ext();
 	ext.register_extension(sp_core::traits::CallInWasmExt::new(executor));
 	ext.execute_with(|| {
 		System::set_block_number(1);
 		System::set_code(
 			RawOrigin::Root.into(),
-			substrate_test_runtime_client::runtime::wasm_binary_unwrap().to_vec(),
+			tetcore_test_runtime_client::runtime::wasm_binary_unwrap().to_vec(),
 		).unwrap();
 
 		assert_eq!(
@@ -384,7 +384,7 @@ fn set_code_with_real_wasm_blob() {
 
 #[test]
 fn runtime_upgraded_with_set_storage() {
-	let executor = substrate_test_runtime_client::new_native_executor();
+	let executor = tetcore_test_runtime_client::new_native_executor();
 	let mut ext = new_test_ext();
 	ext.register_extension(sp_core::traits::CallInWasmExt::new(executor));
 	ext.execute_with(|| {
@@ -392,7 +392,7 @@ fn runtime_upgraded_with_set_storage() {
 			RawOrigin::Root.into(),
 			vec![(
 				well_known_keys::CODE.to_vec(),
-				substrate_test_runtime_client::runtime::wasm_binary_unwrap().to_vec()
+				tetcore_test_runtime_client::runtime::wasm_binary_unwrap().to_vec()
 			)],
 		).unwrap();
 	});

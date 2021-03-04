@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -33,7 +33,7 @@ use sp_api::{ProvideRuntimeApi, ApiRef};
 use sp_core::crypto::Public;
 use sp_keystore::{testing::KeyStore, CryptoStore};
 use sp_runtime::traits::{Zero, Block as BlockT, NumberFor};
-use substrate_test_runtime_client::runtime::Block;
+use tetcore_test_runtime_client::runtime::Block;
 
 use super::*;
 

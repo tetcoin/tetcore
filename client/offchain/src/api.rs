@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -53,7 +53,7 @@ mod timestamp;
 pub(crate) struct Api<Storage> {
 	/// Offchain Workers database.
 	db: Storage,
-	/// A provider for substrate networking.
+	/// A provider for tetcore networking.
 	network_provider: Arc<dyn NetworkProvider + Send + Sync>,
 	/// Is this node a potential validator?
 	is_validator: bool,
@@ -64,7 +64,7 @@ pub(crate) struct Api<Storage> {
 fn unavailable_yet<R: Default>(name: &str) -> R {
 	error!(
 		"The {:?} API is not available for offchain workers yet. Follow \
-		https://github.com/paritytech/substrate/issues/1458 for details", name
+		https://github.com/tetcoin/tetcore/issues/1458 for details", name
 	);
 	Default::default()
 }

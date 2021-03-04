@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate state API.
+//! Tetcore state API.
 
 use jsonrpc_derive::rpc;
 use sp_core::storage::{StorageKey, PrefixedStorageKey, StorageData};
@@ -24,7 +24,7 @@ use crate::state::error::FutureResult;
 
 pub use self::gen_client::Client as ChildStateClient;
 
-/// Substrate child state API
+/// Tetcore child state API
 ///
 /// Note that all `PrefixedStorageKey` are desierialized
 /// from json and not guaranted valid.

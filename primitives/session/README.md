@@ -1,3 +1,3 @@
-Substrate core types around sessions.
+Tetcore core types around sessions.
 
 License: Apache-2.0

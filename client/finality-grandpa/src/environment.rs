@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -26,7 +26,7 @@ use std::time::Duration;
 use futures::prelude::*;
 use futures_timer::Delay;
 use log::{debug, warn};
-use parity_scale_codec::{Decode, Encode};
+use tetsy_scale_codec::{Decode, Encode};
 use parking_lot::RwLock;
 
 use sc_client_api::{backend::{Backend, apply_aux}, utils::is_descendent_of};
@@ -103,10 +103,10 @@ impl<Block: BlockT> Encode for CompletedRounds<Block> {
 	}
 }
 
-impl<Block: BlockT> parity_scale_codec::EncodeLike for CompletedRounds<Block> {}
+impl<Block: BlockT> tetsy_scale_codec::EncodeLike for CompletedRounds<Block> {}
 
 impl<Block: BlockT> Decode for CompletedRounds<Block> {
-	fn decode<I: parity_scale_codec::Input>(value: &mut I) -> Result<Self, parity_scale_codec::Error> {
+	fn decode<I: tetsy_scale_codec::Input>(value: &mut I) -> Result<Self, tetsy_scale_codec::Error> {
 		<(Vec<CompletedRound<Block>>, SetId, Vec<AuthorityId>)>::decode(value)
 			.map(|(rounds, set_id, voters)| CompletedRounds {
 				rounds,

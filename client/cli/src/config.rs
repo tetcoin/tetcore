@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,13 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Configuration trait for a CLI based on substrate
+//! Configuration trait for a CLI based on tetcore
 
 use crate::arg_enums::Database;
 use crate::error::Result;
 use crate::{
 	DatabaseParams, ImportParams, KeystoreParams, NetworkParams, NodeKeyParams,
-	OffchainWorkerParams, PruningParams, SharedParams, SubstrateCli,
+	OffchainWorkerParams, PruningParams, SharedParams, TetcoreCli,
 };
 use log::warn;
 use names::{Generator, Name};
@@ -47,33 +47,33 @@ pub(crate) const DEFAULT_NETWORK_CONFIG_PATH: &'static str = "network";
 /// The recommended open file descriptor limit to be configured for the process.
 const RECOMMENDED_OPEN_FILE_DESCRIPTOR_LIMIT: u64 = 10_000;
 
-/// Default configuration values used by Substrate
+/// Default configuration values used by Tetcore
 ///
 /// These values will be used by [`CliConfiguration`] to set
 /// default values for e.g. the listen port or the RPC port.
 pub trait DefaultConfigurationValues {
-	/// The port Substrate should listen on for p2p connections.
+	/// The port Tetcore should listen on for p2p connections.
 	///
 	/// By default this is `30333`.
 	fn p2p_listen_port() -> u16 {
 		30333
 	}
 
-	/// The port Substrate should listen on for websocket connections.
+	/// The port Tetcore should listen on for websocket connections.
 	///
 	/// By default this is `9944`.
 	fn rpc_ws_listen_port() -> u16 {
 		9944
 	}
 
-	/// The port Substrate should listen on for http connections.
+	/// The port Tetcore should listen on for http connections.
 	///
 	/// By default this is `9933`.
 	fn rpc_http_listen_port() -> u16 {
 		9933
 	}
 
-	/// The port Substrate should listen on for prometheus connections.
+	/// The port Tetcore should listen on for prometheus connections.
 	///
 	/// By default this is `9615`.
 	fn prometheus_listen_port() -> u16 {
@@ -231,8 +231,8 @@ pub trait CliConfiguration<DCV: DefaultConfigurationValues = ()>: Sized {
 				path: base_path.join("db"),
 				cache_size,
 			},
-			Database::ParityDb => DatabaseConfig::ParityDb {
-				path: base_path.join("paritydb"),
+			Database::TetsyDb => DatabaseConfig::TetsyDb {
+				path: base_path.join("tetsydb"),
 			},
 		})
 	}
@@ -466,7 +466,7 @@ pub trait CliConfiguration<DCV: DefaultConfigurationValues = ()>: Sized {
 	}
 
 	/// Create a Configuration object from the current object
-	fn create_configuration<C: SubstrateCli>(
+	fn create_configuration<C: TetcoreCli>(
 		&self,
 		cli: &C,
 		task_executor: TaskExecutor,
@@ -574,14 +574,14 @@ pub trait CliConfiguration<DCV: DefaultConfigurationValues = ()>: Sized {
 		Ok(self.shared_params().disable_log_color())
 	}
 
-	/// Initialize substrate. This must be done only once per process.
+	/// Initialize tetcore. This must be done only once per process.
 	///
 	/// This method:
 	///
 	/// 1. Sets the panic handler
 	/// 2. Initializes the logger
 	/// 3. Raises the FD limit
-	fn init<C: SubstrateCli>(&self) -> Result<sc_telemetry::TelemetryWorker> {
+	fn init<C: TetcoreCli>(&self) -> Result<sc_telemetry::TelemetryWorker> {
 		sp_panic_handler::set(&C::support_url(), &C::impl_version());
 
 		let mut logger = LoggerBuilder::new(self.log_filters()?);

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,15 +15,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Substrate runtime api
+//! Tetcore runtime api
 //!
-//! The Substrate runtime api is the crucial interface between the node and the runtime.
+//! The Tetcore runtime api is the crucial interface between the node and the runtime.
 //! Every call that goes into the runtime is done with a runtime api. The runtime apis are not fixed.
-//! Every Substrate user can define its own apis with
+//! Every Tetcore user can define its own apis with
 //! [`decl_runtime_apis`](macro.decl_runtime_apis.html) and implement them in
 //! the runtime with [`impl_runtime_apis`](macro.impl_runtime_apis.html).
 //!
-//! Every Substrate runtime needs to implement the [`Core`] runtime api. This api provides the basic
+//! Every Tetcore runtime needs to implement the [`Core`] runtime api. This api provides the basic
 //! functionality that every runtime needs to export.
 //!
 //! Besides the macros and the [`Core`] runtime api, this crates provides the [`Metadata`] runtime
@@ -49,7 +49,7 @@ pub use sp_core::NativeOrEncoded;
 pub use hash_db::Hasher;
 #[doc(hidden)]
 #[cfg(not(feature = "std"))]
-pub use sp_core::to_substrate_wasm_fn_return_value;
+pub use sp_core::to_tetcore_wasm_fn_return_value;
 #[doc(hidden)]
 pub use sp_runtime::{
 	traits::{
@@ -647,7 +647,7 @@ impl From<RuntimeVersion> for OldRuntimeVersion {
 }
 
 decl_runtime_apis! {
-	/// The `Core` runtime api that every Substrate runtime needs to implement.
+	/// The `Core` runtime api that every Tetcore runtime needs to implement.
 	#[core_trait]
 	#[api_version(3)]
 	pub trait Core {

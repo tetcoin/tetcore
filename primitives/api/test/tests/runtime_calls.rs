@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use sp_api::ProvideRuntimeApi;
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	prelude::*,
 	DefaultTestClientBuilderExt, TestClientBuilder,
 	runtime::{TestAPI, DecodeFails, Transfer, Block},

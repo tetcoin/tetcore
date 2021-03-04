@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate CLI library.
+//! Tetcore CLI library.
 
 #![warn(missing_docs)]
 #![warn(unused_extern_crates)]
@@ -47,7 +47,7 @@ use structopt::{
 	StructOpt,
 };
 
-/// Substrate client CLI
+/// Tetcore client CLI
 ///
 /// This trait needs to be defined on the root structopt of the application. It will provide the
 /// implementation name, version, executable name, description, author, support_url, copyright start
@@ -55,7 +55,7 @@ use structopt::{
 ///
 /// StructOpt must not be in scope to use from_args (or the similar methods). This trait provides
 /// its own implementation that will fill the necessary field based on the trait's functions.
-pub trait SubstrateCli: Sized {
+pub trait TetcoreCli: Sized {
 	/// Implementation name.
 	fn impl_name() -> String;
 
@@ -105,7 +105,7 @@ pub trait SubstrateCli: Sized {
 	where
 		Self: StructOpt + Sized,
 	{
-		<Self as SubstrateCli>::from_iter(&mut std::env::args_os())
+		<Self as TetcoreCli>::from_iter(&mut std::env::args_os())
 	}
 
 	/// Helper function used to parse the command line arguments. This is the equivalent of

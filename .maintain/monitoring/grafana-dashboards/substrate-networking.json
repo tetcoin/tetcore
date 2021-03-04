@@ -69,7 +69,7 @@
       }
     ]
   },
-  "description": "Information related to the networking layer of Substrate",
+  "description": "Information related to the networking layer of Tetcore",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -2092,7 +2092,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total sizes of notifications waiting to be delivered to the rest of Substrate",
+      "title": "Total sizes of notifications waiting to be delivered to the rest of Tetcore",
       "tooltip": {
         "shared": false,
         "sort": 1,
@@ -2696,8 +2696,8 @@
       {
         "current": {
           "selected": false,
-          "text": "prometheus.parity-mgmt",
-          "value": "prometheus.parity-mgmt"
+          "text": "prometheus.tetsy-mgmt",
+          "value": "prometheus.tetsy-mgmt"
         },
         "error": null,
         "hide": 0,
@@ -2754,7 +2754,7 @@
     ]
   },
   "timezone": "utc",
-  "title": "Substrate Networking",
+  "title": "Tetcore Networking",
   "uid": "vKVuiD9Zk",
   "version": 147
 }

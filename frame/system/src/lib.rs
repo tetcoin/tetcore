@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -18,13 +18,13 @@
 //! # System Pallet
 //!
 //! The System pallet provides low-level access to core types and cross-cutting utilities.
-//! It acts as the base layer for other pallets to interact with the Substrate framework components.
+//! It acts as the base layer for other pallets to interact with the Tetcore framework components.
 //!
 //! - [`Config`]
 //!
 //! ## Overview
 //!
-//! The System pallet defines the core data types used in a Substrate runtime.
+//! The System pallet defines the core data types used in a Tetcore runtime.
 //! It also provides several utility functions (see [`Pallet`]) for other FRAME pallets.
 //!
 //! In addition, it manages the storage items for extrinsics data, indexes, event records, and digest items,
@@ -428,23 +428,23 @@ pub mod pallet {
 
 		/// Kill all storage items with a key that starts with the given prefix.
 		///
-		/// **NOTE:** We rely on the Root origin to provide us the number of subkeys under
+		/// **NOTE:** We rely on the Root origin to provide us the number of tetkeys under
 		/// the prefix we are removing to accurately calculate the weight of this function.
 		///
 		/// # <weight>
 		/// - `O(P)` where `P` amount of keys with prefix `prefix`
 		/// - `P` storage deletions.
 		/// - Base Weight: 0.834 * P µs
-		/// - Writes: Number of subkeys + 1
+		/// - Writes: Number of tetkeys + 1
 		/// # </weight>
 		#[pallet::weight((
-			T::SystemWeightInfo::kill_prefix(_subkeys.saturating_add(1)),
+			T::SystemWeightInfo::kill_prefix(_tetkeys.saturating_add(1)),
 			DispatchClass::Operational,
 		))]
 		pub(crate) fn kill_prefix(
 			origin: OriginFor<T>,
 			prefix: Key,
-			_subkeys: u32,
+			_tetkeys: u32,
 		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
 			storage::unhashed::kill_prefix(&prefix);

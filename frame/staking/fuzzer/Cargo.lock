@@ -368,22 +368,22 @@ dependencies = [
  "frame-support",
  "frame-system",
  "linregress",
- "parity-scale-codec",
- "sp-api",
- "sp-io",
- "sp-runtime",
- "sp-runtime-interface",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-api",
+ "tc-io",
+ "tc-runtime",
+ "tc-runtime-interface",
+ "tc-std",
 ]
 
 [[package]]
 name = "frame-metadata"
 version = "11.0.0-alpha.5"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-core",
- "sp-std",
+ "tc-core",
+ "tc-std",
 ]
 
 [[package]]
@@ -396,16 +396,16 @@ dependencies = [
  "impl-trait-for-tuples",
  "log",
  "once_cell",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "paste",
  "serde",
- "sp-arithmetic",
- "sp-core",
- "sp-inherents",
- "sp-io",
- "sp-runtime",
- "sp-state-machine",
- "sp-std",
+ "tc-arithmetic",
+ "tc-core",
+ "tc-inherents",
+ "tc-io",
+ "tc-runtime",
+ "tc-state-machine",
+ "tc-std",
  "tracing",
 ]
 
@@ -445,13 +445,13 @@ version = "2.0.0-alpha.5"
 dependencies = [
  "frame-support",
  "impl-trait-for-tuples",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-core",
- "sp-io",
- "sp-runtime",
- "sp-std",
- "sp-version",
+ "tc-core",
+ "tc-io",
+ "tc-runtime",
+ "tc-std",
+ "tc-version",
 ]
 
 [[package]]
@@ -648,7 +648,7 @@ version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1be51a921b067b0eaca2fad532d9400041561aa922221cc65f95a85641c6bf53"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
 ]
 
 [[package]]
@@ -804,7 +804,7 @@ dependencies = [
  "ahash",
  "hash-db",
  "hashbrown",
- "parity-util-mem",
+ "tetsy-util-mem",
 ]
 
 [[package]]
@@ -933,13 +933,13 @@ dependencies = [
  "frame-support",
  "frame-system",
  "impl-trait-for-tuples",
- "parity-scale-codec",
- "sp-authorship",
- "sp-core",
- "sp-inherents",
- "sp-io",
- "sp-runtime",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-authorship",
+ "tc-core",
+ "tc-inherents",
+ "tc-io",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
@@ -949,11 +949,11 @@ dependencies = [
  "frame-benchmarking",
  "frame-support",
  "frame-system",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-io",
- "sp-runtime",
- "sp-std",
+ "tc-io",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
@@ -962,13 +962,13 @@ version = "2.0.0-alpha.5"
 dependencies = [
  "frame-support",
  "frame-system",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-core",
- "sp-io",
- "sp-keyring",
- "sp-runtime",
- "sp-std",
+ "tc-core",
+ "tc-io",
+ "tc-keyring",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
@@ -979,13 +979,13 @@ dependencies = [
  "frame-system",
  "impl-trait-for-tuples",
  "pallet-timestamp",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-io",
- "sp-runtime",
- "sp-staking",
- "sp-std",
- "sp-trie",
+ "tc-io",
+ "tc-runtime",
+ "tc-staking",
+ "tc-std",
+ "tc-trie",
 ]
 
 [[package]]
@@ -997,16 +997,16 @@ dependencies = [
  "pallet-authorship",
  "pallet-indices",
  "pallet-session",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "rand 0.7.3",
  "serde",
- "sp-application-crypto",
- "sp-core",
- "sp-io",
- "sp-npos-elections",
- "sp-runtime",
- "sp-staking",
- "sp-std",
+ "tc-application-crypto",
+ "tc-core",
+ "tc-io",
+ "tc-npos-elections",
+ "tc-runtime",
+ "tc-staking",
+ "tc-std",
  "static_assertions",
 ]
 
@@ -1023,13 +1023,13 @@ dependencies = [
  "pallet-staking",
  "pallet-staking-reward-curve",
  "pallet-timestamp",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "rand 0.7.3",
- "sp-core",
- "sp-io",
- "sp-npos-elections",
- "sp-runtime",
- "sp-std",
+ "tc-core",
+ "tc-io",
+ "tc-npos-elections",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
@@ -1050,16 +1050,16 @@ dependencies = [
  "frame-support",
  "frame-system",
  "impl-trait-for-tuples",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-inherents",
- "sp-runtime",
- "sp-std",
- "sp-timestamp",
+ "tc-inherents",
+ "tc-runtime",
+ "tc-std",
+ "tc-timestamp",
 ]
 
 [[package]]
-name = "parity-scale-codec"
+name = "tetsy-scale-codec"
 version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "329c8f7f4244ddb5c37c103641027a76c530e65e8e4b8240b29f81ea40508b17"
@@ -1067,12 +1067,12 @@ dependencies = [
  "arrayvec 0.5.1",
  "bitvec",
  "byte-slice-cast",
- "parity-scale-codec-derive",
+ "tetsy-scale-codec-derive",
  "serde",
 ]
 
 [[package]]
-name = "parity-scale-codec-derive"
+name = "tetsy-scale-codec-derive"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a0ec292e92e8ec7c58e576adacc1e3f399c597c8f263c42f18420abe58e7245"
@@ -1084,21 +1084,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "parity-util-mem"
+name = "tetsy-util-mem"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6e42755f26e5ea21a6a819d9e63cbd70713e9867a2b767ec2cc65ca7659532c5"
 dependencies = [
  "cfg-if",
  "impl-trait-for-tuples",
- "parity-util-mem-derive",
+ "tetsy-util-mem-derive",
  "parking_lot 0.10.0",
  "primitive-types",
  "winapi",
 ]
 
 [[package]]
-name = "parity-util-mem-derive"
+name = "tetsy-util-mem-derive"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f557c32c6d268a07c921471619c0295f5efad3a0e76d4f97a05c091a51d110b2"
@@ -1109,7 +1109,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "parity-wasm"
+name = "tetsy-wasm"
 version = "0.41.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ddfc878dac00da22f8f61e7af3157988424567ab01d9920b962ef7dcbd7cd865"
@@ -1590,21 +1590,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5c2fb2ec9bcd216a5b0d0ccf31ab17b5ed1d627960edff65bbe95d3ce221cefc"
 
 [[package]]
-name = "sp-api"
+name = "tc-api"
 version = "2.0.0-alpha.5"
 dependencies = [
  "hash-db",
- "parity-scale-codec",
- "sp-api-proc-macro",
- "sp-core",
- "sp-runtime",
- "sp-state-machine",
- "sp-std",
- "sp-version",
+ "tetsy-scale-codec",
+ "tc-api-proc-macro",
+ "tc-core",
+ "tc-runtime",
+ "tc-state-machine",
+ "tc-std",
+ "tc-version",
 ]
 
 [[package]]
-name = "sp-api-proc-macro"
+name = "tc-api-proc-macro"
 version = "2.0.0-alpha.5"
 dependencies = [
  "blake2-rfc",
@@ -1615,40 +1615,40 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-application-crypto"
+name = "tc-application-crypto"
 version = "2.0.0-alpha.5"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-core",
- "sp-io",
- "sp-std",
+ "tc-core",
+ "tc-io",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-arithmetic"
+name = "tc-arithmetic"
 version = "2.0.0-alpha.5"
 dependencies = [
  "integer-sqrt",
  "num-traits",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-debug-derive",
- "sp-std",
+ "tc-debug-derive",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-authorship"
+name = "tc-authorship"
 version = "2.0.0-alpha.5"
 dependencies = [
- "parity-scale-codec",
- "sp-inherents",
- "sp-runtime",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-inherents",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-core"
+name = "tc-core"
 version = "2.0.0-alpha.5"
 dependencies = [
  "base58",
@@ -1664,8 +1664,8 @@ dependencies = [
  "libsecp256k1",
  "log",
  "num-traits",
- "parity-scale-codec",
- "parity-util-mem",
+ "tetsy-scale-codec",
+ "tetsy-util-mem",
  "parking_lot 0.10.0",
  "primitive-types",
  "rand 0.7.3",
@@ -1673,12 +1673,12 @@ dependencies = [
  "schnorrkel",
  "serde",
  "sha2",
- "sp-debug-derive",
- "sp-externalities",
- "sp-runtime-interface",
- "sp-std",
- "sp-storage",
- "substrate-bip39",
+ "tc-debug-derive",
+ "tc-externalities",
+ "tc-runtime-interface",
+ "tc-std",
+ "tc-storage",
+ "tetcore-bip39",
  "tiny-bip39",
  "tiny-keccak",
  "twox-hash",
@@ -1687,7 +1687,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-debug-derive"
+name = "tc-debug-derive"
 version = "2.0.0-alpha.5"
 dependencies = [
  "proc-macro2",
@@ -1696,54 +1696,54 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-externalities"
+name = "tc-externalities"
 version = "0.8.0-alpha.5"
 dependencies = [
  "environmental",
- "sp-std",
- "sp-storage",
+ "tc-std",
+ "tc-storage",
 ]
 
 [[package]]
-name = "sp-inherents"
+name = "tc-inherents"
 version = "2.0.0-alpha.5"
 dependencies = [
  "derive_more",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "parking_lot 0.10.0",
- "sp-core",
- "sp-std",
+ "tc-core",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-io"
+name = "tc-io"
 version = "2.0.0-alpha.5"
 dependencies = [
  "hash-db",
  "libsecp256k1",
  "log",
- "parity-scale-codec",
- "sp-core",
- "sp-externalities",
- "sp-runtime-interface",
- "sp-state-machine",
- "sp-std",
- "sp-trie",
- "sp-wasm-interface",
+ "tetsy-scale-codec",
+ "tc-core",
+ "tc-externalities",
+ "tc-runtime-interface",
+ "tc-state-machine",
+ "tc-std",
+ "tc-trie",
+ "tc-wasm-interface",
 ]
 
 [[package]]
-name = "sp-keyring"
+name = "tc-keyring"
 version = "2.0.0-alpha.5"
 dependencies = [
  "lazy_static",
- "sp-core",
- "sp-runtime",
+ "tc-core",
+ "tc-runtime",
  "strum",
 ]
 
 [[package]]
-name = "sp-panic-handler"
+name = "tc-panic-handler"
 version = "2.0.0-alpha.5"
 dependencies = [
  "backtrace",
@@ -1751,18 +1751,18 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-npos-elections"
+name = "tc-npos-elections"
 version = "2.0.0-alpha.5"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-npos-elections-compact",
- "sp-runtime",
- "sp-std",
+ "tc-npos-elections-compact",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-npos-elections-compact"
+name = "tc-npos-elections-compact"
 version = "2.0.0-rc3"
 dependencies = [
  "proc-macro-crate",
@@ -1772,40 +1772,40 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-runtime"
+name = "tc-runtime"
 version = "2.0.0-alpha.5"
 dependencies = [
  "hash256-std-hasher",
  "impl-trait-for-tuples",
  "log",
- "parity-scale-codec",
- "parity-util-mem",
+ "tetsy-scale-codec",
+ "tetsy-util-mem",
  "paste",
  "rand 0.7.3",
  "serde",
- "sp-application-crypto",
- "sp-arithmetic",
- "sp-core",
- "sp-inherents",
- "sp-io",
- "sp-std",
+ "tc-application-crypto",
+ "tc-arithmetic",
+ "tc-core",
+ "tc-inherents",
+ "tc-io",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-runtime-interface"
+name = "tc-runtime-interface"
 version = "2.0.0-alpha.5"
 dependencies = [
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "primitive-types",
- "sp-externalities",
- "sp-runtime-interface-proc-macro",
- "sp-std",
- "sp-wasm-interface",
+ "tc-externalities",
+ "tc-runtime-interface-proc-macro",
+ "tc-std",
+ "tc-wasm-interface",
  "static_assertions",
 ]
 
 [[package]]
-name = "sp-runtime-interface-proc-macro"
+name = "tc-runtime-interface-proc-macro"
 version = "2.0.0-alpha.5"
 dependencies = [
  "Inflector",
@@ -1816,90 +1816,90 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-staking"
+name = "tc-staking"
 version = "2.0.0-alpha.5"
 dependencies = [
- "parity-scale-codec",
- "sp-runtime",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-state-machine"
+name = "tc-state-machine"
 version = "0.8.0-alpha.5"
 dependencies = [
  "hash-db",
  "log",
  "num-traits",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "parking_lot 0.10.0",
  "rand 0.7.3",
- "sp-core",
- "sp-externalities",
- "sp-panic-handler",
- "sp-trie",
+ "tc-core",
+ "tc-externalities",
+ "tc-panic-handler",
+ "tc-trie",
  "trie-db",
  "trie-root",
 ]
 
 [[package]]
-name = "sp-std"
+name = "tc-std"
 version = "2.0.0-alpha.5"
 
 [[package]]
-name = "sp-storage"
+name = "tc-storage"
 version = "2.0.0-alpha.5"
 dependencies = [
  "impl-serde 0.2.3",
  "serde",
- "sp-debug-derive",
- "sp-std",
+ "tc-debug-derive",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-timestamp"
+name = "tc-timestamp"
 version = "2.0.0-alpha.5"
 dependencies = [
  "impl-trait-for-tuples",
- "parity-scale-codec",
- "sp-api",
- "sp-inherents",
- "sp-runtime",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-api",
+ "tc-inherents",
+ "tc-runtime",
+ "tc-std",
  "wasm-timer",
 ]
 
 [[package]]
-name = "sp-trie"
+name = "tc-trie"
 version = "2.0.0-alpha.5"
 dependencies = [
  "hash-db",
  "memory-db",
- "parity-scale-codec",
- "sp-core",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-core",
+ "tc-std",
  "trie-db",
  "trie-root",
 ]
 
 [[package]]
-name = "sp-version"
+name = "tc-version"
 version = "2.0.0-alpha.5"
 dependencies = [
  "impl-serde 0.2.3",
- "parity-scale-codec",
+ "tetsy-scale-codec",
  "serde",
- "sp-runtime",
- "sp-std",
+ "tc-runtime",
+ "tc-std",
 ]
 
 [[package]]
-name = "sp-wasm-interface"
+name = "tc-wasm-interface"
 version = "2.0.0-alpha.5"
 dependencies = [
  "impl-trait-for-tuples",
- "parity-scale-codec",
- "sp-std",
+ "tetsy-scale-codec",
+ "tc-std",
  "wasmi",
 ]
 
@@ -1940,7 +1940,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "substrate-bip39"
+name = "tetcore-bip39"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c004e8166d6e0aa3a9d5fa673e5b7098ff25f930de1013a21341988151e681bb"
@@ -2227,7 +2227,7 @@ dependencies = [
  "memory_units",
  "num-rational",
  "num-traits",
- "parity-wasm",
+ "tetsy-wasm",
  "wasmi-validation",
 ]
 
@@ -2237,7 +2237,7 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea78c597064ba73596099281e2f4cfc019075122a65cdda3205af94f0b264d93"
 dependencies = [
- "parity-wasm",
+ "tetsy-wasm",
 ]
 
 [[package]]

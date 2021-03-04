@@ -1,4 +1,4 @@
-Substrate chain configurations.
+Tetcore chain configurations.
 
 This crate contains structs and utilities to declare
 a runtime-specific configuration file (a.k.a chain spec).
@@ -7,7 +7,7 @@ Basic chain spec type containing all required parameters is
 [`ChainSpec`](https://docs.rs/sc-chain-spec/latest/sc_chain_spec/struct.GenericChainSpec.html). It can be extended with
 additional options that contain configuration specific to your chain.
 Usually the extension is going to be an amalgamate of types exposed
-by Substrate core modules. To allow the core modules to retrieve
+by Tetcore core modules. To allow the core modules to retrieve
 their configuration from your extension you should use `ChainSpecExtension`
 macro exposed by this crate.
 

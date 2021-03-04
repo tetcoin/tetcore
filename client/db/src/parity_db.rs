@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -15,15 +15,15 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-/// A `Database` adapter for parity-db.
+/// A `Database` adapter for tetsy-db.
 
 use sp_database::{Database, Change, ColumnId, Transaction, error::DatabaseError};
 use crate::utils::{DatabaseType, NUM_COLUMNS};
 use crate::columns;
 
-struct DbAdapter(parity_db::Db);
+struct DbAdapter(tetsy_db::Db);
 
-fn handle_err<T>(result: parity_db::Result<T>) -> T {
+fn handle_err<T>(result: tetsy_db::Result<T>) -> T {
 	match result {
 		Ok(r) => r,
 		Err(e) =>  {
@@ -32,11 +32,11 @@ fn handle_err<T>(result: parity_db::Result<T>) -> T {
 	}
 }
 
-/// Wrap parity-db database into a trait object that implements `sp_database::Database`
+/// Wrap tetsy-db database into a trait object that implements `sp_database::Database`
 pub fn open<H: Clone>(path: &std::path::Path, db_type: DatabaseType)
-	-> parity_db::Result<std::sync::Arc<dyn Database<H>>>
+	-> tetsy_db::Result<std::sync::Arc<dyn Database<H>>>
 {
-	let mut config = parity_db::Options::with_columns(path, NUM_COLUMNS as u8);
+	let mut config = tetsy_db::Options::with_columns(path, NUM_COLUMNS as u8);
 	config.sync = true; // Flush each commit
 	if db_type == DatabaseType::Full {
 		let mut state_col = &mut config.columns[columns::STATE as usize];
@@ -44,7 +44,7 @@ pub fn open<H: Clone>(path: &std::path::Path, db_type: DatabaseType)
 		state_col.preimage = true;
 		state_col.uniform = true;
 	}
-	let db = parity_db::Db::open(&config)?;
+	let db = tetsy_db::Db::open(&config)?;
 	Ok(std::sync::Arc::new(DbAdapter(db)))
 }
 

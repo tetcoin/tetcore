@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -44,7 +44,7 @@ pub enum Error {
 	ProposalTooLarge { block_size: usize, max_block_size: usize },
 }
 
-/// Attempt to evaluate a substrate block as a node block, returning error
+/// Attempt to evaluate a tetcore block as a node block, returning error
 /// upon any initial validity checks failing.
 pub fn evaluate_initial<Block: BlockT>(
 	proposal: &Block,

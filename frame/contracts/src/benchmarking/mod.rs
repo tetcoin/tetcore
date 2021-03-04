@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -38,7 +38,7 @@ use self::{
 };
 use frame_benchmarking::{benchmarks, account, whitelisted_caller};
 use frame_system::{Module as System, RawOrigin};
-use parity_wasm::elements::{Instruction, ValueType, BlockType};
+use tetsy_wasm::elements::{Instruction, ValueType, BlockType};
 use sp_runtime::traits::{Hash, Bounded, Zero};
 use sp_std::{default::Default, convert::{TryInto}, vec::Vec, vec};
 use pallet_contracts_primitives::RentProjection;
@@ -1802,7 +1802,7 @@ benchmarks! {
 	// 1 * w_param + 0.5 * 2 * w_param + 0.25 * 4 * w_param
 	instr_br_table {
 		let r in 0 .. INSTR_BENCHMARK_BATCHES;
-		let table = Box::new(parity_wasm::elements::BrTableData {
+		let table = Box::new(tetsy_wasm::elements::BrTableData {
 			table: Box::new([0, 1, 2]),
 			default: 1,
 		});
@@ -1836,7 +1836,7 @@ benchmarks! {
 			.cloned()
 			.cycle()
 			.take((e / 2) as usize).collect();
-		let table = Box::new(parity_wasm::elements::BrTableData {
+		let table = Box::new(tetsy_wasm::elements::BrTableData {
 			table: entry.into_boxed_slice(),
 			default: 0,
 		});

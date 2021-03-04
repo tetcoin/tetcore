@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate service. Starts a thread that spins up the network, client, and extrinsic pool.
+//! Tetcore service. Starts a thread that spins up the network, client, and extrinsic pool.
 //! Manages communication between them.
 
 #![warn(missing_docs)]
@@ -46,7 +46,7 @@ use log::{warn, debug, error};
 use codec::{Encode, Decode};
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
-use parity_util_mem::MallocSizeOf;
+use tetsy_util_mem::MallocSizeOf;
 use sp_utils::{status_sinks, mpsc::{tracing_unbounded, TracingUnboundedReceiver}};
 
 pub use self::error::Error;
@@ -588,7 +588,7 @@ mod tests {
 	use futures::executor::block_on;
 	use sp_consensus::SelectChain;
 	use sp_runtime::traits::BlindCheckable;
-	use substrate_test_runtime_client::{prelude::*, runtime::{Extrinsic, Transfer}};
+	use tetcore_test_runtime_client::{prelude::*, runtime::{Extrinsic, Transfer}};
 	use sc_transaction_pool::BasicPool;
 
 	#[test]

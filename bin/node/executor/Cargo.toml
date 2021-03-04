@@ -2,25 +2,25 @@
 name = "node-executor"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
-description = "Substrate node implementation in Rust."
+description = "Tetcore node implementation in Rust."
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0" }
 node-primitives = { version = "2.0.0", path = "../primitives" }
 node-runtime = { version = "2.0.0", path = "../runtime" }
 sc-executor = { version = "0.8.0", path = "../../../client/executor" }
-sp-core = { version = "2.0.0", path = "../../../primitives/core" }
-sp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
-sp-io = { version = "2.0.0", path = "../../../primitives/io" }
-sp-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
-sp-trie = { version = "2.0.0", path = "../../../primitives/trie" }
+tc-core = { version = "2.0.0", path = "../../../primitives/core" }
+tc-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
+tc-io = { version = "2.0.0", path = "../../../primitives/io" }
+tc-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
+tc-trie = { version = "2.0.0", path = "../../../primitives/trie" }
 trie-root = "0.16.0"
 frame-benchmarking = { version = "2.0.0", path = "../../../frame/benchmarking" }
 
@@ -38,10 +38,10 @@ pallet-session = { version = "2.0.0", path = "../../../frame/session" }
 pallet-timestamp = { version = "2.0.0", path = "../../../frame/timestamp" }
 pallet-transaction-payment = { version = "2.0.0", path = "../../../frame/transaction-payment" }
 pallet-treasury = { version = "2.0.0", path = "../../../frame/treasury" }
-sp-application-crypto = { version = "2.0.0", path = "../../../primitives/application-crypto" }
-sp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-sp-externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
-substrate-test-client = { version = "2.0.0", path = "../../../test-utils/client" }
+tc-application-crypto = { version = "2.0.0", path = "../../../primitives/application-crypto" }
+tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tc-externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
+tetcore-test-client = { version = "2.0.0", path = "../../../test-utils/client" }
 wat = "1.0"
 
 [features]

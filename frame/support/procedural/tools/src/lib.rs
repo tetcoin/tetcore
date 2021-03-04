@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -28,7 +28,7 @@ use quote::quote;
 
 pub mod syn_ext;
 
-// FIXME #1569, remove the following functions, which are copied from sp-api-macros
+// FIXME #1569, remove the following functions, which are copied from tc-api-macros
 use proc_macro2::{TokenStream, Span};
 use syn::Ident;
 

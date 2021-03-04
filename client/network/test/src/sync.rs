@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -21,7 +21,7 @@ use std::time::Duration;
 use futures::{Future, executor::block_on};
 use super::*;
 use sp_consensus::block_validation::Validation;
-use substrate_test_runtime::Header;
+use tetcore_test_runtime::Header;
 
 fn test_ancestor_search_when_common_is(n: usize) {
 	sp_tracing::try_init_simple();

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -84,7 +84,7 @@ impl ExtensionsFactory for () {
 pub struct ExecutionExtensions<Block: traits::Block> {
 	strategies: ExecutionStrategies,
 	keystore: Option<SyncCryptoStorePtr>,
-	// FIXME: these two are only RwLock because of https://github.com/paritytech/substrate/issues/4587
+	// FIXME: these two are only RwLock because of https://github.com/tetcoin/tetcore/issues/4587
 	//        remove when fixed.
 	// To break retain cycle between `Client` and `TransactionPool` we require this
 	// extension to be a `Weak` reference.

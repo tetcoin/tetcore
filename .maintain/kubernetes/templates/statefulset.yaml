@@ -31,7 +31,7 @@ spec:
                 - key: node
                   operator: In
                   values:
-                  - substrate
+                  - tetcore
         {{- if .Values.listen_node_port }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -93,7 +93,7 @@ spec:
         command: ["/bin/sh"]
         args:
           - -c
-          - exec /usr/local/bin/substrate
+          - exec /usr/local/bin/tetcore
             --base-path {{ .Values.image.basepath }}
             {{- if .Values.validator.keys }}
             --validator

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -77,10 +77,10 @@ impl<'a> RuntimeInterface<'a> {
 
 /// Generates the include for the runtime-interface crate.
 pub fn generate_runtime_interface_include() -> TokenStream {
-	if env::var("CARGO_PKG_NAME").unwrap() == "sp-runtime-interface" {
+	if env::var("CARGO_PKG_NAME").unwrap() == "tc-runtime-interface" {
 		TokenStream::new()
 	} else {
-		match crate_name("sp-runtime-interface") {
+		match crate_name("tc-runtime-interface") {
 			Ok(crate_name) => {
 				let crate_name = Ident::new(&crate_name, Span::call_site());
 				quote!(
@@ -96,9 +96,9 @@ pub fn generate_runtime_interface_include() -> TokenStream {
 	}
 }
 
-/// Generates the access to the `sp-runtime-interface` crate.
+/// Generates the access to the `tc-runtime-interface` crate.
 pub fn generate_crate_access() -> TokenStream {
-	if env::var("CARGO_PKG_NAME").unwrap() == "sp-runtime-interface" {
+	if env::var("CARGO_PKG_NAME").unwrap() == "tc-runtime-interface" {
 		quote!( sp_runtime_interface )
 	} else {
 		quote!( proc_macro_runtime_interface )

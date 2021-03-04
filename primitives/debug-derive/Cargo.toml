@@ -1,13 +1,13 @@
 [package]
-name = "sp-debug-derive"
+name = "tc-debug-derive"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Macros to derive runtime debug implementation."
-documentation = "https://docs.rs/sp-debug-derive"
+documentation = "https://docs.rs/tc-debug-derive"
 
 
 [package.metadata.docs.rs]

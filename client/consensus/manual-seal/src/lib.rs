@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -264,14 +264,14 @@ pub async fn run_instant_seal<B, BI, CB, E, C, A, SC>(
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use substrate_test_runtime_client::{
+	use tetcore_test_runtime_client::{
 		DefaultTestClientBuilderExt,
 		TestClientBuilderExt,
 		AccountKeyring::*,
 		TestClientBuilder,
 	};
 	use sc_transaction_pool::{BasicPool, RevalidationType, txpool::Options};
-	use substrate_test_runtime_transaction_pool::{TestApi, uxt};
+	use tetcore_test_runtime_transaction_pool::{TestApi, uxt};
 	use sp_transaction_pool::{TransactionPool, MaintainedTransactionPool, TransactionSource};
 	use sp_runtime::generic::BlockId;
 	use sp_consensus::ImportedAux;

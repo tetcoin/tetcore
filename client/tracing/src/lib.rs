@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,13 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Instrumentation implementation for substrate.
+//! Instrumentation implementation for tetcore.
 //!
 //! This crate is unstable and the API and usage may change.
 //!
 //! # Usage
 //!
-//! See `sp-tracing` for examples on how to use tracing.
+//! See `tc-tracing` for examples on how to use tracing.
 //!
 //! Currently we provide `Log` (default), `Telemetry` variants for `Receiver`
 
@@ -46,7 +46,7 @@ use tracing_subscriber::{
 	CurrentSpan,
 	layer::{Layer, Context},
 };
-use sc_telemetry::{telemetry, SUBSTRATE_INFO};
+use sc_telemetry::{telemetry, TETCORE_INFO};
 use sp_tracing::{WASM_NAME_KEY, WASM_TARGET_KEY, WASM_TRACE_IDENTIFIER};
 
 #[doc(hidden)]
@@ -399,7 +399,7 @@ pub struct TelemetryTraceHandler;
 
 impl TraceHandler for TelemetryTraceHandler {
 	fn handle_span(&self, span_datum: SpanDatum) {
-		telemetry!(SUBSTRATE_INFO; "tracing.profiling";
+		telemetry!(TETCORE_INFO; "tracing.profiling";
 			"name" => span_datum.name,
 			"target" => span_datum.target,
 			"time" => span_datum.overall_time.as_nanos(),
@@ -410,7 +410,7 @@ impl TraceHandler for TelemetryTraceHandler {
 	}
 
 	fn handle_event(&self, event: TraceEvent) {
-		telemetry!(SUBSTRATE_INFO; "tracing.event";
+		telemetry!(TETCORE_INFO; "tracing.event";
 			"name" => event.name,
 			"target" => event.target,
 			"parent_id" => event.parent_id.as_ref().map(|i| i.into_u64()),

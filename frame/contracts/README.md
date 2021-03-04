@@ -53,7 +53,7 @@ initialize the contract.
 The Contract module is a work in progress. The following examples show how this Contract module
 can be used to instantiate and call contracts.
 
-* [`ink`](https://github.com/paritytech/ink) is
+* [`pro`](https://github.com/tetcoin/pro) is
 an [`eDSL`](https://wiki.haskell.org/Embedded_domain_specific_language) that enables writing
 WebAssembly based smart contracts in the Rust programming language. This is a work in progress.
 

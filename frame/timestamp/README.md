@@ -64,7 +64,7 @@ decl_module! {
 
 ### Example from the FRAME
 
-The [Session module](https://github.com/paritytech/substrate/blob/master/frame/session/src/lib.rs) uses
+The [Session module](https://github.com/tetcoin/tetcore/blob/master/frame/session/src/lib.rs) uses
 the Timestamp module for session management.
 
 ## Related Modules

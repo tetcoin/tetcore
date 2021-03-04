@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -83,7 +83,7 @@
 //!
 //! ### Example from the FRAME
 //!
-//! The [Session module](https://github.com/paritytech/substrate/blob/master/frame/session/src/lib.rs) uses
+//! The [Session module](https://github.com/tetcoin/tetcore/blob/master/frame/session/src/lib.rs) uses
 //! the Timestamp module for session management.
 //!
 //! ## Related Modules

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -42,8 +42,8 @@ mod storage_cache;
 mod upgrade;
 mod utils;
 mod stats;
-#[cfg(feature = "with-parity-db")]
-mod parity_db;
+#[cfg(feature = "with-tetsy-db")]
+mod tetsy_db;
 
 use std::sync::Arc;
 use std::path::{Path, PathBuf};
@@ -304,8 +304,8 @@ pub enum DatabaseSettingsSrc {
 		cache_size: usize,
 	},
 
-	/// Load a ParityDb database from a given path.
-	ParityDb {
+	/// Load a TetsyDb database from a given path.
+	TetsyDb {
 		/// Path to the database.
 		path: PathBuf,
 	},
@@ -319,14 +319,14 @@ impl DatabaseSettingsSrc {
 	pub fn path(&self) -> Option<&Path> {
 		match self {
 			DatabaseSettingsSrc::RocksDb { path, .. } => Some(path.as_path()),
-			DatabaseSettingsSrc::ParityDb { path, .. } => Some(path.as_path()),
+			DatabaseSettingsSrc::TetsyDb { path, .. } => Some(path.as_path()),
 			DatabaseSettingsSrc::Custom(_) => None,
 		}
 	}
 	/// Check if database supports internal ref counting for state data.
 	pub fn supports_ref_counting(&self) -> bool {
 		match self {
-			DatabaseSettingsSrc::ParityDb { .. } => true,
+			DatabaseSettingsSrc::TetsyDb { .. } => true,
 			_ => false,
 		}
 	}
@@ -336,7 +336,7 @@ impl std::fmt::Display for DatabaseSettingsSrc {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 		let name = match self {
 			DatabaseSettingsSrc::RocksDb { .. } => "RocksDb",
-			DatabaseSettingsSrc::ParityDb { .. } => "ParityDb",
+			DatabaseSettingsSrc::TetsyDb { .. } => "TetsyDb",
 			DatabaseSettingsSrc::Custom(_) => "Custom",
 		};
 		write!(f, "{}", name)
@@ -2448,20 +2448,20 @@ pub(crate) mod tests {
 
 	#[test]
 	fn test_leaves_with_complex_block_tree() {
-		let backend: Arc<Backend<substrate_test_runtime_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
-		substrate_test_runtime_client::trait_tests::test_leaves_for_backend(backend);
+		let backend: Arc<Backend<tetcore_test_runtime_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
+		tetcore_test_runtime_client::trait_tests::test_leaves_for_backend(backend);
 	}
 
 	#[test]
 	fn test_children_with_complex_block_tree() {
-		let backend: Arc<Backend<substrate_test_runtime_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
-		substrate_test_runtime_client::trait_tests::test_children_for_backend(backend);
+		let backend: Arc<Backend<tetcore_test_runtime_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
+		tetcore_test_runtime_client::trait_tests::test_children_for_backend(backend);
 	}
 
 	#[test]
 	fn test_blockchain_query_by_number_gets_canonical() {
-		let backend: Arc<Backend<substrate_test_runtime_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
-		substrate_test_runtime_client::trait_tests::test_blockchain_query_by_number_gets_canonical(backend);
+		let backend: Arc<Backend<tetcore_test_runtime_client::runtime::Block>> = Arc::new(Backend::new_test(20, 20));
+		tetcore_test_runtime_client::trait_tests::test_blockchain_query_by_number_gets_canonical(backend);
 	}
 
 	#[test]
@@ -2490,7 +2490,7 @@ pub(crate) mod tests {
 
 	#[test]
 	fn test_aux() {
-		let backend: Backend<substrate_test_runtime_client::runtime::Block> = Backend::new_test(0, 0);
+		let backend: Backend<tetcore_test_runtime_client::runtime::Block> = Backend::new_test(0, 0);
 		assert!(backend.get_aux(b"test").unwrap().is_none());
 		backend.insert_aux(&[(&b"test"[..], &b"hello"[..])], &[]).unwrap();
 		assert_eq!(b"hello", &backend.get_aux(b"test").unwrap().unwrap()[..]);

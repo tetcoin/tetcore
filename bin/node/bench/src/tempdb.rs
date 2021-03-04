@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -23,15 +23,15 @@ use kvdb_rocksdb::{DatabaseConfig, Database};
 #[derive(Debug, Clone, Copy, derive_more::Display)]
 pub enum DatabaseType {
 	RocksDb,
-	ParityDb,
+	TetsyDb,
 }
 
 pub struct TempDatabase(tempfile::TempDir);
 
-struct ParityDbWrapper(parity_db::Db);
-parity_util_mem::malloc_size_of_is_0!(ParityDbWrapper);
+struct TetsyDbWrapper(tetsy_db::Db);
+tetsy_util_mem::malloc_size_of_is_0!(TetsyDbWrapper);
 
-impl KeyValueDB for ParityDbWrapper {
+impl KeyValueDB for TetsyDbWrapper {
 	/// Get a value by key.
 	fn get(&self, col: u32, key: &[u8]) -> io::Result<Option<Vec<u8>>> {
 		Ok(self.0.get(col as u8, &key[key.len() - 32..]).expect("db error"))
@@ -93,14 +93,14 @@ impl TempDatabase {
 				let db = Database::open(&db_cfg, &self.0.path().to_string_lossy()).expect("Database backend error");
 				Arc::new(db)
 			},
-			DatabaseType::ParityDb => {
-				Arc::new(ParityDbWrapper({
-					let mut options = parity_db::Options::with_columns(self.0.path(), 1);
+			DatabaseType::TetsyDb => {
+				Arc::new(TetsyDbWrapper({
+					let mut options = tetsy_db::Options::with_columns(self.0.path(), 1);
 					let mut column_options = &mut options.columns[0];
 					column_options.ref_counted = true;
 					column_options.preimage = true;
 					column_options.uniform = true;
-					parity_db::Db::open(&options).expect("db open error")
+					tetsy_db::Db::open(&options).expect("db open error")
 				}))
 			}
 		}

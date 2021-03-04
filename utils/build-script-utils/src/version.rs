@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -39,7 +39,7 @@ pub fn generate_cargo_keys() {
 		},
 	};
 
-	println!("cargo:rustc-env=SUBSTRATE_CLI_IMPL_VERSION={}", get_version(&commit))
+	println!("cargo:rustc-env=TETCORE_CLI_IMPL_VERSION={}", get_version(&commit))
 }
 
 fn get_platform() -> String {

@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME executives engine"
 readme = "README.md"
 
@@ -13,37 +13,37 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 serde = { version = "1.0.101", optional = true }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-sp-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-sp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-sp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tc-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 
 [dev-dependencies]
 hex-literal = "0.3.1"
-sp-core = { version = "2.0.0", path = "../../primitives/core" }
-sp-io ={ version = "2.0.0", path = "../../primitives/io" }
+tc-core = { version = "2.0.0", path = "../../primitives/core" }
+tc-io ={ version = "2.0.0", path = "../../primitives/io" }
 pallet-indices = { version = "2.0.0", path = "../indices" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-transaction-payment = { version = "2.0.0", path = "../transaction-payment" }
-sp-version = { version = "2.0.0", path = "../../primitives/version" }
+tc-version = { version = "2.0.0", path = "../../primitives/version" }
 
 [features]
 default = ["std"]
 with-tracing = [
-	"sp-tracing/with-tracing"
+	"tc-tracing/with-tracing"
 ]
 std = [
 	"codec/std",
 	"frame-support/std",
 	"frame-system/std",
 	"serde",
-	"sp-core/std",
-	"sp-runtime/std",
-	"sp-tracing/std",
-	"sp-std/std",
+	"tc-core/std",
+	"tc-runtime/std",
+	"tc-tracing/std",
+	"tc-std/std",
 ]

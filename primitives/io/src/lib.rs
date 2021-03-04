@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! I/O host interface for substrate runtime.
+//! I/O host interface for tetcore runtime.
 
 #![warn(missing_docs)]
 
@@ -23,9 +23,9 @@
 #![cfg_attr(not(feature = "std"), feature(alloc_error_handler))]
 
 #![cfg_attr(feature = "std",
-   doc = "Substrate runtime standard library as compiled when linked with Rust's standard library.")]
+   doc = "Tetcore runtime standard library as compiled when linked with Rust's standard library.")]
 #![cfg_attr(not(feature = "std"),
-   doc = "Substrate's runtime standard library as compiled without Rust's standard library.")]
+   doc = "Tetcore's runtime standard library as compiled without Rust's standard library.")]
 
 use sp_std::vec::Vec;
 
@@ -896,7 +896,7 @@ pub trait Offchain {
 
 	/// Initiates a http request given HTTP verb and the URL.
 	///
-	/// Meta is a future-reserved field containing additional, parity-scale-codec encoded parameters.
+	/// Meta is a future-reserved field containing additional, tetsy-scale-codec encoded parameters.
 	/// Returns the id of newly started request.
 	fn http_request_start(
 		&mut self,
@@ -1056,7 +1056,7 @@ impl<T> core::default::Default for Crossing<T>
 }
 
 /// Interface to provide tracing facilities for wasm. Modelled after tokios `tracing`-crate
-/// interfaces. See `sp-tracing` for more information.
+/// interfaces. See `tc-tracing` for more information.
 #[runtime_interface(wasm_only, no_tracing)]
 pub trait WasmTracing {
 	/// Whether the span described in `WasmMetadata` should be traced wasm-side
@@ -1294,7 +1294,7 @@ pub trait RuntimeTasks {
 	}
  }
 
-/// Allocator used by Substrate when executing the Wasm runtime.
+/// Allocator used by Tetcore when executing the Wasm runtime.
 #[cfg(not(feature = "std"))]
 struct WasmAllocator;
 
@@ -1344,11 +1344,11 @@ pub fn oom(_: core::alloc::Layout) -> ! {
 #[cfg(feature = "std")]
 pub type TestExternalities = sp_state_machine::TestExternalities<sp_core::Blake2Hasher, u64>;
 
-/// The host functions Substrate provides for the Wasm runtime environment.
+/// The host functions Tetcore provides for the Wasm runtime environment.
 ///
 /// All these host functions will be callable from inside the Wasm environment.
 #[cfg(feature = "std")]
-pub type SubstrateHostFunctions = (
+pub type TetcoreHostFunctions = (
 	storage::HostFunctions,
 	default_child_storage::HostFunctions,
 	misc::HostFunctions,

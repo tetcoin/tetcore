@@ -1,13 +1,13 @@
 [package]
-name = "sp-finality-grandpa"
+name = "tc-finality-grandpa"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Primitives for GRANDPA integration, suitable for WASM compilation."
-documentation = "https://docs.rs/sp-finality-grandpa"
+documentation = "https://docs.rs/tc-finality-grandpa"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -15,16 +15,16 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 grandpa = { package = "finality-grandpa", version = "0.13.0", default-features = false, features = ["derive-codec"] }
 log = { version = "0.4.8", optional = true }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-sp-api = { version = "2.0.0", default-features = false, path = "../api" }
-sp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
-sp-core = { version = "2.0.0", default-features = false, path = "../core" }
-sp-keystore = { version = "0.8.0", default-features = false, path = "../keystore", optional = true }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
-sp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tc-api = { version = "2.0.0", default-features = false, path = "../api" }
+tc-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
+tc-core = { version = "2.0.0", default-features = false, path = "../core" }
+tc-keystore = { version = "0.8.0", default-features = false, path = "../keystore", optional = true }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
+tc-std = { version = "2.0.0", default-features = false, path = "../std" }
 
 [features]
 default = ["std"]
@@ -33,10 +33,10 @@ std = [
 	"serde",
 	"codec/std",
 	"grandpa/std",
-	"sp-api/std",
-	"sp-application-crypto/std",
-	"sp-core/std",
-	"sp-keystore",
-	"sp-runtime/std",
-	"sp-std/std",
+	"tc-api/std",
+	"tc-application-crypto/std",
+	"tc-core/std",
+	"tc-keystore",
+	"tc-runtime/std",
+	"tc-std/std",
 ]

@@ -1,6 +1,6 @@
 
-= Substrate CLI
+= Tetcore CLI
 
-Substrate CLI library
+Tetcore CLI library
 
 include::doc/shell-completion.adoc[]

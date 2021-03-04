@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -30,7 +30,7 @@ fn inspect_works() {
 
 	common::run_dev_node_for_a_while(base_path.path());
 
-	let status = Command::new(cargo_bin("substrate"))
+	let status = Command::new(cargo_bin("tetcore"))
 		.args(&["inspect", "--dev", "--pruning", "archive", "-d"])
 		.arg(base_path.path())
 		.args(&["block", "1"])

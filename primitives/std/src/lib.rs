@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -15,15 +15,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Lowest-abstraction level for the Substrate runtime: just exports useful primitives from std
+//! Lowest-abstraction level for the Tetcore runtime: just exports useful primitives from std
 //! or client/alloc to be used with any code that depends on the runtime.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #![cfg_attr(feature = "std",
-   doc = "Substrate runtime standard library as compiled when linked with Rust's standard library.")]
+   doc = "Tetcore runtime standard library as compiled when linked with Rust's standard library.")]
 #![cfg_attr(not(feature = "std"),
-   doc = "Substrate's runtime standard library as compiled without Rust's standard library.")]
+   doc = "Tetcore's runtime standard library as compiled without Rust's standard library.")]
 
 #[macro_export]
 macro_rules! map {

@@ -1,12 +1,12 @@
 [package]
-description = "Gossiping for the Substrate network protocol"
+description = "Gossiping for the Tetcore network protocol"
 name = "sc-network-gossip"
 version = "0.8.1"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 documentation = "https://docs.rs/sc-network-gossip"
 readme = "README.md"
 
@@ -20,13 +20,13 @@ futures-timer = "3.0.1"
 libp2p = { version = "0.34.0", default-features = false }
 log = "0.4.8"
 lru = "0.6.1"
-prometheus-endpoint = { package = "substrate-prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
+prometheus-endpoint = { package = "tetcore-prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
 sc-network = { version = "0.8.0", path = "../network" }
-sp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tc-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 wasm-timer = "0.2"
 
 [dev-dependencies]
 async-std = "1.6.5"
 quickcheck = "0.9.0"
 rand = "0.7.2"
-substrate-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }

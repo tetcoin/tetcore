@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -1343,7 +1343,7 @@ mod tests {
 	use super::{Event, LightClientHandler, Request, Response, OutboundProtocol, PeerStatus};
 	use void::Void;
 
-	type Block = sp_runtime::generic::Block<Header<u64, BlakeTwo256>, substrate_test_runtime::Extrinsic>;
+	type Block = sp_runtime::generic::Block<Header<u64, BlakeTwo256>, tetcore_test_runtime::Extrinsic>;
 	type Handler = LightClientHandler<Block>;
 	type Swarm = libp2p::swarm::Swarm<Handler>;
 
@@ -1352,7 +1352,7 @@ mod tests {
 	}
 
 	fn make_swarm(ok: bool, ps: sc_peerset::PeersetHandle, cf: super::Config) -> Swarm {
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let checker = Arc::new(DummyFetchChecker { ok, _mark: std::marker::PhantomData });
 		let id_key = identity::Keypair::generate_ed25519();
 		let dh_key = Keypair::<X25519>::new().into_authentic(&id_key).unwrap();
@@ -1504,7 +1504,7 @@ mod tests {
 		, cf: super::Config
 		) -> LightClientHandler<Block>
 	{
-		let client = Arc::new(substrate_test_runtime_client::new());
+		let client = Arc::new(tetcore_test_runtime_client::new());
 		let checker = Arc::new(DummyFetchChecker { ok, _mark: std::marker::PhantomData });
 		LightClientHandler::new(cf, client, checker, ps)
 	}

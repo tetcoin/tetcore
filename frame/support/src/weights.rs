@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -24,11 +24,11 @@
 //! - [`ClassifyDispatch`]: class of the dispatch.
 //! - [`PaysFee`]: weather this weight should be translated to fee and deducted upon dispatch.
 //!
-//! Substrate then bundles the output information of the three traits into [`DispatchInfo`] struct
+//! Tetcore then bundles the output information of the three traits into [`DispatchInfo`] struct
 //! and provides it by implementing the [`GetDispatchInfo`] for all `Call` both inner and outer call
 //! types.
 //!
-//! Substrate provides two pre-defined ways to annotate weight:
+//! Tetcore provides two pre-defined ways to annotate weight:
 //!
 //! ### 1. Fixed values
 //!
@@ -162,7 +162,7 @@ pub mod constants {
 		pub const BlockExecutionWeight: Weight = 5 * WEIGHT_PER_MILLIS;
 		/// Executing 10,000 System remarks (no-op) txs takes ~1.26 seconds -> ~125 µs per tx
 		pub const ExtrinsicBaseWeight: Weight = 125 * WEIGHT_PER_MICROS;
-		/// By default, Substrate uses RocksDB, so this will be the weight used throughout
+		/// By default, Tetcore uses RocksDB, so this will be the weight used throughout
 		/// the runtime.
 		pub const RocksDbWeight: RuntimeDbWeight = RuntimeDbWeight {
 			read: 25 * WEIGHT_PER_MICROS,   // ~25 µs @ 200,000 items
@@ -170,7 +170,7 @@ pub mod constants {
 		};
 		/// ParityDB can be enabled with a feature flag, but is still experimental. These weights
 		/// are available for brave runtime engineers who may want to try this out as default.
-		pub const ParityDbWeight: RuntimeDbWeight = RuntimeDbWeight {
+		pub const TetsyDbWeight: RuntimeDbWeight = RuntimeDbWeight {
 			read: 8 * WEIGHT_PER_MICROS,   // ~8 µs @ 200,000 items
 			write: 50 * WEIGHT_PER_MICROS, // ~50 µs @ 200,000 items
 		};

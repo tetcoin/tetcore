@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -18,9 +18,9 @@
 
 #![warn(missing_docs)]
 #![recursion_limit = "1024"]
-//! Substrate authority discovery.
+//! Tetcore authority discovery.
 //!
-//! This crate enables Substrate authorities to discover and directly connect to
+//! This crate enables Tetcore authorities to discover and directly connect to
 //! other authorities. It is split into two components the [`Worker`] and the
 //! [`Service`].
 //!

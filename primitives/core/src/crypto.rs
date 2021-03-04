@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -311,7 +311,7 @@ fn ss58hash(data: &[u8]) -> blake2_rfc::blake2b::Blake2bResult {
 #[cfg(feature = "std")]
 lazy_static::lazy_static! {
 	static ref DEFAULT_VERSION: Mutex<Ss58AddressFormat>
-		= Mutex::new(Ss58AddressFormat::SubstrateAccount);
+		= Mutex::new(Ss58AddressFormat::TetcoreAccount);
 }
 
 #[cfg(feature = "full_crypto")]
@@ -468,8 +468,8 @@ ss58_address_format!(
 		(11, "laminar", "Laminar mainnet, standard account (*25519).")
 	PolymathAccount =>
 		(12, "polymath", "Polymath network, standard account (*25519).")
-	SubstraTeeAccount =>
-		(13, "substratee", "Any SubstraTEE off-chain network private account (*25519).")
+	TetcoReeAccount =>
+		(13, "tetcoree", "Any TetcoREE off-chain network private account (*25519).")
 	TotemAccount =>
 		(14, "totem", "Any Totem Live Accounting network standard account (*25519).")
 	SynesthesiaAccount =>
@@ -501,7 +501,7 @@ ss58_address_format!(
 	SubsocialAccount =>
 		(28, "subsocial", "Subsocial network, standard account (*25519).")
 	DhiwayAccount =>
-		(29, "cord", "Dhiway CORD network, standard account (*25519).")	
+		(29, "cord", "Dhiway CORD network, standard account (*25519).")
 	PhalaAccount =>
 		(30, "phala", "Phala Network, standard account (*25519).")
 	LitentryAccount =>
@@ -520,8 +520,8 @@ ss58_address_format!(
 		(38, "kilt", "KILT Chain mainnet, standard account (*25519).")
 	PolimecAccount =>
 		(41, "poli", "Polimec Chain mainnet, standard account (*25519).")
-	SubstrateAccount =>
-		(42, "substrate", "Any Substrate network, standard account (*25519).")
+	TetcoreAccount =>
+		(42, "tetcore", "Any Tetcore network, standard account (*25519).")
 	Reserved43 =>
 		(43, "reserved43", "Reserved for future use (43).")
 	ChainXAccount =>
@@ -925,13 +925,13 @@ pub trait Pair: CryptoType + Sized + Clone + Send + Sync + 'static {
 	/// junction iterator.
 	///
 	/// - If `s` is a possibly `0x` prefixed 64-digit hex string, then it will be interpreted
-	/// directly as a `MiniSecretKey` (aka "seed" in `subkey`).
+	/// directly as a `MiniSecretKey` (aka "seed" in `tetkey`).
 	/// - If `s` is a valid BIP-39 key phrase of 12, 15, 18, 21 or 24 words, then the key will
 	/// be derived from it. In this case:
 	///   - the phrase may be followed by one or more items delimited by `/` characters.
 	///   - the path may be followed by `///`, in which case everything after the `///` is treated
 	/// as a password.
-	/// - If `s` begins with a `/` character it is prefixed with the Substrate public `DEV_PHRASE` and
+	/// - If `s` begins with a `/` character it is prefixed with the Tetcore public `DEV_PHRASE` and
 	/// interpreted as above.
 	///
 	/// In this case they are interpreted as HDKD junctions; purely numeric items are interpreted as
@@ -1109,7 +1109,7 @@ pub mod key_types {
 	pub const BABE: KeyTypeId = KeyTypeId(*b"babe");
 	/// Key type for Grandpa module, built-in. Identified as `gran`.
 	pub const GRANDPA: KeyTypeId = KeyTypeId(*b"gran");
-	/// Key type for controlling an account in a Substrate runtime, built-in. Identified as `acco`.
+	/// Key type for controlling an account in a Tetcore runtime, built-in. Identified as `acco`.
 	pub const ACCOUNT: KeyTypeId = KeyTypeId(*b"acco");
 	/// Key type for Aura module, built-in. Identified as `aura`.
 	pub const AURA: KeyTypeId = KeyTypeId(*b"aura");

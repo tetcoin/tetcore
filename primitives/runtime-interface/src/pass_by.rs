@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -38,7 +38,7 @@ use sp_std::vec::Vec;
 /// Derive macro for implementing [`PassBy`] with the [`Codec`] strategy.
 ///
 /// This requires that the type implements [`Encode`](codec::Encode) and [`Decode`](codec::Decode)
-/// from `parity-scale-codec`.
+/// from `tetsy-scale-codec`.
 ///
 /// # Example
 ///

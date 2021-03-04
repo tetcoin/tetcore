@@ -4,8 +4,8 @@ edition = '2018'
 name = 'pallet-template'
 version = "2.0.0"
 license = "Unlicense"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME pallet template for defining custom runtime logic."
 readme = "README.md"
 
@@ -13,7 +13,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 
 [dev-dependencies]
 serde = { version = "1.0.101" }
@@ -28,17 +28,17 @@ default-features = false
 version = "2.0.0"
 path = "../../../../frame/system"
 
-[dev-dependencies.sp-core]
+[dev-dependencies.tc-core]
 default-features = false
 version = "2.0.0"
 path = "../../../../primitives/core"
 
-[dev-dependencies.sp-io]
+[dev-dependencies.tc-io]
 default-features = false
 version = "2.0.0"
 path = "../../../../primitives/io"
 
-[dev-dependencies.sp-runtime]
+[dev-dependencies.tc-runtime]
 default-features = false
 version = "2.0.0"
 path = "../../../../primitives/runtime"

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -57,7 +57,7 @@ pub fn build_spec(spec: &dyn ChainSpec, raw: bool) -> error::Result<String> {
 }
 
 
-/// Helper enum that wraps either a binary decoder (from parity-scale-codec), or a JSON decoder
+/// Helper enum that wraps either a binary decoder (from tetsy-scale-codec), or a JSON decoder
 /// (from serde_json). Implements the Iterator Trait, calling `next()` will decode the next
 /// SignedBlock and return it.
 enum BlockIter<R, B> where

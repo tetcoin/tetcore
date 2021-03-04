@@ -1,12 +1,12 @@
 [package]
-name = "sp-tracing"
+name = "tc-tracing"
 version = "2.0.1"
 license = "Apache-2.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
-description = "Instrumentation primitives and macros for Substrate."
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Instrumentation primitives and macros for Tetcore."
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -18,8 +18,8 @@ features = ["with-tracing"]
 targets = ["x86_64-unknown-linux-gnu", "wasm32-unknown-unknown"]
 
 [dependencies]
-sp-std = { version = "2.0.0", path = "../std", default-features = false}
-codec = { version = "2.0.0", package = "parity-scale-codec", default-features = false, features = ["derive"]}
+tc-std = { version = "2.0.0", path = "../std", default-features = false}
+codec = { version = "2.0.0", package = "tetsy-scale-codec", default-features = false, features = ["derive"]}
 tracing = { version = "0.1.22", default-features = false }
 tracing-core = { version = "0.1.17", default-features = false }
 log = { version = "0.4.8", optional = true }
@@ -36,7 +36,7 @@ std = [
 	"tracing/std",
 	"tracing-core/std",
 	"codec/std",
-	"sp-std/std",
+	"tc-std/std",
 	"log",
 	"tracing-subscriber",
 ]

@@ -1,4 +1,4 @@
-Slots functionality for Substrate.
+Slots functionality for Tetcore.
 
 Some consensus algorithms have a concept of *slots*, which are intervals in
 time during which certain events can and/or must occur.  This crate

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -19,7 +19,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-/// Copied from `sp-runtime` and documented there.
+/// Copied from `tc-runtime` and documented there.
 #[macro_export]
 macro_rules! assert_eq_error_rate {
 	($x:expr, $y:expr, $error:expr $(,)?) => {

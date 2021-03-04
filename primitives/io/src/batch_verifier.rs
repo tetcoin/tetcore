@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -96,7 +96,7 @@ impl BatchVerifier {
 	) -> bool {
 		self.spawn_verification_task(
 			move || ed25519::Pair::verify(&signature, &message, &pub_key),
-			"substrate_ed25519_verify",
+			"tetcore_ed25519_verify",
 		)
 	}
 
@@ -117,7 +117,7 @@ impl BatchVerifier {
 			let items = std::mem::take(&mut self.sr25519_items);
 			self.spawn_verification_task(
 				move || Self::verify_sr25519_batch(items),
-				"substrate_sr25519_verify",
+				"tetcore_sr25519_verify",
 			)
 		} else {
 			true
@@ -136,7 +136,7 @@ impl BatchVerifier {
 	) -> bool {
 		self.spawn_verification_task(
 			move || ecdsa::Pair::verify(&signature, &message, &pub_key),
-			"substrate_ecdsa_verify",
+			"tetcore_ecdsa_verify",
 		)
 	}
 
@@ -169,7 +169,7 @@ impl BatchVerifier {
 		if pending.len() > 0 {
 			let (sender, receiver) = std::sync::mpsc::channel();
 			self.scheduler.spawn(
-				"substrate_batch_verify_join",
+				"tetcore_batch_verify_join",
 				async move {
 					futures::future::join_all(pending).await;
 					sender.send(())

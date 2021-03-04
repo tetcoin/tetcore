@@ -4,22 +4,22 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Unlicense"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME example pallet using runtime worker threads"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-sp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-sp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-sp-tasks = { version = "2.0.0", default-features = false, path = "../../primitives/tasks" }
+tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tc-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-tasks = { version = "2.0.0", default-features = false, path = "../../primitives/tasks" }
 
 [features]
 default = ["std"]
@@ -27,9 +27,9 @@ std = [
 	"codec/std",
 	"frame-support/std",
 	"frame-system/std",
-	"sp-core/std",
-	"sp-io/std",
-	"sp-runtime/std",
-	"sp-std/std",
-	"sp-tasks/std",
+	"tc-core/std",
+	"tc-io/std",
+	"tc-runtime/std",
+	"tc-std/std",
+	"tc-tasks/std",
 ]

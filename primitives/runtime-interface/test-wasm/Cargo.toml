@@ -1,26 +1,26 @@
 [package]
-name = "sp-runtime-interface-test-wasm"
+name = "tc-runtime-interface-test-wasm"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 build = "build.rs"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 publish = false
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-sp-runtime-interface = { version = "2.0.0", default-features = false, path = "../" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../std" }
-sp-io = { version = "2.0.0", default-features = false, path = "../../io" }
-sp-core = { version = "2.0.0", default-features = false, path = "../../core" }
+tc-runtime-interface = { version = "2.0.0", default-features = false, path = "../" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../std" }
+tc-io = { version = "2.0.0", default-features = false, path = "../../io" }
+tc-core = { version = "2.0.0", default-features = false, path = "../../core" }
 
 [build-dependencies]
-substrate-wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
+tetcore-wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
 
 [features]
 default = [ "std" ]
-std = [ "sp-runtime-interface/std", "sp-std/std", "sp-core/std", "sp-io/std" ]
+std = [ "tc-runtime-interface/std", "tc-std/std", "tc-core/std", "tc-io/std" ]

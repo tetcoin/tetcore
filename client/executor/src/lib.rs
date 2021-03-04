@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -78,7 +78,7 @@ mod tests {
 		let executor = WasmExecutor::new(
 			WasmExecutionMethod::Interpreted,
 			Some(8),
-			sp_io::SubstrateHostFunctions::host_functions(),
+			sp_io::TetcoreHostFunctions::host_functions(),
 			8,
 		);
 		let res = executor.call_in_wasm(

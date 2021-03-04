@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -66,7 +66,7 @@ impl HostState {
 		}
 	}
 
-	/// Materialize `HostContext` that can be used to invoke a substrate host `dyn Function`.
+	/// Materialize `HostContext` that can be used to invoke a tetcore host `dyn Function`.
 	pub fn materialize<'a>(&'a self) -> HostContext<'a> {
 		HostContext(self)
 	}
@@ -250,7 +250,7 @@ impl<'a> Sandbox for HostContext<'a> {
 		return_val_len: u32,
 		state: u32,
 	) -> sp_wasm_interface::Result<u32> {
-		trace!(target: "sp-sandbox", "invoke, instance_idx={}", instance_id);
+		trace!(target: "tc-sandbox", "invoke, instance_idx={}", instance_id);
 
 		// Deserialize arguments and convert them into wasmi types.
 		let args = Vec::<sp_wasm_interface::Value>::decode(&mut &args[..])

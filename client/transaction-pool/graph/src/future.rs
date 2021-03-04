@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -31,7 +31,7 @@ use wasm_timer::Instant;
 
 use crate::base_pool::Transaction;
 
-#[cfg_attr(not(target_os = "unknown"), derive(parity_util_mem::MallocSizeOf))]
+#[cfg_attr(not(target_os = "unknown"), derive(tetsy_util_mem::MallocSizeOf))]
 /// Transaction with partially satisfied dependencies.
 pub struct WaitingTransaction<Hash, Ex> {
 	/// Transaction details.
@@ -113,7 +113,7 @@ impl<Hash, Ex> WaitingTransaction<Hash, Ex> {
 /// Contains transactions that are still awaiting for some other transactions that
 /// could provide a tag that they require.
 #[derive(Debug)]
-#[cfg_attr(not(target_os = "unknown"), derive(parity_util_mem::MallocSizeOf))]
+#[cfg_attr(not(target_os = "unknown"), derive(tetsy_util_mem::MallocSizeOf))]
 pub struct FutureTransactions<Hash: hash::Hash + Eq, Ex> {
 	/// tags that are not yet provided by any transaction and we await for them
 	wanted_tags: HashMap<Tag, HashSet<Hash>>,
@@ -273,6 +273,6 @@ mod tests {
 		});
 
 		// data is at least 1024!
-		assert!(parity_util_mem::malloc_size(&future) > 1024);
+		assert!(tetsy_util_mem::malloc_size(&future) > 1024);
 	}
 }

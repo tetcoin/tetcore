@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -83,7 +83,7 @@
 //!
 //! [`Call`]: ./enum.Call.html
 //! [`Config`]: ./trait.Config.html
-//! [`Origin`]: https://docs.substrate.dev/docs/substrate-types
+//! [`Origin`]: https://docs.tetcoin.org/docs/tetcore-types
 
 #![cfg_attr(not(feature = "std"), no_std)]
 

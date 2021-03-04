@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,9 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate Client and associated logic.
+//! Tetcore Client and associated logic.
 //!
-//! The [`Client`] is one of the most important components of Substrate. It mainly comprises two
+//! The [`Client`] is one of the most important components of Tetcore. It mainly comprises two
 //! parts:
 //!
 //! - A database containing the blocks and chain state, generally referred to as

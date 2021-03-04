@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -40,7 +40,7 @@ pub enum Error {
 	Client(#[from] sp_blockchain::Error),
 
 	#[error(transparent)]
-	Codec(#[from] parity_scale_codec::Error),
+	Codec(#[from] tetsy_scale_codec::Error),
 
 	#[error("Invalid input: {0}")]
 	Input(String),

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -19,7 +19,7 @@
 //! in your runtime to external entities like users, chain explorers, or dApps.
 
 // You should have received a copy of the GNU General Public License
-// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+// along with Tetcore.  If not, see <http://www.gnu.org/licenses/>.
 
 pub use frame_metadata::{EventMetadata, DecodeDifferent, OuterEventMetadata, FnEncode};
 

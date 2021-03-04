@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -23,7 +23,7 @@ use crate::{
 	Support, Voter, EvaluateSupport,
 };
 use sp_arithmetic::{PerU16, Perbill, Percent, Permill};
-use substrate_test_utils::assert_eq_uvec;
+use tetcore_test_utils::assert_eq_uvec;
 
 #[test]
 fn float_phragmen_poc_works() {
@@ -1141,7 +1141,7 @@ mod score {
 mod solution_type {
 	use super::AccountId;
 	use codec::{Decode, Encode};
-	// these need to come from the same dev-dependency `sp-npos-elections`, not from the crate.
+	// these need to come from the same dev-dependency `tc-npos-elections`, not from the crate.
 	use crate::{generate_solution_type, Assignment, CompactSolution, Error as PhragmenError};
 	use sp_arithmetic::Percent;
 	use sp_std::{convert::TryInto, fmt::Debug};

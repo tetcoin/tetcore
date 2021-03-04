@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -58,7 +58,7 @@ impl From<sp_npos_elections::Error> for OffchainElectionError {
 }
 
 /// Storage key used to store the persistent offchain worker status.
-pub(crate) const OFFCHAIN_HEAD_DB: &[u8] = b"parity/staking-election/";
+pub(crate) const OFFCHAIN_HEAD_DB: &[u8] = b"tetsy/staking-election/";
 /// The repeat threshold of the offchain worker. This means we won't run the offchain worker twice
 /// within a window of 5 blocks.
 pub(crate) const OFFCHAIN_REPEAT: u32 = 5;

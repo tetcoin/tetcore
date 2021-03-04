@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "RPC interface for the transaction payment module."
 readme = "README.md"
 
@@ -13,13 +13,13 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0" }
 jsonrpc-core = "15.1.0"
 jsonrpc-core-client = "15.1.0"
 jsonrpc-derive = "15.1.0"
-sp-core = { version = "2.0.0", path = "../../../primitives/core" }
-sp-rpc = { version = "2.0.0", path = "../../../primitives/rpc" }
-sp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-sp-api = { version = "2.0.0", path = "../../../primitives/api" }
-sp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tc-core = { version = "2.0.0", path = "../../../primitives/core" }
+tc-rpc = { version = "2.0.0", path = "../../../primitives/rpc" }
+tc-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tc-api = { version = "2.0.0", path = "../../../primitives/api" }
+tc-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
 pallet-transaction-payment-rpc-runtime-api = { version = "2.0.0", path = "./runtime-api" }

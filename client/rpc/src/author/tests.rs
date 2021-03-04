@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -28,7 +28,7 @@ use sp_core::{
 };
 use sp_keystore::testing::KeyStore;
 use rpc::futures::Stream as _;
-use substrate_test_runtime_client::{
+use tetcore_test_runtime_client::{
 	self, AccountKeyring, runtime::{Extrinsic, Transfer, SessionKeys, Block},
 	DefaultTestClientBuilderExt, TestClientBuilderExt, Backend, Client,
 };
@@ -59,7 +59,7 @@ struct TestSetup {
 impl Default for TestSetup {
 	fn default() -> Self {
 		let keystore = Arc::new(KeyStore::new());
-		let client_builder = substrate_test_runtime_client::TestClientBuilder::new();
+		let client_builder = tetcore_test_runtime_client::TestClientBuilder::new();
 		let client = Arc::new(client_builder.set_keystore(keystore.clone()).build());
 
 		let spawner = sp_core::testing::TaskExecutor::new();

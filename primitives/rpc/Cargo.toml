@@ -1,12 +1,12 @@
 [package]
-name = "sp-rpc"
+name = "tc-rpc"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
-description = "Substrate RPC primitives and utilities."
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Tetcore RPC primitives and utilities."
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -14,7 +14,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 serde = { version = "1.0.101", features = ["derive"] }
-sp-core = { version = "2.0.0", path = "../core" }
+tc-core = { version = "2.0.0", path = "../core" }
 
 [dev-dependencies]
 serde_json = "1.0.41"

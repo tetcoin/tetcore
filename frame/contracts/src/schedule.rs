@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -26,7 +26,7 @@ use pallet_contracts_proc_macro::{ScheduleDebug, WeightDebug};
 use frame_support::weights::Weight;
 use sp_std::{marker::PhantomData, vec::Vec};
 use codec::{Encode, Decode};
-use parity_wasm::elements;
+use tetsy_wasm::elements;
 use pwasm_utils::rules;
 use sp_runtime::RuntimeDebug;
 
@@ -70,7 +70,7 @@ pub struct Limits {
 
 	/// Maximum allowed stack height in number of elements.
 	///
-	/// See <https://wiki.parity.io/WebAssembly-StackHeight> to find out
+	/// See <https://wiki.tetcoin.org/WebAssembly-StackHeight> to find out
 	/// how the stack frame cost is calculated. Each element can be of one of the
 	/// wasm value types. This means the maximum size per element is 64bit.
 	pub stack_height: u32,
@@ -586,7 +586,7 @@ impl<T: Config> Schedule<T> {
 
 impl<'a, T: Config> rules::Rules for ScheduleRules<'a, T> {
 	fn instruction_cost(&self, instruction: &elements::Instruction) -> Option<u32> {
-		use parity_wasm::elements::Instruction::*;
+		use tetsy_wasm::elements::Instruction::*;
 		let w = &self.schedule.instruction_weights;
 		let max_params = self.schedule.limits.parameters;
 

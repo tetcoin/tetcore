@@ -1440,8 +1440,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "substrate",
-          "value": "substrate"
+          "text": "tetcore",
+          "value": "tetcore"
         },
         "hide": 0,
         "includeAll": false,
@@ -1451,8 +1451,8 @@
         "options": [
           {
             "selected": true,
-            "text": "substrate",
-            "value": "substrate"
+            "text": "tetcore",
+            "value": "tetcore"
           },
           {
             "selected": false,
@@ -1460,7 +1460,7 @@
             "value": "polkadot"
           }
         ],
-        "query": "substrate, polkadot",
+        "query": "tetcore, polkadot",
         "skipUrlSync": false,
         "type": "custom"
       },
@@ -1539,7 +1539,7 @@
     ]
   },
   "timezone": "",
-  "title": "Substrate Dashboard",
+  "title": "Tetcore Dashboard",
   "uid": "ColmenaLabs",
   "variables": {
     "list": []

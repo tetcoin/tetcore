@@ -21,7 +21,7 @@
 # Block production
 /client/basic-authorship/ @NikVolf
 
-# Sandboxing capability of Substrate Runtime
+# Sandboxing capability of Tetcore Runtime
 /primitives/sr-sandbox/ @pepyakin
 /primitives/core/src/sandbox.rs @pepyakin
 
@@ -52,7 +52,7 @@
 /primitives/npos-elections/ @kianenigma
 
 # Fixed point arithmetic
-/primitives/sp-arithmetic/ @kianenigma
+/primitives/tc-arithmetic/ @kianenigma
 
 # Transaction weight stuff
 /frame/support/src/weights.rs @shawntabrizi

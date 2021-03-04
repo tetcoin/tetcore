@@ -1,19 +1,19 @@
 # set tag manually --set image.tag=latest
 image:
-  repository: parity/substrate
+  repository: tetcoin/tetcore
   tag: latest
   pullPolicy: Always
-  basepath: /substrate
+  basepath: /tetcore
 
 
-# if set to true a service account for substrate will be created
+# if set to true a service account for tetcore will be created
 rbac:
   enable: true
-  name: substrate
+  name: tetcore
 
 
 # name of the statefulset
-app: substrate
+app: tetcore
 listen_node_port: true
 
 nodes:
@@ -40,12 +40,12 @@ validator: {}
   # name, key and node-key can be given in a base64 encoded keyfile string (at
   # validator.keys) which has the following format:
   #
-  # substrate-0-name <node-name>
-  # substrate-0-key <key-seed>
-  # substrate-0-node-key <node-secret-key>
-  # substrate-1-name <node-name>
-  # substrate-1-key <key-seed>
-  # substrate-1-node-key <node-secret-key>
+  # tetcore-0-name <node-name>
+  # tetcore-0-key <key-seed>
+  # tetcore-0-node-key <node-secret-key>
+  # tetcore-1-name <node-name>
+  # tetcore-1-key <key-seed>
+  # tetcore-1-node-key <node-secret-key>
   #
   # pod names are canonical. changing these or providing different amount of
   # keys than the replicas count will lead to behavior no one ever has

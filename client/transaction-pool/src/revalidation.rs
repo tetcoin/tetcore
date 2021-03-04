@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -364,9 +364,9 @@ mod tests {
 	use super::*;
 	use sc_transaction_graph::Pool;
 	use sp_transaction_pool::TransactionSource;
-	use substrate_test_runtime_transaction_pool::{TestApi, uxt};
+	use tetcore_test_runtime_transaction_pool::{TestApi, uxt};
 	use futures::executor::block_on;
-	use substrate_test_runtime_client::AccountKeyring::*;
+	use tetcore_test_runtime_client::AccountKeyring::*;
 
 	fn setup() -> (Arc<TestApi>, Pool<TestApi>) {
 		let test_api = Arc::new(TestApi::empty());

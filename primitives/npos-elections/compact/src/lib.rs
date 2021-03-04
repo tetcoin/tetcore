@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -38,12 +38,12 @@ pub(crate) fn syn_err(message: &'static str) -> syn::Error {
 ///
 /// The following data types can be configured by the macro.
 ///
-/// - The identifier of the voter. This can be any type that supports `parity-scale-codec`'s compact
+/// - The identifier of the voter. This can be any type that supports `tetsy-scale-codec`'s compact
 ///   encoding.
-/// - The identifier of the target. This can be any type that supports `parity-scale-codec`'s
+/// - The identifier of the target. This can be any type that supports `tetsy-scale-codec`'s
 ///   compact encoding.
 /// - The accuracy of the ratios. This must be one of the `PerThing` types defined in
-///   `sp-arithmetic`.
+///   `tc-arithmetic`.
 ///
 /// Moreover, the maximum number of edges per voter (distribution per assignment) also need to be
 /// specified. Attempting to convert from/to an assignment with more distributions will fail.
@@ -63,7 +63,7 @@ pub(crate) fn syn_err(message: &'static str) -> syn::Error {
 ///
 /// The generated struct is by default deriving both `Encode` and `Decode`. This is okay but could
 /// lead to many 0s in the solution. If prefixed with `#[compact]`, then a custom compact encoding
-/// for numbers will be used, similar to how `parity-scale-codec`'s `Compact` works.
+/// for numbers will be used, similar to how `tetsy-scale-codec`'s `Compact` works.
 ///
 /// ```ignore
 /// generate_solution_type!(
@@ -348,12 +348,12 @@ fn unique_targets_impl(count: usize) -> TokenStream2 {
 }
 
 fn imports() -> Result<TokenStream2> {
-	if std::env::var("CARGO_PKG_NAME").unwrap() == "sp-npos-elections" {
+	if std::env::var("CARGO_PKG_NAME").unwrap() == "tc-npos-elections" {
 		Ok(quote! {
 			use crate as _npos;
 		})
 	} else {
-		match crate_name("sp-npos-elections") {
+		match crate_name("tc-npos-elections") {
 			Ok(sp_npos_elections) => {
 				let ident = syn::Ident::new(&sp_npos_elections, Span::call_site());
 				Ok(quote!( extern crate #ident as _npos; ))

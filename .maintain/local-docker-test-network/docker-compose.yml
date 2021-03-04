@@ -13,7 +13,7 @@
 #
 # # Usage
 #
-# 1. Build `target/release/substrate` binary: `cargo build --release`
+# 1. Build `target/release/tetcore` binary: `cargo build --release`
 # 2. Start networks and containers:
 #    `sudo docker-compose -f .maintain/sentry-node/docker-compose.yml up`
 # 3. Connect to nodes:
@@ -33,8 +33,8 @@ services:
       - "9944:9944"
       - "9615:9615"
     volumes:
-      - ../../target/release/substrate:/usr/local/bin/substrate
-    image: parity/substrate
+      - ../../target/release/tetcore:/usr/local/bin/tetcore
+    image: tetcoin/tetcore
     networks:
       - internet
     command:
@@ -60,11 +60,11 @@ services:
       - "--prometheus-external"
 
   validator-b:
-    image: parity/substrate
+    image: tetcoin/tetcore
     ports:
       - "9945:9944"
     volumes:
-      - ../../target/release/substrate:/usr/local/bin/substrate
+      - ../../target/release/tetcore:/usr/local/bin/tetcore
     networks:
       - internet
     command:
@@ -90,11 +90,11 @@ services:
       - "--prometheus-external"
 
   light-c:
-    image: parity/substrate
+    image: tetcoin/tetcore
     ports:
       - "9946:9944"
     volumes:
-      - ../../target/release/substrate:/usr/local/bin/substrate
+      - ../../target/release/tetcore:/usr/local/bin/tetcore
     networks:
       - internet
     command:

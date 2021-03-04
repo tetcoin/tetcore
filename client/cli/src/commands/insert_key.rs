@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -19,7 +19,7 @@
 
 use crate::{
 	Error, KeystoreParams, CryptoSchemeFlag, SharedParams, utils, with_crypto_scheme,
-	SubstrateCli,
+	TetcoreCli,
 };
 use std::{sync::Arc, convert::TryFrom};
 use structopt::StructOpt;
@@ -60,7 +60,7 @@ pub struct InsertKeyCmd {
 
 impl InsertKeyCmd {
 	/// Run the command
-	pub fn run<C: SubstrateCli>(&self, cli: &C) -> Result<(), Error> {
+	pub fn run<C: TetcoreCli>(&self, cli: &C) -> Result<(), Error> {
 		let suri = utils::read_uri(self.suri.as_ref())?;
 		let base_path = self.shared_params
 			.base_path()
@@ -105,7 +105,7 @@ mod tests {
 
 	struct Cli;
 
-	impl SubstrateCli for Cli {
+	impl TetcoreCli for Cli {
 		fn impl_name() -> String {
 			"test".into()
 		}

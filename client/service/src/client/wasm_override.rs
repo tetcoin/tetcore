@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -207,19 +207,19 @@ where
 mod tests {
 	use super::*;
 	use sc_executor::{NativeExecutor, WasmExecutionMethod};
-	use substrate_test_runtime_client::LocalExecutor;
+	use tetcore_test_runtime_client::LocalExecutor;
 	use std::fs::{self, File};
 
 	fn wasm_test<F>(fun: F)
 	where
 		F: Fn(&Path, &[u8], &NativeExecutor::<LocalExecutor>)
 	{
-		let exec = NativeExecutor::<substrate_test_runtime_client::LocalExecutor>::new(
+		let exec = NativeExecutor::<tetcore_test_runtime_client::LocalExecutor>::new(
 			WasmExecutionMethod::Interpreted,
 			Some(128),
 			1,
 		);
-		let bytes = substrate_test_runtime::wasm_binary_unwrap();
+		let bytes = tetcore_test_runtime::wasm_binary_unwrap();
 		let dir = tempfile::tempdir().expect("Create a temporary directory");
 		fun(dir.path(), bytes, &exec);
 		dir.close().expect("Temporary Directory should close");
@@ -227,7 +227,7 @@ mod tests {
 
 	#[test]
 	fn should_get_runtime_version() {
-		let wasm = WasmBlob::new(substrate_test_runtime::wasm_binary_unwrap().to_vec());
+		let wasm = WasmBlob::new(tetcore_test_runtime::wasm_binary_unwrap().to_vec());
 		let executor =
 			NativeExecutor::<LocalExecutor>::new(WasmExecutionMethod::Interpreted, Some(128), 1);
 
@@ -243,7 +243,7 @@ mod tests {
 			let overrides = WasmOverride::scrape_overrides(dir, exec)
 				.expect("HashMap of u32 and WasmBlob");
 			let wasm = overrides.get(&2).expect("WASM binary");
-			assert_eq!(wasm.code, substrate_test_runtime::wasm_binary_unwrap().to_vec())
+			assert_eq!(wasm.code, tetcore_test_runtime::wasm_binary_unwrap().to_vec())
 		});
 	}
 

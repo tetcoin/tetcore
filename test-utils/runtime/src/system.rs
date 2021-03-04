@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -349,7 +349,7 @@ mod tests {
 	use super::*;
 
 	use sp_io::TestExternalities;
-	use substrate_test_runtime_client::{AccountKeyring, Sr25519Keyring};
+	use tetcore_test_runtime_client::{AccountKeyring, Sr25519Keyring};
 	use crate::{Header, Transfer, wasm_binary_unwrap};
 	use sp_core::{NeverNativeValue, map, traits::{CodeExecutor, RuntimeCode}};
 	use sc_executor::{NativeExecutor, WasmExecutionMethod, native_executor_instance};

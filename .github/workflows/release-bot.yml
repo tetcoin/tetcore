@@ -15,4 +15,4 @@ jobs:
           room_id: ${{ secrets.MATRIX_ROOM_ID }}
           access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
           message: "**${{github.event.repository.full_name}}:** A release has been ${{github.event.action}}<br/>Release version [${{github.event.release.tag_name}}](${{github.event.release.html_url}})<br/><br/>***Description:***<br/>${{github.event.release.body}}<br/>"
-          server: "matrix.parity.io"
+          server: "matrix.tetcoin.org"

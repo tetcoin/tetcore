@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -40,7 +40,7 @@ use log::trace;
 use std::sync::Arc;
 
 use finality_grandpa::BlockNumberOps;
-use parity_scale_codec::{Encode, Decode};
+use tetsy_scale_codec::{Encode, Decode};
 use sp_blockchain::{Backend as BlockchainBackend, Error as ClientError, Result as ClientResult};
 use sp_runtime::{
 	Justification, generic::BlockId,
@@ -600,7 +600,7 @@ pub(crate) mod tests {
 	use sp_finality_grandpa::AuthorityList;
 	use sc_client_api::NewBlockState;
 	use sc_client_api::in_mem::Blockchain as InMemoryBlockchain;
-	use substrate_test_runtime_client::runtime::{Block, Header, H256};
+	use tetcore_test_runtime_client::runtime::{Block, Header, H256};
 
 	pub(crate) type FinalityProof = super::FinalityProof<Header>;
 

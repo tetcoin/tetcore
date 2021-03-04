@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate's client telemetry is a part of substrate that allows ingesting telemetry data
-//! with for example [Polkadot telemetry](https://github.com/paritytech/substrate-telemetry).
+//! Tetcore's client telemetry is a part of tetcore that allows ingesting telemetry data
+//! with for example [Polkadot telemetry](https://github.com/tetcoin/tetcore-telemetry).
 //!
 //! It works using Tokio's [tracing](https://github.com/tokio-rs/tracing/) library. The telemetry
 //! information uses tracing's logging to report the telemetry data which is then retrieved by a
@@ -25,11 +25,11 @@
 //! background task called [`TelemetryWorker`] which will send the information to the configured
 //! remote telemetry servers.
 //!
-//! If multiple substrate nodes are running in the same process, it uses a `tracing::Span` to
-//! identify which substrate node is reporting the telemetry. Every task spawned using sc-service's
+//! If multiple tetcore nodes are running in the same process, it uses a `tracing::Span` to
+//! identify which tetcore node is reporting the telemetry. Every task spawned using sc-service's
 //! `TaskManager` automatically inherit this span.
 //!
-//! Substrate's nodes initialize/register with the [`TelemetryWorker`] using a [`TelemetryHandle`].
+//! Tetcore's nodes initialize/register with the [`TelemetryWorker`] using a [`TelemetryHandle`].
 //! This handle can be cloned and passed around. It uses an asynchronous channel to communicate with
 //! the running [`TelemetryWorker`] dedicated to registration. Registering can happen at any point
 //! in time during the process execution.
@@ -58,10 +58,10 @@ pub use layer::*;
 use node::*;
 use transport::*;
 
-/// Substrate DEBUG log level.
-pub const SUBSTRATE_DEBUG: u8 = 9;
-/// Substrate INFO log level.
-pub const SUBSTRATE_INFO: u8 = 0;
+/// Tetcore DEBUG log level.
+pub const TETCORE_DEBUG: u8 = 9;
+/// Tetcore INFO log level.
+pub const TETCORE_INFO: u8 = 0;
 
 /// Consensus TRACE log level.
 pub const CONSENSUS_TRACE: u8 = 9;
@@ -311,17 +311,17 @@ impl TelemetryWorker {
 	}
 }
 
-/// Handle to the [`TelemetryWorker`] thats allows initializing the telemetry for a Substrate node.
+/// Handle to the [`TelemetryWorker`] thats allows initializing the telemetry for a Tetcore node.
 #[derive(Debug, Clone)]
 pub struct TelemetryHandle {
 	message_sender: mpsc::UnboundedSender<Register>,
 }
 
 impl TelemetryHandle {
-	/// Initialize the telemetry with the endpoints provided in argument for the current substrate
+	/// Initialize the telemetry with the endpoints provided in argument for the current tetcore
 	/// node.
 	///
-	/// This method must be called during the substrate node initialization.
+	/// This method must be called during the tetcore node initialization.
 	///
 	/// The `endpoints` argument is a collection of telemetry WebSocket servers with a corresponding
 	/// verbosity level.

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -118,7 +118,7 @@ impl<Block: BlockT, T: CacheItemT> StorageEntry<Block, T> {
 #[cfg(test)]
 mod tests {
 	use crate::cache::list_storage::tests::{DummyStorage, FaultyStorage};
-	use substrate_test_runtime_client::runtime::{H256, Block};
+	use tetcore_test_runtime_client::runtime::{H256, Block};
 	use super::*;
 
 	fn test_id(number: u64) -> ComplexBlockId<Block> {

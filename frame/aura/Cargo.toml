@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME AURA consensus pallet"
 readme = "README.md"
 
@@ -13,38 +13,38 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-sp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-sp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tc-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+tc-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
-sp-consensus-aura = { version = "0.8.0", path = "../../primitives/consensus/aura", default-features = false }
+tc-consensus-aura = { version = "0.8.0", path = "../../primitives/consensus/aura", default-features = false }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-sp-timestamp = { version = "2.0.0", default-features = false, path = "../../primitives/timestamp" }
+tc-timestamp = { version = "2.0.0", default-features = false, path = "../../primitives/timestamp" }
 pallet-timestamp = { version = "2.0.0", default-features = false, path = "../timestamp" }
 
 
 [dev-dependencies]
-sp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-sp-io ={ version = "2.0.0", path = "../../primitives/io" }
+tc-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tc-io ={ version = "2.0.0", path = "../../primitives/io" }
 lazy_static = "1.4.0"
 parking_lot = "0.11.1"
 
 [features]
 default = ["std"]
 std = [
-	"sp-application-crypto/std",
+	"tc-application-crypto/std",
 	"codec/std",
-	"sp-inherents/std",
-	"sp-std/std",
+	"tc-inherents/std",
+	"tc-std/std",
 	"serde",
-	"sp-runtime/std",
+	"tc-runtime/std",
 	"frame-support/std",
-	"sp-consensus-aura/std",
+	"tc-consensus-aura/std",
 	"frame-system/std",
-	"sp-timestamp/std",
+	"tc-timestamp/std",
 	"pallet-timestamp/std",
 ]

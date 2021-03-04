@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -98,7 +98,7 @@ fn main() {
 				BlockType::RandomTransfersReaping,
 				BlockType::Noop,
 			].iter() {
-				for database_type in [BenchDataBaseType::RocksDb, BenchDataBaseType::ParityDb].iter() {
+				for database_type in [BenchDataBaseType::RocksDb, BenchDataBaseType::TetsyDb].iter() {
 					import_benchmarks.push((profile, size.clone(), block_type.clone(), database_type));
 				}
 			}
@@ -121,7 +121,7 @@ fn main() {
 			]
 			.iter().flat_map(|size|
 			[
-				DatabaseType::RocksDb, DatabaseType::ParityDb
+				DatabaseType::RocksDb, DatabaseType::TetsyDb
 			]
 			.iter().map(move |db_type| (size, db_type)))
 			=> TrieReadBenchmarkDescription { database_size: *size, database_type: *db_type },
@@ -132,7 +132,7 @@ fn main() {
 			]
 			.iter().flat_map(|size|
 			[
-				DatabaseType::RocksDb, DatabaseType::ParityDb
+				DatabaseType::RocksDb, DatabaseType::TetsyDb
 			]
 			.iter().map(move |db_type| (size, db_type)))
 			=> TrieWriteBenchmarkDescription { database_size: *size, database_type: *db_type },

@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,9 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate RPC interfaces.
+//! Tetcore RPC interfaces.
 //!
-//! A collection of RPC methods and subscriptions supported by all substrate clients.
+//! A collection of RPC methods and subscriptions supported by all tetcore clients.
 
 #![warn(missing_docs)]
 

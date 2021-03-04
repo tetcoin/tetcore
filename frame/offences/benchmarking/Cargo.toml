@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME offences pallet benchmarking"
 readme = "README.md"
 
@@ -13,7 +13,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../../benchmarking" }
 frame-support = { version = "2.0.0", default-features = false, path = "../../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../../system" }
@@ -24,16 +24,16 @@ pallet-im-online = { version = "2.0.0", default-features = false, path = "../../
 pallet-offences = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../offences" }
 pallet-session = { version = "2.0.0", default-features = false, path = "../../session" }
 pallet-staking = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../staking" }
-sp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
-sp-staking = { version = "2.0.0", default-features = false, path = "../../../primitives/staking" }
-sp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tc-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tc-staking = { version = "2.0.0", default-features = false, path = "../../../primitives/staking" }
+tc-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 
 [dev-dependencies]
 pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 serde = { version = "1.0.101" }
-sp-core = { version = "2.0.0", path = "../../../primitives/core" }
-sp-io = { version = "2.0.0", path = "../../../primitives/io" }
+tc-core = { version = "2.0.0", path = "../../../primitives/core" }
+tc-io = { version = "2.0.0", path = "../../../primitives/io" }
 
 [features]
 default = ["std"]
@@ -48,8 +48,8 @@ std = [
 	"pallet-offences/std",
 	"pallet-session/std",
 	"pallet-staking/std",
-	"sp-runtime/std",
-	"sp-staking/std",
-	"sp-std/std",
+	"tc-runtime/std",
+	"tc-staking/std",
+	"tc-std/std",
 	"codec/std",
 ]

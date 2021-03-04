@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -209,7 +209,7 @@ impl log::Log for RuntimeLogger {
 
 #[cfg(test)]
 mod tests {
-	use substrate_test_runtime_client::{
+	use tetcore_test_runtime_client::{
 		ExecutionStrategy, TestClientBuilderExt, DefaultTestClientBuilderExt,
 		TestClientBuilder, runtime::TestAPI,
 	};

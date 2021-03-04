@@ -4,8 +4,8 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
 description = "Macro for benchmarking a FRAME runtime."
 readme = "README.md"
 
@@ -15,13 +15,13 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 linregress = { version = "0.4.0", optional = true }
 paste = "0.1"
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
-sp-api = { version = "2.0.0", path = "../../primitives/api", default-features = false }
-sp-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface", default-features = false }
-sp-runtime = { version = "2.0.0", path = "../../primitives/runtime", default-features = false }
-sp-std = { version = "2.0.0", path = "../../primitives/std", default-features = false }
-sp-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
-sp-storage = { version = "2.0.0", path = "../../primitives/storage", default-features = false }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
+tc-api = { version = "2.0.0", path = "../../primitives/api", default-features = false }
+tc-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface", default-features = false }
+tc-runtime = { version = "2.0.0", path = "../../primitives/runtime", default-features = false }
+tc-std = { version = "2.0.0", path = "../../primitives/std", default-features = false }
+tc-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
+tc-storage = { version = "2.0.0", path = "../../primitives/storage", default-features = false }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 
@@ -32,10 +32,10 @@ hex-literal = "0.3.1"
 default = [ "std" ]
 std = [
 	"codec/std",
-	"sp-runtime-interface/std",
-	"sp-runtime/std",
-	"sp-api/std",
-	"sp-std/std",
+	"tc-runtime-interface/std",
+	"tc-runtime/std",
+	"tc-api/std",
+	"tc-std/std",
 	"frame-support/std",
 	"frame-system/std",
 	"linregress",

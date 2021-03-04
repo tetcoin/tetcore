@@ -1,3 +1,3 @@
-Substrate state machine implementation.
+Tetcore state machine implementation.
 
 License: Apache-2.0

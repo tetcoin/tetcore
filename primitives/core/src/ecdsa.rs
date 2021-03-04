@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2017-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -28,7 +28,7 @@ use codec::{Encode, Decode};
 #[cfg(feature = "full_crypto")]
 use core::convert::{TryFrom, TryInto};
 #[cfg(feature = "std")]
-use substrate_bip39::seed_from_entropy;
+use tetcore_bip39::seed_from_entropy;
 #[cfg(feature = "std")]
 use bip39::{Mnemonic, Language, MnemonicType};
 #[cfg(feature = "full_crypto")]

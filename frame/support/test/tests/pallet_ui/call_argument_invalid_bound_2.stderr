@@ -9,11 +9,11 @@ error[E0277]: the trait bound `pallet::Call<T>: Decode` is not satisfied
    |     type Call: UnfilteredDispatchable + Codec + Clone + PartialEq + Eq;
    |                                         ----- required by this bound in `frame_support::Callable::Call`
 
-error[E0277]: the trait bound `pallet::Call<T>: pallet::_::_parity_scale_codec::Encode` is not satisfied
+error[E0277]: the trait bound `pallet::Call<T>: pallet::_::_tetsy_scale_codec::Encode` is not satisfied
   --> $DIR/call_argument_invalid_bound_2.rs:17:12
    |
 17 |     #[pallet::call]
-   |               ^^^^ the trait `pallet::_::_parity_scale_codec::Encode` is not implemented for `pallet::Call<T>`
+   |               ^^^^ the trait `pallet::_::_tetsy_scale_codec::Encode` is not implemented for `pallet::Call<T>`
    |
   ::: $WORKSPACE/frame/support/src/dispatch.rs
    |

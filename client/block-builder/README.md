@@ -1,4 +1,4 @@
-Substrate block builder
+Tetcore block builder
 
 This crate provides the [`BlockBuilder`] utility and the corresponding runtime api
 [`BlockBuilder`](https://docs.rs/sc-block-builder/latest/sc_block_builder/struct.BlockBuilder.html).Error

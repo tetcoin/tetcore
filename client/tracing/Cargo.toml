@@ -4,9 +4,9 @@ version = "2.0.1"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 edition = "2018"
-homepage = "https://substrate.dev"
-repository = "https://github.com/paritytech/substrate/"
-description = "Instrumentation implementation for substrate."
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Instrumentation implementation for tetcore."
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -29,7 +29,7 @@ tracing = "0.1.22"
 tracing-core = "0.1.17"
 tracing-log = "0.1.1"
 tracing-subscriber = "0.2.15"
-sp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tc-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 sc-telemetry = { version = "2.0.0", path = "../telemetry" }
 sc-tracing-proc-macro = { version = "2.0.0", path = "./proc-macro" }
 

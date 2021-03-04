@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
@@ -161,7 +161,7 @@ where
 	///
 	/// # Note
 	///
-	/// Weight is synonymous with gas in substrate.
+	/// Weight is synonymous with gas in tetcore.
 	pub fn charge_weight(&mut self, amount: Weight) -> Result<()> {
 		self.inner.runtime.charge_gas(RuntimeToken::ChainExtension(amount)).map(|_| ())
 	}

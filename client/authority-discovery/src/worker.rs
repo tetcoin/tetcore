@@ -1,4 +1,4 @@
-// This file is part of Substrate.
+// This file is part of Tetcore.
 
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -561,7 +561,7 @@ where
 }
 
 /// NetworkProvider provides [`Worker`] with all necessary hooks into the
-/// underlying Substrate networking. Using this trait abstraction instead of
+/// underlying Tetcore networking. Using this trait abstraction instead of
 /// [`sc_network::NetworkService`] directly is necessary to unit test [`Worker`].
 #[async_trait]
 pub trait NetworkProvider: NetworkStateInfo {

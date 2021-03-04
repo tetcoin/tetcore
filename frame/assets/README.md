@@ -26,7 +26,7 @@ The supported dispatchable functions are documented in the [`assets::Call`](http
 
 ### Goals
 
-The assets system in Substrate is designed to make the following possible:
+The assets system in Tetcore is designed to make the following possible:
 
 * Issue a unique asset to its creator's account.
 * Move assets between accounts.

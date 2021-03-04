@@ -1,6 +1,6 @@
-Substrate authority discovery.
+Tetcore authority discovery.
 
-This crate enables Substrate authorities to discover and directly connect to
+This crate enables Tetcore authorities to discover and directly connect to
 other authorities. It is split into two components the [`Worker`] and the
 [`Service`].
 
