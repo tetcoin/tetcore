@@ -25,7 +25,7 @@ use crate::{
 	primitives::{self, Error},
 };
 #[cfg(not(feature = "std"))]
-use sp_std::vec;
+use tp_std::vec;
 
 /// Stateless verification of the leaf proof.
 pub fn verify_leaf_proof<H, L>(

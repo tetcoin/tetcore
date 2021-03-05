@@ -107,8 +107,8 @@ pub trait Config<I = DefaultInstance>: frame_system::Config {
 	///
 	/// This type is actually going to be stored in the MMR.
 	/// Required to be provided again, to satisfy trait bounds for storage items.
-	type Hash: traits::Member + traits::MaybeSerializeDeserialize + sp_std::fmt::Debug
-		+ sp_std::hash::Hash + AsRef<[u8]> + AsMut<[u8]> + Copy + Default + codec::Codec
+	type Hash: traits::Member + traits::MaybeSerializeDeserialize + tp_std::fmt::Debug
+		+ tp_std::hash::Hash + AsRef<[u8]> + AsMut<[u8]> + Copy + Default + codec::Codec
 		+ codec::EncodeLike;
 
 	/// Data stored in the leaf nodes.
@@ -208,7 +208,7 @@ pub fn verify_leaf_proof<H, L>(
 }
 
 impl<T: Config<I>, I: Instance> Module<T, I> {
-	fn offchain_key(pos: u64) -> sp_std::prelude::Vec<u8> {
+	fn offchain_key(pos: u64) -> tp_std::prelude::Vec<u8> {
 		(T::INDEXING_PREFIX, pos).encode()
 	}
 

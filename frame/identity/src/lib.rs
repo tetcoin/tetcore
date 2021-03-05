@@ -77,8 +77,8 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 
-use sp_std::prelude::*;
-use sp_std::{fmt::Debug, ops::Add, iter::once};
+use tp_std::prelude::*;
+use tp_std::{fmt::Debug, ops::Add, iter::once};
 use enumflags2::BitFlags;
 use codec::{Encode, Decode};
 use sp_runtime::{DispatchError, RuntimeDebug, DispatchResult};
@@ -161,7 +161,7 @@ pub enum Data {
 }
 
 impl Decode for Data {
-	fn decode<I: codec::Input>(input: &mut I) -> sp_std::result::Result<Self, codec::Error> {
+	fn decode<I: codec::Input>(input: &mut I) -> tp_std::result::Result<Self, codec::Error> {
 		let b = input.read_byte()?;
 		Ok(match b {
 			0 => Data::None,
@@ -285,7 +285,7 @@ impl Encode for IdentityFields {
 	}
 }
 impl Decode for IdentityFields {
-	fn decode<I: codec::Input>(input: &mut I) -> sp_std::result::Result<Self, codec::Error> {
+	fn decode<I: codec::Input>(input: &mut I) -> tp_std::result::Result<Self, codec::Error> {
 		let field = u64::decode(input)?;
 		Ok(Self(<BitFlags<IdentityField>>::from_bits(field as u64).map_err(|_| "invalid value")?))
 	}
@@ -375,7 +375,7 @@ impl <
 impl<
 	Balance: Encode + Decode + Copy + Clone + Debug + Eq + PartialEq,
 > Decode for Registration<Balance> {
-	fn decode<I: codec::Input>(input: &mut I) -> sp_std::result::Result<Self, codec::Error> {
+	fn decode<I: codec::Input>(input: &mut I) -> tp_std::result::Result<Self, codec::Error> {
 		let (judgements, deposit, info) = Decode::decode(&mut AppendZerosInput::new(input))?;
 		Ok(Self { judgements, deposit, info })
 	}

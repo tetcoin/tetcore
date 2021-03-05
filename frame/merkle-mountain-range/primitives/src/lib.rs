@@ -22,9 +22,9 @@
 
 use frame_support::{RuntimeDebug, debug};
 use sp_runtime::traits::{self, Saturating, One};
-use sp_std::fmt;
+use tp_std::fmt;
 #[cfg(not(feature = "std"))]
-use sp_std::prelude::Vec;
+use tp_std::prelude::Vec;
 
 /// A provider of the MMR's leaf data.
 pub trait LeafDataProvider {
@@ -176,10 +176,10 @@ impl<H: traits::Hash, L: FullLeaf> DataOrHash<H, L> {
 pub struct Compact<H, T> {
 	/// Internal tuple representation.
 	pub tuple: T,
-	_hash: sp_std::marker::PhantomData<H>,
+	_hash: tp_std::marker::PhantomData<H>,
 }
 
-impl<H, T> sp_std::ops::Deref for Compact<H, T> {
+impl<H, T> tp_std::ops::Deref for Compact<H, T> {
 	type Target = T;
 
 	fn deref(&self) -> &Self::Target {

@@ -22,7 +22,7 @@
 use bitflags::bitflags;
 use codec::{Decode, Encode};
 use sp_runtime::{DispatchError, RuntimeDebug};
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 
 /// Result type of a `bare_call` call.
 ///

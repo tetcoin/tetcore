@@ -39,12 +39,12 @@
 #![allow(unused_imports)]
 
 use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
-use sp_std::marker::PhantomData;
+use tp_std::marker::PhantomData;
 
 /// Weight functions needed for pallet_im_online.
 pub trait WeightInfo {
 	fn validate_unsigned_and_then_heartbeat(k: u32, e: u32, ) -> Weight;
-	
+
 }
 
 /// Weights for pallet_im_online using the Tetcore node and recommended hardware.
@@ -56,9 +56,9 @@ impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 			.saturating_add((481_000 as Weight).saturating_mul(e as Weight))
 			.saturating_add(T::DbWeight::get().reads(4 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
-	
+
 }
 
 // For backwards compatibility and tests
@@ -69,7 +69,7 @@ impl WeightInfo for () {
 			.saturating_add((481_000 as Weight).saturating_mul(e as Weight))
 			.saturating_add(RocksDbWeight::get().reads(4 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
-	
+
 }

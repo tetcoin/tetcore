@@ -29,8 +29,8 @@ use sp_runtime::{
 		BlakeTwo256, Keccak256, IdentityLookup,
 	},
 };
-use sp_std::cell::RefCell;
-use sp_std::prelude::*;
+use tp_std::cell::RefCell;
+use tp_std::prelude::*;
 
 impl_outer_origin! {
 	pub enum Origin for Test where system = frame_system {}

@@ -17,7 +17,7 @@
 
 //! The conviction datatype.
 
-use sp_std::{result::Result, convert::TryFrom};
+use tp_std::{result::Result, convert::TryFrom};
 use sp_runtime::{RuntimeDebug, traits::{Zero, Bounded, CheckedMul, CheckedDiv}};
 use codec::{Encode, Decode};
 use crate::types::Delegations;

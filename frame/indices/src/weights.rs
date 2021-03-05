@@ -39,7 +39,7 @@
 #![allow(unused_imports)]
 
 use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
-use sp_std::marker::PhantomData;
+use tp_std::marker::PhantomData;
 
 /// Weight functions needed for pallet_indices.
 pub trait WeightInfo {
@@ -48,7 +48,7 @@ pub trait WeightInfo {
 	fn free() -> Weight;
 	fn force_transfer() -> Weight;
 	fn freeze() -> Weight;
-	
+
 }
 
 /// Weights for pallet_indices using the Tetcore node and recommended hardware.
@@ -58,33 +58,33 @@ impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 		(53_799_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn transfer() -> Weight {
 		(60_294_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(2 as Weight))
 			.saturating_add(T::DbWeight::get().writes(2 as Weight))
-			
+
 	}
 	fn free() -> Weight {
 		(48_625_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn force_transfer() -> Weight {
 		(49_762_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(2 as Weight))
 			.saturating_add(T::DbWeight::get().writes(2 as Weight))
-			
+
 	}
 	fn freeze() -> Weight {
 		(44_869_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
-	
+
 }
 
 // For backwards compatibility and tests
@@ -93,31 +93,31 @@ impl WeightInfo for () {
 		(53_799_000 as Weight)
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn transfer() -> Weight {
 		(60_294_000 as Weight)
 			.saturating_add(RocksDbWeight::get().reads(2 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(2 as Weight))
-			
+
 	}
 	fn free() -> Weight {
 		(48_625_000 as Weight)
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn force_transfer() -> Weight {
 		(49_762_000 as Weight)
 			.saturating_add(RocksDbWeight::get().reads(2 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(2 as Weight))
-			
+
 	}
 	fn freeze() -> Weight {
 		(44_869_000 as Weight)
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
-	
+
 }

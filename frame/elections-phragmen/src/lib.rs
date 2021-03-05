@@ -117,7 +117,7 @@ use sp_runtime::{
 	traits::{Saturating, StaticLookup, Zero},
 	DispatchError, Perbill, RuntimeDebug,
 };
-use sp_std::{prelude::*, cmp::Ordering};
+use tp_std::{prelude::*, cmp::Ordering};
 
 mod benchmarking;
 pub mod weights;

@@ -31,7 +31,7 @@ pub type NodeOf<T, I, L> = Node<<T as crate::Config<I>>::Hashing, L>;
 pub type Node<H, L> = crate::primitives::DataOrHash<H, L>;
 
 /// Default Merging & Hashing behavior for MMR.
-pub struct Hasher<H, L>(sp_std::marker::PhantomData<(H, L)>);
+pub struct Hasher<H, L>(tp_std::marker::PhantomData<(H, L)>);
 
 impl<H: traits::Hash, L: FullLeaf> mmr_lib::Merge for Hasher<H, L> {
 	type Item = Node<H, L>;

@@ -77,8 +77,8 @@ pub mod weights;
 use sp_application_crypto::RuntimeAppPublic;
 use codec::{Encode, Decode};
 use sp_core::offchain::OpaqueNetworkState;
-use sp_std::prelude::*;
-use sp_std::convert::TryInto;
+use tp_std::prelude::*;
+use tp_std::convert::TryInto;
 use pallet_session::historical::IdentificationTuple;
 use sp_runtime::{
 	offchain::storage::StorageValueRef,
@@ -191,8 +191,8 @@ enum OffchainErr<BlockNumber> {
 	SubmitTransaction,
 }
 
-impl<BlockNumber: sp_std::fmt::Debug> sp_std::fmt::Debug for OffchainErr<BlockNumber> {
-	fn fmt(&self, fmt: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+impl<BlockNumber: tp_std::fmt::Debug> tp_std::fmt::Debug for OffchainErr<BlockNumber> {
+	fn fmt(&self, fmt: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		match *self {
 			OffchainErr::TooEarly(ref block) =>
 				write!(fmt, "Too early to send heartbeat, next expected at {:?}", block),

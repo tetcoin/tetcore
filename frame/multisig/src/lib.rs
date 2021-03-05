@@ -50,7 +50,7 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use codec::{Encode, Decode};
 use sp_io::hashing::blake2_256;
 use frame_support::{decl_module, decl_event, decl_error, decl_storage, Parameter, ensure, RuntimeDebug};

@@ -78,7 +78,7 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 
 use frame_support::{decl_module, decl_storage, decl_event, ensure, decl_error};
 

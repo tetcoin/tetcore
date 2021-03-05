@@ -54,7 +54,7 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use sp_runtime::{
 	DispatchError, ModuleId,
 	traits::{AccountIdConversion, Saturating, Zero},

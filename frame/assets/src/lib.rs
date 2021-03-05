@@ -113,7 +113,7 @@
 mod benchmarking;
 pub mod weights;
 
-use sp_std::{fmt::Debug, prelude::*};
+use tp_std::{fmt::Debug, prelude::*};
 use sp_runtime::{RuntimeDebug, traits::{
 	Member, AtLeast32BitUnsigned, Zero, StaticLookup, Saturating, CheckedSub, CheckedAdd
 }};

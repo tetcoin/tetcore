@@ -26,7 +26,7 @@ use crate::{
 };
 use tetsy_wasm::elements::{self, Internal, External, MemoryType, Type, ValueType};
 use pwasm_utils;
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 
 /// Currently, all imported functions must be located inside this module. We might support
 /// additional modules for versioning later.

@@ -23,7 +23,7 @@ use frame_system::RawOrigin as SystemOrigin;
 use frame_system::EventRecord;
 use frame_benchmarking::{benchmarks_instance, account, whitelisted_caller};
 use sp_runtime::traits::Bounded;
-use sp_std::mem::size_of;
+use tp_std::mem::size_of;
 
 use frame_system::Call as SystemCall;
 use frame_system::Module as System;
@@ -42,7 +42,7 @@ fn assert_last_event<T: Config<I>, I: Instance>(generic_event: <T as Config<I>>:
 }
 
 benchmarks_instance! {
-	
+
 	set_members {
 		let m in 1 .. T::MaxMembers::get();
 		let n in 1 .. T::MaxMembers::get();

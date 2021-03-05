@@ -152,7 +152,7 @@
 #![recursion_limit="128"]
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use sp_runtime::{
 	DispatchResult, DispatchError, RuntimeDebug,
 	traits::{Zero, Hash, Dispatchable, Saturating, Bounded},
@@ -1390,7 +1390,7 @@ impl<T: Config> Module<T> {
 				delegations: Default::default(),
 				prior: Default::default(),
 			};
-			sp_std::mem::swap(&mut old, voting);
+			tp_std::mem::swap(&mut old, voting);
 			match old {
 				Voting::Delegating { balance, target, conviction, delegations, prior, .. } => {
 					// remove any delegation votes to our current target.
@@ -1424,7 +1424,7 @@ impl<T: Config> Module<T> {
 	fn try_undelegate(who: T::AccountId) -> Result<u32, DispatchError> {
 		let votes = VotingOf::<T>::try_mutate(&who, |voting| -> Result<u32, DispatchError> {
 			let mut old = Voting::default();
-			sp_std::mem::swap(&mut old, voting);
+			tp_std::mem::swap(&mut old, voting);
 			match old {
 				Voting::Delegating {
 					balance,

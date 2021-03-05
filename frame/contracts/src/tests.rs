@@ -103,14 +103,14 @@ pub mod test_utils {
 	}
 	macro_rules! assert_return_code {
 		( $x:expr , $y:expr $(,)? ) => {{
-			use sp_std::convert::TryInto;
+			use tp_std::convert::TryInto;
 			assert_eq!(u32::from_le_bytes($x.data[..].try_into().unwrap()), $y as u32);
 		}}
 	}
 }
 
 thread_local! {
-	static TEST_EXTENSION: sp_std::cell::RefCell<TestExtension> = Default::default();
+	static TEST_EXTENSION: tp_std::cell::RefCell<TestExtension> = Default::default();
 }
 
 pub struct TestExtension {

@@ -115,7 +115,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_std::{prelude::*, marker::PhantomData};
+use tp_std::{prelude::*, marker::PhantomData};
 use frame_support::{
 	weights::{GetDispatchInfo, DispatchInfo, DispatchClass},
 	traits::{OnInitialize, OnFinalize, OnRuntimeUpgrade, OffchainWorker},

@@ -24,7 +24,7 @@ use crate::{Config, weights::WeightInfo};
 use serde::{Serialize, Deserialize};
 use pallet_contracts_proc_macro::{ScheduleDebug, WeightDebug};
 use frame_support::weights::Weight;
-use sp_std::{marker::PhantomData, vec::Vec};
+use tp_std::{marker::PhantomData, vec::Vec};
 use codec::{Encode, Decode};
 use tetsy_wasm::elements;
 use pwasm_utils::rules;

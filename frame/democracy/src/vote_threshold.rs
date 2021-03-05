@@ -21,7 +21,7 @@
 use serde::{Serialize, Deserialize};
 use codec::{Encode, Decode};
 use sp_runtime::traits::{Zero, IntegerSquareRoot};
-use sp_std::ops::{Add, Mul, Div, Rem};
+use tp_std::ops::{Add, Mul, Div, Rem};
 use crate::Tally;
 
 /// A means of determining if a vote is past pass threshold.

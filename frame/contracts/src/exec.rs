@@ -21,7 +21,7 @@ use crate::{
 	Error, ContractInfoOf
 };
 use sp_core::crypto::UncheckedFrom;
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use sp_runtime::traits::{Bounded, Zero, Convert, Saturating};
 use frame_support::{
 	dispatch::DispatchResult,

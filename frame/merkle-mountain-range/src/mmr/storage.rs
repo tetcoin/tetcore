@@ -22,7 +22,7 @@ use crate::mmr::{NodeOf, Node};
 use crate::{NumberOfLeaves, Nodes, Module, Config, Instance, primitives};
 use frame_support::{StorageMap, StorageValue};
 #[cfg(not(feature = "std"))]
-use sp_std::prelude::Vec;
+use tp_std::prelude::Vec;
 
 /// A marker type for runtime-specific storage implementation.
 ///
@@ -45,7 +45,7 @@ pub struct OffchainStorage;
 /// There are two different implementations depending on the use case.
 /// See docs for [RuntimeStorage] and [OffchainStorage].
 pub struct Storage<StorageType, T, I, L>(
-	sp_std::marker::PhantomData<(StorageType, T, I, L)>
+	tp_std::marker::PhantomData<(StorageType, T, I, L)>
 );
 
 impl<StorageType, T, I, L> Default for Storage<StorageType, T, I, L> {

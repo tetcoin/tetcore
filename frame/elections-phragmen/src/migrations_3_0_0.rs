@@ -18,7 +18,7 @@
 //! Migrations to version [`3.0.0`], as denoted by the changelog.
 
 use codec::{Encode, Decode, FullCodec};
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use frame_support::{
 	RuntimeDebug, weights::Weight, Twox64Concat,
 	storage::types::{StorageMap, StorageValue},

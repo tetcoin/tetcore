@@ -40,7 +40,7 @@ use frame_benchmarking::{benchmarks, account, whitelisted_caller};
 use frame_system::{Module as System, RawOrigin};
 use tetsy_wasm::elements::{Instruction, ValueType, BlockType};
 use sp_runtime::traits::{Hash, Bounded, Zero};
-use sp_std::{default::Default, convert::{TryInto}, vec::Vec, vec};
+use tp_std::{default::Default, convert::{TryInto}, vec::Vec, vec};
 use pallet_contracts_primitives::RentProjection;
 
 /// How many batches we do per API benchmark.
@@ -975,7 +975,7 @@ benchmarks! {
 		let keys = (0 .. r * API_BENCHMARK_BATCH_SIZE)
 			.flat_map(|n| T::Hashing::hash_of(&n).as_ref().to_vec())
 			.collect::<Vec<_>>();
-		let key_len = sp_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
+		let key_len = tp_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
 		let code = WasmModule::<T>::from(ModuleDefinition {
 			memory: Some(ImportedMemory::max::<T>()),
 			imported_functions: vec![ImportedFunction {
@@ -1039,7 +1039,7 @@ benchmarks! {
 			.map(|n| T::Hashing::hash_of(&n).as_ref().to_vec())
 			.collect::<Vec<_>>();
 		let key_bytes = keys.iter().flatten().cloned().collect::<Vec<_>>();
-		let key_len = sp_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
+		let key_len = tp_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
 		let code = WasmModule::<T>::from(ModuleDefinition {
 			memory: Some(ImportedMemory::max::<T>()),
 			imported_functions: vec![ImportedFunction {
@@ -1079,7 +1079,7 @@ benchmarks! {
 		let keys = (0 .. r * API_BENCHMARK_BATCH_SIZE)
 			.map(|n| T::Hashing::hash_of(&n).as_ref().to_vec())
 			.collect::<Vec<_>>();
-		let key_len = sp_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
+		let key_len = tp_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
 		let key_bytes = keys.iter().flatten().cloned().collect::<Vec<_>>();
 		let key_bytes_len = key_bytes.len();
 		let code = WasmModule::<T>::from(ModuleDefinition {
@@ -1380,7 +1380,7 @@ benchmarks! {
 		assert!(value > 0u32.into());
 		let value_bytes = value.encode();
 		let value_len = value_bytes.len();
-		let addr_len = sp_std::mem::size_of::<T::AccountId>();
+		let addr_len = tp_std::mem::size_of::<T::AccountId>();
 
 		// offsets where to place static data in contract memory
 		let value_offset = 0;
@@ -1501,7 +1501,7 @@ benchmarks! {
 		assert!(value > 0u32.into());
 		let value_bytes = value.encode();
 		let value_len = value_bytes.len();
-		let addr_len = sp_std::mem::size_of::<T::AccountId>();
+		let addr_len = tp_std::mem::size_of::<T::AccountId>();
 
 		// offsets where to place static data in contract memory
 		let input_offset = 0;

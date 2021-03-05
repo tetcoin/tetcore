@@ -42,7 +42,7 @@
 
 mod tests;
 
-use sp_std::{prelude::*, marker::PhantomData, ops::{Deref, DerefMut}};
+use tp_std::{prelude::*, marker::PhantomData, ops::{Deref, DerefMut}};
 use sp_io::hashing::blake2_256;
 use frame_support::{
 	Parameter, decl_module, decl_storage, decl_event, decl_error, ensure,
@@ -191,7 +191,7 @@ decl_event!(
 	{
 		/// Swap created. \[account, proof, swap\]
 		NewSwap(AccountId, HashedProof, PendingSwap),
-		/// Swap claimed. The last parameter indicates whether the execution succeeds. 
+		/// Swap claimed. The last parameter indicates whether the execution succeeds.
 		/// \[account, proof, success\]
 		SwapClaimed(AccountId, HashedProof, bool),
 		/// Swap cancelled. \[account, proof\]

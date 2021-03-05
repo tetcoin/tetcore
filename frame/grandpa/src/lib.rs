@@ -31,7 +31,7 @@
 // re-export since this is necessary for `impl_apis` in runtime.
 pub use sp_finality_grandpa as fg_primitives;
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 
 use codec::{self as codec, Decode, Encode};
 pub use fg_primitives::{AuthorityId, AuthorityList, AuthorityWeight, VersionedAuthorityList};

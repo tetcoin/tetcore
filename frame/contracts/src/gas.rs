@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use crate::Config;
-use sp_std::marker::PhantomData;
+use tp_std::marker::PhantomData;
 use sp_runtime::traits::Zero;
 use frame_support::dispatch::{
 	DispatchResultWithPostInfo, PostDispatchInfo, DispatchErrorWithPostInfo,

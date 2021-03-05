@@ -255,12 +255,12 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_std::marker::PhantomData;
+use tp_std::marker::PhantomData;
 use frame_support::{
 	dispatch::DispatchResult, decl_module, decl_storage, decl_event, traits::IsSubType,
 	weights::{DispatchClass, ClassifyDispatch, WeighData, Weight, PaysFee, Pays},
 };
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use frame_system::{ensure_signed, ensure_root};
 use codec::{Encode, Decode};
 use sp_runtime::{
@@ -604,8 +604,8 @@ impl<T: Config> Module<T> {
 #[derive(Encode, Decode, Clone, Eq, PartialEq)]
 pub struct WatchDummy<T: Config + Send + Sync>(PhantomData<T>);
 
-impl<T: Config + Send + Sync> sp_std::fmt::Debug for WatchDummy<T> {
-	fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+impl<T: Config + Send + Sync> tp_std::fmt::Debug for WatchDummy<T> {
+	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		write!(f, "WatchDummy")
 	}
 }
@@ -620,7 +620,7 @@ where
 	type AdditionalSigned = ();
 	type Pre = ();
 
-	fn additional_signed(&self) -> sp_std::result::Result<(), TransactionValidityError> { Ok(()) }
+	fn additional_signed(&self) -> tp_std::result::Result<(), TransactionValidityError> { Ok(()) }
 
 	fn validate(
 		&self,

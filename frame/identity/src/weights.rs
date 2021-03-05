@@ -39,7 +39,7 @@
 #![allow(unused_imports)]
 
 use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
-use sp_std::marker::PhantomData;
+use tp_std::marker::PhantomData;
 
 /// Weight functions needed for pallet_identity.
 pub trait WeightInfo {
@@ -59,7 +59,7 @@ pub trait WeightInfo {
 	fn rename_sub(_s: u32, ) -> Weight;
 	fn remove_sub(_s: u32, ) -> Weight;
 	fn quit_sub(_s: u32, ) -> Weight;
-	
+
 }
 
 /// Weights for pallet_identity using the Tetcore node and recommended hardware.
@@ -70,7 +70,7 @@ impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 			.saturating_add((421_000 as Weight).saturating_mul(r as Weight))
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_identity(r: u32, x: u32, ) -> Weight {
 		(71_923_000 as Weight)
@@ -78,7 +78,7 @@ impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 			.saturating_add((1_763_000 as Weight).saturating_mul(x as Weight))
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_subs_new(s: u32, ) -> Weight {
 		(55_550_000 as Weight)
@@ -110,7 +110,7 @@ impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 			.saturating_add((2_014_000 as Weight).saturating_mul(x as Weight))
 			.saturating_add(T::DbWeight::get().reads(2 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn cancel_request(r: u32, x: u32, ) -> Weight {
 		(67_492_000 as Weight)
@@ -118,28 +118,28 @@ impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 			.saturating_add((2_003_000 as Weight).saturating_mul(x as Weight))
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_fee(r: u32, ) -> Weight {
 		(11_375_000 as Weight)
 			.saturating_add((382_000 as Weight).saturating_mul(r as Weight))
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_account_id(r: u32, ) -> Weight {
 		(12_898_000 as Weight)
 			.saturating_add((384_000 as Weight).saturating_mul(r as Weight))
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_fields(r: u32, ) -> Weight {
 		(11_419_000 as Weight)
 			.saturating_add((381_000 as Weight).saturating_mul(r as Weight))
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn provide_judgement(r: u32, x: u32, ) -> Weight {
 		(51_115_000 as Weight)
@@ -147,7 +147,7 @@ impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 			.saturating_add((2_001_000 as Weight).saturating_mul(x as Weight))
 			.saturating_add(T::DbWeight::get().reads(2 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn kill_identity(_r: u32, s: u32, _x: u32, ) -> Weight {
 		(90_911_000 as Weight)
@@ -161,30 +161,30 @@ impl<T: frame_system::Config> WeightInfo for TetcoreWeight<T> {
 			.saturating_add((261_000 as Weight).saturating_mul(s as Weight))
 			.saturating_add(T::DbWeight::get().reads(3 as Weight))
 			.saturating_add(T::DbWeight::get().writes(2 as Weight))
-			
+
 	}
 	fn rename_sub(s: u32, ) -> Weight {
 		(26_219_000 as Weight)
 			.saturating_add((84_000 as Weight).saturating_mul(s as Weight))
 			.saturating_add(T::DbWeight::get().reads(2 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn remove_sub(s: u32, ) -> Weight {
 		(73_130_000 as Weight)
 			.saturating_add((239_000 as Weight).saturating_mul(s as Weight))
 			.saturating_add(T::DbWeight::get().reads(3 as Weight))
 			.saturating_add(T::DbWeight::get().writes(2 as Weight))
-			
+
 	}
 	fn quit_sub(s: u32, ) -> Weight {
 		(48_088_000 as Weight)
 			.saturating_add((237_000 as Weight).saturating_mul(s as Weight))
 			.saturating_add(T::DbWeight::get().reads(2 as Weight))
 			.saturating_add(T::DbWeight::get().writes(2 as Weight))
-			
+
 	}
-	
+
 }
 
 // For backwards compatibility and tests
@@ -194,7 +194,7 @@ impl WeightInfo for () {
 			.saturating_add((421_000 as Weight).saturating_mul(r as Weight))
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_identity(r: u32, x: u32, ) -> Weight {
 		(71_923_000 as Weight)
@@ -202,7 +202,7 @@ impl WeightInfo for () {
 			.saturating_add((1_763_000 as Weight).saturating_mul(x as Weight))
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_subs_new(s: u32, ) -> Weight {
 		(55_550_000 as Weight)
@@ -234,7 +234,7 @@ impl WeightInfo for () {
 			.saturating_add((2_014_000 as Weight).saturating_mul(x as Weight))
 			.saturating_add(RocksDbWeight::get().reads(2 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn cancel_request(r: u32, x: u32, ) -> Weight {
 		(67_492_000 as Weight)
@@ -242,28 +242,28 @@ impl WeightInfo for () {
 			.saturating_add((2_003_000 as Weight).saturating_mul(x as Weight))
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_fee(r: u32, ) -> Weight {
 		(11_375_000 as Weight)
 			.saturating_add((382_000 as Weight).saturating_mul(r as Weight))
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_account_id(r: u32, ) -> Weight {
 		(12_898_000 as Weight)
 			.saturating_add((384_000 as Weight).saturating_mul(r as Weight))
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn set_fields(r: u32, ) -> Weight {
 		(11_419_000 as Weight)
 			.saturating_add((381_000 as Weight).saturating_mul(r as Weight))
 			.saturating_add(RocksDbWeight::get().reads(1 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn provide_judgement(r: u32, x: u32, ) -> Weight {
 		(51_115_000 as Weight)
@@ -271,7 +271,7 @@ impl WeightInfo for () {
 			.saturating_add((2_001_000 as Weight).saturating_mul(x as Weight))
 			.saturating_add(RocksDbWeight::get().reads(2 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn kill_identity(_r: u32, s: u32, _x: u32, ) -> Weight {
 		(90_911_000 as Weight)
@@ -285,28 +285,28 @@ impl WeightInfo for () {
 			.saturating_add((261_000 as Weight).saturating_mul(s as Weight))
 			.saturating_add(RocksDbWeight::get().reads(3 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(2 as Weight))
-			
+
 	}
 	fn rename_sub(s: u32, ) -> Weight {
 		(26_219_000 as Weight)
 			.saturating_add((84_000 as Weight).saturating_mul(s as Weight))
 			.saturating_add(RocksDbWeight::get().reads(2 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-			
+
 	}
 	fn remove_sub(s: u32, ) -> Weight {
 		(73_130_000 as Weight)
 			.saturating_add((239_000 as Weight).saturating_mul(s as Weight))
 			.saturating_add(RocksDbWeight::get().reads(3 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(2 as Weight))
-			
+
 	}
 	fn quit_sub(s: u32, ) -> Weight {
 		(48_088_000 as Weight)
 			.saturating_add((237_000 as Weight).saturating_mul(s as Weight))
 			.saturating_add(RocksDbWeight::get().reads(2 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(2 as Weight))
-			
+
 	}
-	
+
 }

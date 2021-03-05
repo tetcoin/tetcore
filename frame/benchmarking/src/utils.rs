@@ -18,7 +18,7 @@
 //! Interfaces, types and utils for benchmarking a FRAME runtime.
 
 use codec::{Encode, Decode};
-use sp_std::{vec::Vec, prelude::Box};
+use tp_std::{vec::Vec, prelude::Box};
 use sp_io::hashing::blake2_256;
 use sp_storage::TrackedStorageKey;
 

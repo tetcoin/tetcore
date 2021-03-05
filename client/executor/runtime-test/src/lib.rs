@@ -12,7 +12,7 @@ pub fn wasm_binary_unwrap() -> &'static [u8] {
 }
 
 #[cfg(not(feature = "std"))]
-use sp_std::{vec::Vec, vec};
+use tp_std::{vec::Vec, vec};
 
 #[cfg(not(feature = "std"))]
 use sp_io::{
@@ -315,7 +315,7 @@ sp_core::wasm_export_functions! {
 		let test_message = b"Hello invalid heap memory";
 		let ptr = unsafe { (heap_base + offset) as *mut u8 };
 
-		let message_slice = unsafe { sp_std::slice::from_raw_parts_mut(ptr, test_message.len()) };
+		let message_slice = unsafe { tp_std::slice::from_raw_parts_mut(ptr, test_message.len()) };
 
 		assert_ne!(test_message, message_slice);
 		message_slice.copy_from_slice(test_message);
@@ -342,7 +342,7 @@ sp_core::wasm_export_functions! {
 
  #[cfg(not(feature = "std"))]
  mod tasks {
-	use sp_std::prelude::*;
+	use tp_std::prelude::*;
 
 	pub fn incrementer(data: Vec<u8>) -> Vec<u8> {
 	   data.into_iter().map(|v| v + 1).collect()

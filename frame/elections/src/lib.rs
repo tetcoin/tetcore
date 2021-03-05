@@ -31,7 +31,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![recursion_limit="128"]
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use sp_runtime::{
 	RuntimeDebug, DispatchResult, print,
 	traits::{Zero, One, StaticLookup, Saturating},
@@ -713,7 +713,7 @@ decl_event!(
 		BadReaperSlashed(AccountId),
 		/// A tally (for approval votes of \[seats\]) has started.
 		TallyStarted(u32),
-		/// A tally (for approval votes of seat(s)) has ended (with one or more new members). 
+		/// A tally (for approval votes of seat(s)) has ended (with one or more new members).
 		/// \[incoming, outgoing\]
 		TallyFinalized(Vec<AccountId>, Vec<AccountId>),
 	}

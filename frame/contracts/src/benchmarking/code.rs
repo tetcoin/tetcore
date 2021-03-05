@@ -32,7 +32,7 @@ use pwasm_utils::stack_height::inject_limiter;
 use sp_core::crypto::UncheckedFrom;
 use sp_runtime::traits::Hash;
 use sp_sandbox::{EnvironmentDefinitionBuilder, Memory};
-use sp_std::{prelude::*, convert::TryFrom};
+use tp_std::{prelude::*, convert::TryFrom};
 
 /// Pass to `create_code` in order to create a compiled `WasmModule`.
 ///
@@ -410,7 +410,7 @@ pub mod body {
 				.cycle()
 				.take(instructions.len() * usize::try_from(repetitions).unwrap())
 				.cloned()
-				.chain(sp_std::iter::once(Instruction::End))
+				.chain(tp_std::iter::once(Instruction::End))
 				.collect()
 		);
 		FuncBody::new(Vec::new(), instructions)
@@ -470,7 +470,7 @@ pub mod body {
 					},
 				}
 			)
-			.chain(sp_std::iter::once(Instruction::End))
+			.chain(tp_std::iter::once(Instruction::End))
 			.collect();
 		FuncBody::new(Vec::new(), Instructions::new(body))
 	}

@@ -67,7 +67,7 @@ use sp_runtime::{
 	},
 };
 use codec::{Encode, Decode};
-use sp_std::vec::Vec;
+use tp_std::vec::Vec;
 use lite_json::json::JsonValue;
 
 #[cfg(test)]
@@ -555,7 +555,7 @@ impl<T: Config> Module<T> {
 		let body = response.body().collect::<Vec<u8>>();
 
 		// Create a str slice from the body.
-		let body_str = sp_std::str::from_utf8(&body).map_err(|_| {
+		let body_str = tp_std::str::from_utf8(&body).map_err(|_| {
 			debug::warn!("No UTF8 body");
 			http::Error::Unknown
 		})?;
