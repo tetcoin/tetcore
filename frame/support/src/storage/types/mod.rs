@@ -100,7 +100,7 @@ struct OnEmptyGetter<Value, OnEmpty>(core::marker::PhantomData<(Value, OnEmpty)>
 impl<Value: FullCodec, OnEmpty: crate::traits::Get<Value>> DefaultByte
 	for OnEmptyGetter<Value, OnEmpty>
 {
-	fn default_byte(&self) -> sp_std::vec::Vec<u8> {
+	fn default_byte(&self) -> tp_std::vec::Vec<u8> {
 		OnEmpty::get().encode()
 	}
 }

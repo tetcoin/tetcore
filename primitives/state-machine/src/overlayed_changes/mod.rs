@@ -25,7 +25,7 @@ use crate::{
 	backend::Backend,
 	stats::StateMachineStats,
 };
-use sp_std::{vec::Vec, any::{TypeId, Any}, boxed::Box};
+use tp_std::{vec::Vec, any::{TypeId, Any}, boxed::Box};
 use self::changeset::OverlayedChangeSet;
 
 #[cfg(feature = "std")]
@@ -40,8 +40,8 @@ use crate::changes_trie::BlockNumber;
 #[cfg(feature = "std")]
 use std::collections::{HashMap as Map, hash_map::Entry as MapEntry};
 #[cfg(not(feature = "std"))]
-use sp_std::collections::btree_map::{BTreeMap as Map, Entry as MapEntry};
-use sp_std::collections::btree_set::BTreeSet;
+use tp_std::collections::btree_map::{BTreeMap as Map, Entry as MapEntry};
+use tp_std::collections::btree_set::BTreeSet;
 use codec::{Decode, Encode};
 use sp_core::storage::{well_known_keys::EXTRINSIC_INDEX, ChildInfo};
 use sp_core::offchain::OffchainOverlayedChange;
@@ -136,7 +136,7 @@ pub struct StorageChanges<Transaction, H: Hasher, N: BlockNumber> {
 	pub changes_trie_transaction: Option<ChangesTrieTransaction<H, N>>,
 	/// Phantom data for block number until change trie support no_std.
 	#[cfg(not(feature = "std"))]
-	pub _ph: sp_std::marker::PhantomData<N>,
+	pub _ph: tp_std::marker::PhantomData<N>,
 }
 
 #[cfg(feature = "std")]
@@ -177,7 +177,7 @@ pub struct StorageTransactionCache<Transaction, H: Hasher, N: BlockNumber> {
 	pub(crate) changes_trie_transaction_storage_root: Option<Option<H::Out>>,
 	/// Phantom data for block number until change trie support no_std.
 	#[cfg(not(feature = "std"))]
-	pub(crate) _ph: sp_std::marker::PhantomData<N>,
+	pub(crate) _ph: tp_std::marker::PhantomData<N>,
 }
 
 impl<Transaction, H: Hasher, N: BlockNumber> StorageTransactionCache<Transaction, H, N> {
@@ -450,7 +450,7 @@ impl OverlayedChanges {
 		impl Iterator<Item=(StorageKey, Option<StorageValue>)>,
 		impl Iterator<Item=(StorageKey, (impl Iterator<Item=(StorageKey, Option<StorageValue>)>, ChildInfo))>,
 	) {
-		use sp_std::mem::take;
+		use tp_std::mem::take;
 		(
 			take(&mut self.top).drain_commited(),
 			take(&mut self.children).into_iter()
@@ -683,7 +683,7 @@ fn retain_map<K, V, F>(map: &mut Map<K, V>, mut f: F)
 		K: Ord,
 		F: FnMut(&K, &mut V) -> bool,
 {
-	let old = sp_std::mem::replace(map, Map::default());
+	let old = tp_std::mem::replace(map, Map::default());
 	for (k, mut v) in old.into_iter() {
 		if f(&k, &mut v) {
 			map.insert(k, v);

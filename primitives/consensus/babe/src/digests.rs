@@ -22,7 +22,7 @@ use super::{
 	BabeEpochConfiguration, Slot, BABE_ENGINE_ID,
 };
 use codec::{Codec, Decode, Encode};
-use sp_std::vec::Vec;
+use tp_std::vec::Vec;
 use sp_runtime::{generic::OpaqueDigestItemId, DigestItem, RuntimeDebug};
 
 use sp_consensus_vrf::schnorrkel::{Randomness, VRFOutput, VRFProof};

@@ -270,12 +270,12 @@ pub trait OneOrMany<T> {
 }
 
 impl OneOrMany<DispatchClass> for DispatchClass {
-    type Iter = sp_std::iter::Once<DispatchClass>;
-    fn into_iter(self) -> Self::Iter { sp_std::iter::once(self) }
+    type Iter = tp_std::iter::Once<DispatchClass>;
+    fn into_iter(self) -> Self::Iter { tp_std::iter::once(self) }
 }
 
 impl<'a> OneOrMany<DispatchClass> for &'a [DispatchClass] {
-    type Iter = sp_std::iter::Cloned<sp_std::slice::Iter<'a, DispatchClass>>;
+    type Iter = tp_std::iter::Cloned<tp_std::slice::Iter<'a, DispatchClass>>;
     fn into_iter(self) -> Self::Iter { self.iter().cloned() }
 }
 
@@ -715,7 +715,7 @@ pub trait WeightToFeePolynomial {
 }
 
 /// Implementor of `WeightToFeePolynomial` that maps one unit of weight to one unit of fee.
-pub struct IdentityFee<T>(sp_std::marker::PhantomData<T>);
+pub struct IdentityFee<T>(tp_std::marker::PhantomData<T>);
 
 impl<T> WeightToFeePolynomial for IdentityFee<T> where
 	T: BaseArithmetic + From<u32> + Copy + Unsigned

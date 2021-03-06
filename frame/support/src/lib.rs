@@ -29,7 +29,7 @@ pub use sp_tracing;
 pub use serde;
 pub use sp_core::Void;
 #[doc(hidden)]
-pub use sp_std;
+pub use tp_std;
 #[doc(hidden)]
 pub use codec;
 #[cfg(feature = "std")]
@@ -329,7 +329,7 @@ macro_rules! ord_parameter_types {
 	(IMPL $name:ident , $type:ty , $value:expr) => {
 		impl $crate::traits::Contains<$type> for $name {
 			fn contains(t: &$type) -> bool { &$value == t }
-			fn sorted_members() -> $crate::sp_std::prelude::Vec<$type> { vec![$value] }
+			fn sorted_members() -> $crate::tp_std::prelude::Vec<$type> { vec![$value] }
 			fn count() -> usize { 1 }
 			#[cfg(feature = "runtime-benchmarks")]
 			fn add(_: &$type) {}
@@ -578,7 +578,7 @@ mod tests {
 		DecodeDifferent, StorageEntryMetadata, StorageMetadata, StorageEntryType,
 		StorageEntryModifier, DefaultByteGetter, StorageHasher,
 	};
-	use sp_std::{marker::PhantomData, result};
+	use tp_std::{marker::PhantomData, result};
 	use sp_io::TestExternalities;
 
 	pub trait Config: 'static {
@@ -1031,7 +1031,7 @@ mod tests {
 
 /// Prelude to be used alongside pallet macro, for ease of use.
 pub mod pallet_prelude {
-	pub use sp_std::marker::PhantomData;
+	pub use tp_std::marker::PhantomData;
 	#[cfg(feature = "std")]
 	pub use frame_support::traits::GenesisBuild;
 	pub use frame_support::{

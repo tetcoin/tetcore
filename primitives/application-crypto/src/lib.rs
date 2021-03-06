@@ -34,7 +34,7 @@ pub use codec;
 #[cfg(feature = "std")]
 pub use serde;
 #[doc(hidden)]
-pub use sp_std::{
+pub use tp_std::{
 	convert::TryFrom,
 	ops::Deref,
 	vec::Vec,

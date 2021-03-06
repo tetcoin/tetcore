@@ -21,7 +21,7 @@
 #![allow(dead_code)]
 
 use sp_npos_elections::{ElectionResult, VoteWeight, phragmms, seq_phragmen};
-use sp_std::collections::btree_map::BTreeMap;
+use tp_std::collections::btree_map::BTreeMap;
 use sp_runtime::Perbill;
 use rand::{self, Rng, RngCore};
 

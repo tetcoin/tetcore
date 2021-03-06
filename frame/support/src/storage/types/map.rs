@@ -27,7 +27,7 @@ use crate::{
 	traits::{GetDefault, StorageInstance},
 };
 use frame_metadata::{DefaultByteGetter, StorageEntryModifier};
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 
 /// A type that allow to store value for given key. Allowing to insert/remove/iterate on values.
 ///

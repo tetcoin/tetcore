@@ -20,7 +20,7 @@ use frame_support::{
 	dispatch::{DispatchError, DispatchResult}, storage::{with_transaction, TransactionOutcome::*},
 };
 use sp_io::TestExternalities;
-use sp_std::result;
+use tp_std::result;
 
 pub trait Config: frame_support_test::Config {}
 

@@ -32,7 +32,7 @@ use frame_support::{
 
 /// Block resource (weight) limit check.
 #[derive(Encode, Decode, Clone, Eq, PartialEq, Default)]
-pub struct CheckWeight<T: Config + Send + Sync>(sp_std::marker::PhantomData<T>);
+pub struct CheckWeight<T: Config + Send + Sync>(tp_std::marker::PhantomData<T>);
 
 impl<T: Config + Send + Sync> CheckWeight<T> where
 	T::Call: Dispatchable<Info=DispatchInfo, PostInfo=PostDispatchInfo>,
@@ -193,7 +193,7 @@ impl<T: Config + Send + Sync> SignedExtension for CheckWeight<T> where
 	type Pre = ();
 	const IDENTIFIER: &'static str = "CheckWeight";
 
-	fn additional_signed(&self) -> sp_std::result::Result<(), TransactionValidityError> { Ok(()) }
+	fn additional_signed(&self) -> tp_std::result::Result<(), TransactionValidityError> { Ok(()) }
 
 	fn pre_dispatch(
 		self,
@@ -265,14 +265,14 @@ impl<T: Config + Send + Sync> SignedExtension for CheckWeight<T> where
 	}
 }
 
-impl<T: Config + Send + Sync> sp_std::fmt::Debug for CheckWeight<T> {
+impl<T: Config + Send + Sync> tp_std::fmt::Debug for CheckWeight<T> {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		write!(f, "CheckWeight")
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -282,7 +282,7 @@ mod tests {
 	use super::*;
 	use crate::{BlockWeight, AllExtrinsicsLen};
 	use crate::mock::{Test, CALL, new_test_ext, System};
-	use sp_std::marker::PhantomData;
+	use tp_std::marker::PhantomData;
 	use frame_support::{assert_ok, assert_noop};
 	use frame_support::weights::{Weight, Pays};
 

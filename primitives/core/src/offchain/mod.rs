@@ -18,7 +18,7 @@
 //! Offchain workers types
 
 use codec::{Encode, Decode};
-use sp_std::{prelude::{Vec, Box}, convert::TryFrom};
+use tp_std::{prelude::{Vec, Box}, convert::TryFrom};
 use crate::{OpaquePeerId, RuntimeDebug};
 use sp_runtime_interface::pass_by::{PassByCodec, PassByInner, PassByEnum};
 

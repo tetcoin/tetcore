@@ -215,7 +215,7 @@ fn balancing_core_works() {
 #[test]
 fn voter_normalize_ops_works() {
 	use crate::{Candidate, Edge};
-	use sp_std::{cell::RefCell, rc::Rc};
+	use tp_std::{cell::RefCell, rc::Rc};
 	// normalize
 	{
 		let c1 = Candidate { who: 10, elected: false ,..Default::default() };
@@ -1144,7 +1144,7 @@ mod solution_type {
 	// these need to come from the same dev-dependency `tp-npos-elections`, not from the crate.
 	use crate::{generate_solution_type, Assignment, CompactSolution, Error as PhragmenError};
 	use sp_arithmetic::Percent;
-	use sp_std::{convert::TryInto, fmt::Debug};
+	use tp_std::{convert::TryInto, fmt::Debug};
 
 	type TestAccuracy = Percent;
 

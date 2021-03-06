@@ -17,7 +17,7 @@
 
 /// State Machine Errors
 
-use sp_std::fmt;
+use tp_std::fmt;
 
 /// State Machine Error bound.
 ///

@@ -87,7 +87,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use sp_runtime::{DispatchResult, traits::StaticLookup};
 
 use frame_support::{

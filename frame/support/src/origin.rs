@@ -186,25 +186,25 @@ macro_rules! impl_outer_origin {
 		#[derive(Clone)]
 		pub struct $name {
 			caller: $caller_name,
-			filter: $crate::sp_std::rc::Rc<Box<dyn Fn(&<$runtime as $system::Config>::Call) -> bool>>,
+			filter: $crate::tp_std::rc::Rc<Box<dyn Fn(&<$runtime as $system::Config>::Call) -> bool>>,
 		}
 
 		#[cfg(not(feature = "std"))]
-		impl $crate::sp_std::fmt::Debug for $name {
+		impl $crate::tp_std::fmt::Debug for $name {
 			fn fmt(
 				&self,
-				fmt: &mut $crate::sp_std::fmt::Formatter
-			) -> $crate::sp_std::result::Result<(), $crate::sp_std::fmt::Error> {
+				fmt: &mut $crate::tp_std::fmt::Formatter
+			) -> $crate::tp_std::result::Result<(), $crate::tp_std::fmt::Error> {
 				fmt.write_str("<wasm:stripped>")
 			}
 		}
 
 		#[cfg(feature = "std")]
-		impl $crate::sp_std::fmt::Debug for $name {
+		impl $crate::tp_std::fmt::Debug for $name {
 			fn fmt(
 				&self,
-				fmt: &mut $crate::sp_std::fmt::Formatter
-			) -> $crate::sp_std::result::Result<(), $crate::sp_std::fmt::Error> {
+				fmt: &mut $crate::tp_std::fmt::Formatter
+			) -> $crate::tp_std::result::Result<(), $crate::tp_std::fmt::Error> {
 				fmt.debug_struct(stringify!($name))
 					.field("caller", &self.caller)
 					.field("filter", &"[function ptr]")
@@ -220,7 +220,7 @@ macro_rules! impl_outer_origin {
 			fn add_filter(&mut self, filter: impl Fn(&Self::Call) -> bool + 'static) {
 				let f = self.filter.clone();
 
-				self.filter = $crate::sp_std::rc::Rc::new(Box::new(move |call| {
+				self.filter = $crate::tp_std::rc::Rc::new(Box::new(move |call| {
 					f(call) && filter(call)
 				}));
 			}
@@ -231,7 +231,7 @@ macro_rules! impl_outer_origin {
 					as $crate::traits::Filter<<$runtime as $system::Config>::Call>
 				>::filter;
 
-				self.filter = $crate::sp_std::rc::Rc::new(Box::new(filter));
+				self.filter = $crate::tp_std::rc::Rc::new(Box::new(filter));
 			}
 
 			fn set_caller_from(&mut self, other: impl Into<Self>) {
@@ -313,7 +313,7 @@ macro_rules! impl_outer_origin {
 			fn from(x: $caller_name) -> Self {
 				let mut o = $name {
 					caller: x,
-					filter: $crate::sp_std::rc::Rc::new(Box::new(|_| true)),
+					filter: $crate::tp_std::rc::Rc::new(Box::new(|_| true)),
 				};
 
 				// Root has no filter
@@ -325,9 +325,9 @@ macro_rules! impl_outer_origin {
 			}
 		}
 
-		impl Into<$crate::sp_std::result::Result<$system::Origin<$runtime>, $name>> for $name {
+		impl Into<$crate::tp_std::result::Result<$system::Origin<$runtime>, $name>> for $name {
 			/// NOTE: converting to pallet origin loses the origin filter information.
-			fn into(self) -> $crate::sp_std::result::Result<$system::Origin<$runtime>, Self> {
+			fn into(self) -> $crate::tp_std::result::Result<$system::Origin<$runtime>, Self> {
 				if let $caller_name::system(l) = self.caller {
 					Ok(l)
 				} else {
@@ -359,13 +359,13 @@ macro_rules! impl_outer_origin {
 					}
 				}
 				impl Into<
-					$crate::sp_std::result::Result<
+					$crate::tp_std::result::Result<
 						$module::Origin < $( $generic )? $(, $module::$generic_instance )? >,
 						$name,
 					>>
 				for $name {
 					/// NOTE: converting to pallet origin loses the origin filter information.
-					fn into(self) -> $crate::sp_std::result::Result<
+					fn into(self) -> $crate::tp_std::result::Result<
 						$module::Origin < $( $generic )? $(, $module::$generic_instance )? >,
 						Self,
 					> {

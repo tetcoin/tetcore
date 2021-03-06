@@ -95,7 +95,7 @@
 mod benchmarking;
 pub mod weights;
 
-use sp_std::{result, cmp};
+use tp_std::{result, cmp};
 use sp_inherents::{ProvideInherent, InherentData, InherentIdentifier};
 #[cfg(feature = "std")]
 use frame_support::debug;
@@ -277,7 +277,7 @@ impl<T: Config> UnixTime for Module<T> {
 		// now is duration since unix epoch in millisecond as documented in
 		// `sp_timestamp::InherentDataProvider`.
 		let now = Self::now();
-		sp_std::if_std! {
+		tp_std::if_std! {
 			if now == T::Moment::zero() {
 				debug::error!(
 					"`pallet_timestamp::UnixTime::now` is called at genesis, invalid value returned: 0"

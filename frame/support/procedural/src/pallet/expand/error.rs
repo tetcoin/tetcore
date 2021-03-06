@@ -36,7 +36,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	let phantom_variant: syn::Variant = syn::parse_quote!(
 		#[doc(hidden)]
 		__Ignore(
-			#frame_support::sp_std::marker::PhantomData<(#type_use_gen)>,
+			#frame_support::tp_std::marker::PhantomData<(#type_use_gen)>,
 			#frame_support::Never,
 		)
 	);
@@ -75,11 +75,11 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 	error_item.variants.insert(0, phantom_variant);
 
 	quote::quote_spanned!(error.attr_span =>
-		impl<#type_impl_gen> #frame_support::sp_std::fmt::Debug for #error_ident<#type_use_gen>
+		impl<#type_impl_gen> #frame_support::tp_std::fmt::Debug for #error_ident<#type_use_gen>
 			#config_where_clause
 		{
-			fn fmt(&self, f: &mut #frame_support::sp_std::fmt::Formatter<'_>)
-				-> #frame_support::sp_std::fmt::Result
+			fn fmt(&self, f: &mut #frame_support::tp_std::fmt::Formatter<'_>)
+				-> #frame_support::tp_std::fmt::Result
 			{
 				f.write_str(self.as_str())
 			}

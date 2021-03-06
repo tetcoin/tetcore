@@ -15,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use sp_std::collections::btree_map::BTreeMap;
-use sp_std::fmt;
+use tp_std::collections::btree_map::BTreeMap;
+use tp_std::fmt;
 
 use twasmi::{
 	Externals, FuncInstance, FuncRef, GlobalDescriptor, GlobalRef, ImportResolver,

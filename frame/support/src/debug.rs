@@ -87,11 +87,11 @@
 //!	native::print!("My struct: {:?}", x);
 //! ```
 
-use sp_std::fmt::{self, Debug};
+use tp_std::fmt::{self, Debug};
 
 pub use log::{info, debug, error, trace, warn};
 pub use crate::runtime_print as print;
-pub use sp_std::Writer;
+pub use tp_std::Writer;
 
 /// Native-only logging.
 ///
@@ -132,7 +132,7 @@ macro_rules! runtime_print {
 	($($arg:tt)+) => {
 		{
 			use core::fmt::Write;
-			let mut w = $crate::sp_std::Writer::default();
+			let mut w = $crate::tp_std::Writer::default();
 			let _ = core::write!(&mut w, $($arg)+);
 			$crate::sp_io::misc::print_utf8(&w.inner())
 		}
@@ -194,7 +194,7 @@ impl log::Log for RuntimeLogger {
 
 	fn log(&self, record: &log::Record) {
 		use fmt::Write;
-		let mut w = sp_std::Writer::default();
+		let mut w = tp_std::Writer::default();
 		let _ = core::write!(&mut w, "{}", record.args());
 
 		sp_io::logging::log(

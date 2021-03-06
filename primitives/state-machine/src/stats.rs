@@ -19,7 +19,7 @@
 
 #[cfg(feature = "std")]
 use std::time::{Instant, Duration};
-use sp_std::cell::RefCell;
+use tp_std::cell::RefCell;
 
 /// Measured count of operations and total bytes.
 #[derive(Clone, Debug, Default)]

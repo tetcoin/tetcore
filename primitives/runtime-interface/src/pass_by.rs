@@ -30,10 +30,10 @@ use crate::wasm::*;
 #[cfg(feature = "std")]
 use sp_wasm_interface::{FunctionContext, Pointer, Result};
 
-use sp_std::{marker::PhantomData, convert::TryFrom};
+use tp_std::{marker::PhantomData, convert::TryFrom};
 
 #[cfg(not(feature = "std"))]
-use sp_std::vec::Vec;
+use tp_std::vec::Vec;
 
 /// Derive macro for implementing [`PassBy`] with the [`Codec`] strategy.
 ///

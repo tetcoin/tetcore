@@ -69,7 +69,7 @@ pub fn decl_and_impl(scrate: &TokenStream, def: &DeclStorageDefExt) -> TokenStre
 			#visibility struct #name<
 				#optional_storage_runtime_bound_comma #optional_instance_bound_optional_default
 			>(
-				#scrate::sp_std::marker::PhantomData<
+				#scrate::tp_std::marker::PhantomData<
 					(#optional_storage_runtime_comma #optional_instance)
 				>
 			) #optional_storage_where_clause;

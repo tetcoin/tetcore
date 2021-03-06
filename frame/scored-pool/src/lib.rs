@@ -91,7 +91,7 @@ mod mock;
 mod tests;
 
 use codec::FullCodec;
-use sp_std::{
+use tp_std::{
 	fmt::Debug,
 	prelude::*,
 };
@@ -176,7 +176,7 @@ decl_storage! {
 	}
 	add_extra_genesis {
 		config(members): Vec<T::AccountId>;
-		config(phantom): sp_std::marker::PhantomData<I>;
+		config(phantom): tp_std::marker::PhantomData<I>;
 		build(|config| {
 			let mut pool = config.pool.clone();
 
@@ -219,7 +219,7 @@ decl_event!(
 		/// See the transaction for who.
 		CandidateScored,
 		/// Phantom member, never used.
-		Dummy(sp_std::marker::PhantomData<(AccountId, I)>),
+		Dummy(tp_std::marker::PhantomData<(AccountId, I)>),
 	}
 );
 

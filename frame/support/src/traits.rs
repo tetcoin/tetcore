@@ -19,7 +19,7 @@
 //!
 //! NOTE: If you're looking for `parameter_types`, it has moved in to the top-level module.
 
-use sp_std::{prelude::*, result, marker::PhantomData, ops::Div, fmt::Debug};
+use tp_std::{prelude::*, result, marker::PhantomData, ops::Div, fmt::Debug};
 use codec::{FullCodec, Codec, Encode, Decode, EncodeLike};
 use sp_core::u32_trait::Value as U32;
 use sp_runtime::{
@@ -38,7 +38,7 @@ use impl_trait_for_tuples::impl_for_tuples;
 
 /// Re-expected for the macro.
 #[doc(hidden)]
-pub use sp_std::{mem::{swap, take}, cell::RefCell, vec::Vec, boxed::Box};
+pub use tp_std::{mem::{swap, take}, cell::RefCell, vec::Vec, boxed::Box};
 
 /// Simple trait for providing a filter over a reference to some type.
 pub trait Filter<T> {
@@ -366,7 +366,7 @@ impl<T> HandleLifetime<T> for () {}
 /// be the default value), or where the account is being removed or reset back to the default value
 /// where previously it did exist (though may have been in a default state). This works well with
 /// system module's `CallOnCreatedAccount` and `CallKillAccount`.
-pub struct StorageMapShim<S, L, K, T>(sp_std::marker::PhantomData<(S, L, K, T)>);
+pub struct StorageMapShim<S, L, K, T>(tp_std::marker::PhantomData<(S, L, K, T)>);
 impl<
 	S: StorageMap<K, T, Query=T>,
 	L: HandleLifetime<K>,
@@ -1600,7 +1600,7 @@ pub mod schedule {
 	/// A type that can be used as a scheduler.
 	pub trait Named<BlockNumber, Call, Origin> {
 		/// An address which can be used for removing a scheduled task.
-		type Address: Codec + Clone + Eq + EncodeLike + sp_std::fmt::Debug;
+		type Address: Codec + Clone + Eq + EncodeLike + tp_std::fmt::Debug;
 
 		/// Schedule a dispatch to happen at the beginning of some block in the future.
 		///
@@ -2018,8 +2018,8 @@ impl PalletVersion {
 	}
 }
 
-impl sp_std::cmp::PartialOrd for PalletVersion {
-	fn partial_cmp(&self, other: &Self) -> Option<sp_std::cmp::Ordering> {
+impl tp_std::cmp::PartialOrd for PalletVersion {
+	fn partial_cmp(&self, other: &Self) -> Option<tp_std::cmp::Ordering> {
 		let res = self.major
 			.cmp(&other.major)
 			.then_with(||

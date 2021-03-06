@@ -18,7 +18,7 @@
 //! Dispatch system. Contains a macro for defining runtime modules and
 //! generating values representing lazy module function calls.
 
-pub use crate::sp_std::{result, fmt, prelude::{Vec, Clone, Eq, PartialEq}, marker};
+pub use crate::tp_std::{result, fmt, prelude::{Vec, Clone, Eq, PartialEq}, marker};
 pub use crate::codec::{Codec, EncodeLike, Decode, Encode, Input, Output, HasCompact, EncodeAsRef};
 pub use frame_metadata::{
 	FunctionMetadata, DecodeDifferent, DecodeDifferentArray, FunctionArgumentMetadata,
@@ -1621,7 +1621,7 @@ macro_rules! decl_module {
 		{
 			#[doc(hidden)]
 			#[codec(skip)]
-			__PhantomItem($crate::sp_std::marker::PhantomData<($trait_instance, $($instance)?)>, $crate::Never),
+			__PhantomItem($crate::tp_std::marker::PhantomData<($trait_instance, $($instance)?)>, $crate::Never),
 			$( $generated_variants )*
 		}
 	};
@@ -1663,7 +1663,7 @@ macro_rules! decl_module {
 		pub struct $mod_type<
 			$trait_instance: $trait_name
 			$(<I>, $instance: $instantiable $( = $module_default_instance)?)?
-		>($crate::sp_std::marker::PhantomData<($trait_instance, $( $instance)?)>) where
+		>($crate::tp_std::marker::PhantomData<($trait_instance, $( $instance)?)>) where
 			$( $other_where_bounds )*;
 
 		$crate::decl_module! {
@@ -2027,7 +2027,7 @@ macro_rules! impl_outer_dispatch {
 				origin: $origin,
 			) -> $crate::dispatch::DispatchResultWithPostInfo {
 				if !<Self::Origin as $crate::traits::OriginTrait>::filter_call(&origin, &self) {
-					return $crate::sp_std::result::Result::Err($crate::dispatch::DispatchError::BadOrigin.into())
+					return $crate::tp_std::result::Result::Err($crate::dispatch::DispatchError::BadOrigin.into())
 				}
 
 				$crate::traits::UnfilteredDispatchable::dispatch_bypass_filter(self, origin)

@@ -23,7 +23,7 @@
 pub mod genesismap;
 pub mod system;
 
-use sp_std::{prelude::*, marker::PhantomData};
+use tp_std::{prelude::*, marker::PhantomData};
 use codec::{Encode, Decode, Input, Error};
 
 use sp_core::{offchain::KeyTypeId, ChangesTrieConfiguration, OpaqueMetadata, RuntimeDebug};
@@ -525,7 +525,7 @@ fn code_using_trie() -> u64 {
 	].to_vec();
 
 	let mut mdb = PrefixedMemoryDB::default();
-	let mut root = sp_std::default::Default::default();
+	let mut root = tp_std::default::Default::default();
 	let _ = {
 		let v = &pairs;
 		let mut t = TrieDBMut::<Hashing>::new(&mut mdb, &mut root);

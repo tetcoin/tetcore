@@ -24,16 +24,16 @@ use sp_runtime::{
 
 /// Ensure the runtime version registered in the transaction is the same as at present.
 #[derive(Encode, Decode, Clone, Eq, PartialEq)]
-pub struct CheckSpecVersion<T: Config + Send + Sync>(sp_std::marker::PhantomData<T>);
+pub struct CheckSpecVersion<T: Config + Send + Sync>(tp_std::marker::PhantomData<T>);
 
-impl<T: Config + Send + Sync> sp_std::fmt::Debug for CheckSpecVersion<T> {
+impl<T: Config + Send + Sync> tp_std::fmt::Debug for CheckSpecVersion<T> {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		write!(f, "CheckSpecVersion")
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -41,7 +41,7 @@ impl<T: Config + Send + Sync> sp_std::fmt::Debug for CheckSpecVersion<T> {
 impl<T: Config + Send + Sync> CheckSpecVersion<T> {
 	/// Create new `SignedExtension` to check runtime version.
 	pub fn new() -> Self {
-		Self(sp_std::marker::PhantomData)
+		Self(tp_std::marker::PhantomData)
 	}
 }
 

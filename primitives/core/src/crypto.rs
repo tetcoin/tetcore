@@ -20,12 +20,12 @@
 // end::description[]
 
 use crate::{sr25519, ed25519};
-use sp_std::hash::Hash;
-use sp_std::vec::Vec;
-use sp_std::str;
+use tp_std::hash::Hash;
+use tp_std::vec::Vec;
+use tp_std::str;
 #[cfg(feature = "std")]
-use sp_std::convert::TryInto;
-use sp_std::convert::TryFrom;
+use tp_std::convert::TryInto;
+use tp_std::convert::TryFrom;
 #[cfg(feature = "std")]
 use parking_lot::Mutex;
 #[cfg(feature = "std")]
@@ -38,7 +38,7 @@ use base58::{FromBase58, ToBase58};
 #[cfg(feature = "std")]
 use crate::hexdisplay::HexDisplay;
 #[doc(hidden)]
-pub use sp_std::ops::Deref;
+pub use tp_std::ops::Deref;
 use sp_runtime_interface::pass_by::PassByInner;
 /// Trait to zeroize a memory buffer.
 pub use zeroize::Zeroize;
@@ -684,7 +684,7 @@ impl From<[u8; 32]> for AccountId32 {
 	}
 }
 
-impl<'a> sp_std::convert::TryFrom<&'a [u8]> for AccountId32 {
+impl<'a> tp_std::convert::TryFrom<&'a [u8]> for AccountId32 {
 	type Error = ();
 	fn try_from(x: &'a [u8]) -> Result<AccountId32, ()> {
 		if x.len() == 32 {
@@ -722,15 +722,15 @@ impl std::fmt::Display for AccountId32 {
 	}
 }
 
-impl sp_std::fmt::Debug for AccountId32 {
+impl tp_std::fmt::Debug for AccountId32 {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		let s = self.to_ss58check();
 		write!(f, "{} ({}...)", crate::hexdisplay::HexDisplay::from(&self.0), &s[0..8])
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -751,7 +751,7 @@ impl<'de> serde::Deserialize<'de> for AccountId32 {
 }
 
 #[cfg(feature = "std")]
-impl sp_std::str::FromStr for AccountId32 {
+impl tp_std::str::FromStr for AccountId32 {
 	type Err = &'static str;
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -786,7 +786,7 @@ mod dummy {
 		fn as_mut(&mut self) -> &mut[u8] {
 			unsafe {
 				#[allow(mutable_transmutes)]
-				sp_std::mem::transmute::<_, &'static mut [u8]>(&b""[..])
+				tp_std::mem::transmute::<_, &'static mut [u8]>(&b""[..])
 			}
 		}
 	}
@@ -1085,8 +1085,8 @@ pub struct CryptoTypeId(pub [u8; 4]);
 pub struct CryptoTypePublicPair(pub CryptoTypeId, pub Vec<u8>);
 
 #[cfg(feature = "std")]
-impl sp_std::fmt::Display for CryptoTypePublicPair {
-	fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+impl tp_std::fmt::Display for CryptoTypePublicPair {
+	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		let id = match str::from_utf8(&(self.0).0[..]) {
 			Ok(id) => id.to_string(),
 			Err(_) => {

@@ -58,7 +58,7 @@ use frame_support::{
 	StorageMap, StorageDoubleMap, ensure,
 	traits::{Currency, OnUnbalanced, Imbalance},
 };
-use sp_std::vec::Vec;
+use tp_std::vec::Vec;
 use codec::{Encode, Decode};
 
 /// The proportion of the slashing reward to be paid out on the first slashing detection.
@@ -140,7 +140,7 @@ impl SlashingSpans {
 			SlashingSpan { index, start, length: Some(length) }
 		});
 
-		sp_std::iter::once(last).chain(prior)
+		tp_std::iter::once(last).chain(prior)
 	}
 
 	/// Yields the era index where the most recent non-zero slash occurred.
@@ -168,7 +168,7 @@ impl SlashingSpans {
 		};
 
 		// readjust the ongoing span, if it started before the beginning of the window.
-		self.last_start = sp_std::cmp::max(self.last_start, window_start);
+		self.last_start = tp_std::cmp::max(self.last_start, window_start);
 		pruned
 	}
 }
@@ -426,7 +426,7 @@ struct InspectingSpans<'a, T: Config + 'a> {
 	paid_out: &'a mut BalanceOf<T>,
 	slash_of: &'a mut BalanceOf<T>,
 	reward_proportion: Perbill,
-	_marker: sp_std::marker::PhantomData<T>,
+	_marker: tp_std::marker::PhantomData<T>,
 }
 
 // fetches the slashing spans record for a stash account, initializing it if necessary.
@@ -451,7 +451,7 @@ fn fetch_spans<'a, T: Config + 'a>(
 		slash_of,
 		paid_out,
 		reward_proportion,
-		_marker: sp_std::marker::PhantomData,
+		_marker: tp_std::marker::PhantomData,
 	}
 }
 
@@ -469,7 +469,7 @@ impl<'a, T: 'a + Config> InspectingSpans<'a, T> {
 	// although `amount` may be zero, as it is only a difference.
 	fn add_slash(&mut self, amount: BalanceOf<T>, slash_era: EraIndex) {
 		*self.slash_of += amount;
-		self.spans.last_nonzero_slash = sp_std::cmp::max(self.spans.last_nonzero_slash, slash_era);
+		self.spans.last_nonzero_slash = tp_std::cmp::max(self.spans.last_nonzero_slash, slash_era);
 	}
 
 	// find the span index of the given era, if covered.

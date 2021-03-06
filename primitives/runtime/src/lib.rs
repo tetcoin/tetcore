@@ -30,7 +30,7 @@ pub use codec;
 #[doc(hidden)]
 pub use serde;
 #[doc(hidden)]
-pub use sp_std;
+pub use tp_std;
 
 #[doc(hidden)]
 pub use paste;
@@ -41,8 +41,8 @@ pub use sp_application_crypto as app_crypto;
 #[cfg(feature = "std")]
 pub use sp_core::storage::{Storage, StorageChild};
 
-use sp_std::prelude::*;
-use sp_std::convert::TryFrom;
+use tp_std::prelude::*;
+use tp_std::convert::TryFrom;
 use sp_core::{crypto::{self, Public}, ed25519, sr25519, ecdsa, hash::{H256, H512}};
 
 use codec::{Encode, Decode};
@@ -384,11 +384,11 @@ impl From<DispatchError> for DispatchOutcome {
 /// This is the legacy return type of `Dispatchable`. It is still exposed for compatibility reasons.
 /// The new return type is `DispatchResultWithInfo`. FRAME runtimes should use
 /// `frame_support::dispatch::DispatchResult`.
-pub type DispatchResult = sp_std::result::Result<(), DispatchError>;
+pub type DispatchResult = tp_std::result::Result<(), DispatchError>;
 
 /// Return type of a `Dispatchable` which contains the `DispatchResult` and additional information
 /// about the `Dispatchable` that is only known post dispatch.
-pub type DispatchResultWithInfo<T> = sp_std::result::Result<T, DispatchErrorWithPostInfo<T>>;
+pub type DispatchResultWithInfo<T> = tp_std::result::Result<T, DispatchErrorWithPostInfo<T>>;
 
 /// Reason why a dispatch call failed.
 #[derive(Eq, PartialEq, Clone, Copy, Encode, Decode, RuntimeDebug)]
@@ -643,14 +643,14 @@ impl tetsy_util_mem::MallocSizeOf for OpaqueExtrinsic {
 	}
 }
 
-impl sp_std::fmt::Debug for OpaqueExtrinsic {
+impl tp_std::fmt::Debug for OpaqueExtrinsic {
 	#[cfg(feature = "std")]
-	fn fmt(&self, fmt: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+	fn fmt(&self, fmt: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		write!(fmt, "{}", sp_core::hexdisplay::HexDisplay::from(&self.0))
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _fmt: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+	fn fmt(&self, _fmt: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -711,7 +711,7 @@ impl Drop for SignatureBatching {
 		//
 		// We should not panic if the current thread is already panicking,
 		// because Rust otherwise aborts the process.
-		if !self.0 && !sp_std::thread::panicking() {
+		if !self.0 && !tp_std::thread::panicking() {
 			panic!("Signature verification has not been called before `SignatureBatching::drop`")
 		}
 	}

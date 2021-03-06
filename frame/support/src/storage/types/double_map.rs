@@ -27,7 +27,7 @@ use crate::{
 	traits::{GetDefault, StorageInstance},
 };
 use frame_metadata::{DefaultByteGetter, StorageEntryModifier};
-use sp_std::vec::Vec;
+use tp_std::vec::Vec;
 
 /// A type that allow to store values for `(key1, key2)` couple. Similar to `StorageMap` but allow
 /// to iterate and remove value associated to first key.

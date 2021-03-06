@@ -19,7 +19,7 @@
 
 use crate::{ElectionDataProvider, ElectionProvider};
 use sp_npos_elections::*;
-use sp_std::{collections::btree_map::BTreeMap, marker::PhantomData, prelude::*};
+use tp_std::{collections::btree_map::BTreeMap, marker::PhantomData, prelude::*};
 
 /// Errors of the on-chain election.
 #[derive(Eq, PartialEq, Debug)]

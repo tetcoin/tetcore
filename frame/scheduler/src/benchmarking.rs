@@ -20,7 +20,7 @@
 #![cfg(feature = "runtime-benchmarks")]
 
 use super::*;
-use sp_std::{vec, prelude::*};
+use tp_std::{vec, prelude::*};
 use frame_system::RawOrigin;
 use frame_support::{ensure, traits::OnInitialize};
 use frame_benchmarking::benchmarks;

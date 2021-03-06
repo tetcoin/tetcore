@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use sp_std::vec::Vec;
+use tp_std::vec::Vec;
 use codec::{Encode, Decode};
 use hash_db::{Hasher, HashDB};
 
@@ -69,7 +69,7 @@ impl StorageProof {
 	pub fn merge<I>(proofs: I) -> Self where I: IntoIterator<Item=Self> {
 		let trie_nodes = proofs.into_iter()
 			.flat_map(|proof| proof.iter_nodes())
-			.collect::<sp_std::collections::btree_set::BTreeSet<_>>()
+			.collect::<tp_std::collections::btree_set::BTreeSet<_>>()
 			.into_iter()
 			.collect();
 

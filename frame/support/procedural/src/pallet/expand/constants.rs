@@ -88,14 +88,14 @@ pub fn expand_constants(def: &mut Def) -> proc_macro2::TokenStream {
 				#[allow(non_upper_case_types)]
 				#[allow(non_camel_case_types)]
 				struct #default_byte_getter<#type_decl_gen>(
-					#frame_support::sp_std::marker::PhantomData<(#type_use_gen)>
+					#frame_support::tp_std::marker::PhantomData<(#type_use_gen)>
 				);
 
 				impl<#type_impl_gen> #frame_support::dispatch::DefaultByte for
 					#default_byte_getter<#type_use_gen>
 					#completed_where_clause
 				{
-					fn default_byte(&self) -> #frame_support::sp_std::vec::Vec<u8> {
+					fn default_byte(&self) -> #frame_support::tp_std::vec::Vec<u8> {
 						#default_byte_impl
 					}
 				}
@@ -113,7 +113,7 @@ pub fn expand_constants(def: &mut Def) -> proc_macro2::TokenStream {
 					value: #frame_support::dispatch::DecodeDifferent::Encode(
 						#frame_support::dispatch::DefaultByteGetter(
 							&#default_byte_getter::<#type_use_gen>(
-								#frame_support::sp_std::marker::PhantomData
+								#frame_support::tp_std::marker::PhantomData
 							)
 						)
 					),

@@ -84,7 +84,7 @@ pub fn expand_call(def: &mut Def) -> proc_macro2::TokenStream {
 			#[doc(hidden)]
 			#[codec(skip)]
 			__Ignore(
-				#frame_support::sp_std::marker::PhantomData<(#type_use_gen,)>,
+				#frame_support::tp_std::marker::PhantomData<(#type_use_gen,)>,
 				#frame_support::Never,
 			),
 			#( #fn_name( #( #args_compact_attr #args_type ),* ), )*

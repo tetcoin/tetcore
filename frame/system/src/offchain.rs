@@ -58,9 +58,9 @@
 #![warn(missing_docs)]
 
 use codec::Encode;
-use sp_std::collections::btree_set::BTreeSet;
-use sp_std::convert::{TryInto, TryFrom};
-use sp_std::prelude::{Box, Vec};
+use tp_std::collections::btree_set::BTreeSet;
+use tp_std::convert::{TryInto, TryFrom};
+use tp_std::prelude::{Box, Vec};
 use sp_runtime::app_crypto::RuntimeAppPublic;
 use sp_runtime::traits::{Extrinsic as ExtrinsicT, IdentifyAccount, One};
 use frame_support::{debug, RuntimeDebug};
@@ -77,7 +77,7 @@ pub struct ForAny {}
 /// utility function can be used. However, this struct is used by `Signer`
 /// to submit a signed transactions providing the signature along with the call.
 pub struct SubmitTransaction<T: SendTransactionTypes<OverarchingCall>, OverarchingCall> {
-	_phantom: sp_std::marker::PhantomData<(T, OverarchingCall)>
+	_phantom: tp_std::marker::PhantomData<(T, OverarchingCall)>
 }
 
 impl<T, LocalCall> SubmitTransaction<T, LocalCall>
@@ -116,7 +116,7 @@ where
 #[derive(RuntimeDebug)]
 pub struct Signer<T: SigningTypes, C: AppCrypto<T::Public, T::Signature>, X = ForAny> {
 	accounts: Option<Vec<T::Public>>,
-	_phantom: sp_std::marker::PhantomData<(X, C)>,
+	_phantom: tp_std::marker::PhantomData<(X, C)>,
 }
 
 impl<T: SigningTypes, C: AppCrypto<T::Public, T::Signature>, X> Default for Signer<T, C, X> {

@@ -17,7 +17,7 @@
 
 //! Types for transaction-payment RPC.
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use frame_support::weights::{Weight, DispatchClass};
 use codec::{Encode, Decode};
 #[cfg(feature = "std")]

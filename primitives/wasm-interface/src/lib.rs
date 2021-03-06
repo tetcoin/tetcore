@@ -19,7 +19,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_std::{
+use tp_std::{
 	vec,
 	borrow::Cow, marker::PhantomData, mem, iter::Iterator, result, vec::Vec,
 };
@@ -57,10 +57,10 @@ impl From<ValueType> for u8 {
 	}
 }
 
-impl sp_std::convert::TryFrom<u8> for ValueType {
+impl tp_std::convert::TryFrom<u8> for ValueType {
 	type Error = ();
 
-	fn try_from(val: u8) -> sp_std::result::Result<ValueType, ()> {
+	fn try_from(val: u8) -> tp_std::result::Result<ValueType, ()> {
 		match val {
 			0 => Ok(Self::I32),
 			1 => Ok(Self::I64),

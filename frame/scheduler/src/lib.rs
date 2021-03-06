@@ -54,7 +54,7 @@
 mod benchmarking;
 pub mod weights;
 
-use sp_std::{prelude::*, marker::PhantomData, borrow::Borrow};
+use tp_std::{prelude::*, marker::PhantomData, borrow::Borrow};
 use codec::{Encode, Decode, Codec};
 use sp_runtime::{RuntimeDebug, traits::{Zero, One, BadOrigin, Saturating}};
 use frame_support::{

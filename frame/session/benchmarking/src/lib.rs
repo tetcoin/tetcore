@@ -22,8 +22,8 @@
 
 mod mock;
 
-use sp_std::prelude::*;
-use sp_std::vec;
+use tp_std::prelude::*;
+use tp_std::vec;
 
 use frame_benchmarking::benchmarks;
 use frame_support::{

@@ -39,7 +39,7 @@ pub trait Currency {}
 // * Origin, Inherent, Event
 mod module1 {
 	use super::*;
-	use sp_std::ops::Add;
+	use tp_std::ops::Add;
 
 	pub trait Config<I>: system::Config where <Self as system::Config>::BlockNumber: From<u32> {
 		type Event: From<Event<Self, I>> + Into<<Self as system::Config>::Event>;

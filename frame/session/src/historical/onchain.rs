@@ -25,7 +25,7 @@ use super::super::{Module as SessionModule, SessionIndex};
 use super::Config as HistoricalConfig;
 
 use super::shared;
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 
 /// Store the validator-set associated to the `session_index` to the off-chain database.
 ///

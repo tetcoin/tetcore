@@ -20,7 +20,7 @@
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 
 use crate::ConsensusEngineId;
 use crate::codec::{Decode, Encode, Input, Error};

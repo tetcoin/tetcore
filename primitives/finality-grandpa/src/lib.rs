@@ -27,8 +27,8 @@ use serde::Serialize;
 
 use codec::{Encode, Decode, Input, Codec};
 use sp_runtime::{ConsensusEngineId, RuntimeDebug, traits::NumberFor};
-use sp_std::borrow::Cow;
-use sp_std::vec::Vec;
+use tp_std::borrow::Cow;
+use tp_std::vec::Vec;
 #[cfg(feature = "std")]
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 
@@ -392,7 +392,7 @@ where
 {
 	use sp_core::crypto::Public;
 	use sp_application_crypto::AppKey;
-	use sp_std::convert::TryInto;
+	use tp_std::convert::TryInto;
 
 	let encoded = localized_payload(round, set_id, &message);
 	let signature = SyncCryptoStore::sign_with(

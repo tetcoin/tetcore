@@ -18,9 +18,9 @@
 //! Schnorrkel-based VRF.
 
 use codec::{Encode, Decode, EncodeLike};
-use sp_std::{convert::TryFrom, prelude::*};
+use tp_std::{convert::TryFrom, prelude::*};
 use sp_core::U512;
-use sp_std::ops::{Deref, DerefMut};
+use tp_std::ops::{Deref, DerefMut};
 use schnorrkel::errors::MultiSignatureStage;
 
 pub use schnorrkel::{SignatureError, PublicKey, vrf::{VRF_PROOF_LENGTH, VRF_OUTPUT_LENGTH}};

@@ -22,10 +22,10 @@ use super::{StorageKey, StorageValue, Extrinsics};
 #[cfg(feature = "std")]
 use std::collections::HashSet as Set;
 #[cfg(not(feature = "std"))]
-use sp_std::collections::btree_set::BTreeSet as Set;
+use tp_std::collections::btree_set::BTreeSet as Set;
 
-use sp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
-use sp_std::hash::Hash;
+use tp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
+use tp_std::hash::Hash;
 use smallvec::SmallVec;
 use crate::warn;
 
@@ -207,7 +207,7 @@ impl<K: Ord + Hash + Clone, V> OverlayedMap<K, V> {
 	/// This changeset might be created when there are already open transactions.
 	/// We need to catch up here so that the child is at the same transaction depth.
 	pub fn spawn_child(&self) -> Self {
-		use sp_std::iter::repeat;
+		use tp_std::iter::repeat;
 		Self {
 			changes: Default::default(),
 			dirty_keys: repeat(Set::new()).take(self.transaction_depth()).collect(),
@@ -224,7 +224,7 @@ impl<K: Ord + Hash + Clone, V> OverlayedMap<K, V> {
 	/// Get an optional reference to the value stored for the specified key.
 	pub fn get<Q>(&self, key: &Q) -> Option<&OverlayedEntry<V>>
 		where
-			K: sp_std::borrow::Borrow<Q>,
+			K: tp_std::borrow::Borrow<Q>,
 			Q: Ord + ?Sized, 
 	{
 		self.changes.get(key)
@@ -428,7 +428,7 @@ impl OverlayedChangeSet {
 
 	/// Get the change that is next to the supplied key.
 	pub fn next_change(&self, key: &[u8]) -> Option<(&[u8], &OverlayedValue)> {
-		use sp_std::ops::Bound;
+		use tp_std::ops::Bound;
 		let range = (Bound::Excluded(key), Bound::Unbounded);
 		self.changes.range::<[u8], _>(range).next().map(|(k, v)| (&k[..], v))
 	}

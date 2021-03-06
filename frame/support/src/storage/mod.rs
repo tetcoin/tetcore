@@ -17,7 +17,7 @@
 
 //! Stuff to do with the runtime's storage.
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use codec::{FullCodec, FullEncode, Encode, EncodeLike, Decode};
 use crate::hash::{Twox128, StorageHasher};
 use sp_runtime::generic::{Digest, DigestItem};

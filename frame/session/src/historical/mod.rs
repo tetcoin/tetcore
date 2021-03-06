@@ -26,7 +26,7 @@
 //! These roots and proofs of inclusion can be generated at any time during the current session.
 //! Afterwards, the proofs can be fed to a consensus module when reporting misbehavior.
 
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use codec::{Encode, Decode};
 use sp_runtime::KeyTypeId;
 use sp_runtime::traits::{Convert, OpaqueKeys};
@@ -84,7 +84,7 @@ impl<T: Config> Module<T> {
 				None => return, // nothing to prune.
 			};
 
-			let up_to = sp_std::cmp::min(up_to, end);
+			let up_to = tp_std::cmp::min(up_to, end);
 
 			if up_to < start {
 				return // out of bounds. harmless.
@@ -114,7 +114,7 @@ pub trait SessionManager<ValidatorId, FullIdentification>: crate::SessionManager
 
 /// An `SessionManager` implementation that wraps an inner `I` and also
 /// sets the historical trie root of the ending session.
-pub struct NoteHistoricalRoot<T, I>(sp_std::marker::PhantomData<(T, I)>);
+pub struct NoteHistoricalRoot<T, I>(tp_std::marker::PhantomData<(T, I)>);
 
 impl<T: Config, I> crate::SessionManager<T::ValidatorId> for NoteHistoricalRoot<T, I>
 	where I: SessionManager<T::ValidatorId, T::FullIdentification>

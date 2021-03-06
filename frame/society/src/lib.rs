@@ -252,7 +252,7 @@ mod mock;
 mod tests;
 
 use rand_chacha::{rand_core::{RngCore, SeedableRng}, ChaChaRng};
-use sp_std::prelude::*;
+use tp_std::prelude::*;
 use codec::{Encode, Decode};
 use sp_runtime::{Percent, ModuleId, RuntimeDebug,
 	traits::{
@@ -1151,7 +1151,7 @@ decl_event! {
 }
 
 /// Simple ensure origin struct to filter for the founder account.
-pub struct EnsureFounder<T>(sp_std::marker::PhantomData<T>);
+pub struct EnsureFounder<T>(tp_std::marker::PhantomData<T>);
 impl<T: Config> EnsureOrigin<T::Origin> for EnsureFounder<T> {
 	type Success = T::AccountId;
 	fn try_origin(o: T::Origin) -> Result<Self::Success, T::Origin> {

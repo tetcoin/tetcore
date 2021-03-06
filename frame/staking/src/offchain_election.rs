@@ -31,7 +31,7 @@ use sp_npos_elections::{
 use sp_runtime::{
 	offchain::storage::StorageValueRef, traits::TrailingZeroInput, RuntimeDebug,
 };
-use sp_std::{convert::TryInto, prelude::*};
+use tp_std::{convert::TryInto, prelude::*};
 
 /// Error types related to the offchain election machinery.
 #[derive(RuntimeDebug)]
@@ -171,7 +171,7 @@ pub fn maximum_compact_len<W: crate::WeightInfo>(
 	size: ElectionSize,
 	max_weight: Weight,
 ) -> u32 {
-	use sp_std::cmp::Ordering;
+	use tp_std::cmp::Ordering;
 
 	if size.nominators < 1 {
 		return size.nominators;

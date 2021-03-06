@@ -32,7 +32,7 @@ use sp_externalities::{
 };
 use codec::{Decode, Encode, EncodeAppend};
 
-use sp_std::{fmt, any::{Any, TypeId}, vec::Vec, vec, boxed::Box};
+use tp_std::{fmt, any::{Any, TypeId}, vec::Vec, vec, boxed::Box};
 use crate::{warn, trace, log_error};
 #[cfg(feature = "std")]
 use crate::changes_trie::State as ChangesTrieState;
@@ -108,7 +108,7 @@ pub struct Ext<'a, H, N, B>
 	/// Pseudo-unique id used for tracing.
 	pub id: u16,
 	/// Dummy usage of N arg.
-	_phantom: sp_std::marker::PhantomData<N>,
+	_phantom: tp_std::marker::PhantomData<N>,
 	/// Extensions registered with this instance.
 	#[cfg(feature = "std")]
 	extensions: Option<OverlayedExtensions<'a>>,
@@ -693,7 +693,7 @@ impl<'a> StorageAppend<'a> {
 	pub fn append(&mut self, value: Vec<u8>) {
 		let value = vec![EncodeOpaqueValue(value)];
 
-		let item = sp_std::mem::take(self.0);
+		let item = tp_std::mem::take(self.0);
 
 		*self.0 = match Vec::<EncodeOpaqueValue>::append_or_new(item, &value) {
 			Ok(item) => item,

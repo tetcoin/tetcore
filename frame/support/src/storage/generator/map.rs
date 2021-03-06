@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #[cfg(not(feature = "std"))]
-use sp_std::prelude::*;
-use sp_std::borrow::Borrow;
+use tp_std::prelude::*;
+use tp_std::borrow::Borrow;
 use codec::{FullCodec, FullEncode, Decode, Encode, EncodeLike};
 use crate::{
 	storage::{self, unhashed, StorageAppend, PrefixIterator},
@@ -95,7 +95,7 @@ pub struct StorageMapIterator<K, V, Hasher> {
 	prefix: Vec<u8>,
 	previous_key: Vec<u8>,
 	drain: bool,
-	_phantom: ::sp_std::marker::PhantomData<(K, V, Hasher)>,
+	_phantom: ::tp_std::marker::PhantomData<(K, V, Hasher)>,
 }
 
 impl<

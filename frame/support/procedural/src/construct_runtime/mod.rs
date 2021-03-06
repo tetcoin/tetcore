@@ -492,9 +492,9 @@ fn decl_pallet_runtime_setup(
 
 		impl #scrate::traits::PalletInfo for PalletInfo {
 			fn index<P: 'static>() -> Option<usize> {
-				let type_id = #scrate::sp_std::any::TypeId::of::<P>();
+				let type_id = #scrate::tp_std::any::TypeId::of::<P>();
 				#(
-					if type_id == #scrate::sp_std::any::TypeId::of::<#names>() {
+					if type_id == #scrate::tp_std::any::TypeId::of::<#names>() {
 						return Some(#indices)
 					}
 				)*
@@ -503,9 +503,9 @@ fn decl_pallet_runtime_setup(
 			}
 
 			fn name<P: 'static>() -> Option<&'static str> {
-				let type_id = #scrate::sp_std::any::TypeId::of::<P>();
+				let type_id = #scrate::tp_std::any::TypeId::of::<P>();
 				#(
-					if type_id == #scrate::sp_std::any::TypeId::of::<#names2>() {
+					if type_id == #scrate::tp_std::any::TypeId::of::<#names2>() {
 						return Some(#name_strings)
 					}
 				)*

@@ -48,10 +48,10 @@
 //! assert_eq!(body.error(), &None);
 //! ```
 
-use sp_std::str;
-use sp_std::prelude::Vec;
+use tp_std::str;
+use tp_std::prelude::Vec;
 #[cfg(not(feature = "std"))]
-use sp_std::prelude::vec;
+use tp_std::prelude::vec;
 use sp_core::RuntimeDebug;
 use sp_core::offchain::{
 	Timestamp,

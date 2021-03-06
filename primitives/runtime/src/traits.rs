@@ -17,8 +17,8 @@
 
 //! Primitives for the runtime modules.
 
-use sp_std::prelude::*;
-use sp_std::{self, marker::PhantomData, convert::{TryFrom, TryInto}, fmt::Debug};
+use tp_std::prelude::*;
+use tp_std::{self, marker::PhantomData, convert::{TryFrom, TryInto}, fmt::Debug};
 use sp_io;
 #[cfg(feature = "std")]
 use std::fmt::Display;
@@ -370,15 +370,15 @@ impl<T: Default + Eq + PartialEq> Clear for T {
 /// A meta trait for all bit ops.
 pub trait SimpleBitOps:
 	Sized + Clear +
-	sp_std::ops::BitOr<Self, Output = Self> +
-	sp_std::ops::BitXor<Self, Output = Self> +
-	sp_std::ops::BitAnd<Self, Output = Self>
+	tp_std::ops::BitOr<Self, Output = Self> +
+	tp_std::ops::BitXor<Self, Output = Self> +
+	tp_std::ops::BitAnd<Self, Output = Self>
 {}
 impl<T:
 	Sized + Clear +
-	sp_std::ops::BitOr<Self, Output = Self> +
-	sp_std::ops::BitXor<Self, Output = Self> +
-	sp_std::ops::BitAnd<Self, Output = Self>
+	tp_std::ops::BitOr<Self, Output = Self> +
+	tp_std::ops::BitXor<Self, Output = Self> +
+	tp_std::ops::BitAnd<Self, Output = Self>
 > SimpleBitOps for T {}
 
 /// Abstraction around hashing
@@ -386,7 +386,7 @@ impl<T:
 // traits must be fulfilled by all type parameters.
 pub trait Hash: 'static + MaybeSerializeDeserialize + Debug + Clone + Eq + PartialEq + Hasher<Out = <Self as Hash>::Output> {
 	/// The hash type produced.
-	type Output: Member + MaybeSerializeDeserialize + Debug + sp_std::hash::Hash
+	type Output: Member + MaybeSerializeDeserialize + Debug + tp_std::hash::Hash
 		+ AsRef<[u8]> + AsMut<[u8]> + Copy + Default + Encode + Decode;
 
 	/// Produce the hash of some byte-slice.
@@ -515,7 +515,7 @@ sp_core::impl_maybe_marker!(
 	trait MaybeFromStr: FromStr;
 
 	/// A type that implements Hash when in std environment.
-	trait MaybeHash: sp_std::hash::Hash;
+	trait MaybeHash: tp_std::hash::Hash;
 
 	/// A type that implements Serialize when in std environment.
 	trait MaybeSerialize: Serialize;
@@ -547,10 +547,10 @@ pub trait Header:
 	MaybeMallocSizeOf + 'static
 {
 	/// Header number.
-	type Number: Member + MaybeSerializeDeserialize + Debug + sp_std::hash::Hash + Copy +
-		MaybeDisplay + AtLeast32BitUnsigned + Codec + sp_std::str::FromStr + MaybeMallocSizeOf;
+	type Number: Member + MaybeSerializeDeserialize + Debug + tp_std::hash::Hash + Copy +
+		MaybeDisplay + AtLeast32BitUnsigned + Codec + tp_std::str::FromStr + MaybeMallocSizeOf;
 	/// Header hash type
-	type Hash: Member + MaybeSerializeDeserialize + Debug + sp_std::hash::Hash + Ord
+	type Hash: Member + MaybeSerializeDeserialize + Debug + tp_std::hash::Hash + Ord
 		+ Copy + MaybeDisplay + Default + SimpleBitOps + Codec + AsRef<[u8]>
 		+ AsMut<[u8]> + MaybeMallocSizeOf;
 	/// Hashing algorithm
@@ -606,7 +606,7 @@ pub trait Block: Clone + Send + Sync + Codec + Eq + MaybeSerialize + Debug + May
 	/// Header type.
 	type Header: Header<Hash=Self::Hash> + MaybeMallocSizeOf;
 	/// Block hash type.
-	type Hash: Member + MaybeSerializeDeserialize + Debug + sp_std::hash::Hash + Ord
+	type Hash: Member + MaybeSerializeDeserialize + Debug + tp_std::hash::Hash + Ord
 		+ Copy + MaybeDisplay + Default + SimpleBitOps + Codec + AsRef<[u8]> + AsMut<[u8]>
 		+ MaybeMallocSizeOf;
 
@@ -869,7 +869,7 @@ pub trait SignedExtension: Codec + Debug + Sync + Send + Clone + Eq + PartialEq 
 	///
 	/// This method provides a default implementation that returns `vec![SELF::IDENTIFIER]`.
 	fn identifier() -> Vec<&'static str> {
-		sp_std::vec![Self::IDENTIFIER]
+		tp_std::vec![Self::IDENTIFIER]
 	}
 }
 
@@ -948,7 +948,7 @@ impl SignedExtension for () {
 	type Call = ();
 	type Pre = ();
 	const IDENTIFIER: &'static str = "UnitSignedExtension";
-	fn additional_signed(&self) -> sp_std::result::Result<(), TransactionValidityError> { Ok(()) }
+	fn additional_signed(&self) -> tp_std::result::Result<(), TransactionValidityError> { Ok(()) }
 }
 
 /// An "executable" piece of information, used by the standard Tetcore Executive in order to
@@ -1239,7 +1239,7 @@ macro_rules! impl_opaque_keys {
 			/// The generated key pairs are stored in the keystore.
 			///
 			/// Returns the concatenated SCALE encoded public keys.
-			pub fn generate(seed: Option<$crate::sp_std::vec::Vec<u8>>) -> $crate::sp_std::vec::Vec<u8> {
+			pub fn generate(seed: Option<$crate::tp_std::vec::Vec<u8>>) -> $crate::tp_std::vec::Vec<u8> {
 				let keys = Self{
 					$(
 						$field: <
@@ -1255,7 +1255,7 @@ macro_rules! impl_opaque_keys {
 			/// Converts `Self` into a `Vec` of `(raw public key, KeyTypeId)`.
 			pub fn into_raw_public_keys(
 				self,
-			) -> $crate::sp_std::vec::Vec<($crate::sp_std::vec::Vec<u8>, $crate::KeyTypeId)> {
+			) -> $crate::tp_std::vec::Vec<($crate::tp_std::vec::Vec<u8>, $crate::KeyTypeId)> {
 				let mut keys = Vec::new();
 				$(
 					keys.push((
@@ -1277,7 +1277,7 @@ macro_rules! impl_opaque_keys {
 			/// Returns `None` when the decoding failed, otherwise `Some(_)`.
 			pub fn decode_into_raw_public_keys(
 				encoded: &[u8],
-			) -> Option<$crate::sp_std::vec::Vec<($crate::sp_std::vec::Vec<u8>, $crate::KeyTypeId)>> {
+			) -> Option<$crate::tp_std::vec::Vec<($crate::tp_std::vec::Vec<u8>, $crate::KeyTypeId)>> {
 				<Self as $crate::codec::Decode>::decode(&mut &encoded[..])
 					.ok()
 					.map(|s| s.into_raw_public_keys())

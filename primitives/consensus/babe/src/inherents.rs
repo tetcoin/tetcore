@@ -25,7 +25,7 @@ use sp_timestamp::TimestampInherentData;
 
 #[cfg(feature = "std")]
 use codec::Decode;
-use sp_std::result::Result;
+use tp_std::result::Result;
 
 /// The BABE inherent identifier.
 pub const INHERENT_IDENTIFIER: InherentIdentifier = *b"babeslot";
