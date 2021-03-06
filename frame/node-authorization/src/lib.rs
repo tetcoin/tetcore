@@ -38,7 +38,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use sp_core::OpaquePeerId as PeerId;
-use sp_std::{
+use tp_std::{
 	collections::btree_set::BTreeSet,
 	iter::FromIterator,
 	prelude::*,
