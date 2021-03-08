@@ -15,7 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 log = "0.4"
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 frame-metadata = { version = "12.0.0", default-features = false, path = "../metadata" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
