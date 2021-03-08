@@ -1,7 +1,7 @@
 [package]
 name = "node-testing"
 version = "2.0.0"
-authors = ["Parity Technologies <admin@parity.io>"]
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Test utilities for Tetcore node."
 edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"

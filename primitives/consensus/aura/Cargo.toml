@@ -1,7 +1,7 @@
 [package]
 name = "tp-consensus-aura"
 version = "0.8.1"
-authors = ["Parity Technologies <admin@parity.io>"]
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Primitives for Aura consensus"
 edition = "2018"
 license = "Apache-2.0"

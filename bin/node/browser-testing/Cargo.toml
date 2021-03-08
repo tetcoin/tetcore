@@ -1,7 +1,7 @@
 [package]
 name = "node-browser-testing"
 version = "2.0.0"
-authors = ["Parity Technologies <admin@parity.io>"]
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Tests for the in-browser light client."
 edition = "2018"
 license = "Apache-2.0"

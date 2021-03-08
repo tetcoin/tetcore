@@ -2,7 +2,7 @@
 name = "tc-tracing"
 version = "2.0.1"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
-authors = ["Parity Technologies <admin@parity.io>"]
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"

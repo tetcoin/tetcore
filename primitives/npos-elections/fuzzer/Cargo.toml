@@ -1,7 +1,7 @@
 [package]
 name = "tp-npos-elections-fuzzer"
 version = "2.0.0-alpha.5"
-authors = ["Parity Technologies <admin@parity.io>"]
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"

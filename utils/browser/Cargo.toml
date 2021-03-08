@@ -1,7 +1,7 @@
 [package]
 name = "tetcore-browser-utils"
 version = "0.8.1"
-authors = ["Parity Technologies <admin@parity.io>"]
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Utilities for creating a browser light-client."
 edition = "2018"
 license = "Apache-2.0"
