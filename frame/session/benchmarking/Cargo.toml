@@ -25,7 +25,7 @@ rand = { version = "0.7.2", default-features = false }
 
 [dev-dependencies]
 serde = { version = "1.0.101" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 tp-core = { version = "2.0.0", path = "../../../primitives/core" }
 pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
 tp-io ={ version = "2.0.0", path = "../../../primitives/io" }
