@@ -19,7 +19,7 @@
 //! Definitions for a wasm runtime.
 
 use crate::error::Error;
-use sp_wasm_interface::Value;
+use tetcore_wasm_interface::Value;
 
 /// A method to be used to find the entrypoint when calling into the runtime
 ///

@@ -1261,7 +1261,7 @@ pub trait Sandbox {
 	/// `instance_idx`.
 	///
 	/// Returns `Some(_)` when the requested global variable could be found.
-	fn get_global_val(&mut self, instance_idx: u32, name: &str) -> Option<sp_wasm_interface::Value> {
+	fn get_global_val(&mut self, instance_idx: u32, name: &str) -> Option<tetcore_wasm_interface::Value> {
 		self.sandbox().get_global_val(instance_idx, name).expect("Failed to get global from sandbox")
 	}
 }

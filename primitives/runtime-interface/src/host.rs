@@ -19,7 +19,7 @@
 
 use crate::RIType;
 
-use sp_wasm_interface::{FunctionContext, Result};
+use tetcore_wasm_interface::{FunctionContext, Result};
 
 /// Something that can be converted into a ffi value.
 pub trait IntoFFIValue: RIType {

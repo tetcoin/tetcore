@@ -38,7 +38,7 @@ use sp_core::{
 	},
 };
 use log::trace;
-use sp_wasm_interface::{HostFunctions, Function};
+use tetcore_wasm_interface::{HostFunctions, Function};
 use sc_executor_common::wasm_runtime::{WasmInstance, WasmModule, InvokeMethod};
 use externalities::ExternalitiesExt as _;
 use sp_tasks::new_async_externalities;

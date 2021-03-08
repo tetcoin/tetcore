@@ -31,7 +31,7 @@ use sc_executor_common::{
 };
 use sp_allocator::FreeingBumpHeapAllocator;
 use sp_runtime_interface::unpack_ptr_and_len;
-use sp_wasm_interface::{Function, Pointer, WordSize, Value};
+use tetcore_wasm_interface::{Function, Pointer, WordSize, Value};
 use wasmtime::{Config, Engine, Store};
 
 /// A `WasmModule` implementation using wasmtime to compile the runtime module to machine code

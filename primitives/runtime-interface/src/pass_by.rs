@@ -28,7 +28,7 @@ use crate::host::*;
 use crate::wasm::*;
 
 #[cfg(feature = "std")]
-use sp_wasm_interface::{FunctionContext, Pointer, Result};
+use tetcore_wasm_interface::{FunctionContext, Pointer, Result};
 
 use tetcore_std::{marker::PhantomData, convert::TryFrom};
 

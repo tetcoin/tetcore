@@ -17,7 +17,7 @@ twasmi = { version = "0.6.2", optional = true }
 tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../io" }
-tp-wasm-interface = { version = "2.0.0", default-features = false, path = "../wasm-interface" }
+tetcore-wasm-interface = { version = "2.0.0", default-features = false, path = "../wasm-interface" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 
 [dev-dependencies]
@@ -32,6 +32,6 @@ std = [
 	"tetcore-std/std",
 	"codec/std",
 	"tp-io/std",
-	"tp-wasm-interface/std",
+	"tetcore-wasm-interface/std",
 ]
 strict = []

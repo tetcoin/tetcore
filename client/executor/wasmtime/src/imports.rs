@@ -18,7 +18,7 @@
 
 use crate::state_holder;
 use sc_executor_common::error::WasmError;
-use sp_wasm_interface::{Function, Value, ValueType};
+use tetcore_wasm_interface::{Function, Value, ValueType};
 use std::any::Any;
 use wasmtime::{
 	Extern, ExternType, Func, FuncType, ImportType, Limits, Memory, MemoryType, Module,

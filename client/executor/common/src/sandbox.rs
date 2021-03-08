@@ -29,7 +29,7 @@ use twasmi::{
 	Externals, ImportResolver, MemoryInstance, MemoryRef, Module, ModuleInstance,
 	ModuleRef, RuntimeArgs, RuntimeValue, Trap, TrapKind, memory_units::Pages,
 };
-use sp_wasm_interface::{FunctionContext, Pointer, WordSize};
+use tetcore_wasm_interface::{FunctionContext, Pointer, WordSize};
 
 /// Index of a function inside the supervisor.
 ///
@@ -189,7 +189,7 @@ fn trap(msg: &'static str) -> Trap {
 
 fn deserialize_result(serialized_result: &[u8]) -> std::result::Result<Option<RuntimeValue>, Trap> {
 	use self::sandbox_primitives::HostError;
-	use sp_wasm_interface::ReturnValue;
+	use tetcore_wasm_interface::ReturnValue;
 	let result_val = std::result::Result::<ReturnValue, HostError>::decode(&mut &serialized_result[..])
 		.map_err(|_| trap("Decoding Result<ReturnValue, HostError> failed!"))?;
 
@@ -225,7 +225,7 @@ impl<'a, FE: SandboxCapabilities + 'a> Externals for GuestExternals<'a, FE> {
 		let invoke_args_data: Vec<u8> = args.as_ref()
 			.iter()
 			.cloned()
-			.map(sp_wasm_interface::Value::from)
+			.map(tetcore_wasm_interface::Value::from)
 			.collect::<Vec<_>>()
 			.encode();
 
@@ -353,7 +353,7 @@ impl<FR> SandboxInstance<FR> {
 	/// Get the value from a global with the given `name`.
 	///
 	/// Returns `Some(_)` if the global could be found.
-	pub fn get_global_val(&self, name: &str) -> Option<sp_wasm_interface::Value> {
+	pub fn get_global_val(&self, name: &str) -> Option<tetcore_wasm_interface::Value> {
 		let global = self.instance
 			.export_by_name(name)?
 			.as_global()?

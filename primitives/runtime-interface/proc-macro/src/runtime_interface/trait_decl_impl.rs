@@ -167,7 +167,7 @@ fn impl_trait_for_externalities(trait_def: &ItemTrait, is_wasm_only: bool) -> Re
 	});
 
 	let impl_type = if is_wasm_only {
-		quote!( &mut dyn #crate_::sp_wasm_interface::FunctionContext )
+		quote!( &mut dyn #crate_::tetcore_wasm_interface::FunctionContext )
 	} else {
 		quote!( &mut dyn #crate_::Externalities )
 	};

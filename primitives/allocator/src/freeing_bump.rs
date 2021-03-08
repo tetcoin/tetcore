@@ -47,7 +47,7 @@
 
 use crate::Error;
 use tetcore_std::{mem, convert::{TryFrom, TryInto}, ops::{Range, Index, IndexMut}};
-use sp_wasm_interface::{Pointer, WordSize};
+use tetcore_wasm_interface::{Pointer, WordSize};
 
 /// The minimal alignment guaranteed by this allocator.
 ///

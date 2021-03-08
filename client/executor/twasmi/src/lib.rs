@@ -27,7 +27,7 @@ use twasmi::{
 use codec::{Encode, Decode};
 use sp_core::sandbox as sandbox_primitives;
 use log::{error, trace, debug};
-use sp_wasm_interface::{
+use tetcore_wasm_interface::{
 	FunctionContext, Pointer, WordSize, Sandbox, MemoryId, Result as WResult, Function,
 };
 use sp_runtime_interface::unpack_ptr_and_len;
@@ -193,7 +193,7 @@ impl<'a> Sandbox for FunctionExecutor<'a> {
 		trace!(target: "tp-sandbox", "invoke, instance_idx={}", instance_id);
 
 		// Deserialize arguments and convert them into twasmi types.
-		let args = Vec::<sp_wasm_interface::Value>::decode(&mut &args[..])
+		let args = Vec::<tetcore_wasm_interface::Value>::decode(&mut &args[..])
 			.map_err(|_| "Can't decode serialized arguments for the invocation")?
 			.into_iter()
 			.map(Into::into)
@@ -206,7 +206,7 @@ impl<'a> Sandbox for FunctionExecutor<'a> {
 			Ok(None) => Ok(sandbox_primitives::ERR_OK),
 			Ok(Some(val)) => {
 				// Serialize return value and write it back into the memory.
-				sp_wasm_interface::ReturnValue::Value(val.into()).using_encoded(|val| {
+				tetcore_wasm_interface::ReturnValue::Value(val.into()).using_encoded(|val| {
 					if val.len() > return_val_len as usize {
 						Err("Return value buffer is too small")?;
 					}
@@ -260,7 +260,7 @@ impl<'a> Sandbox for FunctionExecutor<'a> {
 		&self,
 		instance_idx: u32,
 		name: &str,
-	) -> WResult<Option<sp_wasm_interface::Value>> {
+	) -> WResult<Option<tetcore_wasm_interface::Value>> {
 		self.sandbox_store
 			.instance(instance_idx)
 			.map(|i| i.get_global_val(name))
@@ -306,7 +306,7 @@ impl<'a> twasmi::ModuleImportResolver for Resolver<'a> {
 	fn resolve_func(&self, name: &str, signature: &twasmi::Signature)
 		-> std::result::Result<twasmi::FuncRef, twasmi::Error>
 	{
-		let signature = sp_wasm_interface::Signature::from(signature);
+		let signature = tetcore_wasm_interface::Signature::from(signature);
 		for (function_index, function) in self.host_functions.iter().enumerate() {
 			if name == function.name() {
 				if signature == function.signature() {
@@ -735,7 +735,7 @@ impl WasmInstance for WasmiInstance {
 		)
 	}
 
-	fn get_global_const(&self, name: &str) -> Result<Option<sp_wasm_interface::Value>, Error> {
+	fn get_global_const(&self, name: &str) -> Result<Option<tetcore_wasm_interface::Value>, Error> {
 		match self.instance.export_by_name(name) {
 			Some(global) => Ok(Some(
 				global

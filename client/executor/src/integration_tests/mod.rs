@@ -27,7 +27,7 @@ use sp_core::{
 use sc_runtime_test::wasm_binary_unwrap;
 use sp_state_machine::TestExternalities as CoreTestExternalities;
 use sp_trie::{TrieConfiguration, trie_types::Layout};
-use sp_wasm_interface::HostFunctions as _;
+use tetcore_wasm_interface::HostFunctions as _;
 use sp_runtime::traits::BlakeTwo256;
 use tracing_subscriber::layer::SubscriberExt;
 

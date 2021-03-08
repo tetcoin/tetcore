@@ -109,7 +109,7 @@ extern crate self as sp_runtime_interface;
 
 #[doc(hidden)]
 #[cfg(feature = "std")]
-pub use sp_wasm_interface;
+pub use tetcore_wasm_interface;
 
 #[doc(hidden)]
 pub use tetcore_tracing;
@@ -211,7 +211,7 @@ pub use tetcore_std;
 ///             .expect("`set_or_clear` called outside of an Externalities-provided environment.")
 ///     }
 ///
-///     /// This type implements the `HostFunctions` trait (from `tp-wasm-interface`) and
+///     /// This type implements the `HostFunctions` trait (from `tetcore-wasm-interface`) and
 ///     /// provides the host implementation for the wasm side. The host implementation converts the
 ///     /// arguments from wasm to native and calls the corresponding native function.
 ///     ///
@@ -284,7 +284,7 @@ pub use tetcore_std;
 ///
 /// 1. The generated functions are not callable from the native side.
 /// 2. The trait as shown above is not implemented for `Externalities` and is instead implemented
-///    for `FunctionExecutor` (from `tp-wasm-interface`).
+///    for `FunctionExecutor` (from `tetcore-wasm-interface`).
 ///
 /// # Disable tracing
 /// By addding `no_tracing` to the list of options you can prevent the wasm-side interface from
@@ -323,7 +323,7 @@ pub use util::{unpack_ptr_and_len, pack_ptr_and_len};
 pub trait RIType {
 	/// The ffi type that is used to represent `Self`.
 	#[cfg(feature = "std")]
-	type FFIType: sp_wasm_interface::IntoValue + sp_wasm_interface::TryFromValue;
+	type FFIType: tetcore_wasm_interface::IntoValue + tetcore_wasm_interface::TryFromValue;
 	#[cfg(not(feature = "std"))]
 	type FFIType;
 }
@@ -334,4 +334,4 @@ pub type Pointer<T> = *mut T;
 
 /// A pointer that can be used in a runtime interface function signature.
 #[cfg(feature = "std")]
-pub type Pointer<T> = sp_wasm_interface::Pointer<T>;
+pub type Pointer<T> = tetcore_wasm_interface::Pointer<T>;

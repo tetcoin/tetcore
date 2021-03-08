@@ -41,7 +41,7 @@
 use tetcore_std::prelude::*;
 
 pub use sp_core::sandbox::HostError;
-pub use sp_wasm_interface::{Value, ReturnValue};
+pub use tetcore_wasm_interface::{Value, ReturnValue};
 
 mod imp {
 	#[cfg(feature = "std")]

@@ -85,7 +85,7 @@ TO_RENAME=(
     "tetcore-state-machine tp-state-machine"
     "tetcore-transaction-pool-runtime-api tp-transaction-pool"
     "tetcore-trie tp-trie"
-    "tetcore-wasm-interface tp-wasm-interface"
+    "tetcore-wasm-interface tetcore-wasm-interface"
 
     # # CLIENT
     "tetcore-client tc-client"

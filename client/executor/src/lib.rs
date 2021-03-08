@@ -44,7 +44,7 @@ pub use codec::Codec;
 #[doc(hidden)]
 pub use sp_core::traits::{Externalities, CallInWasm};
 #[doc(hidden)]
-pub use sp_wasm_interface;
+pub use tetcore_wasm_interface;
 pub use wasm_runtime::WasmExecutionMethod;
 
 pub use sc_executor_common::{error, sandbox};
@@ -67,7 +67,7 @@ mod tests {
 	use super::*;
 	use sc_runtime_test::wasm_binary_unwrap;
 	use sp_io::TestExternalities;
-	use sp_wasm_interface::HostFunctions;
+	use tetcore_wasm_interface::HostFunctions;
 	use sp_core::traits::CallInWasm;
 
 	#[test]

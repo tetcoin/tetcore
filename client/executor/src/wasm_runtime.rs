@@ -30,7 +30,7 @@ use sp_version::RuntimeVersion;
 use std::panic::AssertUnwindSafe;
 use sc_executor_common::wasm_runtime::{WasmModule, WasmInstance};
 
-use sp_wasm_interface::Function;
+use tetcore_wasm_interface::Function;
 
 /// Specification of different methods of executing the runtime Wasm code.
 #[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
@@ -371,7 +371,7 @@ fn create_versioned_wasm_runtime(
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_wasm_interface::HostFunctions;
+	use tetcore_wasm_interface::HostFunctions;
 	use sp_api::{Core, RuntimeApiInfo};
 	use tetcore_test_runtime::Block;
 	use codec::Encode;

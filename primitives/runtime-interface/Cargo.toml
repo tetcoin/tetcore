@@ -14,7 +14,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-wasm-interface = { version = "2.0.0", path = "../wasm-interface", default-features = false }
+tetcore-wasm-interface = { version = "2.0.0", path = "../wasm-interface", default-features = false }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tetcore-tracing = { version = "2.0.0", default-features = false, path = "../tracing" }
 tp-runtime-interface-proc-macro = { version = "2.0.0", path = "proc-macro" }
@@ -36,7 +36,7 @@ trybuild = "1.0.38"
 [features]
 default = [ "std" ]
 std = [
-	"tp-wasm-interface/std",
+	"tetcore-wasm-interface/std",
 	"tetcore-std/std",
 	"tetcore-tracing/std",
 	"codec/std",

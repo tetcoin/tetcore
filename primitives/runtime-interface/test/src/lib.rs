@@ -23,7 +23,7 @@ use sp_runtime_interface::*;
 use sp_runtime_interface_test_wasm::{wasm_binary_unwrap, test_api::HostFunctions};
 use sp_runtime_interface_test_wasm_deprecated::wasm_binary_unwrap as wasm_binary_deprecated_unwrap;
 
-use sp_wasm_interface::HostFunctions as HostFunctionsT;
+use tetcore_wasm_interface::HostFunctions as HostFunctionsT;
 use sc_executor::CallInWasm;
 
 use std::{collections::HashSet, sync::{Arc, Mutex}};

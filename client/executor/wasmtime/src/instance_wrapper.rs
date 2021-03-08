@@ -28,7 +28,7 @@ use sc_executor_common::{
 	util::{WasmModuleInfo, DataSegmentsSnapshot},
 	wasm_runtime::InvokeMethod,
 };
-use sp_wasm_interface::{Pointer, WordSize, Value};
+use tetcore_wasm_interface::{Pointer, WordSize, Value};
 use wasmtime::{Engine, Instance, Module, Memory, Table, Val, Func, Extern, Global, Store};
 use tetsy_wasm::elements;
 

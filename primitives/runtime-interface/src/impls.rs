@@ -30,7 +30,7 @@ use crate::wasm::*;
 use static_assertions::assert_eq_size;
 
 #[cfg(feature = "std")]
-use sp_wasm_interface::{FunctionContext, Result};
+use tetcore_wasm_interface::{FunctionContext, Result};
 
 use codec::{Encode, Decode};
 
@@ -438,7 +438,7 @@ impl IntoFFIValue for str {
 }
 
 #[cfg(feature = "std")]
-impl<T: sp_wasm_interface::PointerType> RIType for Pointer<T> {
+impl<T: tetcore_wasm_interface::PointerType> RIType for Pointer<T> {
 	type FFIType = u32;
 }
 
@@ -465,7 +465,7 @@ impl<T> FromFFIValue for Pointer<T> {
 }
 
 #[cfg(feature = "std")]
-impl<T: sp_wasm_interface::PointerType> FromFFIValue for Pointer<T> {
+impl<T: tetcore_wasm_interface::PointerType> FromFFIValue for Pointer<T> {
 	type SelfInstance = Self;
 
 	fn from_ffi_value(_: &mut dyn FunctionContext, arg: u32) -> Result<Self> {
@@ -474,7 +474,7 @@ impl<T: sp_wasm_interface::PointerType> FromFFIValue for Pointer<T> {
 }
 
 #[cfg(feature = "std")]
-impl<T: sp_wasm_interface::PointerType> IntoFFIValue for Pointer<T> {
+impl<T: tetcore_wasm_interface::PointerType> IntoFFIValue for Pointer<T> {
 	fn into_ffi_value(self, _: &mut dyn FunctionContext) -> Result<u32> {
 		Ok(self.into())
 	}
@@ -532,12 +532,12 @@ macro_rules! for_u128_i128 {
 for_u128_i128!(u128);
 for_u128_i128!(i128);
 
-impl PassBy for sp_wasm_interface::ValueType {
-	type PassBy = Enum<sp_wasm_interface::ValueType>;
+impl PassBy for tetcore_wasm_interface::ValueType {
+	type PassBy = Enum<tetcore_wasm_interface::ValueType>;
 }
 
-impl PassBy for sp_wasm_interface::Value {
-	type PassBy = Codec<sp_wasm_interface::Value>;
+impl PassBy for tetcore_wasm_interface::Value {
+	type PassBy = Codec<tetcore_wasm_interface::Value>;
 }
 
 impl PassBy for tetcore_storage::TrackedStorageKey {

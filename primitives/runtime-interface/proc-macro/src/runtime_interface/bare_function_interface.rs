@@ -157,7 +157,7 @@ fn function_std_impl(
 			if is_wasm_only {
 				Some(
 					parse_quote!(
-						mut __function_context__: &mut dyn #crate_::sp_wasm_interface::FunctionContext
+						mut __function_context__: &mut dyn #crate_::tetcore_wasm_interface::FunctionContext
 					)
 				)
 			} else {
@@ -224,7 +224,7 @@ fn generate_call_to_trait(
 	} else {
 		// The name of the trait the interface trait is implemented for
 		let impl_trait_name = if is_wasm_only {
-			quote!( #crate_::sp_wasm_interface::FunctionContext )
+			quote!( #crate_::tetcore_wasm_interface::FunctionContext )
 		} else {
 			quote!( #crate_::Externalities )
 		};

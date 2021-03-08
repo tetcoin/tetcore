@@ -27,7 +27,7 @@ twasmi = "0.6.2"
 tetsy-wasm = "0.41.0"
 lazy_static = "1.4.0"
 tp-api = { version = "2.0.0", path = "../../primitives/api" }
-tp-wasm-interface = { version = "2.0.0", path = "../../primitives/wasm-interface" }
+tetcore-wasm-interface = { version = "2.0.0", path = "../../primitives/wasm-interface" }
 tp-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface" }
 externalities = { version = "0.8.0", path = "../../primitives/externalities" }
 tc-executor-common = { version = "0.8.0", path = "common" }

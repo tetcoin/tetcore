@@ -28,7 +28,7 @@ use sp_allocator::FreeingBumpHeapAllocator;
 use sc_executor_common::error::Result;
 use sc_executor_common::sandbox::{self, SandboxCapabilities, SupervisorFuncIndex};
 use sp_core::sandbox as sandbox_primitives;
-use sp_wasm_interface::{FunctionContext, MemoryId, Pointer, Sandbox, WordSize};
+use tetcore_wasm_interface::{FunctionContext, MemoryId, Pointer, Sandbox, WordSize};
 use wasmtime::{Func, Val};
 
 /// Wrapper type for pointer to a Wasm table entry.
@@ -124,30 +124,30 @@ impl<'a> SandboxCapabilities for HostContext<'a> {
 	}
 }
 
-impl<'a> sp_wasm_interface::FunctionContext for HostContext<'a> {
+impl<'a> tetcore_wasm_interface::FunctionContext for HostContext<'a> {
 	fn read_memory_into(
 		&self,
 		address: Pointer<u8>,
 		dest: &mut [u8],
-	) -> sp_wasm_interface::Result<()> {
+	) -> tetcore_wasm_interface::Result<()> {
 		self.instance
 			.read_memory_into(address, dest)
 			.map_err(|e| e.to_string())
 	}
 
-	fn write_memory(&mut self, address: Pointer<u8>, data: &[u8]) -> sp_wasm_interface::Result<()> {
+	fn write_memory(&mut self, address: Pointer<u8>, data: &[u8]) -> tetcore_wasm_interface::Result<()> {
 		self.instance
 			.write_memory_from(address, data)
 			.map_err(|e| e.to_string())
 	}
 
-	fn allocate_memory(&mut self, size: WordSize) -> sp_wasm_interface::Result<Pointer<u8>> {
+	fn allocate_memory(&mut self, size: WordSize) -> tetcore_wasm_interface::Result<Pointer<u8>> {
 		self.instance
 			.allocate(&mut *self.allocator.borrow_mut(), size)
 			.map_err(|e| e.to_string())
 	}
 
-	fn deallocate_memory(&mut self, ptr: Pointer<u8>) -> sp_wasm_interface::Result<()> {
+	fn deallocate_memory(&mut self, ptr: Pointer<u8>) -> tetcore_wasm_interface::Result<()> {
 		self.instance
 			.deallocate(&mut *self.allocator.borrow_mut(), ptr)
 			.map_err(|e| e.to_string())
@@ -165,7 +165,7 @@ impl<'a> Sandbox for HostContext<'a> {
 		offset: WordSize,
 		buf_ptr: Pointer<u8>,
 		buf_len: WordSize,
-	) -> sp_wasm_interface::Result<u32> {
+	) -> tetcore_wasm_interface::Result<u32> {
 		let sandboxed_memory = self
 			.sandbox_store
 			.borrow()
@@ -199,7 +199,7 @@ impl<'a> Sandbox for HostContext<'a> {
 		offset: WordSize,
 		val_ptr: Pointer<u8>,
 		val_len: WordSize,
-	) -> sp_wasm_interface::Result<u32> {
+	) -> tetcore_wasm_interface::Result<u32> {
 		let sandboxed_memory = self
 			.sandbox_store
 			.borrow()
@@ -227,14 +227,14 @@ impl<'a> Sandbox for HostContext<'a> {
 		})
 	}
 
-	fn memory_teardown(&mut self, memory_id: MemoryId) -> sp_wasm_interface::Result<()> {
+	fn memory_teardown(&mut self, memory_id: MemoryId) -> tetcore_wasm_interface::Result<()> {
 		self.sandbox_store
 			.borrow_mut()
 			.memory_teardown(memory_id)
 			.map_err(|e| e.to_string())
 	}
 
-	fn memory_new(&mut self, initial: u32, maximum: u32) -> sp_wasm_interface::Result<u32> {
+	fn memory_new(&mut self, initial: u32, maximum: u32) -> tetcore_wasm_interface::Result<u32> {
 		self.sandbox_store
 			.borrow_mut()
 			.new_memory(initial, maximum)
@@ -249,11 +249,11 @@ impl<'a> Sandbox for HostContext<'a> {
 		return_val: Pointer<u8>,
 		return_val_len: u32,
 		state: u32,
-	) -> sp_wasm_interface::Result<u32> {
+	) -> tetcore_wasm_interface::Result<u32> {
 		trace!(target: "tp-sandbox", "invoke, instance_idx={}", instance_id);
 
 		// Deserialize arguments and convert them into twasmi types.
-		let args = Vec::<sp_wasm_interface::Value>::decode(&mut &args[..])
+		let args = Vec::<tetcore_wasm_interface::Value>::decode(&mut &args[..])
 			.map_err(|_| "Can't decode serialized arguments for the invocation")?
 			.into_iter()
 			.map(Into::into)
@@ -270,7 +270,7 @@ impl<'a> Sandbox for HostContext<'a> {
 			Ok(None) => Ok(sandbox_primitives::ERR_OK),
 			Ok(Some(val)) => {
 				// Serialize return value and write it back into the memory.
-				sp_wasm_interface::ReturnValue::Value(val.into()).using_encoded(|val| {
+				tetcore_wasm_interface::ReturnValue::Value(val.into()).using_encoded(|val| {
 					if val.len() > return_val_len as usize {
 						Err("Return value buffer is too small")?;
 					}
@@ -283,7 +283,7 @@ impl<'a> Sandbox for HostContext<'a> {
 		}
 	}
 
-	fn instance_teardown(&mut self, instance_id: u32) -> sp_wasm_interface::Result<()> {
+	fn instance_teardown(&mut self, instance_id: u32) -> tetcore_wasm_interface::Result<()> {
 		self.sandbox_store
 			.borrow_mut()
 			.instance_teardown(instance_id)
@@ -296,7 +296,7 @@ impl<'a> Sandbox for HostContext<'a> {
 		wasm: &[u8],
 		raw_env_def: &[u8],
 		state: u32,
-	) -> sp_wasm_interface::Result<u32> {
+	) -> tetcore_wasm_interface::Result<u32> {
 		// Extract a dispatch thunk from the instance's table by the specified index.
 		let dispatch_thunk = {
 			let table_item = self
@@ -337,7 +337,7 @@ impl<'a> Sandbox for HostContext<'a> {
 		&self,
 		instance_idx: u32,
 		name: &str,
-	) -> sp_wasm_interface::Result<Option<sp_wasm_interface::Value>> {
+	) -> tetcore_wasm_interface::Result<Option<tetcore_wasm_interface::Value>> {
 		self.sandbox_store
 			.borrow()
 			.instance(instance_idx)
