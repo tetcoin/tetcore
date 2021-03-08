@@ -88,7 +88,7 @@ where
 		role: Role::Light,
 		database: {
 			info!("Opening Indexed DB database '{}'...", name);
-			let db = kvdb_web::Database::open(name, 10).await?;
+			let db = tetsy_kvdb_web::Database::open(name, 10).await?;
 
 			DatabaseConfig::Custom(tetcore_database::as_database(db))
 		},

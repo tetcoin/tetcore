@@ -19,7 +19,7 @@
 
 pub mod error;
 mod mem;
-mod kvdb;
+mod tetsy_kvdb;
 
 pub use mem::MemDb;
 pub use crate::tetsy_kvdb::as_database;

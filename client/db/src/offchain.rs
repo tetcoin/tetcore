@@ -42,7 +42,7 @@ impl LocalStorage {
 	/// Create new offchain storage for tests (backed by memorydb)
 	#[cfg(any(feature = "test-helpers", test))]
 	pub fn new_test() -> Self {
-		let db = kvdb_memorydb::create(crate::utils::NUM_COLUMNS);
+		let db = tetsy_kvdb_memorydb::create(crate::utils::NUM_COLUMNS);
 		let db = tetcore_database::as_database(db);
 		Self::new(db as _)
 	}

@@ -948,7 +948,7 @@ impl<Block: BlockT> Backend<Block> {
 		canonicalization_delay: u64,
 		transaction_storage: TransactionStorageMode,
 	) -> Self {
-		let db = kvdb_memorydb::create(crate::utils::NUM_COLUMNS);
+		let db = tetsy_kvdb_memorydb::create(crate::utils::NUM_COLUMNS);
 		let db = tetcore_database::as_database(db);
 		let db_setting = DatabaseSettings {
 			state_cache_size: 16777216,
