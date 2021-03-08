@@ -84,7 +84,7 @@ pallet-transaction-payment-rpc-runtime-api = { version = "2.0.0", default-featur
 pallet-vesting = { version = "2.0.0", default-features = false, path = "../../../frame/vesting" }
 
 [build-dependencies]
-tetcore-wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
+wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
 
 [dev-dependencies]
 tp-io = { version = "2.0.0", path = "../../../primitives/io" }

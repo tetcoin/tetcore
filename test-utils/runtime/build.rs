@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use tetcore_wasm_builder::WasmBuilder;
+use wasm_builder::WasmBuilder;
 
 fn main() {
 	WasmBuilder::new()

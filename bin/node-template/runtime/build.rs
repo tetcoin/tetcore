@@ -1,4 +1,4 @@
-use tetcore_wasm_builder::WasmBuilder;
+use wasm_builder::WasmBuilder;
 
 fn main() {
 	WasmBuilder::new()

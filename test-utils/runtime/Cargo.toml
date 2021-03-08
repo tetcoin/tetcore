@@ -56,7 +56,7 @@ tc-executor = { version = "0.8.0", path = "../../client/executor" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "./client" }
 
 [build-dependencies]
-tetcore-wasm-builder = { version = "3.0.0", path = "../../utils/wasm-builder" }
+wasm-builder = { version = "3.0.0", path = "../../utils/wasm-builder" }
 
 [features]
 default = [

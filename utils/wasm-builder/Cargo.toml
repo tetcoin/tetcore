@@ -1,8 +1,8 @@
 [package]
-name = "tetcore-wasm-builder"
+name = "wasm-builder"
 version = "3.0.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
-description = "Utility for building WASM binaries"
+description = "Tetcore utility for building WASM binaries"
 edition = "2018"
 readme = "README.md"
 repository = "https://github.com/tetcoin/tetcore/"
