@@ -56,7 +56,7 @@ TO_RENAME=(
     "tetcore-consensus-common tp-consensus"
     "tetcore-consensus-pow-primitives tp-consensus-pow"
     "tetcore-primitives tp-core"
-    "tetcore-debug-derive tp-debug-derive"
+    "tetcore-debug-derive debug-derive"
     "tetcore-primitives-storage tp-storage"
     "tetcore-externalities tp-externalities"
     "tetcore-finality-grandpa-primitives tp-finality-grandpa"
