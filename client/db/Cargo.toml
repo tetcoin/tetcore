@@ -21,7 +21,7 @@ kvdb-memorydb = "0.9.0"
 linked-hash-map = "0.5.2"
 hash-db = "0.15.2"
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["std"] }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 blake2-rfc = "0.2.18"
 
 tc-client-api = { version = "2.0.0", path = "../api" }
