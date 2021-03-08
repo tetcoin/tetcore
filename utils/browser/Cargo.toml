@@ -22,7 +22,7 @@ js-sys = "0.3.34"
 wasm-bindgen = "0.2.57"
 wasm-bindgen-futures = "0.4.18"
 kvdb-web = "0.9.0"
-tp-database = { version = "2.0.0", path = "../../primitives/database" }
+tetcore-database = { version = "2.0.0", path = "../../primitives/database" }
 tc-informant = { version = "0.8.0", path = "../../client/informant" }
 tc-service = { version = "0.8.0", path = "../../client/service", default-features = false }
 tc-network = { path = "../../client/network", version = "0.8.0"}

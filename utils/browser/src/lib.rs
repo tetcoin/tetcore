@@ -90,7 +90,7 @@ where
 			info!("Opening Indexed DB database '{}'...", name);
 			let db = kvdb_web::Database::open(name, 10).await?;
 
-			DatabaseConfig::Custom(sp_database::as_database(db))
+			DatabaseConfig::Custom(tetcore_database::as_database(db))
 		},
 		keystore_remote: Default::default(),
 		keystore: KeystoreConfig::InMemory,

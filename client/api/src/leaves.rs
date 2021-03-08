@@ -20,7 +20,7 @@
 
 use std::collections::BTreeMap;
 use std::cmp::Reverse;
-use sp_database::{Database, Transaction};
+use tetcore_database::{Database, Transaction};
 use sp_runtime::traits::AtLeast32Bit;
 use codec::{Encode, Decode};
 use sp_blockchain::{Error, Result};
@@ -302,7 +302,7 @@ mod tests {
 	#[test]
 	fn flush_to_disk() {
 		const PREFIX: &[u8] = b"abcdefg";
-		let db = Arc::new(sp_database::MemDb::default());
+		let db = Arc::new(tetcore_database::MemDb::default());
 
 		let mut set = LeafSet::new();
 		set.import(0u32, 0u32, 0u32);
@@ -336,7 +336,7 @@ mod tests {
 	#[test]
 	fn finalization_consistent_with_disk() {
 		const PREFIX: &[u8] = b"prefix";
-		let db = Arc::new(sp_database::MemDb::default());
+		let db = Arc::new(tetcore_database::MemDb::default());
 
 		let mut set = LeafSet::new();
 		set.import(10_1u32, 10u32, 0u32);

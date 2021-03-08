@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// A wrapper around `kvdb::Database` that implements `sp_database::Database` trait
+/// A wrapper around `kvdb::Database` that implements `tetcore_database::Database` trait
 
 use ::kvdb::{DBTransaction, KeyValueDB};
 
@@ -32,7 +32,7 @@ fn handle_err<T>(result: std::io::Result<T>) -> T {
 	}
 }
 
-/// Wrap RocksDb database into a trait object that implements `sp_database::Database`
+/// Wrap RocksDb database into a trait object that implements `tetcore_database::Database`
 pub fn as_database<D: KeyValueDB + 'static, H: Clone>(db: D) -> std::sync::Arc<dyn Database<H>> {
 	std::sync::Arc::new(DbAdapter(db))
 }

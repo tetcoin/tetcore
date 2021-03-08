@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 /// A `Database` adapter for tetsy-db.
 
-use sp_database::{Database, Change, ColumnId, Transaction, error::DatabaseError};
+use tetcore_database::{Database, Change, ColumnId, Transaction, error::DatabaseError};
 use crate::utils::{DatabaseType, NUM_COLUMNS};
 use crate::columns;
 
@@ -32,7 +32,7 @@ fn handle_err<T>(result: tetsy_db::Result<T>) -> T {
 	}
 }
 
-/// Wrap tetsy-db database into a trait object that implements `sp_database::Database`
+/// Wrap tetsy-db database into a trait object that implements `tetcore_database::Database`
 pub fn open<H: Clone>(path: &std::path::Path, db_type: DatabaseType)
 	-> tetsy_db::Result<std::sync::Arc<dyn Database<H>>>
 {

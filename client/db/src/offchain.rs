@@ -43,7 +43,7 @@ impl LocalStorage {
 	#[cfg(any(feature = "test-helpers", test))]
 	pub fn new_test() -> Self {
 		let db = kvdb_memorydb::create(crate::utils::NUM_COLUMNS);
-		let db = sp_database::as_database(db);
+		let db = tetcore_database::as_database(db);
 		Self::new(db as _)
 	}
 

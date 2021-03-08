@@ -23,5 +23,5 @@ codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = f
 tp-consensus = { version = "0.8.0", path = "../consensus/common" }
 tp-runtime = { version = "2.0.0", path = "../runtime" }
 tp-state-machine = { version = "0.8.0", path = "../state-machine" }
-tp-database = { version = "2.0.0", path = "../database" }
+tetcore-database = { version = "2.0.0", path = "../database" }
 tp-api = { version = "2.0.0", path = "../api" }

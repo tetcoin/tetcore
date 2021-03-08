@@ -65,7 +65,7 @@ use sp_blockchain::{
 use codec::{Decode, Encode};
 use hash_db::Prefix;
 use sp_trie::{MemoryDB, PrefixedMemoryDB, prefixed_key};
-use sp_database::Transaction;
+use tetcore_database::Transaction;
 use sp_core::{Hasher, ChangesTrieConfiguration};
 use sp_core::offchain::OffchainOverlayedChange;
 use sp_core::storage::{well_known_keys, ChildInfo};
@@ -87,7 +87,7 @@ use crate::storage_cache::{CachingState, SyncingCachingState, SharedCache, new_s
 use crate::stats::StateUsageStats;
 
 // Re-export the Database trait so that one can pass an implementation of it.
-pub use sp_database::Database;
+pub use tetcore_database::Database;
 pub use sc_state_db::PruningMode;
 
 #[cfg(any(feature = "with-kvdb-rocksdb", test))]
@@ -949,7 +949,7 @@ impl<Block: BlockT> Backend<Block> {
 		transaction_storage: TransactionStorageMode,
 	) -> Self {
 		let db = kvdb_memorydb::create(crate::utils::NUM_COLUMNS);
-		let db = sp_database::as_database(db);
+		let db = tetcore_database::as_database(db);
 		let db_setting = DatabaseSettings {
 			state_cache_size: 16777216,
 			state_cache_child_ratio: Some((50, 100)),

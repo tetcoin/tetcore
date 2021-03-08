@@ -21,7 +21,7 @@
 use codec::{Encode, Decode};
 use sp_blockchain;
 use std::hash::Hash;
-use sp_database::{Database, Transaction};
+use tetcore_database::{Database, Transaction};
 use crate::DbHash;
 
 /// Returns the hashes of the children blocks of the block with `parent_hash`.
@@ -87,7 +87,7 @@ mod tests {
 	#[test]
 	fn children_write_read_remove() {
 		const PREFIX: &[u8] = b"children";
-		let db = Arc::new(sp_database::MemDb::default());
+		let db = Arc::new(tetcore_database::MemDb::default());
 
 		let mut tx = Transaction::new();
 

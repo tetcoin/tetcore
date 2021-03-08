@@ -23,7 +23,7 @@ use parking_lot::RwLock;
 
 use sc_client_api::blockchain::{well_known_cache_keys::{self, Id as CacheKeyId}, Cache as BlockchainCache};
 use sp_blockchain::{Result as ClientResult, HeaderMetadataCache};
-use sp_database::{Database, Transaction};
+use tetcore_database::{Database, Transaction};
 use codec::{Encode, Decode};
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor, Zero};

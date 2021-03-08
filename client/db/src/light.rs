@@ -35,7 +35,7 @@ use sp_blockchain::{
 	HeaderBackend as BlockchainHeaderBackend,
 	well_known_cache_keys,
 };
-use sp_database::{Database, Transaction};
+use tetcore_database::{Database, Transaction};
 use codec::{Decode, Encode};
 use sp_runtime::generic::{DigestItem, BlockId};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, Zero, One, NumberFor, HashFor};
@@ -80,7 +80,7 @@ impl<Block: BlockT> LightStorage<Block> {
 	/// Create new memory-backed `LightStorage` for tests.
 	#[cfg(any(test, feature = "test-helpers"))]
 	pub fn new_test() -> Self {
-		let db = Arc::new(sp_database::MemDb::default());
+		let db = Arc::new(tetcore_database::MemDb::default());
 		Self::from_kvdb(db as Arc<_>).expect("failed to create test-db")
 	}
 
@@ -741,7 +741,7 @@ pub(crate) mod tests {
 
 	#[test]
 	fn import_header_works() {
-		let raw_db = Arc::new(sp_database::MemDb::default());
+		let raw_db = Arc::new(tetcore_database::MemDb::default());
 		let db = LightStorage::from_kvdb(raw_db.clone()).unwrap();
 
 		let genesis_hash = insert_block(&db, HashMap::new(), || default_header(&Default::default(), 0));
@@ -756,9 +756,9 @@ pub(crate) mod tests {
 	#[test]
 	fn finalized_ancient_headers_are_replaced_with_cht() {
 		fn insert_headers<F: Fn(&Hash, u64) -> Header>(header_producer: F) ->
-			(Arc<sp_database::MemDb<DbHash>>, LightStorage<Block>)
+			(Arc<tetcore_database::MemDb<DbHash>>, LightStorage<Block>)
 		{
-			let raw_db = Arc::new(sp_database::MemDb::default());
+			let raw_db = Arc::new(tetcore_database::MemDb::default());
 			let db = LightStorage::from_kvdb(raw_db.clone()).unwrap();
 			let cht_size: u64 = cht::size();
 			let ucht_size: usize = cht_size as _;

@@ -29,7 +29,7 @@ use sc_client_api::backend::PrunableStateChangesTrieStorage;
 use sp_blockchain::{well_known_cache_keys, Cache as BlockchainCache, HeaderMetadataCache};
 use sp_core::{ChangesTrieConfiguration, ChangesTrieConfigurationRange, convert_hash};
 use sp_core::storage::PrefixedStorageKey;
-use sp_database::Transaction;
+use tetcore_database::Transaction;
 use sp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, HashFor, NumberFor, One, Zero, CheckedSub,
 };

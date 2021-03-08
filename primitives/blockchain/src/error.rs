@@ -148,7 +148,7 @@ pub enum Error {
 	TransactionPoolNotReady,
 
 	#[error("Database")]
-	DatabaseError(#[from] sp_database::error::DatabaseError),
+	DatabaseError(#[from] tetcore_database::error::DatabaseError),
 
 	#[error("Failed to get header for hash {0}")]
 	MissingHeader(String),

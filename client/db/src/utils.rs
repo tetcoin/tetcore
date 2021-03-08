@@ -26,7 +26,7 @@ use log::debug;
 
 use codec::Decode;
 use sp_trie::DBValue;
-use sp_database::Transaction;
+use tetcore_database::Transaction;
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, Zero,
@@ -269,7 +269,7 @@ pub fn open_database<Block: BlockT>(
 
 			let db = kvdb_rocksdb::Database::open(&db_config, &path)
 				.map_err(|err| sp_blockchain::Error::Backend(format!("{}", err)))?;
-			sp_database::as_database(db)
+			tetcore_database::as_database(db)
 		},
 		#[cfg(not(any(feature = "with-kvdb-rocksdb", test)))]
 		DatabaseSettingsSrc::RocksDb { .. } => {
