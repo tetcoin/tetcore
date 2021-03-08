@@ -79,7 +79,7 @@ fn main() {
 	let opt = Opt::from_args();
 
 	if !opt.json {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 	}
 
 	let mut import_benchmarks = Vec::new();

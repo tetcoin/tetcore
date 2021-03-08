@@ -1277,7 +1277,7 @@ macro_rules! decl_module {
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_initialize(_block_number_not_used: <$trait_instance as $system::Config>::BlockNumber) -> $return {
-				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_initialize"));
+				$crate::tetcore_tracing::enter_span!($crate::tetcore_tracing::trace_span!("on_initialize"));
 				{ $( $impl )* }
 			}
 		}
@@ -1294,7 +1294,7 @@ macro_rules! decl_module {
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_initialize($param: $param_ty) -> $return {
-				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_initialize"));
+				$crate::tetcore_tracing::enter_span!($crate::tetcore_tracing::trace_span!("on_initialize"));
 				{ $( $impl )* }
 			}
 		}
@@ -1322,7 +1322,7 @@ macro_rules! decl_module {
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_runtime_upgrade() -> $return {
-				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_runtime_upgrade"));
+				$crate::tetcore_tracing::enter_span!($crate::tetcore_tracing::trace_span!("on_runtime_upgrade"));
 				let result: $return = (|| { $( $impl )* })();
 
 				$crate::crate_to_pallet_version!()
@@ -1347,7 +1347,7 @@ macro_rules! decl_module {
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_runtime_upgrade() -> $crate::dispatch::Weight {
-				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_runtime_upgrade"));
+				$crate::tetcore_tracing::enter_span!($crate::tetcore_tracing::trace_span!("on_runtime_upgrade"));
 
 				$crate::crate_to_pallet_version!()
 					.put_into_storage::<<$trait_instance as $system::Config>::PalletInfo, Self>();
@@ -1399,7 +1399,7 @@ macro_rules! decl_module {
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_finalize(_block_number_not_used: <$trait_instance as $system::Config>::BlockNumber) {
-				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_finalize"));
+				$crate::tetcore_tracing::enter_span!($crate::tetcore_tracing::trace_span!("on_finalize"));
 				{ $( $impl )* }
 			}
 		}
@@ -1416,7 +1416,7 @@ macro_rules! decl_module {
 			for $module<$trait_instance$(, $instance)?> where $( $other_where_bounds )*
 		{
 			fn on_finalize($param: $param_ty) {
-				$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!("on_finalize"));
+				$crate::tetcore_tracing::enter_span!($crate::tetcore_tracing::trace_span!("on_finalize"));
 				{ $( $impl )* }
 			}
 		}
@@ -1489,7 +1489,7 @@ macro_rules! decl_module {
 		$vis fn $name(
 			$origin: $origin_ty $(, $param: $param_ty )*
 		) -> $crate::dispatch::DispatchResult {
-			$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!(stringify!($name)));
+			$crate::tetcore_tracing::enter_span!($crate::tetcore_tracing::trace_span!(stringify!($name)));
 			{ $( $impl )* }
 			Ok(())
 		}
@@ -1508,7 +1508,7 @@ macro_rules! decl_module {
 	) => {
 		$(#[$fn_attr])*
 		$vis fn $name($origin: $origin_ty $(, $param: $param_ty )* ) -> $result {
-			$crate::sp_tracing::enter_span!($crate::sp_tracing::trace_span!(stringify!($name)));
+			$crate::tetcore_tracing::enter_span!($crate::tetcore_tracing::trace_span!(stringify!($name)));
 			$( $impl )*
 		}
 	};

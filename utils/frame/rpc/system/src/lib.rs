@@ -294,7 +294,7 @@ mod tests {
 
 	#[test]
 	fn should_return_next_nonce_for_some_account() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());
@@ -333,7 +333,7 @@ mod tests {
 
 	#[test]
 	fn dry_run_should_deny_unsafe() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());
@@ -356,7 +356,7 @@ mod tests {
 
 	#[test]
 	fn dry_run_should_work() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());
@@ -388,7 +388,7 @@ mod tests {
 
 	#[test]
 	fn dry_run_should_indicate_error() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());

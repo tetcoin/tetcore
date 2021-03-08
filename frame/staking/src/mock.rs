@@ -371,7 +371,7 @@ impl ExtBuilder {
 		self
 	}
 	pub fn build(self) -> sp_io::TestExternalities {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 		let mut storage = frame_system::GenesisConfig::default()
 			.build_storage::<Test>()
 			.unwrap();

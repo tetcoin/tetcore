@@ -1043,7 +1043,7 @@ mod tests {
 
 	#[test]
 	fn simple_fork() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		let root_parent = H256::random();
 		let key = H256::random()[..].to_vec();
@@ -1264,7 +1264,7 @@ mod tests {
 
 	#[test]
 	fn fix_storage_mismatch_issue() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 		let root_parent = H256::random();
 
 		let key = H256::random()[..].to_vec();
@@ -1336,7 +1336,7 @@ mod tests {
 
 	#[test]
 	fn same_block_no_changes() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		let root_parent = H256::random();
 		let key = H256::random()[..].to_vec();

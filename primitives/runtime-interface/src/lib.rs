@@ -112,7 +112,7 @@ extern crate self as sp_runtime_interface;
 pub use sp_wasm_interface;
 
 #[doc(hidden)]
-pub use sp_tracing;
+pub use tetcore_tracing;
 
 #[doc(hidden)]
 pub use tetcore_std;

@@ -236,7 +236,7 @@ mod tests {
 	#[test]
 	fn ensure_runtime_logger_works_implementation() {
 		if std::env::var("RUN_TEST").is_ok() {
-			sp_tracing::try_init_simple();
+			tetcore_tracing::try_init_simple();
 
 			let client = TestClientBuilder::new().set_execution_strategy(ExecutionStrategy::AlwaysWasm).build();
 			let runtime_api = client.runtime_api();

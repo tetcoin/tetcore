@@ -208,7 +208,7 @@ where
 	/// Start the execution of a particular block.
 	pub fn initialize_block(header: &System::Header) {
 		sp_io::init_tracing();
-		sp_tracing::enter_span!(sp_tracing::Level::TRACE, "init_block");
+		tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "init_block");
 		let digests = Self::extract_pre_digest(&header);
 		Self::initialize_block_impl(
 			header.number(),
@@ -275,7 +275,7 @@ where
 	}
 
 	fn initial_checks(block: &Block) {
-		sp_tracing::enter_span!(sp_tracing::Level::TRACE, "initial_checks");
+		tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "initial_checks");
 		let header = block.header();
 
 		// Check that `parent_hash` is correct.
@@ -290,8 +290,8 @@ where
 	/// Actually execute all transitions for `block`.
 	pub fn execute_block(block: Block) {
 		sp_io::init_tracing();
-		sp_tracing::within_span! {
-			sp_tracing::info_span!( "execute_block", ?block);
+		tetcore_tracing::within_span! {
+			tetcore_tracing::info_span!( "execute_block", ?block);
 		{
 			Self::initialize_block(block.header());
 
@@ -333,7 +333,7 @@ where
 	/// except state-root.
 	pub fn finalize_block() -> System::Header {
 		sp_io::init_tracing();
-		sp_tracing::enter_span!( sp_tracing::Level::TRACE, "finalize_block" );
+		tetcore_tracing::enter_span!( tetcore_tracing::Level::TRACE, "finalize_block" );
 		<frame_system::Module<System>>::note_finished_extrinsics();
 		let block_number = <frame_system::Module<System>>::block_number();
 		<frame_system::Module<System> as OnFinalize<System::BlockNumber>>::on_finalize(block_number);
@@ -359,8 +359,8 @@ where
 		encoded_len: usize,
 		to_note: Vec<u8>,
 	) -> ApplyExtrinsicResult {
-		sp_tracing::enter_span!(
-			sp_tracing::info_span!("apply_extrinsic",
+		tetcore_tracing::enter_span!(
+			tetcore_tracing::info_span!("apply_extrinsic",
 				ext=?sp_core::hexdisplay::HexDisplay::from(&uxt.encode()))
 		);
 		// Verify that the signature is good.
@@ -383,7 +383,7 @@ where
 	}
 
 	fn final_checks(header: &System::Header) {
-		sp_tracing::enter_span!(sp_tracing::Level::TRACE, "final_checks");
+		tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "final_checks");
 		// remove temporaries
 		let new_header = <frame_system::Module<System>>::finalize();
 
@@ -419,24 +419,24 @@ where
 		uxt: Block::Extrinsic,
 	) -> TransactionValidity {
 		sp_io::init_tracing();
-		use sp_tracing::{enter_span, within_span};
+		use tetcore_tracing::{enter_span, within_span};
 
-		enter_span!{ sp_tracing::Level::TRACE, "validate_transaction" };
+		enter_span!{ tetcore_tracing::Level::TRACE, "validate_transaction" };
 
-		let encoded_len = within_span!{ sp_tracing::Level::TRACE, "using_encoded";
+		let encoded_len = within_span!{ tetcore_tracing::Level::TRACE, "using_encoded";
 			uxt.using_encoded(|d| d.len())
 		};
 
-		let xt = within_span!{ sp_tracing::Level::TRACE, "check";
+		let xt = within_span!{ tetcore_tracing::Level::TRACE, "check";
 			uxt.check(&Default::default())
 		}?;
 
-		let dispatch_info = within_span!{ sp_tracing::Level::TRACE, "dispatch_info";
+		let dispatch_info = within_span!{ tetcore_tracing::Level::TRACE, "dispatch_info";
 			xt.get_dispatch_info()
 		};
 
 		within_span! {
-			sp_tracing::Level::TRACE, "validate";
+			tetcore_tracing::Level::TRACE, "validate";
 			xt.validate::<UnsignedValidator>(source, &dispatch_info, encoded_len)
 		}
 	}

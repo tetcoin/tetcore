@@ -346,7 +346,7 @@ impl TestNetFactory for BabeTestNet {
 #[test]
 #[should_panic]
 fn rejects_empty_block() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let mut net = BabeTestNet::new(3);
 	let block_builder = |builder: BlockBuilder<_, _, _>| {
 		builder.build().unwrap().block
@@ -359,7 +359,7 @@ fn rejects_empty_block() {
 fn run_one_test(
 	mutator: impl Fn(&mut TestHeader, Stage) + Send + Sync + 'static,
 ) {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let mutator = Arc::new(mutator) as Mutator;
 
 	MUTATOR.with(|m| *m.borrow_mut() = mutator.clone());
@@ -489,7 +489,7 @@ fn rejects_missing_consensus_digests() {
 
 #[test]
 fn wrong_consensus_engine_id_rejected() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let sig = AuthorityPair::generate().0.sign(b"");
 	let bad_seal: Item = DigestItem::Seal([0; 4], sig.to_vec());
 	assert!(bad_seal.as_babe_pre_digest().is_none());
@@ -498,14 +498,14 @@ fn wrong_consensus_engine_id_rejected() {
 
 #[test]
 fn malformed_pre_digest_rejected() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let bad_seal: Item = DigestItem::Seal(BABE_ENGINE_ID, [0; 64].to_vec());
 	assert!(bad_seal.as_babe_pre_digest().is_none());
 }
 
 #[test]
 fn sig_is_not_pre_digest() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let sig = AuthorityPair::generate().0.sign(b"");
 	let bad_seal: Item = DigestItem::Seal(BABE_ENGINE_ID, sig.to_vec());
 	assert!(bad_seal.as_babe_pre_digest().is_none());
@@ -514,7 +514,7 @@ fn sig_is_not_pre_digest() {
 
 #[test]
 fn can_author_block() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let keystore_path = tempfile::tempdir().expect("Creates keystore path");
 	let keystore: SyncCryptoStorePtr = Arc::new(LocalKeystore::open(keystore_path.path(), None)
 		.expect("Creates keystore"));
@@ -822,7 +822,7 @@ fn verify_slots_are_strictly_increasing() {
 
 #[test]
 fn babe_transcript_generation_match() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let keystore_path = tempfile::tempdir().expect("Creates keystore path");
 	let keystore: SyncCryptoStorePtr = Arc::new(LocalKeystore::open(keystore_path.path(), None)
 		.expect("Creates keystore"));

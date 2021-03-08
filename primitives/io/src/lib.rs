@@ -1067,7 +1067,7 @@ pub trait WasmTracing {
 	/// checked more than once per metadata. This exists for optimisation purposes but is still not
 	/// cheap as it will jump the wasm-native-barrier every time it is called. So an implementation might
 	/// chose to cache the result for the execution of the entire block.
-	fn enabled(&mut self, metadata: Crossing<sp_tracing::WasmMetadata>) -> bool {
+	fn enabled(&mut self, metadata: Crossing<tetcore_tracing::WasmMetadata>) -> bool {
 		let metadata: &tracing_core::metadata::Metadata<'static> = (&metadata.into_inner()).into();
 		tracing::dispatcher::get_default(|d| {
 			d.enabled(metadata)
@@ -1080,7 +1080,7 @@ pub trait WasmTracing {
 	/// and then calls `clone_span` with the ID to signal that we are keeping it around on the wasm-
 	/// side even after the local span is dropped. The resulting ID is then handed over to the wasm-
 	/// side.
-	fn enter_span(&mut self, span: Crossing<sp_tracing::WasmEntryAttributes>) -> u64 {
+	fn enter_span(&mut self, span: Crossing<tetcore_tracing::WasmEntryAttributes>) -> u64 {
 		let span: tracing::Span = span.into_inner().into();
 		match span.id() {
 			Some(id) => tracing::dispatcher::get_default(|d| {
@@ -1097,7 +1097,7 @@ pub trait WasmTracing {
 	}
 
 	/// Emit the given event to the global tracer on the native side
-	fn event(&mut self, event: Crossing<sp_tracing::WasmEntryAttributes>) {
+	fn event(&mut self, event: Crossing<tetcore_tracing::WasmEntryAttributes>) {
 		event.into_inner().emit();
 	}
 
@@ -1157,7 +1157,7 @@ mod tracing_setup {
 	}
 
 
-	/// Initialize tracing of sp_tracing on wasm with `with-tracing` enabled.
+	/// Initialize tracing of tetcore_tracing on wasm with `with-tracing` enabled.
 	/// Can be called multiple times from within the same process and will only
 	/// set the global bridging subscriber once.
 	pub fn init_tracing() {
@@ -1171,7 +1171,7 @@ mod tracing_setup {
 
 #[cfg(not(all(not(feature="std"), feature="with-tracing")))]
 mod tracing_setup {
-	/// Initialize tracing of sp_tracing not necessary – noop. To enable build
+	/// Initialize tracing of tetcore_tracing not necessary – noop. To enable build
 	/// without std and with the `with-tracing`-feature.
 	pub fn init_tracing() { }
 }

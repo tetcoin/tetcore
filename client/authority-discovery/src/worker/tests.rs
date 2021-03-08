@@ -233,7 +233,7 @@ fn new_registers_metrics() {
 
 #[test]
 fn triggers_dht_get_query() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let (_dht_event_tx, dht_event_rx) = channel(1000);
 
 	// Generate authority keys
@@ -266,7 +266,7 @@ fn triggers_dht_get_query() {
 
 #[test]
 fn publish_discover_cycle() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 
 	let mut pool = LocalPool::new();
 

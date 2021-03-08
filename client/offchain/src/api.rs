@@ -330,7 +330,7 @@ mod tests {
 	}
 
 	fn offchain_api() -> (Api<LocalStorage>, AsyncApi) {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 		let db = LocalStorage::new_test();
 		let mock = Arc::new(TestNetwork());
 		let shared_client = SharedClient::new();

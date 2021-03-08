@@ -349,7 +349,7 @@ fn add_forced_change(
 
 #[test]
 fn finalize_3_voters_no_observers() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let mut runtime = Runtime::new().unwrap();
 	let peers = &[Ed25519Keyring::Alice, Ed25519Keyring::Bob, Ed25519Keyring::Charlie];
 	let voters = make_ids(peers);
@@ -432,7 +432,7 @@ fn finalize_3_voters_1_full_observer() {
 
 #[test]
 fn transition_3_voters_twice_1_full_observer() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let peers_a = &[
 		Ed25519Keyring::Alice,
 		Ed25519Keyring::Bob,
@@ -672,7 +672,7 @@ fn sync_justifications_on_change_blocks() {
 
 #[test]
 fn finalizes_multiple_pending_changes_in_order() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let mut runtime = Runtime::new().unwrap();
 
 	let peers_a = &[Ed25519Keyring::Alice, Ed25519Keyring::Bob, Ed25519Keyring::Charlie];
@@ -733,7 +733,7 @@ fn finalizes_multiple_pending_changes_in_order() {
 
 #[test]
 fn force_change_to_new_set() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let mut runtime = Runtime::new().unwrap();
 	// two of these guys are offline.
 	let genesis_authorities = &[
@@ -895,7 +895,7 @@ fn voter_persists_its_votes() {
 	use std::sync::atomic::{AtomicUsize, Ordering};
 	use futures::future;
 
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let mut runtime = Runtime::new().unwrap();
 	let mut keystore_paths = Vec::new();
 
@@ -1152,7 +1152,7 @@ fn voter_persists_its_votes() {
 
 #[test]
 fn finalize_3_voters_1_light_observer() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let mut runtime = Runtime::new().unwrap();
 	let authorities = &[Ed25519Keyring::Alice, Ed25519Keyring::Bob, Ed25519Keyring::Charlie];
 	let voters = make_ids(authorities);
@@ -1188,7 +1188,7 @@ fn finalize_3_voters_1_light_observer() {
 
 #[test]
 fn voter_catches_up_to_latest_round_when_behind() {
-	sp_tracing::try_init_simple();
+	tetcore_tracing::try_init_simple();
 	let mut runtime = Runtime::new().unwrap();
 
 	let peers = &[Ed25519Keyring::Alice, Ed25519Keyring::Bob];

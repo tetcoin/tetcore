@@ -2149,7 +2149,7 @@ mod test {
 	/// have requested block 2 from both peers.
 	#[test]
 	fn do_not_report_peer_on_block_response_for_block_request() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		let mut client = Arc::new(TestClientBuilder::new().build());
 		let info = client.info();
@@ -2258,7 +2258,7 @@ mod test {
 	/// that we start an ancestor search to find the common number.
 	#[test]
 	fn do_ancestor_search_when_common_block_to_best_qeued_gap_is_to_big() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		let blocks = {
 			let mut client = Arc::new(TestClientBuilder::new().build());
@@ -2364,7 +2364,7 @@ mod test {
 	/// the fork and finish it ;)
 	#[test]
 	fn can_sync_huge_fork() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 
 		let mut client = Arc::new(TestClientBuilder::new().build());
 		let blocks = (0..MAX_BLOCKS_TO_LOOK_BACKWARDS * 4)

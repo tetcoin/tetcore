@@ -2007,7 +2007,7 @@ mod tests {
 
 	#[test]
 	fn send_receive_header() {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 		let chan = oneshot::channel();
 		let request = light::RemoteHeaderRequest {
 			cht_root: Default::default(),

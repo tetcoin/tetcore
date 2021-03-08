@@ -301,7 +301,7 @@ impl<G, E, F, L, U> TestNet<G, E, F, L, U> where
 		)>,
 		base_port: u16
 	) -> TestNet<G, E, F, L, U> {
-		sp_tracing::try_init_simple();
+		tetcore_tracing::try_init_simple();
 		fdlimit::raise_fd_limit();
 		let runtime = Runtime::new().expect("Error creating tokio runtime");
 		let mut net = TestNet {

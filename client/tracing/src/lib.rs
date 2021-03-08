@@ -47,7 +47,7 @@ use tracing_subscriber::{
 	layer::{Layer, Context},
 };
 use sc_telemetry::{telemetry, TETCORE_INFO};
-use sp_tracing::{WASM_NAME_KEY, WASM_TARGET_KEY, WASM_TRACE_IDENTIFIER};
+use tetcore_tracing::{WASM_NAME_KEY, WASM_TARGET_KEY, WASM_TRACE_IDENTIFIER};
 
 #[doc(hidden)]
 pub use tracing;

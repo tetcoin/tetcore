@@ -54,17 +54,17 @@
 /// # Example
 ///
 /// ```rust
-/// sp_tracing::enter_span!(sp_tracing::Level::TRACE, "fn wide span");
+/// tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "fn wide span");
 /// {
-///		sp_tracing::enter_span!(sp_tracing::trace_span!("outer-span"));
+///		tetcore_tracing::enter_span!(tetcore_tracing::trace_span!("outer-span"));
 ///		{
-///			sp_tracing::enter_span!(sp_tracing::Level::TRACE, "inner-span");
+///			tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "inner-span");
 ///			// ..
 ///		}  // inner span exists here
 ///	} // outer span exists here
 ///
-/// sp_tracing::within_span! {
-///		sp_tracing::debug_span!("debug-span", you_can_pass="any params");
+/// tetcore_tracing::within_span! {
+///		tetcore_tracing::debug_span!("debug-span", you_can_pass="any params");
 ///     1 + 1;
 ///     // some other complex code
 /// } // debug span ends here
@@ -121,26 +121,26 @@ pub use crate::types::{
 /// Runs given code within a tracing span, measuring it's execution time.
 ///
 /// If tracing is not enabled, the code is still executed. Pass in level and name or
-/// use any valid `sp_tracing::Span`followe by `;` and the code to execute,
+/// use any valid `tetcore_tracing::Span`followe by `;` and the code to execute,
 ///
 /// # Example
 ///
 /// ```
-/// sp_tracing::within_span! {
-///		sp_tracing::Level::TRACE,
+/// tetcore_tracing::within_span! {
+///		tetcore_tracing::Level::TRACE,
 ///     "test-span";
 ///     1 + 1;
 ///     // some other complex code
 /// }
 ///
-/// sp_tracing::within_span! {
-///		sp_tracing::span!(sp_tracing::Level::WARN, "warn-span", you_can_pass="any params");
+/// tetcore_tracing::within_span! {
+///		tetcore_tracing::span!(tetcore_tracing::Level::WARN, "warn-span", you_can_pass="any params");
 ///     1 + 1;
 ///     // some other complex code
 /// }
 ///
-/// sp_tracing::within_span! {
-///		sp_tracing::debug_span!("debug-span", you_can_pass="any params");
+/// tetcore_tracing::within_span! {
+///		tetcore_tracing::debug_span!("debug-span", you_can_pass="any params");
 ///     1 + 1;
 ///     // some other complex code
 /// }
@@ -199,7 +199,7 @@ macro_rules! enter_span {
 /// Enter a span.
 ///
 /// The span will be valid, until the scope is left. Use either level and name
-/// or pass in any valid `sp_tracing::Span` for extended usage. The span will
+/// or pass in any valid `tetcore_tracing::Span` for extended usage. The span will
 /// be exited on drop – which is at the end of the block or to the next
 /// `enter_span!` calls, as this overwrites the local variable. For nested
 /// usage or to ensure the span closes at certain time either put it into a block
@@ -208,16 +208,16 @@ macro_rules! enter_span {
 /// # Example
 ///
 /// ```
-/// sp_tracing::enter_span!(sp_tracing::Level::TRACE, "test-span");
+/// tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "test-span");
 /// // previous will be dropped here
-/// sp_tracing::enter_span!(
-/// 	sp_tracing::span!(sp_tracing::Level::DEBUG, "debug-span", params="value"));
-/// sp_tracing::enter_span!(sp_tracing::info_span!("info-span",  params="value"));
+/// tetcore_tracing::enter_span!(
+/// 	tetcore_tracing::span!(tetcore_tracing::Level::DEBUG, "debug-span", params="value"));
+/// tetcore_tracing::enter_span!(tetcore_tracing::info_span!("info-span",  params="value"));
 ///
 /// {
-///		sp_tracing::enter_span!(sp_tracing::Level::TRACE, "outer-span");
+///		tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "outer-span");
 ///		{
-///			sp_tracing::enter_span!(sp_tracing::Level::TRACE, "inner-span");
+///			tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "inner-span");
 ///			// ..
 ///		}  // inner span exists here
 ///	} // outer span exists here

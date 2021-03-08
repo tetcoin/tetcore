@@ -23,7 +23,7 @@
 extern crate self as frame_support;
 
 #[doc(hidden)]
-pub use sp_tracing;
+pub use tetcore_tracing;
 
 #[cfg(feature = "std")]
 pub use serde;
