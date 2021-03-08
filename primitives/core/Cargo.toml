@@ -104,7 +104,7 @@ std = [
 	"regex",
 	"num-traits/std",
 	"tiny-keccak",
-	"tp-debug-derive/std",
+	"debug-derive/std",
 	"tp-externalities",
 	"tp-storage/std",
 	"tp-runtime-interface/std",
