@@ -287,13 +287,13 @@ impl core::Benchmark for TrieWriteBenchmark {
 	fn run(&mut self, mode: Mode) -> std::time::Duration {
 		let mut rng = rand::thread_rng();
 		let mut db = self.database.clone();
-		let kvdb = db.open(self.database_type);
+		let tetsy_kvdb = db.open(self.database_type);
 
 		let mut new_root = self.root.clone();
 
 		let mut overlay = HashMap::new();
 		let mut trie = SimpleTrie {
-			db: kvdb.clone(),
+			db: tetsy_kvdb.clone(),
 			overlay: &mut overlay,
 		};
 		let mut trie_db_mut = TrieDBMut::from_existing(&mut trie, &mut new_root)
@@ -321,14 +321,14 @@ impl core::Benchmark for TrieWriteBenchmark {
 		trie_db_mut.commit();
 		drop(trie_db_mut);
 
-		let mut transaction = kvdb.transaction();
+		let mut transaction = tetsy_kvdb.transaction();
 		for (key, value) in overlay.into_iter() {
 			match value {
 				Some(value) => transaction.put(0, &key[..], &value[..]),
 				None => transaction.delete(0, &key[..]),
 			}
 		}
-		kvdb.write(transaction).expect("Failed to write transaction");
+		tetsy_kvdb.write(transaction).expect("Failed to write transaction");
 
 		let elapsed = started.elapsed();
 
