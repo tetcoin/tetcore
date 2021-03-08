@@ -18,7 +18,7 @@ name = "bench"
 harness = false
 
 [dependencies]
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 hash-db = { version = "0.15.2", default-features = false }
 trie-db = { version = "0.22.2", default-features = false }

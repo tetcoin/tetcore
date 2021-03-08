@@ -16,7 +16,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
 tp-arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }

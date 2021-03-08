@@ -16,7 +16,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 tp-api = { version = "2.0.0", default-features = false, path = "../api" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
 impl-trait-for-tuples = "0.2.0"
 wasm-timer = { version = "0.2", optional = true }

@@ -22,7 +22,7 @@ tp-runtime-interface = { version = "2.0.0", default-features = false, path = "..
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 
 [dev-dependencies]
-codec = { package = "tetsy-scale-codec", default-features = false, version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", default-features = false, version = "2.0.1" }
 
 [features]
 default = ["std"]

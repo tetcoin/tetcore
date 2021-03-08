@@ -19,7 +19,7 @@ tetcore-std = { version = "2.0.0", path = "../../std" }
 tp-runtime = { version = "2.0.0", path = "../../runtime" }
 honggfuzz = "0.5"
 rand = { version = "0.7.3", features = ["std", "small_rng"] }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 
 [[bin]]
 name = "reduce"

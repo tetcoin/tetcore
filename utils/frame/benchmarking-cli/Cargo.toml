@@ -23,7 +23,7 @@ tp-externalities = { version = "0.8.0", path = "../../../primitives/externalitie
 tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 tp-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
-codec = { version = "2.0.0", package = "tetsy-scale-codec" }
+codec = { version = "2.0.1", package = "tetsy-scale-codec" }
 structopt = "0.3.8"
 chrono = "0.4"
 serde = "1.0.116"
