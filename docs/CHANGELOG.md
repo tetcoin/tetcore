@@ -12,7 +12,7 @@ Patch release with backports to fix broken nightly builds.
 Namely contains backports of
 
 * [#7381: Make Tetcore compile with latest nightly](https://github.com/tetcoin/tetcore/pull/7381)
-* [#7238: Fix compilation with environmental on latest nightly](https://github.com/tetcoin/tetcore/pull/7238)
+* [#7238: Fix compilation with environ on latest nightly](https://github.com/tetcoin/tetcore/pull/7238)
 * [#7395: Make benchmarks compile with latest nightly](https://github.com/tetcoin/tetcore/pull/7395)
 * [#7838: Fix incorrect use of syn::exports](https://github.com/tetcoin/tetcore/pull/7838) (partially)
 * [#7854: Update to futures 0.3.9](https://github.com/tetcoin/tetcore/pull/7854)

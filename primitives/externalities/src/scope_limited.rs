@@ -15,11 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Stores the externalities in an `environmental` value to make it scope limited available.
+//! Stores the externalities in an `environ` value to make it scope limited available.
 
 use crate::Externalities;
 
-environmental::environmental!(ext: trait Externalities);
+environ::environ!(ext: trait Externalities);
 
 /// Set the given externalities while executing the given closure. To get access to the externalities
 /// while executing the given closure [`with_externalities`] grants access to them. The externalities
