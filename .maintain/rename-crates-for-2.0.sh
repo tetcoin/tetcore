@@ -69,7 +69,7 @@ TO_RENAME=(
     "tetcore-runtime-interface tp-runtime-interface"
     "tetcore-runtime-interface-proc-macro tp-runtime-interface-proc-macro"
     "tetcore-runtime-interface-test-wasm tp-runtime-interface-test-wasm"
-    "tetcore-serializer tp-serializer"
+    "tetcore-serializer serializer"
     "tetcore-session tp-session"
     "sr-api tp-api"
     "sr-api-proc-macro tp-api-proc-macro"

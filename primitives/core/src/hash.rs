@@ -32,7 +32,7 @@ pub fn convert_hash<H1: Default + AsMut<[u8]>, H2: AsRef<[u8]>>(src: &H2) -> H1 
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_serializer as ser;
+	use serializer as ser;
 
 	#[test]
 	fn test_h160() {
