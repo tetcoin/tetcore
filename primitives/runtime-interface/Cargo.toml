@@ -41,7 +41,7 @@ std = [
 	"tp-tracing/std",
 	"codec/std",
 	"tp-externalities",
-	"primitive-types/std",
+	"tetsy-primitive-types/std",
 ]
 
 # ATTENTION
