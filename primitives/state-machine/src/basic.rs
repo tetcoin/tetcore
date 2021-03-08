@@ -33,7 +33,7 @@ use sp_core::{
 };
 use log::warn;
 use codec::Encode;
-use sp_externalities::{Extensions, Extension};
+use externalities::{Extensions, Extension};
 
 /// Simple Map-based Externalities impl.
 #[derive(Debug)]
@@ -89,7 +89,7 @@ impl BasicExternalities {
 	///
 	/// Returns the result of the given closure.
 	pub fn execute_with<R>(&mut self, f: impl FnOnce() -> R) -> R {
-		sp_externalities::set_and_run_with_externalities(self, f)
+		externalities::set_and_run_with_externalities(self, f)
 	}
 
 	/// List of active extensions.
@@ -334,7 +334,7 @@ impl Externalities for BasicExternalities {
 	}
 }
 
-impl sp_externalities::ExtensionStore for BasicExternalities {
+impl externalities::ExtensionStore for BasicExternalities {
 	fn extension_by_type_id(&mut self, type_id: TypeId) -> Option<&mut dyn Any> {
 		self.extensions.get_mut(type_id)
 	}
@@ -342,16 +342,16 @@ impl sp_externalities::ExtensionStore for BasicExternalities {
 	fn register_extension_with_type_id(
 		&mut self,
 		type_id: TypeId,
-		extension: Box<dyn sp_externalities::Extension>,
-	) -> Result<(), sp_externalities::Error> {
+		extension: Box<dyn externalities::Extension>,
+	) -> Result<(), externalities::Error> {
 		self.extensions.register_with_type_id(type_id, extension)
 	}
 
-	fn deregister_extension_by_type_id(&mut self, type_id: TypeId) -> Result<(), sp_externalities::Error> {
+	fn deregister_extension_by_type_id(&mut self, type_id: TypeId) -> Result<(), externalities::Error> {
 		if self.extensions.deregister(type_id) {
 			Ok(())
 		} else {
-			Err(sp_externalities::Error::ExtensionIsNotRegistered(type_id))
+			Err(externalities::Error::ExtensionIsNotRegistered(type_id))
 		}
 	}
 }

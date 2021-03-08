@@ -62,7 +62,7 @@ pub use async_externalities::{new_async_externalities, AsyncExternalities};
 #[cfg(feature = "std")]
 mod inner {
 	use std::{panic::AssertUnwindSafe, sync::mpsc};
-	use sp_externalities::ExternalitiesExt as _;
+	use externalities::ExternalitiesExt as _;
 	use sp_core::traits::TaskExecutorExt;
 
 	/// Task handle (wasm).
@@ -83,7 +83,7 @@ mod inner {
 
 	/// Spawn new runtime task (native).
 	pub fn spawn(entry_point: fn(Vec<u8>) -> Vec<u8>, data: Vec<u8>) -> DataJoinHandle {
-		let scheduler = sp_externalities::with_externalities(|mut ext| ext.extension::<TaskExecutorExt>()
+		let scheduler = externalities::with_externalities(|mut ext| ext.extension::<TaskExecutorExt>()
 			.expect("No task executor associated with the current context!")
 			.clone()
 		).expect("Spawn called outside of externalities context!");
@@ -95,7 +95,7 @@ mod inner {
 				Ok(mut ext) => {
 					let mut ext = AssertUnwindSafe(&mut ext);
 					match std::panic::catch_unwind(move || {
-						sp_externalities::set_and_run_with_externalities(
+						externalities::set_and_run_with_externalities(
 							&mut **ext,
 							move || entry_point(data),
 						)

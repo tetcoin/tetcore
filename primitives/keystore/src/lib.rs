@@ -359,7 +359,7 @@ pub trait SyncCryptoStore: CryptoStore + Send + Sync {
 /// A pointer to a keystore.
 pub type SyncCryptoStorePtr = Arc<dyn SyncCryptoStore>;
 
-sp_externalities::decl_extension! {
+externalities::decl_extension! {
 	/// The keystore extension to register/retrieve from the externalities.
 	pub struct KeystoreExt(SyncCryptoStorePtr);
 }

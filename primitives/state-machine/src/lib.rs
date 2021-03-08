@@ -177,7 +177,7 @@ mod execution {
 		storage::ChildInfo, NativeOrEncoded, NeverNativeValue, hexdisplay::HexDisplay,
 		traits::{CodeExecutor, CallInWasmExt, RuntimeCode, SpawnNamed},
 	};
-	use sp_externalities::Extensions;
+	use externalities::Extensions;
 
 
 	const PROOF_CLOSE_TRANSACTION: &str = "\
@@ -916,7 +916,7 @@ mod tests {
 			let using_native = use_native && self.native_available;
 			match (using_native, self.native_succeeds, self.fallback_succeeds, native_call) {
 				(true, true, _, Some(call)) => {
-					let res = sp_externalities::set_and_run_with_externalities(ext, || call());
+					let res = externalities::set_and_run_with_externalities(ext, || call());
 					(
 						res.map(NativeOrEncoded::Native).map_err(|_| 0),
 						true
@@ -1529,8 +1529,8 @@ mod tests {
 
 	#[test]
 	fn runtime_registered_extensions_are_removed_after_execution() {
-		use sp_externalities::ExternalitiesExt;
-		sp_externalities::decl_extension! {
+		use externalities::ExternalitiesExt;
+		externalities::decl_extension! {
 			struct DummyExt(u32);
 		}
 
@@ -1559,7 +1559,7 @@ mod tests {
 			state_machine.execute_using_consensus_failure_handler::<fn(_, _) -> _, _, _>(
 				ExecutionManager::NativeWhenPossible,
 				Some(|| {
-					sp_externalities::with_externalities(|mut ext| {
+					externalities::with_externalities(|mut ext| {
 						ext.register_extension(DummyExt(2)).unwrap();
 					}).unwrap();
 

@@ -69,7 +69,7 @@ impl<'a, H: Hasher, B: 'a + Backend<H>> ReadOnlyExternalities<'a, H, B> {
 	///
 	/// Returns the result of the given closure.
 	pub fn execute_with<R>(&mut self, f: impl FnOnce() -> R) -> R {
-		sp_externalities::set_and_run_with_externalities(self, f)
+		externalities::set_and_run_with_externalities(self, f)
 	}
 }
 
@@ -204,7 +204,7 @@ impl<'a, H: Hasher, B: 'a + Backend<H>> Externalities for ReadOnlyExternalities<
 	}
 }
 
-impl<'a, H: Hasher, B: 'a + Backend<H>> sp_externalities::ExtensionStore for ReadOnlyExternalities<'a, H, B> {
+impl<'a, H: Hasher, B: 'a + Backend<H>> externalities::ExtensionStore for ReadOnlyExternalities<'a, H, B> {
 	fn extension_by_type_id(&mut self, _type_id: TypeId) -> Option<&mut dyn Any> {
 		unimplemented!("extension_by_type_id is not supported in ReadOnlyExternalities")
 	}
@@ -212,12 +212,12 @@ impl<'a, H: Hasher, B: 'a + Backend<H>> sp_externalities::ExtensionStore for Rea
 	fn register_extension_with_type_id(
 		&mut self,
 		_type_id: TypeId,
-		_extension: Box<dyn sp_externalities::Extension>,
-	) -> Result<(), sp_externalities::Error> {
+		_extension: Box<dyn externalities::Extension>,
+	) -> Result<(), externalities::Error> {
 		unimplemented!("register_extension_with_type_id is not supported in ReadOnlyExternalities")
 	}
 
-	fn deregister_extension_by_type_id(&mut self, _type_id: TypeId) -> Result<(), sp_externalities::Error> {
+	fn deregister_extension_by_type_id(&mut self, _type_id: TypeId) -> Result<(), externalities::Error> {
 		unimplemented!("deregister_extension_by_type_id is not supported in ReadOnlyExternalities")
 	}
 }

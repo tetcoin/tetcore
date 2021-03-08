@@ -27,7 +27,7 @@ use sp_state_machine::{
 	OverlayedChanges, ExecutionManager, ExecutionStrategy, StorageProof,
 };
 use sc_executor::{RuntimeVersion, NativeVersion};
-use sp_externalities::Extensions;
+use externalities::Extensions;
 use sp_core::NativeOrEncoded;
 
 use sp_api::{ProofRecorder, InitializeBlock, StorageTransactionCache};

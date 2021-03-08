@@ -1147,7 +1147,7 @@ fn test_read_child_storage() {
 }
 
 fn test_witness(proof: StorageProof, root: crate::Hash) {
-	use sp_externalities::Externalities;
+	use externalities::Externalities;
 	let db: sp_trie::MemoryDB<crate::Hashing> = proof.into_memory_db();
 	let backend = sp_state_machine::TrieBackend::<_, crate::Hashing>::new(
 		db,

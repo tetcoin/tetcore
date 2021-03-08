@@ -47,7 +47,7 @@ use sc_client_api::{
 	RemoteCallRequest, StorageProvider, ChangesProof, RemoteBodyRequest, RemoteReadRequest,
 	RemoteChangesRequest, FetchChecker, RemoteReadChildRequest, RemoteHeaderRequest, BlockBackend,
 };
-use sp_externalities::Extensions;
+use externalities::Extensions;
 use sc_block_builder::BlockBuilderProvider;
 use sp_blockchain::{
 	BlockStatus, Result as ClientResult, Error as ClientError, CachedHeaderMetadata,

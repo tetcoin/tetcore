@@ -41,7 +41,7 @@ use sp_core::{
 	traits::TaskExecutorExt,
 	testing::TaskExecutor,
 };
-use sp_externalities::{Extensions, Extension};
+use externalities::{Extensions, Extension};
 
 /// Simple HashMap-based Externalities impl.
 pub struct TestExternalities<H: Hasher, N: ChangesTrieBlockNumber = u64>
@@ -194,7 +194,7 @@ impl<H: Hasher, N: ChangesTrieBlockNumber> TestExternalities<H, N>
 	/// Returns the result of the given closure.
 	pub fn execute_with<R>(&mut self, execute: impl FnOnce() -> R) -> R {
 		let mut ext = self.ext();
-		sp_externalities::set_and_run_with_externalities(&mut ext, execute)
+		externalities::set_and_run_with_externalities(&mut ext, execute)
 	}
 
 	/// Execute the given closure while `self` is set as externalities.
@@ -204,7 +204,7 @@ impl<H: Hasher, N: ChangesTrieBlockNumber> TestExternalities<H, N>
 	pub fn execute_with_safe<R>(&mut self, f: impl FnOnce() -> R + UnwindSafe) -> Result<R, String> {
 		let mut ext = AssertUnwindSafe(self.ext());
 		std::panic::catch_unwind(move ||
-			sp_externalities::set_and_run_with_externalities(&mut *ext, f)
+			externalities::set_and_run_with_externalities(&mut *ext, f)
 		).map_err(|e| {
 			format!("Closure panicked: {:?}", e)
 		})
@@ -246,7 +246,7 @@ impl<H: Hasher, N: ChangesTrieBlockNumber> From<Storage> for TestExternalities<H
 	}
 }
 
-impl<H, N> sp_externalities::ExtensionStore for TestExternalities<H, N> where
+impl<H, N> externalities::ExtensionStore for TestExternalities<H, N> where
 	H: Hasher,
 	H::Out: Ord + codec::Codec,
 	N: ChangesTrieBlockNumber,
@@ -259,15 +259,15 @@ impl<H, N> sp_externalities::ExtensionStore for TestExternalities<H, N> where
 		&mut self,
 		type_id: TypeId,
 		extension: Box<dyn Extension>,
-	) -> Result<(), sp_externalities::Error> {
+	) -> Result<(), externalities::Error> {
 		self.extensions.register_with_type_id(type_id, extension)
 	}
 
-	fn deregister_extension_by_type_id(&mut self, type_id: TypeId) -> Result<(), sp_externalities::Error> {
+	fn deregister_extension_by_type_id(&mut self, type_id: TypeId) -> Result<(), externalities::Error> {
 		if self.extensions.deregister(type_id) {
 			Ok(())
 		} else {
-			Err(sp_externalities::Error::ExtensionIsNotRegistered(type_id))
+			Err(externalities::Error::ExtensionIsNotRegistered(type_id))
 		}
 	}
 }

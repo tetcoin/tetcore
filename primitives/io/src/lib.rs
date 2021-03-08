@@ -62,7 +62,7 @@ use sp_runtime_interface::pass_by::PassBy;
 use codec::{Encode, Decode};
 
 #[cfg(feature = "std")]
-use sp_externalities::{ExternalitiesExt, Externalities};
+use externalities::{ExternalitiesExt, Externalities};
 
 #[cfg(feature = "std")]
 mod batch_verifier;
@@ -781,7 +781,7 @@ pub trait OffchainIndex {
 }
 
 #[cfg(feature = "std")]
-sp_externalities::decl_extension! {
+externalities::decl_extension! {
 	/// Batch verification extension to register/retrieve from the externalities.
 	pub struct VerificationExt(BatchVerifier);
 }
@@ -1275,7 +1275,7 @@ pub trait RuntimeTasks {
 	///
 	/// This should not be used directly. Use `sp_tasks::spawn` instead.
 	fn spawn(dispatcher_ref: u32, entry: u32, payload: Vec<u8>) -> u64 {
-		sp_externalities::with_externalities(|mut ext|{
+		externalities::with_externalities(|mut ext|{
 			let runtime_spawn = ext.extension::<RuntimeSpawnExt>()
 				.expect("Cannot spawn without dynamic runtime dispatcher (RuntimeSpawnExt)");
 			runtime_spawn.spawn_call(dispatcher_ref, entry, payload)
@@ -1286,7 +1286,7 @@ pub trait RuntimeTasks {
 	///
 	/// This should not be used directly. Use `join` of `sp_tasks::spawn` result instead.
 	fn join(handle: u64) -> Vec<u8> {
-		sp_externalities::with_externalities(|mut ext| {
+		externalities::with_externalities(|mut ext| {
 			let runtime_spawn = ext.extension::<RuntimeSpawnExt>()
 				.expect("Cannot join without dynamic runtime dispatcher (RuntimeSpawnExt)");
 			runtime_spawn.join(handle)

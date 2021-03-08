@@ -29,7 +29,7 @@ use sp_core::{
 use sp_runtime::{
 	generic::BlockId, traits::{One, Block as BlockT, Header as HeaderT, HashFor},
 };
-use sp_externalities::Extensions;
+use externalities::Extensions;
 use sp_state_machine::{
 	self, Backend as StateBackend, OverlayedChanges, ExecutionStrategy, create_proof_check_backend,
 	execution_proof_check_on_trie_backend, ExecutionManager, StorageProof,

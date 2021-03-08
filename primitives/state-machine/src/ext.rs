@@ -27,7 +27,7 @@ use sp_core::{
 	hexdisplay::HexDisplay,
 };
 use sp_trie::{trie_types::Layout, empty_child_trie_root};
-use sp_externalities::{
+use externalities::{
 	Externalities, Extensions, Extension, ExtensionStore,
 };
 use codec::{Decode, Encode, EncodeAppend};
@@ -724,15 +724,15 @@ where
 		&mut self,
 		_type_id: TypeId,
 		_extension: Box<dyn Extension>,
-	) -> Result<(), sp_externalities::Error> {
-		Err(sp_externalities::Error::ExtensionsAreNotSupported)
+	) -> Result<(), externalities::Error> {
+		Err(externalities::Error::ExtensionsAreNotSupported)
 	}
 
 	fn deregister_extension_by_type_id(
 		&mut self,
 		_type_id: TypeId,
-	) -> Result<(), sp_externalities::Error> {
-		Err(sp_externalities::Error::ExtensionsAreNotSupported)
+	) -> Result<(), externalities::Error> {
+		Err(externalities::Error::ExtensionsAreNotSupported)
 	}
 }
 
@@ -751,23 +751,23 @@ where
 		&mut self,
 		type_id: TypeId,
 		extension: Box<dyn Extension>,
-	) -> Result<(), sp_externalities::Error> {
+	) -> Result<(), externalities::Error> {
 		if let Some(ref mut extensions) = self.extensions {
 			extensions.register(type_id, extension)
 		} else {
-			Err(sp_externalities::Error::ExtensionsAreNotSupported)
+			Err(externalities::Error::ExtensionsAreNotSupported)
 		}
 	}
 
-	fn deregister_extension_by_type_id(&mut self, type_id: TypeId) -> Result<(), sp_externalities::Error> {
+	fn deregister_extension_by_type_id(&mut self, type_id: TypeId) -> Result<(), externalities::Error> {
 		if let Some(ref mut extensions) = self.extensions {
 			if extensions.deregister(type_id) {
 				Ok(())
 			} else {
-				Err(sp_externalities::Error::ExtensionIsNotRegistered(type_id))
+				Err(externalities::Error::ExtensionIsNotRegistered(type_id))
 			}
 		} else {
-			Err(sp_externalities::Error::ExtensionsAreNotSupported)
+			Err(externalities::Error::ExtensionsAreNotSupported)
 		}
 	}
 }

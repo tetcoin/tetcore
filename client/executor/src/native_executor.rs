@@ -40,7 +40,7 @@ use sp_core::{
 use log::trace;
 use sp_wasm_interface::{HostFunctions, Function};
 use sc_executor_common::wasm_runtime::{WasmInstance, WasmModule, InvokeMethod};
-use sp_externalities::ExternalitiesExt as _;
+use externalities::ExternalitiesExt as _;
 use sp_tasks::new_async_externalities;
 
 /// Default num of pages for the heap
@@ -52,7 +52,7 @@ const DEFAULT_HEAP_PAGES: u64 = 1024;
 pub fn with_externalities_safe<F, U>(ext: &mut dyn Externalities, f: F) -> Result<U>
 	where F: UnwindSafe + FnOnce() -> U
 {
-	sp_externalities::set_and_run_with_externalities(
+	externalities::set_and_run_with_externalities(
 		ext,
 		move || {
 			// Tetcore uses custom panic hook that terminates process on panic. Disable
@@ -414,7 +414,7 @@ impl RuntimeInstanceSpawn {
 	///
 	/// This extensions will spawn instances from provided `module`.
 	pub fn register_on_externalities(module: Arc<dyn WasmModule>) {
-		sp_externalities::with_externalities(
+		externalities::with_externalities(
 			move |mut ext| {
 				if let Some(runtime_spawn) =
 					Self::with_externalities_and_module(module.clone(), ext)

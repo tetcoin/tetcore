@@ -23,7 +23,7 @@ use sc_cli::{SharedParams, CliConfiguration, ExecutionStrategy, Result};
 use sc_client_db::BenchmarkingState;
 use sc_executor::NativeExecutor;
 use sp_state_machine::StateMachine;
-use sp_externalities::Extensions;
+use externalities::Extensions;
 use sc_service::{Configuration, NativeExecutionDispatch};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 use sp_core::offchain::{OffchainExt, testing::TestOffchainExt};

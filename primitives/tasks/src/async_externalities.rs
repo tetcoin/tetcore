@@ -23,7 +23,7 @@ use sp_core::{
 	storage::{ChildInfo, TrackedStorageKey},
 	traits::{Externalities, SpawnNamed, TaskExecutorExt, RuntimeSpawnExt, RuntimeSpawn},
 };
-use sp_externalities::{Extensions, ExternalitiesExt as _};
+use externalities::{Extensions, ExternalitiesExt as _};
 
 /// Simple state-less externalities for use in async context.
 ///
@@ -191,7 +191,7 @@ impl Externalities for AsyncExternalities {
 	}
 }
 
-impl sp_externalities::ExtensionStore for AsyncExternalities {
+impl externalities::ExtensionStore for AsyncExternalities {
 	fn extension_by_type_id(&mut self, type_id: TypeId) -> Option<&mut dyn Any> {
 		self.extensions.get_mut(type_id)
 	}
@@ -199,16 +199,16 @@ impl sp_externalities::ExtensionStore for AsyncExternalities {
 	fn register_extension_with_type_id(
 		&mut self,
 		type_id: TypeId,
-		extension: Box<dyn sp_externalities::Extension>,
-	) -> Result<(), sp_externalities::Error> {
+		extension: Box<dyn externalities::Extension>,
+	) -> Result<(), externalities::Error> {
 		self.extensions.register_with_type_id(type_id, extension)
 	}
 
-	fn deregister_extension_by_type_id(&mut self, type_id: TypeId) -> Result<(), sp_externalities::Error> {
+	fn deregister_extension_by_type_id(&mut self, type_id: TypeId) -> Result<(), externalities::Error> {
 		if self.extensions.deregister(type_id) {
 			Ok(())
 		} else {
-			Err(sp_externalities::Error::ExtensionIsNotRegistered(type_id))
+			Err(externalities::Error::ExtensionIsNotRegistered(type_id))
 		}
 	}
 }

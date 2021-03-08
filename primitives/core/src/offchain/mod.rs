@@ -706,7 +706,7 @@ impl<T: Externalities> Externalities for LimitedExternalities<T> {
 }
 
 #[cfg(feature = "std")]
-sp_externalities::decl_extension! {
+externalities::decl_extension! {
 	/// The offchain extension that will be registered at the Tetcore externalities.
 	pub struct OffchainExt(Box<dyn Externalities>);
 }
@@ -733,7 +733,7 @@ pub trait TransactionPool {
 }
 
 #[cfg(feature = "std")]
-sp_externalities::decl_extension! {
+externalities::decl_extension! {
 	/// An externalities extension to submit transactions to the pool.
 	pub struct TransactionPoolExt(Box<dyn TransactionPool + Send>);
 }

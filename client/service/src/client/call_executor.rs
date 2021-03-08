@@ -26,7 +26,7 @@ use sp_state_machine::{
 	backend::Backend as _, StorageProof,
 };
 use sc_executor::{RuntimeVersion, RuntimeInfo, NativeVersion};
-use sp_externalities::Extensions;
+use externalities::Extensions;
 use sp_core::{
 	NativeOrEncoded, NeverNativeValue, traits::{CodeExecutor, SpawnNamed, RuntimeCode},
 };

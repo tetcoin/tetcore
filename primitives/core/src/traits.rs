@@ -23,7 +23,7 @@ use std::{
 	panic::UnwindSafe,
 };
 
-pub use sp_externalities::{Externalities, ExternalitiesExt};
+pub use externalities::{Externalities, ExternalitiesExt};
 
 /// Code execution engine.
 pub trait CodeExecutor: Sized + Send + Sync + CallInWasm + Clone + 'static {
@@ -162,7 +162,7 @@ pub trait CallInWasm: Send + Sync {
 	) -> Result<Vec<u8>, String>;
 }
 
-sp_externalities::decl_extension! {
+externalities::decl_extension! {
 	/// The call-in-wasm extension to register/retrieve from the externalities.
 	pub struct CallInWasmExt(Box<dyn CallInWasm>);
 }
@@ -174,7 +174,7 @@ impl CallInWasmExt {
 	}
 }
 
-sp_externalities::decl_extension! {
+externalities::decl_extension! {
 	/// Task executor extension.
 	pub struct TaskExecutorExt(Box<dyn SpawnNamed>);
 }
@@ -200,7 +200,7 @@ pub trait RuntimeSpawn: Send {
 }
 
 #[cfg(feature = "std")]
-sp_externalities::decl_extension! {
+externalities::decl_extension! {
 	/// Extension that supports spawning extra runtime instances in externalities.
 	pub struct RuntimeSpawnExt(Box<dyn RuntimeSpawn>);
 }

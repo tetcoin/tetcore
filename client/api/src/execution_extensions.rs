@@ -34,7 +34,7 @@ use sp_runtime::{
 	traits,
 };
 use sp_state_machine::{ExecutionStrategy, ExecutionManager, DefaultHandler};
-use sp_externalities::Extensions;
+use externalities::Extensions;
 use parking_lot::RwLock;
 
 /// Execution strategies settings.
