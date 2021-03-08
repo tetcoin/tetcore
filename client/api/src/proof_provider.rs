@@ -22,7 +22,7 @@ use sp_runtime::{
 	traits::{Block as BlockT},
 };
 use crate::{StorageProof, ChangesProof};
-use sp_storage::{ChildInfo, StorageKey, PrefixedStorageKey};
+use tetcore_storage::{ChildInfo, StorageKey, PrefixedStorageKey};
 
 /// Interface for providing block proving utilities.
 pub trait ProofProvider<Block: BlockT> {

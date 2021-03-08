@@ -374,7 +374,7 @@ fn tip_changing_works() {
 
 #[test]
 fn test_last_reward_migration() {
-	use sp_storage::Storage;
+	use tetcore_storage::Storage;
 
 	let mut s = Storage::default();
 

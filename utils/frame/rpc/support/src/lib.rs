@@ -28,7 +28,7 @@ use serde::{de::DeserializeOwned, Serialize};
 use frame_support::storage::generator::{
 	StorageDoubleMap, StorageMap, StorageValue
 };
-use sp_storage::{StorageData, StorageKey};
+use tetcore_storage::{StorageData, StorageKey};
 use sc_rpc_api::state::StateClient;
 
 /// A typed query on chain state usable from an RPC client.

@@ -32,7 +32,7 @@ pub use sp_io::storage::root as storage_root;
 pub use sp_runtime::traits::Zero;
 pub use frame_support;
 pub use paste;
-pub use sp_storage::TrackedStorageKey;
+pub use tetcore_storage::TrackedStorageKey;
 
 /// Construct pallet benchmarks for weighing dispatchables.
 ///

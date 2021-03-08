@@ -28,7 +28,7 @@ use sp_state_machine::{
 	ChangesTrieState, ChangesTrieStorage as StateChangesTrieStorage, ChangesTrieTransaction,
 	StorageCollection, ChildStorageCollection, OffchainChangesCollection,
 };
-use sp_storage::{StorageData, StorageKey, PrefixedStorageKey, ChildInfo};
+use tetcore_storage::{StorageData, StorageKey, PrefixedStorageKey, ChildInfo};
 use crate::{
 	blockchain::{
 		Backend as BlockchainBackend, well_known_cache_keys

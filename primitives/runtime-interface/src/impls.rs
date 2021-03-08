@@ -540,6 +540,6 @@ impl PassBy for sp_wasm_interface::Value {
 	type PassBy = Codec<sp_wasm_interface::Value>;
 }
 
-impl PassBy for sp_storage::TrackedStorageKey {
+impl PassBy for tetcore_storage::TrackedStorageKey {
 	type PassBy = Codec<Self>;
 }

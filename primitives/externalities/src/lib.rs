@@ -27,7 +27,7 @@
 
 use tetcore_std::{any::{Any, TypeId}, vec::Vec, boxed::Box};
 
-use sp_storage::{ChildInfo, TrackedStorageKey};
+use tetcore_storage::{ChildInfo, TrackedStorageKey};
 
 pub use scope_limited::{set_and_run_with_externalities, with_externalities};
 pub use extensions::{Extension, Extensions, ExtensionStore};

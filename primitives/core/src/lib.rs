@@ -85,7 +85,7 @@ pub use self::hasher::blake2::Blake2Hasher;
 #[cfg(feature = "std")]
 pub use self::hasher::keccak::KeccakHasher;
 
-pub use sp_storage as storage;
+pub use tetcore_storage as storage;
 
 #[doc(hidden)]
 pub use tetcore_std;
