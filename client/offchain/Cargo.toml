@@ -23,7 +23,7 @@ log = "0.4.8"
 threadpool = "1.7"
 num_cpus = "1.10"
 tp-offchain = { version = "2.0.0", path = "../../primitives/offchain" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 parking_lot = "0.11.1"
 tp-core = { version = "2.0.0", path = "../../primitives/core" }
 rand = "0.7.2"

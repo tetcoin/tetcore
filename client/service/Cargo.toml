@@ -61,7 +61,7 @@ tc-light = { version = "2.0.0", path = "../light" }
 tc-client-api = { version = "2.0.0", path = "../api" }
 tp-api = { version = "2.0.0", path = "../../primitives/api" }
 tc-client-db = { version = "0.8.0", default-features = false, path = "../db" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 tc-executor = { version = "0.8.0", path = "../executor" }
 tc-transaction-pool = { version = "2.0.0", path = "../transaction-pool" }
 tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
