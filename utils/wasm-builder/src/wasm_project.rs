@@ -447,7 +447,7 @@ fn compact_wasm_file(
 
 	let wasm_compact_file = if is_release_build {
 		let wasm_compact_file = project.join(format!("{}.compact.wasm", wasm_binary));
-		wasm_gc::garbage_collect_file(&wasm_file, &wasm_compact_file)
+		tetsy_wasm_gc::garbage_collect_file(&wasm_file, &wasm_compact_file)
 			.expect("Failed to compact generated WASM binary.");
 		Some(WasmBinary(wasm_compact_file))
 	} else {
