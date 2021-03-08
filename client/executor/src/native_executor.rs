@@ -57,7 +57,7 @@ pub fn with_externalities_safe<F, U>(ext: &mut dyn Externalities, f: F) -> Resul
 		move || {
 			// Tetcore uses custom panic hook that terminates process on panic. Disable
 			// termination for the native call.
-			let _guard = sp_panic_handler::AbortGuard::force_unwind();
+			let _guard = panic_handler::AbortGuard::force_unwind();
 			std::panic::catch_unwind(f).map_err(|e| {
 				if let Some(err) = e.downcast_ref::<String>() {
 					Error::RuntimePanicked(err.clone())

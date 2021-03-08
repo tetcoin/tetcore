@@ -582,7 +582,7 @@ pub trait CliConfiguration<DCV: DefaultConfigurationValues = ()>: Sized {
 	/// 2. Initializes the logger
 	/// 3. Raises the FD limit
 	fn init<C: TetcoreCli>(&self) -> Result<sc_telemetry::TelemetryWorker> {
-		sp_panic_handler::set(&C::support_url(), &C::impl_version());
+		panic_handler::set(&C::support_url(), &C::impl_version());
 
 		let mut logger = LoggerBuilder::new(self.log_filters()?);
 		logger.with_log_reloading(!self.is_log_filter_reloading_disabled()?);

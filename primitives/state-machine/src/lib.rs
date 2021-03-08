@@ -547,7 +547,7 @@ mod execution {
 					ExecutionManager::AlwaysWasm(trust_level) => {
 						let _abort_guard = match trust_level {
 							BackendTrustLevel::Trusted => None,
-							BackendTrustLevel::Untrusted => Some(sp_panic_handler::AbortGuard::never_abort()),
+							BackendTrustLevel::Untrusted => Some(panic_handler::AbortGuard::never_abort()),
 						};
 						self.execute_aux(false, native_call).0
 					},

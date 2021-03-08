@@ -63,7 +63,7 @@ TO_RENAME=(
     "tetcore-inherents tp-inherents"
     "tetcore-keyring tp-keyring"
     "tetcore-offchain-primitives tp-offchain"
-    "tetcore-panic-handler tp-panic-handler"
+    "tetcore-panic-handler panic-handler"
     "tetcore-phragmen tp-npos-elections"
     "tetcore-rpc-primitives tp-rpc"
     "tetcore-runtime-interface tp-runtime-interface"

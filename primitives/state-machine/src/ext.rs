@@ -48,8 +48,8 @@ const BENCHMARKING_FN: &str = "\
 
 
 #[cfg(feature = "std")]
-fn guard() -> sp_panic_handler::AbortGuard {
-	sp_panic_handler::AbortGuard::force_abort()
+fn guard() -> panic_handler::AbortGuard {
+	panic_handler::AbortGuard::force_abort()
 }
 
 #[cfg(not(feature = "std"))]

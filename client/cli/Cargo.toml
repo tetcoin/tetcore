@@ -25,7 +25,7 @@ rand = "0.7.3"
 tiny-bip39 = "0.8.0"
 serde_json = "1.0.41"
 tc-keystore = { version = "2.0.0", path = "../keystore" }
-tp-panic-handler = { version = "2.0.0", path = "../../primitives/panic-handler" }
+panic-handler = { version = "2.0.0", path = "../../primitives/panic-handler" }
 tc-client-api = { version = "2.0.0", path = "../api" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tc-network = { version = "0.8.0", path = "../network" }
