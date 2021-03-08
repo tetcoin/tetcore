@@ -7,7 +7,7 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Macros to derive runtime debug implementation."
-documentation = "https://docs.rs/tp-debug-derive"
+documentation = "https://docs.rs/debug-derive"
 
 
 [package.metadata.docs.rs]
