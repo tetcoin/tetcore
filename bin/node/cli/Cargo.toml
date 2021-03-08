@@ -129,7 +129,7 @@ platforms = "0.2.1"
 structopt = { version = "0.3.8", optional = true }
 node-inspect = { version = "0.8.0", optional = true, path = "../inspect" }
 frame-benchmarking-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/benchmarking-cli" }
-tetcore-build-script-utils = { version = "2.0.0", optional = true, path = "../../../utils/build-script-utils" }
+build-script-utils = { version = "2.0.0", optional = true, path = "../../../utils/build-script-utils" }
 tetcore-frame-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/frame-utilities-cli" }
 
 [build-dependencies.tc-cli]
@@ -154,7 +154,7 @@ cli = [
 	"tc-service/db",
 	"tc-finality-grandpa-warp-sync",
 	"structopt",
-	"tetcore-build-script-utils",
+	"build-script-utils",
 ]
 runtime-benchmarks = [
 	"node-runtime/runtime-benchmarks",

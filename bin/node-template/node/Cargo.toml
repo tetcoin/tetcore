@@ -54,7 +54,7 @@ frame-benchmarking-cli = { version = "2.0.0", path = "../../../utils/frame/bench
 node-template-runtime = { version = "2.0.0", path = "../runtime" }
 
 [build-dependencies]
-tetcore-build-script-utils = { version = "2.0.0", path = "../../../utils/build-script-utils" }
+build-script-utils = { version = "2.0.0", path = "../../../utils/build-script-utils" }
 
 [features]
 default = []

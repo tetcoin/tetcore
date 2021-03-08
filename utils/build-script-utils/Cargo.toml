@@ -1,5 +1,5 @@
 [package]
-name = "tetcore-build-script-utils"
+name = "build-script-utils"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
