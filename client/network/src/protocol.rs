@@ -51,7 +51,7 @@ use sp_runtime::{generic::BlockId, Justification};
 use sp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, NumberFor, Zero, CheckedSub
 };
-use sp_arithmetic::traits::SaturatedConversion;
+use arithmetic::traits::SaturatedConversion;
 use sync::{ChainSync, SyncState};
 use std::borrow::Cow;
 use std::convert::TryFrom as _;

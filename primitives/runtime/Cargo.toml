@@ -19,7 +19,7 @@ serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
-tp-arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
+arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../io" }
 log = { version = "0.4.8", optional = true }
@@ -41,7 +41,7 @@ runtime-benchmarks = []
 default = ["std"]
 std = [
 	"tp-application-crypto/std",
-	"tp-arithmetic/std",
+	"arithmetic/std",
 	"codec/std",
 	"log",
 	"tp-core/std",

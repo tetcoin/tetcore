@@ -27,7 +27,7 @@
 //! See [`balance`] for more information.
 
 use crate::{IdentifierT, Voter, ExtendedBalance, Edge};
-use sp_arithmetic::traits::Zero;
+use arithmetic::traits::Zero;
 use tetcore_std::prelude::*;
 
 /// Balance the weight distribution of a given `voters` at most `iterations` times, or up until the

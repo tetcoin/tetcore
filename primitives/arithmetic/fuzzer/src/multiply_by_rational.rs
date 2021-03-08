@@ -28,7 +28,7 @@
 //! [here](https://docs.rs/honggfuzz/).
 
 use honggfuzz::fuzz;
-use sp_arithmetic::{helpers_128bit::multiply_by_rational, traits::Zero};
+use arithmetic::{helpers_128bit::multiply_by_rational, traits::Zero};
 
 fn main() {
 	loop {

@@ -84,7 +84,7 @@ pub trait PerThing:
 	/// nearest whole number.
 	///
 	/// ```rust
-	/// # use sp_arithmetic::{Percent, PerThing};
+	/// # use arithmetic::{Percent, PerThing};
 	/// # fn main () {
 	/// // round to nearest
 	/// assert_eq!(Percent::from_percent(34) * 10u64, 3);
@@ -108,7 +108,7 @@ pub trait PerThing:
 	/// rounds to the nearest whole number.
 	///
 	/// ```rust
-	/// # use sp_arithmetic::{Percent, PerThing};
+	/// # use arithmetic::{Percent, PerThing};
 	/// # fn main () {
 	/// // round to nearest
 	/// assert_eq!(Percent::from_percent(34) * 10u64, 3);
@@ -132,7 +132,7 @@ pub trait PerThing:
 	/// nearest whole number and saturates at the numeric bounds instead of overflowing.
 	///
 	/// ```rust
-	/// # use sp_arithmetic::{Percent, PerThing};
+	/// # use arithmetic::{Percent, PerThing};
 	/// # fn main () {
 	/// assert_eq!(Percent::from_percent(50).saturating_reciprocal_mul(10u64), 20);
 	/// # }
@@ -151,7 +151,7 @@ pub trait PerThing:
 	/// nearest whole number and saturates at the numeric bounds instead of overflowing.
 	///
 	/// ```rust
-	/// # use sp_arithmetic::{Percent, PerThing};
+	/// # use arithmetic::{Percent, PerThing};
 	/// # fn main () {
 	/// // round to nearest
 	/// assert_eq!(Percent::from_percent(60).saturating_reciprocal_mul(10u64), 17);
@@ -173,7 +173,7 @@ pub trait PerThing:
 	/// nearest whole number and saturates at the numeric bounds instead of overflowing.
 	///
 	/// ```rust
-	/// # use sp_arithmetic::{Percent, PerThing};
+	/// # use arithmetic::{Percent, PerThing};
 	/// # fn main () {
 	/// // round to nearest
 	/// assert_eq!(Percent::from_percent(61).saturating_reciprocal_mul(10u64), 16);
@@ -210,7 +210,7 @@ pub trait PerThing:
 	/// Note that this always rounds _down_, i.e.
 	///
 	/// ```rust
-	/// # use sp_arithmetic::{Percent, PerThing};
+	/// # use arithmetic::{Percent, PerThing};
 	/// # fn main () {
 	/// // 989/100 is technically closer to 99%.
 	/// assert_eq!(

@@ -73,7 +73,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_arithmetic::{
+use arithmetic::{
 	traits::{Bounded, UniqueSaturatedInto, Zero},
 	Normalizable, PerThing, Rational128, ThresholdOrd,
 };
@@ -115,7 +115,7 @@ pub use balancing::*;
 #[doc(hidden)]
 pub use codec;
 #[doc(hidden)]
-pub use sp_arithmetic;
+pub use arithmetic;
 
 /// Simple Extension trait to easily convert `None` from index closures to `Err`.
 ///

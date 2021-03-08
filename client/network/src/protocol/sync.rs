@@ -51,7 +51,7 @@ use sp_runtime::{
 		Hash, HashFor,
 	},
 };
-use sp_arithmetic::traits::Saturating;
+use arithmetic::traits::Saturating;
 use std::{
 	fmt, ops::Range, collections::{HashMap, hash_map::Entry, HashSet}, sync::Arc, pin::Pin,
 };

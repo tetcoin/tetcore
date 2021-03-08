@@ -20,7 +20,7 @@
 #![cfg(test)]
 
 use crate::*;
-use sp_arithmetic::{
+use arithmetic::{
 	traits::{One, SaturatedConversion, Zero},
 	PerThing,
 };

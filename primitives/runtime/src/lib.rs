@@ -74,15 +74,15 @@ pub use sp_application_crypto::{RuntimeAppPublic, BoundToRuntimeAppPublic};
 pub use sp_core::RuntimeDebug;
 
 /// Re-export top-level arithmetic stuff.
-pub use sp_arithmetic::{
+pub use arithmetic::{
 	PerThing, Perquintill, Perbill, Permill, Percent, PerU16, InnerOf, UpperOf,
 	Rational128, FixedI64, FixedI128, FixedU128, FixedPointNumber, FixedPointOperand,
 	traits::SaturatedConversion,
 };
 /// Re-export 128 bit helpers.
-pub use sp_arithmetic::helpers_128bit;
+pub use arithmetic::helpers_128bit;
 /// Re-export big_uint stuff.
-pub use sp_arithmetic::biguint;
+pub use arithmetic::biguint;
 
 pub use random_number_generator::RandomNumberGenerator;
 

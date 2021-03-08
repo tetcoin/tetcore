@@ -18,7 +18,7 @@
 //! Helper methods for npos-elections.
 
 use crate::{Assignment, Error, IdentifierT, PerThing128, StakedAssignment, VoteWeight, WithApprovalOf};
-use sp_arithmetic::PerThing;
+use arithmetic::PerThing;
 use tetcore_std::prelude::*;
 
 /// Converts a vector of ratio assignments into ones with absolute budget value.
@@ -87,7 +87,7 @@ pub fn to_without_backing<A: IdentifierT>(winners: Vec<WithApprovalOf<A>>) -> Ve
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_arithmetic::Perbill;
+	use arithmetic::Perbill;
 
 	#[test]
 	fn into_staked_works() {

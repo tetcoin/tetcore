@@ -19,7 +19,7 @@ tc-client-api = { version = "2.0.0", path = "../../api" }
 tp-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-trie = { version = "2.0.0", path = "../../../primitives/trie" }
 tp-application-crypto = { version = "2.0.0", path = "../../../primitives/application-crypto" }
-tp-arithmetic = { version = "2.0.0", path = "../../../primitives/arithmetic" }
+arithmetic = { version = "2.0.0", path = "../../../primitives/arithmetic" }
 tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
 tp-consensus-slots = { version = "0.8.0", path = "../../../primitives/consensus/slots" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }

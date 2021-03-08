@@ -22,7 +22,7 @@ tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tetcore-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
 tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tp-arithmetic = { version = "2.0.0", default-features = false, path = "../../primitives/arithmetic" }
+arithmetic = { version = "2.0.0", default-features = false, path = "../../primitives/arithmetic" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
 frame-support-procedural = { version = "2.0.1", default-features = false, path = "./procedural" }
 paste = "0.1.6"
@@ -49,7 +49,7 @@ std = [
 	"tetcore-std/std",
 	"tp-runtime/std",
 	"tetcore-tracing/std",
-	"tp-arithmetic/std",
+	"arithmetic/std",
 	"frame-metadata/std",
 	"tp-inherents/std",
 	"tp-state-machine",

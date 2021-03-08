@@ -137,7 +137,7 @@ use sp_runtime::{
 };
 use crate::dispatch::{DispatchErrorWithPostInfo, DispatchResultWithPostInfo, DispatchError};
 use sp_runtime::traits::SaturatedConversion;
-use sp_arithmetic::{Perbill, traits::{BaseArithmetic, Saturating, Unsigned}};
+use arithmetic::{Perbill, traits::{BaseArithmetic, Saturating, Unsigned}};
 use smallvec::{smallvec, SmallVec};
 
 /// Re-export priority as type

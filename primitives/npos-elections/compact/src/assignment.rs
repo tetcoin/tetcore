@@ -97,7 +97,7 @@ pub(crate) fn into_impl(count: usize, per_thing: syn::Type) -> TokenStream2 {
 				}
 
 				// defensive only. Since Percent doesn't have `Sub`.
-				let p2 = _npos::sp_arithmetic::traits::Saturating::saturating_sub(
+				let p2 = _npos::arithmetic::traits::Saturating::saturating_sub(
 					#per_thing::one(),
 					p1,
 				);
@@ -121,7 +121,7 @@ pub(crate) fn into_impl(count: usize, per_thing: syn::Type) -> TokenStream2 {
 				let mut inners_parsed = inners
 					.iter()
 					.map(|(ref t_idx, p)| {
-						sum = _npos::sp_arithmetic::traits::Saturating::saturating_add(sum, *p);
+						sum = _npos::arithmetic::traits::Saturating::saturating_add(sum, *p);
 						let target = target_at(*t_idx).or_invalid_index()?;
 						Ok((target, *p))
 					})
@@ -132,7 +132,7 @@ pub(crate) fn into_impl(count: usize, per_thing: syn::Type) -> TokenStream2 {
 				}
 
 				// defensive only. Since Percent doesn't have `Sub`.
-				let p_last = _npos::sp_arithmetic::traits::Saturating::saturating_sub(
+				let p_last = _npos::arithmetic::traits::Saturating::saturating_sub(
 					#per_thing::one(),
 					sum,
 				);

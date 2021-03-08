@@ -25,7 +25,7 @@
 //! `cargo hfuzz run-debug normalize hfuzz_workspace/normalize/*.fuzz`.
 
 use honggfuzz::fuzz;
-use sp_arithmetic::Normalizable;
+use arithmetic::Normalizable;
 use std::convert::TryInto;
 
 type Ty = u64;

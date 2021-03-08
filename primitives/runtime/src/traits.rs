@@ -33,7 +33,7 @@ use crate::transaction_validity::{
 	UnknownTransaction,
 };
 use crate::generic::{Digest, DigestItem};
-pub use sp_arithmetic::traits::{
+pub use arithmetic::traits::{
 	AtLeast32Bit, AtLeast32BitUnsigned, UniqueSaturatedInto, UniqueSaturatedFrom, Saturating,
 	SaturatedConversion, Zero, One, Bounded, CheckedAdd, CheckedSub, CheckedMul, CheckedDiv,
 	CheckedShl, CheckedShr, IntegerSquareRoot

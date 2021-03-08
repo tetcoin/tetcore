@@ -25,7 +25,7 @@ use crate::{
 	IdentifierT, ElectionResult, ExtendedBalance, setup_inputs, VoteWeight, Voter, CandidatePtr,
 	balance, PerThing128,
 };
-use sp_arithmetic::{PerThing, Rational128, traits::Bounded};
+use arithmetic::{PerThing, Rational128, traits::Bounded};
 use tetcore_std::{prelude::*, rc::Rc};
 
 /// Execute the phragmms method.

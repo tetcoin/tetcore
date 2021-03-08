@@ -24,7 +24,7 @@
 //! `cargo hfuzz run-debug per_thing_rational hfuzz_workspace/per_thing_rational/*.fuzz`.
 
 use honggfuzz::fuzz;
-use sp_arithmetic::{
+use arithmetic::{
 	PerThing, PerU16, Percent, Perbill, Perquintill, traits::SaturatedConversion,
 };
 

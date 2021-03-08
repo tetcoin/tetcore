@@ -52,7 +52,7 @@
 /primitives/npos-elections/ @kianenigma
 
 # Fixed point arithmetic
-/primitives/tp-arithmetic/ @kianenigma
+/primitives/arithmetic/ @kianenigma
 
 # Transaction weight stuff
 /frame/support/src/weights.rs @shawntabrizi

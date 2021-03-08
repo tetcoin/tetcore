@@ -18,7 +18,7 @@ codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = f
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-npos-elections-compact = { version = "2.0.0", path = "./compact" }
-tp-arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
+arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
 tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 
 [dev-dependencies]
@@ -33,6 +33,6 @@ std = [
 	"codec/std",
 	"serde",
 	"tetcore-std/std",
-	"tp-arithmetic/std",
+	"arithmetic/std",
 	"tp-core/std",
 ]

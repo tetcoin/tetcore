@@ -39,7 +39,7 @@ use futures_timer::Delay;
 use log::{debug, error, info, warn};
 use parking_lot::Mutex;
 use sp_api::{ProvideRuntimeApi, ApiRef};
-use sp_arithmetic::traits::BaseArithmetic;
+use arithmetic::traits::BaseArithmetic;
 use sp_consensus::{BlockImport, Proposer, SyncOracle, SelectChain, CanAuthorWith, SlotData, RecordProof};
 use sp_consensus_slots::Slot;
 use sp_inherents::{InherentData, InherentDataProviders};

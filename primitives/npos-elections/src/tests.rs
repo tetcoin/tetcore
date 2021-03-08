@@ -22,7 +22,7 @@ use crate::{
 	to_support_map, to_supports, Assignment, ElectionResult, ExtendedBalance, StakedAssignment,
 	Support, Voter, EvaluateSupport,
 };
-use sp_arithmetic::{PerU16, Perbill, Percent, Permill};
+use arithmetic::{PerU16, Perbill, Percent, Permill};
 use tetcore_test_utils::assert_eq_uvec;
 
 #[test]
@@ -1143,7 +1143,7 @@ mod solution_type {
 	use codec::{Decode, Encode};
 	// these need to come from the same dev-dependency `tp-npos-elections`, not from the crate.
 	use crate::{generate_solution_type, Assignment, CompactSolution, Error as PhragmenError};
-	use sp_arithmetic::Percent;
+	use arithmetic::Percent;
 	use tetcore_std::{convert::TryInto, fmt::Debug};
 
 	type TestAccuracy = Percent;
@@ -1155,7 +1155,7 @@ mod solution_type {
 		// This is just to make sure that that the compact can be generated in a scope without any
 		// imports.
 		use crate::generate_solution_type;
-		use sp_arithmetic::Percent;
+		use arithmetic::Percent;
 		generate_solution_type!(
 			#[compact]
 			struct InnerTestSolutionCompact::<u32, u8, Percent>(12)

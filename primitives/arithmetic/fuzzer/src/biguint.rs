@@ -28,7 +28,7 @@
 //! [here](https://docs.rs/honggfuzz/).
 
 use honggfuzz::fuzz;
-use sp_arithmetic::biguint::{BigUint, Single};
+use arithmetic::biguint::{BigUint, Single};
 use std::convert::TryFrom;
 
 fn main() {

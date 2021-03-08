@@ -43,7 +43,7 @@ pub(crate) fn syn_err(message: &'static str) -> syn::Error {
 /// - The identifier of the target. This can be any type that supports `tetsy-scale-codec`'s
 ///   compact encoding.
 /// - The accuracy of the ratios. This must be one of the `PerThing` types defined in
-///   `tp-arithmetic`.
+///   `arithmetic`.
 ///
 /// Moreover, the maximum number of edges per voter (distribution per assignment) also need to be
 /// specified. Attempting to convert from/to an assignment with more distributions will fail.

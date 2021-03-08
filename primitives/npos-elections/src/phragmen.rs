@@ -24,7 +24,7 @@ use crate::{
 	balancing, setup_inputs, CandidatePtr, ElectionResult, ExtendedBalance, IdentifierT,
 	PerThing128, VoteWeight, Voter,
 };
-use sp_arithmetic::{
+use arithmetic::{
 	helpers_128bit::multiply_by_rational,
 	traits::{Bounded, Zero},
 	Rational128,

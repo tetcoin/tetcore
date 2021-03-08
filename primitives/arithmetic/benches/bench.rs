@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use criterion::{Criterion, Throughput, BenchmarkId, criterion_group, criterion_main};
-use sp_arithmetic::biguint::{BigUint, Single};
+use arithmetic::biguint::{BigUint, Single};
 use rand::Rng;
 
 fn random_big_uint(size: usize) -> BigUint {

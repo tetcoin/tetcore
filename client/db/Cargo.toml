@@ -25,7 +25,7 @@ codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"
 blake2-rfc = "0.2.18"
 
 tc-client-api = { version = "2.0.0", path = "../api" }
-tp-arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
+arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
 tp-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }

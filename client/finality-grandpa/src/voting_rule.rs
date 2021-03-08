@@ -85,7 +85,7 @@ impl<Block, B> VotingRule<Block, B> for BeforeBestBlockBy<NumberFor<Block>> wher
 		best_target: &Block::Header,
 		current_target: &Block::Header,
 	) -> Option<(Block::Hash, NumberFor<Block>)> {
-		use sp_arithmetic::traits::Saturating;
+		use arithmetic::traits::Saturating;
 
 		if current_target.number().is_zero() {
 			return None;
