@@ -41,7 +41,7 @@ tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tc-network = { version = "0.8.0", path = "../network" }
 tc-network-gossip = { version = "0.8.0", path = "../network-gossip" }
 tp-finality-grandpa = { version = "2.0.0", path = "../../primitives/finality-grandpa" }
-prometheus-endpoint = { package = "tetcore-prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
+prometheus-endpoint = { package = "prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
 tc-block-builder = { version = "0.8.0", path = "../block-builder" }
 finality-grandpa = { version = "0.13.0", features = ["derive-codec"] }
 pin-project = "0.4.6"

@@ -21,7 +21,7 @@ intervalier = "0.4.0"
 log = "0.4.8"
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
 parking_lot = "0.11.1"
-prometheus-endpoint = { package = "tetcore-prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
+prometheus-endpoint = { package = "prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
 tc-client-api = { version = "2.0.0", path = "../api" }
 tc-transaction-graph = { version = "2.0.0", path = "./graph" }
 tp-api = { version = "2.0.0", path = "../../primitives/api" }

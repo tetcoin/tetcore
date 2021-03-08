@@ -17,7 +17,7 @@ futures = "0.1.6"
 jsonrpc-core = "15.1.0"
 pubsub = { package = "jsonrpc-pubsub", version = "15.1.0" }
 log = "0.4.8"
-prometheus-endpoint = { package = "tetcore-prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
+prometheus-endpoint = { package = "prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
 serde = "1.0.101"
 serde_json = "1.0.41"
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }

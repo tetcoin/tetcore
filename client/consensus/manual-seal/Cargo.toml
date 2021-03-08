@@ -42,7 +42,7 @@ tp-api = {  path = "../../../primitives/api", version = "2.0.0" }
 tp-transaction-pool = { path = "../../../primitives/transaction-pool", version = "2.0.0" }
 tp-timestamp = { path = "../../../primitives/timestamp", version = "2.0.0" }
 
-prometheus-endpoint = { package = "tetcore-prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.0" }
+prometheus-endpoint = { package = "prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.0" }
 
 [dev-dependencies]
 tokio = { version = "0.2", features = ["rt-core", "macros"] }
