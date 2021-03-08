@@ -1,13 +1,13 @@
 [package]
-name = "tp-storage"
+name = "tetcore-storage"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
-description = "Storage related primitives"
+description = "Tetcore storage related primitives"
 license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
-documentation = "https://docs.rs/tp-storage/"
+documentation = "https://docs.rs/tetcore-storage/"
 readme = "README.md"
 
 [package.metadata.docs.rs]

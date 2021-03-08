@@ -18,7 +18,7 @@ jsonrpc-core = "15.1.0"
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 serde = "1"
 frame-support = { version = "2.0.0", path = "../../../../frame/support" }
-tp-storage = { version = "2.0.0", path = "../../../../primitives/storage" }
+tetcore-storage = { version = "2.0.0", path = "../../../../primitives/storage" }
 tc-rpc-api = { version = "0.8.0", path = "../../../../client/rpc-api" }
 
 [dev-dependencies]

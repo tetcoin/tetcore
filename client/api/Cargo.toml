@@ -38,7 +38,7 @@ tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
 tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
-tp-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tetcore-storage = { version = "2.0.0", path = "../../primitives/storage" }
 tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
 prometheus-endpoint = { package = "prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
 

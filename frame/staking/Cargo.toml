@@ -33,7 +33,7 @@ rand_chacha = { version = "0.2", default-features = false, optional = true }
 
 [dev-dependencies]
 tp-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tetcore-storage = { version = "2.0.0", path = "../../primitives/storage" }
 tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-timestamp = { version = "2.0.0", path = "../timestamp" }

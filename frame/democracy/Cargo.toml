@@ -26,7 +26,7 @@ frame-system = { version = "2.0.0", default-features = false, path = "../system"
 tp-core = { version = "2.0.0", path = "../../primitives/core" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-scheduler = { version = "2.0.0", path = "../scheduler" }
-tp-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tetcore-storage = { version = "2.0.0", path = "../../primitives/storage" }
 tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
 hex-literal = "0.3.1"
 

@@ -35,7 +35,7 @@ lazy_static = { version = "1.4.0", default-features = false, optional = true }
 parking_lot = { version = "0.11.1", optional = true }
 debug-derive = { version = "2.0.0", path = "../debug-derive" }
 tp-externalities = { version = "0.8.0", optional = true, path = "../externalities" }
-tp-storage = { version = "2.0.0", default-features = false, path = "../storage" }
+tetcore-storage = { version = "2.0.0", default-features = false, path = "../storage" }
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
 futures = { version = "0.3.1", optional = true }
 dyn-clonable = { version = "0.9.0", optional = true }
@@ -106,7 +106,7 @@ std = [
 	"tiny-keccak",
 	"debug-derive/std",
 	"tp-externalities",
-	"tp-storage/std",
+	"tetcore-storage/std",
 	"tp-runtime-interface/std",
 	"zeroize/alloc",
 	"secrecy/alloc",
