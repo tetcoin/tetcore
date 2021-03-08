@@ -14,7 +14,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
-codec = { package = "tetsy-scale-codec", default-features = false, version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", default-features = false, version = "2.0.1" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-api = { version = "2.0.0", default-features = false, path = "../api" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
