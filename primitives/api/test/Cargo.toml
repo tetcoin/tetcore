@@ -19,7 +19,7 @@ tp-runtime = { version = "2.0.0", path = "../../runtime" }
 tp-blockchain = { version = "2.0.0", path = "../../blockchain" }
 tp-consensus = { version = "0.8.0", path = "../../consensus/common" }
 tc-block-builder = { version = "0.8.0", path = "../../../client/block-builder" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 tp-state-machine = { version = "0.8.0", path = "../../state-machine" }
 trybuild = "1.0.38"
 rustversion = "1.0.0"
