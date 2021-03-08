@@ -29,7 +29,7 @@ use sp_consensus::BlockOrigin;
 
 use crate::blockchain::Info;
 use crate::notifications::StorageEventStream;
-use sp_utils::mpsc::TracingUnboundedReceiver;
+use tetcore_utils::mpsc::TracingUnboundedReceiver;
 use sp_blockchain;
 
 /// Type that implements `futures::Stream` of block import events.

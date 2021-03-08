@@ -21,6 +21,6 @@ tc-client-api = { version = "2.0.0", path = "../api" }
 tc-network = { version = "0.8.0", path = "../network" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
 wasm-timer = "0.2"

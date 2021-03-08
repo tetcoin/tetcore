@@ -20,7 +20,7 @@
 
 use futures::Stream;
 use sp_transaction_pool::TransactionStatus;
-use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
+use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
 
 /// Extrinsic watcher.
 ///

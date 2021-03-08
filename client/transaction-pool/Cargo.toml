@@ -30,7 +30,7 @@ tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tetcore-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 wasm-timer = "0.2"
 
 [dev-dependencies]

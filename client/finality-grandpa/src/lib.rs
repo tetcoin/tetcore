@@ -78,7 +78,7 @@ use sp_core::{
 };
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sp_application_crypto::AppKey;
-use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
+use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
 use sc_telemetry::{telemetry, CONSENSUS_INFO, CONSENSUS_DEBUG};
 use parking_lot::RwLock;
 

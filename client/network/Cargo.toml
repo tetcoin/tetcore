@@ -54,7 +54,7 @@ tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
 tp-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 thiserror = "1"
 unsigned-varint = { version = "0.6.0", features = ["futures", "asynchronous_codec"] }
 void = "1.0.2"

@@ -40,7 +40,7 @@ use futures::{channel::mpsc, prelude::*};
 use libp2p::Multiaddr;
 use log::{error, warn};
 use serde::Serialize;
-use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
+use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
 use std::collections::HashMap;
 use tracing::Id;
 

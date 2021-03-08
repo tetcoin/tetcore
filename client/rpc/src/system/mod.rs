@@ -25,7 +25,7 @@ use futures::{future::BoxFuture, FutureExt, TryFutureExt};
 use futures::{channel::oneshot, compat::Compat};
 use sc_rpc_api::{DenyUnsafe, Receiver};
 use sc_tracing::logging;
-use sp_utils::mpsc::TracingUnboundedSender;
+use tetcore_utils::mpsc::TracingUnboundedSender;
 use sp_runtime::traits::{self, Header as HeaderT};
 
 use self::error::Result;

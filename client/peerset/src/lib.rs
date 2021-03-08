@@ -40,7 +40,7 @@ use log::{debug, error, trace};
 use serde_json::json;
 use std::{collections::HashMap, pin::Pin, task::{Context, Poll}, time::Duration};
 use wasm_timer::Instant;
-use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
+use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
 
 pub use libp2p::PeerId;
 

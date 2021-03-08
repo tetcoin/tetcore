@@ -27,7 +27,7 @@ use sc_network::NetworkStatus;
 use sp_blockchain::HeaderMetadata;
 use sp_runtime::traits::{Block as BlockT, Header};
 use sp_transaction_pool::TransactionPool;
-use sp_utils::{status_sinks, mpsc::tracing_unbounded};
+use tetcore_utils::{status_sinks, mpsc::tracing_unbounded};
 use std::{fmt::Display, sync::Arc, time::Duration, collections::VecDeque};
 
 mod display;

@@ -23,7 +23,7 @@ use sc_network::config::Role;
 use tetcore_test_runtime_client::runtime::Block;
 use assert_matches::assert_matches;
 use futures::prelude::*;
-use sp_utils::mpsc::tracing_unbounded;
+use tetcore_utils::mpsc::tracing_unbounded;
 use std::{
 	process::{Stdio, Command}, env, io::{BufReader, BufRead, Write},
 	sync::{Arc, Mutex}, thread, time::Duration

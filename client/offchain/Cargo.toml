@@ -28,7 +28,7 @@ parking_lot = "0.11.1"
 tp-core = { version = "2.0.0", path = "../../primitives/core" }
 rand = "0.7.2"
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 tc-network = { version = "0.8.0", path = "../network" }
 tc-keystore = { version = "2.0.0", path = "../keystore" }
 

@@ -60,7 +60,7 @@ use gossip::{
 use sp_finality_grandpa::{
 	AuthorityId, AuthoritySignature, SetId as SetIdNumber, RoundNumber,
 };
-use sp_utils::mpsc::TracingUnboundedReceiver;
+use tetcore_utils::mpsc::TracingUnboundedReceiver;
 
 pub mod gossip;
 mod periodic;

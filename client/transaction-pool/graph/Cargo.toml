@@ -21,7 +21,7 @@ parking_lot = "0.11.1"
 serde = { version = "1.0.101", features = ["derive"] }
 wasm-timer = "0.2"
 tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tp-utils = { version = "2.0.0", path = "../../../primitives/utils" }
+tetcore-utils = { version = "2.0.0", path = "../../../primitives/utils" }
 tp-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }

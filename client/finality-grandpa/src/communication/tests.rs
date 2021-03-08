@@ -18,7 +18,7 @@
 
 //! Tests for the communication portion of the GRANDPA crate.
 
-use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
+use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 use futures::prelude::*;
 use sc_network::{Event as NetworkEvent, ObservedRole, PeerId};
 use sc_network_test::{Block, Hash};

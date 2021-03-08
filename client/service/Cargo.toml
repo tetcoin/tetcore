@@ -45,7 +45,7 @@ tp-io = { version = "2.0.0", path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
 externalities = { version = "0.8.0", path = "../../primitives/externalities" }
-tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 tp-version = { version = "2.0.0", path = "../../primitives/version" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tp-core = { version = "2.0.0", path = "../../primitives/core" }

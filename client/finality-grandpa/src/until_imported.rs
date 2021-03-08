@@ -31,7 +31,7 @@ use super::{
 };
 
 use log::{debug, warn};
-use sp_utils::mpsc::TracingUnboundedReceiver;
+use tetcore_utils::mpsc::TracingUnboundedReceiver;
 use futures::prelude::*;
 use futures::stream::{Fuse, StreamExt};
 use futures_timer::Delay;
@@ -551,7 +551,7 @@ mod tests {
 	use sc_client_api::BlockImportNotification;
 	use futures::future::Either;
 	use futures_timer::Delay;
-	use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedSender};
+	use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender};
 	use finality_grandpa::Precommit;
 
 	#[derive(Clone)]

@@ -47,7 +47,7 @@ use codec::{Encode, Decode};
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use tetsy_util_mem::MallocSizeOf;
-use sp_utils::{status_sinks, mpsc::{tracing_unbounded, TracingUnboundedReceiver}};
+use tetcore_utils::{status_sinks, mpsc::{tracing_unbounded, TracingUnboundedReceiver}};
 
 pub use self::error::Error;
 pub use self::builder::{

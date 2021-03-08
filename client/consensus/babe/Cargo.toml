@@ -40,7 +40,7 @@ tp-consensus-vrf = { version = "0.8.0", path = "../../../primitives/consensus/vr
 tc-consensus-uncles = { version = "0.8.0", path = "../uncles" }
 tc-consensus-slots = { version = "0.8.0", path = "../slots" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tp-utils = { version = "2.0.0", path = "../../../primitives/utils" }
+tetcore-utils = { version = "2.0.0", path = "../../../primitives/utils" }
 forktree = { version = "2.0.0", path = "../../../utils/forktree" }
 prometheus-endpoint = { package = "prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.0"}
 futures = "0.3.9"

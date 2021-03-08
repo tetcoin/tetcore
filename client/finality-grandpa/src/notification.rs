@@ -20,7 +20,7 @@ use std::sync::Arc;
 use parking_lot::Mutex;
 
 use sp_runtime::traits::Block as BlockT;
-use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
+use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 
 use crate::justification::GrandpaJustification;
 use crate::Error;

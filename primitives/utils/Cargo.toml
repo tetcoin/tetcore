@@ -1,11 +1,12 @@
 [package]
-name = "tp-utils"
+name = "tetcore-utils"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
+documentation = "https://docs.rs/tetcore-utils"
 description = "I/O for Tetcore runtimes"
 readme = "README.md"
 

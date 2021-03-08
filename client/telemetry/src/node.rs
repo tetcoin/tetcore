@@ -23,7 +23,7 @@ use rand::Rng as _;
 use std::{fmt, mem, pin::Pin, task::Context, task::Poll, time::Duration};
 use wasm_timer::Delay;
 
-pub(crate) type ConnectionNotifierSender = sp_utils::mpsc::TracingUnboundedSender<()>;
+pub(crate) type ConnectionNotifierSender = tetcore_utils::mpsc::TracingUnboundedSender<()>;
 
 /// Handler for a single telemetry node.
 ///

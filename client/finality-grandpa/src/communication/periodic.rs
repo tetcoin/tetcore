@@ -22,7 +22,7 @@ use futures_timer::Delay;
 use futures::{future::{FutureExt as _}, prelude::*, ready, stream::Stream};
 use log::debug;
 use std::{pin::Pin, task::{Context, Poll}, time::Duration};
-use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
+use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 
 use sc_network::PeerId;
 use sp_runtime::traits::{NumberFor, Block as BlockT};

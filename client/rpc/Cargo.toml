@@ -27,7 +27,7 @@ serde_json = "1.0.41"
 tp-session = { version = "2.0.0", path = "../../primitives/session" }
 tp-offchain = { version = "2.0.0", path = "../../primitives/offchain" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 tp-rpc = { version = "2.0.0", path = "../../primitives/rpc" }
 tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
 tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }

@@ -26,7 +26,7 @@ use futures::{future, future::FutureExt, Future};
 use log::info;
 use sc_service::{Configuration, TaskType, TaskManager};
 use sc_telemetry::{TelemetryHandle, TelemetryWorker};
-use sp_utils::metrics::{TOKIO_THREADS_ALIVE, TOKIO_THREADS_TOTAL};
+use tetcore_utils::metrics::{TOKIO_THREADS_ALIVE, TOKIO_THREADS_TOTAL};
 use std::marker::PhantomData;
 use sc_service::Error as ServiceError;
 use crate::error::Error as CliError;

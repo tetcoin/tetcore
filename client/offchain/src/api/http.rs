@@ -34,7 +34,7 @@ use futures::{prelude::*, future, channel::mpsc};
 use log::error;
 use sp_core::offchain::{HttpRequestId, Timestamp, HttpRequestStatus, HttpError};
 use std::{convert::TryFrom, fmt, io::Read as _, pin::Pin, task::{Context, Poll}};
-use sp_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
+use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
 use std::sync::Arc;
 use hyper::{Client as HyperClient, Body, client};
 use hyper_rustls::HttpsConnector;
@@ -704,7 +704,7 @@ mod tests {
 	use sp_core::offchain::{HttpError, HttpRequestId, HttpRequestStatus, Duration};
 	use futures::future;
 	use lazy_static::lazy_static;
-	
+
 	// Using lazy_static to avoid spawning lots of different SharedClients,
 	// as spawning a SharedClient is CPU-intensive and opens lots of fds.
 	lazy_static! {

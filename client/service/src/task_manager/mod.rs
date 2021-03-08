@@ -31,7 +31,7 @@ use prometheus_endpoint::{
 	PrometheusError,
 	CounterVec, HistogramOpts, HistogramVec, Opts, Registry, U64
 };
-use sp_utils::mpsc::{TracingUnboundedSender, TracingUnboundedReceiver, tracing_unbounded};
+use tetcore_utils::mpsc::{TracingUnboundedSender, TracingUnboundedReceiver, tracing_unbounded};
 use tracing_futures::Instrument;
 use crate::{config::{TaskExecutor, TaskType, JoinFuture}, Error};
 use sc_telemetry::TelemetrySpan;

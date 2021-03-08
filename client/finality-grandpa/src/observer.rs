@@ -29,7 +29,7 @@ use log::{debug, info, warn};
 use sp_keystore::SyncCryptoStorePtr;
 use sp_consensus::SelectChain;
 use sc_client_api::backend::Backend;
-use sp_utils::mpsc::TracingUnboundedReceiver;
+use tetcore_utils::mpsc::TracingUnboundedReceiver;
 use sp_runtime::traits::{NumberFor, Block as BlockT};
 use sp_blockchain::HeaderMetadata;
 
@@ -386,7 +386,7 @@ mod tests {
 	use super::*;
 
 	use assert_matches::assert_matches;
-	use sp_utils::mpsc::tracing_unbounded;
+	use tetcore_utils::mpsc::tracing_unbounded;
 	use crate::{aux_schema,	communication::tests::{Event, make_test_network}};
 	use tetcore_test_runtime_client::{TestClientBuilder, TestClientBuilderExt};
 	use sc_network::PeerId;
