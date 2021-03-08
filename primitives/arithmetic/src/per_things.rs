@@ -24,7 +24,7 @@ use crate::traits::{
 	SaturatedConversion, UniqueSaturatedInto, Saturating, BaseArithmetic, Bounded, Zero, Unsigned,
 	One,
 };
-use sp_debug_derive::RuntimeDebug;
+use debug_derive::RuntimeDebug;
 
 /// Get the inner type of a `PerThing`.
 pub type InnerOf<P> = <P as PerThing>::Inner;
