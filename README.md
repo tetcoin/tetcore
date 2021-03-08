@@ -1,7 +1,7 @@
 # Tetcore &middot; [![GitHub license](https://img.shields.io/badge/license-GPL3%2FApache2-blue)](#LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/CONTRIBUTING.adoc)
 
 <p align="center">
-  <img src="/docs/media/sub.gif">
+  <img src="/docs/media/tetcore.png">
 </p>
 
 
