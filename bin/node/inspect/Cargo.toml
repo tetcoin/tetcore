@@ -11,7 +11,7 @@ repository = "https://github.com/tetcoin/tetcore/"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "tetsy-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 derive_more = "0.99"
 log = "0.4.8"
 tc-cli = { version = "0.8.0", path = "../../../client/cli" }

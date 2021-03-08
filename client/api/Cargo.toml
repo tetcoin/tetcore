@@ -14,7 +14,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
 derive_more = "0.99.2"
 tc-executor = { version = "0.8.0", path = "../executor" }

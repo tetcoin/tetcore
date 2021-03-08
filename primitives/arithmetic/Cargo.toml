@@ -15,7 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 
 [dependencies]
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 integer-sqrt = "0.1.2"
 num-traits = { version = "0.2.8", default-features = false }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }

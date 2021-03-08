@@ -11,7 +11,7 @@ repository = "https://github.com/tetcoin/tetcore/"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 
 pallet-aura = { version = "2.0.0", default-features = false, path = "../../../frame/aura" }
 pallet-balances = { version = "2.0.0", default-features = false, path = "../../../frame/balances" }

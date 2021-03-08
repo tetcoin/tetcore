@@ -17,7 +17,7 @@ pallet-balances = { version = "2.0.0", path = "../../../frame/balances" }
 tc-service = { version = "0.8.0", features = ["test-helpers", "db"],  path = "../../../client/service" }
 tc-client-db = { version = "0.8.0", path = "../../../client/db/", features = ["kvdb-rocksdb", "tetsy-db"] }
 tc-client-api = { version = "2.0.0", path = "../../../client/api/" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 pallet-contracts = { version = "2.0.0", path = "../../../frame/contracts" }
 pallet-grandpa = { version = "2.0.0", path = "../../../frame/grandpa" }
 pallet-indices = { version = "2.0.0", path = "../../../frame/indices" }
