@@ -15,7 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 tp-authority-discovery = { version = "2.0.0", default-features = false, path = "../../primitives/authority-discovery" }
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 pallet-session = { version = "2.0.0", features = ["historical" ], path = "../session", default-features = false }
