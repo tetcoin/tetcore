@@ -29,7 +29,7 @@ tp-runtime = { version = "2.0.0", path = "../../runtime" }
 tp-utils = { version = "2.0.0", path = "../../utils" }
 tp-trie = { version = "2.0.0", path = "../../trie" }
 tp-api = { version = "2.0.0", path = "../../api" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 parking_lot = "0.11.1"
 serde = { version = "1.0", features = ["derive"] }
 prometheus-endpoint = { package = "prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.0"}

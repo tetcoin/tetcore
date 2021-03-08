@@ -17,7 +17,7 @@ tp-api = { version = "2.0.0", default-features = false, path = "../../api" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../std" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../runtime" }
 tp-core = { version = "2.0.0", default-features = false, path = "../../core" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 
 [features]
 default = ["std"]
