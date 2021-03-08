@@ -21,7 +21,7 @@ tp-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
 tc-client-api = { version = "2.0.0", path = "../api" }
 tp-api = { version = "2.0.0", path = "../../primitives/api" }
-codec = { package = "tetsy-scale-codec", version = "2.0.0" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 tc-executor = { version = "0.8.0", path = "../executor" }
 
 [features]
