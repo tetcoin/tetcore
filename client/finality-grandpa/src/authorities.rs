@@ -18,7 +18,7 @@
 
 //! Utilities for dealing with authorities, authority sets, and handoffs.
 
-use fork_tree::ForkTree;
+use forktree::ForkTree;
 use parking_lot::RwLock;
 use finality_grandpa::voter_set::VoterSet;
 use tetsy_scale_codec::{Encode, Decode};
@@ -49,14 +49,14 @@ pub enum Error<N, E> {
 	)]
 	ForcedAuthoritySetChangeDependencyUnsatisfied(N),
 	#[display(fmt = "Invalid operation in the pending changes tree: {}", _0)]
-	ForkTree(fork_tree::Error<E>),
+	ForkTree(forktree::Error<E>),
 }
 
-impl<N, E> From<fork_tree::Error<E>> for Error<N, E> {
-	fn from(err: fork_tree::Error<E>) -> Error<N, E> {
+impl<N, E> From<forktree::Error<E>> for Error<N, E> {
+	fn from(err: forktree::Error<E>) -> Error<N, E> {
 		match err {
-			fork_tree::Error::Client(err) => Error::Client(err),
-			fork_tree::Error::Duplicate => Error::DuplicateAuthoritySetChange,
+			forktree::Error::Client(err) => Error::Client(err),
+			forktree::Error::Duplicate => Error::DuplicateAuthoritySetChange,
 			err => Error::ForkTree(err),
 		}
 	}
@@ -521,7 +521,7 @@ where
 			is_descendent_of,
 			|change| change.effective_number() <= finalized_number
 		)? {
-			fork_tree::FinalizationResult::Changed(change) => {
+			forktree::FinalizationResult::Changed(change) => {
 				status.changed = true;
 
 				let pending_forced_changes = std::mem::replace(
@@ -560,7 +560,7 @@ where
 					));
 				}
 			},
-			fork_tree::FinalizationResult::Unchanged => {},
+			forktree::FinalizationResult::Unchanged => {},
 		}
 
 		Ok(status)
@@ -951,7 +951,7 @@ mod tests {
 		// trying to finalize past `change_c` without finalizing `change_a` first
 		assert!(matches!(
 			authorities.apply_standard_changes("hash_d", 40, &is_descendent_of, false),
-			Err(Error::ForkTree(fork_tree::Error::UnfinalizedAncestor))
+			Err(Error::ForkTree(forktree::Error::UnfinalizedAncestor))
 		));
 		assert_eq!(authorities.authority_set_changes, AuthoritySetChanges::empty());
 

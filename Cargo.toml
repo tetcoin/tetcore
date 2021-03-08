@@ -183,7 +183,7 @@ members = [
 	"test-utils/test-crate",
 	"utils/browser",
 	"utils/build-script-utils",
-	"utils/fork-tree",
+	"utils/forktree",
 	"utils/frame/benchmarking-cli",
 	"utils/frame/frame-utilities-cli",
 	"utils/frame/rpc/support",

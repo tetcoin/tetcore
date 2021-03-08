@@ -139,7 +139,7 @@ pub fn load_block_weight<H: Encode, B: AuxStore>(
 mod test {
 	use super::*;
 	use crate::migration::EpochV0;
-	use fork_tree::ForkTree;
+	use forktree::ForkTree;
 	use tetcore_test_runtime_client;
 	use sp_core::H256;
 	use sp_runtime::traits::NumberFor;

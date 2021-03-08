@@ -18,7 +18,7 @@
 
 use sp_blockchain::Error as ClientError;
 use crate::protocol::sync::{PeerSync, PeerSyncState};
-use fork_tree::ForkTree;
+use forktree::ForkTree;
 use libp2p::PeerId;
 use log::{debug, trace, warn};
 use sp_runtime::traits::{Block as BlockT, NumberFor, Zero};
@@ -100,7 +100,7 @@ impl<B: BlockT> ExtraRequests<B> {
 				// this is a new root so we add it to the current `pending_requests`
 				self.pending_requests.push_back((request.0, request.1));
 			}
-			Err(fork_tree::Error::Revert) => {
+			Err(forktree::Error::Revert) => {
 				// we have finalized further than the given request, presumably
 				// by some other part of the system (not sync). we can safely
 				// ignore the `Revert` error.
@@ -158,7 +158,7 @@ impl<B: BlockT> ExtraRequests<B> {
 		best_finalized_hash: &B::Hash,
 		best_finalized_number: NumberFor<B>,
 		is_descendent_of: F
-	) -> Result<(), fork_tree::Error<ClientError>>
+	) -> Result<(), forktree::Error<ClientError>>
 		where F: Fn(&B::Hash, &B::Hash) -> Result<bool, ClientError>
 	{
 		let request = (*best_finalized_hash, best_finalized_number);
@@ -176,7 +176,7 @@ impl<B: BlockT> ExtraRequests<B> {
 				best_finalized_number,
 				&is_descendent_of,
 			) {
-				Err(fork_tree::Error::Revert) => {
+				Err(forktree::Error::Revert) => {
 					// we might have finalized further already in which case we
 					// will get a `Revert` error which we can safely ignore.
 				},

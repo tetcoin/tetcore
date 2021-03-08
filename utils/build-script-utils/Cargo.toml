@@ -6,7 +6,7 @@ edition = "2018"
 license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
-description = "Crate with utility functions for `build.rs` scripts."
+description = "Tetcore crate with utility functions for `build.rs` scripts."
 readme = "README.md"
 
 [package.metadata.docs.rs]

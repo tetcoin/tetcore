@@ -276,7 +276,7 @@ pub enum Error<B: BlockT> {
 	/// Runtime error
 	Runtime(sp_inherents::Error),
 	/// Fork tree error
-	ForkTree(Box<fork_tree::Error<sp_blockchain::Error>>),
+	ForkTree(Box<forktree::Error<sp_blockchain::Error>>),
 }
 
 impl<B: BlockT> std::convert::From<Error<B>> for String {

@@ -23,7 +23,7 @@ pub mod migration;
 use std::{sync::Arc, ops::Add, collections::BTreeMap, borrow::{Borrow, BorrowMut}};
 use parking_lot::Mutex;
 use codec::{Encode, Decode};
-use fork_tree::ForkTree;
+use forktree::ForkTree;
 use sc_client_api::utils::is_descendent_of;
 use sp_blockchain::{HeaderMetadata, HeaderBackend, Error as ClientError};
 use sp_runtime::traits::{Block as BlockT, NumberFor, One, Zero};
@@ -195,7 +195,7 @@ impl<E, ERef> ViableEpoch<E, ERef> where
 	}
 
 	/// Increment the epoch, yielding an `IncrementedEpoch` to be imported
-	/// into the fork-tree.
+	/// into the forktree.
 	pub fn increment(
 		&self,
 		next_descriptor: E::NextEpochDescriptor
@@ -268,7 +268,7 @@ impl<E: Epoch> Clone for PersistedEpochHeader<E> {
 	}
 }
 
-/// A fresh, incremented epoch to import into the underlying fork-tree.
+/// A fresh, incremented epoch to import into the underlying forktree.
 ///
 /// Create this with `ViableEpoch::increment`.
 #[must_use = "Freshly-incremented epoch must be imported with `EpochChanges::import`"]
@@ -395,7 +395,7 @@ impl<Hash, Number, E: Epoch> EpochChanges<Hash, Number, E> where
 		hash: &Hash,
 		number: Number,
 		slot: E::Slot,
-	) -> Result<(), fork_tree::Error<D::Error>> {
+	) -> Result<(), forktree::Error<D::Error>> {
 		let is_descendent_of = descendent_of_builder
 			.build_is_descendent_of(None);
 
@@ -525,7 +525,7 @@ impl<Hash, Number, E: Epoch> EpochChanges<Hash, Number, E> where
 		parent_number: Number,
 		slot: E::Slot,
 		make_genesis: G,
-	) -> Result<Option<E>, fork_tree::Error<D::Error>> where
+	) -> Result<Option<E>, forktree::Error<D::Error>> where
 		G: FnOnce(E::Slot) -> E,
 		E: Clone,
 	{
@@ -549,8 +549,8 @@ impl<Hash, Number, E: Epoch> EpochChanges<Hash, Number, E> where
 		parent_hash: &Hash,
 		parent_number: Number,
 		slot: E::Slot,
-	) -> Result<Option<ViableEpochDescriptor<Hash, Number, E>>, fork_tree::Error<D::Error>> {
-		// find_node_where will give you the node in the fork-tree which is an ancestor
+	) -> Result<Option<ViableEpochDescriptor<Hash, Number, E>>, forktree::Error<D::Error>> {
+		// find_node_where will give you the node in the forktree which is an ancestor
 		// of the `parent_hash` by default. if the last epoch was signalled at the parent_hash,
 		// then it won't be returned. we need to create a new fake chain head hash which
 		// "descends" from our parent-hash.
@@ -617,7 +617,7 @@ impl<Hash, Number, E: Epoch> EpochChanges<Hash, Number, E> where
 		number: Number,
 		parent_hash: Hash,
 		epoch: IncrementedEpoch<E>,
-	) -> Result<(), fork_tree::Error<D::Error>> {
+	) -> Result<(), forktree::Error<D::Error>> {
 		let is_descendent_of = descendent_of_builder
 			.build_is_descendent_of(Some((hash, parent_hash)));
 		let header = PersistedEpochHeader::<E>::from(&epoch.0);
@@ -630,7 +630,7 @@ impl<Hash, Number, E: Epoch> EpochChanges<Hash, Number, E> where
 		);
 
 		match res {
-			Ok(_) | Err(fork_tree::Error::Duplicate) => {
+			Ok(_) | Err(forktree::Error::Duplicate) => {
 				self.epochs.insert((hash, number), epoch.0);
 				Ok(())
 			},

@@ -27,7 +27,7 @@ derive_more = "0.99.2"
 either = "1.5.3"
 erased-serde = "0.3.9"
 fnv = "1.0.6"
-fork-tree = { version = "2.0.0", path = "../../utils/fork-tree" }
+forktree = { version = "2.0.0", path = "../../utils/forktree" }
 futures = "0.3.9"
 futures-timer = "3.0.2"
 asynchronous-codec = "0.5"

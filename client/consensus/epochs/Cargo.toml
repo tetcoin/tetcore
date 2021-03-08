@@ -15,7 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
 parking_lot = "0.11.1"
-fork-tree = { version = "2.0.0", path = "../../../utils/fork-tree" }
+forktree = { version = "2.0.0", path = "../../../utils/forktree" }
 tp-runtime = {  path = "../../../primitives/runtime" , version = "2.0.0"}
 tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
 tc-client-api = { path = "../../api" , version = "2.0.0"}

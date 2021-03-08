@@ -930,7 +930,7 @@ mod test {
 
 	impl std::error::Error for TestError {}
 
-	fn test_fork_tree<'a>() -> (ForkTree<&'a str, u64, ()>, impl Fn(&&str, &&str) -> Result<bool, TestError>)  {
+	fn test_forktree<'a>() -> (ForkTree<&'a str, u64, ()>, impl Fn(&&str, &&str) -> Result<bool, TestError>)  {
 		let mut tree = ForkTree::new();
 
 		//
@@ -997,7 +997,7 @@ mod test {
 
 	#[test]
 	fn import_doesnt_revert() {
-		let (mut tree, is_descendent_of) = test_fork_tree();
+		let (mut tree, is_descendent_of) = test_forktree();
 
 		tree.finalize_root(&"A");
 
@@ -1014,7 +1014,7 @@ mod test {
 
 	#[test]
 	fn import_doesnt_add_duplicates() {
-		let (mut tree, is_descendent_of) = test_fork_tree();
+		let (mut tree, is_descendent_of) = test_forktree();
 
 		assert_eq!(
 			tree.import("A", 1, (), &is_descendent_of),
@@ -1040,7 +1040,7 @@ mod test {
 	#[test]
 	fn finalize_root_works() {
 		let finalize_a = || {
-			let (mut tree, ..) = test_fork_tree();
+			let (mut tree, ..) = test_forktree();
 
 			assert_eq!(
 				tree.roots().map(|(h, n, _)| (h.clone(), n.clone())).collect::<Vec<_>>(),
@@ -1091,7 +1091,7 @@ mod test {
 
 	#[test]
 	fn finalize_works() {
-		let (mut tree, is_descendent_of) = test_fork_tree();
+		let (mut tree, is_descendent_of) = test_forktree();
 
 		let original_roots = tree.roots.clone();
 
@@ -1158,7 +1158,7 @@ mod test {
 
 	#[test]
 	fn finalize_with_ancestor_works() {
-		let (mut tree, is_descendent_of) = test_fork_tree();
+		let (mut tree, is_descendent_of) = test_forktree();
 
 		let original_roots = tree.roots.clone();
 
@@ -1360,7 +1360,7 @@ mod test {
 
 	#[test]
 	fn iter_iterates_in_preorder() {
-		let (tree, ..) = test_fork_tree();
+		let (tree, ..) = test_forktree();
 		assert_eq!(
 			tree.iter().map(|(h, n, _)| (h.clone(), n.clone())).collect::<Vec<_>>(),
 			vec![
@@ -1449,7 +1449,7 @@ mod test {
 
 	#[test]
 	fn find_node_works() {
-		let (tree, is_descendent_of) = test_fork_tree();
+		let (tree, is_descendent_of) = test_forktree();
 
 		let node = tree.find_node_where(
 			&"D",
@@ -1464,14 +1464,14 @@ mod test {
 
 	#[test]
 	fn map_works() {
-		let (tree, _is_descendent_of) = test_fork_tree();
+		let (tree, _is_descendent_of) = test_forktree();
 
 		let _tree = tree.map(&mut |_, _, _| ());
 	}
 
 	#[test]
 	fn prune_works() {
-		let (mut tree, is_descendent_of) = test_fork_tree();
+		let (mut tree, is_descendent_of) = test_forktree();
 
 		let removed = tree.prune(
 			&"C",
@@ -1555,7 +1555,7 @@ mod test {
 
 	#[test]
 	fn tree_rebalance() {
-		let (mut tree, _) = test_fork_tree();
+		let (mut tree, _) = test_forktree();
 
 		// the tree is automatically rebalanced on import, therefore we should iterate in preorder
 		// exploring the longest forks first. check the ascii art above to understand the expected
