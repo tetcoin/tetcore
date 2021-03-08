@@ -18,7 +18,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 impl-serde = { version = "0.3.1", optional = true }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
 
 [features]
@@ -27,6 +27,6 @@ std = [
 	"impl-serde",
 	"serde",
 	"codec/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-runtime/std",
 ]

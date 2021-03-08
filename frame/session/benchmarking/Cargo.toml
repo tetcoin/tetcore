@@ -13,7 +13,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 tp-session = { version = "2.0.0", default-features = false, path = "../../../primitives/session" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
 frame-system = { version = "2.0.0", default-features = false, path = "../../system" }
@@ -35,7 +35,7 @@ pallet-balances = { version = "2.0.0", path = "../../balances" }
 [features]
 default = ["std"]
 std = [
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-session/std",
 	"tp-runtime/std",
 	"frame-system/std",

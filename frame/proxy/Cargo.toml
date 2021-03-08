@@ -20,7 +20,7 @@ frame-system = { version = "2.0.0", default-features = false, path = "../system"
 tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 
@@ -37,7 +37,7 @@ std = [
 	"tp-runtime/std",
 	"frame-support/std",
 	"frame-system/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-io/std"
 ]
 runtime-benchmarks = [

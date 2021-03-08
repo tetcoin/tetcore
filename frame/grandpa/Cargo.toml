@@ -19,7 +19,7 @@ tp-application-crypto = { version = "2.0.0", default-features = false, path = ".
 tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tp-finality-grandpa = { version = "2.0.0", default-features = false, path = "../../primitives/finality-grandpa" }
 tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
@@ -49,7 +49,7 @@ std = [
 	"tp-core/std",
 	"tp-finality-grandpa/std",
 	"tp-session/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"frame-support/std",
 	"tp-runtime/std",
 	"tp-staking/std",

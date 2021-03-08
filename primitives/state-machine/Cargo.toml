@@ -28,7 +28,7 @@ num-traits = { version = "0.2.8", default-features = false }
 rand = { version = "0.7.2", optional = true }
 tp-externalities = { version = "0.8.0", path = "../externalities", default-features = false }
 smallvec = "1.4.1"
-tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 
 [dev-dependencies]
 hex-literal = "0.3.1"
@@ -43,7 +43,7 @@ std = [
 	"num-traits/std",
 	"tp-core/std",
 	"tp-externalities/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-trie/std",
 	"trie-db/std",
 	"trie-root/std",

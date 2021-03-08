@@ -24,7 +24,7 @@ tp-keyring = { version = "2.0.0", optional = true, path = "../../primitives/keyr
 memory-db = { version = "0.26.0", default-features = false }
 tp-offchain = { path = "../../primitives/offchain", default-features = false, version = "2.0.0"}
 tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-runtime-interface = { path = "../../primitives/runtime-interface", default-features = false, version = "2.0.0"}
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 frame-support = { version = "2.0.0", default-features = false, path = "../../frame/support" }
@@ -76,7 +76,7 @@ std = [
 	"tp-offchain/std",
 	"tp-core/std",
 	"tp-core/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-runtime-interface/std",
 	"tp-io/std",
 	"frame-support/std",

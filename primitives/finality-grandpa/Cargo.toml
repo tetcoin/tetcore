@@ -24,7 +24,7 @@ tp-application-crypto = { version = "2.0.0", default-features = false, path = ".
 tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 tp-keystore = { version = "0.8.0", default-features = false, path = "../keystore", optional = true }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
-tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 
 [features]
 default = ["std"]
@@ -38,5 +38,5 @@ std = [
 	"tp-core/std",
 	"tp-keystore",
 	"tp-runtime/std",
-	"tp-std/std",
+	"tetcore-std/std",
 ]

@@ -14,7 +14,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
@@ -30,7 +30,7 @@ tp-io = { version = "2.0.0", path = "../../primitives/io" }
 default = ["std"]
 std = [
 	"codec/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"frame-support/std",
 	"tp-runtime/std",
 	"frame-system/std",

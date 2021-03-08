@@ -31,7 +31,7 @@ use super::{node_header::{NodeHeader, NodeKind}};
 
 /// Helper struct for trie node decoder. This implements `codec::Input` on a byte slice, while
 /// tracking the absolute position. This is similar to `std::io::Cursor` but does not implement
-/// `Read` and `io` is not in `tp-std`.
+/// `Read` and `io` is not in `tetcore-std`.
 struct ByteSliceInput<'a> {
 	data: &'a [u8],
 	offset: usize,

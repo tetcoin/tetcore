@@ -19,7 +19,7 @@ tp-runtime = { version = "2.0.0", default-features = false, path = "../../primit
 tp-npos-elections = { version = "2.0.0", default-features = false, path = "../../primitives/npos-elections" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 
 [dev-dependencies]
@@ -38,7 +38,7 @@ std = [
 	"tp-runtime/std",
 	"tp-npos-elections/std",
 	"frame-system/std",
-	"tp-std/std",
+	"tetcore-std/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking",

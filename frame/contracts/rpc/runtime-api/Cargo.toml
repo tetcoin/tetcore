@@ -16,7 +16,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 tp-api = { version = "2.0.0", default-features = false, path = "../../../../primitives/api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tp-std = { version = "2.0.0", default-features = false, path = "../../../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../../../primitives/std" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../../primitives/runtime" }
 pallet-contracts-primitives = { version = "2.0.0", default-features = false, path = "../../common" }
 
@@ -25,7 +25,7 @@ default = ["std"]
 std = [
 	"tp-api/std",
 	"codec/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-runtime/std",
 	"pallet-contracts-primitives/std",
 ]

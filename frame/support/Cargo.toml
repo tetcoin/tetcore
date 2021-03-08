@@ -17,7 +17,7 @@ log = "0.4"
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 frame-metadata = { version = "12.0.0", default-features = false, path = "../metadata" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
@@ -46,7 +46,7 @@ std = [
 	"serde",
 	"tp-io/std",
 	"codec/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-runtime/std",
 	"tp-tracing/std",
 	"tp-arithmetic/std",

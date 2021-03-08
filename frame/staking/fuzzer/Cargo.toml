@@ -23,7 +23,7 @@ pallet-balances = { version = "2.0.0", path = "../../balances" }
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 frame-system = { version = "2.0.0", path = "../../system" }
 frame-support = { version = "2.0.0", path = "../../support" }
-tp-std = { version = "2.0.0", path = "../../../primitives/std" }
+tetcore-std = { version = "2.0.0", path = "../../../primitives/std" }
 tp-io ={ version = "2.0.0", path = "../../../primitives/io" }
 tp-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-npos-elections = { version = "2.0.0", path = "../../../primitives/npos-elections" }

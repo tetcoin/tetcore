@@ -32,7 +32,7 @@ tp-inherents = { path = "../../../primitives/inherents", default-features = fals
 tp-offchain = { version = "2.0.0", default-features = false, path = "../../../primitives/offchain" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
 tp-session = { version = "2.0.0", default-features = false, path = "../../../primitives/session" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 tp-transaction-pool = { version = "2.0.0", default-features = false, path = "../../../primitives/transaction-pool" }
 tp-version = { version = "2.0.0", default-features = false, path = "../../../primitives/version" }
 
@@ -73,7 +73,7 @@ std = [
 	"tp-offchain/std",
 	"tp-runtime/std",
 	"tp-session/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-transaction-pool/std",
 	"tp-version/std",
 	"frame-system/std",

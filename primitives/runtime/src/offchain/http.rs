@@ -112,7 +112,7 @@ mod header {
 		/// Returns the name of this header.
 		pub fn name(&self) -> &str {
 			// Header keys are always produced from `&str` so this is safe.
-			// we don't store them as `Strings` to avoid bringing `alloc::String` to tp-std
+			// we don't store them as `Strings` to avoid bringing `alloc::String` to tetcore-std
 			// or here.
 			unsafe { str::from_utf8_unchecked(&self.name) }
 		}
@@ -120,7 +120,7 @@ mod header {
 		/// Returns the value of this header.
 		pub fn value(&self) -> &str {
 			// Header values are always produced from `&str` so this is safe.
-			// we don't store them as `Strings` to avoid bringing `alloc::String` to tp-std
+			// we don't store them as `Strings` to avoid bringing `alloc::String` to tetcore-std
 			// or here.
 			unsafe { str::from_utf8_unchecked(&self.value) }
 		}

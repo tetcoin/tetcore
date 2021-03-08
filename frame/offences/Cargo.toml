@@ -15,7 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 pallet-balances = { version = "2.0.0", default-features = false, path = "../balances" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
@@ -31,7 +31,7 @@ default = ["std"]
 std = [
 	"pallet-balances/std",
 	"codec/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"serde",
 	"tp-runtime/std",
 	"tp-staking/std",

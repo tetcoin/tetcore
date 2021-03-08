@@ -29,7 +29,7 @@ tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
 tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-timestamp = { version = "2.0.0", default-features = false, path = "../../primitives/timestamp" }
 
 [dev-dependencies]
@@ -59,7 +59,7 @@ std = [
 	"tp-runtime/std",
 	"tp-session/std",
 	"tp-staking/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-timestamp/std",
 ]
 runtime-benchmarks = ["frame-benchmarking"]

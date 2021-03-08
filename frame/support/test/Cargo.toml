@@ -20,7 +20,7 @@ frame-support = { version = "2.0.0", default-features = false, path = "../" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../../primitives/inherents" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
 tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 trybuild = "1.0.38"
 pretty_assertions = "0.6.1"
 rustversion = "1.0.0"
@@ -37,7 +37,7 @@ std = [
 	"frame-system/std",
 	"tp-inherents/std",
 	"tp-core/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-runtime/std",
 	"tp-state-machine",
 ]

@@ -80,7 +80,7 @@ TO_RENAME=(
     "sr-primitives tp-runtime"
     "sr-sandbox tp-sandbox"
     "sr-staking-primitives tp-staking"
-    "sr-std tp-std"
+    "sr-std tetcore-std"
     "sr-version tp-version"
     "tetcore-state-machine tp-state-machine"
     "tetcore-transaction-pool-runtime-api tp-transaction-pool"

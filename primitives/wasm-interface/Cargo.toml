@@ -16,9 +16,9 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 twasmi = { version = "0.6.2", optional = true }
 impl-trait-for-tuples = "0.2.0"
-tp-std = { version = "2.0.0", path = "../std", default-features = false }
+tetcore-std = { version = "2.0.0", path = "../std", default-features = false }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 
 [features]
 default = [ "std" ]
-std = [ "twasmi", "tp-std/std", "codec/std" ]
+std = [ "twasmi", "tetcore-std/std", "codec/std" ]

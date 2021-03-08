@@ -20,7 +20,7 @@ codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = f
 tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
 tp-arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
-tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../io" }
 log = { version = "0.4.8", optional = true }
 paste = "0.1.6"
@@ -46,7 +46,7 @@ std = [
 	"log",
 	"tp-core/std",
 	"rand",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-io/std",
 	"serde",
 	"tetsy-util-mem/std",

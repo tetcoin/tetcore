@@ -14,7 +14,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 tp-api = { version = "2.0.0", default-features = false, path = "../api" }
-tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
@@ -25,7 +25,7 @@ wasm-timer = { version = "0.2", optional = true }
 default = [ "std" ]
 std = [
 	"tp-api/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"tp-runtime/std",
 	"codec/std",
 	"tp-inherents/std",

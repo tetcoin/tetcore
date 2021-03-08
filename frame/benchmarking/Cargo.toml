@@ -19,7 +19,7 @@ codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = f
 tp-api = { version = "2.0.0", path = "../../primitives/api", default-features = false }
 tp-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface", default-features = false }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime", default-features = false }
-tp-std = { version = "2.0.0", path = "../../primitives/std", default-features = false }
+tetcore-std = { version = "2.0.0", path = "../../primitives/std", default-features = false }
 tp-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
 tp-storage = { version = "2.0.0", path = "../../primitives/storage", default-features = false }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
@@ -35,7 +35,7 @@ std = [
 	"tp-runtime-interface/std",
 	"tp-runtime/std",
 	"tp-api/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"frame-support/std",
 	"frame-system/std",
 	"linregress",

@@ -17,7 +17,7 @@ tp-application-crypto = { version = "2.0.0", default-features = false, path = ".
 pallet-authorship = { version = "2.0.0", default-features = false, path = "../authorship" }
 codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
 tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
@@ -35,7 +35,7 @@ std = [
 	"pallet-authorship/std",
 	"codec/std",
 	"tp-core/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"serde",
 	"pallet-session/std",
 	"tp-io/std",

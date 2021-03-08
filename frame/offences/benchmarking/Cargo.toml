@@ -26,7 +26,7 @@ pallet-session = { version = "2.0.0", default-features = false, path = "../../se
 pallet-staking = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../staking" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
 tp-staking = { version = "2.0.0", default-features = false, path = "../../../primitives/staking" }
-tp-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 
 [dev-dependencies]
 pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
@@ -50,6 +50,6 @@ std = [
 	"pallet-staking/std",
 	"tp-runtime/std",
 	"tp-staking/std",
-	"tp-std/std",
+	"tetcore-std/std",
 	"codec/std",
 ]
