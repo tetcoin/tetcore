@@ -19,7 +19,7 @@ tc-service = { version = "0.8.0", default-features = false, path = "../../../cli
 tc-cli = { version = "0.8.0", path = "../../../client/cli" }
 tc-client-db = { version = "0.8.0", path = "../../../client/db" }
 tc-executor = { version = "0.8.0", path = "../../../client/executor" }
-tp-externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
+externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
 tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 tp-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }

@@ -23,7 +23,7 @@ tc-light = { version = "2.0.0", path = "../../light" }
 tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
 tp-api = { version = "2.0.0", path = "../../../primitives/api" }
 tp-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
-tp-externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
+externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
 tp-trie = { version = "2.0.0", path = "../../../primitives/trie" }
 tetcore-storage = { version = "2.0.0", path = "../../../primitives/storage" }
 tc-client-db = { version = "0.8.0", default-features = false, path = "../../db" }

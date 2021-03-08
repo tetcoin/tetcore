@@ -15,7 +15,7 @@ parking_lot = "0.11.1"
 lazy_static = "1.4.0"
 hash-db = "0.15.2"
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tp-externalities = { version = "0.8.0", path = "../../primitives/externalities" }
+externalities = { version = "0.8.0", path = "../../primitives/externalities" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tp-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }

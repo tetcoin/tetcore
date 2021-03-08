@@ -40,7 +40,7 @@ pallet-transaction-payment = { version = "2.0.0", path = "../../../frame/transac
 pallet-treasury = { version = "2.0.0", path = "../../../frame/treasury" }
 tp-application-crypto = { version = "2.0.0", path = "../../../primitives/application-crypto" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tp-externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
+externalities = { version = "0.8.0", path = "../../../primitives/externalities" }
 tetcore-test-client = { version = "2.0.0", path = "../../../test-utils/client" }
 wat = "1.0"
 

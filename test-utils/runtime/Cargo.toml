@@ -43,7 +43,7 @@ trie-db = { version = "0.22.2", default-features = false }
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
 tc-service = { version = "0.8.0", default-features = false, optional = true, features = ["test-helpers"], path = "../../client/service" }
 tp-state-machine = { version = "0.8.0", default-features = false, path = "../../primitives/state-machine" }
-tp-externalities = { version = "0.8.0", default-features = false, path = "../../primitives/externalities" }
+externalities = { version = "0.8.0", default-features = false, path = "../../primitives/externalities" }
 
 # 3rd party
 cfg-if = "0.1.10"
@@ -85,7 +85,7 @@ std = [
 	"tp-session/std",
 	"tp-api/std",
 	"tp-runtime/std",
-	"tp-externalities/std",
+	"externalities/std",
 	"tp-state-machine/std",
 	"pallet-babe/std",
 	"frame-system-rpc-runtime-api/std",

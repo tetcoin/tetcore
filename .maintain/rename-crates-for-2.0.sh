@@ -58,7 +58,7 @@ TO_RENAME=(
     "tetcore-primitives tp-core"
     "tetcore-debug-derive debug-derive"
     "tetcore-primitives-storage tetcore-storage"
-    "tetcore-externalities tp-externalities"
+    "tetcore-externalities externalities"
     "tetcore-finality-grandpa-primitives tp-finality-grandpa"
     "tetcore-inherents tp-inherents"
     "tetcore-keyring tp-keyring"

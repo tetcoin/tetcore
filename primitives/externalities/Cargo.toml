@@ -1,5 +1,5 @@
 [package]
-name = "tp-externalities"
+name = "externalities"
 version = "0.8.1"
 license = "Apache-2.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
@@ -7,7 +7,7 @@ edition = "2018"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Tetcore externalities abstraction"
-documentation = "https://docs.rs/tp-externalities"
+documentation = "https://docs.rs/externalities"
 readme = "README.md"
 
 [package.metadata.docs.rs]
