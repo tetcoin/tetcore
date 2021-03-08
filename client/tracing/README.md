@@ -4,7 +4,7 @@ This crate is unstable and the API and usage may change.
 
 # Usage
 
-See `tp-tracing` for examples on how to use tracing.
+See `tetcore-tracing` for examples on how to use tracing.
 
 Currently we provide `Log` (default), `Telemetry` variants for `Receiver`
 

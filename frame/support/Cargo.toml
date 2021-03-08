@@ -20,7 +20,7 @@ frame-metadata = { version = "12.0.0", default-features = false, path = "../meta
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tp-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
 tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tp-arithmetic = { version = "2.0.0", default-features = false, path = "../../primitives/arithmetic" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
@@ -48,7 +48,7 @@ std = [
 	"codec/std",
 	"tetcore-std/std",
 	"tp-runtime/std",
-	"tp-tracing/std",
+	"tetcore-tracing/std",
 	"tp-arithmetic/std",
 	"frame-metadata/std",
 	"tp-inherents/std",

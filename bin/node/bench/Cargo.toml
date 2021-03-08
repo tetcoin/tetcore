@@ -30,7 +30,7 @@ tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transacti
 tc-basic-authorship = { version = "0.8.0", path = "../../../client/basic-authorship" }
 tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
 tp-timestamp = { version = "2.0.0", default-features = false, path = "../../../primitives/timestamp" }
-tp-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
 hash-db = "0.15.2"
 tempfile = "3.1.0"
 fs_extra = "1"

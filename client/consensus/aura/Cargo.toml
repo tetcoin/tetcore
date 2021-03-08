@@ -44,7 +44,7 @@ getrandom = { version = "0.2", features = ["js"], optional = true }
 
 [dev-dependencies]
 tp-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
-tp-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
 tc-executor = { version = "0.8.0", path = "../../executor" }
 tc-keystore = { version = "2.0.0", path = "../../keystore" }
 tc-network = { version = "0.8.0", path = "../../network" }

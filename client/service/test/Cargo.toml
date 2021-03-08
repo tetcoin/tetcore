@@ -41,4 +41,4 @@ tc-block-builder = { version = "0.8.0", path = "../../block-builder" }
 tc-executor = { version = "0.8.0", path = "../../executor" }
 tp-panic-handler = { version = "2.0.0", path = "../../../primitives/panic-handler" }
 tetsy-scale-codec = "2.0.1"
-tp-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }

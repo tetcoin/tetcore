@@ -56,7 +56,7 @@ retain_mut = "0.1.2"
 
 [dev-dependencies]
 tp-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
-tp-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
 tc-executor = { version = "0.8.0", path = "../../executor" }
 tc-network = { version = "0.8.0", path = "../../network" }
 tc-network-test = { version = "0.8.0", path = "../../network/test" }

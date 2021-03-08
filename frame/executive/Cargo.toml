@@ -18,7 +18,7 @@ frame-support = { version = "2.0.0", default-features = false, path = "../suppor
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 serde = { version = "1.0.101", optional = true }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tp-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
@@ -35,7 +35,7 @@ tp-version = { version = "2.0.0", path = "../../primitives/version" }
 [features]
 default = ["std"]
 with-tracing = [
-	"tp-tracing/with-tracing"
+	"tetcore-tracing/with-tracing"
 ]
 std = [
 	"codec/std",
@@ -44,6 +44,6 @@ std = [
 	"serde",
 	"tp-core/std",
 	"tp-runtime/std",
-	"tp-tracing/std",
+	"tetcore-tracing/std",
 	"tetcore-std/std",
 ]

@@ -45,7 +45,7 @@ tc-runtime-test = { version = "2.0.0", path = "runtime-test" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime" }
 tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 tc-tracing = { version = "2.0.0", path = "../tracing" }
 tracing = "0.1.22"
 tracing-subscriber = "0.2.15"

@@ -41,7 +41,7 @@ tc-client-db = { version = "0.8.0", default-features = true, path = "../db" }
 tc-block-builder = { version = "0.8.0", path = "../block-builder" }
 tc-transaction-pool = { version = "2.0.0", path = "../transaction-pool" }
 tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
-tp-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
 tp-consensus = { version = "0.8.1", path = "../../primitives/consensus/common" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 tokio = "0.2"

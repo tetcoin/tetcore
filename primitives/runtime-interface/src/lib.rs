@@ -288,7 +288,7 @@ pub use tetcore_std;
 ///
 /// # Disable tracing
 /// By addding `no_tracing` to the list of options you can prevent the wasm-side interface from
-/// generating the default `tp-tracing`-calls. Note that this is rarely needed but only meant for
+/// generating the default `tetcore-tracing`-calls. Note that this is rarely needed but only meant for
 /// the case when that would create a circular dependency. You usually _do not_ want to add this
 /// flag, as tracing doesn't cost you anything by default anyways (it is added as a no-op) but is
 /// super useful for debugging later.

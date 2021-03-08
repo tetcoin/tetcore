@@ -1056,7 +1056,7 @@ impl<T> core::default::Default for Crossing<T>
 }
 
 /// Interface to provide tracing facilities for wasm. Modelled after tokios `tracing`-crate
-/// interfaces. See `tp-tracing` for more information.
+/// interfaces. See `tetcore-tracing` for more information.
 #[runtime_interface(wasm_only, no_tracing)]
 pub trait WasmTracing {
 	/// Whether the span described in `WasmMetadata` should be traced wasm-side
