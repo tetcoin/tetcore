@@ -21,7 +21,7 @@
 
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize};
-use sp_debug_derive::RuntimeDebug;
+use debug_derive::RuntimeDebug;
 
 use tetcore_std::{vec::Vec, ops::{Deref, DerefMut}};
 use ref_cast::RefCast;
