@@ -819,7 +819,7 @@ macro_rules! implement_per_thing {
 
 			#[test]
 			fn per_thing_mul_works() {
-				use primitive_types::U256;
+				use tetsy_primitive_types::U256;
 
 				// accuracy test
 				assert_eq!(
@@ -840,7 +840,7 @@ macro_rules! implement_per_thing {
 
 			#[test]
 			fn per_thing_multiplication_with_large_number() {
-				use primitive_types::U256;
+				use tetsy_primitive_types::U256;
 				let max_minus_one = $max - 1;
 				assert_eq_error_rate!(
 					$name::from_parts(max_minus_one) * std::u128::MAX,

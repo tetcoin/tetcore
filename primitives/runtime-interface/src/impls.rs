@@ -375,11 +375,11 @@ impl PassBy for Tuple where Self: codec::Codec {
 macro_rules! for_primitive_types {
 	{ $( $hash:ident $n:expr ),* $(,)? } => {
 		$(
-			impl PassBy for primitive_types::$hash {
+			impl PassBy for tetsy_primitive_types::$hash {
 				type PassBy = Inner<Self, [u8; $n]>;
 			}
 
-			impl PassByInner for primitive_types::$hash {
+			impl PassByInner for tetsy_primitive_types::$hash {
 				type Inner = [u8; $n];
 
 				fn inner(&self) -> &Self::Inner {

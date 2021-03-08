@@ -276,7 +276,7 @@ mod tests {
 	}
 
 	fn mul_div(a: u128, b: u128, c: u128) -> u128 {
-		use primitive_types::U256;
+		use tetsy_primitive_types::U256;
 		if a.is_zero() { return Zero::zero(); }
 		let c = c.max(1);
 

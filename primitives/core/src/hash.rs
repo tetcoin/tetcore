@@ -17,7 +17,7 @@
 
 //! A fixed hash type.
 
-pub use primitive_types::{H160, H256, H512};
+pub use tetsy_primitive_types::{H160, H256, H512};
 
 /// Hash conversion. Used to convert between unbound associated hash types in traits,
 /// implemented by the same hash type.
