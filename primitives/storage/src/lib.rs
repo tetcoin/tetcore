@@ -23,7 +23,7 @@
 use serde::{Serialize, Deserialize};
 use sp_debug_derive::RuntimeDebug;
 
-use tp_std::{vec::Vec, ops::{Deref, DerefMut}};
+use tetcore_std::{vec::Vec, ops::{Deref, DerefMut}};
 use ref_cast::RefCast;
 use codec::{Encode, Decode};
 
