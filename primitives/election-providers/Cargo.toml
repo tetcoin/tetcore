@@ -13,7 +13,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tetcore-std = { version = "2.0.1", default-features = false, path = "../std" }
 tp-arithmetic = { version = "2.0.1", default-features = false, path = "../arithmetic" }
 tp-npos-elections = { version = "2.0.1", default-features = false, path = "../npos-elections" }
