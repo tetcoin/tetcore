@@ -282,7 +282,7 @@ pub mod offchain_election;
 pub mod inflation;
 pub mod weights;
 
-use tp_std::{
+use tetcore_std::{
 	result,
 	prelude::*,
 	collections::btree_map::BTreeMap,
@@ -584,7 +584,7 @@ impl<AccountId, Balance> StakingLedger<AccountId, Balance> where
 				// don't leave a dust balance in the staking system.
 				if *target <= minimum_balance {
 					slash_from_target += *target;
-					*value += tp_std::mem::replace(target, Zero::zero());
+					*value += tetcore_std::mem::replace(target, Zero::zero());
 				}
 
 				*total_remaining = total_remaining.saturating_sub(slash_from_target);
@@ -3261,7 +3261,7 @@ impl<T> pallet_authorship::EventHandler<T::AccountId, T::BlockNumber> for Module
 
 /// A `Convert` implementation that finds the stash of the given controller account,
 /// if any.
-pub struct StashOf<T>(tp_std::marker::PhantomData<T>);
+pub struct StashOf<T>(tetcore_std::marker::PhantomData<T>);
 
 impl<T: Config> Convert<T::AccountId, Option<T::AccountId>> for StashOf<T> {
 	fn convert(controller: T::AccountId) -> Option<T::AccountId> {
@@ -3274,7 +3274,7 @@ impl<T: Config> Convert<T::AccountId, Option<T::AccountId>> for StashOf<T> {
 ///
 /// Active exposure is the exposure of the validator set currently validating, i.e. in
 /// `active_era`. It can differ from the latest planned exposure in `current_era`.
-pub struct ExposureOf<T>(tp_std::marker::PhantomData<T>);
+pub struct ExposureOf<T>(tetcore_std::marker::PhantomData<T>);
 
 impl<T: Config> Convert<T::AccountId, Option<Exposure<T::AccountId, BalanceOf<T>>>>
 	for ExposureOf<T>
@@ -3427,7 +3427,7 @@ for Module<T> where
 
 /// Filter historical offences out and only allow those from the bonding period.
 pub struct FilterHistoricalOffences<T, R> {
-	_inner: tp_std::marker::PhantomData<(T, R)>,
+	_inner: tetcore_std::marker::PhantomData<(T, R)>,
 }
 
 impl<T, Reporter, Offender, R, O> ReportOffence<Reporter, Offender, O>

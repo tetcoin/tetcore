@@ -28,7 +28,7 @@ use serde::Serialize;
 #[cfg(feature = "std")]
 use codec::{Decode, Input, Error};
 use codec::{Encode, Output};
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 use sp_core::RuntimeDebug;
 
 #[cfg(feature = "std")]
@@ -86,12 +86,12 @@ impl<B, O> Eq for DecodeDifferent<B, O>
 	where B: Encode + Eq + PartialEq + 'static, O: Encode + Eq + PartialEq + 'static
 {}
 
-impl<B, O> tp_std::fmt::Debug for DecodeDifferent<B, O>
+impl<B, O> tetcore_std::fmt::Debug for DecodeDifferent<B, O>
 	where
-		B: tp_std::fmt::Debug + Eq + 'static,
-		O: tp_std::fmt::Debug + Eq + 'static,
+		B: tetcore_std::fmt::Debug + Eq + 'static,
+		O: tetcore_std::fmt::Debug + Eq + 'static,
 {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		match self {
 			DecodeDifferent::Encode(b) => b.fmt(f),
 			DecodeDifferent::Decoded(o) => o.fmt(f),
@@ -152,8 +152,8 @@ impl<E: Encode + PartialEq> PartialEq for FnEncode<E> {
 	}
 }
 
-impl<E: Encode + tp_std::fmt::Debug> tp_std::fmt::Debug for FnEncode<E> {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+impl<E: Encode + tetcore_std::fmt::Debug> tetcore_std::fmt::Debug for FnEncode<E> {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		self.0().fmt(f)
 	}
 }
@@ -262,8 +262,8 @@ impl serde::Serialize for DefaultByteGetter {
 	}
 }
 
-impl tp_std::fmt::Debug for DefaultByteGetter {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+impl tetcore_std::fmt::Debug for DefaultByteGetter {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		self.0.default_byte().fmt(f)
 	}
 }

@@ -42,7 +42,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![recursion_limit = "128"]
 
-use tp_std::{prelude::*, result};
+use tetcore_std::{prelude::*, result};
 use sp_core::u32_trait::Value as U32;
 use sp_io::storage;
 use sp_runtime::{RuntimeDebug, traits::Hash};
@@ -162,7 +162,7 @@ pub enum RawOrigin<AccountId, I> {
 	/// It has been condoned by a single member of the collective.
 	Member(AccountId),
 	/// Dummy to manage the fact we have instancing.
-	_Phantom(tp_std::marker::PhantomData<I>),
+	_Phantom(tetcore_std::marker::PhantomData<I>),
 }
 
 /// Origin for the collective module.
@@ -201,7 +201,7 @@ decl_storage! {
 		pub Prime get(fn prime): Option<T::AccountId>;
 	}
 	add_extra_genesis {
-		config(phantom): tp_std::marker::PhantomData<I>;
+		config(phantom): tetcore_std::marker::PhantomData<I>;
 		config(members): Vec<T::AccountId>;
 		build(|config| Module::<T, I>::initialize_members(&config.members))
 	}
@@ -868,7 +868,7 @@ where
 	}
 }
 
-pub struct EnsureMember<AccountId, I=DefaultInstance>(tp_std::marker::PhantomData<(AccountId, I)>);
+pub struct EnsureMember<AccountId, I=DefaultInstance>(tetcore_std::marker::PhantomData<(AccountId, I)>);
 impl<
 	O: Into<Result<RawOrigin<AccountId, I>, O>> + From<RawOrigin<AccountId, I>>,
 	AccountId: Default,
@@ -888,7 +888,7 @@ impl<
 	}
 }
 
-pub struct EnsureMembers<N: U32, AccountId, I=DefaultInstance>(tp_std::marker::PhantomData<(N, AccountId, I)>);
+pub struct EnsureMembers<N: U32, AccountId, I=DefaultInstance>(tetcore_std::marker::PhantomData<(N, AccountId, I)>);
 impl<
 	O: Into<Result<RawOrigin<AccountId, I>, O>> + From<RawOrigin<AccountId, I>>,
 	N: U32,
@@ -910,7 +910,7 @@ impl<
 }
 
 pub struct EnsureProportionMoreThan<N: U32, D: U32, AccountId, I=DefaultInstance>(
-	tp_std::marker::PhantomData<(N, D, AccountId, I)>
+	tetcore_std::marker::PhantomData<(N, D, AccountId, I)>
 );
 impl<
 	O: Into<Result<RawOrigin<AccountId, I>, O>> + From<RawOrigin<AccountId, I>>,
@@ -934,7 +934,7 @@ impl<
 }
 
 pub struct EnsureProportionAtLeast<N: U32, D: U32, AccountId, I=DefaultInstance>(
-	tp_std::marker::PhantomData<(N, D, AccountId, I)>
+	tetcore_std::marker::PhantomData<(N, D, AccountId, I)>
 );
 impl<
 	O: Into<Result<RawOrigin<AccountId, I>, O>> + From<RawOrigin<AccountId, I>>,

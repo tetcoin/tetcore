@@ -25,7 +25,7 @@ use sp_runtime::{
 		TransactionLongevity,
 	},
 };
-use tp_std::vec;
+use tetcore_std::vec;
 
 /// Nonce check and increment to give replay protection for transactions.
 ///
@@ -41,14 +41,14 @@ impl<T: Config> CheckNonce<T> {
 	}
 }
 
-impl<T: Config> tp_std::fmt::Debug for CheckNonce<T> {
+impl<T: Config> tetcore_std::fmt::Debug for CheckNonce<T> {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		write!(f, "CheckNonce({})", self.0)
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, _: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -62,7 +62,7 @@ impl<T: Config> SignedExtension for CheckNonce<T> where
 	type Pre = ();
 	const IDENTIFIER: &'static str = "CheckNonce";
 
-	fn additional_signed(&self) -> tp_std::result::Result<(), TransactionValidityError> { Ok(()) }
+	fn additional_signed(&self) -> tetcore_std::result::Result<(), TransactionValidityError> { Ok(()) }
 
 	fn pre_dispatch(
 		self,

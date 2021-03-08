@@ -21,8 +21,8 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use tp_std::{result, prelude::*};
-use tp_std::collections::btree_set::BTreeSet;
+use tetcore_std::{result, prelude::*};
+use tetcore_std::collections::btree_set::BTreeSet;
 use frame_support::{decl_module, decl_storage, decl_error, dispatch, ensure};
 use frame_support::traits::{FindAuthor, VerifySeal, Get};
 use codec::{Encode, Decode};
@@ -98,7 +98,7 @@ impl<H, A> FilterUncle<H, A> for () {
 /// A filter on uncles which verifies seals and does no additional checks.
 /// This is well-suited to consensus modes such as PoW where the cost of
 /// equivocating is high.
-pub struct SealVerify<T>(tp_std::marker::PhantomData<T>);
+pub struct SealVerify<T>(tetcore_std::marker::PhantomData<T>);
 
 impl<Header, Author, T: VerifySeal<Header, Author>> FilterUncle<Header, Author>
 	for SealVerify<T>
@@ -116,7 +116,7 @@ impl<Header, Author, T: VerifySeal<Header, Author>> FilterUncle<Header, Author>
 /// one uncle included per author per height.
 ///
 /// This does O(n log n) work in the number of uncles included.
-pub struct OnePerAuthorPerHeight<T, N>(tp_std::marker::PhantomData<(T, N)>);
+pub struct OnePerAuthorPerHeight<T, N>(tetcore_std::marker::PhantomData<(T, N)>);
 
 impl<Header, Author, T> FilterUncle<Header, Author>
 	for OnePerAuthorPerHeight<T, Header::Number>

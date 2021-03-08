@@ -47,7 +47,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use codec::{Encode, Decode};
 use frame_support::{
 	decl_storage, decl_module,
@@ -126,7 +126,7 @@ type BalanceOf<T> =
 ///
 /// More info can be found at:
 /// <https://w3f-research.readthedocs.io/en/latest/polkadot/Token%20Economics.html>
-pub struct TargetedFeeAdjustment<T, S, V, M>(tp_std::marker::PhantomData<(T, S, V, M)>);
+pub struct TargetedFeeAdjustment<T, S, V, M>(tetcore_std::marker::PhantomData<(T, S, V, M)>);
 
 /// Something that can convert the current multiplier to the next one.
 pub trait MultiplierUpdate: Convert<Multiplier, Multiplier> {
@@ -275,7 +275,7 @@ decl_module! {
 			// given weight == u64, we build multipliers from `diff` of two weight values, which can
 			// at most be maximum block weight. Make sure that this can fit in a multiplier without
 			// loss.
-			use tp_std::convert::TryInto;
+			use tetcore_std::convert::TryInto;
 			assert!(
 				<Multiplier as sp_runtime::traits::Bounded>::max_value() >=
 				Multiplier::checked_from_integer(
@@ -524,13 +524,13 @@ impl<T: Config> ChargeTransactionPayment<T> where
 	}
 }
 
-impl<T: Config> tp_std::fmt::Debug for ChargeTransactionPayment<T> {
+impl<T: Config> tetcore_std::fmt::Debug for ChargeTransactionPayment<T> {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		write!(f, "ChargeTransactionPayment<{:?}>", self.0)
 	}
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, _: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -551,7 +551,7 @@ impl<T: Config> SignedExtension for ChargeTransactionPayment<T> where
 		// imbalance resulting from withdrawing the fee
 		<<T as Config>::OnChargeTransaction as OnChargeTransaction<T>>::LiquidityInfo,
 	);
-	fn additional_signed(&self) -> tp_std::result::Result<(), TransactionValidityError> { Ok(()) }
+	fn additional_signed(&self) -> tetcore_std::result::Result<(), TransactionValidityError> { Ok(()) }
 
 	fn validate(
 		&self,

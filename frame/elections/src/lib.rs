@@ -31,7 +31,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![recursion_limit="128"]
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use sp_runtime::{
 	RuntimeDebug, DispatchResult, print,
 	traits::{Zero, One, StaticLookup, Saturating},

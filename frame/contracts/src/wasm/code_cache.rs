@@ -29,7 +29,7 @@
 
 use crate::wasm::{prepare, runtime::Env, PrefabWasmModule};
 use crate::{CodeHash, CodeStorage, PristineCode, Schedule, Config};
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use sp_runtime::traits::Hash;
 use sp_core::crypto::UncheckedFrom;
 use frame_support::StorageMap;

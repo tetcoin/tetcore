@@ -22,7 +22,7 @@
 use crate::*;
 use frame_support::traits::OnInitialize;
 use frame_benchmarking::benchmarks;
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 
 benchmarks! {
 	on_initialize {

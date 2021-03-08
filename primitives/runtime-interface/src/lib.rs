@@ -115,7 +115,7 @@ pub use sp_wasm_interface;
 pub use sp_tracing;
 
 #[doc(hidden)]
-pub use tp_std;
+pub use tetcore_std;
 
 /// Attribute macro for transforming a trait declaration into a runtime interface.
 ///

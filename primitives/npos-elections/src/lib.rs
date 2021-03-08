@@ -77,7 +77,7 @@ use sp_arithmetic::{
 	traits::{Bounded, UniqueSaturatedInto, Zero},
 	Normalizable, PerThing, Rational128, ThresholdOrd,
 };
-use tp_std::{
+use tetcore_std::{
 	cell::RefCell,
 	cmp::Ordering,
 	collections::btree_map::BTreeMap,
@@ -299,8 +299,8 @@ pub struct Edge<AccountId> {
 }
 
 #[cfg(feature = "std")]
-impl<A: IdentifierT> tp_std::fmt::Debug for Edge<A> {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter<'_>) -> tp_std::fmt::Result {
+impl<A: IdentifierT> tetcore_std::fmt::Debug for Edge<A> {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter<'_>) -> tetcore_std::fmt::Result {
 		write!(f, "Edge({:?}, weight = {:?})", self.who, self.weight)
 	}
 }
@@ -320,7 +320,7 @@ pub struct Voter<AccountId> {
 
 #[cfg(feature = "std")]
 impl<A: IdentifierT> std::fmt::Debug for Voter<A> {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter<'_>) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter<'_>) -> tetcore_std::fmt::Result {
 		write!(f, "Voter({:?}, budget = {}, edges = {:?})", self.who, self.budget, self.edges)
 	}
 }

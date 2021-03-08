@@ -18,7 +18,7 @@
 //! Overlayed changes for offchain indexing.
 
 use sp_core::offchain::OffchainOverlayedChange;
-use tp_std::prelude::Vec;
+use tetcore_std::prelude::Vec;
 use super::changeset::OverlayedMap;
 
 /// In-memory storage for offchain workers recoding changes for the actual offchain storage implementation.
@@ -47,7 +47,7 @@ impl OffchainOverlayedChanges {
 
 	/// Drain all elements of changeset.
 	pub fn drain(&mut self) -> impl Iterator<Item = OffchainOverlayedChangesItemOwned> {
-		tp_std::mem::take(self).into_iter()
+		tetcore_std::mem::take(self).into_iter()
 	}
 
 	/// Remove a key and its associated value from the offchain database.

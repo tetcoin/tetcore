@@ -37,7 +37,7 @@ use sp_runtime::{
 	ConsensusEngineId, KeyTypeId,
 };
 use sp_session::{GetSessionNumber, GetValidatorCount};
-use tp_std::{prelude::*, result};
+use tetcore_std::{prelude::*, result};
 use sp_timestamp::OnTimestampSet;
 
 use sp_consensus_babe::{
@@ -655,7 +655,7 @@ impl<T: Config> Module<T> {
 	/// randomness. Returns the new randomness.
 	fn randomness_change_epoch(next_epoch_index: u64) -> schnorrkel::Randomness {
 		let this_randomness = NextRandomness::get();
-		let segment_idx: u32 = <SegmentIndex>::mutate(|s| tp_std::mem::replace(s, 0));
+		let segment_idx: u32 = <SegmentIndex>::mutate(|s| tetcore_std::mem::replace(s, 0));
 
 		// overestimate to the segment being full.
 		let rho_size = segment_idx.saturating_add(1) as usize * UNDER_CONSTRUCTION_SEGMENT_LENGTH;

@@ -20,7 +20,7 @@
 
 #[cfg(feature = "std")]
 use std::sync::Arc;
-use tp_std::{ops::Deref, boxed::Box, vec::Vec};
+use tetcore_std::{ops::Deref, boxed::Box, vec::Vec};
 use crate::{warn, debug};
 use hash_db::{self, Hasher, Prefix};
 use sp_trie::{Trie, MemoryDB, PrefixedMemoryDB, DBValue,
@@ -38,7 +38,7 @@ macro_rules! format {
 	);
 }
 
-type Result<V> = tp_std::result::Result<V, crate::DefaultError>;
+type Result<V> = tetcore_std::result::Result<V, crate::DefaultError>;
 
 /// Patricia trie-based storage trait.
 pub trait Storage<H: Hasher>: Send + Sync {
@@ -245,7 +245,7 @@ impl<S: TrieBackendStorage<H>, H: Hasher> TrieBackendEssence<S, H> where H::Out:
 		mut f: F,
 		child_info: Option<&ChildInfo>,
 	) {
-		let mut iter = move |db| -> tp_std::result::Result<(), Box<TrieError<H::Out>>> {
+		let mut iter = move |db| -> tetcore_std::result::Result<(), Box<TrieError<H::Out>>> {
 			let trie = TrieDB::<H>::new(db, root)?;
 
 			for x in TrieDBIterator::new_prefixed(&trie, prefix)? {

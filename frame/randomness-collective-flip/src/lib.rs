@@ -55,7 +55,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use tp_std::{prelude::*, convert::TryInto};
+use tetcore_std::{prelude::*, convert::TryInto};
 use sp_runtime::traits::Hash;
 use frame_support::{
 	decl_module, decl_storage, traits::Randomness,

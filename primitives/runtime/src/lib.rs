@@ -30,7 +30,7 @@ pub use codec;
 #[doc(hidden)]
 pub use serde;
 #[doc(hidden)]
-pub use tp_std;
+pub use tetcore_std;
 
 #[doc(hidden)]
 pub use paste;
@@ -41,8 +41,8 @@ pub use sp_application_crypto as app_crypto;
 #[cfg(feature = "std")]
 pub use sp_core::storage::{Storage, StorageChild};
 
-use tp_std::prelude::*;
-use tp_std::convert::TryFrom;
+use tetcore_std::prelude::*;
+use tetcore_std::convert::TryFrom;
 use sp_core::{crypto::{self, Public}, ed25519, sr25519, ecdsa, hash::{H256, H512}};
 
 use codec::{Encode, Decode};
@@ -384,11 +384,11 @@ impl From<DispatchError> for DispatchOutcome {
 /// This is the legacy return type of `Dispatchable`. It is still exposed for compatibility reasons.
 /// The new return type is `DispatchResultWithInfo`. FRAME runtimes should use
 /// `frame_support::dispatch::DispatchResult`.
-pub type DispatchResult = tp_std::result::Result<(), DispatchError>;
+pub type DispatchResult = tetcore_std::result::Result<(), DispatchError>;
 
 /// Return type of a `Dispatchable` which contains the `DispatchResult` and additional information
 /// about the `Dispatchable` that is only known post dispatch.
-pub type DispatchResultWithInfo<T> = tp_std::result::Result<T, DispatchErrorWithPostInfo<T>>;
+pub type DispatchResultWithInfo<T> = tetcore_std::result::Result<T, DispatchErrorWithPostInfo<T>>;
 
 /// Reason why a dispatch call failed.
 #[derive(Eq, PartialEq, Clone, Copy, Encode, Decode, RuntimeDebug)]
@@ -643,14 +643,14 @@ impl tetsy_util_mem::MallocSizeOf for OpaqueExtrinsic {
 	}
 }
 
-impl tp_std::fmt::Debug for OpaqueExtrinsic {
+impl tetcore_std::fmt::Debug for OpaqueExtrinsic {
 	#[cfg(feature = "std")]
-	fn fmt(&self, fmt: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, fmt: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		write!(fmt, "{}", sp_core::hexdisplay::HexDisplay::from(&self.0))
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _fmt: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, _fmt: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -711,7 +711,7 @@ impl Drop for SignatureBatching {
 		//
 		// We should not panic if the current thread is already panicking,
 		// because Rust otherwise aborts the process.
-		if !self.0 && !tp_std::thread::panicking() {
+		if !self.0 && !tetcore_std::thread::panicking() {
 			panic!("Signature verification has not been called before `SignatureBatching::drop`")
 		}
 	}

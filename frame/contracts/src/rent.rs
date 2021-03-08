@@ -22,7 +22,7 @@ use crate::{
 	TombstoneContractInfo, Config, CodeHash, ConfigCache, Error,
 	storage::Storage,
 };
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use sp_io::hashing::blake2_256;
 use sp_core::crypto::UncheckedFrom;
 use frame_support::{
@@ -86,7 +86,7 @@ enum Verdict<T: Config> {
 	Charge { amount: OutstandingAmount<T> },
 }
 
-pub struct Rent<T>(tp_std::marker::PhantomData<T>);
+pub struct Rent<T>(tetcore_std::marker::PhantomData<T>);
 
 impl<T> Rent<T>
 where

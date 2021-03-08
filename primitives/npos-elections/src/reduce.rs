@@ -50,7 +50,7 @@
 use crate::node::{Node, NodeId, NodeRef, NodeRole};
 use crate::{ExtendedBalance, IdentifierT, StakedAssignment};
 use sp_arithmetic::traits::{Bounded, Zero};
-use tp_std::{
+use tetcore_std::{
 	collections::btree_map::{BTreeMap, Entry::*},
 	vec,
 	prelude::*,

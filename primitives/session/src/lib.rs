@@ -29,7 +29,7 @@ use sp_api::ProvideRuntimeApi;
 use sp_core::RuntimeDebug;
 use sp_core::crypto::KeyTypeId;
 use sp_staking::SessionIndex;
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 
 sp_api::decl_runtime_apis! {
 	/// Session keys runtime api.

@@ -25,7 +25,7 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use codec::Codec;
 use sp_runtime::MultiAddress;
 use sp_runtime::traits::{

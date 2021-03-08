@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use tp_std::{cmp::Ordering, prelude::*};
+use tetcore_std::{cmp::Ordering, prelude::*};
 use crate::helpers_128bit;
 use num_traits::{Zero, One, Bounded};
 use crate::biguint::BigUint;
@@ -93,15 +93,15 @@ impl From<Rational128> for RationalInfinite {
 pub struct Rational128(u128, u128);
 
 #[cfg(feature = "std")]
-impl tp_std::fmt::Debug for Rational128 {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter<'_>) -> tp_std::fmt::Result {
+impl tetcore_std::fmt::Debug for Rational128 {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter<'_>) -> tetcore_std::fmt::Result {
 		write!(f, "Rational128({:.4})", self.0 as f32 / self.1 as f32)
 	}
 }
 
 #[cfg(not(feature = "std"))]
-impl tp_std::fmt::Debug for Rational128 {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter<'_>) -> tp_std::fmt::Result {
+impl tetcore_std::fmt::Debug for Rational128 {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter<'_>) -> tetcore_std::fmt::Result {
 		write!(f, "Rational128(..)")
 	}
 }

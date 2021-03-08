@@ -30,7 +30,7 @@ use codec::{Encode, Decode};
 use sp_runtime::RuntimeString;
 pub use sp_runtime::create_runtime_str;
 #[doc(hidden)]
-pub use tp_std;
+pub use tetcore_std;
 
 #[cfg(feature = "std")]
 use sp_runtime::{traits::Block as BlockT, generic::BlockId};
@@ -39,12 +39,12 @@ use sp_runtime::{traits::Block as BlockT, generic::BlockId};
 pub type ApiId = [u8; 8];
 
 /// A vector of pairs of `ApiId` and a `u32` for version.
-pub type ApisVec = tp_std::borrow::Cow<'static, [(ApiId, u32)]>;
+pub type ApisVec = tetcore_std::borrow::Cow<'static, [(ApiId, u32)]>;
 
 /// Create a vector of Api declarations.
 #[macro_export]
 macro_rules! create_apis_vec {
-	( $y:expr ) => { $crate::tp_std::borrow::Cow::Borrowed(& $y) }
+	( $y:expr ) => { $crate::tetcore_std::borrow::Cow::Borrowed(& $y) }
 }
 
 /// Runtime version.

@@ -37,7 +37,7 @@
 //! definition.
 //!
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 
 use codec::{self as codec, Decode, Encode};
 use frame_support::{debug, traits::KeyOwnerProofSystem};
@@ -120,7 +120,7 @@ impl<T: Config> HandleEquivocation<T> for () {
 /// below) and will dispatch to them directly, it's only purpose is to wire all
 /// subsystems together.
 pub struct EquivocationHandler<I, R, O = GrandpaEquivocationOffence<I>> {
-	_phantom: tp_std::marker::PhantomData<(I, R, O)>,
+	_phantom: tetcore_std::marker::PhantomData<(I, R, O)>,
 }
 
 impl<I, R, O> Default for EquivocationHandler<I, R, O> {

@@ -18,7 +18,7 @@
 //! Definition of a sandbox environment.
 
 use codec::{Encode, Decode};
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 
 /// Error error that can be returned from host function.
 #[derive(Encode, Decode)]

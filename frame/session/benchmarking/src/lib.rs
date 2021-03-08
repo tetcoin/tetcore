@@ -22,8 +22,8 @@
 
 mod mock;
 
-use tp_std::prelude::*;
-use tp_std::vec;
+use tetcore_std::prelude::*;
+use tetcore_std::vec;
 
 use frame_benchmarking::benchmarks;
 use frame_support::{

@@ -20,7 +20,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use codec::{Encode, Decode, Codec};
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 use sp_runtime::ConsensusEngineId;
 
 pub mod inherents;

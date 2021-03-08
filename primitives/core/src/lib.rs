@@ -33,8 +33,8 @@ macro_rules! map {
 }
 
 use sp_runtime_interface::pass_by::{PassByEnum, PassByInner};
-use tp_std::prelude::*;
-use tp_std::ops::Deref;
+use tetcore_std::prelude::*;
+use tetcore_std::ops::Deref;
 #[cfg(feature = "std")]
 use std::borrow::Cow;
 #[cfg(feature = "std")]
@@ -88,7 +88,7 @@ pub use self::hasher::keccak::KeccakHasher;
 pub use sp_storage as storage;
 
 #[doc(hidden)]
-pub use tp_std;
+pub use tetcore_std;
 
 /// Context for executing a call into the runtime.
 pub enum ExecutionContext {
@@ -148,7 +148,7 @@ impl Deref for Bytes {
 }
 
 #[cfg(feature = "std")]
-impl tp_std::str::FromStr for Bytes {
+impl tetcore_std::str::FromStr for Bytes {
 	type Err = bytes::FromHexError;
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -167,7 +167,7 @@ impl OpaqueMetadata {
 	}
 }
 
-impl tp_std::ops::Deref for OpaqueMetadata {
+impl tetcore_std::ops::Deref for OpaqueMetadata {
 	type Target = Vec<u8>;
 
 	fn deref(&self) -> &Self::Target {
@@ -204,8 +204,8 @@ impl<R> From<R> for NativeOrEncoded<R> {
 }
 
 #[cfg(feature = "std")]
-impl<R: codec::Encode> tp_std::fmt::Debug for NativeOrEncoded<R> {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+impl<R: codec::Encode> tetcore_std::fmt::Debug for NativeOrEncoded<R> {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		hexdisplay::HexDisplay::from(&self.as_encoded().as_ref()).fmt(f)
 	}
 }
@@ -344,7 +344,7 @@ pub fn to_tetcore_wasm_fn_return_value(value: &impl Encode) -> u64 {
 	// Leak the output vector to avoid it being freed.
 	// This is fine in a WASM context since the heap
 	// will be discarded after the call.
-	tp_std::mem::forget(encoded);
+	tetcore_std::mem::forget(encoded);
 
 	res
 }

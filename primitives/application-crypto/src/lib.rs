@@ -34,7 +34,7 @@ pub use codec;
 #[cfg(feature = "std")]
 pub use serde;
 #[doc(hidden)]
-pub use tp_std::{
+pub use tetcore_std::{
 	convert::TryFrom,
 	ops::Deref,
 	vec::Vec,

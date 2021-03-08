@@ -19,7 +19,7 @@
 
 use crate::RIType;
 
-use tp_std::cell::Cell;
+use tetcore_std::cell::Cell;
 
 /// Something that can be created from a ffi value.
 ///

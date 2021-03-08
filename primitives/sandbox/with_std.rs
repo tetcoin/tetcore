@@ -15,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use tp_std::collections::btree_map::BTreeMap;
-use tp_std::fmt;
+use tetcore_std::collections::btree_map::BTreeMap;
+use tetcore_std::fmt;
 
 use twasmi::{
 	Externals, FuncInstance, FuncRef, GlobalDescriptor, GlobalRef, ImportResolver,

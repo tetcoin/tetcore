@@ -25,7 +25,7 @@ use crate::{
 };
 use tetsy_wasm::elements::ValueType;
 use frame_support::{dispatch::DispatchError, ensure};
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use codec::{Decode, DecodeAll, Encode};
 use sp_runtime::traits::SaturatedConversion;
 use sp_core::crypto::UncheckedFrom;
@@ -1215,7 +1215,7 @@ define_env!(Env, <E: Ext>,
 	// - data_len - the length of the data buffer.
 	seal_deposit_event(ctx, topics_ptr: u32, topics_len: u32, data_ptr: u32, data_len: u32) => {
 		let num_topic = topics_len
-			.checked_div(tp_std::mem::size_of::<TopicOf<E::T>>() as u32)
+			.checked_div(tetcore_std::mem::size_of::<TopicOf<E::T>>() as u32)
 			.ok_or_else(|| "Zero sized topics are not allowed")?;
 		ctx.charge_gas(RuntimeToken::DepositEvent {
 			num_topic,

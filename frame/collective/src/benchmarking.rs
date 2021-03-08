@@ -23,7 +23,7 @@ use frame_system::RawOrigin as SystemOrigin;
 use frame_system::EventRecord;
 use frame_benchmarking::{benchmarks_instance, account, whitelisted_caller};
 use sp_runtime::traits::Bounded;
-use tp_std::mem::size_of;
+use tetcore_std::mem::size_of;
 
 use frame_system::Call as SystemCall;
 use frame_system::Module as System;

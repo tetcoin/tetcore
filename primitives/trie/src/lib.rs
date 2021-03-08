@@ -25,7 +25,7 @@ mod node_codec;
 mod storage_proof;
 mod trie_stream;
 
-use tp_std::{boxed::Box, marker::PhantomData, vec::Vec, borrow::Borrow};
+use tetcore_std::{boxed::Box, marker::PhantomData, vec::Vec, borrow::Borrow};
 use hash_db::{Hasher, Prefix};
 use trie_db::proof::{generate_proof, verify_proof};
 pub use trie_db::proof::VerifyError;
@@ -48,7 +48,7 @@ pub use hash_db::{HashDB as HashDBT, EMPTY_PREFIX};
 
 #[derive(Default)]
 /// tetcore trie layout
-pub struct Layout<H>(tp_std::marker::PhantomData<H>);
+pub struct Layout<H>(tetcore_std::marker::PhantomData<H>);
 
 impl<H: Hasher> TrieLayout for Layout<H> {
 	const USE_EXTENSION: bool = false;
@@ -377,7 +377,7 @@ pub struct KeySpacedDBMut<'a, DB, H>(&'a mut DB, &'a [u8], PhantomData<H>);
 /// Utility function used to merge some byte data (keyspace) and `prefix` data
 /// before calling key value database primitives.
 fn keyspace_as_prefix_alloc(ks: &[u8], prefix: Prefix) -> (Vec<u8>, Option<u8>) {
-	let mut result = tp_std::vec![0; ks.len() + prefix.0.len()];
+	let mut result = tetcore_std::vec![0; ks.len() + prefix.0.len()];
 	result[..ks.len()].copy_from_slice(ks);
 	result[ks.len()..].copy_from_slice(prefix.0);
 	(result, prefix.1)

@@ -72,7 +72,7 @@ pub fn expand_event(def: &mut Def) -> proc_macro2::TokenStream {
 			#[doc(hidden)]
 			#[codec(skip)]
 			__Ignore(
-				#frame_support::tp_std::marker::PhantomData<(#event_use_gen)>,
+				#frame_support::tetcore_std::marker::PhantomData<(#event_use_gen)>,
 				#frame_support::Never,
 			)
 		);

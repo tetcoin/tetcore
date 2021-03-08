@@ -17,10 +17,10 @@
 
 //! `NodeCodec` implementation for Tetcore's trie format.
 
-use tp_std::marker::PhantomData;
-use tp_std::ops::Range;
-use tp_std::vec::Vec;
-use tp_std::borrow::Borrow;
+use tetcore_std::marker::PhantomData;
+use tetcore_std::ops::Range;
+use tetcore_std::vec::Vec;
+use tetcore_std::borrow::Borrow;
 use codec::{Encode, Decode, Input, Compact};
 use hash_db::Hasher;
 use trie_db::{self, node::{NibbleSlicePlan, NodePlan, NodeHandlePlan}, ChildReference,
@@ -95,7 +95,7 @@ impl<H: Hasher> NodeCodecT for NodeCodec<H> {
 		H::hash(<Self as NodeCodecT>::empty_node())
 	}
 
-	fn decode_plan(data: &[u8]) -> tp_std::result::Result<NodePlan, Self::Error> {
+	fn decode_plan(data: &[u8]) -> tetcore_std::result::Result<NodePlan, Self::Error> {
 		let mut input = ByteSliceInput::new(data);
 		match NodeHeader::decode(&mut input)? {
 			NodeHeader::Null => Ok(NodePlan::Empty),
@@ -230,7 +230,7 @@ fn partial_from_iterator_encode<I: Iterator<Item = u8>>(
 	nibble_count: usize,
 	node_kind: NodeKind,
 ) -> Vec<u8> {
-	let nibble_count = tp_std::cmp::min(trie_constants::NIBBLE_SIZE_BOUND, nibble_count);
+	let nibble_count = tetcore_std::cmp::min(trie_constants::NIBBLE_SIZE_BOUND, nibble_count);
 
 	let mut output = Vec::with_capacity(3 + (nibble_count / nibble_ops::NIBBLE_PER_BYTE));
 	match node_kind {
@@ -248,7 +248,7 @@ fn partial_encode(partial: Partial, node_kind: NodeKind) -> Vec<u8> {
 	let number_nibble_encoded = (partial.0).0 as usize;
 	let nibble_count = partial.1.len() * nibble_ops::NIBBLE_PER_BYTE + number_nibble_encoded;
 
-	let nibble_count = tp_std::cmp::min(trie_constants::NIBBLE_SIZE_BOUND, nibble_count);
+	let nibble_count = tetcore_std::cmp::min(trie_constants::NIBBLE_SIZE_BOUND, nibble_count);
 
 	let mut output = Vec::with_capacity(3 + partial.1.len());
 	match node_kind {

@@ -46,7 +46,7 @@
 
 use pallet_timestamp;
 
-use tp_std::{result, prelude::*};
+use tetcore_std::{result, prelude::*};
 use codec::{Encode, Decode};
 use frame_support::{
 	decl_storage, decl_module, Parameter, traits::{Get, FindAuthor},
@@ -165,7 +165,7 @@ impl<T: Config> FindAuthor<u32> for Module<T> {
 /// We can not implement `FindAuthor` twice, because the compiler does not know if
 /// `u32 == T::AuthorityId` and thus, prevents us to implement the trait twice.
 #[doc(hidden)]
-pub struct FindAccountFromAuthorIndex<T, Inner>(tp_std::marker::PhantomData<(T, Inner)>);
+pub struct FindAccountFromAuthorIndex<T, Inner>(tetcore_std::marker::PhantomData<(T, Inner)>);
 
 impl<T: Config, Inner: FindAuthor<u32>> FindAuthor<T::AuthorityId>
 	for FindAccountFromAuthorIndex<T, Inner>

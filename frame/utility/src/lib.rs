@@ -59,7 +59,7 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use codec::{Encode, Decode};
 use sp_core::TypeId;
 use sp_io::hashing::blake2_256;

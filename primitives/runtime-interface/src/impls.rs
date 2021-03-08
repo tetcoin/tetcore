@@ -34,10 +34,10 @@ use sp_wasm_interface::{FunctionContext, Result};
 
 use codec::{Encode, Decode};
 
-use tp_std::{any::TypeId, mem, vec::Vec};
+use tetcore_std::{any::TypeId, mem, vec::Vec};
 
 #[cfg(feature = "std")]
-use tp_std::borrow::Cow;
+use tetcore_std::borrow::Cow;
 
 // Make sure that our assumptions for storing a pointer + its size in `u64` is valid.
 #[cfg(all(not(feature = "std"), not(feature = "disable_target_static_assertions")))]
@@ -357,7 +357,7 @@ impl_traits_for_arrays! {
 	75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96,
 }
 
-impl<T: codec::Codec, E: codec::Codec> PassBy for tp_std::result::Result<T, E> {
+impl<T: codec::Codec, E: codec::Codec> PassBy for tetcore_std::result::Result<T, E> {
 	type PassBy = Codec<Self>;
 }
 

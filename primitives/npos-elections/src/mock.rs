@@ -25,7 +25,7 @@ use sp_arithmetic::{
 	PerThing,
 };
 use sp_runtime::assert_eq_error_rate;
-use tp_std::collections::btree_map::BTreeMap;
+use tetcore_std::collections::btree_map::BTreeMap;
 
 #[derive(Default, Debug)]
 pub(crate) struct _Candidate<A> {
@@ -137,7 +137,7 @@ pub(crate) fn elect_float<A, FS>(
 		if let Some(winner) = candidates
 			.iter_mut()
 			.filter(|c| !c.elected)
-			.min_by(|x, y| x.score.partial_cmp(&y.score).unwrap_or(tp_std::cmp::Ordering::Equal))
+			.min_by(|x, y| x.score.partial_cmp(&y.score).unwrap_or(tetcore_std::cmp::Ordering::Equal))
 		{
 			winner.elected = true;
 			for n in &mut voters {
@@ -238,10 +238,10 @@ pub(crate) fn do_equalize_float<A>(
 	if backing_backed_stake.len() > 0 {
 		let max_stake = backing_backed_stake
 			.iter()
-			.max_by(|x, y| x.partial_cmp(&y).unwrap_or(tp_std::cmp::Ordering::Equal))
+			.max_by(|x, y| x.partial_cmp(&y).unwrap_or(tetcore_std::cmp::Ordering::Equal))
 			.expect("vector with positive length will have a max; qed");
 		let min_stake = backed_stakes_iter
-			.min_by(|x, y| x.partial_cmp(&y).unwrap_or(tp_std::cmp::Ordering::Equal))
+			.min_by(|x, y| x.partial_cmp(&y).unwrap_or(tetcore_std::cmp::Ordering::Equal))
 			.expect("iterator with positive length will have a min; qed");
 
 		difference = max_stake - min_stake;
@@ -265,7 +265,7 @@ pub(crate) fn do_equalize_float<A>(
 	elected_edges.sort_by(|x, y|
 		support_map.get(&x.0)
 			.and_then(|x| support_map.get(&y.0).and_then(|y| x.total.partial_cmp(&y.total)))
-			.unwrap_or(tp_std::cmp::Ordering::Equal)
+			.unwrap_or(tetcore_std::cmp::Ordering::Equal)
 	);
 
 	let mut cumulative_stake = 0.0;

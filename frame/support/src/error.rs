@@ -92,7 +92,7 @@ macro_rules! decl_error {
 		{
 			#[doc(hidden)]
 			__Ignore(
-				$crate::tp_std::marker::PhantomData<($generic, $( $inst_generic)?)>,
+				$crate::tetcore_std::marker::PhantomData<($generic, $( $inst_generic)?)>,
 				$crate::Never,
 			),
 			$(
@@ -101,11 +101,11 @@ macro_rules! decl_error {
 			),*
 		}
 
-		impl<$generic: $trait $(, $inst_generic: $instance)?> $crate::tp_std::fmt::Debug
+		impl<$generic: $trait $(, $inst_generic: $instance)?> $crate::tetcore_std::fmt::Debug
 			for $error<$generic $(, $inst_generic)?>
 		$( where $( $where_ty: $where_bound ),* )?
 		{
-			fn fmt(&self, f: &mut $crate::tp_std::fmt::Formatter<'_>) -> $crate::tp_std::fmt::Result {
+			fn fmt(&self, f: &mut $crate::tetcore_std::fmt::Formatter<'_>) -> $crate::tetcore_std::fmt::Result {
 				f.write_str(self.as_str())
 			}
 		}

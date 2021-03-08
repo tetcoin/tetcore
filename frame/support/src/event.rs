@@ -284,7 +284,7 @@ macro_rules! __decl_generic_event {
 			$(
 				#[doc(hidden)]
 				#[codec(skip)]
-				PhantomData($crate::tp_std::marker::PhantomData<$instance>),
+				PhantomData($crate::tetcore_std::marker::PhantomData<$instance>),
 			)?
 		}
 		impl<$( $generic_param ),* $(, $instance)? > From<RawEvent<$( $generic_param ),* $(, $instance)?>> for () {
@@ -468,12 +468,12 @@ macro_rules! impl_outer_event {
 						$name::[< $module_name $(_ $generic_instance )? >](x)
 					}
 				}
-				impl $crate::tp_std::convert::TryInto<
+				impl $crate::tetcore_std::convert::TryInto<
 					$module_name::Event < $( $generic_param, )? $( $module_name::$generic_instance )? >
 				> for $name {
 					type Error = ();
 
-					fn try_into(self) -> $crate::tp_std::result::Result<
+					fn try_into(self) -> $crate::tetcore_std::result::Result<
 						$module_name::Event < $( $generic_param, )? $( $module_name::$generic_instance )? >, Self::Error
 					> {
 						match self {

@@ -19,7 +19,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 
 mod app {
 	use sp_application_crypto::{

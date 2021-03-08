@@ -19,7 +19,7 @@
 
 use crate::{Assignment, Error, IdentifierT, PerThing128, StakedAssignment, VoteWeight, WithApprovalOf};
 use sp_arithmetic::PerThing;
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 
 /// Converts a vector of ratio assignments into ones with absolute budget value.
 ///

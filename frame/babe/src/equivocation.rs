@@ -46,7 +46,7 @@ use sp_staking::{
 	offence::{Kind, Offence, OffenceError, ReportOffence},
 	SessionIndex,
 };
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 
 use crate::{Call, Module, Config};
 
@@ -104,7 +104,7 @@ impl<T: Config> HandleEquivocation<T> for () {
 /// below) and will dispatch to them directly, it's only purpose is to wire all
 /// subsystems together.
 pub struct EquivocationHandler<I, R> {
-	_phantom: tp_std::marker::PhantomData<(I, R)>,
+	_phantom: tetcore_std::marker::PhantomData<(I, R)>,
 }
 
 impl<I, R> Default for EquivocationHandler<I, R> {

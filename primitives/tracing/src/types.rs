@@ -19,10 +19,10 @@
 /// optimised for the specific use case.
 
 use core::{format_args, fmt::Debug};
-use tp_std::{
+use tetcore_std::{
 	vec, vec::Vec,
 };
-use tp_std::Writer;
+use tetcore_std::Writer;
 use codec::{Encode, Decode};
 
 /// The Tracing Level – the user can filter by this

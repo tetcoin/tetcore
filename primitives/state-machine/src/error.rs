@@ -17,7 +17,7 @@
 
 /// State Machine Errors
 
-use tp_std::fmt;
+use tetcore_std::fmt;
 
 /// State Machine Error bound.
 ///

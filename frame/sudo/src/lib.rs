@@ -87,7 +87,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use sp_runtime::{DispatchResult, traits::StaticLookup};
 
 use frame_support::{

@@ -114,7 +114,7 @@ mod tests;
 pub mod historical;
 pub mod weights;
 
-use tp_std::{prelude::*, marker::PhantomData, ops::{Sub, Rem}};
+use tetcore_std::{prelude::*, marker::PhantomData, ops::{Sub, Rem}};
 use codec::Decode;
 use sp_runtime::{KeyTypeId, Perbill, RuntimeAppPublic, BoundToRuntimeAppPublic};
 use sp_runtime::traits::{Convert, Zero, Member, OpaqueKeys, Saturating};
@@ -687,7 +687,7 @@ impl<T: Config> Module<T> {
 	/// Returns `Ok(true)` if more than `DisabledValidatorsThreshold` validators in current
 	/// session is already disabled.
 	/// If used with the staking module it allows to force a new era in such case.
-	pub fn disable(c: &T::ValidatorId) -> tp_std::result::Result<bool, ()> {
+	pub fn disable(c: &T::ValidatorId) -> tetcore_std::result::Result<bool, ()> {
 		Self::validators().iter().position(|i| i == c).map(Self::disable_index).ok_or(())
 	}
 
@@ -833,7 +833,7 @@ impl<T: Config> Module<T> {
 /// Wraps the author-scraping logic for consensus engines that can recover
 /// the canonical index of an author. This then transforms it into the
 /// registering account-ID of that session key index.
-pub struct FindAccountFromAuthorIndex<T, Inner>(tp_std::marker::PhantomData<(T, Inner)>);
+pub struct FindAccountFromAuthorIndex<T, Inner>(tetcore_std::marker::PhantomData<(T, Inner)>);
 
 impl<T: Config, Inner: FindAuthor<u32>> FindAuthor<T::ValidatorId>
 	for FindAccountFromAuthorIndex<T, Inner>

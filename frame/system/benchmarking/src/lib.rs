@@ -20,8 +20,8 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use codec::Encode;
-use tp_std::vec;
-use tp_std::prelude::*;
+use tetcore_std::vec;
+use tetcore_std::prelude::*;
 use sp_core::{ChangesTrieConfiguration, storage::well_known_keys};
 use sp_runtime::traits::Hash;
 use frame_benchmarking::{benchmarks, whitelisted_caller};

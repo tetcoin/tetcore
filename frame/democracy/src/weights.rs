@@ -39,7 +39,7 @@
 #![allow(unused_imports)]
 
 use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
-use tp_std::marker::PhantomData;
+use tetcore_std::marker::PhantomData;
 
 /// Weight functions needed for pallet_democracy.
 pub trait WeightInfo {

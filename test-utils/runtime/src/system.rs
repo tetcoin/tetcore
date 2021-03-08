@@ -18,7 +18,7 @@
 //! System manager: Handles all of the top-level stuff; executing block/transaction, setting code
 //! and depositing logs.
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use sp_io::{
 	storage::root as storage_root, storage::changes_root as storage_changes_root,
 	hashing::blake2_256, trie,

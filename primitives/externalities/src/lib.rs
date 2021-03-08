@@ -25,7 +25,7 @@
 //!
 //! This crate exposes the main [`Externalities`] trait.
 
-use tp_std::{any::{Any, TypeId}, vec::Vec, boxed::Box};
+use tetcore_std::{any::{Any, TypeId}, vec::Vec, boxed::Box};
 
 use sp_storage::{ChildInfo, TrackedStorageKey};
 

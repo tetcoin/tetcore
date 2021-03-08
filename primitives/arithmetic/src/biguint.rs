@@ -18,7 +18,7 @@
 //! Infinite precision unsigned integer for tetcore runtime.
 
 use num_traits::{Zero, One};
-use tp_std::{cmp::Ordering, ops, prelude::*, vec, cell::RefCell, convert::TryFrom};
+use tetcore_std::{cmp::Ordering, ops, prelude::*, vec, cell::RefCell, convert::TryFrom};
 
 // A sensible value for this would be half of the dword size of the host machine. Since the
 // runtime is compiled to 32bit webassembly, using 32 and 64 for single and double respectively
@@ -429,9 +429,9 @@ impl BigUint {
 	}
 }
 
-impl tp_std::fmt::Debug for BigUint {
+impl tetcore_std::fmt::Debug for BigUint {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter<'_>) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter<'_>) -> tetcore_std::fmt::Result {
 		write!(
 			f,
 			"BigUint {{ {:?} ({:?})}}",
@@ -441,7 +441,7 @@ impl tp_std::fmt::Debug for BigUint {
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut tp_std::fmt::Formatter<'_>) -> tp_std::fmt::Result {
+	fn fmt(&self, _: &mut tetcore_std::fmt::Formatter<'_>) -> tetcore_std::fmt::Result {
 		Ok(())
 	}
 
@@ -582,7 +582,7 @@ pub mod tests {
 
 	#[test]
 	fn shift_check() {
-		let shift = tp_std::mem::size_of::<Double>() - tp_std::mem::size_of::<Single>();
+		let shift = tetcore_std::mem::size_of::<Double>() - tetcore_std::mem::size_of::<Single>();
 		assert_eq!(shift * 8, SHIFT);
 	}
 
@@ -671,7 +671,7 @@ pub mod tests {
 
 	#[test]
 	fn can_try_build_numbers_from_types() {
-		use tp_std::convert::TryFrom;
+		use tetcore_std::convert::TryFrom;
 		assert_eq!(u64::try_from(with_limbs(1)).unwrap(), 1);
 		assert_eq!(u64::try_from(with_limbs(2)).unwrap(), u32::max_value() as u64 + 2);
 		assert_eq!(

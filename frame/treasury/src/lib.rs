@@ -65,7 +65,7 @@ pub mod weights;
 
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize};
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use frame_support::{decl_module, decl_storage, decl_event, ensure, print, decl_error};
 use frame_support::traits::{
 	Currency, Get, Imbalance, OnUnbalanced, ExistenceRequirement::{KeepAlive},

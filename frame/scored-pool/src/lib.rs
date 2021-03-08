@@ -91,7 +91,7 @@ mod mock;
 mod tests;
 
 use codec::FullCodec;
-use tp_std::{
+use tetcore_std::{
 	fmt::Debug,
 	prelude::*,
 };
@@ -176,7 +176,7 @@ decl_storage! {
 	}
 	add_extra_genesis {
 		config(members): Vec<T::AccountId>;
-		config(phantom): tp_std::marker::PhantomData<I>;
+		config(phantom): tetcore_std::marker::PhantomData<I>;
 		build(|config| {
 			let mut pool = config.pool.clone();
 
@@ -219,7 +219,7 @@ decl_event!(
 		/// See the transaction for who.
 		CandidateScored,
 		/// Phantom member, never used.
-		Dummy(tp_std::marker::PhantomData<(AccountId, I)>),
+		Dummy(tetcore_std::marker::PhantomData<(AccountId, I)>),
 	}
 );
 

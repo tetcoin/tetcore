@@ -51,10 +51,10 @@ pub fn derive_impl(input: DeriveInput) -> Result<TokenStream> {
 				type PassBy = #crate_::pass_by::Enum<#ident>;
 			}
 
-			impl #crate_::tp_std::convert::TryFrom<u8> for #ident {
+			impl #crate_::tetcore_std::convert::TryFrom<u8> for #ident {
 				type Error = ();
 
-				fn try_from(inner: u8) -> #crate_::tp_std::result::Result<Self, ()> {
+				fn try_from(inner: u8) -> #crate_::tetcore_std::result::Result<Self, ()> {
 					match inner {
 						#( #try_from_variants, )*
 						_ => Err(()),

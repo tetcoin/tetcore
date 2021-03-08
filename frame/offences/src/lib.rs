@@ -25,7 +25,7 @@
 mod mock;
 mod tests;
 
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 use frame_support::{
 	decl_module, decl_event, decl_storage, Parameter, debug,
 	traits::Get,

@@ -27,23 +27,23 @@ use sp_runtime::{
 
 /// Check for transaction mortality.
 #[derive(Encode, Decode, Clone, Eq, PartialEq)]
-pub struct CheckMortality<T: Config + Send + Sync>(Era, tp_std::marker::PhantomData<T>);
+pub struct CheckMortality<T: Config + Send + Sync>(Era, tetcore_std::marker::PhantomData<T>);
 
 impl<T: Config + Send + Sync> CheckMortality<T> {
 	/// utility constructor. Used only in client/factory code.
 	pub fn from(era: Era) -> Self {
-		Self(era, tp_std::marker::PhantomData)
+		Self(era, tetcore_std::marker::PhantomData)
 	}
 }
 
-impl<T: Config + Send + Sync> tp_std::fmt::Debug for CheckMortality<T> {
+impl<T: Config + Send + Sync> tetcore_std::fmt::Debug for CheckMortality<T> {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		write!(f, "CheckMortality({:?})", self.0)
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, _: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		Ok(())
 	}
 }

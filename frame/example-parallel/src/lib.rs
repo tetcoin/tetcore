@@ -29,7 +29,7 @@ use frame_support::{
 use sp_runtime::RuntimeDebug;
 
 use codec::{Encode, Decode};
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 
 #[cfg(test)]
 mod tests;

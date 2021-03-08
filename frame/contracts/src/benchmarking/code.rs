@@ -32,7 +32,7 @@ use pwasm_utils::stack_height::inject_limiter;
 use sp_core::crypto::UncheckedFrom;
 use sp_runtime::traits::Hash;
 use sp_sandbox::{EnvironmentDefinitionBuilder, Memory};
-use tp_std::{prelude::*, convert::TryFrom};
+use tetcore_std::{prelude::*, convert::TryFrom};
 
 /// Pass to `create_code` in order to create a compiled `WasmModule`.
 ///
@@ -410,7 +410,7 @@ pub mod body {
 				.cycle()
 				.take(instructions.len() * usize::try_from(repetitions).unwrap())
 				.cloned()
-				.chain(tp_std::iter::once(Instruction::End))
+				.chain(tetcore_std::iter::once(Instruction::End))
 				.collect()
 		);
 		FuncBody::new(Vec::new(), instructions)
@@ -470,7 +470,7 @@ pub mod body {
 					},
 				}
 			)
-			.chain(tp_std::iter::once(Instruction::End))
+			.chain(tetcore_std::iter::once(Instruction::End))
 			.collect();
 		FuncBody::new(Vec::new(), Instructions::new(body))
 	}

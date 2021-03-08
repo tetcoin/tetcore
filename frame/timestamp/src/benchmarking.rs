@@ -20,7 +20,7 @@
 #![cfg(feature = "runtime-benchmarks")]
 
 use super::*;
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use frame_system::RawOrigin;
 use frame_support::{ensure, traits::OnFinalize};
 use frame_benchmarking::{benchmarks, TrackedStorageKey};

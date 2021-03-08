@@ -32,7 +32,7 @@ use super::super::{Module as SessionModule, SessionIndex};
 use super::{IdentificationTuple, ProvingTrie, Config};
 
 use super::shared;
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 
 
 /// A set of validators, which was used for a fixed session index.
@@ -61,9 +61,9 @@ impl<T: Config> ValidatorSet<T> {
 
 /// Implement conversion into iterator for usage
 /// with [ProvingTrie](super::ProvingTrie::generate_for).
-impl<T: Config> tp_std::iter::IntoIterator for ValidatorSet<T> {
+impl<T: Config> tetcore_std::iter::IntoIterator for ValidatorSet<T> {
 	type Item = (T::ValidatorId, T::FullIdentification);
-	type IntoIter = tp_std::vec::IntoIter<Self::Item>;
+	type IntoIter = tetcore_std::vec::IntoIter<Self::Item>;
 	fn into_iter(self) -> Self::IntoIter {
 		self.validator_set.into_iter()
 	}

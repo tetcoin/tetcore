@@ -26,7 +26,7 @@ use crate::{
 	balance, PerThing128,
 };
 use sp_arithmetic::{PerThing, Rational128, traits::Bounded};
-use tp_std::{prelude::*, rc::Rc};
+use tetcore_std::{prelude::*, rc::Rc};
 
 /// Execute the phragmms method.
 ///
@@ -225,7 +225,7 @@ mod tests {
 	use super::*;
 	use crate::{ElectionResult, Assignment};
 	use sp_runtime::{Perbill, Percent};
-	use tp_std::rc::Rc;
+	use tetcore_std::rc::Rc;
 
 	#[test]
 	fn basic_election_manual_works() {

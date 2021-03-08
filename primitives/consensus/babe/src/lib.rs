@@ -32,7 +32,7 @@ use codec::{Decode, Encode};
 #[cfg(feature = "std")]
 use sp_keystore::vrf::{VRFTranscriptData, VRFTranscriptValue};
 use sp_runtime::{traits::Header, ConsensusEngineId, RuntimeDebug};
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 
 use crate::digests::{NextConfigDescriptor, NextEpochDescriptor};
 

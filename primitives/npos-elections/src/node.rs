@@ -17,7 +17,7 @@
 
 //! (very) Basic implementation of a graph node used in the reduce algorithm.
 
-use tp_std::{cell::RefCell, fmt, prelude::*, rc::Rc};
+use tetcore_std::{cell::RefCell, fmt, prelude::*, rc::Rc};
 
 /// The role that a node can accept.
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Debug)]
@@ -49,8 +49,8 @@ impl<A> NodeId<A> {
 }
 
 #[cfg(feature = "std")]
-impl<A: fmt::Debug> tp_std::fmt::Debug for NodeId<A> {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> tp_std::fmt::Result {
+impl<A: fmt::Debug> tetcore_std::fmt::Debug for NodeId<A> {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> tetcore_std::fmt::Result {
 		write!(
 			f,
 			"Node({:?}, {:?})",

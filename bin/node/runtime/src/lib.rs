@@ -23,7 +23,7 @@
 #![recursion_limit = "256"]
 
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use frame_support::{
 	construct_runtime, parameter_types, debug, RuntimeDebug,
 	weights::{
@@ -714,7 +714,7 @@ impl pallet_tips::Config for Runtime {
 parameter_types! {
 	pub const TombstoneDeposit: Balance = deposit(
 		1,
-		tp_std::mem::size_of::<pallet_contracts::ContractInfo<Runtime>>() as u32
+		tetcore_std::mem::size_of::<pallet_contracts::ContractInfo<Runtime>>() as u32
 	);
 	pub const DepositPerContract: Balance = TombstoneDeposit::get();
 	pub const DepositPerStorageByte: Balance = deposit(0, 1);

@@ -156,8 +156,8 @@ mod tests_composite;
 mod benchmarking;
 pub mod weights;
 
-use tp_std::prelude::*;
-use tp_std::{cmp, result, mem, fmt::Debug, ops::BitOr};
+use tetcore_std::prelude::*;
+use tetcore_std::{cmp, result, mem, fmt::Debug, ops::BitOr};
 use codec::{Codec, Encode, Decode};
 use frame_support::{
 	StorageValue, Parameter, decl_event, decl_storage, decl_module, decl_error, ensure,
@@ -575,24 +575,24 @@ impl<T: Config<I>, I: Instance> Module<T, I> {
 	// PRIVATE MUTABLES
 
 	/// Get the free balance of an account.
-	pub fn free_balance(who: impl tp_std::borrow::Borrow<T::AccountId>) -> T::Balance {
+	pub fn free_balance(who: impl tetcore_std::borrow::Borrow<T::AccountId>) -> T::Balance {
 		Self::account(who.borrow()).free
 	}
 
 	/// Get the balance of an account that can be used for transfers, reservations, or any other
 	/// non-locking, non-transaction-fee activity. Will be at most `free_balance`.
-	pub fn usable_balance(who: impl tp_std::borrow::Borrow<T::AccountId>) -> T::Balance {
+	pub fn usable_balance(who: impl tetcore_std::borrow::Borrow<T::AccountId>) -> T::Balance {
 		Self::account(who.borrow()).usable(Reasons::Misc)
 	}
 
 	/// Get the balance of an account that can be used for paying transaction fees (not tipping,
 	/// or any other kind of fees, though). Will be at most `free_balance`.
-	pub fn usable_balance_for_fees(who: impl tp_std::borrow::Borrow<T::AccountId>) -> T::Balance {
+	pub fn usable_balance_for_fees(who: impl tetcore_std::borrow::Borrow<T::AccountId>) -> T::Balance {
 		Self::account(who.borrow()).usable(Reasons::Fee)
 	}
 
 	/// Get the reserved balance of an account.
-	pub fn reserved_balance(who: impl tp_std::borrow::Borrow<T::AccountId>) -> T::Balance {
+	pub fn reserved_balance(who: impl tetcore_std::borrow::Borrow<T::AccountId>) -> T::Balance {
 		Self::account(who.borrow()).reserved
 	}
 
@@ -721,7 +721,7 @@ mod imbalances {
 		result, DefaultInstance, Imbalance, Config, Zero, Instance, Saturating,
 		StorageValue, TryDrop, RuntimeDebug,
 	};
-	use tp_std::mem;
+	use tetcore_std::mem;
 
 	/// Opaque, move-only struct with private fields that serves as a token denoting that
 	/// funds have been created without any equal and opposite accounting.

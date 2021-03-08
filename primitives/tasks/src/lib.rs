@@ -134,7 +134,7 @@ mod inner {
 #[cfg(not(feature = "std"))]
 mod inner {
 	use core::mem;
-	use tp_std::prelude::*;
+	use tetcore_std::prelude::*;
 
 	/// Dispatch wrapper for wasm blob.
 	///

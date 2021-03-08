@@ -23,7 +23,7 @@
 
 use sp_runtime::{generic, traits::{BlakeTwo256, Verify}, DispatchError};
 use sp_core::{H256, sr25519};
-use tp_std::cell::RefCell;
+use tetcore_std::cell::RefCell;
 use frame_support::traits::PalletInfo as _;
 
 mod system;

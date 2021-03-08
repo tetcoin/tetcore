@@ -66,11 +66,11 @@
 
 #[cfg(feature = "std")]
 use serde::Serialize;
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 #[cfg(any(feature = "std", test))]
-use tp_std::map;
-use tp_std::marker::PhantomData;
-use tp_std::fmt::Debug;
+use tetcore_std::map;
+use tetcore_std::marker::PhantomData;
+use tetcore_std::fmt::Debug;
 use sp_version::RuntimeVersion;
 use sp_runtime::{
 	RuntimeDebug, Perbill, DispatchError, Either, generic,
@@ -180,13 +180,13 @@ pub mod pallet {
 		/// The block number type used by the runtime.
 		type BlockNumber:
 			Parameter + Member + MaybeSerializeDeserialize + Debug + MaybeDisplay +
-			AtLeast32BitUnsigned + Default + Bounded + Copy + tp_std::hash::Hash +
-			tp_std::str::FromStr + MaybeMallocSizeOf;
+			AtLeast32BitUnsigned + Default + Bounded + Copy + tetcore_std::hash::Hash +
+			tetcore_std::str::FromStr + MaybeMallocSizeOf;
 
 		/// The output of the `Hashing` function.
 		type Hash:
 			Parameter + Member + MaybeSerializeDeserialize + Debug + MaybeDisplay + SimpleBitOps + Ord
-			+ Default + Copy + CheckEqual + tp_std::hash::Hash + AsRef<[u8]> + AsMut<[u8]> + MaybeMallocSizeOf;
+			+ Default + Copy + CheckEqual + tetcore_std::hash::Hash + AsRef<[u8]> + AsMut<[u8]> + MaybeMallocSizeOf;
 
 		/// The hashing system (algorithm) being used in the runtime (e.g. Blake2).
 		type Hashing: Hash<Output=Self::Hash>;
@@ -782,7 +782,7 @@ impl From<sp_version::RuntimeVersion> for LastRuntimeUpgradeInfo {
 	}
 }
 
-pub struct EnsureRoot<AccountId>(tp_std::marker::PhantomData<AccountId>);
+pub struct EnsureRoot<AccountId>(tetcore_std::marker::PhantomData<AccountId>);
 impl<
 	O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>,
 	AccountId,
@@ -801,7 +801,7 @@ impl<
 	}
 }
 
-pub struct EnsureSigned<AccountId>(tp_std::marker::PhantomData<AccountId>);
+pub struct EnsureSigned<AccountId>(tetcore_std::marker::PhantomData<AccountId>);
 impl<
 	O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>,
 	AccountId: Default,
@@ -820,7 +820,7 @@ impl<
 	}
 }
 
-pub struct EnsureSignedBy<Who, AccountId>(tp_std::marker::PhantomData<(Who, AccountId)>);
+pub struct EnsureSignedBy<Who, AccountId>(tetcore_std::marker::PhantomData<(Who, AccountId)>);
 impl<
 	O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>,
 	Who: Contains<AccountId>,
@@ -845,7 +845,7 @@ impl<
 	}
 }
 
-pub struct EnsureNone<AccountId>(tp_std::marker::PhantomData<AccountId>);
+pub struct EnsureNone<AccountId>(tetcore_std::marker::PhantomData<AccountId>);
 impl<
 	O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>,
 	AccountId,
@@ -864,7 +864,7 @@ impl<
 	}
 }
 
-pub struct EnsureNever<T>(tp_std::marker::PhantomData<T>);
+pub struct EnsureNever<T>(tetcore_std::marker::PhantomData<T>);
 impl<O, T> EnsureOrigin<O> for EnsureNever<T> {
 	type Success = T;
 	fn try_origin(o: O) -> Result<Self::Success, O> {
@@ -880,7 +880,7 @@ impl<O, T> EnsureOrigin<O> for EnsureNever<T> {
 /// The "OR gate" implementation of `EnsureOrigin`.
 ///
 /// Origin check will pass if `L` or `R` origin check passes. `L` is tested first.
-pub struct EnsureOneOf<AccountId, L, R>(tp_std::marker::PhantomData<(AccountId, L, R)>);
+pub struct EnsureOneOf<AccountId, L, R>(tetcore_std::marker::PhantomData<(AccountId, L, R)>);
 impl<
 	AccountId,
 	O: Into<Result<RawOrigin<AccountId>, O>> + From<RawOrigin<AccountId>>,

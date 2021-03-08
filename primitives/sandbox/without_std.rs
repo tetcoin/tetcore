@@ -18,11 +18,11 @@
 use codec::{Decode, Encode};
 use sp_core::sandbox as sandbox_primitives;
 use sp_io::sandbox;
-use tp_std::{prelude::*, slice, marker, mem, vec, rc::Rc};
+use tetcore_std::{prelude::*, slice, marker, mem, vec, rc::Rc};
 use super::{Error, Value, ReturnValue, HostFuncType};
 
 mod ffi {
-	use tp_std::mem;
+	use tetcore_std::mem;
 	use super::HostFuncType;
 
 	/// Index into the default table that points to a `HostFuncType`.

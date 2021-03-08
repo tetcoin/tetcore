@@ -22,7 +22,7 @@
 //!
 //! It is required that each extension implements the [`Extension`] trait.
 
-use tp_std::{
+use tetcore_std::{
 	collections::btree_map::{BTreeMap, Entry}, any::{Any, TypeId}, ops::DerefMut, boxed::Box,
 };
 use crate::Error;

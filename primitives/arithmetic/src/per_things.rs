@@ -18,7 +18,7 @@
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize};
 
-use tp_std::{ops, fmt, prelude::*, convert::TryInto};
+use tetcore_std::{ops, fmt, prelude::*, convert::TryInto};
 use codec::{Encode, CompactAs};
 use crate::traits::{
 	SaturatedConversion, UniqueSaturatedInto, Saturating, BaseArithmetic, Bounded, Zero, Unsigned,

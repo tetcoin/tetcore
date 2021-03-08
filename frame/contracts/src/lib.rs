@@ -109,7 +109,7 @@ use crate::{
 	storage::Storage,
 };
 use sp_core::crypto::UncheckedFrom;
-use tp_std::{prelude::*, marker::PhantomData, fmt::Debug};
+use tetcore_std::{prelude::*, marker::PhantomData, fmt::Debug};
 use codec::{Codec, Encode, Decode};
 use sp_runtime::{
 	traits::{
@@ -244,7 +244,7 @@ impl<H, Hasher> RawTombstoneContractInfo<H, Hasher>
 where
 	H: Member + MaybeSerializeDeserialize+ Debug
 		+ AsRef<[u8]> + AsMut<[u8]> + Copy + Default
-		+ tp_std::hash::Hash + Codec,
+		+ tetcore_std::hash::Hash + Codec,
 	Hasher: Hash<Output=H>,
 {
 	fn new(storage_root: &[u8], code_hash: H) -> Self {

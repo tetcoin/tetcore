@@ -19,7 +19,7 @@
 
 use crate::trie_constants;
 use codec::{Encode, Decode, Input, Output};
-use tp_std::iter::once;
+use tetcore_std::iter::once;
 
 /// A node header
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -73,9 +73,9 @@ impl Decode for NodeHeader {
 /// Size encoding allows unlimited, length inefficient, representation, but
 /// is bounded to 16 bit maximum value to avoid possible DOS.
 pub(crate) fn size_and_prefix_iterator(size: usize, prefix: u8) -> impl Iterator<Item = u8> {
-	let size = tp_std::cmp::min(trie_constants::NIBBLE_SIZE_BOUND, size);
+	let size = tetcore_std::cmp::min(trie_constants::NIBBLE_SIZE_BOUND, size);
 
-	let l1 = tp_std::cmp::min(62, size);
+	let l1 = tetcore_std::cmp::min(62, size);
 	let (first_byte, mut rem) = if size == l1 {
 		(once(prefix + l1 as u8), 0)
 	} else {
@@ -95,7 +95,7 @@ pub(crate) fn size_and_prefix_iterator(size: usize, prefix: u8) -> impl Iterator
 			None
 		}
 	};
-	first_byte.chain(tp_std::iter::from_fn(next_bytes))
+	first_byte.chain(tetcore_std::iter::from_fn(next_bytes))
 }
 
 /// Encodes size and prefix to a stream output.

@@ -27,7 +27,7 @@ use crate::{
 	StorageKey, StorageValue, Backend,
 	trie_backend_essence::{TrieBackendEssence, TrieBackendStorage, Ephemeral},
 };
-use tp_std::{boxed::Box, vec::Vec};
+use tetcore_std::{boxed::Box, vec::Vec};
 
 /// Patricia trie-based backend. Transaction type is an overlay of changes to commit.
 pub struct TrieBackend<S: TrieBackendStorage<H>, H: Hasher> {
@@ -68,8 +68,8 @@ impl<S: TrieBackendStorage<H>, H: Hasher> TrieBackend<S, H> where H::Out: Codec 
 	}
 }
 
-impl<S: TrieBackendStorage<H>, H: Hasher> tp_std::fmt::Debug for TrieBackend<S, H> {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter<'_>) -> tp_std::fmt::Result {
+impl<S: TrieBackendStorage<H>, H: Hasher> tetcore_std::fmt::Debug for TrieBackend<S, H> {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter<'_>) -> tetcore_std::fmt::Result {
 		write!(f, "TrieBackend")
 	}
 }

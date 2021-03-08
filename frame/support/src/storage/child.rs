@@ -21,7 +21,7 @@
 // NOTE: could replace unhashed by having only one kind of storage (top trie being the child info
 // of null length parent storage key).
 
-use crate::tp_std::prelude::*;
+use crate::tetcore_std::prelude::*;
 use codec::{Codec, Encode, Decode};
 pub use sp_core::storage::{ChildInfo, ChildType};
 

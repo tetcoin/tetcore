@@ -109,8 +109,8 @@ pub type DefaultError = String;
 pub struct DefaultError;
 
 #[cfg(not(feature = "std"))]
-impl tp_std::fmt::Display for DefaultError {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+impl tetcore_std::fmt::Display for DefaultError {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		write!(f, "DefaultError")
 	}
 }

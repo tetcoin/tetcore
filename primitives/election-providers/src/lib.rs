@@ -159,7 +159,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 pub mod onchain;
-use tp_std::{prelude::*, fmt::Debug};
+use tetcore_std::{prelude::*, fmt::Debug};
 
 /// Re-export some type as they are used in the interface.
 pub use sp_arithmetic::PerThing;

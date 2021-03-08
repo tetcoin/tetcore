@@ -27,7 +27,7 @@ use crate::{
 	trie_backend_essence::TrieBackendStorage,
 	UsageInfo, StorageKey, StorageValue, StorageCollection, ChildStorageCollection,
 };
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 #[cfg(feature = "std")]
 use sp_core::traits::RuntimeCode;
 
@@ -35,7 +35,7 @@ use sp_core::traits::RuntimeCode;
 /// to it.
 ///
 /// The clone operation (if implemented) should be cheap.
-pub trait Backend<H: Hasher>: tp_std::fmt::Debug {
+pub trait Backend<H: Hasher>: tetcore_std::fmt::Debug {
 	/// An error type when fetching data is not possible.
 	type Error: super::Error;
 

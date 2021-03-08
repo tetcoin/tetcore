@@ -17,7 +17,7 @@
 
 //! Decimal Fixed Point implementations for Tetcore runtime.
 
-use tp_std::{ops::{self, Add, Sub, Mul, Div}, fmt::Debug, prelude::*, convert::{TryInto, TryFrom}};
+use tetcore_std::{ops::{self, Add, Sub, Mul, Div}, fmt::Debug, prelude::*, convert::{TryInto, TryFrom}};
 use codec::{Encode, Decode, CompactAs};
 use crate::{
 	helpers_128bit::multiply_by_rational, PerThing,
@@ -518,9 +518,9 @@ macro_rules! implement_fixed {
 			}
 		}
 
-		impl tp_std::fmt::Debug for $name {
+		impl tetcore_std::fmt::Debug for $name {
 			#[cfg(feature = "std")]
-			fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+			fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 				let integral = {
 					let int = self.0 / Self::accuracy();
 					let signum_for_zero = if int == 0 && self.is_negative() { "-" } else { "" };
@@ -532,7 +532,7 @@ macro_rules! implement_fixed {
 			}
 
 			#[cfg(not(feature = "std"))]
-			fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+			fn fmt(&self, _: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 				Ok(())
 			}
 		}
@@ -546,14 +546,14 @@ macro_rules! implement_fixed {
 		}
 
 		#[cfg(feature = "std")]
-		impl tp_std::fmt::Display for $name {
-			fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+		impl tetcore_std::fmt::Display for $name {
+			fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 				write!(f, "{}", self.0)
 			}
 		}
 
 		#[cfg(feature = "std")]
-		impl tp_std::str::FromStr for $name {
+		impl tetcore_std::str::FromStr for $name {
 			type Err = &'static str;
 
 			fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -583,7 +583,7 @@ macro_rules! implement_fixed {
 			where
 				D: Deserializer<'de>,
 			{
-				use tp_std::str::FromStr;
+				use tetcore_std::str::FromStr;
 				let s = String::deserialize(deserializer)?;
 				$name::from_str(&s).map_err(|err_str| de::Error::custom(err_str))
 			}

@@ -670,7 +670,7 @@ macro_rules! impl_benchmark {
 				verify: bool,
 			) -> Result<Vec<$crate::BenchmarkResults>, &'static str> {
 				// Map the input to the selected benchmark.
-				let extrinsic = tp_std::str::from_utf8(extrinsic)
+				let extrinsic = tetcore_std::str::from_utf8(extrinsic)
 					.map_err(|_| "`extrinsic` is not a valid utf8 string!")?;
 				let selected_benchmark = match extrinsic {
 					$( stringify!($name) => SelectedBenchmark::$name, )*
@@ -908,9 +908,9 @@ macro_rules! impl_benchmark_test {
 pub fn show_benchmark_debug_info(
 	instance_string: &[u8],
 	benchmark: &[u8],
-	lowest_range_values: &tp_std::prelude::Vec<u32>,
-	highest_range_values: &tp_std::prelude::Vec<u32>,
-	steps: &tp_std::prelude::Vec<u32>,
+	lowest_range_values: &tetcore_std::prelude::Vec<u32>,
+	highest_range_values: &tetcore_std::prelude::Vec<u32>,
+	steps: &tetcore_std::prelude::Vec<u32>,
 	repeat: &u32,
 	verify: &bool,
 	error_message: &str,
@@ -924,9 +924,9 @@ pub fn show_benchmark_debug_info(
 		* Repeat: {:?}\n\
 		* Verify: {:?}\n\
 		* Error message: {}",
-		tp_std::str::from_utf8(instance_string)
+		tetcore_std::str::from_utf8(instance_string)
 		.expect("it's all just strings ran through the wasm interface. qed"),
-		tp_std::str::from_utf8(benchmark)
+		tetcore_std::str::from_utf8(benchmark)
 		.expect("it's all just strings ran through the wasm interface. qed"),
 		lowest_range_values,
 		highest_range_values,

@@ -15,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use tp_std::prelude::*;
-use tp_std::borrow::Borrow;
+use tetcore_std::prelude::*;
+use tetcore_std::borrow::Borrow;
 use codec::{FullCodec, FullEncode, Decode, Encode, EncodeLike};
 use crate::{storage::{self, unhashed, StorageAppend, PrefixIterator}, Never};
 use crate::hash::{StorageHasher, Twox128, ReversibleStorageHasher};

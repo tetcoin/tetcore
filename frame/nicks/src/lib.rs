@@ -41,7 +41,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use sp_runtime::{
 	traits::{StaticLookup, Zero}
 };

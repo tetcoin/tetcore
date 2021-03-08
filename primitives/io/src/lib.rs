@@ -27,10 +27,10 @@
 #![cfg_attr(not(feature = "std"),
    doc = "Tetcore's runtime standard library as compiled without Rust's standard library.")]
 
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 
 #[cfg(feature = "std")]
-use tp_std::ops::Deref;
+use tetcore_std::ops::Deref;
 
 #[cfg(feature = "std")]
 use tracing;
@@ -1324,7 +1324,7 @@ mod allocator_impl {
 #[no_mangle]
 pub fn panic(info: &core::panic::PanicInfo) -> ! {
 	unsafe {
-		let message = tp_std::alloc::format!("{}", info);
+		let message = tetcore_std::alloc::format!("{}", info);
 		logging::log(LogLevel::Error, "runtime", message.as_bytes());
 		core::arch::wasm32::unreachable();
 	}

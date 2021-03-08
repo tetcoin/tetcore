@@ -36,7 +36,7 @@
 
 use codec::{Encode, Decode};
 
-use tp_std::{collections::btree_map::{BTreeMap, IntoIter, Entry}, vec::Vec};
+use tetcore_std::{collections::btree_map::{BTreeMap, IntoIter, Entry}, vec::Vec};
 
 #[cfg(feature = "std")]
 use parking_lot::RwLock;

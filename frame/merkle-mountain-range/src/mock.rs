@@ -29,8 +29,8 @@ use sp_runtime::{
 		BlakeTwo256, Keccak256, IdentityLookup,
 	},
 };
-use tp_std::cell::RefCell;
-use tp_std::prelude::*;
+use tetcore_std::cell::RefCell;
+use tetcore_std::prelude::*;
 
 impl_outer_origin! {
 	pub enum Origin for Test where system = frame_system {}

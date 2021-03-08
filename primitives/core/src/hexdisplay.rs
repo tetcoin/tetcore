@@ -25,8 +25,8 @@ impl<'a> HexDisplay<'a> {
 	pub fn from<R: AsBytesRef>(d: &'a R) -> Self { HexDisplay(d.as_bytes_ref()) }
 }
 
-impl<'a> tp_std::fmt::Display for HexDisplay<'a> {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> Result<(), tp_std::fmt::Error> {
+impl<'a> tetcore_std::fmt::Display for HexDisplay<'a> {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> Result<(), tetcore_std::fmt::Error> {
 		if self.0.len() < 1027 {
 			for byte in self.0 {
 				f.write_fmt(format_args!("{:02x}", byte))?;
@@ -44,8 +44,8 @@ impl<'a> tp_std::fmt::Display for HexDisplay<'a> {
 	}
 }
 
-impl<'a> tp_std::fmt::Debug for HexDisplay<'a> {
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> Result<(), tp_std::fmt::Error> {
+impl<'a> tetcore_std::fmt::Debug for HexDisplay<'a> {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> Result<(), tetcore_std::fmt::Error> {
 		for byte in self.0 {
 			f.write_fmt(format_args!("{:02x}", byte))?;
 		}
@@ -67,7 +67,7 @@ impl AsBytesRef for [u8] {
 	fn as_bytes_ref(&self) -> &[u8] { &self }
 }
 
-impl AsBytesRef for tp_std::vec::Vec<u8> {
+impl AsBytesRef for tetcore_std::vec::Vec<u8> {
 	fn as_bytes_ref(&self) -> &[u8] { &self }
 }
 

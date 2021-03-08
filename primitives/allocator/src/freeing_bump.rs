@@ -46,7 +46,7 @@
 //! allocation to the linked list for the respective order.
 
 use crate::Error;
-use tp_std::{mem, convert::{TryFrom, TryInto}, ops::{Range, Index, IndexMut}};
+use tetcore_std::{mem, convert::{TryFrom, TryInto}, ops::{Range, Index, IndexMut}};
 use sp_wasm_interface::{Pointer, WordSize};
 
 /// The minimal alignment guaranteed by this allocator.
@@ -69,7 +69,7 @@ fn error(msg: &'static str) -> Error {
 /// Uses `wasm-heap` as default target.
 macro_rules! trace {
 	( $( $args:expr ),+ ) => {
-		tp_std::if_std! {
+		tetcore_std::if_std! {
 			log::trace!(target: "wasm-heap", $( $args ),+);
 		}
 	}

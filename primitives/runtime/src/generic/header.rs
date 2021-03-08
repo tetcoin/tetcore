@@ -27,7 +27,7 @@ use crate::traits::{
 };
 use crate::generic::Digest;
 use sp_core::U256;
-use tp_std::{
+use tetcore_std::{
 	convert::TryFrom,
 	fmt::Debug,
 };
@@ -122,11 +122,11 @@ impl<Number, Hash> codec::EncodeLike for Header<Number, Hash> where
 {}
 
 impl<Number, Hash> traits::Header for Header<Number, Hash> where
-	Number: Member + MaybeSerializeDeserialize + Debug + tp_std::hash::Hash + MaybeDisplay +
-		AtLeast32BitUnsigned + Codec + Copy + Into<U256> + TryFrom<U256> + tp_std::str::FromStr +
+	Number: Member + MaybeSerializeDeserialize + Debug + tetcore_std::hash::Hash + MaybeDisplay +
+		AtLeast32BitUnsigned + Codec + Copy + Into<U256> + TryFrom<U256> + tetcore_std::str::FromStr +
 		MaybeMallocSizeOf,
 	Hash: HashT,
-	Hash::Output: Default + tp_std::hash::Hash + Copy + Member + Ord +
+	Hash::Output: Default + tetcore_std::hash::Hash + Copy + Member + Ord +
 		MaybeSerialize + Debug + MaybeDisplay + SimpleBitOps + Codec + MaybeMallocSizeOf,
 {
 	type Number = Number;
@@ -171,10 +171,10 @@ impl<Number, Hash> traits::Header for Header<Number, Hash> where
 }
 
 impl<Number, Hash> Header<Number, Hash> where
-	Number: Member + tp_std::hash::Hash + Copy + MaybeDisplay + AtLeast32BitUnsigned + Codec +
+	Number: Member + tetcore_std::hash::Hash + Copy + MaybeDisplay + AtLeast32BitUnsigned + Codec +
 		Into<U256> + TryFrom<U256>,
 	Hash: HashT,
-	Hash::Output: Default + tp_std::hash::Hash + Copy + Member + MaybeDisplay + SimpleBitOps + Codec,
+	Hash::Output: Default + tetcore_std::hash::Hash + Copy + Member + MaybeDisplay + SimpleBitOps + Codec,
  {
 	/// Convenience helper for computing the hash of the header without having
 	/// to import the trait.

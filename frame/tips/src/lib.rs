@@ -58,7 +58,7 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use frame_support::{decl_module, decl_storage, decl_event, ensure, decl_error, Parameter};
 use frame_support::traits::{
 	Currency, Get, ExistenceRequirement::{KeepAlive},

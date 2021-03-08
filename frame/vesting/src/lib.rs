@@ -50,8 +50,8 @@
 mod benchmarking;
 pub mod weights;
 
-use tp_std::prelude::*;
-use tp_std::fmt::Debug;
+use tetcore_std::prelude::*;
+use tetcore_std::fmt::Debug;
 use codec::{Encode, Decode};
 use sp_runtime::{DispatchResult, RuntimeDebug, traits::{
 	StaticLookup, Zero, AtLeast32BitUnsigned, MaybeSerializeDeserialize, Convert

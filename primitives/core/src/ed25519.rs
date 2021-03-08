@@ -20,7 +20,7 @@
 // end::description[]
 
 #[cfg(feature = "full_crypto")]
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 
 use crate::{hash::H256, hash::H512};
 use codec::{Encode, Decode};
@@ -43,7 +43,7 @@ use crate::crypto::Ss58Codec;
 use serde::{de, Serializer, Serialize, Deserializer, Deserialize};
 use crate::crypto::{Public as TraitPublic, CryptoTypePublicPair, UncheckedFrom, CryptoType, Derive, CryptoTypeId};
 use sp_runtime_interface::pass_by::PassByInner;
-use tp_std::ops::Deref;
+use tetcore_std::ops::Deref;
 
 /// An identifier used to match public keys against ed25519 keys
 pub const CRYPTO_ID: CryptoTypeId = CryptoTypeId(*b"ed25");
@@ -100,7 +100,7 @@ impl Deref for Public {
 	}
 }
 
-impl tp_std::convert::TryFrom<&[u8]> for Public {
+impl tetcore_std::convert::TryFrom<&[u8]> for Public {
 	type Error = ();
 
 	fn try_from(data: &[u8]) -> Result<Self, Self::Error> {
@@ -161,15 +161,15 @@ impl std::fmt::Display for Public {
 	}
 }
 
-impl tp_std::fmt::Debug for Public {
+impl tetcore_std::fmt::Debug for Public {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		let s = self.to_ss58check();
 		write!(f, "{} ({}...)", crate::hexdisplay::HexDisplay::from(&self.0), &s[0..8])
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, _: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -193,7 +193,7 @@ impl<'de> Deserialize<'de> for Public {
 #[derive(Encode, Decode, PassByInner)]
 pub struct Signature(pub [u8; 64]);
 
-impl tp_std::convert::TryFrom<&[u8]> for Signature {
+impl tetcore_std::convert::TryFrom<&[u8]> for Signature {
 	type Error = ();
 
 	fn try_from(data: &[u8]) -> Result<Self, Self::Error> {
@@ -276,22 +276,22 @@ impl AsMut<[u8]> for Signature {
 	}
 }
 
-impl tp_std::fmt::Debug for Signature {
+impl tetcore_std::fmt::Debug for Signature {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		write!(f, "{}", crate::hexdisplay::HexDisplay::from(&self.0))
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, _: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		Ok(())
 	}
 }
 
 #[cfg(feature = "full_crypto")]
-impl tp_std::hash::Hash for Signature {
-	fn hash<H: tp_std::hash::Hasher>(&self, state: &mut H) {
-		tp_std::hash::Hash::hash(&self.0[..], state);
+impl tetcore_std::hash::Hash for Signature {
+	fn hash<H: tetcore_std::hash::Hasher>(&self, state: &mut H) {
+		tetcore_std::hash::Hash::hash(&self.0[..], state);
 	}
 }
 

@@ -42,7 +42,7 @@
 
 mod tests;
 
-use tp_std::{prelude::*, marker::PhantomData, ops::{Deref, DerefMut}};
+use tetcore_std::{prelude::*, marker::PhantomData, ops::{Deref, DerefMut}};
 use sp_io::hashing::blake2_256;
 use frame_support::{
 	Parameter, decl_module, decl_storage, decl_event, decl_error, ensure,

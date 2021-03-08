@@ -18,7 +18,7 @@
 //! MultiAddress type is a wrapper for multiple downstream account formats.
 
 use codec::{Encode, Decode};
-use tp_std::vec::Vec;
+use tetcore_std::vec::Vec;
 
 /// A multi-format address wrapper for on-chain accounts.
 #[derive(Encode, Decode, PartialEq, Eq, Clone, crate::RuntimeDebug)]

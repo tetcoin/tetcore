@@ -17,7 +17,7 @@
 
 //! Some utilities for helping access storage with arbitrary key types.
 
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use codec::{Encode, Decode};
 use crate::{StorageHasher, Twox128};
 use crate::hash::ReversibleStorageHasher;
@@ -27,7 +27,7 @@ pub struct StorageIterator<T> {
 	prefix: Vec<u8>,
 	previous_key: Vec<u8>,
 	drain: bool,
-	_phantom: ::tp_std::marker::PhantomData<T>,
+	_phantom: ::tetcore_std::marker::PhantomData<T>,
 }
 
 impl<T> StorageIterator<T> {
@@ -85,7 +85,7 @@ pub struct StorageKeyIterator<K, T, H: ReversibleStorageHasher> {
 	prefix: Vec<u8>,
 	previous_key: Vec<u8>,
 	drain: bool,
-	_phantom: ::tp_std::marker::PhantomData<(K, T, H)>,
+	_phantom: ::tetcore_std::marker::PhantomData<(K, T, H)>,
 }
 
 impl<K, T, H: ReversibleStorageHasher> StorageKeyIterator<K, T, H> {

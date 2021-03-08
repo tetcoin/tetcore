@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #[doc(hidden)]
-pub use crate::tp_std::vec::Vec;
+pub use crate::tetcore_std::vec::Vec;
 #[doc(hidden)]
 pub use crate::sp_runtime::traits::{Block as BlockT, Extrinsic};
 #[doc(hidden)]

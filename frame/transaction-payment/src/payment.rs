@@ -9,7 +9,7 @@ use sp_runtime::{
 	traits::{AtLeast32BitUnsigned, DispatchInfoOf, MaybeSerializeDeserialize, PostDispatchInfoOf, Saturating, Zero},
 	transaction_validity::InvalidTransaction,
 };
-use tp_std::{fmt::Debug, marker::PhantomData};
+use tetcore_std::{fmt::Debug, marker::PhantomData};
 
 type NegativeImbalanceOf<C, T> =
 	<C as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance;

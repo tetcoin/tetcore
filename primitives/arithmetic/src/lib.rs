@@ -44,7 +44,7 @@ pub use fixed_point::{FixedPointNumber, FixedPointOperand, FixedI64, FixedI128, 
 pub use per_things::{PerThing, InnerOf, UpperOf, Percent, PerU16, Permill, Perbill, Perquintill};
 pub use rational::{Rational128, RationalInfinite};
 
-use tp_std::{prelude::*, cmp::Ordering, fmt::Debug, convert::TryInto};
+use tetcore_std::{prelude::*, cmp::Ordering, fmt::Debug, convert::TryInto};
 use traits::{BaseArithmetic, One, Zero, SaturatedConversion, Unsigned};
 
 /// Trait for comparing two numbers with an threshold.
@@ -453,7 +453,7 @@ mod normalize_tests {
 mod threshold_compare_tests {
 	use super::*;
 	use crate::traits::Saturating;
-	use tp_std::cmp::Ordering;
+	use tetcore_std::cmp::Ordering;
 
 	#[test]
 	fn epsilon_ord_works() {

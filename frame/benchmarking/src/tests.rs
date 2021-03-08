@@ -20,7 +20,7 @@
 #![cfg(test)]
 
 use super::*;
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::{H256, Header}};
 use frame_support::{
 	dispatch::DispatchResult,

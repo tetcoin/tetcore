@@ -28,7 +28,7 @@
 
 use crate::{IdentifierT, Voter, ExtendedBalance, Edge};
 use sp_arithmetic::traits::Zero;
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 
 /// Balance the weight distribution of a given `voters` at most `iterations` times, or up until the
 /// point where the biggest difference created per iteration of all stakes is `tolerance`. If this

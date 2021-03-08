@@ -55,7 +55,7 @@ use crate::{
 use codec::Decode;
 use frame_support::weights::Weight;
 use sp_runtime::DispatchError;
-use tp_std::{
+use tetcore_std::{
 	marker::PhantomData,
 	vec::Vec,
 };
@@ -67,7 +67,7 @@ pub use crate::exec::Ext;
 pub use state::Init as InitState;
 
 /// Result that returns a [`DispatchError`] on error.
-pub type Result<T> = tp_std::result::Result<T, DispatchError>;
+pub type Result<T> = tetcore_std::result::Result<T, DispatchError>;
 
 /// A trait used to extend the set of contract callable functions.
 ///

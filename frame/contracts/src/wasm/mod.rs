@@ -24,7 +24,7 @@ use crate::{
 	exec::Ext,
 	gas::GasMeter,
 };
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 use sp_core::crypto::UncheckedFrom;
 use codec::{Encode, Decode};
 

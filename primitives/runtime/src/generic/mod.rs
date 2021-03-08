@@ -38,10 +38,10 @@ pub use self::digest::{
 };
 
 use crate::codec::Encode;
-use tp_std::prelude::*;
+use tetcore_std::prelude::*;
 
 fn encode_with_vec_prefix<T: Encode, F: Fn(&mut Vec<u8>)>(encoder: F) -> Vec<u8> {
-	let size = ::tp_std::mem::size_of::<T>();
+	let size = ::tetcore_std::mem::size_of::<T>();
 	let reserve = match size {
 		0..=0b00111111 => 1,
 		0..=0b00111111_11111111 => 2,

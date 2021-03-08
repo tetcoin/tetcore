@@ -24,16 +24,16 @@ use sp_runtime::{
 
 /// Genesis hash check to provide replay protection between different networks.
 #[derive(Encode, Decode, Clone, Eq, PartialEq)]
-pub struct CheckGenesis<T: Config + Send + Sync>(tp_std::marker::PhantomData<T>);
+pub struct CheckGenesis<T: Config + Send + Sync>(tetcore_std::marker::PhantomData<T>);
 
-impl<T: Config + Send + Sync> tp_std::fmt::Debug for CheckGenesis<T> {
+impl<T: Config + Send + Sync> tetcore_std::fmt::Debug for CheckGenesis<T> {
 	#[cfg(feature = "std")]
-	fn fmt(&self, f: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, f: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		write!(f, "CheckGenesis")
 	}
 
 	#[cfg(not(feature = "std"))]
-	fn fmt(&self, _: &mut tp_std::fmt::Formatter) -> tp_std::fmt::Result {
+	fn fmt(&self, _: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
 		Ok(())
 	}
 }
@@ -41,7 +41,7 @@ impl<T: Config + Send + Sync> tp_std::fmt::Debug for CheckGenesis<T> {
 impl<T: Config + Send + Sync> CheckGenesis<T> {
 	/// Creates new `SignedExtension` to check genesis hash.
 	pub fn new() -> Self {
-		Self(tp_std::marker::PhantomData)
+		Self(tetcore_std::marker::PhantomData)
 	}
 }
 
