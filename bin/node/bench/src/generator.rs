@@ -18,7 +18,7 @@
 
 use std::{collections::HashMap, sync::Arc};
 
-use kvdb::KeyValueDB;
+use tetsy_kvdb::KeyValueDB;
 use node_primitives::Hash;
 use sp_trie::{trie_types::TrieDBMut, TrieMut};
 

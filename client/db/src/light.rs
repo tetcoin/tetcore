@@ -67,7 +67,7 @@ pub struct LightStorage<Block: BlockT> {
 	header_metadata_cache: Arc<HeaderMetadataCache<Block>>,
 
 	#[cfg(not(target_os = "unknown"))]
-	io_stats: FrozenForDuration<kvdb::IoStats>,
+	io_stats: FrozenForDuration<tetsy_kvdb::IoStats>,
 }
 
 impl<Block: BlockT> LightStorage<Block> {
@@ -565,7 +565,7 @@ impl<Block> Storage<Block> for LightStorage<Block>
 
 		// TODO: reimplement IO stats
 		let database_cache = MemorySize::from_bytes(0);
-		let io_stats = self.io_stats.take_or_else(|| kvdb::IoStats::empty());
+		let io_stats = self.io_stats.take_or_else(|| tetsy_kvdb::IoStats::empty());
 
 		Some(UsageInfo {
 			memory: MemoryInfo {

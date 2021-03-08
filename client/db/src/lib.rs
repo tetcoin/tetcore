@@ -918,7 +918,7 @@ pub struct Backend<Block: BlockT> {
 	is_archive: bool,
 	keep_blocks: KeepBlocks,
 	transaction_storage: TransactionStorageMode,
-	io_stats: FrozenForDuration<(kvdb::IoStats, StateUsageInfo)>,
+	io_stats: FrozenForDuration<(tetsy_kvdb::IoStats, StateUsageInfo)>,
 	state_usage: Arc<StateUsageStats>,
 }
 
@@ -1676,7 +1676,7 @@ impl<Block: BlockT> sc_client_api::backend::Backend<Block> for Backend<Block> {
 		let (io_stats, state_stats) = self.io_stats.take_or_else(||
 			(
 				// TODO: implement DB stats and cache size retrieval
-				kvdb::IoStats::empty(),
+				tetsy_kvdb::IoStats::empty(),
 				self.state_usage.take(),
 			)
 		);

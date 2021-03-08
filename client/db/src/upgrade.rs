@@ -24,7 +24,7 @@ use std::path::{Path, PathBuf};
 
 use sp_runtime::traits::Block as BlockT;
 use crate::utils::DatabaseType;
-use kvdb_rocksdb::{Database, DatabaseConfig};
+use tetsy_kvdb_rocksdb::{Database, DatabaseConfig};
 
 /// Version file name.
 const VERSION_FILE_NAME: &'static str = "db_version";

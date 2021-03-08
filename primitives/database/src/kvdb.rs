@@ -15,9 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// A wrapper around `kvdb::Database` that implements `tetcore_database::Database` trait
+/// A wrapper around `tetsy_kvdb::Database` that implements `tetcore_database::Database` trait
 
-use ::kvdb::{DBTransaction, KeyValueDB};
+use ::tetsy_kvdb::{DBTransaction, KeyValueDB};
 
 use crate::{Database, Change, ColumnId, Transaction, error};
 

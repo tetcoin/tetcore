@@ -226,7 +226,7 @@ pub fn open_database<Block: BlockT>(
 			crate::upgrade::upgrade_db::<Block>(&path, db_type)?;
 
 			// and now open database assuming that it has the latest version
-			let mut db_config = kvdb_rocksdb::DatabaseConfig::with_columns(NUM_COLUMNS);
+			let mut db_config = tetsy_kvdb_rocksdb::DatabaseConfig::with_columns(NUM_COLUMNS);
 			let path = path.to_str()
 				.ok_or_else(|| sp_blockchain::Error::Backend("Invalid database path".into()))?;
 
@@ -267,7 +267,7 @@ pub fn open_database<Block: BlockT>(
 			}
 			db_config.memory_budget = memory_budget;
 
-			let db = kvdb_rocksdb::Database::open(&db_config, &path)
+			let db = tetsy_kvdb_rocksdb::Database::open(&db_config, &path)
 				.map_err(|err| sp_blockchain::Error::Backend(format!("{}", err)))?;
 			tetcore_database::as_database(db)
 		},

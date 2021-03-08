@@ -17,8 +17,8 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use std::{io, path::PathBuf, sync::Arc};
-use kvdb::{KeyValueDB, DBTransaction};
-use kvdb_rocksdb::{DatabaseConfig, Database};
+use tetsy_kvdb::{KeyValueDB, DBTransaction};
+use tetsy_kvdb_rocksdb::{DatabaseConfig, Database};
 
 #[derive(Debug, Clone, Copy, derive_more::Display)]
 pub enum DatabaseType {
@@ -46,9 +46,9 @@ impl KeyValueDB for TetsyDbWrapper {
 	fn write(&self, transaction: DBTransaction) -> io::Result<()> {
 		self.0.commit(
 			transaction.ops.iter().map(|op| match op {
-				kvdb::DBOp::Insert { col, key, value } => (*col as u8, &key[key.len() - 32..], Some(value.to_vec())),
-				kvdb::DBOp::Delete { col, key } => (*col as u8, &key[key.len() - 32..], None),
-				kvdb::DBOp::DeletePrefix { col: _, prefix: _ } => unimplemented!()
+				tetsy_kvdb::DBOp::Insert { col, key, value } => (*col as u8, &key[key.len() - 32..], Some(value.to_vec())),
+				tetsy_kvdb::DBOp::Delete { col, key } => (*col as u8, &key[key.len() - 32..], None),
+				tetsy_kvdb::DBOp::DeletePrefix { col: _, prefix: _ } => unimplemented!()
 			})
 		).expect("db error");
 		Ok(())

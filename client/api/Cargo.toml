@@ -24,7 +24,7 @@ futures = "0.3.1"
 hash-db = { version = "0.15.2", default-features = false }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
-kvdb = "0.9.0"
+tetsy-kvdb = "0.9.0"
 log = "0.4.8"
 parking_lot = "0.11.1"
 lazy_static =  "1.4.0"

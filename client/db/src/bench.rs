@@ -33,7 +33,7 @@ use sp_runtime::Storage;
 use sp_state_machine::{
 	DBValue, backend::Backend as StateBackend, StorageCollection, ChildStorageCollection
 };
-use kvdb::{KeyValueDB, DBTransaction};
+use tetsy_kvdb::{KeyValueDB, DBTransaction};
 use crate::storage_cache::{CachingState, SharedCache, new_shared_cache};
 
 type DbState<B> = sp_state_machine::TrieBackend<

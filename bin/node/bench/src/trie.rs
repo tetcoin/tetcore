@@ -19,7 +19,7 @@
 //! Trie benchmark (integrated).
 
 use std::{borrow::Cow, collections::HashMap, sync::Arc};
-use kvdb::KeyValueDB;
+use tetsy_kvdb::KeyValueDB;
 use lazy_static::lazy_static;
 use rand::Rng;
 use hash_db::Prefix;

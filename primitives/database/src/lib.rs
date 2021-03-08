@@ -22,7 +22,7 @@ mod mem;
 mod kvdb;
 
 pub use mem::MemDb;
-pub use crate::kvdb::as_database;
+pub use crate::tetsy_kvdb::as_database;
 
 /// An identifier for a column.
 pub type ColumnId = u32;
