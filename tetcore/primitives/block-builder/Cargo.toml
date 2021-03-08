@@ -1,0 +1,30 @@
+[package]
+name = "tp-block-builder"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "The block builder runtime api."
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
+tp-api = { version = "2.0.0", default-features = false, path = "../api" }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../inherents" }
+
+[features]
+default = [ "std" ]
+std = [
+	"tp-runtime/std",
+	"codec/std",
+	"tp-inherents/std",
+	"tp-api/std",
+	"tp-std/std",
+]

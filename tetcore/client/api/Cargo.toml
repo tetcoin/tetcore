@@ -1,0 +1,49 @@
+[package]
+name = "tc-client-api"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Tetcore client interfaces."
+documentation = "https://docs.rs/tc-client-api"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
+derive_more = "0.99.2"
+tc-executor = { version = "0.8.0", path = "../executor" }
+tp-externalities = { version = "0.8.0", path = "../../primitives/externalities" }
+fnv = "1.0.6"
+futures = "0.3.1"
+hash-db = { version = "0.15.2", default-features = false }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
+kvdb = "0.9.0"
+log = "0.4.8"
+parking_lot = "0.11.1"
+lazy_static =  "1.4.0"
+tp-database = { version = "2.0.0", path = "../../primitives/database" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-keystore = { version = "0.8.0", default-features = false, path = "../../primitives/keystore" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-version = { version = "2.0.0", default-features = false, path = "../../primitives/version" }
+tp-api = { version = "2.0.0", path = "../../primitives/api" }
+tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
+tp-storage = { version = "2.0.0", path = "../../primitives/storage" }
+tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
+prometheus-endpoint = { package = "tetcore-prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
+
+[dev-dependencies]
+kvdb-memorydb = "0.9.0"
+tp-test-primitives = { version = "2.0.0", path = "../../primitives/test-primitives" }
+tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime"  }
+thiserror = "1.0.21"

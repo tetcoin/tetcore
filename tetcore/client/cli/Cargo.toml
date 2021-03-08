@@ -1,0 +1,56 @@
+[package]
+name = "tc-cli"
+version = "0.8.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+description = "Tetcore CLI interface."
+edition = "2018"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+log = "0.4.11"
+regex = "1.4.2"
+tokio = { version = "0.2.21", features = [ "signal", "rt-core", "rt-threaded", "blocking" ] }
+futures = "0.3.9"
+fdlimit = "0.2.1"
+libp2p = "0.34.0"
+tetsy-scale-codec = "2.0.0"
+hex = "0.4.2"
+rand = "0.7.3"
+tiny-bip39 = "0.8.0"
+serde_json = "1.0.41"
+tc-keystore = { version = "2.0.0", path = "../keystore" }
+tp-panic-handler = { version = "2.0.0", path = "../../primitives/panic-handler" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tc-network = { version = "0.8.0", path = "../network" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tp-version = { version = "2.0.0", path = "../../primitives/version" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
+tc-service = { version = "0.8.0", default-features = false, path = "../service" }
+tc-telemetry = { version = "2.0.0", path = "../telemetry" }
+tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+names = "0.11.0"
+structopt = "0.3.8"
+tc-tracing = { version = "2.0.0", path = "../tracing" }
+chrono = "0.4.10"
+serde = "1.0.111"
+thiserror = "1.0.21"
+
+[target.'cfg(not(target_os = "unknown"))'.dependencies]
+rpassword = "5.0.0"
+
+[dev-dependencies]
+tempfile = "3.1.0"
+
+[features]
+wasmtime = [
+	"tc-service/wasmtime",
+]

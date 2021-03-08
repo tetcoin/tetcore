@@ -1,0 +1,6 @@
+
+= Tetcore CLI
+
+Tetcore CLI library
+
+include::doc/shell-completion.adoc[]

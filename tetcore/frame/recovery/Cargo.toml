@@ -1,0 +1,39 @@
+[package]
+name = "pallet-recovery"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FRAME account recovery pallet"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+serde = { version = "1.0.101", optional = true }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+enumflags2 = { version = "0.6.2" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+frame-support = { version = "2.0.0", default-features = false, path = "../support" }
+frame-system = { version = "2.0.0", default-features = false, path = "../system" }
+
+[dev-dependencies]
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+pallet-balances = { version = "2.0.0", path = "../balances" }
+
+[features]
+default = ["std"]
+std = [
+	"serde",
+	"codec/std",
+	"tp-std/std",
+	"tp-io/std",
+	"tp-runtime/std",
+	"frame-support/std",
+	"frame-system/std",
+]

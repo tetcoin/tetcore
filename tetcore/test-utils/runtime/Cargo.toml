@@ -1,0 +1,99 @@
+[package]
+name = "tetcore-test-runtime"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+build = "build.rs"
+license = "Apache-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+publish = false
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tp-consensus-aura = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/aura" }
+tp-consensus-babe = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/babe" }
+tp-block-builder = { version = "2.0.0", default-features = false, path = "../../primitives/block-builder" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+frame-executive = { version = "2.0.0", default-features = false, path = "../../frame/executive" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
+tp-keyring = { version = "2.0.0", optional = true, path = "../../primitives/keyring" }
+memory-db = { version = "0.26.0", default-features = false }
+tp-offchain = { path = "../../primitives/offchain", default-features = false, version = "2.0.0"}
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-runtime-interface = { path = "../../primitives/runtime-interface", default-features = false, version = "2.0.0"}
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+frame-support = { version = "2.0.0", default-features = false, path = "../../frame/support" }
+tp-version = { version = "2.0.0", default-features = false, path = "../../primitives/version" }
+tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
+tp-api = { version = "2.0.0", default-features = false, path = "../../primitives/api" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+pallet-babe = { version = "2.0.0", default-features = false, path = "../../frame/babe" }
+frame-system = { version = "2.0.0", default-features = false, path = "../../frame/system" }
+frame-system-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../frame/system/rpc/runtime-api" }
+pallet-timestamp = { version = "2.0.0", default-features = false, path = "../../frame/timestamp" }
+tp-finality-grandpa = { version = "2.0.0", default-features = false, path = "../../primitives/finality-grandpa" }
+tp-trie = { version = "2.0.0", default-features = false, path = "../../primitives/trie" }
+tp-transaction-pool = { version = "2.0.0", default-features = false, path = "../../primitives/transaction-pool" }
+trie-db = { version = "0.22.2", default-features = false }
+tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
+tc-service = { version = "0.8.0", default-features = false, optional = true, features = ["test-helpers"], path = "../../client/service" }
+tp-state-machine = { version = "0.8.0", default-features = false, path = "../../primitives/state-machine" }
+tp-externalities = { version = "0.8.0", default-features = false, path = "../../primitives/externalities" }
+
+# 3rd party
+cfg-if = "0.1.10"
+log = { version = "0.4.8", optional = true }
+serde = { version = "1.0.101", optional = true, features = ["derive"] }
+
+[dev-dependencies]
+tc-block-builder = { version = "0.8.0", path = "../../client/block-builder" }
+tc-executor = { version = "0.8.0", path = "../../client/executor" }
+tetcore-test-runtime-client = { version = "2.0.0", path = "./client" }
+
+[build-dependencies]
+tetcore-wasm-builder = { version = "3.0.0", path = "../../utils/wasm-builder" }
+
+[features]
+default = [
+	"std",
+]
+std = [
+	"tp-application-crypto/std",
+	"tp-consensus-aura/std",
+	"tp-consensus-babe/std",
+	"tp-block-builder/std",
+	"codec/std",
+	"frame-executive/std",
+	"tp-inherents/std",
+	"tp-keyring",
+	"log",
+	"memory-db/std",
+	"tp-offchain/std",
+	"tp-core/std",
+	"tp-core/std",
+	"tp-std/std",
+	"tp-runtime-interface/std",
+	"tp-io/std",
+	"frame-support/std",
+	"tp-version/std",
+	"serde",
+	"tp-session/std",
+	"tp-api/std",
+	"tp-runtime/std",
+	"tp-externalities/std",
+	"tp-state-machine/std",
+	"pallet-babe/std",
+	"frame-system-rpc-runtime-api/std",
+	"frame-system/std",
+	"pallet-timestamp/std",
+	"tc-service",
+	"tp-finality-grandpa/std",
+	"tp-trie/std",
+	"tp-transaction-pool/std",
+	"trie-db/std",
+]

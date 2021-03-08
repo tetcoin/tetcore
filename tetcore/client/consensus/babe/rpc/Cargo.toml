@@ -1,0 +1,40 @@
+[package]
+name = "tc-consensus-babe-rpc"
+version = "0.8.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+description = "RPC extensions for the BABE consensus algorithm"
+edition = "2018"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+tc-consensus-babe = { version = "0.8.0", path = "../" }
+tc-rpc-api = { version = "0.8.0", path = "../../../rpc-api" }
+jsonrpc-core = "15.1.0"
+jsonrpc-core-client = "15.1.0"
+jsonrpc-derive = "15.1.0"
+tp-consensus-babe = { version = "0.8.0", path = "../../../../primitives/consensus/babe" }
+serde = { version = "1.0.104", features=["derive"] }
+tp-blockchain = { version = "2.0.0", path = "../../../../primitives/blockchain" }
+tp-runtime = { version = "2.0.0", path = "../../../../primitives/runtime" }
+tc-consensus-epochs = { version = "0.8.0", path = "../../epochs" }
+futures = { version = "0.3.4", features = ["compat"] }
+derive_more = "0.99.2"
+tp-api = { version = "2.0.0", path = "../../../../primitives/api" }
+tp-consensus = { version = "0.8.0", path = "../../../../primitives/consensus/common" }
+tp-core = { version = "2.0.0", path = "../../../../primitives/core" }
+tp-application-crypto = { version = "2.0.0", path = "../../../../primitives/application-crypto" }
+tp-keystore = { version = "0.8.0", path = "../../../../primitives/keystore" }
+
+[dev-dependencies]
+tc-consensus = { version = "0.8.0", path = "../../../consensus/common" }
+serde_json = "1.0.50"
+tp-keyring = { version = "2.0.0", path = "../../../../primitives/keyring" }
+tc-keystore = { version = "2.0.0", path = "../../../keystore" }
+tetcore-test-runtime-client = { version = "2.0.0", path = "../../../../test-utils/runtime/client" }
+tempfile = "3.1.0"

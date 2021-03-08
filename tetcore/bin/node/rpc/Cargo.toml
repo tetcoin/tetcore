@@ -1,0 +1,38 @@
+[package]
+name = "node-rpc"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+jsonrpc-core = "15.1.0"
+node-primitives = { version = "2.0.0", path = "../primitives" }
+node-runtime = { version = "2.0.0", path = "../runtime" }
+pallet-contracts-rpc = { version = "0.8.0", path = "../../../frame/contracts/rpc/" }
+pallet-transaction-payment-rpc = { version = "2.0.0", path = "../../../frame/transaction-payment/rpc/" }
+tc-client-api = { version = "2.0.0", path = "../../../client/api" }
+tc-consensus-babe = { version = "0.8.0", path = "../../../client/consensus/babe" }
+tc-consensus-babe-rpc = { version = "0.8.0", path = "../../../client/consensus/babe/rpc" }
+tc-consensus-epochs = { version = "0.8.0", path = "../../../client/consensus/epochs" }
+tc-chain-spec = { version = "2.0.0", path = "../../../client/chain-spec" }
+tc-finality-grandpa = { version = "0.8.0", path = "../../../client/finality-grandpa" }
+tc-finality-grandpa-rpc = { version = "0.8.0", path = "../../../client/finality-grandpa/rpc" }
+tc-keystore = { version = "2.0.0", path = "../../../client/keystore" }
+tc-rpc-api = { version = "0.8.0", path = "../../../client/rpc-api" }
+tc-rpc = { version = "2.0.0", path = "../../../client/rpc" }
+tc-sync-state-rpc = { version = "0.8.0", path = "../../../client/sync-state-rpc" }
+tp-api = { version = "2.0.0", path = "../../../primitives/api" }
+tp-block-builder = { version = "2.0.0", path = "../../../primitives/block-builder" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
+tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tp-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
+tetcore-frame-rpc-system = { version = "2.0.0", path = "../../../utils/frame/rpc/system" }

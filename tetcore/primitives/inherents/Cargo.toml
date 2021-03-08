@@ -1,0 +1,32 @@
+[package]
+name = "tp-inherents"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Provides types and traits for creating and checking inherents."
+documentation = "https://docs.rs/tp-inherents"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+
+[dependencies]
+parking_lot = { version = "0.11.1", optional = true }
+tp-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+thiserror = { version = "1.0.21", optional = true }
+
+[features]
+default = [ "std" ]
+std = [
+	"parking_lot",
+	"tp-std/std",
+	"codec/std",
+	"tp-core/std",
+	"thiserror",
+]

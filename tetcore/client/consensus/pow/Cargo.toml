@@ -1,0 +1,32 @@
+[package]
+name = "tc-consensus-pow"
+version = "0.8.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+description = "PoW consensus algorithm for tetcore"
+edition = "2018"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.0", features = ["derive"] }
+tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-api = { version = "2.0.0", path = "../../../primitives/api" }
+tc-client-api = { version = "2.0.0", path = "../../api" }
+tp-block-builder = { version = "2.0.0", path = "../../../primitives/block-builder" }
+tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
+tp-consensus-pow = { version = "0.8.0", path = "../../../primitives/consensus/pow" }
+tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+log = "0.4.8"
+futures = { version = "0.3.1", features = ["compat"] }
+futures-timer = "3.0.1"
+parking_lot = "0.11.1"
+tp-timestamp = { version = "2.0.0", path = "../../../primitives/timestamp" }
+derive_more = "0.99.2"
+prometheus-endpoint = { package = "tetcore-prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.0"}

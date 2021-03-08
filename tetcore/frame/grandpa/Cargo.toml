@@ -1,0 +1,60 @@
+[package]
+name = "pallet-grandpa"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FRAME pallet for GRANDPA finality gadget"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+serde = { version = "1.0.101", optional = true, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-finality-grandpa = { version = "2.0.0", default-features = false, path = "../../primitives/finality-grandpa" }
+tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
+frame-support = { version = "2.0.0", default-features = false, path = "../support" }
+frame-system = { version = "2.0.0", default-features = false, path = "../system" }
+pallet-authorship = { version = "2.0.0", default-features = false, path = "../authorship" }
+pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
+
+[dev-dependencies]
+frame-benchmarking = { version = "2.0.0", path = "../benchmarking" }
+grandpa = { package = "finality-grandpa", version = "0.13.0", features = ["derive-codec"] }
+tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+pallet-balances = { version = "2.0.0", path = "../balances" }
+pallet-offences = { version = "2.0.0", path = "../offences" }
+pallet-staking = { version = "2.0.0", path = "../staking" }
+pallet-staking-reward-curve = { version = "2.0.0", path = "../staking/reward-curve" }
+pallet-timestamp = { version = "2.0.0", path = "../timestamp" }
+
+[features]
+default = ["std"]
+std = [
+	"serde",
+	"codec/std",
+	"frame-benchmarking/std",
+	"tp-application-crypto/std",
+	"tp-core/std",
+	"tp-finality-grandpa/std",
+	"tp-session/std",
+	"tp-std/std",
+	"frame-support/std",
+	"tp-runtime/std",
+	"tp-staking/std",
+	"frame-system/std",
+	"pallet-authorship/std",
+	"pallet-session/std",
+]
+runtime-benchmarks = ["frame-benchmarking"]

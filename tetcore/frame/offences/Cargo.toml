@@ -1,0 +1,41 @@
+[package]
+name = "pallet-offences"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://github.com/tetcoin/tetcore"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FRAME offences pallet"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+pallet-balances = { version = "2.0.0", default-features = false, path = "../balances" }
+codec = { package = "tetsy-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+tp-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+serde = { version = "1.0.101", optional = true }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+frame-support = { version = "2.0.0", default-features = false, path = "../support" }
+frame-system = { version = "2.0.0", default-features = false, path = "../system" }
+
+[dev-dependencies]
+tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tp-core = { version = "2.0.0", path = "../../primitives/core" }
+
+[features]
+default = ["std"]
+std = [
+	"pallet-balances/std",
+	"codec/std",
+	"tp-std/std",
+	"serde",
+	"tp-runtime/std",
+	"tp-staking/std",
+	"frame-support/std",
+	"frame-system/std",
+]
+runtime-benchmarks = []
