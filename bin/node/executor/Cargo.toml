@@ -21,7 +21,7 @@ tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
 tp-io = { version = "2.0.0", path = "../../../primitives/io" }
 tp-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
 tp-trie = { version = "2.0.0", path = "../../../primitives/trie" }
-trie-root = "0.16.0"
+tetsy-trie-root = "0.16.0"
 frame-benchmarking = { version = "2.0.0", path = "../../../frame/benchmarking" }
 
 [dev-dependencies]

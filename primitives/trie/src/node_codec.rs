@@ -23,7 +23,7 @@ use tetcore_std::vec::Vec;
 use tetcore_std::borrow::Borrow;
 use codec::{Encode, Decode, Input, Compact};
 use tetsy_hash_db::Hasher;
-use trie_db::{self, node::{NibbleSlicePlan, NodePlan, NodeHandlePlan}, ChildReference,
+use tetsy_trie_db::{self, node::{NibbleSlicePlan, NodePlan, NodeHandlePlan}, ChildReference,
 	nibble_ops, Partial, NodeCodec as NodeCodecT};
 use crate::error::Error;
 use crate::trie_constants;

@@ -27,8 +27,8 @@ mod trie_stream;
 
 use tetcore_std::{boxed::Box, marker::PhantomData, vec::Vec, borrow::Borrow};
 use tetsy_hash_db::{Hasher, Prefix};
-use trie_db::proof::{generate_proof, verify_proof};
-pub use trie_db::proof::VerifyError;
+use tetsy_trie_db::proof::{generate_proof, verify_proof};
+pub use tetsy_trie_db::proof::VerifyError;
 /// Our `NodeCodec`-specific error.
 pub use error::Error;
 /// The Tetcore format implementation of `TrieStream`.
@@ -36,8 +36,8 @@ pub use trie_stream::TrieStream;
 /// The Tetcore format implementation of `NodeCodec`.
 pub use node_codec::NodeCodec;
 pub use storage_proof::StorageProof;
-/// Various re-exports from the `trie-db` crate.
-pub use trie_db::{
+/// Various re-exports from the `tetsy-trie-db` crate.
+pub use tetsy_trie_db::{
 	Trie, TrieMut, DBValue, Recorder, CError, Query, TrieLayout, TrieConfiguration, nibble_ops, TrieDBIterator,
 };
 /// Various re-exports from the `memory-db` crate.
@@ -80,40 +80,40 @@ impl<H: Hasher> TrieConfiguration for Layout<H> {
 }
 
 #[cfg(not(feature = "memory-tracker"))]
-type MemTracker = memory_db::NoopTracker<trie_db::DBValue>;
+type MemTracker = memory_db::NoopTracker<tetsy_trie_db::DBValue>;
 #[cfg(feature = "memory-tracker")]
-type MemTracker = memory_db::MemCounter<trie_db::DBValue>;
+type MemTracker = memory_db::MemCounter<tetsy_trie_db::DBValue>;
 
 /// TrieDB error over `TrieConfiguration` trait.
-pub type TrieError<L> = trie_db::TrieError<TrieHash<L>, CError<L>>;
+pub type TrieError<L> = tetsy_trie_db::TrieError<TrieHash<L>, CError<L>>;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
-pub trait AsHashDB<H: Hasher>: tetsy_hash_db::AsHashDB<H, trie_db::DBValue> {}
-impl<H: Hasher, T: tetsy_hash_db::AsHashDB<H, trie_db::DBValue>> AsHashDB<H> for T {}
+pub trait AsHashDB<H: Hasher>: tetsy_hash_db::AsHashDB<H, tetsy_trie_db::DBValue> {}
+impl<H: Hasher, T: tetsy_hash_db::AsHashDB<H, tetsy_trie_db::DBValue>> AsHashDB<H> for T {}
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
-pub type HashDB<'a, H> = dyn tetsy_hash_db::HashDB<H, trie_db::DBValue> + 'a;
+pub type HashDB<'a, H> = dyn tetsy_hash_db::HashDB<H, tetsy_trie_db::DBValue> + 'a;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 /// This uses a `KeyFunction` for prefixing keys internally (avoiding
 /// key conflict for non random keys).
 pub type PrefixedMemoryDB<H> = memory_db::MemoryDB<
-	H, memory_db::PrefixedKey<H>, trie_db::DBValue, MemTracker
+	H, memory_db::PrefixedKey<H>, tetsy_trie_db::DBValue, MemTracker
 >;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 /// This uses a noops `KeyFunction` (key addressing must be hashed or using
 /// an encoding scheme that avoid key conflict).
 pub type MemoryDB<H> = memory_db::MemoryDB<
-	H, memory_db::HashKey<H>, trie_db::DBValue, MemTracker,
+	H, memory_db::HashKey<H>, tetsy_trie_db::DBValue, MemTracker,
 >;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 pub type GenericMemoryDB<H, KF> = memory_db::MemoryDB<
-	H, KF, trie_db::DBValue, MemTracker
+	H, KF, tetsy_trie_db::DBValue, MemTracker
 >;
 
 /// Persistent trie database read-access interface for the a given hasher.
-pub type TrieDB<'a, L> = trie_db::TrieDB<'a, L>;
+pub type TrieDB<'a, L> = tetsy_trie_db::TrieDB<'a, L>;
 /// Persistent trie database write-access interface for the a given hasher.
-pub type TrieDBMut<'a, L> = trie_db::TrieDBMut<'a, L>;
-/// Querying interface, as in `trie_db` but less generic.
-pub type Lookup<'a, L, Q> = trie_db::Lookup<'a, L, Q>;
+pub type TrieDBMut<'a, L> = tetsy_trie_db::TrieDBMut<'a, L>;
+/// Querying interface, as in `tetsy_trie_db` but less generic.
+pub type Lookup<'a, L, Q> = tetsy_trie_db::Lookup<'a, L, Q>;
 /// Hash type for a trie layout.
 pub type TrieHash<L> = <<L as TrieLayout>::Hash as Hasher>::Out;
 
@@ -125,10 +125,10 @@ pub mod trie_types {
 	pub type TrieDB<'a, H> = super::TrieDB<'a, Layout<H>>;
 	/// Persistent trie database write-access interface for the a given hasher.
 	pub type TrieDBMut<'a, H> = super::TrieDBMut<'a, Layout<H>>;
-	/// Querying interface, as in `trie_db` but less generic.
-	pub type Lookup<'a, H, Q> = trie_db::Lookup<'a, Layout<H>, Q>;
-	/// As in `trie_db`, but less generic, error type for the crate.
-	pub type TrieError<H> = trie_db::TrieError<H, super::Error>;
+	/// Querying interface, as in `tetsy_trie_db` but less generic.
+	pub type Lookup<'a, H, Q> = tetsy_trie_db::Lookup<'a, Layout<H>, Q>;
+	/// As in `tetsy_trie_db`, but less generic, error type for the crate.
+	pub type TrieError<H> = tetsy_trie_db::TrieError<H, super::Error>;
 }
 
 /// Create a proof for a subset of keys in a trie.
@@ -146,7 +146,7 @@ pub fn generate_trie_proof<'a, L: TrieConfiguration, I, K, DB>(
 ) -> Result<Vec<Vec<u8>>, Box<TrieError<L>>> where
 	I: IntoIterator<Item=&'a K>,
 	K: 'a + AsRef<[u8]>,
-	DB: tetsy_hash_db::HashDBRef<L::Hash, trie_db::DBValue>,
+	DB: tetsy_hash_db::HashDBRef<L::Hash, tetsy_trie_db::DBValue>,
 {
 	let trie = TrieDB::<L>::new(db, &root)?;
 	generate_proof(&trie, keys)
@@ -182,7 +182,7 @@ pub fn delta_trie_root<L: TrieConfiguration, I, A, B, DB, V>(
 	A: Borrow<[u8]>,
 	B: Borrow<Option<V>>,
 	V: Borrow<[u8]>,
-	DB: tetsy_hash_db::HashDB<L::Hash, trie_db::DBValue>,
+	DB: tetsy_hash_db::HashDB<L::Hash, tetsy_trie_db::DBValue>,
 {
 	{
 		let mut trie = TrieDBMut::<L>::from_existing(db, &mut root)?;
@@ -202,7 +202,7 @@ pub fn delta_trie_root<L: TrieConfiguration, I, A, B, DB, V>(
 }
 
 /// Read a value from the trie.
-pub fn read_trie_value<L: TrieConfiguration, DB: tetsy_hash_db::HashDBRef<L::Hash, trie_db::DBValue>>(
+pub fn read_trie_value<L: TrieConfiguration, DB: tetsy_hash_db::HashDBRef<L::Hash, tetsy_trie_db::DBValue>>(
 	db: &DB,
 	root: &TrieHash<L>,
 	key: &[u8]
@@ -214,7 +214,7 @@ pub fn read_trie_value<L: TrieConfiguration, DB: tetsy_hash_db::HashDBRef<L::Has
 pub fn read_trie_value_with<
 	L: TrieConfiguration,
 	Q: Query<L::Hash, Item=DBValue>,
-	DB: tetsy_hash_db::HashDBRef<L::Hash, trie_db::DBValue>
+	DB: tetsy_hash_db::HashDBRef<L::Hash, tetsy_trie_db::DBValue>
 >(
 	db: &DB,
 	root: &TrieHash<L>,
@@ -261,7 +261,7 @@ pub fn child_delta_trie_root<L: TrieConfiguration, I, A, B, DB, RD, V>(
 		B: Borrow<Option<V>>,
 		V: Borrow<[u8]>,
 		RD: AsRef<[u8]>,
-		DB: tetsy_hash_db::HashDB<L::Hash, trie_db::DBValue>
+		DB: tetsy_hash_db::HashDB<L::Hash, tetsy_trie_db::DBValue>
 {
 	let mut root = TrieHash::<L>::default();
 	// root is fetched from DB, not writable by runtime, so it's always valid.
@@ -284,7 +284,7 @@ pub fn for_keys_in_child_trie<L: TrieConfiguration, F: FnMut(&[u8]) -> bool, DB>
 	mut f: F
 ) -> Result<(), Box<TrieError<L>>>
 	where
-		DB: tetsy_hash_db::HashDBRef<L::Hash, trie_db::DBValue>
+		DB: tetsy_hash_db::HashDBRef<L::Hash, tetsy_trie_db::DBValue>
 {
 	let mut root = TrieHash::<L>::default();
 	// root is fetched from DB, not writable by runtime, so it's always valid.
@@ -310,7 +310,7 @@ pub fn record_all_keys<L: TrieConfiguration, DB>(
 	root: &TrieHash<L>,
 	recorder: &mut Recorder<TrieHash<L>>
 ) -> Result<(), Box<TrieError<L>>> where
-	DB: tetsy_hash_db::HashDBRef<L::Hash, trie_db::DBValue>
+	DB: tetsy_hash_db::HashDBRef<L::Hash, tetsy_trie_db::DBValue>
 {
 	let trie = TrieDB::<L>::new(&*db, root)?;
 	let iter = trie.iter()?;
@@ -335,7 +335,7 @@ pub fn read_child_trie_value<L: TrieConfiguration, DB>(
 	key: &[u8]
 ) -> Result<Option<Vec<u8>>, Box<TrieError<L>>>
 	where
-		DB: tetsy_hash_db::HashDBRef<L::Hash, trie_db::DBValue>
+		DB: tetsy_hash_db::HashDBRef<L::Hash, tetsy_trie_db::DBValue>
 {
 	let mut root = TrieHash::<L>::default();
 	// root is fetched from DB, not writable by runtime, so it's always valid.
@@ -354,7 +354,7 @@ pub fn read_child_trie_value_with<L: TrieConfiguration, Q: Query<L::Hash, Item=D
 	query: Q
 ) -> Result<Option<Vec<u8>>, Box<TrieError<L>>>
 	where
-		DB: tetsy_hash_db::HashDBRef<L::Hash, trie_db::DBValue>
+		DB: tetsy_hash_db::HashDBRef<L::Hash, tetsy_trie_db::DBValue>
 {
 	let mut root = TrieHash::<L>::default();
 	// root is fetched from DB, not writable by runtime, so it's always valid.
@@ -475,7 +475,7 @@ mod tests {
 	use codec::{Encode, Decode, Compact};
 	use sp_core::Blake2Hasher;
 	use tetsy_hash_db::{HashDB, Hasher};
-	use trie_db::{DBValue, TrieMut, Trie, NodeCodec as NodeCodecT};
+	use tetsy_trie_db::{DBValue, TrieMut, Trie, NodeCodec as NodeCodecT};
 	use trie_standardmap::{Alphabet, ValueMode, StandardMap};
 	use hex_literal::hex;
 

@@ -21,8 +21,8 @@ harness = false
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tetsy-hash-db = { version = "0.15.2", default-features = false }
-trie-db = { version = "0.22.2", default-features = false }
-trie-root = { version = "0.16.0", default-features = false }
+tetsy-trie-db = { version = "0.22.2", default-features = false }
+tetsy-trie-root = { version = "0.16.0", default-features = false }
 memory-db = { version = "0.26.0", default-features = false }
 tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 
@@ -40,8 +40,8 @@ std = [
 	"codec/std",
 	"tetsy-hash-db/std",
 	"memory-db/std",
-	"trie-db/std",
-	"trie-root/std",
+	"tetsy-trie-db/std",
+	"tetsy-trie-root/std",
 	"tp-core/std",
 ]
 memory-tracker = []

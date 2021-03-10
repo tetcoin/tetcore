@@ -28,7 +28,7 @@ use codec::{Encode, Decode, Input, Error};
 
 use sp_core::{offchain::KeyTypeId, ChangesTrieConfiguration, OpaqueMetadata, RuntimeDebug};
 use sp_application_crypto::{ed25519, sr25519, ecdsa, RuntimeAppPublic};
-use trie_db::{TrieMut, Trie};
+use tetsy_trie_db::{TrieMut, Trie};
 use sp_trie::{PrefixedMemoryDB, StorageProof};
 use sp_trie::trie_types::{TrieDB, TrieDBMut};
 

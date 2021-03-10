@@ -18,8 +18,8 @@ log = { version = "0.4.11", optional = true }
 thiserror = { version = "1.0.21", optional = true }
 parking_lot = { version = "0.11.1", optional = true }
 tetsy-hash-db = { version = "0.15.2", default-features = false }
-trie-db = { version = "0.22.2", default-features = false }
-trie-root = { version = "0.16.0", default-features = false }
+tetsy-trie-db = { version = "0.22.2", default-features = false }
+tetsy-trie-root = { version = "0.16.0", default-features = false }
 tp-trie = { version = "2.0.0", path = "../trie", default-features = false }
 tp-core = { version = "2.0.0", path = "../core", default-features = false }
 panic-handler = { version = "2.0.0", path = "../panic-handler", optional = true }
@@ -45,8 +45,8 @@ std = [
 	"externalities/std",
 	"tetcore-std/std",
 	"tp-trie/std",
-	"trie-db/std",
-	"trie-root/std",
+	"tetsy-trie-db/std",
+	"tetsy-trie-root/std",
 	"log",
 	"thiserror",
 	"parking_lot",
