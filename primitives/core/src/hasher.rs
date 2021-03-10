@@ -18,8 +18,8 @@
 //! Tetcore Blake2b Hasher implementation
 
 pub mod blake2 {
-	use hash_db::Hasher;
-	use hash256_std_hasher::Hash256StdHasher;
+	use tetsy_hash_db::Hasher;
+	use tetsy_hash256_std_hasher::Hash256StdHasher;
 	use crate::hash::H256;
 
 	/// Concrete implementation of Hasher using Blake2b 256-bit hashes
@@ -38,8 +38,8 @@ pub mod blake2 {
 }
 
 pub mod keccak {
-	use hash_db::Hasher;
-	use hash256_std_hasher::Hash256StdHasher;
+	use tetsy_hash_db::Hasher;
+	use tetsy_hash256_std_hasher::Hash256StdHasher;
 	use crate::hash::H256;
 
 	/// Concrete implementation of Hasher using Keccak 256-bit hashes

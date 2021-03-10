@@ -20,7 +20,7 @@
 use std::collections::BTreeMap;
 use std::collections::btree_map::Entry;
 use codec::{Decode, Encode};
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use num_traits::One;
 use crate::{
 	StorageKey,

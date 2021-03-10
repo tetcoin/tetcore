@@ -20,7 +20,7 @@
 
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
-use hash_db::Prefix;
+use tetsy_hash_db::Prefix;
 use codec::{Decode, Encode};
 use parking_lot::RwLock;
 use sp_blockchain::{Error as ClientError, Result as ClientResult};
@@ -525,7 +525,7 @@ fn write_tries_meta<Block: BlockT>(
 
 #[cfg(test)]
 mod tests {
-	use hash_db::EMPTY_PREFIX;
+	use tetsy_hash_db::EMPTY_PREFIX;
 	use sc_client_api::backend::{
 		Backend as ClientBackend, NewBlockState, BlockImportOperation, PrunableStateChangesTrieStorage,
 	};

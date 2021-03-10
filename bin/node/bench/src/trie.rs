@@ -22,7 +22,7 @@ use std::{borrow::Cow, collections::HashMap, sync::Arc};
 use tetsy_kvdb::KeyValueDB;
 use lazy_static::lazy_static;
 use rand::Rng;
-use hash_db::Prefix;
+use tetsy_hash_db::Prefix;
 use sp_state_machine::Backend as _;
 use sp_trie::{trie_types::TrieDBMut, TrieMut as _};
 

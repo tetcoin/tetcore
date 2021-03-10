@@ -21,7 +21,7 @@
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use codec::{Decode, Encode, Codec};
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use num_traits::Zero;
 use sp_core::storage::PrefixedStorageKey;
 use sp_trie::Recorder;

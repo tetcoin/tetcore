@@ -48,7 +48,7 @@ use sc_client_api::{
 	UsageInfo,
 };
 use super::blockchain::Blockchain;
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 
 const IN_MEMORY_EXPECT_PROOF: &str = "InMemory state backend has Void error type and always succeeds; qed";
 

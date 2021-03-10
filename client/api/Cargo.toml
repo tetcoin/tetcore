@@ -21,7 +21,7 @@ tc-executor = { version = "0.8.0", path = "../executor" }
 externalities = { version = "0.8.0", path = "../../primitives/externalities" }
 fnv = "1.0.6"
 futures = "0.3.1"
-hash-db = { version = "0.15.2", default-features = false }
+tetsy-hash-db = { version = "0.15.2", default-features = false }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
 tetsy-kvdb = "0.9.0"

@@ -171,7 +171,7 @@ mod execution {
 	use super::*;
 	use std::{fmt, result, collections::HashMap, panic::UnwindSafe};
 	use log::{warn, trace};
-	use hash_db::Hasher;
+	use tetsy_hash_db::Hasher;
 	use codec::{Decode, Encode, Codec};
 	use sp_core::{
 		storage::ChildInfo, NativeOrEncoded, NeverNativeValue, hexdisplay::HexDisplay,

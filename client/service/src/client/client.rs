@@ -27,7 +27,7 @@ use std::{
 use log::{info, trace, warn};
 use parking_lot::{Mutex, RwLock};
 use codec::{Encode, Decode};
-use hash_db::Prefix;
+use tetsy_hash_db::Prefix;
 use sp_core::{
 	convert_hash,
 	storage::{well_known_keys, ChildInfo, PrefixedStorageKey, StorageData, StorageKey},

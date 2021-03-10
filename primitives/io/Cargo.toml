@@ -16,7 +16,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
-hash-db = { version = "0.15.2", default-features = false }
+tetsy-hash-db = { version = "0.15.2", default-features = false }
 tp-core = { version = "2.0.0", default-features = false, path = "../core" }
 tp-keystore = { version = "0.8.0", default-features = false, optional = true, path = "../keystore" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
@@ -40,7 +40,7 @@ std = [
 	"tp-keystore",
 	"codec/std",
 	"tetcore-std/std",
-	"hash-db/std",
+	"tetsy-hash-db/std",
 	"tp-trie",
 	"tp-state-machine",
 	"libsecp256k1",

@@ -22,7 +22,7 @@ use std::{
 	marker::PhantomData,
 };
 use crate::{Backend, StorageKey, StorageValue};
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use sp_core::{
 	storage::{ChildInfo, TrackedStorageKey},
 	traits::Externalities, Blake2Hasher,

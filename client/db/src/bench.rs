@@ -22,7 +22,7 @@ use std::sync::Arc;
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 
-use hash_db::{Prefix, Hasher};
+use tetsy_hash_db::{Prefix, Hasher};
 use sp_trie::{MemoryDB, prefixed_key};
 use sp_core::{
 	storage::{ChildInfo, TrackedStorageKey},

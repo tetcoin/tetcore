@@ -17,7 +17,7 @@
 
 //! State machine backends. These manage the code and storage of contracts.
 
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use codec::{Decode, Encode};
 use sp_core::{
 	storage::{ChildInfo, well_known_keys, TrackedStorageKey}

@@ -17,7 +17,7 @@
 
 use tetcore_std::vec::Vec;
 use codec::{Encode, Decode};
-use hash_db::{Hasher, HashDB};
+use tetsy_hash_db::{Hasher, HashDB};
 
 /// A proof that some set of key-value pairs are included in the storage trie. The proof contains
 /// the storage values so that the partial storage backend can be reconstructed by a verifier that

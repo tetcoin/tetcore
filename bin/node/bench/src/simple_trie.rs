@@ -21,7 +21,7 @@ use std::{collections::HashMap, sync::Arc};
 use tetsy_kvdb::KeyValueDB;
 use node_primitives::Hash;
 use sp_trie::DBValue;
-use hash_db::{HashDB, AsHashDB, Prefix, Hasher as _};
+use tetsy_hash_db::{HashDB, AsHashDB, Prefix, Hasher as _};
 
 pub type Hasher = sp_core::Blake2Hasher;
 
@@ -32,7 +32,7 @@ pub struct SimpleTrie<'a> {
 }
 
 impl<'a> AsHashDB<Hasher, DBValue> for SimpleTrie<'a> {
-	fn as_hash_db(&self) -> &dyn hash_db::HashDB<Hasher, DBValue> { &*self }
+	fn as_hash_db(&self) -> &dyn tetsy_hash_db::HashDB<Hasher, DBValue> { &*self }
 
 	fn as_hash_db_mut<'b>(&'b mut self) -> &'b mut (dyn HashDB<Hasher, DBValue> + 'b) {
 		&mut *self

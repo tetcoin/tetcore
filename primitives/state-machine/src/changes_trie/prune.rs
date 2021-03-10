@@ -17,7 +17,7 @@
 
 //! Changes trie pruning-related functions.
 
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use sp_trie::Recorder;
 use log::warn;
 use num_traits::One;

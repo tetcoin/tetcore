@@ -29,7 +29,7 @@ use futures::{
 	FutureExt, TryFutureExt,
 	StreamExt as _, TryStreamExt as _,
 };
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use log::warn;
 use parking_lot::Mutex;

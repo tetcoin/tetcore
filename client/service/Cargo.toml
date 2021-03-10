@@ -37,7 +37,7 @@ futures-timer = "3.0.1"
 wasm-timer = "0.2"
 tetsy-exit-future = "0.2.0"
 pin-project = "0.4.8"
-hash-db = "0.15.2"
+tetsy-hash-db = "0.15.2"
 serde = "1.0.101"
 serde_json = "1.0.41"
 tc-keystore = { version = "2.0.0", path = "../keystore" }

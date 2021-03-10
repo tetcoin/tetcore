@@ -31,7 +31,7 @@ use crate::{
 };
 
 use codec::{Decode, Encode};
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use sp_core::{
 	offchain::testing::TestPersistentOffchainDB,
 	storage::{

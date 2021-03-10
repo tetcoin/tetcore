@@ -21,7 +21,7 @@ use crate::{
 	StorageKey, StorageValue, OverlayedChanges,
 	backend::Backend, overlayed_changes::OverlayedExtensions,
 };
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use sp_core::{
 	storage::{well_known_keys::is_child_storage_key, ChildInfo, TrackedStorageKey},
 	hexdisplay::HexDisplay,

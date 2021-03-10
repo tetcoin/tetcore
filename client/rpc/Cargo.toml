@@ -38,7 +38,7 @@ tc-keystore = { version = "2.0.0", path = "../keystore" }
 tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tc-tracing = { version = "2.0.0", path = "../tracing" }
-hash-db = { version = "0.15.2", default-features = false }
+tetsy-hash-db = { version = "0.15.2", default-features = false }
 parking_lot = "0.11.1"
 lazy_static = { version = "1.4.0", optional = true }
 

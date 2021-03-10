@@ -21,7 +21,7 @@ use std::{sync::Arc, collections::HashMap};
 use parking_lot::RwLock;
 use codec::{Decode, Codec};
 use log::debug;
-use hash_db::{Hasher, HashDB, EMPTY_PREFIX, Prefix};
+use tetsy_hash_db::{Hasher, HashDB, EMPTY_PREFIX, Prefix};
 use sp_trie::{
 	MemoryDB, empty_child_trie_root, read_trie_value_with, read_child_trie_value_with,
 	record_all_keys, StorageProof,

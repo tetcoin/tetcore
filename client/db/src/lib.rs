@@ -63,7 +63,7 @@ use sp_blockchain::{
 	well_known_cache_keys, HeaderBackend,
 };
 use codec::{Decode, Encode};
-use hash_db::Prefix;
+use tetsy_hash_db::Prefix;
 use sp_trie::{MemoryDB, PrefixedMemoryDB, prefixed_key};
 use tetcore_database::Transaction;
 use sp_core::{Hasher, ChangesTrieConfiguration};
@@ -1908,7 +1908,7 @@ impl<Block: BlockT> sc_client_api::backend::LocalBackend<Block> for Backend<Bloc
 
 #[cfg(test)]
 pub(crate) mod tests {
-	use hash_db::{HashDB, EMPTY_PREFIX};
+	use tetsy_hash_db::{HashDB, EMPTY_PREFIX};
 	use super::*;
 	use crate::columns;
 	use sp_core::H256;

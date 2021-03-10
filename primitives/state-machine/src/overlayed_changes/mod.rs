@@ -45,7 +45,7 @@ use tetcore_std::collections::btree_set::BTreeSet;
 use codec::{Decode, Encode};
 use sp_core::storage::{well_known_keys::EXTRINSIC_INDEX, ChildInfo};
 use sp_core::offchain::OffchainOverlayedChange;
-use hash_db::Hasher;
+use tetsy_hash_db::Hasher;
 use crate::DefaultError;
 use externalities::{Extensions, Extension};
 
