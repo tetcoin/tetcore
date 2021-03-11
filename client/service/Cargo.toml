@@ -16,7 +16,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 default = ["db"]
 # The RocksDB feature activates the RocksDB database backend. If it is not activated, and you pass
 # a path to a database, an error will be produced at runtime.
-db = ["tc-client-db/with-kvdb-rocksdb", "tc-client-db/with-tetsy-db"]
+db = ["tc-client-db/with-tetsy-kvdb-rocksdb", "tc-client-db/with-tetsy-db"]
 wasmtime = [
 	"tc-executor/wasmtime",
 ]

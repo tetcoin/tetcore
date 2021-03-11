@@ -271,9 +271,9 @@ pub fn open_database<Block: BlockT>(
 				.map_err(|err| sp_blockchain::Error::Backend(format!("{}", err)))?;
 			tetcore_database::as_database(db)
 		},
-		#[cfg(not(any(feature = "with-kvdb-rocksdb", test)))]
+		#[cfg(not(any(feature = "with-tetsy-kvdb-rocksdb", test)))]
 		DatabaseSettingsSrc::RocksDb { .. } => {
-			return Err(db_open_error("with-kvdb-rocksdb"));
+			return Err(db_open_error("with-tetsy-kvdb-rocksdb"));
 		},
 		#[cfg(feature = "with-tetsy-db")]
 		DatabaseSettingsSrc::TetsyDb { path } => {

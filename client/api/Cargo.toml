@@ -43,7 +43,7 @@ tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-
 prometheus-endpoint = { package = "prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
 
 [dev-dependencies]
-kvdb-memorydb = "0.9.0"
+tetsy-kvdb-memorydb = "0.9.0"
 tp-test-primitives = { version = "2.0.0", path = "../../primitives/test-primitives" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime"  }
 thiserror = "1.0.21"
