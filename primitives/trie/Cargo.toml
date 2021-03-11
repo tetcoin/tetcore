@@ -39,7 +39,7 @@ std = [
 	"tetcore-std/std",
 	"codec/std",
 	"tetsy-hash-db/std",
-	"memory-db/std",
+	"tetsy-memory-db/std",
 	"tetsy-trie-db/std",
 	"tetsy-trie-root/std",
 	"tp-core/std",

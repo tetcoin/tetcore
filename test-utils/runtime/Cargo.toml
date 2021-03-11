@@ -72,7 +72,7 @@ std = [
 	"tp-inherents/std",
 	"tp-keyring",
 	"log",
-	"memory-db/std",
+	"tetsy-memory-db/std",
 	"tp-offchain/std",
 	"tp-core/std",
 	"tp-core/std",
