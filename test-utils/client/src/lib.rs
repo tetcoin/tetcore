@@ -44,7 +44,7 @@ use std::sync::Arc;
 use std::collections::{HashSet, HashMap};
 use futures::{future::{Future, FutureExt}, stream::StreamExt};
 use serde::Deserialize;
-use sp_core::storage::ChildInfo;
+use tet_core::storage::ChildInfo;
 use sp_runtime::{OpaqueExtrinsic, codec::Encode, traits::{Block as BlockT, BlakeTwo256}};
 use sc_service::client::{LocalCallExecutor, ClientConfig};
 use sc_client_api::BlockchainEvents;
@@ -268,7 +268,7 @@ impl<Block: BlockT, E, Backend, G: GenesisInit> TestClientBuilder<
 		let executor = LocalCallExecutor::new(
 			self.backend.clone(),
 			executor,
-			Box::new(sp_core::testing::TaskExecutor::new()),
+			Box::new(tet_core::testing::TaskExecutor::new()),
 			Default::default(),
 		).expect("Creates LocalCallExecutor");
 

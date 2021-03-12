@@ -22,7 +22,7 @@ use sc_finality_grandpa::FinalityProofProvider;
 use sp_runtime::traits::{Block as BlockT, NumberFor};
 
 #[derive(Serialize, Deserialize)]
-pub struct EncodedFinalityProof(pub sp_core::Bytes);
+pub struct EncodedFinalityProof(pub tet_core::Bytes);
 
 /// Local trait mainly to allow mocking in tests.
 pub trait RpcFinalityProofProvider<Block: BlockT> {

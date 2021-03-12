@@ -18,7 +18,7 @@
 //! Integration tests for ecdsa
 use std::sync::Arc;
 use sp_runtime::generic::BlockId;
-use sp_core::{
+use tet_core::{
 	crypto::Pair,
 	testing::ECDSA,
 };

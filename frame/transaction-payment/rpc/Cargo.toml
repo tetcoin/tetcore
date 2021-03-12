@@ -17,7 +17,7 @@ codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 jsonrpc-core = "15.1.0"
 jsonrpc-core-client = "15.1.0"
 jsonrpc-derive = "15.1.0"
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-rpc = { version = "2.0.0", path = "../../../primitives/rpc" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 tp-api = { version = "2.0.0", path = "../../../primitives/api" }

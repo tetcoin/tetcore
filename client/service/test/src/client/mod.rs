@@ -42,7 +42,7 @@ use sp_runtime::traits::{
 use tetcore_test_runtime::TestAPI;
 use sp_state_machine::backend::Backend as _;
 use sp_api::ProvideRuntimeApi;
-use sp_core::{H256, ChangesTrieConfiguration, blake2_256, testing::TaskExecutor};
+use tet_core::{H256, ChangesTrieConfiguration, blake2_256, testing::TaskExecutor};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use sp_consensus::{

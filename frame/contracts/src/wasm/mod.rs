@@ -25,7 +25,7 @@ use crate::{
 	gas::GasMeter,
 };
 use tetcore_std::prelude::*;
-use sp_core::crypto::UncheckedFrom;
+use tet_core::crypto::UncheckedFrom;
 use codec::{Encode, Decode};
 
 #[macro_use]
@@ -169,7 +169,7 @@ mod tests {
 		wasm::prepare::prepare_contract,
 	};
 	use std::collections::HashMap;
-	use sp_core::H256;
+	use tet_core::H256;
 	use hex_literal::hex;
 	use sp_runtime::DispatchError;
 	use frame_support::{dispatch::DispatchResult, weights::Weight};

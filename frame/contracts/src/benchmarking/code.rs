@@ -29,7 +29,7 @@ use crate::Module as Contracts;
 
 use tetsy_wasm::elements::{Instruction, Instructions, FuncBody, ValueType, BlockType};
 use pwasm_utils::stack_height::inject_limiter;
-use sp_core::crypto::UncheckedFrom;
+use tet_core::crypto::UncheckedFrom;
 use sp_runtime::traits::Hash;
 use sp_sandbox::{EnvironmentDefinitionBuilder, Memory};
 use tetcore_std::{prelude::*, convert::TryFrom};

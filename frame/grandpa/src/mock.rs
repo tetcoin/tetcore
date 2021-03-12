@@ -28,7 +28,7 @@ use frame_support::{
 	weights::Weight,
 };
 use pallet_staking::EraIndex;
-use sp_core::{crypto::KeyTypeId, H256};
+use tet_core::{crypto::KeyTypeId, H256};
 use sp_finality_grandpa::{RoundNumber, SetId, GRANDPA_ENGINE_ID};
 use sp_io;
 use sp_keyring::Ed25519Keyring;

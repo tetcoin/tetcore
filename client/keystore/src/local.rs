@@ -26,7 +26,7 @@ use std::{
 };
 use async_trait::async_trait;
 use parking_lot::RwLock;
-use sp_core::{
+use tet_core::{
 	crypto::{CryptoTypePublicPair, KeyTypeId, Pair as PairT, ExposeSecret, SecretString, Public},
 	sr25519::{Public as Sr25519Public, Pair as Sr25519Pair},
 	Encode,
@@ -491,7 +491,7 @@ impl KeystoreInner {
 mod tests {
 	use super::*;
 	use tempfile::TempDir;
-	use sp_core::{
+	use tet_core::{
 		Pair,
 		crypto::Ss58Codec,
 		testing::SR25519,

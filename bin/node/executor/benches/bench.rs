@@ -24,9 +24,9 @@ use node_runtime::{
 };
 use node_runtime::constants::currency::*;
 use node_testing::keyring::*;
-use sp_core::{NativeOrEncoded, NeverNativeValue};
-use sp_core::storage::well_known_keys;
-use sp_core::traits::{CodeExecutor, RuntimeCode};
+use tet_core::{NativeOrEncoded, NeverNativeValue};
+use tet_core::storage::well_known_keys;
+use tet_core::traits::{CodeExecutor, RuntimeCode};
 use frame_support::Hashable;
 use sp_state_machine::TestExternalities as CoreTestExternalities;
 use sc_executor::{NativeExecutor, RuntimeInfo, WasmExecutionMethod, Externalities};
@@ -97,7 +97,7 @@ fn construct_block<E: Externalities>(
 	};
 
 	let runtime_code = RuntimeCode {
-		code_fetcher: &sp_core::traits::WrappedRuntimeCode(compact_code_unwrap().into()),
+		code_fetcher: &tet_core::traits::WrappedRuntimeCode(compact_code_unwrap().into()),
 		hash: vec![1, 2, 3],
 		heap_pages: None,
 	};
@@ -179,7 +179,7 @@ fn bench_execute_block(c: &mut Criterion) {
 
 			let executor = NativeExecutor::new(wasm_method, None, 8);
 			let runtime_code = RuntimeCode {
-				code_fetcher: &sp_core::traits::WrappedRuntimeCode(compact_code_unwrap().into()),
+				code_fetcher: &tet_core::traits::WrappedRuntimeCode(compact_code_unwrap().into()),
 				hash: vec![1, 2, 3],
 				heap_pages: None,
 			};

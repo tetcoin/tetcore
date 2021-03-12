@@ -66,9 +66,9 @@ use codec::{Decode, Encode};
 use tetsy_hash_db::Prefix;
 use sp_trie::{MemoryDB, PrefixedMemoryDB, prefixed_key};
 use tetcore_database::Transaction;
-use sp_core::{Hasher, ChangesTrieConfiguration};
-use sp_core::offchain::OffchainOverlayedChange;
-use sp_core::storage::{well_known_keys, ChildInfo};
+use tet_core::{Hasher, ChangesTrieConfiguration};
+use tet_core::offchain::OffchainOverlayedChange;
+use tet_core::storage::{well_known_keys, ChildInfo};
 use arithmetic::traits::Saturating;
 use sp_runtime::{generic::{DigestItem, BlockId}, Justification, Storage};
 use sp_runtime::traits::{
@@ -1911,7 +1911,7 @@ pub(crate) mod tests {
 	use tetsy_hash_db::{HashDB, EMPTY_PREFIX};
 	use super::*;
 	use crate::columns;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sc_client_api::backend::{Backend as BTrait, BlockImportOperation as Op};
 	use sc_client_api::blockchain::Backend as BLBTrait;
 	use sp_runtime::testing::{Header, Block as RawBlock, ExtrinsicWrapper};

@@ -1044,7 +1044,7 @@ mod tests {
 		traits::OnInitialize,
 	};
 	use tetcore_test_utils::assert_eq_uvec;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::{
 		testing::Header, BuildStorage, DispatchResult,
 		traits::{BlakeTwo256, IdentityLookup},

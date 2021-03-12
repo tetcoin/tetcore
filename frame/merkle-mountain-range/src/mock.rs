@@ -22,7 +22,7 @@ use frame_support::{
 	impl_outer_origin, parameter_types,
 };
 use pallet_mmr_primitives::{LeafDataProvider, Compact};
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	testing::Header,
 	traits::{
@@ -49,7 +49,7 @@ impl frame_system::Config for Test {
 	type BlockNumber = u64;
 	type Hash = H256;
 	type Hashing = BlakeTwo256;
-	type AccountId = sp_core::sr25519::Public;
+	type AccountId = tet_core::sr25519::Public;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
 	type Event = ();

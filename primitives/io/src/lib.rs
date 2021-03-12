@@ -36,7 +36,7 @@ use tetcore_std::ops::Deref;
 use tracing;
 
 #[cfg(feature = "std")]
-use sp_core::{
+use tet_core::{
 	crypto::Pair,
 	traits::{CallInWasmExt, TaskExecutorExt, RuntimeSpawnExt},
 	offchain::{OffchainExt, TransactionPoolExt},
@@ -46,7 +46,7 @@ use sp_core::{
 #[cfg(feature = "std")]
 use sp_keystore::{KeystoreExt, SyncCryptoStore};
 
-use sp_core::{
+use tet_core::{
 	OpaquePeerId, crypto::KeyTypeId, ed25519, sr25519, ecdsa, H256, LogLevel,
 	offchain::{
 		Timestamp, HttpRequestId, HttpRequestStatus, HttpError, StorageKind, OpaqueNetworkState,
@@ -366,22 +366,22 @@ pub trait DefaultChildStorage {
 pub trait Trie {
 	/// A trie root formed from the iterated items.
 	fn blake2_256_root(input: Vec<(Vec<u8>, Vec<u8>)>) -> H256 {
-		Layout::<sp_core::Blake2Hasher>::trie_root(input)
+		Layout::<tet_core::Blake2Hasher>::trie_root(input)
 	}
 
 	/// A trie root formed from the enumerated items.
 	fn blake2_256_ordered_root(input: Vec<Vec<u8>>) -> H256 {
-		Layout::<sp_core::Blake2Hasher>::ordered_trie_root(input)
+		Layout::<tet_core::Blake2Hasher>::ordered_trie_root(input)
 	}
 
 	/// A trie root formed from the iterated items.
 	fn keccak_256_root(input: Vec<(Vec<u8>, Vec<u8>)>) -> H256 {
-		Layout::<sp_core::KeccakHasher>::trie_root(input)
+		Layout::<tet_core::KeccakHasher>::trie_root(input)
 	}
 
 	/// A trie root formed from the enumerated items.
 	fn keccak_256_ordered_root(input: Vec<Vec<u8>>) -> H256 {
-		Layout::<sp_core::KeccakHasher>::ordered_trie_root(input)
+		Layout::<tet_core::KeccakHasher>::ordered_trie_root(input)
 	}
 }
 
@@ -431,7 +431,7 @@ pub trait Misc {
 				// the node, we should not fail at instantiation. Otherwise nodes that are
 				// updated could run this successfully and it could lead to a storage root
 				// mismatch when importing this block.
-				sp_core::traits::MissingHostFunctions::Allow,
+				tet_core::traits::MissingHostFunctions::Allow,
 			)
 			.ok()
 	}
@@ -727,42 +727,42 @@ pub trait Crypto {
 pub trait Hashing {
 	/// Conduct a 256-bit Keccak hash.
 	fn keccak_256(data: &[u8]) -> [u8; 32] {
-		sp_core::hashing::keccak_256(data)
+		tet_core::hashing::keccak_256(data)
 	}
 
 	/// Conduct a 512-bit Keccak hash.
 	fn keccak_512(data: &[u8]) -> [u8; 64] {
-		sp_core::hashing::keccak_512(data)
+		tet_core::hashing::keccak_512(data)
 	}
 
 	/// Conduct a 256-bit Sha2 hash.
 	fn sha2_256(data: &[u8]) -> [u8; 32] {
-		sp_core::hashing::sha2_256(data)
+		tet_core::hashing::sha2_256(data)
 	}
 
 	/// Conduct a 128-bit Blake2 hash.
 	fn blake2_128(data: &[u8]) -> [u8; 16] {
-		sp_core::hashing::blake2_128(data)
+		tet_core::hashing::blake2_128(data)
 	}
 
 	/// Conduct a 256-bit Blake2 hash.
 	fn blake2_256(data: &[u8]) -> [u8; 32] {
-		sp_core::hashing::blake2_256(data)
+		tet_core::hashing::blake2_256(data)
 	}
 
 	/// Conduct four XX hashes to give a 256-bit result.
 	fn twox_256(data: &[u8]) -> [u8; 32] {
-		sp_core::hashing::twox_256(data)
+		tet_core::hashing::twox_256(data)
 	}
 
 	/// Conduct two XX hashes to give a 128-bit result.
 	fn twox_128(data: &[u8]) -> [u8; 16] {
-		sp_core::hashing::twox_128(data)
+		tet_core::hashing::twox_128(data)
 	}
 
 	/// Conduct two XX hashes to give a 64-bit result.
 	fn twox_64(data: &[u8]) -> [u8; 8] {
-		sp_core::hashing::twox_64(data)
+		tet_core::hashing::twox_64(data)
 	}
 }
 
@@ -1342,7 +1342,7 @@ pub fn oom(_: core::alloc::Layout) -> ! {
 
 /// Type alias for Externalities implementation used in tests.
 #[cfg(feature = "std")]
-pub type TestExternalities = sp_state_machine::TestExternalities<sp_core::Blake2Hasher, u64>;
+pub type TestExternalities = sp_state_machine::TestExternalities<tet_core::Blake2Hasher, u64>;
 
 /// The host functions Tetcore provides for the Wasm runtime environment.
 ///
@@ -1368,7 +1368,7 @@ pub type TetcoreHostFunctions = (
 mod tests {
 	use super::*;
 	use sp_state_machine::BasicExternalities;
-	use sp_core::{
+	use tet_core::{
 		storage::Storage, map, traits::TaskExecutorExt, testing::TaskExecutor,
 	};
 	use std::any::TypeId;

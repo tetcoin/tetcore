@@ -41,7 +41,7 @@ use sp_consensus::{
 use std::{collections::{HashMap, HashSet}, pin::Pin};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use sp_runtime::generic::{BlockId, DigestItem};
-use sp_core::H256;
+use tet_core::H256;
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sp_finality_grandpa::{GRANDPA_ENGINE_ID, AuthorityList, EquivocationProof, GrandpaApi, OpaqueKeyOwnershipProof};
 

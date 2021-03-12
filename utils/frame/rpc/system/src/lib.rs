@@ -35,7 +35,7 @@ use sp_runtime::{
 	generic::BlockId,
 	traits,
 };
-use sp_core::{hexdisplay::HexDisplay, Bytes};
+use tet_core::{hexdisplay::HexDisplay, Bytes};
 use sp_transaction_pool::{TransactionPool, InPoolTransaction};
 use sp_block_builder::BlockBuilder;
 use sc_rpc_api::DenyUnsafe;
@@ -298,7 +298,7 @@ mod tests {
 
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
 			None,
@@ -337,7 +337,7 @@ mod tests {
 
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
 			None,
@@ -360,7 +360,7 @@ mod tests {
 
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
 			None,
@@ -392,7 +392,7 @@ mod tests {
 
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
 			None,

@@ -86,7 +86,7 @@ mod tests {
 	use super::*;
 	use crate::mock::{Test, new_test_ext, System, CALL};
 	use frame_support::weights::{DispatchClass, DispatchInfo, Pays};
-	use sp_core::H256;
+	use tet_core::H256;
 
 	#[test]
 	fn signed_ext_check_era_should_work() {

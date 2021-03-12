@@ -687,7 +687,7 @@ impl<Hash: Encode> StorageAppend<DigestItem<Hash>> for Digest<Hash> {}
 #[cfg(test)]
 mod test {
 	use super::*;
-	use sp_core::hashing::twox_128;
+	use tet_core::hashing::twox_128;
 	use sp_io::TestExternalities;
 	use generator::StorageValue as _;
 

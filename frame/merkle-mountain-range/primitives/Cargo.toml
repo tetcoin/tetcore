@@ -17,7 +17,7 @@ frame-support = { version = "2.0.0", default-features = false, path = "../../sup
 frame-system = { version = "2.0.0", default-features = false, path = "../../system" }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 tp-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
-tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 
@@ -32,7 +32,7 @@ std = [
 	"frame-system/std",
 	"serde",
 	"tp-api/std",
-	"tp-core/std",
+	"tet-core/std",
 	"tp-runtime/std",
 	"tetcore-std/std",
 ]

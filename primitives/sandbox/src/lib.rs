@@ -40,7 +40,7 @@
 
 use tetcore_std::prelude::*;
 
-pub use sp_core::sandbox::HostError;
+pub use tet_core::sandbox::HostError;
 pub use tetcore_wasm_interface::{Value, ReturnValue};
 
 mod imp {
@@ -52,7 +52,7 @@ mod imp {
 }
 
 /// Error that can occur while using this crate.
-#[derive(sp_core::RuntimeDebug)]
+#[derive(tet_core::RuntimeDebug)]
 pub enum Error {
 	/// Module is not valid, couldn't be instantiated.
 	Module,

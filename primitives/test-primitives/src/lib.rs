@@ -24,7 +24,7 @@ use codec::{Encode, Decode};
 use sp_application_crypto::sr25519;
 pub use sp_application_crypto;
 
-pub use sp_core::{hash::H256, RuntimeDebug};
+pub use tet_core::{hash::H256, RuntimeDebug};
 use sp_runtime::traits::{BlakeTwo256, Verify, Extrinsic as ExtrinsicT,};
 
 /// Extrinsic for test-runtime.
@@ -79,8 +79,8 @@ pub type Block = sp_runtime::generic::Block<Header, Extrinsic>;
 pub type Header = sp_runtime::generic::Header<BlockNumber, BlakeTwo256>;
 
 /// Changes trie configuration (optionally) used in tests.
-pub fn changes_trie_config() -> sp_core::ChangesTrieConfiguration {
-	sp_core::ChangesTrieConfiguration {
+pub fn changes_trie_config() -> tet_core::ChangesTrieConfiguration {
+	tet_core::ChangesTrieConfiguration {
 		digest_interval: 4,
 		digest_levels: 2,
 	}

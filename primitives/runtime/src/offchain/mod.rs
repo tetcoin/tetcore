@@ -21,4 +21,4 @@ pub mod http;
 pub mod storage;
 pub mod storage_lock;
 
-pub use sp_core::offchain::*;
+pub use tet_core::offchain::*;

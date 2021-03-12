@@ -119,7 +119,7 @@ mod tests {
 	use super::*;
 	use sp_authority_discovery::AuthorityPair;
 	use sp_application_crypto::Pair;
-	use sp_core::{crypto::key_types, H256};
+	use tet_core::{crypto::key_types, H256};
 	use sp_io::TestExternalities;
 	use sp_runtime::{
 		testing::{Header, UintAuthorityId}, traits::{ConvertInto, IdentityLookup, OpaqueKeys},

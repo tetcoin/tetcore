@@ -32,7 +32,7 @@ tc-service = { version = "0.8.0", default-features = false, features = ["test-he
 tc-network = { version = "0.8.0", path = "../../network" }
 tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../../test-utils/runtime" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }

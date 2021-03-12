@@ -71,13 +71,13 @@ pub struct EnlistedParticipant {
 
 impl EnlistedParticipant {
 	fn verify(&self, event_id: &[u8]) -> bool {
-		use sp_core::Public;
+		use tet_core::Public;
 		use std::convert::TryFrom;
 		use sp_runtime::traits::Verify;
 
-		match sp_core::sr25519::Signature::try_from(&self.signature[..]) {
+		match tet_core::sr25519::Signature::try_from(&self.signature[..]) {
 			Ok(signature) => {
-				let public = sp_core::sr25519::Public::from_slice(self.account.as_ref());
+				let public = tet_core::sr25519::Public::from_slice(self.account.as_ref());
 				signature.verify(event_id, &public)
 			}
 			_ => false

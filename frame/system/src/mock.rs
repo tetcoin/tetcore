@@ -17,7 +17,7 @@
 
 use crate::*;
 use tetcore_std::cell::RefCell;
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup},
 	testing::Header,

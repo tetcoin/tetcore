@@ -144,8 +144,8 @@ mod tests {
 	};
 	use codec::Encode;
 	use frame_support::traits::{KeyOwnerProofSystem, OnInitialize};
-	use sp_core::crypto::key_types::DUMMY;
-	use sp_core::offchain::{
+	use tet_core::crypto::key_types::DUMMY;
+	use tet_core::offchain::{
 		testing::TestOffchainExt,
 		OffchainExt,
 		StorageKind,

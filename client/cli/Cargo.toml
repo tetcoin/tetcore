@@ -33,7 +33,7 @@ tc-network = { version = "0.8.0", path = "../network" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 tp-version = { version = "2.0.0", path = "../../primitives/version" }
-tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
 tc-service = { version = "0.8.0", default-features = false, path = "../service" }
 tc-telemetry = { version = "2.0.0", path = "../telemetry" }

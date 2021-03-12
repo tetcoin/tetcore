@@ -115,7 +115,7 @@ fn prune_trie<H: Hasher, Number: BlockNumber, F: FnMut(H::Out)>(
 mod tests {
 	use std::collections::HashSet;
 	use sp_trie::MemoryDB;
-	use sp_core::H256;
+	use tet_core::H256;
 	use crate::backend::insert_into_memory_db;
 	use crate::changes_trie::storage::InMemoryStorage;
 	use codec::Encode;
@@ -138,7 +138,7 @@ mod tests {
 	#[test]
 	fn prune_works() {
 		fn prepare_storage() -> InMemoryStorage<BlakeTwo256, u64> {
-			let child_info = sp_core::storage::ChildInfo::new_default(&b"1"[..]);
+			let child_info = tet_core::storage::ChildInfo::new_default(&b"1"[..]);
 			let child_key = ChildIndex { block: 67u64, storage_key: child_info.prefixed_storage_key() }.encode();
 			let mut mdb1 = MemoryDB::<BlakeTwo256>::default();
 			let root1 = insert_into_memory_db::<BlakeTwo256, _>(

@@ -32,7 +32,7 @@ use sp_consensus_babe::{
 	digests::PreDigest,
 };
 use serde::{Deserialize, Serialize};
-use sp_core::{
+use tet_core::{
 	crypto::Public,
 };
 use sp_application_crypto::AppKey;
@@ -241,7 +241,7 @@ mod tests {
 	};
 	use sp_application_crypto::AppPair;
 	use sp_keyring::Sr25519Keyring;
-	use sp_core::{crypto::key_types::BABE};
+	use tet_core::{crypto::key_types::BABE};
 	use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 	use sc_keystore::LocalKeystore;
 

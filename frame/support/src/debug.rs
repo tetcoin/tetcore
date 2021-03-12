@@ -26,7 +26,7 @@
 //! this that are described below.
 //!
 //! First component to utilize debug-printing and logging is actually
-//! located in `primitives` crate: `sp_core::RuntimeDebug`.
+//! located in `primitives` crate: `tet_core::RuntimeDebug`.
 //! This custom-derive generates `core::fmt::Debug` implementation,
 //! just like regular `derive(Debug)`, however it does not generate
 //! any code when the code is compiled to WASM. This means that
@@ -38,7 +38,7 @@
 //! ```rust,no_run
 //!	use frame_support::debug;
 //!
-//! #[derive(sp_core::RuntimeDebug)]
+//! #[derive(tet_core::RuntimeDebug)]
 //!	struct MyStruct {
 //!   a: u64,
 //!	}
@@ -69,7 +69,7 @@
 //! ```rust,no_run
 //!	use frame_support::debug::native;
 //!
-//! #[derive(sp_core::RuntimeDebug)]
+//! #[derive(tet_core::RuntimeDebug)]
 //!	struct MyStruct {
 //!   a: u64,
 //!	}

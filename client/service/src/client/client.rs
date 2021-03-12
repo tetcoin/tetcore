@@ -28,7 +28,7 @@ use log::{info, trace, warn};
 use parking_lot::{Mutex, RwLock};
 use codec::{Encode, Decode};
 use tetsy_hash_db::Prefix;
-use sp_core::{
+use tet_core::{
 	convert_hash,
 	storage::{well_known_keys, ChildInfo, PrefixedStorageKey, StorageData, StorageKey},
 	ChangesTrieConfiguration, ExecutionContext, NativeOrEncoded,
@@ -95,7 +95,7 @@ use rand::Rng;
 
 #[cfg(feature="test-helpers")]
 use {
-	sp_core::traits::{CodeExecutor, SpawnNamed},
+	tet_core::traits::{CodeExecutor, SpawnNamed},
 	sc_client_api::in_mem,
 	sc_executor::RuntimeInfo,
 	super::call_executor::LocalCallExecutor,

@@ -21,7 +21,7 @@
 
 use std::{borrow::Cow, fs::File, path::PathBuf, sync::Arc, collections::HashMap};
 use serde::{Serialize, Deserialize};
-use sp_core::storage::{StorageKey, StorageData, ChildInfo, Storage, StorageChild};
+use tet_core::storage::{StorageKey, StorageData, ChildInfo, Storage, StorageChild};
 use sp_runtime::BuildStorage;
 use serde_json as json;
 use crate::{RuntimeGenesis, ChainType, extension::GetExtension, Properties};

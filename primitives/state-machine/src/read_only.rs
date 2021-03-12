@@ -23,7 +23,7 @@ use std::{
 };
 use crate::{Backend, StorageKey, StorageValue};
 use tetsy_hash_db::Hasher;
-use sp_core::{
+use tet_core::{
 	storage::{ChildInfo, TrackedStorageKey},
 	traits::Externalities, Blake2Hasher,
 };

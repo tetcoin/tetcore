@@ -17,7 +17,7 @@
 
 use crate::*;
 use mock::{*, Origin};
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{DispatchError, DispatchErrorWithPostInfo, traits::{Header, BlakeTwo256}};
 use frame_support::{
 	weights::WithPostDispatchInfo,
@@ -314,7 +314,7 @@ fn prunes_block_hash_mappings() {
 fn set_code_checks_works() {
 	struct CallInWasm(Vec<u8>);
 
-	impl sp_core::traits::CallInWasm for CallInWasm {
+	impl tet_core::traits::CallInWasm for CallInWasm {
 		fn call_in_wasm(
 			&self,
 			_: &[u8],
@@ -322,7 +322,7 @@ fn set_code_checks_works() {
 			_: &str,
 			_: &[u8],
 			_: &mut dyn externalities::Externalities,
-			_: sp_core::traits::MissingHostFunctions,
+			_: tet_core::traits::MissingHostFunctions,
 		) -> Result<Vec<u8>, String> {
 			Ok(self.0.clone())
 		}
@@ -347,7 +347,7 @@ fn set_code_checks_works() {
 		let call_in_wasm = CallInWasm(version.encode());
 
 		let mut ext = new_test_ext();
-		ext.register_extension(sp_core::traits::CallInWasmExt::new(call_in_wasm));
+		ext.register_extension(tet_core::traits::CallInWasmExt::new(call_in_wasm));
 		ext.execute_with(|| {
 			let res = System::set_code(
 				RawOrigin::Root.into(),
@@ -363,7 +363,7 @@ fn set_code_checks_works() {
 fn set_code_with_real_wasm_blob() {
 	let executor = tetcore_test_runtime_client::new_native_executor();
 	let mut ext = new_test_ext();
-	ext.register_extension(sp_core::traits::CallInWasmExt::new(executor));
+	ext.register_extension(tet_core::traits::CallInWasmExt::new(executor));
 	ext.execute_with(|| {
 		System::set_block_number(1);
 		System::set_code(
@@ -386,7 +386,7 @@ fn set_code_with_real_wasm_blob() {
 fn runtime_upgraded_with_set_storage() {
 	let executor = tetcore_test_runtime_client::new_native_executor();
 	let mut ext = new_test_ext();
-	ext.register_extension(sp_core::traits::CallInWasmExt::new(executor));
+	ext.register_extension(tet_core::traits::CallInWasmExt::new(executor));
 	ext.execute_with(|| {
 		System::set_storage(
 			RawOrigin::Root.into(),

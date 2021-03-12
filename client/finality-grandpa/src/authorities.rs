@@ -692,7 +692,7 @@ impl<N: Ord + Clone> AuthoritySetChanges<N> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::crypto::Public;
+	use tet_core::crypto::Public;
 
 	fn static_is_descendent_of<A>(value: bool)
 		-> impl Fn(&A, &A) -> Result<bool, std::io::Error>

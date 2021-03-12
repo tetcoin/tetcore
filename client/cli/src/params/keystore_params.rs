@@ -21,7 +21,7 @@ use sc_service::config::KeystoreConfig;
 use std::{fs, path::{PathBuf, Path}};
 use structopt::StructOpt;
 use crate::error;
-use sp_core::crypto::SecretString;
+use tet_core::crypto::SecretString;
 
 /// default sub directory for the key store
 const DEFAULT_KEYSTORE_CONFIG_PATH: &'static str = "keystore";

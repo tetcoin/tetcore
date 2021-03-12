@@ -24,8 +24,8 @@ pub mod helpers;
 use jsonrpc_core::Result as RpcResult;
 use jsonrpc_derive::rpc;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
-use sp_core::Bytes;
-use sp_core::storage::{StorageKey, StorageData, StorageChangeSet};
+use tet_core::Bytes;
+use tet_core::storage::{StorageKey, StorageData, StorageChangeSet};
 use sp_version::RuntimeVersion;
 use self::error::FutureResult;
 

@@ -19,7 +19,7 @@
 
 use std::sync::Arc;
 use sp_runtime::generic::BlockId;
-use sp_core::{
+use tet_core::{
 	crypto::Pair,
 	testing::SR25519,
 };

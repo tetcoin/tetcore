@@ -23,7 +23,7 @@ use frame_support::{
 	StorageValue, StorageMap, parameter_types, assert_ok,
 	traits::{ChangeMembers, Currency, LockIdentifier},
 };
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	BuildStorage, testing::Header, traits::{BlakeTwo256, IdentityLookup},
 };

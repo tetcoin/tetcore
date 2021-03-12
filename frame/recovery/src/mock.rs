@@ -20,7 +20,7 @@
 use super::*;
 
 use frame_support::{parameter_types, traits::{OnInitialize, OnFinalize}};
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup}, testing::Header,
 };

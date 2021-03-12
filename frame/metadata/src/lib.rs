@@ -29,7 +29,7 @@ use serde::Serialize;
 use codec::{Decode, Input, Error};
 use codec::{Encode, Output};
 use tetcore_std::vec::Vec;
-use sp_core::RuntimeDebug;
+use tet_core::RuntimeDebug;
 
 #[cfg(feature = "std")]
 type StringBuf = String;
@@ -417,9 +417,9 @@ pub struct ModuleMetadata {
 type ODFnA<T> = Option<DFnA<T>>;
 type DFnA<T> = DecodeDifferent<FnEncode<&'static [T]>, Vec<T>>;
 
-impl Into<sp_core::OpaqueMetadata> for RuntimeMetadataPrefixed {
-	fn into(self) -> sp_core::OpaqueMetadata {
-		sp_core::OpaqueMetadata::new(self.encode())
+impl Into<tet_core::OpaqueMetadata> for RuntimeMetadataPrefixed {
+	fn into(self) -> tet_core::OpaqueMetadata {
+		tet_core::OpaqueMetadata::new(self.encode())
 	}
 }
 

@@ -19,7 +19,7 @@
 
 use super::*;
 use frame_support::{traits::OnInitialize, assert_ok};
-use sp_core::crypto::key_types::DUMMY;
+use tet_core::crypto::key_types::DUMMY;
 use sp_runtime::testing::UintAuthorityId;
 use mock::{
 	SESSION_CHANGED, TEST_SESSION_CHANGED, authorities, force_new_session,
@@ -315,7 +315,7 @@ fn return_true_if_more_than_third_is_disabled() {
 fn upgrade_keys() {
 	use frame_support::storage;
 	use mock::Test;
-	use sp_core::crypto::key_types::DUMMY;
+	use tet_core::crypto::key_types::DUMMY;
 
 	// This test assumes certain mocks.
 	assert_eq!(mock::NEXT_VALIDATORS.with(|l| l.borrow().clone()), vec![1, 2, 3]);

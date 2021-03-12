@@ -30,7 +30,7 @@ use frame_support::{
 };
 use frame_system::{EventRecord, Phase};
 use pallet_session::OneSessionHandler;
-use sp_core::H256;
+use tet_core::H256;
 use sp_keyring::Ed25519Keyring;
 use sp_runtime::testing::Digest;
 

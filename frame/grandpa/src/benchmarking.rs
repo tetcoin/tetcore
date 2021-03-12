@@ -22,7 +22,7 @@
 use super::{*, Module as Grandpa};
 use frame_benchmarking::benchmarks;
 use frame_system::RawOrigin;
-use sp_core::H256;
+use tet_core::H256;
 
 benchmarks! {
 	check_equivocation_proof {

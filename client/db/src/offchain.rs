@@ -56,7 +56,7 @@ impl LocalStorage {
 	}
 }
 
-impl sp_core::offchain::OffchainStorage for LocalStorage {
+impl tet_core::offchain::OffchainStorage for LocalStorage {
 	fn set(&mut self, prefix: &[u8], key: &[u8], value: &[u8]) {
 		let mut tx = Transaction::new();
 		tx.set(columns::OFFCHAIN, &concatenate_prefix_and_key(prefix, key), value);
@@ -128,7 +128,7 @@ pub(crate) fn concatenate_prefix_and_key(prefix: &[u8], key: &[u8]) -> Vec<u8> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::offchain::OffchainStorage;
+	use tet_core::offchain::OffchainStorage;
 
 	#[test]
 	fn should_compare_and_set_and_clear_the_locks_map() {

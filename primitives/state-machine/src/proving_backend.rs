@@ -30,7 +30,7 @@ pub use sp_trie::{Recorder, trie_types::{Layout, TrieError}};
 use crate::trie_backend::TrieBackend;
 use crate::trie_backend_essence::{Ephemeral, TrieBackendEssence, TrieBackendStorage};
 use crate::{Error, ExecutionError, Backend, DBValue};
-use sp_core::storage::ChildInfo;
+use tet_core::storage::ChildInfo;
 
 /// Patricia trie-based backend specialized in get value proofs.
 pub struct ProvingBackendRecorder<'a, S: 'a + TrieBackendStorage<H>, H: 'a + Hasher> {
@@ -328,7 +328,7 @@ mod tests {
 
 	#[test]
 	fn proof_is_invalid_when_does_not_contains_root() {
-		use sp_core::H256;
+		use tet_core::H256;
 		let result = create_proof_check_backend::<BlakeTwo256>(
 			H256::from_low_u64_be(1),
 			StorageProof::empty()

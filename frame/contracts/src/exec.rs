@@ -20,7 +20,7 @@ use crate::{
 	TrieId, BalanceOf, ContractInfo, gas::GasMeter, rent::Rent, storage::{self, Storage},
 	Error, ContractInfoOf
 };
-use sp_core::crypto::UncheckedFrom;
+use tet_core::crypto::UncheckedFrom;
 use tetcore_std::prelude::*;
 use sp_runtime::traits::{Bounded, Zero, Convert, Saturating};
 use frame_support::{

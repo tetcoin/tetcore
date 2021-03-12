@@ -19,7 +19,7 @@
 
 use tetsy_hash_db::Hasher;
 use codec::{Decode, Encode};
-use sp_core::{
+use tet_core::{
 	storage::{ChildInfo, well_known_keys, TrackedStorageKey}
 };
 use crate::{
@@ -29,7 +29,7 @@ use crate::{
 };
 use tetcore_std::vec::Vec;
 #[cfg(feature = "std")]
-use sp_core::traits::RuntimeCode;
+use tet_core::traits::RuntimeCode;
 
 /// A state backend is used to read state data and can have changes committed
 /// to it.
@@ -385,7 +385,7 @@ pub struct BackendRuntimeCode<'a, B, H> {
 }
 
 #[cfg(feature = "std")]
-impl<'a, B: Backend<H>, H: Hasher> sp_core::traits::FetchRuntimeCode for
+impl<'a, B: Backend<H>, H: Hasher> tet_core::traits::FetchRuntimeCode for
 	BackendRuntimeCode<'a, B, H>
 {
 	fn fetch_runtime_code<'b>(&'b self) -> Option<std::borrow::Cow<'b, [u8]>> {

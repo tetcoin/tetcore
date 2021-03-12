@@ -21,7 +21,7 @@ use codec::{Encode, Decode};
 use frame_support::{
 	assert_ok, impl_outer_origin, parameter_types,
 };
-use sp_core::{
+use tet_core::{
 	H256,
 	offchain::{OffchainExt, TransactionPoolExt, testing},
 	sr25519::Signature,
@@ -65,7 +65,7 @@ impl frame_system::Config for Test {
 	type BlockNumber = u64;
 	type Hash = H256;
 	type Hashing = BlakeTwo256;
-	type AccountId = sp_core::sr25519::Public;
+	type AccountId = tet_core::sr25519::Public;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
 	type Event = ();

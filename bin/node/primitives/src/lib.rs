@@ -48,7 +48,7 @@ pub type Moment = u64;
 pub type Index = u32;
 
 /// A hash of some data used by the chain.
-pub type Hash = sp_core::H256;
+pub type Hash = tet_core::H256;
 
 /// A timestamp: milliseconds since the unix epoch.
 /// `u64` is enough to represent a duration of half a billion years, when the
@@ -70,7 +70,7 @@ pub type BlockId = generic::BlockId<Block>;
 pub mod report {
 	use super::{Signature, Verify};
 	use frame_system::offchain::AppCrypto;
-	use sp_core::crypto::{key_types, KeyTypeId};
+	use tet_core::crypto::{key_types, KeyTypeId};
 
 	/// Key type for the reporting module. Used for reporting BABE and GRANDPA
 	/// equivocations.
@@ -90,7 +90,7 @@ pub mod report {
 
 	impl AppCrypto<<Signature as Verify>::Signer, Signature> for ReporterAppCrypto {
 		type RuntimeAppPublic = ReporterId;
-		type GenericSignature = sp_core::sr25519::Signature;
-		type GenericPublic = sp_core::sr25519::Public;
+		type GenericSignature = tet_core::sr25519::Signature;
+		type GenericPublic = tet_core::sr25519::Public;
 	}
 }

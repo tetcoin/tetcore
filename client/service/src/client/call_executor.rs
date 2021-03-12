@@ -27,7 +27,7 @@ use sp_state_machine::{
 };
 use sc_executor::{RuntimeVersion, RuntimeInfo, NativeVersion};
 use externalities::Extensions;
-use sp_core::{
+use tet_core::{
 	NativeOrEncoded, NeverNativeValue, traits::{CodeExecutor, SpawnNamed, RuntimeCode},
 };
 use sp_api::{ProofRecorder, InitializeBlock, StorageTransactionCache};
@@ -322,7 +322,7 @@ mod tests {
 	use super::*;
 	use tetcore_test_runtime_client::{LocalExecutor, GenesisInit, runtime};
 	use sc_executor::{NativeExecutor, WasmExecutionMethod};
-	use sp_core::{traits::{WrappedRuntimeCode, FetchRuntimeCode}, testing::TaskExecutor};
+	use tet_core::{traits::{WrappedRuntimeCode, FetchRuntimeCode}, testing::TaskExecutor};
 	use sc_client_api::in_mem;
 
 	#[test]

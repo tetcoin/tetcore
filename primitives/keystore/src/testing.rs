@@ -17,8 +17,8 @@
 
 //! Types that should only be used for testing!
 
-use sp_core::crypto::KeyTypeId;
-use sp_core::{
+use tet_core::crypto::KeyTypeId;
+use tet_core::{
 	crypto::{Pair, Public, CryptoTypePublicPair},
 	ed25519, sr25519, ecdsa,
 };
@@ -338,7 +338,7 @@ impl Into<Arc<dyn CryptoStore>> for KeyStore {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::{sr25519, testing::{ED25519, SR25519}};
+	use tet_core::{sr25519, testing::{ED25519, SR25519}};
 	use crate::{SyncCryptoStore, vrf::VRFTranscriptValue};
 
 	#[test]

@@ -16,7 +16,7 @@ tc-light = { version = "2.0.0", path = "../../../client/light" }
 tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
 tc-block-builder = { version = "0.8.0", path = "../../../client/block-builder" }
 tetcore-test-client = { version = "2.0.0", path = "../../client" }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../runtime" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 tp-api = { version = "2.0.0", path = "../../../primitives/api" }

@@ -23,7 +23,7 @@ use std::collections::VecDeque;
 use codec::{Decode, Encode, Codec};
 use tetsy_hash_db::Hasher;
 use num_traits::Zero;
-use sp_core::storage::PrefixedStorageKey;
+use tet_core::storage::PrefixedStorageKey;
 use sp_trie::Recorder;
 use crate::changes_trie::{AnchorBlockId, ConfigurationRange, RootsStorage, Storage, BlockNumber};
 use crate::changes_trie::input::{DigestIndex, ExtrinsicIndex, DigestIndexValue, ExtrinsicIndexValue};
@@ -385,7 +385,7 @@ mod tests {
 	use super::*;
 
 	fn child_key() -> PrefixedStorageKey {
-		let child_info = sp_core::storage::ChildInfo::new_default(&b"1"[..]);
+		let child_info = tet_core::storage::ChildInfo::new_default(&b"1"[..]);
 		child_info.prefixed_storage_key()
 	}
 

@@ -144,7 +144,7 @@ fn should_return_block_hash() {
 		Ok(ListOrValue::Value(Some(ref x))) if x == &block.hash()
 	);
 	assert_matches!(
-		api.block_hash(Some(ListOrValue::Value(sp_core::U256::from(1u64).into())).into()),
+		api.block_hash(Some(ListOrValue::Value(tet_core::U256::from(1u64).into())).into()),
 		Ok(ListOrValue::Value(Some(ref x))) if x == &block.hash()
 	);
 

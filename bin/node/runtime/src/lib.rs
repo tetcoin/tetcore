@@ -41,7 +41,7 @@ use frame_system::{
 };
 use frame_support::traits::InstanceFilter;
 use codec::{Encode, Decode};
-use sp_core::{
+use tet_core::{
 	crypto::KeyTypeId,
 	u32_trait::{_1, _2, _3, _4, _5},
 	OpaqueMetadata,

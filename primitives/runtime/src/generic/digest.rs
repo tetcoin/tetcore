@@ -24,7 +24,7 @@ use tetcore_std::prelude::*;
 
 use crate::ConsensusEngineId;
 use crate::codec::{Decode, Encode, Input, Error};
-use sp_core::{ChangesTrieConfiguration, RuntimeDebug};
+use tet_core::{ChangesTrieConfiguration, RuntimeDebug};
 
 /// Generic header digest.
 #[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug)]
@@ -139,7 +139,7 @@ pub enum ChangesTrieSignal {
 impl<Hash: Encode> serde::Serialize for DigestItem<Hash> {
 	fn serialize<S>(&self, seq: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
 		self.using_encoded(|bytes| {
-			sp_core::bytes::serialize(bytes, seq)
+			tet_core::bytes::serialize(bytes, seq)
 		})
 	}
 }
@@ -149,7 +149,7 @@ impl<'a, Hash: Decode> serde::Deserialize<'a> for DigestItem<Hash> {
 	fn deserialize<D>(de: D) -> Result<Self, D::Error> where
 		D: serde::Deserializer<'a>,
 	{
-		let r = sp_core::bytes::deserialize(de)?;
+		let r = tet_core::bytes::deserialize(de)?;
 		Decode::decode(&mut &r[..])
 			.map_err(|e| serde::de::Error::custom(format!("Decode error: {}", e)))
 	}

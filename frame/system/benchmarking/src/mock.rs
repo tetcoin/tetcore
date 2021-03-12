@@ -59,7 +59,7 @@ impl frame_system::Config for Test {
 	type Index = AccountIndex;
 	type BlockNumber = BlockNumber;
 	type Call = Call;
-	type Hash = sp_core::H256;
+	type Hash = tet_core::H256;
 	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = IdentityLookup<Self::AccountId>;

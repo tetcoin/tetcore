@@ -121,7 +121,7 @@ use serde::{Serialize, de::DeserializeOwned};
 use sp_runtime::BuildStorage;
 use sc_network::config::MultiaddrWithPeerId;
 use sc_telemetry::TelemetryEndpoints;
-use sp_core::storage::Storage;
+use tet_core::storage::Storage;
 
 /// A set of traits for the runtime genesis config.
 pub trait RuntimeGenesis: Serialize + DeserializeOwned + BuildStorage {}

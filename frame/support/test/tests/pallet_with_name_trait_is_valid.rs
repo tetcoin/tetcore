@@ -123,7 +123,7 @@ mod tests {
 		type Origin = Origin;
 		type Index = u64;
 		type BlockNumber = u64;
-		type Hash = sp_core::H256;
+		type Hash = tet_core::H256;
 		type Call = Call;
 		type Hashing = sp_runtime::traits::BlakeTwo256;
 		type AccountId = u64;

@@ -21,7 +21,7 @@ use frame_support::{
 	traits::Currency,
 	weights::{GetDispatchInfo, DispatchInfo, DispatchClass},
 };
-use sp_core::{NeverNativeValue, traits::Externalities, storage::well_known_keys};
+use tet_core::{NeverNativeValue, traits::Externalities, storage::well_known_keys};
 use sp_runtime::{
 	ApplyExtrinsicResult,
 	traits::Hash as HashT,

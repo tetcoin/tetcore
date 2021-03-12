@@ -5,7 +5,7 @@
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or 
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
 // This program is distributed in the hope that it will be useful,
@@ -19,7 +19,7 @@
 //! implementation of the `verify` subcommand
 
 use crate::{error, utils, with_crypto_scheme, CryptoSchemeFlag};
-use sp_core::{Public, crypto::Ss58Codec};
+use tet_core::{Public, crypto::Ss58Codec};
 use structopt::StructOpt;
 
 /// The `verify` command
@@ -72,7 +72,7 @@ impl VerifyCmd {
 
 fn verify<Pair>(sig_data: Vec<u8>, message: Vec<u8>, uri: &str) -> error::Result<()>
 	where
-		Pair: sp_core::Pair,
+		Pair: tet_core::Pair,
 		Pair::Signature: Default + AsMut<[u8]>,
 {
 	let mut signature = Pair::Signature::default();

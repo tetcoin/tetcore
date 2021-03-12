@@ -22,7 +22,7 @@ use mock::*;
 
 use frame_support::{assert_ok, assert_noop};
 use sp_runtime::traits::BadOrigin;
-use sp_core::blake2_256;
+use tet_core::blake2_256;
 
 #[test]
 fn founding_works() {

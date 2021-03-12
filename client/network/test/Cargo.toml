@@ -27,7 +27,7 @@ tc-consensus = { version = "0.8.0", path = "../../consensus/common" }
 tc-client-api = { version = "2.0.0", path = "../../api" }
 tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tc-block-builder = { version = "0.8.0", path = "../../block-builder" }
 tp-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }

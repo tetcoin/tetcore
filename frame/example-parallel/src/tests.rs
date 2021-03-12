@@ -19,7 +19,7 @@ use crate::*;
 
 use codec::{Encode, Decode};
 use frame_support::{impl_outer_origin, parameter_types};
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	Perbill,
 	testing::{Header},
@@ -46,7 +46,7 @@ impl frame_system::Config for Test {
 	type BlockNumber = u64;
 	type Hash = H256;
 	type Hashing = BlakeTwo256;
-	type AccountId = sp_core::sr25519::Public;
+	type AccountId = tet_core::sr25519::Public;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
 	type Event = ();
@@ -77,11 +77,11 @@ type Example = Module<Test>;
 
 #[test]
 fn it_can_enlist() {
-	use sp_core::Pair;
+	use tet_core::Pair;
 
 	sp_io::TestExternalities::default().execute_with(|| {
-		let (pair1, _) = sp_core::sr25519::Pair::generate();
-		let (pair2, _) = sp_core::sr25519::Pair::generate();
+		let (pair1, _) = tet_core::sr25519::Pair::generate();
+		let (pair2, _) = tet_core::sr25519::Pair::generate();
 
 		let event_name = b"test";
 
@@ -109,12 +109,12 @@ fn it_can_enlist() {
 
 #[test]
 fn one_wrong_will_not_enlist_anyone() {
-	use sp_core::Pair;
+	use tet_core::Pair;
 
 	sp_io::TestExternalities::default().execute_with(|| {
-		let (pair1, _) = sp_core::sr25519::Pair::generate();
-		let (pair2, _) = sp_core::sr25519::Pair::generate();
-		let (pair3, _) = sp_core::sr25519::Pair::generate();
+		let (pair1, _) = tet_core::sr25519::Pair::generate();
+		let (pair2, _) = tet_core::sr25519::Pair::generate();
+		let (pair3, _) = tet_core::sr25519::Pair::generate();
 
 		let event_name = b"test";
 

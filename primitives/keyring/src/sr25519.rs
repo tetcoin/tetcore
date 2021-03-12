@@ -20,8 +20,8 @@
 use std::collections::HashMap;
 use std::ops::Deref;
 use lazy_static::lazy_static;
-use sp_core::{sr25519::{Pair, Public, Signature}, Pair as PairT, Public as PublicT, H256};
-pub use sp_core::sr25519;
+use tet_core::{sr25519::{Pair, Public, Signature}, Pair as PairT, Public as PublicT, H256};
+pub use tet_core::sr25519;
 use sp_runtime::AccountId32;
 
 /// Set of test accounts.
@@ -208,7 +208,7 @@ impl Deref for Keyring {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::{sr25519::Pair, Pair as PairT};
+	use tet_core::{sr25519::Pair, Pair as PairT};
 
 	#[test]
 	fn should_work() {

@@ -23,7 +23,7 @@
 #![allow(deprecated)]
 use super::*;
 use authorship::claim_slot;
-use sp_core::crypto::Pair;
+use tet_core::crypto::Pair;
 use sp_keystore::{
 	SyncCryptoStore,
 	vrf::make_transcript as transcript_from_data,
@@ -569,7 +569,7 @@ fn propose_and_import_block<Transaction>(
 	slot: Option<Slot>,
 	proposer_factory: &mut DummyFactory,
 	block_import: &mut BoxBlockImport<TestBlock, Transaction>,
-) -> sp_core::H256 {
+) -> tet_core::H256 {
 	let mut proposer = futures::executor::block_on(proposer_factory.init(parent)).unwrap();
 
 	let slot = slot.unwrap_or_else(|| {

@@ -27,7 +27,7 @@ use sp_runtime::{
 };
 use frame_support::parameter_types;
 use sp_io;
-use sp_core::H256;
+use tet_core::H256;
 
 type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
 type Block = frame_system::mocking::MockBlock<Test>;

@@ -44,7 +44,7 @@ use sc_network::{
 	PeerId,
 };
 use sp_authority_discovery::{AuthorityDiscoveryApi, AuthorityId, AuthoritySignature, AuthorityPair};
-use sp_core::crypto::{key_types, Pair};
+use tet_core::crypto::{key_types, Pair};
 use sp_keystore::CryptoStore;
 use sp_runtime::{traits::Block as BlockT, generic::BlockId};
 use sp_api::ProvideRuntimeApi;

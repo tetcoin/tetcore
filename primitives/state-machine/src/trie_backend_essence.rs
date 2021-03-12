@@ -28,7 +28,7 @@ use sp_trie::{Trie, MemoryDB, PrefixedMemoryDB, DBValue,
 	for_keys_in_child_trie, KeySpacedDB, TrieDBIterator};
 use sp_trie::trie_types::{TrieDB, TrieError, Layout};
 use crate::{backend::Consolidate, StorageKey, StorageValue};
-use sp_core::storage::ChildInfo;
+use tet_core::storage::ChildInfo;
 use codec::Encode;
 
 #[cfg(not(feature = "std"))]
@@ -433,7 +433,7 @@ impl<S: TrieBackendStorage<H>, H: Hasher> tetsy_hash_db::HashDBRef<H, DBValue>
 
 #[cfg(test)]
 mod test {
-	use sp_core::{Blake2Hasher, H256};
+	use tet_core::{Blake2Hasher, H256};
 	use sp_trie::{TrieMut, PrefixedMemoryDB, trie_types::TrieDBMut, KeySpacedDBMut};
 	use super::*;
 

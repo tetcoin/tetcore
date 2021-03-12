@@ -2915,7 +2915,7 @@ mod offchain_election {
 	use sp_runtime::transaction_validity::TransactionSource;
 	use mock::*;
 	use parking_lot::RwLock;
-	use sp_core::offchain::{
+	use tet_core::offchain::{
 		testing::{PoolState, TestOffchainExt, TestTransactionPoolExt},
 		OffchainExt, TransactionPoolExt,
 	};

@@ -42,7 +42,7 @@ use sp_runtime::{
 	generic::BlockId,
 	traits::{Block as BlockT, NumberFor, AtLeast32Bit, Extrinsic, Zero},
 };
-use sp_core::traits::SpawnNamed;
+use tet_core::traits::SpawnNamed;
 use sp_transaction_pool::{
 	TransactionPool, PoolStatus, ImportNotificationStream, TxHash, TransactionFor,
 	TransactionStatusStreamFor, MaintainedTransactionPool, PoolFuture, ChainEvent,

@@ -39,11 +39,11 @@ pub use paste;
 pub use sp_application_crypto as app_crypto;
 
 #[cfg(feature = "std")]
-pub use sp_core::storage::{Storage, StorageChild};
+pub use tet_core::storage::{Storage, StorageChild};
 
 use tetcore_std::prelude::*;
 use tetcore_std::convert::TryFrom;
-use sp_core::{crypto::{self, Public}, ed25519, sr25519, ecdsa, hash::{H256, H512}};
+use tet_core::{crypto::{self, Public}, ed25519, sr25519, ecdsa, hash::{H256, H512}};
 
 use codec::{Encode, Decode};
 
@@ -67,11 +67,11 @@ pub use multiaddress::MultiAddress;
 pub use generic::{DigestItem, Digest};
 
 /// Re-export this since it's part of the API of this crate.
-pub use sp_core::{TypeId, crypto::{key_types, KeyTypeId, CryptoType, CryptoTypeId, AccountId32}};
+pub use tet_core::{TypeId, crypto::{key_types, KeyTypeId, CryptoType, CryptoTypeId, AccountId32}};
 pub use sp_application_crypto::{RuntimeAppPublic, BoundToRuntimeAppPublic};
 
 /// Re-export `RuntimeDebug`, to avoid dependency clutter.
-pub use sp_core::RuntimeDebug;
+pub use tet_core::RuntimeDebug;
 
 /// Re-export top-level arithmetic stuff.
 pub use arithmetic::{
@@ -115,7 +115,7 @@ use crate::traits::IdentifyAccount;
 #[cfg(feature = "std")]
 pub trait BuildStorage {
 	/// Build the storage out of this builder.
-	fn build_storage(&self) -> Result<sp_core::storage::Storage, String> {
+	fn build_storage(&self) -> Result<tet_core::storage::Storage, String> {
 		let mut storage = Default::default();
 		self.assimilate_storage(&mut storage)?;
 		Ok(storage)
@@ -123,7 +123,7 @@ pub trait BuildStorage {
 	/// Assimilate the storage for this module into pre-existing overlays.
 	fn assimilate_storage(
 		&self,
-		storage: &mut sp_core::storage::Storage,
+		storage: &mut tet_core::storage::Storage,
 	) -> Result<(), String>;
 }
 
@@ -133,15 +133,15 @@ pub trait BuildModuleGenesisStorage<T, I>: Sized {
 	/// Create the module genesis storage into the given `storage` and `child_storage`.
 	fn build_module_genesis_storage(
 		&self,
-		storage: &mut sp_core::storage::Storage,
+		storage: &mut tet_core::storage::Storage,
 	) -> Result<(), String>;
 }
 
 #[cfg(feature = "std")]
-impl BuildStorage for sp_core::storage::Storage {
+impl BuildStorage for tet_core::storage::Storage {
 	fn assimilate_storage(
 		&self,
-		storage: &mut sp_core::storage::Storage,
+		storage: &mut tet_core::storage::Storage,
 	)-> Result<(), String> {
 		storage.top.extend(self.top.iter().map(|(k, v)| (k.clone(), v.clone())));
 		for (k, other_map) in self.children_default.iter() {
@@ -163,7 +163,7 @@ impl BuildStorage for sp_core::storage::Storage {
 impl BuildStorage for () {
 	fn assimilate_storage(
 		&self,
-		_: &mut sp_core::storage::Storage,
+		_: &mut tet_core::storage::Storage,
 	) -> Result<(), String> {
 		Err("`assimilate_storage` not implemented for `()`".into())
 	}
@@ -646,7 +646,7 @@ impl tetsy_util_mem::MallocSizeOf for OpaqueExtrinsic {
 impl tetcore_std::fmt::Debug for OpaqueExtrinsic {
 	#[cfg(feature = "std")]
 	fn fmt(&self, fmt: &mut tetcore_std::fmt::Formatter) -> tetcore_std::fmt::Result {
-		write!(fmt, "{}", sp_core::hexdisplay::HexDisplay::from(&self.0))
+		write!(fmt, "{}", tet_core::hexdisplay::HexDisplay::from(&self.0))
 	}
 
 	#[cfg(not(feature = "std"))]
@@ -659,14 +659,14 @@ impl tetcore_std::fmt::Debug for OpaqueExtrinsic {
 #[cfg(feature = "std")]
 impl ::serde::Serialize for OpaqueExtrinsic {
 	fn serialize<S>(&self, seq: S) -> Result<S::Ok, S::Error> where S: ::serde::Serializer {
-		codec::Encode::using_encoded(&self.0, |bytes| ::sp_core::bytes::serialize(bytes, seq))
+		codec::Encode::using_encoded(&self.0, |bytes| ::tet_core::bytes::serialize(bytes, seq))
 	}
 }
 
 #[cfg(feature = "std")]
 impl<'a> ::serde::Deserialize<'a> for OpaqueExtrinsic {
 	fn deserialize<D>(de: D) -> Result<Self, D::Error> where D: ::serde::Deserializer<'a> {
-		let r = ::sp_core::bytes::deserialize(de)?;
+		let r = ::tet_core::bytes::deserialize(de)?;
 		Decode::decode(&mut &r[..])
 			.map_err(|e| ::serde::de::Error::custom(format!("Decode error: {}", e)))
 	}
@@ -739,7 +739,7 @@ impl<R> TransactionOutcome<R> {
 mod tests {
 	use super::*;
 	use codec::{Encode, Decode};
-	use sp_core::crypto::Pair;
+	use tet_core::crypto::Pair;
 
 	#[test]
 	fn opaque_extrinsic_serialization() {
@@ -789,7 +789,7 @@ mod tests {
 	fn batching_still_finishes_when_not_called_directly() {
 		let mut ext = sp_state_machine::BasicExternalities::default();
 		ext.register_extension(
-			sp_core::traits::TaskExecutorExt::new(sp_core::testing::TaskExecutor::new()),
+			tet_core::traits::TaskExecutorExt::new(tet_core::testing::TaskExecutor::new()),
 		);
 
 		ext.execute_with(|| {
@@ -807,7 +807,7 @@ mod tests {
 	fn batching_does_not_panic_while_thread_is_already_panicking() {
 		let mut ext = sp_state_machine::BasicExternalities::default();
 		ext.register_extension(
-			sp_core::traits::TaskExecutorExt::new(sp_core::testing::TaskExecutor::new()),
+			tet_core::traits::TaskExecutorExt::new(tet_core::testing::TaskExecutor::new()),
 		);
 
 		ext.execute_with(|| {

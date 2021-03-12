@@ -21,7 +21,7 @@ tetcore-std = { version = "2.0.0", default-features = false, path = "../../primi
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tetcore-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
-tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 arithmetic = { version = "2.0.0", default-features = false, path = "../../primitives/arithmetic" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
 frame-support-procedural = { version = "2.0.1", default-features = false, path = "./procedural" }

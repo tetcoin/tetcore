@@ -32,7 +32,7 @@ tetcore-std = { version = "2.0.0", default-features = false, path = "../../../pr
 pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 serde = { version = "1.0.101" }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-io = { version = "2.0.0", path = "../../../primitives/io" }
 
 [features]

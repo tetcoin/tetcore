@@ -726,7 +726,7 @@ mod tests {
 		traits::{OnInitialize, OnFinalize, Filter},
 		weights::constants::RocksDbWeight,
 	};
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::{
 		Perbill,
 		testing::Header,

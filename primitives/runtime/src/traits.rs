@@ -26,7 +26,7 @@ use std::fmt::Display;
 use std::str::FromStr;
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
-use sp_core::{self, Hasher, TypeId, RuntimeDebug};
+use tet_core::{self, Hasher, TypeId, RuntimeDebug};
 use crate::codec::{Codec, Encode, Decode};
 use crate::transaction_validity::{
 	ValidTransaction, TransactionSource, TransactionValidity, TransactionValidityError,
@@ -63,17 +63,17 @@ pub trait IdentifyAccount {
 	fn into_account(self) -> Self::AccountId;
 }
 
-impl IdentifyAccount for sp_core::ed25519::Public {
+impl IdentifyAccount for tet_core::ed25519::Public {
 	type AccountId = Self;
 	fn into_account(self) -> Self { self }
 }
 
-impl IdentifyAccount for sp_core::sr25519::Public {
+impl IdentifyAccount for tet_core::sr25519::Public {
 	type AccountId = Self;
 	fn into_account(self) -> Self { self }
 }
 
-impl IdentifyAccount for sp_core::ecdsa::Public {
+impl IdentifyAccount for tet_core::ecdsa::Public {
 	type AccountId = Self;
 	fn into_account(self) -> Self { self }
 }
@@ -88,25 +88,25 @@ pub trait Verify {
 	fn verify<L: Lazy<[u8]>>(&self, msg: L, signer: &<Self::Signer as IdentifyAccount>::AccountId) -> bool;
 }
 
-impl Verify for sp_core::ed25519::Signature {
-	type Signer = sp_core::ed25519::Public;
+impl Verify for tet_core::ed25519::Signature {
+	type Signer = tet_core::ed25519::Public;
 
-	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &sp_core::ed25519::Public) -> bool {
+	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &tet_core::ed25519::Public) -> bool {
 		sp_io::crypto::ed25519_verify(self, msg.get(), signer)
 	}
 }
 
-impl Verify for sp_core::sr25519::Signature {
-	type Signer = sp_core::sr25519::Public;
+impl Verify for tet_core::sr25519::Signature {
+	type Signer = tet_core::sr25519::Public;
 
-	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &sp_core::sr25519::Public) -> bool {
+	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &tet_core::sr25519::Public) -> bool {
 		sp_io::crypto::sr25519_verify(self, msg.get(), signer)
 	}
 }
 
-impl Verify for sp_core::ecdsa::Signature {
-	type Signer = sp_core::ecdsa::Public;
-	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &sp_core::ecdsa::Public) -> bool {
+impl Verify for tet_core::ecdsa::Signature {
+	type Signer = tet_core::ecdsa::Public;
+	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &tet_core::ecdsa::Public) -> bool {
 		match sp_io::crypto::secp256k1_ecdsa_recover_compressed(
 			self.as_ref(),
 			&sp_io::hashing::blake2_256(msg.get()),
@@ -412,7 +412,7 @@ pub trait Hash: 'static + MaybeSerializeDeserialize + Debug + Clone + Eq + Parti
 pub struct BlakeTwo256;
 
 impl Hasher for BlakeTwo256 {
-	type Out = sp_core::H256;
+	type Out = tet_core::H256;
 	type StdHasher = tetsy_hash256_std_hasher::Hash256StdHasher;
 	const LENGTH: usize = 32;
 
@@ -422,7 +422,7 @@ impl Hasher for BlakeTwo256 {
 }
 
 impl Hash for BlakeTwo256 {
-	type Output = sp_core::H256;
+	type Output = tet_core::H256;
 
 	fn trie_root(input: Vec<(Vec<u8>, Vec<u8>)>) -> Self::Output {
 		sp_io::trie::blake2_256_root(input)
@@ -439,7 +439,7 @@ impl Hash for BlakeTwo256 {
 pub struct Keccak256;
 
 impl Hasher for Keccak256 {
-	type Out = sp_core::H256;
+	type Out = tet_core::H256;
 	type StdHasher = tetsy_hash256_std_hasher::Hash256StdHasher;
 	const LENGTH: usize = 32;
 
@@ -449,7 +449,7 @@ impl Hasher for Keccak256 {
 }
 
 impl Hash for Keccak256 {
-	type Output = sp_core::H256;
+	type Output = tet_core::H256;
 
 	fn trie_root(input: Vec<(Vec<u8>, Vec<u8>)>) -> Self::Output {
 		sp_io::trie::keccak_256_root(input)
@@ -466,10 +466,10 @@ pub trait CheckEqual {
 	fn check_equal(&self, other: &Self);
 }
 
-impl CheckEqual for sp_core::H256 {
+impl CheckEqual for tet_core::H256 {
 	#[cfg(feature = "std")]
 	fn check_equal(&self, other: &Self) {
-		use sp_core::hexdisplay::HexDisplay;
+		use tet_core::hexdisplay::HexDisplay;
 		if self != other {
 			println!(
 				"Hash: given={}, expected={}",
@@ -507,7 +507,7 @@ impl<H: PartialEq + Eq + Debug> CheckEqual for super::generic::DigestItem<H> whe
 	}
 }
 
-sp_core::impl_maybe_marker!(
+tet_core::impl_maybe_marker!(
 	/// A type that implements Display when in std environment.
 	trait MaybeDisplay: Display;
 
@@ -1410,10 +1410,10 @@ pub trait BlockIdTo<Block: self::Block> {
 mod tests {
 	use super::*;
 	use crate::codec::{Encode, Decode, Input};
-	use sp_core::{crypto::Pair, ecdsa};
+	use tet_core::{crypto::Pair, ecdsa};
 
 	mod t {
-		use sp_core::crypto::KeyTypeId;
+		use tet_core::crypto::KeyTypeId;
 		use sp_application_crypto::{app_crypto, sr25519};
 		app_crypto!(sr25519, KeyTypeId(*b"test"));
 	}

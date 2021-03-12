@@ -19,7 +19,7 @@ mod sandbox;
 
 use codec::{Encode, Decode};
 use hex_literal::hex;
-use sp_core::{
+use tet_core::{
 	blake2_128, blake2_256, ed25519, sr25519, map, Pair,
 	offchain::{OffchainExt, testing},
 	traits::{Externalities, CallInWasm},
@@ -82,7 +82,7 @@ fn call_in_wasm<E: Externalities>(
 		function,
 		call_data,
 		ext,
-		sp_core::traits::MissingHostFunctions::Allow,
+		tet_core::traits::MissingHostFunctions::Allow,
 	)
 }
 
@@ -202,7 +202,7 @@ fn storage_should_work(wasm_method: WasmExecutionMethod) {
 		assert_eq!(output, b"all ok!".to_vec().encode());
 	}
 
-	let expected = TestExternalities::new(sp_core::storage::Storage {
+	let expected = TestExternalities::new(tet_core::storage::Storage {
 		top: map![
 			b"input".to_vec() => b"Hello world".to_vec(),
 			b"foo".to_vec() => b"bar".to_vec(),
@@ -235,7 +235,7 @@ fn clear_prefix_should_work(wasm_method: WasmExecutionMethod) {
 		assert_eq!(output, b"all ok!".to_vec().encode());
 	}
 
-	let expected = TestExternalities::new(sp_core::storage::Storage {
+	let expected = TestExternalities::new(tet_core::storage::Storage {
 		top: map![
 			b"aaa".to_vec() => b"1".to_vec(),
 			b"aab".to_vec() => b"2".to_vec(),
@@ -475,9 +475,9 @@ fn offchain_index(wasm_method: WasmExecutionMethod) {
 		&mut ext.ext(),
 	).unwrap();
 
-	use sp_core::offchain::OffchainOverlayedChange;
+	use tet_core::offchain::OffchainOverlayedChange;
 	let data = ext.overlayed_changes().clone().offchain_drain_committed().find(|(k, _v)| {
-		k == &(sp_core::offchain::STORAGE_PREFIX.to_vec(), b"k".to_vec())
+		k == &(tet_core::offchain::STORAGE_PREFIX.to_vec(), b"k".to_vec())
 	});
 	assert_eq!(data.map(|data| data.1), Some(OffchainOverlayedChange::SetValue(b"v".to_vec())));
 }
@@ -544,7 +544,7 @@ fn should_trap_when_heap_exhausted(wasm_method: WasmExecutionMethod) {
 		"test_exhaust_heap",
 		&[0],
 		&mut ext.ext(),
-		sp_core::traits::MissingHostFunctions::Allow,
+		tet_core::traits::MissingHostFunctions::Allow,
 	).unwrap_err();
 
 	assert!(err.contains("Allocator ran out of space"));
@@ -650,7 +650,7 @@ fn parallel_execution(wasm_method: WasmExecutionMethod) {
 						"test_twox_128",
 						&[0],
 						&mut ext,
-						sp_core::traits::MissingHostFunctions::Allow,
+						tet_core::traits::MissingHostFunctions::Allow,
 					).unwrap(),
 					hex!("99e9d85137db46ef4bbea33613baafd5").to_vec().encode(),
 				);

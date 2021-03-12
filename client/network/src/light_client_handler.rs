@@ -66,7 +66,7 @@ use sc_client_api::{
 	}
 };
 use sc_peerset::ReputationChange;
-use sp_core::{
+use tet_core::{
 	storage::{ChildInfo, ChildType,StorageKey, PrefixedStorageKey},
 	hexdisplay::HexDisplay,
 };
@@ -1330,7 +1330,7 @@ mod tests {
 	};
 	use sc_client_api::{StorageProof, RemoteReadChildRequest, FetchChecker};
 	use sp_blockchain::{Error as ClientError};
-	use sp_core::storage::ChildInfo;
+	use tet_core::storage::ChildInfo;
 	use std::{
 		collections::{HashMap, HashSet},
 		io,
@@ -1919,10 +1919,10 @@ mod tests {
 	fn receives_remote_changes_response() {
 		let mut chan = oneshot::channel();
 		let request = light::RemoteChangesRequest {
-			changes_trie_configs: vec![sp_core::ChangesTrieConfigurationRange {
+			changes_trie_configs: vec![tet_core::ChangesTrieConfigurationRange {
 				zero: (0, Default::default()),
 				end: None,
-				config: Some(sp_core::ChangesTrieConfiguration::new(4, 2)),
+				config: Some(tet_core::ChangesTrieConfiguration::new(4, 2)),
 			}],
 			first_block: (1, Default::default()),
 			last_block: (100, Default::default()),
@@ -2023,10 +2023,10 @@ mod tests {
 	fn send_receive_changes() {
 		let chan = oneshot::channel();
 		let request = light::RemoteChangesRequest {
-			changes_trie_configs: vec![sp_core::ChangesTrieConfigurationRange {
+			changes_trie_configs: vec![tet_core::ChangesTrieConfigurationRange {
 				zero: (0, Default::default()),
 				end: None,
-				config: Some(sp_core::ChangesTrieConfiguration::new(4, 2)),
+				config: Some(tet_core::ChangesTrieConfiguration::new(4, 2)),
 			}],
 			first_block: (1, Default::default()),
 			last_block: (100, Default::default()),

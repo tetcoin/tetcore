@@ -21,10 +21,10 @@ use crate::{RuntimePublic, KeyTypeId};
 
 use tetcore_std::vec::Vec;
 
-pub use sp_core::ecdsa::*;
+pub use tet_core::ecdsa::*;
 
 mod app {
-	use sp_core::testing::ECDSA;
+	use tet_core::testing::ECDSA;
 
 	crate::app_crypto!(super, ECDSA);
 
@@ -57,6 +57,6 @@ impl RuntimePublic for Public {
 	}
 
 	fn to_raw_vec(&self) -> Vec<u8> {
-		sp_core::crypto::Public::to_raw_vec(self)
+		tet_core::crypto::Public::to_raw_vec(self)
 	}
 }

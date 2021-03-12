@@ -27,7 +27,7 @@ use sp_consensus_babe::digests::{
 	PreDigest, PrimaryPreDigest, SecondaryPlainPreDigest, SecondaryVRFPreDigest,
 };
 use sp_consensus_vrf::schnorrkel::{VRFOutput, VRFProof};
-use sp_core::{U256, blake2_256, crypto::Public};
+use tet_core::{U256, blake2_256, crypto::Public};
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use codec::Encode;
 use schnorrkel::{
@@ -291,7 +291,7 @@ fn claim_primary_slot(
 mod tests {
 	use super::*;
 	use std::sync::Arc;
-	use sp_core::{sr25519::Pair, crypto::Pair as _};
+	use tet_core::{sr25519::Pair, crypto::Pair as _};
 	use sp_consensus_babe::{AuthorityId, BabeEpochConfiguration, AllowedSlots};
 	use sc_keystore::LocalKeystore;
 
@@ -301,7 +301,7 @@ mod tests {
 		let valid_public_key = SyncCryptoStore::sr25519_generate_new(
 			&*keystore,
 			AuthorityId::ID,
-			Some(sp_core::crypto::DEV_PHRASE),
+			Some(tet_core::crypto::DEV_PHRASE),
 		).unwrap();
 
 		let authorities = vec![

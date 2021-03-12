@@ -21,7 +21,7 @@ use super::*;
 use std::{mem, sync::Arc};
 use assert_matches::assert_matches;
 use codec::Encode;
-use sp_core::{
+use tet_core::{
 	ed25519, sr25519,
 	H256, blake2_256, hexdisplay::HexDisplay, testing::{ED25519, SR25519},
 	crypto::{CryptoTypePublicPair, Pair, Public},
@@ -62,7 +62,7 @@ impl Default for TestSetup {
 		let client_builder = tetcore_test_runtime_client::TestClientBuilder::new();
 		let client = Arc::new(client_builder.set_keystore(keystore.clone()).build());
 
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
 			None,

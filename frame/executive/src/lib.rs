@@ -361,7 +361,7 @@ where
 	) -> ApplyExtrinsicResult {
 		tetcore_tracing::enter_span!(
 			tetcore_tracing::info_span!("apply_extrinsic",
-				ext=?sp_core::hexdisplay::HexDisplay::from(&uxt.encode()))
+				ext=?tet_core::hexdisplay::HexDisplay::from(&uxt.encode()))
 		);
 		// Verify that the signature is good.
 		let xt = uxt.check(&Default::default())?;
@@ -473,7 +473,7 @@ where
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::{
 		generic::{Era, DigestItem}, DispatchError, testing::{Digest, Header, Block},
 		traits::{Header as HeaderT, BlakeTwo256, IdentityLookup},
@@ -605,7 +605,7 @@ mod tests {
 		type Index = u64;
 		type Call = Call;
 		type BlockNumber = u64;
-		type Hash = sp_core::H256;
+		type Hash = tet_core::H256;
 		type Hashing = BlakeTwo256;
 		type AccountId = u64;
 		type Lookup = IdentityLookup<u64>;
@@ -1130,7 +1130,7 @@ mod tests {
 	#[test]
 	fn offchain_worker_works_as_expected() {
 		new_test_ext(1).execute_with(|| {
-			let parent_hash = sp_core::H256::from([69u8; 32]);
+			let parent_hash = tet_core::H256::from([69u8; 32]);
 			let mut digest = Digest::default();
 			digest.push(DigestItem::Seal([1, 2, 3, 4], vec![5, 6, 7, 8]));
 

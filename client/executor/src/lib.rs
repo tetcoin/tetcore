@@ -42,7 +42,7 @@ pub use native_executor::{with_externalities_safe, NativeExecutor, WasmExecutor,
 pub use sp_version::{RuntimeVersion, NativeVersion};
 pub use codec::Codec;
 #[doc(hidden)]
-pub use sp_core::traits::{Externalities, CallInWasm};
+pub use tet_core::traits::{Externalities, CallInWasm};
 #[doc(hidden)]
 pub use tetcore_wasm_interface;
 pub use wasm_runtime::WasmExecutionMethod;
@@ -58,7 +58,7 @@ pub trait RuntimeInfo {
 	fn runtime_version(
 		&self,
 		ext: &mut dyn Externalities,
-		runtime_code: &sp_core::traits::RuntimeCode,
+		runtime_code: &tet_core::traits::RuntimeCode,
 	) -> error::Result<RuntimeVersion>;
 }
 
@@ -68,7 +68,7 @@ mod tests {
 	use sc_runtime_test::wasm_binary_unwrap;
 	use sp_io::TestExternalities;
 	use tetcore_wasm_interface::HostFunctions;
-	use sp_core::traits::CallInWasm;
+	use tet_core::traits::CallInWasm;
 
 	#[test]
 	fn call_in_interpreted_wasm_works() {
@@ -87,7 +87,7 @@ mod tests {
 			"test_empty_return",
 			&[],
 			&mut ext,
-			sp_core::traits::MissingHostFunctions::Allow,
+			tet_core::traits::MissingHostFunctions::Allow,
 		).unwrap();
 		assert_eq!(res, vec![0u8; 0]);
 	}

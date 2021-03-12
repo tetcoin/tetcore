@@ -13,7 +13,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../core" }
 tp-api = { version = "2.0.0", default-features = false, path = "../api" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
 
@@ -23,7 +23,7 @@ tp-state-machine = { version = "0.8.0", default-features = false, path = "../sta
 [features]
 default = ["std"]
 std = [
-	"tp-core/std",
+	"tet-core/std",
 	"tp-api/std",
 	"tp-runtime/std"
 ]

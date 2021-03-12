@@ -64,7 +64,7 @@
 use crate::offchain::storage::StorageValueRef;
 use crate::traits::AtLeast32BitUnsigned;
 use codec::{Codec, Decode, Encode};
-use sp_core::offchain::{Duration, Timestamp};
+use tet_core::offchain::{Duration, Timestamp};
 use sp_io::offchain;
 
 /// Default expiry duration for time based locks in milliseconds.
@@ -453,7 +453,7 @@ pub trait BlockNumberProvider {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::offchain::{testing, OffchainExt};
+	use tet_core::offchain::{testing, OffchainExt};
 	use sp_io::TestExternalities;
 
 	const VAL_1: u32 = 0u32;

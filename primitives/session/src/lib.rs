@@ -26,8 +26,8 @@ use sp_runtime::{generic::BlockId, traits::Block as BlockT};
 #[cfg(feature = "std")]
 use sp_api::ProvideRuntimeApi;
 
-use sp_core::RuntimeDebug;
-use sp_core::crypto::KeyTypeId;
+use tet_core::RuntimeDebug;
+use tet_core::crypto::KeyTypeId;
 use sp_staking::SessionIndex;
 use tetcore_std::vec::Vec;
 
@@ -82,13 +82,13 @@ pub trait GetValidatorCount {
 	fn validator_count(&self) -> ValidatorCount;
 }
 
-impl GetSessionNumber for sp_core::Void {
+impl GetSessionNumber for tet_core::Void {
 	fn session(&self) -> SessionIndex {
 		Default::default()
 	}
 }
 
-impl GetValidatorCount for sp_core::Void {
+impl GetValidatorCount for tet_core::Void {
 	fn validator_count(&self) -> ValidatorCount {
 		Default::default()
 	}

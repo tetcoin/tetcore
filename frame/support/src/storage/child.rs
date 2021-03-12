@@ -23,7 +23,7 @@
 
 use crate::tetcore_std::prelude::*;
 use codec::{Codec, Encode, Decode};
-pub use sp_core::storage::{ChildInfo, ChildType};
+pub use tet_core::storage::{ChildInfo, ChildType};
 
 /// The outcome of calling [`kill_storage`].
 pub enum KillOutcome {

@@ -26,8 +26,8 @@ use crate::traits::{
 };
 use crate::traits::ValidateUnsigned;
 use crate::{generic, KeyTypeId, CryptoTypeId, ApplyExtrinsicResultWithInfo};
-pub use sp_core::{H256, sr25519};
-use sp_core::{crypto::{CryptoType, Dummy, key_types, Public}, U256};
+pub use tet_core::{H256, sr25519};
+use tet_core::{crypto::{CryptoType, Dummy, key_types, Public}, U256};
 use crate::transaction_validity::{TransactionValidity, TransactionValidityError, TransactionSource};
 
 /// A dummy type which can be used instead of regular cryptographic primitives.

@@ -27,7 +27,7 @@ pub use tetcore_tracing;
 
 #[cfg(feature = "std")]
 pub use serde;
-pub use sp_core::Void;
+pub use tet_core::Void;
 #[doc(hidden)]
 pub use tetcore_std;
 #[doc(hidden)]

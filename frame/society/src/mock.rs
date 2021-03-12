@@ -24,7 +24,7 @@ use frame_support::{
 	parameter_types, ord_parameter_types,
 	traits::{OnInitialize, OnFinalize, TestRandomness},
 };
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	testing::Header,
 	traits::{BlakeTwo256, IdentityLookup},

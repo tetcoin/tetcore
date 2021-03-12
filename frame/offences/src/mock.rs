@@ -29,7 +29,7 @@ use sp_staking::{
 };
 use sp_runtime::testing::Header;
 use sp_runtime::traits::{IdentityLookup, BlakeTwo256};
-use sp_core::H256;
+use tet_core::H256;
 use frame_support::{
 	impl_outer_origin, impl_outer_event, parameter_types, StorageMap, StorageDoubleMap,
 	weights::{Weight, constants::{WEIGHT_PER_SECOND, RocksDbWeight}},

@@ -17,7 +17,7 @@
 
 //! Error types in Consensus
 use sp_version::RuntimeVersion;
-use sp_core::ed25519::Public;
+use tet_core::ed25519::Public;
 use std::error;
 
 /// Result type alias.

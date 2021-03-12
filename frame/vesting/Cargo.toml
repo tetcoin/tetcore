@@ -24,7 +24,7 @@ frame-benchmarking = { version = "2.0.0", default-features = false, path = "../b
 
 [dev-dependencies]
 tp-io = { version = "2.0.0", path = "../../primitives/io" }
-tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 tetcore-storage = { version = "2.0.0", path = "../../primitives/storage" }
 hex-literal = "0.3.1"

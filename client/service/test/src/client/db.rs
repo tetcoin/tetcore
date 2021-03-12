@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use sp_core::offchain::{OffchainStorage, storage::InMemOffchainStorage};
+use tet_core::offchain::{OffchainStorage, storage::InMemOffchainStorage};
 use std::sync::Arc;
 
 type TestBackend = sc_client_api::in_mem::Backend<tetcore_test_runtime::Block>;

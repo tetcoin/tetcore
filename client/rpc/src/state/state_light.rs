@@ -49,7 +49,7 @@ use sc_client_api::{
 		RemoteBlockchain, Fetcher, future_header,
 	},
 };
-use sp_core::{
+use tet_core::{
 	Bytes, OpaqueMetadata,
 	storage::{StorageKey, PrefixedStorageKey, StorageData, StorageChangeSet},
 };
@@ -746,7 +746,7 @@ fn ignore_error<F, T>(future: F) -> impl std::future::Future<Output=Result<Optio
 mod tests {
 	use rpc::futures::stream::futures_ordered;
 	use tetcore_test_runtime_client::runtime::Block;
-	use sp_core::H256;
+	use tet_core::H256;
 	use super::*;
 
 	#[test]

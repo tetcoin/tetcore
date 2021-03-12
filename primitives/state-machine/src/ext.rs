@@ -22,7 +22,7 @@ use crate::{
 	backend::Backend, overlayed_changes::OverlayedExtensions,
 };
 use tetsy_hash_db::Hasher;
-use sp_core::{
+use tet_core::{
 	storage::{well_known_keys::is_child_storage_key, ChildInfo, TrackedStorageKey},
 	hexdisplay::HexDisplay,
 };
@@ -434,7 +434,7 @@ where
 		);
 		let _guard = guard();
 
-		if sp_core::storage::well_known_keys::starts_with_child_storage_key(prefix) {
+		if tet_core::storage::well_known_keys::starts_with_child_storage_key(prefix) {
 			warn!(target: "trie", "Refuse to directly clear prefix that is part or contains of child storage key");
 			return;
 		}
@@ -778,7 +778,7 @@ mod tests {
 	use hex_literal::hex;
 	use num_traits::Zero;
 	use codec::Encode;
-	use sp_core::{
+	use tet_core::{
 		H256,
 		Blake2Hasher,
 		map,
@@ -1009,7 +1009,7 @@ mod tests {
 
 		let ext = TestExt::new(&mut overlay, &mut cache, &backend, None, None);
 
-		use sp_core::storage::well_known_keys;
+		use tet_core::storage::well_known_keys;
 		let mut ext = ext;
 		let mut not_under_prefix = well_known_keys::CHILD_STORAGE_KEY_PREFIX.to_vec();
 		not_under_prefix[4] = 88;

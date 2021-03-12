@@ -17,7 +17,7 @@
 
 //! A set of storage helpers for offchain workers.
 
-use sp_core::offchain::StorageKind;
+use tet_core::offchain::StorageKind;
 
 /// A storage value with a static key.
 pub type StorageValue = StorageValueRef<'static>;
@@ -103,7 +103,7 @@ impl<'a> StorageValueRef<'a> {
 mod tests {
 	use super::*;
 	use sp_io::TestExternalities;
-	use sp_core::offchain::{
+	use tet_core::offchain::{
 		OffchainExt,
 		testing,
 	};

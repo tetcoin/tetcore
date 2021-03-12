@@ -24,7 +24,7 @@ use tp_runtime_interface::runtime_interface;
 #[cfg(not(feature = "std"))]
 use tetcore_std::{prelude::*, mem, convert::TryFrom};
 
-use sp_core::{sr25519::Public, wasm_export_functions};
+use tet_core::{sr25519::Public, wasm_export_functions};
 
 // Include the WASM binary
 #[cfg(feature = "std")]

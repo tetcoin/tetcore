@@ -19,7 +19,7 @@ use codec::{Encode, Decode};
 use frame_system::offchain::AppCrypto;
 use frame_support::Hashable;
 use sp_state_machine::TestExternalities as CoreTestExternalities;
-use sp_core::{
+use tet_core::{
 	NeverNativeValue, NativeOrEncoded,
 	crypto::KeyTypeId,
 	sr25519::Signature,
@@ -59,7 +59,7 @@ pub struct TestAuthorityId;
 impl AppCrypto<MultiSigner, MultiSignature> for TestAuthorityId {
 	type RuntimeAppPublic = sr25519::AuthorityId;
 	type GenericSignature = Signature;
-	type GenericPublic = sp_core::sr25519::Public;
+	type GenericPublic = tet_core::sr25519::Public;
 }
 
 /// The wasm runtime code.
@@ -109,11 +109,11 @@ pub fn executor_call<
 ) -> (Result<NativeOrEncoded<R>>, bool) {
 	let mut t = t.ext();
 
-	let code = t.storage(sp_core::storage::well_known_keys::CODE).unwrap();
-	let heap_pages = t.storage(sp_core::storage::well_known_keys::HEAP_PAGES);
+	let code = t.storage(tet_core::storage::well_known_keys::CODE).unwrap();
+	let heap_pages = t.storage(tet_core::storage::well_known_keys::HEAP_PAGES);
 	let runtime_code = RuntimeCode {
-		code_fetcher: &sp_core::traits::WrappedRuntimeCode(code.as_slice().into()),
-		hash: sp_core::blake2_256(&code).to_vec(),
+		code_fetcher: &tet_core::traits::WrappedRuntimeCode(code.as_slice().into()),
+		hash: tet_core::blake2_256(&code).to_vec(),
 		heap_pages: heap_pages.and_then(|hp| Decode::decode(&mut &hp[..]).ok()),
 	};
 

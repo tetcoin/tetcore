@@ -34,7 +34,7 @@ pub trait TotalDifficulty {
 	fn increment(&mut self, other: Self);
 }
 
-impl TotalDifficulty for sp_core::U256 {
+impl TotalDifficulty for tet_core::U256 {
 	fn increment(&mut self, other: Self) {
 		let ret = self.saturating_add(other);
 		*self = ret;

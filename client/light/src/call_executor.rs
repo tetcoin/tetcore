@@ -23,7 +23,7 @@ use std::{
 };
 
 use codec::{Encode, Decode};
-use sp_core::{
+use tet_core::{
 	convert_hash, NativeOrEncoded, traits::{CodeExecutor, SpawnNamed},
 };
 use sp_runtime::{

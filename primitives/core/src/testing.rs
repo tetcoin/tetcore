@@ -38,7 +38,7 @@ pub const ECDSA: KeyTypeId = KeyTypeId(*b"ecds");
 /// # Example
 ///
 /// ```
-/// # use sp_core::wasm_export_functions;
+/// # use tet_core::wasm_export_functions;
 ///
 /// wasm_export_functions! {
 ///     fn test_in_wasm(value: bool, another_value: Vec<u8>) -> bool {

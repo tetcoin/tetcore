@@ -638,7 +638,7 @@ mod tests {
 	use super::*;
 	use codec::Decode;
 	use crate::mock::{Test as TestRuntime, Call};
-	use sp_core::offchain::{testing, TransactionPoolExt};
+	use tet_core::offchain::{testing, TransactionPoolExt};
 	use sp_runtime::testing::{UintAuthorityId, TestSignature, TestXt};
 
 	impl SigningTypes for TestRuntime {

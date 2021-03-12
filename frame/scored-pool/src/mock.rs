@@ -22,7 +22,7 @@ use crate as pallet_scored_pool;
 
 use std::cell::RefCell;
 use frame_support::{parameter_types, ord_parameter_types};
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup}, testing::Header,
 };

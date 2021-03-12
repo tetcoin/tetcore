@@ -21,7 +21,7 @@ log = { version = "0.4.8", optional = true }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 tp-api = { version = "2.0.0", default-features = false, path = "../api" }
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
-tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../core" }
 tp-keystore = { version = "0.8.0", default-features = false, path = "../keystore", optional = true }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
@@ -35,7 +35,7 @@ std = [
 	"grandpa/std",
 	"tp-api/std",
 	"tp-application-crypto/std",
-	"tp-core/std",
+	"tet-core/std",
 	"tp-keystore",
 	"tp-runtime/std",
 	"tetcore-std/std",

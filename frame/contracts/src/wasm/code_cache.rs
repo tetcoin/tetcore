@@ -31,7 +31,7 @@ use crate::wasm::{prepare, runtime::Env, PrefabWasmModule};
 use crate::{CodeHash, CodeStorage, PristineCode, Schedule, Config};
 use tetcore_std::prelude::*;
 use sp_runtime::traits::Hash;
-use sp_core::crypto::UncheckedFrom;
+use tet_core::crypto::UncheckedFrom;
 use frame_support::StorageMap;
 
 /// Put code in the storage. The hash of code is used as a key and is returned

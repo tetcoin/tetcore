@@ -22,7 +22,7 @@ use std::collections::{HashMap, HashSet};
 use std::ptr;
 use std::sync::Arc;
 use parking_lot::RwLock;
-use sp_core::{
+use tet_core::{
 	storage::well_known_keys, offchain::storage::InMemOffchainStorage as OffchainStorage,
 };
 use sp_runtime::generic::BlockId;

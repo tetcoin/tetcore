@@ -24,7 +24,7 @@ use std::marker::PhantomData;
 
 use tetsy_hash_db::{HashDB, Hasher, EMPTY_PREFIX};
 use codec::{Decode, Encode};
-use sp_core::{convert_hash, traits::{CodeExecutor, SpawnNamed}, storage::{ChildInfo, ChildType}};
+use tet_core::{convert_hash, traits::{CodeExecutor, SpawnNamed}, storage::{ChildInfo, ChildType}};
 use sp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, Hash, HashFor, NumberFor,
 	AtLeast32Bit, CheckedConversion,

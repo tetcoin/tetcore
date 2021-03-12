@@ -27,7 +27,7 @@ mod transaction_pool_params;
 
 use std::{fmt::Debug, str::FromStr, convert::TryFrom};
 use sp_runtime::{generic::BlockId, traits::{Block as BlockT, NumberFor}};
-use sp_core::crypto::Ss58AddressFormat;
+use tet_core::crypto::Ss58AddressFormat;
 use crate::arg_enums::{OutputType, CryptoScheme};
 use structopt::StructOpt;
 
@@ -177,7 +177,7 @@ mod tests {
 
 	#[test]
 	fn parse_block_hash() {
-		let hash = sp_core::H256::default();
+		let hash = tet_core::H256::default();
 		let hash_str = format!("{:?}", hash);
 		let block_number_or_hash = BlockNumberOrHash::from_str(&hash_str).unwrap();
 		let parsed = block_number_or_hash.parse::<Block>().unwrap();

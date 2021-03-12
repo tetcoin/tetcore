@@ -26,7 +26,7 @@ tp-block-builder = { path = "../../../primitives/block-builder", default-feature
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../../primitives/inherents" }
 node-primitives = { version = "2.0.0", default-features = false, path = "../primitives" }
 tp-offchain = { version = "2.0.0", default-features = false, path = "../../../primitives/offchain" }
-tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
 tp-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
@@ -124,7 +124,7 @@ std = [
 	"tp-offchain/std",
 	"pallet-offences/std",
 	"pallet-proxy/std",
-	"tp-core/std",
+	"tet-core/std",
 	"pallet-randomness-collective-flip/std",
 	"tetcore-std/std",
 	"serde",

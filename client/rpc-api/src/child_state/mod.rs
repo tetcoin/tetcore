@@ -19,7 +19,7 @@
 //! Tetcore state API.
 
 use jsonrpc_derive::rpc;
-use sp_core::storage::{StorageKey, PrefixedStorageKey, StorageData};
+use tet_core::storage::{StorageKey, PrefixedStorageKey, StorageData};
 use crate::state::error::FutureResult;
 
 pub use self::gen_client::Client as ChildStateClient;

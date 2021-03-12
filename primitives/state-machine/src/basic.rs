@@ -24,7 +24,7 @@ use crate::{Backend, StorageKey, StorageValue};
 use tetsy_hash_db::Hasher;
 use sp_trie::{TrieConfiguration, empty_child_trie_root};
 use sp_trie::trie_types::Layout;
-use sp_core::{
+use tet_core::{
 	storage::{
 		well_known_keys::is_child_storage_key, Storage,
 		ChildInfo, StorageChild, TrackedStorageKey,
@@ -67,7 +67,7 @@ impl BasicExternalities {
 	///
 	/// Returns the result of the closure and updates `storage` with all changes.
 	pub fn execute_with_storage<R>(
-		storage: &mut sp_core::storage::Storage,
+		storage: &mut tet_core::storage::Storage,
 		f: impl FnOnce() -> R,
 	) -> R {
 		let mut ext = Self {
@@ -359,9 +359,9 @@ impl externalities::ExtensionStore for BasicExternalities {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::map;
-	use sp_core::storage::{Storage, StorageChild};
-	use sp_core::storage::well_known_keys::CODE;
+	use tet_core::map;
+	use tet_core::storage::{Storage, StorageChild};
+	use tet_core::storage::well_known_keys::CODE;
 	use hex_literal::hex;
 
 	#[test]

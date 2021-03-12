@@ -63,7 +63,7 @@ impl<T, I, L> mmr_lib::MMRStore<NodeOf<T, I, L>> for Storage<OffchainStorage, T,
 		let key = Module::<T, I>::offchain_key(pos);
 		// Retrieve the element from Off-chain DB.
 		Ok(
-			sp_io::offchain ::local_storage_get(sp_core::offchain::StorageKind::PERSISTENT, &key)
+			sp_io::offchain ::local_storage_get(tet_core::offchain::StorageKind::PERSISTENT, &key)
 				.and_then(|v| codec::Decode::decode(&mut &*v).ok())
 		)
 	}

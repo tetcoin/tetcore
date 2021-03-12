@@ -32,7 +32,7 @@ use frame_support::{
 	weights::Weight,
 };
 use sp_io;
-use sp_core::{H256, U256, crypto::{IsWrappedBy, KeyTypeId, Pair}};
+use tet_core::{H256, U256, crypto::{IsWrappedBy, KeyTypeId, Pair}};
 use sp_consensus_babe::{AuthorityId, AuthorityPair, Slot};
 use sp_consensus_vrf::schnorrkel::{VRFOutput, VRFProof};
 use sp_staking::SessionIndex;
@@ -346,7 +346,7 @@ pub fn make_vrf_output(
 	slot: Slot,
 	pair: &sp_consensus_babe::AuthorityPair
 ) -> (VRFOutput, VRFProof, [u8; 32]) {
-	let pair = sp_core::sr25519::Pair::from_ref(pair).as_ref();
+	let pair = tet_core::sr25519::Pair::from_ref(pair).as_ref();
 	let transcript = sp_consensus_babe::make_transcript(&Babe::randomness(), slot, 0);
 	let vrf_inout = pair.vrf_sign(transcript);
 	let vrf_randomness: sp_consensus_vrf::schnorrkel::Randomness = vrf_inout.0

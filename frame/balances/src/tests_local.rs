@@ -23,7 +23,7 @@ use sp_runtime::{
 	traits::IdentityLookup,
 	testing::Header,
 };
-use sp_core::H256;
+use tet_core::H256;
 use sp_io;
 use frame_support::parameter_types;
 use frame_support::traits::StorageMapShim;

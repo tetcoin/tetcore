@@ -4,7 +4,7 @@ use super::*;
 use crate as pallet_atomic_swap;
 
 use frame_support::parameter_types;
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	testing::Header,
 	traits::{BlakeTwo256, IdentityLookup},

@@ -18,7 +18,7 @@
 
 //! Extrinsic helpers for author RPC module.
 
-use sp_core::Bytes;
+use tet_core::Bytes;
 use serde::{Serialize, Deserialize};
 
 /// RPC Extrinsic or hash

@@ -47,7 +47,7 @@ parking_lot = "0.11.1"
 tp-authority-discovery = { version = "2.0.0",  path = "../../../primitives/authority-discovery" }
 tp-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
 grandpa-primitives = { version = "2.0.0", package = "tp-finality-grandpa", path = "../../../primitives/finality-grandpa" }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 tp-timestamp = { version = "2.0.0", default-features = false, path = "../../../primitives/timestamp" }
 tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }

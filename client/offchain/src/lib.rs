@@ -46,7 +46,7 @@ use sp_api::{ApiExt, ProvideRuntimeApi};
 use futures::future::Future;
 use log::{debug, warn};
 use sc_network::{ExHashT, NetworkService, NetworkStateInfo, PeerId};
-use sp_core::{offchain::{self, OffchainStorage}, ExecutionContext, traits::SpawnNamed};
+use tet_core::{offchain::{self, OffchainStorage}, ExecutionContext, traits::SpawnNamed};
 use sp_runtime::{generic::BlockId, traits::{self, Header}};
 use futures::{prelude::*, future::ready};
 
@@ -292,7 +292,7 @@ mod tests {
 		tetcore_tracing::try_init_simple();
 
 		let client = Arc::new(tetcore_test_runtime_client::new());
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = TestPool(BasicPool::new_full(
 			Default::default(),
 			None,

@@ -35,7 +35,7 @@ use futures::future::{ready, FutureExt, TryFutureExt};
 use sc_rpc_api::DenyUnsafe;
 use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use codec::{Encode, Decode};
-use sp_core::Bytes;
+use tet_core::Bytes;
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sp_api::ProvideRuntimeApi;
 use sp_runtime::generic;

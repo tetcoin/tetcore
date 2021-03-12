@@ -23,7 +23,7 @@ use futures::{channel::mpsc::channel, executor::LocalPool, task::LocalSpawn};
 use tetsy_libp2p::core::{multiaddr::{Multiaddr, Protocol}, PeerId};
 
 use sp_authority_discovery::AuthorityId;
-use sp_core::crypto::key_types;
+use tet_core::crypto::key_types;
 use sp_keystore::{CryptoStore, testing::KeyStore};
 
 #[test]

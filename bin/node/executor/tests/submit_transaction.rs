@@ -20,7 +20,7 @@ use node_runtime::{
 	Executive, Indices, Runtime, UncheckedExtrinsic,
 };
 use sp_application_crypto::AppKey;
-use sp_core::{
+use tet_core::{
 	offchain::{
 		TransactionPoolExt,
 		testing::TestTransactionPoolExt,

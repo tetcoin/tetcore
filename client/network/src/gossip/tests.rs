@@ -88,7 +88,7 @@ fn build_test_full_node(network_config: config::NetworkConfiguration)
 		PassThroughVerifier(false),
 		Box::new(client.clone()),
 		None,
-		&sp_core::testing::TaskExecutor::new(),
+		&tet_core::testing::TaskExecutor::new(),
 		None,
 	));
 

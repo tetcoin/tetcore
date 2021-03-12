@@ -31,7 +31,7 @@
 //! # };
 //! # use sc_transaction_pool::{BasicPool, FullChainApi};
 //! # let client = Arc::new(tetcore_test_runtime_client::new());
-//! # let spawner = sp_core::testing::TaskExecutor::new();
+//! # let spawner = tet_core::testing::TaskExecutor::new();
 //! # let txpool = BasicPool::new_full(
 //! #     Default::default(),
 //! #     None,

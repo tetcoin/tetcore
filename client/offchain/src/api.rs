@@ -29,8 +29,8 @@ use futures::Future;
 use log::error;
 use sc_network::{PeerId, Multiaddr};
 use codec::{Encode, Decode};
-use sp_core::OpaquePeerId;
-use sp_core::offchain::{
+use tet_core::OpaquePeerId;
+use tet_core::offchain::{
 	Externalities as OffchainExt, HttpRequestId, Timestamp, HttpRequestStatus, HttpError,
 	OffchainStorage, OpaqueNetworkState, OpaqueMultiaddr, StorageKind,
 };
@@ -365,7 +365,7 @@ mod tests {
 
 		// Arrange.
 		let now = api.timestamp();
-		let delta = sp_core::offchain::Duration::from_millis(100);
+		let delta = tet_core::offchain::Duration::from_millis(100);
 		let deadline = now.add(delta);
 
 		// Act.

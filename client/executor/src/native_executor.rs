@@ -30,7 +30,7 @@ use std::{
 
 use sp_version::{NativeVersion, RuntimeVersion};
 use codec::{Decode, Encode};
-use sp_core::{
+use tet_core::{
 	NativeOrEncoded,
 	traits::{
 		CodeExecutor, Externalities, RuntimeCode, MissingHostFunctions,
@@ -175,7 +175,7 @@ impl WasmExecutor {
 	}
 }
 
-impl sp_core::traits::CallInWasm for WasmExecutor {
+impl tet_core::traits::CallInWasm for WasmExecutor {
 	fn call_in_wasm(
 		&self,
 		wasm_code: &[u8],
@@ -189,7 +189,7 @@ impl sp_core::traits::CallInWasm for WasmExecutor {
 
 		if let Some(hash) = code_hash {
 			let code = RuntimeCode {
-				code_fetcher: &sp_core::traits::WrappedRuntimeCode(wasm_code.into()),
+				code_fetcher: &tet_core::traits::WrappedRuntimeCode(wasm_code.into()),
 				hash,
 				heap_pages: None,
 			};
@@ -302,7 +302,7 @@ pub struct RuntimeInstanceSpawn {
 	module: Arc<dyn WasmModule>,
 	tasks: parking_lot::Mutex<HashMap<u64, mpsc::Receiver<Vec<u8>>>>,
 	counter: AtomicU64,
-	scheduler: Box<dyn sp_core::traits::SpawnNamed>,
+	scheduler: Box<dyn tet_core::traits::SpawnNamed>,
 }
 
 impl RuntimeSpawn for RuntimeInstanceSpawn {
@@ -392,7 +392,7 @@ impl RuntimeSpawn for RuntimeInstanceSpawn {
 impl RuntimeInstanceSpawn {
 	pub fn new(
 		module: Arc<dyn WasmModule>,
-		scheduler: Box<dyn sp_core::traits::SpawnNamed>,
+		scheduler: Box<dyn tet_core::traits::SpawnNamed>,
 	) -> Self {
 		Self {
 			module,
@@ -406,7 +406,7 @@ impl RuntimeInstanceSpawn {
 		module: Arc<dyn WasmModule>,
 		mut ext: &mut dyn Externalities,
 	) -> Option<Self> {
-		ext.extension::<sp_core::traits::TaskExecutorExt>()
+		ext.extension::<tet_core::traits::TaskExecutorExt>()
 			.map(move |task_ext| Self::new(module, task_ext.clone()))
 	}
 
@@ -530,7 +530,7 @@ impl<D: NativeExecutionDispatch> Clone for NativeExecutor<D> {
 	}
 }
 
-impl<D: NativeExecutionDispatch> sp_core::traits::CallInWasm for NativeExecutor<D> {
+impl<D: NativeExecutionDispatch> tet_core::traits::CallInWasm for NativeExecutor<D> {
 	fn call_in_wasm(
 		&self,
 		wasm_blob: &[u8],

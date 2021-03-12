@@ -23,7 +23,7 @@ use super::{
 	Config,
 	code::WasmModule,
 };
-use sp_core::crypto::UncheckedFrom;
+use tet_core::crypto::UncheckedFrom;
 use sp_sandbox::{EnvironmentDefinitionBuilder, Instance, Memory};
 
 /// Minimal execution environment without any exported functions.

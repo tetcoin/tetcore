@@ -25,7 +25,7 @@ use frame_support::{
 	weights::{constants::RocksDbWeight, Weight},
 	IterableStorageMap, StorageDoubleMap, StorageMap, StorageValue,
 };
-use sp_core::H256;
+use tet_core::H256;
 use sp_io;
 use sp_npos_elections::{
 	to_support_map, EvaluateSupport, reduce, ExtendedBalance, StakedAssignment, ElectionScore,

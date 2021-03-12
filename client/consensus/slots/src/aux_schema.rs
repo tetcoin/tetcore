@@ -135,8 +135,8 @@ pub fn check_equivocation<C, H, P>(
 
 #[cfg(test)]
 mod test {
-	use sp_core::{sr25519, Pair};
-	use sp_core::hash::H256;
+	use tet_core::{sr25519, Pair};
+	use tet_core::hash::H256;
 	use sp_runtime::testing::{Header as HeaderTest, Digest as DigestTest};
 	use tetcore_test_runtime_client;
 

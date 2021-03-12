@@ -16,7 +16,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
-tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tp-finality-grandpa = { version = "2.0.0", default-features = false, path = "../../primitives/finality-grandpa" }
 tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
@@ -46,7 +46,7 @@ std = [
 	"codec/std",
 	"frame-benchmarking/std",
 	"tp-application-crypto/std",
-	"tp-core/std",
+	"tet-core/std",
 	"tp-finality-grandpa/std",
 	"tp-session/std",
 	"tetcore-std/std",

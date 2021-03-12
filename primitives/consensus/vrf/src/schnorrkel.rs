@@ -19,7 +19,7 @@
 
 use codec::{Encode, Decode, EncodeLike};
 use tetcore_std::{convert::TryFrom, prelude::*};
-use sp_core::U512;
+use tet_core::U512;
 use tetcore_std::ops::{Deref, DerefMut};
 use schnorrkel::errors::MultiSignatureStage;
 

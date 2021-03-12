@@ -52,8 +52,8 @@ use tetcore_std::str;
 use tetcore_std::prelude::Vec;
 #[cfg(not(feature = "std"))]
 use tetcore_std::prelude::vec;
-use sp_core::RuntimeDebug;
-use sp_core::offchain::{
+use tet_core::RuntimeDebug;
+use tet_core::offchain::{
 	Timestamp,
 	HttpRequestId as RequestId,
 	HttpRequestStatus as RequestStatus,
@@ -517,7 +517,7 @@ impl<'a> HeadersIterator<'a> {
 mod tests {
 	use super::*;
 	use sp_io::TestExternalities;
-	use sp_core::offchain::{
+	use tet_core::offchain::{
 		OffchainExt,
 		testing,
 	};

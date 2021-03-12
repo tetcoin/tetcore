@@ -21,7 +21,7 @@ use crate::{warn, debug};
 use tetsy_hash_db::Hasher;
 use sp_trie::{Trie, delta_trie_root, empty_child_trie_root, child_delta_trie_root};
 use sp_trie::trie_types::{TrieDB, TrieError, Layout};
-use sp_core::storage::{ChildInfo, ChildType};
+use tet_core::storage::{ChildInfo, ChildType};
 use codec::{Codec, Decode};
 use crate::{
 	StorageKey, StorageValue, Backend,
@@ -250,7 +250,7 @@ impl<S: TrieBackendStorage<H>, H: Hasher> Backend<H> for TrieBackend<S, H> where
 #[cfg(test)]
 pub mod tests {
 	use std::{collections::HashSet, iter};
-	use sp_core::H256;
+	use tet_core::H256;
 	use codec::Encode;
 	use sp_trie::{TrieMut, PrefixedMemoryDB, trie_types::TrieDBMut, KeySpacedDBMut};
 	use sp_runtime::traits::BlakeTwo256;

@@ -18,7 +18,7 @@
 
 //! Authority discovery errors.
 
-use sp_core::crypto::CryptoTypePublicPair;
+use tet_core::crypto::CryptoTypePublicPair;
 
 /// AuthorityDiscovery Result.
 pub type Result<T> = std::result::Result<T, Error>;

@@ -39,7 +39,7 @@ use tetcore_test_runtime_client::{
 use sp_api::{InitializeBlock, StorageTransactionCache, ProofRecorder};
 use sp_consensus::BlockOrigin;
 use sc_executor::{NativeExecutor, WasmExecutionMethod, RuntimeVersion, NativeVersion};
-use sp_core::{H256, NativeOrEncoded, testing::TaskExecutor};
+use tet_core::{H256, NativeOrEncoded, testing::TaskExecutor};
 use sc_client_api::{
 	blockchain::Info, backend::NewBlockState, Backend as ClientBackend, ProofProvider,
 	in_mem::{Backend as InMemBackend, Blockchain as InMemoryBlockchain}, ProvideChtRoots,
@@ -62,7 +62,7 @@ use tetcore_test_runtime_client::{
 	AccountKeyring, runtime::{self, Extrinsic},
 };
 
-use sp_core::{blake2_256, ChangesTrieConfiguration, storage::{well_known_keys, StorageKey, ChildInfo}};
+use tet_core::{blake2_256, ChangesTrieConfiguration, storage::{well_known_keys, StorageKey, ChildInfo}};
 use sp_state_machine::Backend as _;
 
 pub type DummyBlockchain = Blockchain<DummyStorage>;
@@ -663,7 +663,7 @@ fn changes_proof_is_generated_and_checked_when_headers_are_not_pruned() {
 		let local_roots_range = local_roots.clone()[(begin - 1) as usize..].to_vec();
 		let config = ChangesTrieConfiguration::new(4, 2);
 		let request = RemoteChangesRequest::<Header> {
-			changes_trie_configs: vec![sp_core::ChangesTrieConfigurationRange {
+			changes_trie_configs: vec![tet_core::ChangesTrieConfigurationRange {
 				zero: (0, Default::default()),
 				end: None,
 				config: Some(config),
@@ -724,7 +724,7 @@ fn changes_proof_is_generated_and_checked_when_headers_are_pruned() {
 	// check proof on local client
 	let config = ChangesTrieConfiguration::new(4, 2);
 	let request = RemoteChangesRequest::<Header> {
-		changes_trie_configs: vec![sp_core::ChangesTrieConfigurationRange {
+		changes_trie_configs: vec![tet_core::ChangesTrieConfigurationRange {
 			zero: (0, Default::default()),
 			end: None,
 			config: Some(config),
@@ -771,7 +771,7 @@ fn check_changes_proof_fails_if_proof_is_wrong() {
 	let local_roots_range = local_roots.clone()[(begin - 1) as usize..].to_vec();
 	let config = ChangesTrieConfiguration::new(4, 2);
 	let request = RemoteChangesRequest::<Header> {
-		changes_trie_configs: vec![sp_core::ChangesTrieConfigurationRange {
+		changes_trie_configs: vec![tet_core::ChangesTrieConfigurationRange {
 			zero: (0, Default::default()),
 			end: None,
 			config: Some(config),

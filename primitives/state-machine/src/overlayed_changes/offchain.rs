@@ -17,7 +17,7 @@
 
 //! Overlayed changes for offchain indexing.
 
-use sp_core::offchain::OffchainOverlayedChange;
+use tet_core::offchain::OffchainOverlayedChange;
 use tetcore_std::prelude::Vec;
 use super::changeset::OverlayedMap;
 
@@ -88,7 +88,7 @@ impl OffchainOverlayedChanges {
 #[cfg(test)]
 mod test {
 	use super::*;
-	use sp_core::offchain::STORAGE_PREFIX;
+	use tet_core::offchain::STORAGE_PREFIX;
 
 	#[test]
 	fn test_drain() {

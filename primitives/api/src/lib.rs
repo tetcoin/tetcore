@@ -43,13 +43,13 @@ pub use sp_state_machine::{
 };
 #[doc(hidden)]
 #[cfg(feature = "std")]
-pub use sp_core::NativeOrEncoded;
+pub use tet_core::NativeOrEncoded;
 #[doc(hidden)]
 #[cfg(feature = "std")]
 pub use tetsy_hash_db::Hasher;
 #[doc(hidden)]
 #[cfg(not(feature = "std"))]
-pub use sp_core::to_tetcore_wasm_fn_return_value;
+pub use tet_core::to_tetcore_wasm_fn_return_value;
 #[doc(hidden)]
 pub use sp_runtime::{
 	traits::{
@@ -59,7 +59,7 @@ pub use sp_runtime::{
 	generic::BlockId, transaction_validity::TransactionValidity, RuntimeString, TransactionOutcome,
 };
 #[doc(hidden)]
-pub use sp_core::{offchain, ExecutionContext};
+pub use tet_core::{offchain, ExecutionContext};
 #[doc(hidden)]
 pub use sp_version::{ApiId, RuntimeVersion, ApisVec, create_apis_vec};
 #[doc(hidden)]
@@ -68,7 +68,7 @@ pub use tetcore_std::{slice, mem};
 use tetcore_std::result;
 #[doc(hidden)]
 pub use codec::{Encode, Decode, DecodeLimit};
-use sp_core::OpaqueMetadata;
+use tet_core::OpaqueMetadata;
 #[cfg(feature = "std")]
 use std::{panic::UnwindSafe, cell::RefCell};
 
@@ -313,7 +313,7 @@ pub use sp_api_proc_macro::impl_runtime_apis;
 /// ```rust
 /// # use sp_runtime::{traits::Block as BlockT, generic::BlockId};
 /// # use sp_test_primitives::Block;
-/// # use sp_core::NativeOrEncoded;
+/// # use tet_core::NativeOrEncoded;
 /// # use codec;
 /// #
 /// # sp_api::decl_runtime_apis! {

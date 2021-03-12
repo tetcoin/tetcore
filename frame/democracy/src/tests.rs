@@ -24,7 +24,7 @@ use frame_support::{
 	impl_outer_event, ord_parameter_types, traits::{Contains, OnInitialize, Filter},
 	weights::Weight,
 };
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup, BadOrigin},
 	testing::Header, Perbill,

@@ -26,7 +26,7 @@ use sp_state_machine::StateMachine;
 use externalities::Extensions;
 use sc_service::{Configuration, NativeExecutionDispatch};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
-use sp_core::offchain::{OffchainExt, testing::TestOffchainExt};
+use tet_core::offchain::{OffchainExt, testing::TestOffchainExt};
 use sp_keystore::{
 	SyncCryptoStorePtr, KeystoreExt,
 	testing::KeyStore,
@@ -93,7 +93,7 @@ impl BenchmarkCmd {
 			).encode(),
 			extensions,
 			&sp_state_machine::backend::BackendRuntimeCode::new(&state).runtime_code()?,
-			sp_core::testing::TaskExecutor::new(),
+			tet_core::testing::TaskExecutor::new(),
 		)
 		.execute(strategy.into())
 		.map_err(|e| format!("Error executing runtime benchmark: {:?}", e))?;

@@ -24,7 +24,7 @@
 use crate::error::{Result, Error};
 use std::{collections::HashMap, rc::Rc};
 use codec::{Decode, Encode};
-use sp_core::sandbox as sandbox_primitives;
+use tet_core::sandbox as sandbox_primitives;
 use twasmi::{
 	Externals, ImportResolver, MemoryInstance, MemoryRef, Module, ModuleInstance,
 	ModuleRef, RuntimeArgs, RuntimeValue, Trap, TrapKind, memory_units::Pages,

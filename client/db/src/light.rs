@@ -626,14 +626,14 @@ fn cht_key<N: TryInto<u32>>(cht_type: u8, block: N) -> ClientResult<[u8; 5]> {
 #[cfg(test)]
 pub(crate) mod tests {
 	use sc_client_api::cht;
-	use sp_core::ChangesTrieConfiguration;
+	use tet_core::ChangesTrieConfiguration;
 	use sp_runtime::generic::{DigestItem, ChangesTrieSignal};
 	use sp_runtime::testing::{H256 as Hash, Header, Block as RawBlock, ExtrinsicWrapper};
 	use sp_blockchain::{lowest_common_ancestor, tree_route};
 	use super::*;
 
 	type Block = RawBlock<ExtrinsicWrapper<u32>>;
-	type AuthorityId = sp_core::ed25519::Public;
+	type AuthorityId = tet_core::ed25519::Public;
 
 	pub fn default_header(parent: &Hash, number: u64) -> Header {
 		Header {

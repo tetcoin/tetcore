@@ -27,7 +27,7 @@ tc-light = { version = "2.0.0", path = "../../client/light" }
 tc-service = { version = "0.8.0", default-features = false, features = ["test-helpers"],  path = "../../client/service" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
 tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }

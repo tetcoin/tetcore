@@ -28,7 +28,7 @@ use sp_state_machine::{
 };
 use sc_executor::{RuntimeVersion, NativeVersion};
 use externalities::Extensions;
-use sp_core::NativeOrEncoded;
+use tet_core::NativeOrEncoded;
 
 use sp_api::{ProofRecorder, InitializeBlock, StorageTransactionCache};
 use crate::execution_extensions::ExecutionExtensions;

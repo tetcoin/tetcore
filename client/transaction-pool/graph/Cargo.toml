@@ -22,7 +22,7 @@ serde = { version = "1.0.101", features = ["derive"] }
 wasm-timer = "0.2"
 tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
 tetcore-utils = { version = "2.0.0", path = "../../../primitives/utils" }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }

@@ -1,5 +1,5 @@
 [package]
-name = "tp-core"
+name = "tet-core"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
@@ -7,7 +7,7 @@ license = "Apache-2.0"
 homepage = "https://github.com/tetcoin/tetcore"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Shareable Tetcore types."
-documentation = "https://docs.rs/tp-core"
+documentation = "https://docs.rs/tet-core"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

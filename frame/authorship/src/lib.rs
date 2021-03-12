@@ -398,7 +398,7 @@ impl<T: Config> ProvideInherent for Module<T> {
 mod tests {
 	use crate as pallet_authorship;
 	use super::*;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::{
 		traits::{BlakeTwo256, IdentityLookup}, testing::Header, generic::DigestItem,
 	};

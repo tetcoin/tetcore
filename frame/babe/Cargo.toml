@@ -38,7 +38,7 @@ pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-offences = { version = "2.0.0", path = "../offences" }
 pallet-staking = { version = "2.0.0", path = "../staking" }
 pallet-staking-reward-curve = { version = "2.0.0", path = "../staking/reward-curve" }
-tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
 
 [features]
 default = ["std"]

@@ -14,7 +14,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 tp-allocator = { version = "2.0.0", default-features = false, path = "../../../primitives/allocator" }
-tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../../primitives/io" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
 tp-sandbox = { version = "0.8.0", default-features = false, path = "../../../primitives/sandbox" }
@@ -28,7 +28,7 @@ wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
 default = [ "std" ]
 std = [
 	"tp-allocator/std",
-	"tp-core/std",
+	"tet-core/std",
 	"tp-io/std",
 	"tp-runtime/std",
 	"tp-sandbox/std",

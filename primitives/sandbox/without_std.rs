@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use codec::{Decode, Encode};
-use sp_core::sandbox as sandbox_primitives;
+use tet_core::sandbox as sandbox_primitives;
 use sp_io::sandbox;
 use tetcore_std::{prelude::*, slice, marker, mem, vec, rc::Rc};
 use super::{Error, Value, ReturnValue, HostFuncType};

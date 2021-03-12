@@ -22,7 +22,7 @@ pub mod vrf;
 use std::sync::Arc;
 use async_trait::async_trait;
 use futures::{executor::block_on, future::join_all};
-use sp_core::{
+use tet_core::{
 	crypto::{KeyTypeId, CryptoTypePublicPair},
 	ed25519, sr25519, ecdsa,
 };

@@ -25,7 +25,7 @@ use frame_support::{
 	traits::{PALLET_VERSION_STORAGE_KEY_POSTFIX, PalletVersion, OnRuntimeUpgrade, GetPalletVersion},
 	crate_to_pallet_version, weights::Weight,
 };
-use sp_core::{H256, sr25519};
+use tet_core::{H256, sr25519};
 
 /// A version that we will check for in the tests
 const SOME_TEST_VERSION: PalletVersion = PalletVersion { major: 3000, minor: 30, patch: 13 };

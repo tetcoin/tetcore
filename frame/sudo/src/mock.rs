@@ -19,7 +19,7 @@
 
 use super::*;
 use frame_support::{parameter_types, weights::Weight};
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 use sp_io;
 use crate as sudo;

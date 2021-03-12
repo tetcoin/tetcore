@@ -21,7 +21,7 @@ use sp_api::{
 	ApiExt,
 };
 use sp_runtime::{traits::{GetNodeBlockType, Block as BlockT}, generic::BlockId};
-use sp_core::NativeOrEncoded;
+use tet_core::NativeOrEncoded;
 use tetcore_test_runtime_client::runtime::Block;
 use sp_blockchain::Result;
 

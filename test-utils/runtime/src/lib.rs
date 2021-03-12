@@ -26,7 +26,7 @@ pub mod system;
 use tetcore_std::{prelude::*, marker::PhantomData};
 use codec::{Encode, Decode, Input, Error};
 
-use sp_core::{offchain::KeyTypeId, ChangesTrieConfiguration, OpaqueMetadata, RuntimeDebug};
+use tet_core::{offchain::KeyTypeId, ChangesTrieConfiguration, OpaqueMetadata, RuntimeDebug};
 use sp_application_crypto::{ed25519, sr25519, ecdsa, RuntimeAppPublic};
 use tetsy_trie_db::{TrieMut, Trie};
 use sp_trie::{PrefixedMemoryDB, StorageProof};
@@ -48,7 +48,7 @@ use sp_runtime::{
 #[cfg(feature = "std")]
 use sp_runtime::traits::NumberFor;
 use sp_version::RuntimeVersion;
-pub use sp_core::hash::H256;
+pub use tet_core::hash::H256;
 #[cfg(any(feature = "std", test))]
 use sp_version::NativeVersion;
 use frame_support::{
@@ -782,7 +782,7 @@ cfg_if! {
 
 				fn decode_session_keys(
 					encoded: Vec<u8>,
-				) -> Option<Vec<(Vec<u8>, sp_core::crypto::KeyTypeId)>> {
+				) -> Option<Vec<(Vec<u8>, tet_core::crypto::KeyTypeId)>> {
 					SessionKeys::decode_into_raw_public_keys(&encoded)
 				}
 			}
@@ -1041,7 +1041,7 @@ cfg_if! {
 
 				fn decode_session_keys(
 					encoded: Vec<u8>,
-				) -> Option<Vec<(Vec<u8>, sp_core::crypto::KeyTypeId)>> {
+				) -> Option<Vec<(Vec<u8>, tet_core::crypto::KeyTypeId)>> {
 					SessionKeys::decode_into_raw_public_keys(&encoded)
 				}
 			}
@@ -1180,7 +1180,7 @@ mod tests {
 	};
 	use sp_api::ProvideRuntimeApi;
 	use sp_runtime::generic::BlockId;
-	use sp_core::storage::well_known_keys::HEAP_PAGES;
+	use tet_core::storage::well_known_keys::HEAP_PAGES;
 	use sp_state_machine::ExecutionStrategy;
 	use codec::Encode;
 	use sc_block_builder::BlockBuilderProvider;

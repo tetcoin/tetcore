@@ -18,7 +18,7 @@
 
 //! Verification for BABE headers.
 use sp_runtime::{traits::Header, traits::DigestItemFor};
-use sp_core::{Pair, Public};
+use tet_core::{Pair, Public};
 use sp_consensus_babe::{make_transcript, AuthoritySignature, AuthorityPair, AuthorityId};
 use sp_consensus_babe::digests::{
 	PreDigest, PrimaryPreDigest, SecondaryPlainPreDigest, SecondaryVRFPreDigest,

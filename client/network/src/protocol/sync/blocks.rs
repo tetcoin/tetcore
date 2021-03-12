@@ -211,7 +211,7 @@ mod test {
 	use super::{BlockCollection, BlockData, BlockRangeState};
 	use crate::{protocol::message, PeerId};
 	use sp_runtime::testing::{Block as RawBlock, ExtrinsicWrapper};
-	use sp_core::H256;
+	use tet_core::H256;
 
 	type Block = RawBlock<ExtrinsicWrapper<u64>>;
 

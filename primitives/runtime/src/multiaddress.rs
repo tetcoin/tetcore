@@ -43,7 +43,7 @@ where
 	AccountIndex: std::fmt::Debug,
 {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		use sp_core::hexdisplay::HexDisplay;
+		use tet_core::hexdisplay::HexDisplay;
 		match self {
 			MultiAddress::Raw(inner) => write!(f, "MultiAddress::Raw({})", HexDisplay::from(inner)),
 			MultiAddress::Address32(inner) => write!(f, "MultiAddress::Address32({})", HexDisplay::from(inner)),

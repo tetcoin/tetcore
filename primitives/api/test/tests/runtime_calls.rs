@@ -165,8 +165,8 @@ fn record_proof_works() {
 	let block_id = BlockId::Number(client.chain_info().best_number);
 	let storage_root = longest_chain.best_chain().unwrap().state_root().clone();
 
-	let runtime_code = sp_core::traits::RuntimeCode {
-		code_fetcher: &sp_core::traits::WrappedRuntimeCode(client.code_at(&block_id).unwrap().into()),
+	let runtime_code = tet_core::traits::RuntimeCode {
+		code_fetcher: &tet_core::traits::WrappedRuntimeCode(client.code_at(&block_id).unwrap().into()),
 		hash: vec![1],
 		heap_pages: None,
 	};
@@ -201,7 +201,7 @@ fn record_proof_works() {
 		&backend,
 		&mut overlay,
 		&executor,
-		sp_core::testing::TaskExecutor::new(),
+		tet_core::testing::TaskExecutor::new(),
 		"Core_execute_block",
 		&block.encode(),
 		&runtime_code,

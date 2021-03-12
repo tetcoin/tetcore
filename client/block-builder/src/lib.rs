@@ -33,7 +33,7 @@ use sp_runtime::{
 	traits::{Header as HeaderT, Hash, Block as BlockT, HashFor, DigestFor, NumberFor, One},
 };
 use sp_blockchain::{ApplyExtrinsicFailed, Error};
-use sp_core::ExecutionContext;
+use tet_core::ExecutionContext;
 use sp_api::{
 	Core, ApiExt, ApiErrorFor, ApiRef, ProvideRuntimeApi, StorageChanges, StorageProof,
 	TransactionOutcome,
@@ -245,7 +245,7 @@ where
 mod tests {
 	use super::*;
 	use sp_blockchain::HeaderBackend;
-	use sp_core::Blake2Hasher;
+	use tet_core::Blake2Hasher;
 	use sp_state_machine::Backend;
 	use tetcore_test_runtime_client::{DefaultTestClientBuilderExt, TestClientBuilderExt};
 
@@ -272,7 +272,7 @@ mod tests {
 		).unwrap();
 
 		assert!(
-			backend.storage(&sp_core::storage::well_known_keys::CODE)
+			backend.storage(&tet_core::storage::well_known_keys::CODE)
 				.unwrap_err()
 				.contains("Database missing expected key"),
 		);

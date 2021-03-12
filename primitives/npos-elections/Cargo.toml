@@ -19,7 +19,7 @@ serde = { version = "1.0.101", optional = true, features = ["derive"] }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-npos-elections-compact = { version = "2.0.0", path = "./compact" }
 arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
-tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../core" }
 
 [dev-dependencies]
 tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
@@ -34,5 +34,5 @@ std = [
 	"serde",
 	"tetcore-std/std",
 	"arithmetic/std",
-	"tp-core/std",
+	"tet-core/std",
 ]

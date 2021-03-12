@@ -219,7 +219,7 @@ impl<BlockHash: Hash, Key: Hash> RefWindow<BlockHash, Key> {
 #[cfg(test)]
 mod tests {
 	use super::RefWindow;
-	use sp_core::H256;
+	use tet_core::H256;
 	use crate::CommitSet;
 	use crate::test::{make_db, make_commit, TestDb};
 

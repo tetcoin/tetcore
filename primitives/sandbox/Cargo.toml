@@ -14,7 +14,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 twasmi = { version = "0.6.2", optional = true }
-tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../core" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../io" }
 tetcore-wasm-interface = { version = "2.0.0", default-features = false, path = "../wasm-interface" }
@@ -28,7 +28,7 @@ assert_matches = "1.3.0"
 default = ["std"]
 std = [
 	"twasmi",
-	"tp-core/std",
+	"tet-core/std",
 	"tetcore-std/std",
 	"codec/std",
 	"tp-io/std",

@@ -19,7 +19,7 @@ tp-runtime = { version = "2.0.0", default-features = false, path = "../../../pri
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../../benchmarking" }
 frame-system = { version = "2.0.0", default-features = false, path = "../../system" }
 frame-support = { version = "2.0.0", default-features = false, path = "../../support" }
-tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
 
 [dev-dependencies]
 serde = { version = "1.0.101" }
@@ -34,5 +34,5 @@ std = [
 	"frame-benchmarking/std",
 	"frame-system/std",
 	"frame-support/std",
-	"tp-core/std",
+	"tet-core/std",
 ]

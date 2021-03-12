@@ -26,7 +26,7 @@ use frame_support::{
 use mock::*;
 use pallet_session::ShouldEndSession;
 use sp_consensus_babe::{AllowedSlots, Slot};
-use sp_core::crypto::Pair;
+use tet_core::crypto::Pair;
 
 const EMPTY_RANDOMNESS: [u8; 32] = [
 	74, 25, 49, 128, 53, 97, 244, 49,

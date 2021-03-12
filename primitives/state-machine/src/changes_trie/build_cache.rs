@@ -20,7 +20,7 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::StorageKey;
-use sp_core::storage::PrefixedStorageKey;
+use tet_core::storage::PrefixedStorageKey;
 
 /// Changes trie build cache.
 ///

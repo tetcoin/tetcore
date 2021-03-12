@@ -36,7 +36,7 @@ use frame_system::Config;
 use crate::{
 	AccountId, BlockNumber, Extrinsic, Transfer, H256 as Hash, Block, Header, Digest, AuthorityId
 };
-use sp_core::{storage::well_known_keys, ChangesTrieConfiguration};
+use tet_core::{storage::well_known_keys, ChangesTrieConfiguration};
 
 const NONCE_OF: &[u8] = b"nonce:";
 const BALANCE_OF: &[u8] = b"balance:";
@@ -325,7 +325,7 @@ fn execute_changes_trie_config_update(new_config: Option<ChangesTrieConfiguratio
 
 #[cfg(feature = "std")]
 fn info_expect_equal_hash(given: &Hash, expected: &Hash) {
-	use sp_core::hexdisplay::HexDisplay;
+	use tet_core::hexdisplay::HexDisplay;
 	if given != expected {
 		println!(
 			"Hash: given={}, expected={}",
@@ -351,7 +351,7 @@ mod tests {
 	use sp_io::TestExternalities;
 	use tetcore_test_runtime_client::{AccountKeyring, Sr25519Keyring};
 	use crate::{Header, Transfer, wasm_binary_unwrap};
-	use sp_core::{NeverNativeValue, map, traits::{CodeExecutor, RuntimeCode}};
+	use tet_core::{NeverNativeValue, map, traits::{CodeExecutor, RuntimeCode}};
 	use sc_executor::{NativeExecutor, WasmExecutionMethod, native_executor_instance};
 	use sp_io::hashing::twox_128;
 
@@ -374,7 +374,7 @@ mod tests {
 		];
 		TestExternalities::new_with_code(
 			wasm_binary_unwrap(),
-			sp_core::storage::Storage {
+			tet_core::storage::Storage {
 				top: map![
 					twox_128(b"latest").to_vec() => vec![69u8; 32],
 					twox_128(b"sys:auth").to_vec() => authorities.encode(),
@@ -415,7 +415,7 @@ mod tests {
 		block_import_works(|b, ext| {
 			let mut ext = ext.ext();
 			let runtime_code = RuntimeCode {
-				code_fetcher: &sp_core::traits::WrappedRuntimeCode(wasm_binary_unwrap().into()),
+				code_fetcher: &tet_core::traits::WrappedRuntimeCode(wasm_binary_unwrap().into()),
 				hash: Vec::new(),
 				heap_pages: None,
 			};
@@ -515,7 +515,7 @@ mod tests {
 		block_import_with_transaction_works(|b, ext| {
 			let mut ext = ext.ext();
 			let runtime_code = RuntimeCode {
-				code_fetcher: &sp_core::traits::WrappedRuntimeCode(wasm_binary_unwrap().into()),
+				code_fetcher: &tet_core::traits::WrappedRuntimeCode(wasm_binary_unwrap().into()),
 				hash: Vec::new(),
 				heap_pages: None,
 			};

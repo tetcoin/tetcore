@@ -29,7 +29,7 @@ tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
 tc-consensus = { version = "0.8.0", path = "../consensus/common" }
-tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
 tp-api = { version = "2.0.0", path = "../../primitives/api" }
 tc-telemetry = { version = "2.0.0", path = "../telemetry" }

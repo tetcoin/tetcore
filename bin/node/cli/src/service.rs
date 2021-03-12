@@ -475,7 +475,7 @@ mod tests {
 	use node_runtime::{BalancesCall, Call, UncheckedExtrinsic, Address};
 	use node_runtime::constants::{currency::CENTS, time::SLOT_DURATION};
 	use codec::Encode;
-	use sp_core::{
+	use tet_core::{
 		crypto::Pair as CryptoPair,
 		H256,
 		Public

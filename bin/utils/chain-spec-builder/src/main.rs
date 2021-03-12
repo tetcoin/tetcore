@@ -24,7 +24,7 @@ use structopt::StructOpt;
 
 use sc_keystore::LocalKeystore;
 use node_cli::chain_spec::{self, AccountId};
-use sp_core::{
+use tet_core::{
 	sr25519,
 	crypto::{Public, Ss58Codec},
 };
@@ -161,22 +161,22 @@ fn generate_authority_keys_and_store(
 		};
 
 		insert_key(
-			sp_core::crypto::key_types::BABE,
+			tet_core::crypto::key_types::BABE,
 			babe.as_slice(),
 		)?;
 
 		insert_key(
-			sp_core::crypto::key_types::GRANDPA,
+			tet_core::crypto::key_types::GRANDPA,
 			grandpa.as_slice(),
 		)?;
 
 		insert_key(
-			sp_core::crypto::key_types::IM_ONLINE,
+			tet_core::crypto::key_types::IM_ONLINE,
 			im_online.as_slice(),
 		)?;
 
 		insert_key(
-			sp_core::crypto::key_types::AUTHORITY_DISCOVERY,
+			tet_core::crypto::key_types::AUTHORITY_DISCOVERY,
 			authority_discovery.as_slice(),
 		)?;
 	}

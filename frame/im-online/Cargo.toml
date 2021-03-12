@@ -16,7 +16,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 pallet-authorship = { version = "2.0.0", default-features = false, path = "../authorship" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
@@ -34,7 +34,7 @@ std = [
 	"tp-application-crypto/std",
 	"pallet-authorship/std",
 	"codec/std",
-	"tp-core/std",
+	"tet-core/std",
 	"tetcore-std/std",
 	"serde",
 	"pallet-session/std",

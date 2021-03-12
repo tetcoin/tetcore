@@ -596,7 +596,7 @@ mod tests {
 		// given
 		let (client, longest_chain) = TestClientBuilder::new().build_with_longest_chain();
 		let client = Arc::new(client);
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = BasicPool::new_full(
 			Default::default(),
 			None,

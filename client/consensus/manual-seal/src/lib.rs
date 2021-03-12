@@ -73,7 +73,7 @@ impl<B: BlockT> Verifier<B> for ManualSealVerifier {
 /// Instantiate the import queue for the manual seal consensus engine.
 pub fn import_queue<Block, Transaction>(
 	block_import: BoxBlockImport<Block, Transaction>,
-	spawner: &impl sp_core::traits::SpawnNamed,
+	spawner: &impl tet_core::traits::SpawnNamed,
 	registry: Option<&Registry>,
 ) -> BasicQueue<Block, Transaction>
 	where
@@ -291,7 +291,7 @@ mod tests {
 		let (client, select_chain) = builder.build_with_longest_chain();
 		let client = Arc::new(client);
 		let inherent_data_providers = InherentDataProviders::new();
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = Arc::new(BasicPool::with_revalidation_type(
 			Options::default(), api(), None, RevalidationType::Full, spawner.clone(),
 		));
@@ -362,7 +362,7 @@ mod tests {
 		let (client, select_chain) = builder.build_with_longest_chain();
 		let client = Arc::new(client);
 		let inherent_data_providers = InherentDataProviders::new();
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = Arc::new(BasicPool::with_revalidation_type(
 			Options::default(), api(), None, RevalidationType::Full, spawner.clone(),
 		));
@@ -437,7 +437,7 @@ mod tests {
 		let client = Arc::new(client);
 		let inherent_data_providers = InherentDataProviders::new();
 		let pool_api = api();
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let pool = Arc::new(BasicPool::with_revalidation_type(
 			Options::default(), pool_api.clone(), None, RevalidationType::Full, spawner.clone(),
 		));

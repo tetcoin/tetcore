@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use sc_network::{config::identity::ed25519, config::NodeKeyConfig};
-use sp_core::H256;
+use tet_core::H256;
 use std::{path::PathBuf, str::FromStr};
 use structopt::StructOpt;
 

@@ -18,7 +18,7 @@
 
 //! Helper methods dedicated to timestamps.
 
-use sp_core::offchain::Timestamp;
+use tet_core::offchain::Timestamp;
 use std::convert::TryInto;
 use std::time::{SystemTime, Duration};
 

@@ -37,7 +37,7 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_core::OpaquePeerId as PeerId;
+use tet_core::OpaquePeerId as PeerId;
 use tetcore_std::{
 	collections::btree_set::BTreeSet,
 	iter::FromIterator,
@@ -437,7 +437,7 @@ mod tests {
 		parameter_types, ord_parameter_types,
 	};
 	use frame_system::EnsureSignedBy;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::{traits::{BlakeTwo256, IdentityLookup, BadOrigin}, testing::Header};
 
 	impl_outer_origin! {

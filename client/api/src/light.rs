@@ -28,7 +28,7 @@ use sp_runtime::{
 	},
 	generic::BlockId
 };
-use sp_core::{ChangesTrieConfigurationRange, storage::PrefixedStorageKey};
+use tet_core::{ChangesTrieConfigurationRange, storage::PrefixedStorageKey};
 use sp_state_machine::StorageProof;
 use sp_blockchain::{
 	HeaderMetadata, well_known_cache_keys, HeaderBackend, Cache as BlockchainCache,
@@ -322,8 +322,8 @@ pub mod tests {
 		fn into(self) -> ClientError {
 			ClientError::Application(Box::new(self))
 		}
-	}	
-	
+	}
+
 	pub type OkCallFetcher = Mutex<Vec<u8>>;
 
 	fn not_implemented_in_tests<T>() -> Ready<Result<T, ClientError>>

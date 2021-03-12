@@ -22,7 +22,7 @@ use crate::{
 	StorageKey, StorageValue,
 	changes_trie::BlockNumber
 };
-use sp_core::storage::PrefixedStorageKey;
+use tet_core::storage::PrefixedStorageKey;
 
 /// Key of { changed key => set of extrinsic indices } mapping.
 #[derive(Clone, Debug, PartialEq, Eq)]

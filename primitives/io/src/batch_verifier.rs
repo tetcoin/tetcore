@@ -17,7 +17,7 @@
 
 //! Batch/parallel verification.
 
-use sp_core::{ed25519, sr25519, ecdsa, crypto::Pair, traits::SpawnNamed};
+use tet_core::{ed25519, sr25519, ecdsa, crypto::Pair, traits::SpawnNamed};
 use std::sync::{Arc, atomic::{AtomicBool, Ordering as AtomicOrdering}};
 use futures::{future::FutureExt, channel::oneshot};
 

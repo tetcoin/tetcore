@@ -61,7 +61,7 @@ pub mod weights;
 
 use tetcore_std::prelude::*;
 use codec::{Encode, Decode};
-use sp_core::TypeId;
+use tet_core::TypeId;
 use sp_io::hashing::blake2_256;
 use frame_support::{decl_module, decl_event, decl_storage, Parameter, transactional};
 use frame_support::{

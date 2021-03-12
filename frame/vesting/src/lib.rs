@@ -392,7 +392,7 @@ mod tests {
 	use crate as pallet_vesting;
 
 	use frame_support::{assert_ok, assert_noop, parameter_types};
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::{
 		testing::Header,
 		traits::{BlakeTwo256, IdentityLookup, Identity, BadOrigin},

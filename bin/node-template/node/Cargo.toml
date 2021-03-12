@@ -19,7 +19,7 @@ name = "node-template"
 structopt = "0.3.8"
 
 tc-cli = { version = "0.8.0", path = "../../../client/cli", features = ["wasmtime"] }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tc-executor = { version = "0.8.0", path = "../../../client/executor", features = ["wasmtime"] }
 tc-service = { version = "0.8.0", path = "../../../client/service", features = ["wasmtime"] }
 tc-telemetry = { version = "2.0.0", path = "../../../client/telemetry" }

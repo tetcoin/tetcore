@@ -35,7 +35,7 @@ tp-consensus = { path = "../../../primitives/consensus/common", version = "0.8.0
 tp-consensus-slots = { path = "../../../primitives/consensus/slots", version = "0.8.1" }
 tp-inherents = { path = "../../../primitives/inherents", version = "2.0.0" }
 tp-runtime = {  path = "../../../primitives/runtime", version = "2.0.0" }
-tp-core = {  path = "../../../primitives/core", version = "2.0.0" }
+tet-core = {  path = "../../../primitives/core", version = "2.0.0" }
 tp-keystore = {  path = "../../../primitives/keystore", version = "0.8.0" }
 tp-keyring = {  path = "../../../primitives/keyring", version = "2.0.0" }
 tp-api = {  path = "../../../primitives/api", version = "2.0.0" }

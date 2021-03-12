@@ -19,8 +19,8 @@ extern crate criterion;
 
 use criterion::{Criterion, black_box, Bencher, Fun};
 use std::time::Duration;
-use sp_core::crypto::Pair as _;
-use sp_core::hashing::{twox_128, blake2_128};
+use tet_core::crypto::Pair as _;
+use tet_core::hashing::{twox_128, blake2_128};
 
 const MAX_KEY_SIZE: u32 = 32;
 
@@ -72,7 +72,7 @@ fn bench_ed25519(c: &mut Criterion) {
 		let msg = (0..msg_size)
 			.map(|_| rand::random::<u8>())
 			.collect::<Vec<_>>();
-		let key = sp_core::ed25519::Pair::generate().0;
+		let key = tet_core::ed25519::Pair::generate().0;
 		b.iter(|| key.sign(&msg))
 	}, vec![32, 1024, 1024 * 1024]);
 
@@ -80,10 +80,10 @@ fn bench_ed25519(c: &mut Criterion) {
 		let msg = (0..msg_size)
 			.map(|_| rand::random::<u8>())
 			.collect::<Vec<_>>();
-		let key = sp_core::ed25519::Pair::generate().0;
+		let key = tet_core::ed25519::Pair::generate().0;
 		let sig = key.sign(&msg);
 		let public = key.public();
-		b.iter(|| sp_core::ed25519::Pair::verify(&sig, &msg, &public))
+		b.iter(|| tet_core::ed25519::Pair::verify(&sig, &msg, &public))
 	}, vec![32, 1024, 1024 * 1024]);
 }
 
@@ -92,7 +92,7 @@ fn bench_sr25519(c: &mut Criterion) {
 		let msg = (0..msg_size)
 			.map(|_| rand::random::<u8>())
 			.collect::<Vec<_>>();
-		let key = sp_core::sr25519::Pair::generate().0;
+		let key = tet_core::sr25519::Pair::generate().0;
 		b.iter(|| key.sign(&msg))
 	}, vec![32, 1024, 1024 * 1024]);
 
@@ -100,10 +100,10 @@ fn bench_sr25519(c: &mut Criterion) {
 		let msg = (0..msg_size)
 			.map(|_| rand::random::<u8>())
 			.collect::<Vec<_>>();
-		let key = sp_core::sr25519::Pair::generate().0;
+		let key = tet_core::sr25519::Pair::generate().0;
 		let sig = key.sign(&msg);
 		let public = key.public();
-		b.iter(|| sp_core::sr25519::Pair::verify(&sig, &msg, &public))
+		b.iter(|| tet_core::sr25519::Pair::verify(&sig, &msg, &public))
 	}, vec![32, 1024, 1024 * 1024]);
 }
 
@@ -112,7 +112,7 @@ fn bench_ecdsa(c: &mut Criterion) {
 		let msg = (0..msg_size)
 			.map(|_| rand::random::<u8>())
 			.collect::<Vec<_>>();
-		let key = sp_core::ecdsa::Pair::generate().0;
+		let key = tet_core::ecdsa::Pair::generate().0;
 		b.iter(|| key.sign(&msg))
 	}, vec![32, 1024, 1024 * 1024]);
 
@@ -120,10 +120,10 @@ fn bench_ecdsa(c: &mut Criterion) {
 		let msg = (0..msg_size)
 			.map(|_| rand::random::<u8>())
 			.collect::<Vec<_>>();
-		let key = sp_core::ecdsa::Pair::generate().0;
+		let key = tet_core::ecdsa::Pair::generate().0;
 		let sig = key.sign(&msg);
 		let public = key.public();
-		b.iter(|| sp_core::ecdsa::Pair::verify(&sig, &msg, &public))
+		b.iter(|| tet_core::ecdsa::Pair::verify(&sig, &msg, &public))
 	}, vec![32, 1024, 1024 * 1024]);
 }
 

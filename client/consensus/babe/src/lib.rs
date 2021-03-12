@@ -79,7 +79,7 @@ use std::{
 	any::Any, borrow::Cow, convert::TryInto,
 };
 use sp_consensus::{ImportResult, CanAuthorWith, import_queue::BoxJustificationImport};
-use sp_core::crypto::Public;
+use tet_core::crypto::Public;
 use sp_application_crypto::AppKey;
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sp_runtime::{
@@ -1490,7 +1490,7 @@ pub fn import_queue<Block: BlockT, Client, SelectChain, Inner, CAW>(
 	client: Arc<Client>,
 	select_chain: SelectChain,
 	inherent_data_providers: InherentDataProviders,
-	spawner: &impl sp_core::traits::SpawnNamed,
+	spawner: &impl tet_core::traits::SpawnNamed,
 	registry: Option<&Registry>,
 	can_author_with: CAW,
 ) -> ClientResult<DefaultImportQueue<Block, Client>> where

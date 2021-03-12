@@ -244,7 +244,7 @@ mod tests {
 		assert_ok, assert_noop, impl_outer_origin, parameter_types,
 		ord_parameter_types
 	};
-	use sp_core::H256;
+	use tet_core::H256;
 	use frame_system::EnsureSignedBy;
 	use sp_runtime::{
 		testing::Header, traits::{BlakeTwo256, IdentityLookup, BadOrigin},

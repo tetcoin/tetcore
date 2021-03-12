@@ -27,7 +27,7 @@ use frame_support::{
 	traits::OnInitialize,
 };
 
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	ModuleId,
 	testing::Header,

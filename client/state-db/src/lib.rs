@@ -527,7 +527,7 @@ impl<BlockHash: Hash + MallocSizeOf, Key: Hash + MallocSizeOf> StateDb<BlockHash
 #[cfg(test)]
 mod tests {
 	use std::io;
-	use sp_core::H256;
+	use tet_core::H256;
 	use crate::{StateDb, PruningMode, Constraints};
 	use crate::test::{make_db, make_changeset, TestDb};
 

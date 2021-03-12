@@ -63,7 +63,7 @@ pub use async_externalities::{new_async_externalities, AsyncExternalities};
 mod inner {
 	use std::{panic::AssertUnwindSafe, sync::mpsc};
 	use externalities::ExternalitiesExt as _;
-	use sp_core::traits::TaskExecutorExt;
+	use tet_core::traits::TaskExecutorExt;
 
 	/// Task handle (wasm).
 	///

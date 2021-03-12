@@ -27,8 +27,8 @@ use parking_lot::{Mutex, RwLock, RwLockUpgradableReadGuard};
 use linked_hash_map::{LinkedHashMap, Entry};
 use tetsy_hash_db::Hasher;
 use sp_runtime::traits::{Block as BlockT, Header, HashFor, NumberFor};
-use sp_core::hexdisplay::HexDisplay;
-use sp_core::storage::ChildInfo;
+use tet_core::hexdisplay::HexDisplay;
+use tet_core::storage::ChildInfo;
 use sp_state_machine::{
 	backend::Backend as StateBackend, TrieBackend, StorageKey, StorageValue,
 	StorageCollection, ChildStorageCollection,

@@ -24,7 +24,7 @@ tetsy-hash-db = { version = "0.15.2", default-features = false }
 tetsy-trie-db = { version = "0.22.2", default-features = false }
 tetsy-trie-root = { version = "0.16.0", default-features = false }
 tetsy-memory-db = { version = "0.26.0", default-features = false }
-tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../core" }
 
 [dev-dependencies]
 trie-bench = "0.27.0"
@@ -42,6 +42,6 @@ std = [
 	"tetsy-memory-db/std",
 	"tetsy-trie-db/std",
 	"tetsy-trie-root/std",
-	"tp-core/std",
+	"tet-core/std",
 ]
 memory-tracker = []

@@ -27,8 +27,8 @@ use sp_blockchain::{Error as ClientError, Result as ClientResult};
 use sp_trie::MemoryDB;
 use sc_client_api::backend::PrunableStateChangesTrieStorage;
 use sp_blockchain::{well_known_cache_keys, Cache as BlockchainCache, HeaderMetadataCache};
-use sp_core::{ChangesTrieConfiguration, ChangesTrieConfigurationRange, convert_hash};
-use sp_core::storage::PrefixedStorageKey;
+use tet_core::{ChangesTrieConfiguration, ChangesTrieConfigurationRange, convert_hash};
+use tet_core::storage::PrefixedStorageKey;
 use tetcore_database::Transaction;
 use sp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, HashFor, NumberFor, One, Zero, CheckedSub,
@@ -530,7 +530,7 @@ mod tests {
 		Backend as ClientBackend, NewBlockState, BlockImportOperation, PrunableStateChangesTrieStorage,
 	};
 	use sp_blockchain::HeaderBackend as BlockchainHeaderBackend;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::testing::{Digest, Header};
 	use sp_runtime::traits::{Hash, BlakeTwo256};
 	use sp_state_machine::{ChangesTrieRootsStorage, ChangesTrieStorage};

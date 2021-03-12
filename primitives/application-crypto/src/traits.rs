@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #[cfg(feature = "full_crypto")]
-use sp_core::crypto::Pair;
+use tet_core::crypto::Pair;
 
 use codec::Codec;
-use sp_core::crypto::{KeyTypeId, CryptoType, CryptoTypeId, IsWrappedBy, Public};
+use tet_core::crypto::{KeyTypeId, CryptoType, CryptoTypeId, IsWrappedBy, Public};
 use tetcore_std::{fmt::Debug, vec::Vec};
 
 /// An application-specific key.

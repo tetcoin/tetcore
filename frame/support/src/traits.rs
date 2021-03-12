@@ -21,7 +21,7 @@
 
 use tetcore_std::{prelude::*, result, marker::PhantomData, ops::Div, fmt::Debug};
 use codec::{FullCodec, Codec, Encode, Decode, EncodeLike};
-use sp_core::u32_trait::Value as U32;
+use tet_core::u32_trait::Value as U32;
 use sp_runtime::{
 	RuntimeDebug, ConsensusEngineId, DispatchResult, DispatchError,
 	traits::{

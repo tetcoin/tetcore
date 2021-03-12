@@ -12,7 +12,7 @@ readme = "README.md"
 tc-finality-grandpa = { version = "0.8.0", path = "../" }
 tc-rpc = { version = "2.0.0", path = "../../rpc" }
 tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 finality-grandpa = { version = "0.13.0", features = ["derive-codec"] }
 jsonrpc-core = "15.1.0"
@@ -32,7 +32,7 @@ tc-block-builder = { version = "0.8.0", path = "../../block-builder" }
 tc-network-test = { version = "0.8.0", path = "../../network/test" }
 tc-rpc = { version = "2.0.0", path = "../../rpc", features = ["test-helpers"] }
 tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
-tp-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-finality-grandpa = { version = "2.0.0", path = "../../../primitives/finality-grandpa" }
 tp-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
 tetcore-test-runtime-client = { version = "2.0.0",  path = "../../../test-utils/runtime/client" }

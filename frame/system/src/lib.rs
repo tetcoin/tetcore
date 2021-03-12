@@ -83,7 +83,7 @@ use sp_runtime::{
 	offchain::storage_lock::BlockNumberProvider,
 };
 
-use sp_core::{ChangesTrieConfiguration, storage::well_known_keys};
+use tet_core::{ChangesTrieConfiguration, storage::well_known_keys};
 use frame_support::{
 	Parameter, debug, storage,
 	traits::{
@@ -592,7 +592,7 @@ pub mod pallet {
 	#[pallet::genesis_config]
 	pub struct GenesisConfig {
 		pub changes_trie_config: Option<ChangesTrieConfiguration>,
-		#[serde(with = "sp_core::bytes")]
+		#[serde(with = "tet_core::bytes")]
 		pub code: Vec<u8>,
 	}
 
@@ -1274,7 +1274,7 @@ impl<T: Config> Module<T> {
 	/// Get the basic externalities for this pallet, useful for tests.
 	#[cfg(any(feature = "std", test))]
 	pub fn externalities() -> TestExternalities {
-		TestExternalities::new(sp_core::storage::Storage {
+		TestExternalities::new(tet_core::storage::Storage {
 			top: map![
 				<BlockHash<T>>::hashed_key_for(T::BlockNumber::zero()) => [69u8; 32].encode(),
 				<Number<T>>::hashed_key().to_vec() => T::BlockNumber::one().encode(),

@@ -18,7 +18,7 @@
 //! Block Builder extensions for tests.
 
 use sp_api::{ApiExt, ProvideRuntimeApi};
-use sp_core::ChangesTrieConfiguration;
+use tet_core::ChangesTrieConfiguration;
 use sc_client_api::backend;
 use sp_runtime::traits::HashFor;
 

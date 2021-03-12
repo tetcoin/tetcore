@@ -26,7 +26,7 @@ use frame_support::{
 	impl_outer_event, RuntimeDebug, dispatch::DispatchError, traits::Filter,
 };
 use codec::{Encode, Decode};
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 use crate as proxy;
 

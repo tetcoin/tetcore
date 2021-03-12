@@ -71,8 +71,8 @@ use std::convert::TryInto;
 use tetsy_hash_db::{Hasher, Prefix};
 use num_traits::{One, Zero};
 use codec::{Decode, Encode};
-use sp_core;
-use sp_core::storage::PrefixedStorageKey;
+use tet_core;
+use tet_core::storage::PrefixedStorageKey;
 use sp_trie::{MemoryDB, DBValue, TrieMut};
 use sp_trie::trie_types::TrieDBMut;
 use crate::{
@@ -173,7 +173,7 @@ impl<'a, H: Hasher, N: BlockNumber> crate::TrieBackendStorage<H> for TrieBackend
 }
 
 /// Changes trie configuration.
-pub type Configuration = sp_core::ChangesTrieConfiguration;
+pub type Configuration = tet_core::ChangesTrieConfiguration;
 
 /// Blocks range where configuration has been constant.
 #[derive(Clone)]
@@ -255,7 +255,7 @@ pub fn build_changes_trie<'a, B: Backend<H>, H: Hasher, Number: BlockNumber>(
 
 	// prepare configuration range - we already know zero block. Current block may be the end block if configuration
 	// has been changed in this block
-	let is_config_changed = match changes.storage(sp_core::storage::well_known_keys::CHANGES_TRIE_CONFIG) {
+	let is_config_changed = match changes.storage(tet_core::storage::well_known_keys::CHANGES_TRIE_CONFIG) {
 		Some(Some(new_config)) => new_config != &state.config.encode()[..],
 		Some(None) => true,
 		None => false,

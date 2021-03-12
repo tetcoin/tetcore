@@ -16,7 +16,7 @@
 // limitations under the License.
 
 /// The error type used by the allocators.
-#[derive(sp_core::RuntimeDebug)]
+#[derive(tet_core::RuntimeDebug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum Error {
 	/// Someone tried to allocate more memory than the allowed maximum per allocation.

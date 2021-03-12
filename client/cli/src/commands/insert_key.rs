@@ -23,7 +23,7 @@ use crate::{
 };
 use std::{sync::Arc, convert::TryFrom};
 use structopt::StructOpt;
-use sp_core::{crypto::KeyTypeId, crypto::SecretString};
+use tet_core::{crypto::KeyTypeId, crypto::SecretString};
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sc_keystore::LocalKeystore;
 use sc_service::config::{KeystoreConfig, BasePath};
@@ -90,7 +90,7 @@ impl InsertKeyCmd {
 	}
 }
 
-fn to_vec<P: sp_core::Pair>(uri: &str, pass: Option<SecretString>) -> Result<Vec<u8>, Error> {
+fn to_vec<P: tet_core::Pair>(uri: &str, pass: Option<SecretString>) -> Result<Vec<u8>, Error> {
 	let p = utils::pair_from_suri::<P>(uri, pass)?;
 	Ok(p.public().as_ref().to_vec())
 }
@@ -100,7 +100,7 @@ mod tests {
 	use super::*;
 	use structopt::StructOpt;
 	use tempfile::TempDir;
-	use sp_core::{sr25519::Pair, Pair as _, Public};
+	use tet_core::{sr25519::Pair, Pair as _, Public};
 	use sc_service::{ChainSpec, GenericChainSpec, ChainType, NoExtension};
 
 	struct Cli;

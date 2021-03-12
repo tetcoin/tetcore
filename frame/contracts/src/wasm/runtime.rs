@@ -28,7 +28,7 @@ use frame_support::{dispatch::DispatchError, ensure};
 use tetcore_std::prelude::*;
 use codec::{Decode, DecodeAll, Encode};
 use sp_runtime::traits::SaturatedConversion;
-use sp_core::crypto::UncheckedFrom;
+use tet_core::crypto::UncheckedFrom;
 use sp_io::hashing::{
 	keccak_256,
 	blake2_256,

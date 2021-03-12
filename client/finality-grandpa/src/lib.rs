@@ -73,7 +73,7 @@ use sp_blockchain::{HeaderBackend, Error as ClientError, HeaderMetadata};
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::{NumberFor, Block as BlockT, DigestFor, Zero};
 use sp_consensus::{SelectChain, BlockImport};
-use sp_core::{
+use tet_core::{
 	crypto::Public,
 };
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};

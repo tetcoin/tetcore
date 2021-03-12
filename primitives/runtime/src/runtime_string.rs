@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use codec::{Encode, Decode};
-use sp_core::RuntimeDebug;
+use tet_core::RuntimeDebug;
 use tetcore_std::vec::Vec;
 
 /// A string that wraps a `&'static str` in the runtime and `String`/`Vec<u8>` on decode.

@@ -32,7 +32,7 @@ use crate::{
 
 use codec::{Decode, Encode};
 use tetsy_hash_db::Hasher;
-use sp_core::{
+use tet_core::{
 	offchain::testing::TestPersistentOffchainDB,
 	storage::{
 		well_known_keys::{CHANGES_TRIE_CONFIG, CODE, HEAP_PAGES, is_child_storage_key},
@@ -275,7 +275,7 @@ impl<H, N> externalities::ExtensionStore for TestExternalities<H, N> where
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::{H256, traits::Externalities, storage::ChildInfo};
+	use tet_core::{H256, traits::Externalities, storage::ChildInfo};
 	use sp_runtime::traits::BlakeTwo256;
 	use hex_literal::hex;
 

@@ -66,7 +66,7 @@ use tetsy_libp2p::multiaddr::Protocol;
 use log::{debug, info, trace, warn};
 use std::{cmp, collections::{HashMap, HashSet, VecDeque}, io, num::NonZeroUsize, time::Duration};
 use std::task::{Context, Poll};
-use sp_core::hexdisplay::HexDisplay;
+use tet_core::hexdisplay::HexDisplay;
 
 /// Maximum number of known external addresses that we will cache.
 /// This only affects whether we will log whenever we (re-)discover

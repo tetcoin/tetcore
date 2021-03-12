@@ -27,7 +27,7 @@ serde = { version = "1.0.101", optional = true, features = ["derive"] }
 tp-api = { version = "2.0.0", default-features = false, path = "../../../primitives/api" }
 tp-block-builder = { path = "../../../primitives/block-builder", default-features = false, version = "2.0.0"}
 tp-consensus-aura = { version = "0.8.0", default-features = false, path = "../../../primitives/consensus/aura" }
-tp-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
 tp-inherents = { path = "../../../primitives/inherents", default-features = false, version = "2.0.0"}
 tp-offchain = { version = "2.0.0", default-features = false, path = "../../../primitives/offchain" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
@@ -68,7 +68,7 @@ std = [
 	"tp-api/std",
 	"tp-block-builder/std",
 	"tp-consensus-aura/std",
-	"tp-core/std",
+	"tet-core/std",
 	"tp-inherents/std",
 	"tp-offchain/std",
 	"tp-runtime/std",

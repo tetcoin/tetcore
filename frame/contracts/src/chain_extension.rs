@@ -62,7 +62,7 @@ use tetcore_std::{
 
 pub use frame_system::Config as SysConfig;
 pub use pallet_contracts_primitives::ReturnFlags;
-pub use sp_core::crypto::UncheckedFrom;
+pub use tet_core::crypto::UncheckedFrom;
 pub use crate::exec::Ext;
 pub use state::Init as InitState;
 

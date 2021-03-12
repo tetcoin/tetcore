@@ -25,7 +25,7 @@ use jsonrpc_core::{Error as RpcError, ErrorCode, Result};
 use jsonrpc_derive::rpc;
 use sp_runtime::{generic::BlockId, traits::{Block as BlockT, MaybeDisplay}};
 use sp_api::ProvideRuntimeApi;
-use sp_core::Bytes;
+use tet_core::Bytes;
 use sp_rpc::number::NumberOrHex;
 use pallet_transaction_payment_rpc_runtime_api::{FeeDetails, InclusionFee, RuntimeDispatchInfo};
 pub use pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi as TransactionPaymentRuntimeApi;

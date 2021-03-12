@@ -21,7 +21,7 @@ tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 
 [dev-dependencies]
-tp-core = { version = "2.0.0", path = "../../primitives/core", default-features = false }
+tet-core = { version = "2.0.0", path = "../../primitives/core", default-features = false }
 tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
 
 [features]

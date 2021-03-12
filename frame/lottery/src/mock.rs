@@ -23,7 +23,7 @@ use frame_support::{
 	impl_outer_origin, impl_outer_dispatch, parameter_types,
 	traits::{OnInitialize, OnFinalize, TestRandomness},
 };
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{
 	Perbill,
 	testing::Header,

@@ -20,8 +20,8 @@
 
 use std::sync::Arc;
 use std::collections::{HashMap, HashSet};
-use sp_core::ChangesTrieConfigurationRange;
-use sp_core::offchain::OffchainStorage;
+use tet_core::ChangesTrieConfigurationRange;
+use tet_core::offchain::OffchainStorage;
 use sp_runtime::{generic::BlockId, Justification, Storage};
 use sp_runtime::traits::{Block as BlockT, NumberFor, HashFor};
 use sp_state_machine::{

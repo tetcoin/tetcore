@@ -21,11 +21,11 @@ tp-runtime = { version = "2.0.0", default-features = false, path = "../../primit
 tetcore-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 
 [dev-dependencies]
 hex-literal = "0.3.1"
-tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-io ={ version = "2.0.0", path = "../../primitives/io" }
 pallet-indices = { version = "2.0.0", path = "../indices" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
@@ -42,7 +42,7 @@ std = [
 	"frame-support/std",
 	"frame-system/std",
 	"serde",
-	"tp-core/std",
+	"tet-core/std",
 	"tp-runtime/std",
 	"tetcore-tracing/std",
 	"tetcore-std/std",

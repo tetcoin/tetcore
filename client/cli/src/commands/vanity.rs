@@ -5,7 +5,7 @@
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or 
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
 // This program is distributed in the hope that it will be useful,
@@ -22,7 +22,7 @@ use crate::{
 	error, utils, with_crypto_scheme,
 	CryptoSchemeFlag, NetworkSchemeFlag, OutputTypeFlag,
 };
-use sp_core::crypto::{Ss58Codec, Ss58AddressFormat};
+use tet_core::crypto::{Ss58Codec, Ss58AddressFormat};
 use structopt::StructOpt;
 use rand::{rngs::OsRng, RngCore};
 use sp_runtime::traits::IdentifyAccount;
@@ -79,7 +79,7 @@ fn generate_key<Pair>(
 	network_override: Ss58AddressFormat,
 ) -> Result<String, &'static str>
 	where
-		Pair: sp_core::Pair,
+		Pair: tet_core::Pair,
 		Pair::Public: IdentifyAccount,
 		<Pair::Public as IdentifyAccount>::AccountId: Ss58Codec,
 {
@@ -164,8 +164,8 @@ fn assert_non_empty_string(pattern: &str) -> Result<String, &'static str> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::{crypto::Ss58Codec, Pair};
-	use sp_core::sr25519;
+	use tet_core::{crypto::Ss58Codec, Pair};
+	use tet_core::sr25519;
 	#[cfg(feature = "bench")]
 	use test::Bencher;
 	use structopt::StructOpt;

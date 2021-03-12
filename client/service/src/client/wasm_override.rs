@@ -41,12 +41,12 @@ use std::{
 	path::{Path, PathBuf},
 	hash::Hasher as _,
 };
-use sp_core::traits::FetchRuntimeCode;
+use tet_core::traits::FetchRuntimeCode;
 use sp_state_machine::BasicExternalities;
 use sp_blockchain::Result;
 use sc_executor::RuntimeInfo;
 use sp_version::RuntimeVersion;
-use sp_core::traits::RuntimeCode;
+use tet_core::traits::RuntimeCode;
 
 #[derive(Clone, Debug, PartialEq)]
 /// Auxiliary structure that holds a wasm blob and its hash.

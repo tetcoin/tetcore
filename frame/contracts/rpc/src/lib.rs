@@ -26,7 +26,7 @@ use pallet_contracts_primitives::RentProjection;
 use serde::{Deserialize, Serialize};
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
-use sp_core::{Bytes, H256};
+use tet_core::{Bytes, H256};
 use sp_rpc::number;
 use sp_runtime::{
 	generic::BlockId,
@@ -308,7 +308,7 @@ fn runtime_error_into_rpc_err(err: impl std::fmt::Debug) -> Error {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_core::U256;
+	use tet_core::U256;
 
 	#[test]
 	fn call_request_should_serialize_deserialize_properly() {

@@ -25,7 +25,7 @@ use frame_support::{
 	assert_ok, assert_noop, impl_outer_origin, parameter_types, impl_outer_dispatch,
 	impl_outer_event, traits::Filter,
 };
-use sp_core::H256;
+use tet_core::H256;
 use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 use crate as multisig;
 

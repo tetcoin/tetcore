@@ -28,7 +28,7 @@ use frame_support::{
 	StorageValue, StorageMap, StorageDoubleMap,
 };
 use sp_inherents::{ProvideInherent, InherentData, InherentIdentifier, MakeFatalError};
-use sp_core::{H256, sr25519};
+use tet_core::{H256, sr25519};
 
 mod system;
 
@@ -316,7 +316,7 @@ fn new_test_ext() -> sp_io::TestExternalities {
 
 #[test]
 fn storage_instance_independence() {
-	let mut storage = sp_core::storage::Storage {
+	let mut storage = tet_core::storage::Storage {
 		top: std::collections::BTreeMap::new(),
 		children_default: std::collections::HashMap::new()
 	};

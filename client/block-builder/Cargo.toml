@@ -19,7 +19,7 @@ tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tp-api = { version = "2.0.0", path = "../../primitives/api" }
 tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-block-builder = { version = "2.0.0", path = "../../primitives/block-builder" }
 tp-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
 tc-client-api = { version = "2.0.0", path = "../api" }

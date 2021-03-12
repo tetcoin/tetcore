@@ -20,7 +20,7 @@
 
 use sp_runtime::traits::{Block as BlockT, HashFor};
 use std::sync::Arc;
-use sp_core::traits::{CodeExecutor, SpawnNamed};
+use tet_core::traits::{CodeExecutor, SpawnNamed};
 
 pub mod backend;
 pub mod blockchain;

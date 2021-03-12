@@ -19,7 +19,7 @@ use crate::*;
 use crate::mock::*;
 
 use frame_support::traits::OnInitialize;
-use sp_core::{
+use tet_core::{
 	H256,
 	offchain::{
 		testing::TestOffchainExt,

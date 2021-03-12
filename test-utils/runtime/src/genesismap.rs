@@ -21,8 +21,8 @@ use std::collections::BTreeMap;
 use sp_io::hashing::{blake2_256, twox_128};
 use super::{AuthorityId, AccountId, wasm_binary_unwrap, system};
 use codec::{Encode, KeyedVec, Joiner};
-use sp_core::{ChangesTrieConfiguration, map};
-use sp_core::storage::{well_known_keys, Storage};
+use tet_core::{ChangesTrieConfiguration, map};
+use tet_core::storage::{well_known_keys, Storage};
 use sp_runtime::traits::{Block as BlockT, Hash as HashT, Header as HeaderT};
 use sc_service::client::genesis;
 
@@ -86,7 +86,7 @@ impl GenesisConfig {
 
 pub fn insert_genesis_block(
 	storage: &mut Storage,
-) -> sp_core::hash::H256 {
+) -> tet_core::hash::H256 {
 	let child_roots = storage.children_default.iter().map(|(sk, child_content)| {
 		let state_root = <<<crate::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::trie_root(
 			child_content.data.clone().into_iter().collect(),

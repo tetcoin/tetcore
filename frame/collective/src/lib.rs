@@ -43,7 +43,7 @@
 #![recursion_limit = "128"]
 
 use tetcore_std::{prelude::*, result};
-use sp_core::u32_trait::Value as U32;
+use tet_core::u32_trait::Value as U32;
 use sp_io::storage;
 use sp_runtime::{RuntimeDebug, traits::Hash};
 
@@ -963,7 +963,7 @@ mod tests {
 	use frame_support::{Hashable, assert_ok, assert_noop, parameter_types};
 	use frame_system::{self as system, EventRecord, Phase};
 	use hex_literal::hex;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::{
 		traits::{BlakeTwo256, IdentityLookup}, testing::Header,
 		BuildStorage,

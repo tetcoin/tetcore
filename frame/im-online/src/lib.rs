@@ -76,7 +76,7 @@ pub mod weights;
 
 use sp_application_crypto::RuntimeAppPublic;
 use codec::{Encode, Decode};
-use sp_core::offchain::OpaqueNetworkState;
+use tet_core::offchain::OpaqueNetworkState;
 use tetcore_std::prelude::*;
 use tetcore_std::convert::TryInto;
 use pallet_session::historical::IdentificationTuple;

@@ -20,7 +20,7 @@
 
 use std::{convert::{TryFrom, TryInto}, fmt::Debug};
 use serde::{Serialize, Deserialize};
-use sp_core::U256;
+use tet_core::U256;
 
 /// A number type that can be serialized both as a number or a string that encodes a number in a
 /// string.

@@ -25,9 +25,9 @@ use parking_lot::RwLock;
 
 use codec::{Decode, Encode};
 
-use sp_core::ChangesTrieConfiguration;
-use sp_core::storage::{well_known_keys, ChildInfo};
-use sp_core::offchain::storage::InMemOffchainStorage;
+use tet_core::ChangesTrieConfiguration;
+use tet_core::storage::{well_known_keys, ChildInfo};
+use tet_core::offchain::storage::InMemOffchainStorage;
 use sp_state_machine::{
 	Backend as StateBackend, TrieBackend, InMemoryBackend, ChangesTrieTransaction,
 	StorageCollection, ChildStorageCollection,

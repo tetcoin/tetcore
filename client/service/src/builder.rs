@@ -60,7 +60,7 @@ use sc_telemetry::{
 use sp_transaction_pool::MaintainedTransactionPool;
 use prometheus_endpoint::Registry;
 use sc_client_db::{Backend, DatabaseSettings};
-use sp_core::traits::{
+use tet_core::traits::{
 	CodeExecutor,
 	SpawnNamed,
 };

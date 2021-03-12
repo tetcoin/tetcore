@@ -20,7 +20,7 @@
 use super::*;
 use std::cell::RefCell;
 use frame_support::{parameter_types, BasicExternalities};
-use sp_core::{crypto::key_types::DUMMY, H256};
+use tet_core::{crypto::key_types::DUMMY, H256};
 use sp_runtime::{
 	Perbill, impl_opaque_keys,
 	traits::{BlakeTwo256, IdentityLookup, ConvertInto},

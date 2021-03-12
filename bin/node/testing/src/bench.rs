@@ -50,7 +50,7 @@ use node_runtime::{
 	AccountId,
 	Signature,
 };
-use sp_core::{ExecutionContext, blake2_256, traits::SpawnNamed, Pair, Public, sr25519, ed25519};
+use tet_core::{ExecutionContext, blake2_256, traits::SpawnNamed, Pair, Public, sr25519, ed25519};
 use sp_api::ProvideRuntimeApi;
 use sp_block_builder::BlockBuilder;
 use sp_inherents::InherentData;

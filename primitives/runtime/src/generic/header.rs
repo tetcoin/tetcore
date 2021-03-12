@@ -26,14 +26,14 @@ use crate::traits::{
 	MaybeMallocSizeOf,
 };
 use crate::generic::Digest;
-use sp_core::U256;
+use tet_core::U256;
 use tetcore_std::{
 	convert::TryFrom,
 	fmt::Debug,
 };
 
 /// Abstraction over a block header for a tetcore chain.
-#[derive(PartialEq, Eq, Clone, sp_core::RuntimeDebug)]
+#[derive(PartialEq, Eq, Clone, tet_core::RuntimeDebug)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "std", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "std", serde(deny_unknown_fields))]

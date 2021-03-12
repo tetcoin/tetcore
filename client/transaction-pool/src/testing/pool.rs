@@ -944,10 +944,10 @@ fn should_not_accept_old_signatures() {
 		nonce: 0,
 		amount: 1,
 	};
-	let _bytes: sp_core::sr25519::Signature = transfer.using_encoded(|e| Alice.sign(e)).into();
+	let _bytes: tet_core::sr25519::Signature = transfer.using_encoded(|e| Alice.sign(e)).into();
 
 	// generated with schnorrkel 0.1.1 from `_bytes`
-	let old_singature = sp_core::sr25519::Signature::try_from(&hex::decode(
+	let old_singature = tet_core::sr25519::Signature::try_from(&hex::decode(
 		"c427eb672e8c441c86d31f1a81b22b43102058e9ce237cabe9897ea5099ffd426cd1c6a1f4f2869c3df57901d36bedcb295657adb3a4355add86ed234eb83108"
 	).expect("hex invalid")[..]).expect("signature construction failed");
 

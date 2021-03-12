@@ -23,7 +23,7 @@ use node_primitives::Hash;
 use sp_trie::DBValue;
 use tetsy_hash_db::{HashDB, AsHashDB, Prefix, Hasher as _};
 
-pub type Hasher = sp_core::Blake2Hasher;
+pub type Hasher = tet_core::Blake2Hasher;
 
 /// Immutable generated trie database with root.
 pub struct SimpleTrie<'a> {

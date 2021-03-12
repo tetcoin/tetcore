@@ -19,7 +19,7 @@
 //! Async externalities.
 
 use std::any::{TypeId, Any};
-use sp_core::{
+use tet_core::{
 	storage::{ChildInfo, TrackedStorageKey},
 	traits::{Externalities, SpawnNamed, TaskExecutorExt, RuntimeSpawnExt, RuntimeSpawn},
 };

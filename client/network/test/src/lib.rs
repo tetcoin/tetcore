@@ -58,7 +58,7 @@ use sc_network::{
 use sc_network::config::{NetworkConfiguration, NonDefaultSetConfig, TransportConfig};
 use tetsy_libp2p::PeerId;
 use parking_lot::Mutex;
-use sp_core::H256;
+use tet_core::H256;
 use sc_network::config::ProtocolConfig;
 use sp_runtime::generic::{BlockId, OpaqueDigestItemId};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
@@ -691,7 +691,7 @@ pub trait TestNetFactory: Sized {
 			verifier.clone(),
 			Box::new(block_import.clone()),
 			justification_import,
-			&sp_core::testing::TaskExecutor::new(),
+			&tet_core::testing::TaskExecutor::new(),
 			None,
 		));
 
@@ -795,7 +795,7 @@ pub trait TestNetFactory: Sized {
 			verifier.clone(),
 			Box::new(block_import.clone()),
 			justification_import,
-			&sp_core::testing::TaskExecutor::new(),
+			&tet_core::testing::TaskExecutor::new(),
 			None,
 		));
 

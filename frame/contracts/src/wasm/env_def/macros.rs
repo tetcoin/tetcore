@@ -137,7 +137,7 @@ macro_rules! define_func {
 		) -> Result<sp_sandbox::ReturnValue, sp_sandbox::HostError>
 			where
 				<E::T as frame_system::Config>::AccountId:
-					sp_core::crypto::UncheckedFrom<<E::T as frame_system::Config>::Hash> +
+					tet_core::crypto::UncheckedFrom<<E::T as frame_system::Config>::Hash> +
 						AsRef<[u8]>
 		{
 			#[allow(unused)]
@@ -198,7 +198,7 @@ macro_rules! define_env {
 		impl<E: Ext> $crate::wasm::env_def::FunctionImplProvider<E> for $init_name
 		where
 			<E::T as frame_system::Config>::AccountId:
-				sp_core::crypto::UncheckedFrom<<E::T as frame_system::Config>::Hash> +
+				tet_core::crypto::UncheckedFrom<<E::T as frame_system::Config>::Hash> +
 					AsRef<[u8]>
 		{
 			fn impls<F: FnMut(&[u8], $crate::wasm::env_def::HostFunc<E>)>(f: &mut F) {

@@ -363,7 +363,7 @@ pub enum Void {}
 /// # Example
 ///
 /// ```
-/// sp_core::impl_maybe_marker! {
+/// tet_core::impl_maybe_marker! {
 ///     /// A marker for a type that implements `Debug` when `feature = std`.
 ///     trait MaybeDebug: std::fmt::Debug;
 ///     /// A marker for a type that implements `Debug + Display` when `feature = std`.

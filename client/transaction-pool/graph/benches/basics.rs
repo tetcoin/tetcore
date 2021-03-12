@@ -29,7 +29,7 @@ use sp_runtime::{
 		TransactionSource,
 	},
 };
-use sp_core::blake2_256;
+use tet_core::blake2_256;
 
 #[derive(Clone, Debug, Default)]
 struct TestApi {

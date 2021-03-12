@@ -596,7 +596,7 @@ impl<Header: HeaderT> WarpSyncFragmentCache<Header> {
 pub(crate) mod tests {
 	use super::*;
 	use crate::authorities::AuthoritySetChanges;
-	use sp_core::crypto::Public;
+	use tet_core::crypto::Public;
 	use sp_finality_grandpa::AuthorityList;
 	use sc_client_api::NewBlockState;
 	use sc_client_api::in_mem::Blockchain as InMemoryBlockchain;

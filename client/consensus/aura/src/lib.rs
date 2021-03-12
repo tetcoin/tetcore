@@ -55,12 +55,12 @@ use sp_blockchain::{
 	ProvideCache, HeaderBackend,
 };
 use sp_block_builder::BlockBuilder as BlockBuilderApi;
-use sp_core::crypto::Public;
+use tet_core::crypto::Public;
 use sp_application_crypto::{AppKey, AppPublic};
 use sp_runtime::{generic::{BlockId, OpaqueDigestItemId}, traits::NumberFor, Justification};
 use sp_runtime::traits::{Block as BlockT, Header, DigestItemFor, Zero, Member};
 use sp_api::ProvideRuntimeApi;
-use sp_core::crypto::Pair;
+use tet_core::crypto::Pair;
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sp_inherents::{InherentDataProviders, InherentData};
 use sp_timestamp::{
@@ -849,7 +849,7 @@ pub fn import_queue<B, I, C, P, S, CAW>(
 	P: Pair + Send + Sync + 'static,
 	P::Public: Clone + Eq + Send + Sync + Hash + Debug + Encode + Decode,
 	P::Signature: Encode + Decode,
-	S: sp_core::traits::SpawnNamed,
+	S: tet_core::traits::SpawnNamed,
 	CAW: CanAuthorWith<B> + Send + Sync + 'static,
 {
 	register_aura_inherent_data_provider(&inherent_data_providers, slot_duration.get())?;

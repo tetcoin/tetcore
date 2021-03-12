@@ -22,7 +22,7 @@ use sp_io::{
 #[cfg(not(feature = "std"))]
 use sp_runtime::{print, traits::{BlakeTwo256, Hash}};
 #[cfg(not(feature = "std"))]
-use sp_core::{ed25519, sr25519};
+use tet_core::{ed25519, sr25519};
 #[cfg(not(feature = "std"))]
 use sp_sandbox::Value;
 
@@ -39,7 +39,7 @@ extern "C" {
 /// the initialized value at the start of a runtime call.
 static mut MUTABLE_STATIC: u64 = 32;
 
-sp_core::wasm_export_functions! {
+tet_core::wasm_export_functions! {
 	fn test_calling_missing_external() {
 		unsafe { missing_external() }
 	}
@@ -196,7 +196,7 @@ sp_core::wasm_export_functions! {
 
 
 	fn test_offchain_local_storage() -> bool {
-		let kind = sp_core::offchain::StorageKind::PERSISTENT;
+		let kind = tet_core::offchain::StorageKind::PERSISTENT;
 		assert_eq!(sp_io::offchain::local_storage_get(kind, b"test"), None);
 		sp_io::offchain::local_storage_set(kind, b"test", b"asd");
 		assert_eq!(sp_io::offchain::local_storage_get(kind, b"test"), Some(b"asd".to_vec()));
@@ -212,7 +212,7 @@ sp_core::wasm_export_functions! {
 	}
 
 	fn test_offchain_local_storage_with_none() {
-		let kind = sp_core::offchain::StorageKind::PERSISTENT;
+		let kind = tet_core::offchain::StorageKind::PERSISTENT;
 		assert_eq!(sp_io::offchain::local_storage_get(kind, b"test"), None);
 
 		let res = sp_io::offchain::local_storage_compare_and_set(kind, b"test", None, b"value");
@@ -221,7 +221,7 @@ sp_core::wasm_export_functions! {
 	}
 
 	fn test_offchain_http() -> bool {
-		use sp_core::offchain::HttpRequestStatus;
+		use tet_core::offchain::HttpRequestStatus;
 		let run = || -> Option<()> {
 			let id = sp_io::offchain::http_request_start(
 				"POST",

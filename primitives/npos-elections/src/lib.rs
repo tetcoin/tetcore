@@ -87,7 +87,7 @@ use tetcore_std::{
 	prelude::*,
 	rc::Rc,
 };
-use sp_core::RuntimeDebug;
+use tet_core::RuntimeDebug;
 
 use codec::{Decode, Encode};
 #[cfg(feature = "std")]

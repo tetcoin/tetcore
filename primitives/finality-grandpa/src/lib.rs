@@ -36,7 +36,7 @@ use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use log::debug;
 
 /// Key type for GRANDPA module.
-pub const KEY_TYPE: sp_core::crypto::KeyTypeId = sp_application_crypto::key_types::GRANDPA;
+pub const KEY_TYPE: tet_core::crypto::KeyTypeId = sp_application_crypto::key_types::GRANDPA;
 
 mod app {
 	use sp_application_crypto::{app_crypto, key_types::GRANDPA, ed25519};
@@ -390,7 +390,7 @@ where
 	H: Encode,
 	N: Encode,
 {
-	use sp_core::crypto::Public;
+	use tet_core::crypto::Public;
 	use sp_application_crypto::AppKey;
 	use tetcore_std::convert::TryInto;
 

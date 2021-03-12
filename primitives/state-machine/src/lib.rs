@@ -173,7 +173,7 @@ mod execution {
 	use log::{warn, trace};
 	use tetsy_hash_db::Hasher;
 	use codec::{Decode, Encode, Codec};
-	use sp_core::{
+	use tet_core::{
 		storage::ChildInfo, NativeOrEncoded, NeverNativeValue, hexdisplay::HexDisplay,
 		traits::{CodeExecutor, CallInWasmExt, RuntimeCode, SpawnNamed},
 	};
@@ -337,7 +337,7 @@ mod execution {
 			spawn_handle: impl SpawnNamed + Send + 'static,
 		) -> Self {
 			extensions.register(CallInWasmExt::new(exec.clone()));
-			extensions.register(sp_core::traits::TaskExecutorExt::new(spawn_handle));
+			extensions.register(tet_core::traits::TaskExecutorExt::new(spawn_handle));
 
 			Self {
 				backend,
@@ -865,13 +865,13 @@ mod tests {
 	use super::*;
 	use super::ext::Ext;
 	use super::changes_trie::Configuration as ChangesTrieConfig;
-	use sp_core::{
+	use tet_core::{
 		map, traits::{Externalities, RuntimeCode}, testing::TaskExecutor,
 	};
 	use sp_runtime::traits::BlakeTwo256;
 	use std::{result, collections::HashMap};
 	use codec::Decode;
-	use sp_core::{
+	use tet_core::{
 		storage::ChildInfo, NativeOrEncoded, NeverNativeValue,
 		traits::CodeExecutor,
 	};
@@ -903,7 +903,7 @@ mod tests {
 		) -> (CallResult<R, Self::Error>, bool) {
 			if self.change_changes_trie_config {
 				ext.place_storage(
-					sp_core::storage::well_known_keys::CHANGES_TRIE_CONFIG.to_vec(),
+					tet_core::storage::well_known_keys::CHANGES_TRIE_CONFIG.to_vec(),
 					Some(
 						ChangesTrieConfig {
 							digest_interval: 777,
@@ -940,7 +940,7 @@ mod tests {
 		}
 	}
 
-	impl sp_core::traits::CallInWasm for DummyCodeExecutor {
+	impl tet_core::traits::CallInWasm for DummyCodeExecutor {
 		fn call_in_wasm(
 			&self,
 			_: &[u8],
@@ -948,7 +948,7 @@ mod tests {
 			_: &str,
 			_: &[u8],
 			_: &mut dyn Externalities,
-			_: sp_core::traits::MissingHostFunctions,
+			_: tet_core::traits::MissingHostFunctions,
 		) -> std::result::Result<Vec<u8>, String> {
 			unimplemented!("Not required in tests.")
 		}

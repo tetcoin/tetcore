@@ -526,7 +526,7 @@ pub(crate) fn load_authorities<B: AuxStore, H: Decode, N: Decode + Clone + Ord>(
 #[cfg(test)]
 mod test {
 	use sp_finality_grandpa::AuthorityId;
-	use sp_core::H256;
+	use tet_core::H256;
 	use tetcore_test_runtime_client;
 	use super::*;
 

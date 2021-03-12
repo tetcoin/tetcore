@@ -24,7 +24,7 @@ use std::collections::{BTreeMap, HashMap};
 use tetsy_hash_db::Hasher;
 use sp_trie::{MemoryDB, empty_trie_root, Layout};
 use codec::Codec;
-use sp_core::storage::{ChildInfo, Storage};
+use tet_core::storage::{ChildInfo, Storage};
 
 /// Create a new empty instance of in-memory backend.
 pub fn new_in_mem<H: Hasher>() -> TrieBackend<MemoryDB<H>, H>

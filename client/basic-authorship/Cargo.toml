@@ -20,7 +20,7 @@ log = "0.4.8"
 prometheus-endpoint = { package = "prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
 tp-api = { version = "2.0.0", path = "../../primitives/api" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tp-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
 tc-client-api = { version = "2.0.0", path = "../api" }
 tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }

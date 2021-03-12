@@ -23,8 +23,8 @@ use super::*;
 
 use frame_system::RawOrigin;
 use frame_benchmarking::benchmarks;
-use sp_core::OpaquePeerId;
-use sp_core::offchain::OpaqueMultiaddr;
+use tet_core::OpaquePeerId;
+use tet_core::offchain::OpaqueMultiaddr;
 use sp_runtime::traits::{ValidateUnsigned, Zero};
 use sp_runtime::transaction_validity::TransactionSource;
 use frame_support::traits::UnfilteredDispatchable;

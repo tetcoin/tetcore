@@ -37,7 +37,7 @@ use tetcore_std::vec::Vec;
 use crate::digests::{NextConfigDescriptor, NextEpochDescriptor};
 
 /// Key type for BABE module.
-pub const KEY_TYPE: sp_core::crypto::KeyTypeId = sp_application_crypto::key_types::BABE;
+pub const KEY_TYPE: tet_core::crypto::KeyTypeId = sp_application_crypto::key_types::BABE;
 
 mod app {
 	use sp_application_crypto::{app_crypto, key_types::BABE, sr25519};

@@ -24,7 +24,7 @@ use std::collections::HashMap;
 
 use tetsy_hash_db::{Prefix, Hasher};
 use sp_trie::{MemoryDB, prefixed_key};
-use sp_core::{
+use tet_core::{
 	storage::{ChildInfo, TrackedStorageKey},
 	hexdisplay::HexDisplay
 };
@@ -514,8 +514,8 @@ mod test {
 			.unwrap();
 
 		for _ in 0..2 {
-			let child1 = sp_core::storage::ChildInfo::new_default(b"child1");
-			let child2 = sp_core::storage::ChildInfo::new_default(b"child2");
+			let child1 = tet_core::storage::ChildInfo::new_default(b"child1");
+			let child2 = tet_core::storage::ChildInfo::new_default(b"child2");
 
 			bench_state.storage(b"foo").unwrap();
 			bench_state.child_storage(&child1, b"foo").unwrap();

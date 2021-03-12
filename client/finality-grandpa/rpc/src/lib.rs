@@ -200,7 +200,7 @@ mod tests {
 	};
 	use sp_blockchain::HeaderBackend;
 	use sp_consensus::RecordProof;
-	use sp_core::crypto::Public;
+	use tet_core::crypto::Public;
 	use sp_keyring::Ed25519Keyring;
 	use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
 	use tetcore_test_runtime_client::{
@@ -504,7 +504,7 @@ mod tests {
 
 		let recv_sub_id: String =
 			serde_json::from_value(json_map["subscription"].take()).unwrap();
-		let recv_justification: sp_core::Bytes =
+		let recv_justification: tet_core::Bytes =
 			serde_json::from_value(json_map["result"].take()).unwrap();
 		let recv_justification: GrandpaJustification<Block> =
 			Decode::decode(&mut &recv_justification[..]).unwrap();
@@ -532,7 +532,7 @@ mod tests {
 		let meta = sc_rpc::Metadata::default();
 		let resp = io.handle_request_sync(request, meta);
 		let mut resp: serde_json::Value = serde_json::from_str(&resp.unwrap()).unwrap();
-		let result: sp_core::Bytes = serde_json::from_value(resp["result"].take()).unwrap();
+		let result: tet_core::Bytes = serde_json::from_value(resp["result"].take()).unwrap();
 		let finality_proof_rpc: FinalityProof<Header> = Decode::decode(&mut &result[..]).unwrap();
 		assert_eq!(finality_proof_rpc, finality_proof);
 	}

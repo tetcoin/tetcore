@@ -25,7 +25,7 @@ mod tests;
 pub use sc_rpc_api::offchain::*;
 use sc_rpc_api::DenyUnsafe;
 use self::error::{Error, Result};
-use sp_core::{
+use tet_core::{
 	Bytes,
 	offchain::{OffchainStorage, StorageKind},
 };

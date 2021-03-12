@@ -18,7 +18,7 @@
 
 //! Initialization errors.
 
-use sp_core::crypto;
+use tet_core::crypto;
 
 /// Result type alias for the CLI.
 pub type Result<T> = std::result::Result<T, Error>;

@@ -473,7 +473,7 @@ mod trie_constants {
 mod tests {
 	use super::*;
 	use codec::{Encode, Decode, Compact};
-	use sp_core::Blake2Hasher;
+	use tet_core::Blake2Hasher;
 	use tetsy_hash_db::{HashDB, Hasher};
 	use tetsy_trie_db::{DBValue, TrieMut, Trie, NodeCodec as NodeCodecT};
 	use trie_standardmap::{Alphabet, ValueMode, StandardMap};
@@ -864,7 +864,7 @@ mod tests {
 	#[test]
 	fn generate_storage_root_with_proof_works_independently_from_the_delta_order() {
 		let proof = StorageProof::decode(&mut &include_bytes!("../test-res/proof")[..]).unwrap();
-		let storage_root = sp_core::H256::decode(
+		let storage_root = tet_core::H256::decode(
 			&mut &include_bytes!("../test-res/storage_root")[..],
 		).unwrap();
 		// Delta order that is "invalid" so that it would require a different proof.

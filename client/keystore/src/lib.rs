@@ -20,7 +20,7 @@
 
 #![warn(missing_docs)]
 use std::io;
-use sp_core::crypto::KeyTypeId;
+use tet_core::crypto::KeyTypeId;
 use sp_keystore::Error as TraitError;
 
 /// Local keystore implementation

@@ -29,7 +29,7 @@ use hash_db;
 use codec::Encode;
 use sp_trie;
 
-use sp_core::{H256, convert_hash};
+use tet_core::{H256, convert_hash};
 use sp_runtime::traits::{Header as HeaderT, AtLeast32Bit, Zero, One};
 use sp_state_machine::{
 	MemoryDB, TrieBackend, Backend as StateBackend, StorageProof, InMemoryBackend,

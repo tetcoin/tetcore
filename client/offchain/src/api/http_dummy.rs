@@ -18,7 +18,7 @@
 
 //! Contains the same API as the `http` module, except that everything returns an error.
 
-use sp_core::offchain::{HttpRequestId, Timestamp, HttpRequestStatus, HttpError};
+use tet_core::offchain::{HttpRequestId, Timestamp, HttpRequestStatus, HttpError};
 use std::{future::Future, pin::Pin, task::Context, task::Poll};
 
 /// Wrapper struct (wrapping nothing in case of http_dummy) used for keeping the hyper_rustls client running.

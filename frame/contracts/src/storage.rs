@@ -28,7 +28,7 @@ use tetcore_std::prelude::*;
 use tetcore_std::marker::PhantomData;
 use sp_io::hashing::blake2_256;
 use sp_runtime::traits::{Bounded, Saturating, Zero};
-use sp_core::crypto::UncheckedFrom;
+use tet_core::crypto::UncheckedFrom;
 use frame_support::{
 	dispatch::DispatchResult,
 	StorageMap,

@@ -116,7 +116,7 @@ mod tests {
 	use rand::Rng;
 
 	use sp_authority_discovery::{AuthorityId, AuthorityPair};
-	use sp_core::crypto::Pair;
+	use tet_core::crypto::Pair;
 
 	#[derive(Clone, Debug)]
 	struct TestAuthorityId(AuthorityId);

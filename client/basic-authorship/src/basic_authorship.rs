@@ -24,7 +24,7 @@ use std::{pin::Pin, time, sync::Arc};
 use sc_client_api::backend;
 use codec::Decode;
 use sp_consensus::{evaluation, Proposal, RecordProof};
-use sp_core::traits::SpawnNamed;
+use tet_core::traits::SpawnNamed;
 use sp_inherents::InherentData;
 use log::{error, info, debug, trace, warn};
 use sp_runtime::{
@@ -405,7 +405,7 @@ mod tests {
 	fn should_cease_building_block_when_deadline_is_reached() {
 		// given
 		let client = Arc::new(tetcore_test_runtime_client::new());
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let txpool = BasicPool::new_full(
 			Default::default(),
 			None,
@@ -463,7 +463,7 @@ mod tests {
 	#[test]
 	fn should_not_panic_when_deadline_is_reached() {
 		let client = Arc::new(tetcore_test_runtime_client::new());
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let txpool = BasicPool::new_full(
 			Default::default(),
 			None,
@@ -503,7 +503,7 @@ mod tests {
 	fn proposed_storage_changes_should_match_execute_block_storage_changes() {
 		let (client, backend) = TestClientBuilder::new().build_with_backend();
 		let client = Arc::new(client);
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let txpool = BasicPool::new_full(
 			Default::default(),
 			None,
@@ -570,7 +570,7 @@ mod tests {
 	fn should_not_remove_invalid_transactions_when_skipping() {
 		// given
 		let mut client = Arc::new(tetcore_test_runtime_client::new());
-		let spawner = sp_core::testing::TaskExecutor::new();
+		let spawner = tet_core::testing::TaskExecutor::new();
 		let txpool = BasicPool::new_full(
 			Default::default(),
 			None,

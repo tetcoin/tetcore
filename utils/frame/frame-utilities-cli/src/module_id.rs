@@ -23,7 +23,7 @@ use sc_cli::{
 };
 use sp_runtime::ModuleId;
 use sp_runtime::traits::AccountIdConversion;
-use sp_core::crypto::{Ss58Codec, Ss58AddressFormat};
+use tet_core::crypto::{Ss58Codec, Ss58AddressFormat};
 use std::convert::{TryInto, TryFrom};
 use structopt::StructOpt;
 

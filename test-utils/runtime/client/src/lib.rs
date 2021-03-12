@@ -31,8 +31,8 @@ pub use sc_consensus::LongestChain;
 
 pub use self::block_builder_ext::BlockBuilderExt;
 
-use sp_core::{sr25519, ChangesTrieConfiguration};
-use sp_core::storage::{ChildInfo, Storage, StorageChild};
+use tet_core::{sr25519, ChangesTrieConfiguration};
+use tet_core::storage::{ChildInfo, Storage, StorageChild};
 use tetcore_test_runtime::genesismap::{GenesisConfig, additional_storage_with_genesis};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, Hash as HashT, NumberFor, HashFor};
 use sc_client_api::light::{
@@ -353,7 +353,7 @@ pub fn new_light() -> (
 	let local_call_executor = client::LocalCallExecutor::new(
 		backend.clone(),
 		executor,
-		Box::new(sp_core::testing::TaskExecutor::new()),
+		Box::new(tet_core::testing::TaskExecutor::new()),
 		Default::default(),
 	).expect("Creates LocalCallExecutor");
 	let call_executor = LightExecutor::new(

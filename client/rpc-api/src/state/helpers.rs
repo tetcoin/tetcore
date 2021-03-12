@@ -18,7 +18,7 @@
 
 //! Tetcore state API helpers.
 
-use sp_core::Bytes;
+use tet_core::Bytes;
 use serde::{Serialize, Deserialize};
 
 /// ReadProof struct returned by the RPC

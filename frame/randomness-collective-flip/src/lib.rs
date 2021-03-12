@@ -134,7 +134,7 @@ impl<T: Config> Randomness<T::Hash> for Module<T> {
 mod tests {
 	use crate as pallet_randomness_collective_flip;
 	use super::*;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::{
 		testing::Header,
 		traits::{BlakeTwo256, Header as _, IdentityLookup},

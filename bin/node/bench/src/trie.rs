@@ -168,9 +168,9 @@ impl core::BenchmarkDescription for TrieReadBenchmarkDescription {
 
 struct Storage(Arc<dyn KeyValueDB>);
 
-impl sp_state_machine::Storage<sp_core::Blake2Hasher> for Storage {
+impl sp_state_machine::Storage<tet_core::Blake2Hasher> for Storage {
 	fn get(&self, key: &Hash, prefix: Prefix) -> Result<Option<Vec<u8>>, String> {
-		let key = sp_trie::prefixed_key::<sp_core::Blake2Hasher>(key, prefix);
+		let key = sp_trie::prefixed_key::<tet_core::Blake2Hasher>(key, prefix);
 		self.0.get(0, &key).map_err(|e| format!("Database backend error: {:?}", e))
 	}
 }
@@ -179,7 +179,7 @@ impl core::Benchmark for TrieReadBenchmark {
 	fn run(&mut self, mode: Mode) -> std::time::Duration {
 		let mut db = self.database.clone();
 
-		let storage: Arc<dyn sp_state_machine::Storage<sp_core::Blake2Hasher>> =
+		let storage: Arc<dyn sp_state_machine::Storage<tet_core::Blake2Hasher>> =
 			Arc::new(Storage(db.open(self.database_type)));
 
 		let trie_backend = sp_state_machine::TrieBackend::new(

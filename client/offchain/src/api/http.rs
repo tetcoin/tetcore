@@ -32,7 +32,7 @@ use bytes::buf::ext::{Reader, BufExt};
 use fnv::FnvHashMap;
 use futures::{prelude::*, future, channel::mpsc};
 use log::error;
-use sp_core::offchain::{HttpRequestId, Timestamp, HttpRequestStatus, HttpError};
+use tet_core::offchain::{HttpRequestId, Timestamp, HttpRequestStatus, HttpError};
 use std::{convert::TryFrom, fmt, io::Read as _, pin::Pin, task::{Context, Poll}};
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
 use std::sync::Arc;
@@ -701,7 +701,7 @@ mod tests {
 	use core::convert::Infallible;
 	use crate::api::timestamp;
 	use super::{http, SharedClient};
-	use sp_core::offchain::{HttpError, HttpRequestId, HttpRequestStatus, Duration};
+	use tet_core::offchain::{HttpError, HttpRequestId, HttpRequestStatus, Duration};
 	use futures::future;
 	use lazy_static::lazy_static;
 

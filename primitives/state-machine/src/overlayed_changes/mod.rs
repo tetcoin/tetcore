@@ -43,8 +43,8 @@ use std::collections::{HashMap as Map, hash_map::Entry as MapEntry};
 use tetcore_std::collections::btree_map::{BTreeMap as Map, Entry as MapEntry};
 use tetcore_std::collections::btree_set::BTreeSet;
 use codec::{Decode, Encode};
-use sp_core::storage::{well_known_keys::EXTRINSIC_INDEX, ChildInfo};
-use sp_core::offchain::OffchainOverlayedChange;
+use tet_core::storage::{well_known_keys::EXTRINSIC_INDEX, ChildInfo};
+use tet_core::offchain::OffchainOverlayedChange;
 use tetsy_hash_db::Hasher;
 use crate::DefaultError;
 use externalities::{Extensions, Extension};
@@ -660,7 +660,7 @@ impl OverlayedChanges {
 
 	/// Write a key value pair to the offchain storage overlay.
 	pub fn set_offchain_storage(&mut self, key: &[u8], value: Option<&[u8]>) {
-		use sp_core::offchain::STORAGE_PREFIX;
+		use tet_core::offchain::STORAGE_PREFIX;
 		match value {
 			Some(value) => self.offchain.set(STORAGE_PREFIX, key, value),
 			None => self.offchain.remove(STORAGE_PREFIX, key),
@@ -754,7 +754,7 @@ impl<'a> OverlayedExtensions<'a> {
 #[cfg(test)]
 mod tests {
 	use hex_literal::hex;
-	use sp_core::{Blake2Hasher, traits::Externalities};
+	use tet_core::{Blake2Hasher, traits::Externalities};
 	use crate::InMemoryBackend;
 	use crate::ext::Ext;
 	use super::*;
@@ -806,7 +806,7 @@ mod tests {
 
 	#[test]
 	fn offchain_overlayed_storage_transactions_works() {
-		use sp_core::offchain::STORAGE_PREFIX;
+		use tet_core::offchain::STORAGE_PREFIX;
 		fn check_offchain_content(
 			state: &OverlayedChanges,
 			nb_commit: usize,

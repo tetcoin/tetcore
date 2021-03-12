@@ -21,7 +21,7 @@ use frame_support::{
 	traits::Currency,
 	weights::{GetDispatchInfo, constants::ExtrinsicBaseWeight, IdentityFee, WeightToFeePolynomial},
 };
-use sp_core::NeverNativeValue;
+use tet_core::NeverNativeValue;
 use sp_runtime::{Perbill, FixedPointNumber};
 use node_runtime::{
 	CheckedExtrinsic, Call, Runtime, Balances, TransactionPayment, Multiplier,

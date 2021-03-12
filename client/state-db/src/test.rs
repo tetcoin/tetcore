@@ -19,7 +19,7 @@
 //! Test utils
 
 use std::collections::HashMap;
-use sp_core::H256;
+use tet_core::H256;
 use crate::{DBValue, ChangeSet, CommitSet, MetaDb, NodeDb};
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]

@@ -27,7 +27,7 @@ use codec::{Encode, Decode};
 use sp_allocator::FreeingBumpHeapAllocator;
 use sc_executor_common::error::Result;
 use sc_executor_common::sandbox::{self, SandboxCapabilities, SupervisorFuncIndex};
-use sp_core::sandbox as sandbox_primitives;
+use tet_core::sandbox as sandbox_primitives;
 use tetcore_wasm_interface::{FunctionContext, MemoryId, Pointer, Sandbox, WordSize};
 use wasmtime::{Func, Val};
 

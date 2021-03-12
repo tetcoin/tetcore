@@ -25,7 +25,7 @@ pallet-contracts-proc-macro = { version = "0.1.0", path = "proc-macro" }
 tetsy-wasm = { version = "0.41.0", default-features = false }
 pwasm-utils = { version = "0.16", default-features = false }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-tp-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
@@ -51,7 +51,7 @@ default = ["std"]
 std = [
 	"serde",
 	"codec/std",
-	"tp-core/std",
+	"tet-core/std",
 	"tp-runtime/std",
 	"tp-io/std",
 	"tetcore-std/std",

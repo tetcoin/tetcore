@@ -24,7 +24,7 @@
 
 use std::sync::{Weak, Arc};
 use codec::Decode;
-use sp_core::{
+use tet_core::{
 	ExecutionContext,
 	offchain::{self, OffchainExt, TransactionPoolExt},
 };

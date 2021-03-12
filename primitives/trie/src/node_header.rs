@@ -23,7 +23,7 @@ use tetcore_std::iter::once;
 
 /// A node header
 #[derive(Copy, Clone, PartialEq, Eq)]
-#[derive(sp_core::RuntimeDebug)]
+#[derive(tet_core::RuntimeDebug)]
 pub(crate) enum NodeHeader {
 	Null,
 	Branch(bool, usize),

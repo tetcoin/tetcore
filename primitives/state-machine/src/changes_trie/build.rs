@@ -33,7 +33,7 @@ use crate::{
 		input::{InputKey, InputPair, DigestIndex, ExtrinsicIndex, ChildIndex},
 	},
 };
-use sp_core::storage::{ChildInfo, PrefixedStorageKey};
+use tet_core::storage::{ChildInfo, PrefixedStorageKey};
 
 /// Prepare input pairs for building a changes trie of given block.
 ///
@@ -332,7 +332,7 @@ fn prepare_digest_input<'a, H, Number>(
 
 #[cfg(test)]
 mod test {
-	use sp_core::Blake2Hasher;
+	use tet_core::Blake2Hasher;
 	use crate::InMemoryBackend;
 	use crate::changes_trie::{RootsStorage, Configuration, storage::InMemoryStorage};
 	use crate::changes_trie::build_cache::{IncompleteCacheAction, IncompleteCachedBuildData};

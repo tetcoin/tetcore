@@ -15,7 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 tp-api-proc-macro = { version = "2.0.0", path = "proc-macro" }
-tp-core = { version = "2.0.0", default-features = false, path = "../core" }
+tet-core = { version = "2.0.0", default-features = false, path = "../core" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
 tp-version = { version = "2.0.0", default-features = false, path = "../version" }
@@ -30,7 +30,7 @@ tp-test-primitives = { version = "2.0.0", path = "../test-primitives" }
 default = [ "std" ]
 std = [
 	"codec/std",
-	"tp-core/std",
+	"tet-core/std",
 	"tetcore-std/std",
 	"tp-runtime/std",
 	"tp-state-machine",

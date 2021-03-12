@@ -141,7 +141,7 @@ mod test {
 	use crate::migration::EpochV0;
 	use forktree::ForkTree;
 	use tetcore_test_runtime_client;
-	use sp_core::H256;
+	use tet_core::H256;
 	use sp_runtime::traits::NumberFor;
 	use sp_consensus_babe::{AllowedSlots, BabeGenesisConfiguration};
 	use sc_consensus_epochs::{PersistedEpoch, PersistedEpochHeader, EpochHeader};

@@ -21,8 +21,8 @@
 
 use super::*;
 use crate::mock::*;
-use sp_core::OpaquePeerId;
-use sp_core::offchain::{
+use tet_core::OpaquePeerId;
+use tet_core::offchain::{
 	OffchainExt,
 	TransactionPoolExt,
 	testing::{TestOffchainExt, TestTransactionPoolExt},

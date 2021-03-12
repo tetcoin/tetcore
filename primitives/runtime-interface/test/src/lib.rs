@@ -51,7 +51,7 @@ fn call_wasm_method_with_result<HF: HostFunctionsT>(
 		method,
 		&[],
 		&mut ext_ext,
-		sp_core::traits::MissingHostFunctions::Disallow,
+		tet_core::traits::MissingHostFunctions::Disallow,
 	).map_err(|e| format!("Failed to execute `{}`: {}", method, e))?;
 	Ok(ext)
 }
