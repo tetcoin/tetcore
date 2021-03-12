@@ -1,0 +1,12 @@
+name: tetcore
+version: 0.2
+appVersion: 0.9.1
+description: "Tetcore: The platform for blockchain innovators"
+home: https://tetcore.network/
+icon: https://tetcore.network/favicon.ico
+sources:
+  - https://github.com/tetcoin/tetcore/
+maintainers:
+  - name: Tetcoin Devops Team
+    email: devops-team@tetcoin.org
+tillerVersion: ">=2.8.0"

@@ -1,0 +1,60 @@
+[package]
+name = "frame-support"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Support code for the runtime."
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+log = "0.4"
+serde = { version = "1.0.101", optional = true, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+frame-metadata = { version = "12.0.0", default-features = false, path = "../metadata" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tetcore-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+arithmetic = { version = "2.0.0", default-features = false, path = "../../primitives/arithmetic" }
+tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
+frame-support-procedural = { version = "2.0.1", default-features = false, path = "./procedural" }
+paste = "0.1.6"
+once_cell = { version = "1", default-features = false, optional = true }
+tp-state-machine = { version = "0.8.0", optional = true, path = "../../primitives/state-machine" }
+bitflags = "1.2"
+impl-trait-for-tuples = "0.2.0"
+smallvec = "1.4.1"
+
+[dev-dependencies]
+pretty_assertions = "0.6.1"
+frame-system = { version = "2.0.0", path = "../system" }
+tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
+tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+tp-api = { version = "2.0.0", default-features = false, path = "../../primitives/api" }
+
+[features]
+default = ["std"]
+std = [
+	"once_cell",
+	"serde",
+	"tp-io/std",
+	"codec/std",
+	"tetcore-std/std",
+	"tp-runtime/std",
+	"tetcore-tracing/std",
+	"arithmetic/std",
+	"frame-metadata/std",
+	"tp-inherents/std",
+	"tp-state-machine",
+	"frame-support-procedural/std",
+]
+nightly = []
+strict = []
+runtime-benchmarks = []

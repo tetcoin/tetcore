@@ -1,0 +1,36 @@
+[package]
+name = "tp-tasks"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Runtime asynchronous, pure computational tasks"
+documentation = "https://docs.rs/tp-tasks"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+log = { version = "0.4.8", optional = true }
+tet-core = { version = "2.0.0", default-features = false, path = "../core" }
+externalities = { version = "0.8.0", optional = true, path = "../externalities" }
+tp-io = { version = "2.0.0", default-features = false, path = "../io" }
+tp-runtime-interface = { version = "2.0.0", default-features = false, path = "../runtime-interface" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
+
+[dev-dependencies]
+codec = { package = "tetsy-scale-codec", default-features = false, version = "2.0.1" }
+
+[features]
+default = ["std"]
+std = [
+	"log",
+	"tet-core/std",
+	"externalities",
+	"tp-io/std",
+	"tp-runtime-interface/std",
+	"tetcore-std/std",
+]

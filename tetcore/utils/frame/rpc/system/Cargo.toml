@@ -1,0 +1,36 @@
+[package]
+name = "tetcore-frame-rpc-system"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FRAME's system exposed over Tetcore RPC"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+tc-client-api = { version = "2.0.0", path = "../../../../client/api" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
+futures = { version = "0.3.4", features = ["compat"] }
+jsonrpc-core = "15.1.0"
+jsonrpc-core-client = "15.1.0"
+jsonrpc-derive = "15.1.0"
+log = "0.4.8"
+serde = { version = "1.0.101", features = ["derive"] }
+tp-runtime = { version = "2.0.0", path = "../../../../primitives/runtime" }
+tp-api = { version = "2.0.0", path = "../../../../primitives/api" }
+frame-system-rpc-runtime-api = { version = "2.0.0", path = "../../../../frame/system/rpc/runtime-api" }
+tet-core = { version = "2.0.0", path = "../../../../primitives/core" }
+tp-blockchain = { version = "2.0.0", path = "../../../../primitives/blockchain" }
+tp-transaction-pool = { version = "2.0.0", path = "../../../../primitives/transaction-pool" }
+tp-block-builder = { version = "2.0.0", path = "../../../../primitives/block-builder" }
+tc-rpc-api = { version = "0.8.0", path = "../../../../client/rpc-api" }
+
+[dev-dependencies]
+tetcore-test-runtime-client = { version = "2.0.0", path = "../../../../test-utils/runtime/client" }
+tetcore-tracing = { version = "2.0.0", path = "../../../../primitives/tracing" }
+tc-transaction-pool = { version = "2.0.0", path = "../../../../client/transaction-pool" }

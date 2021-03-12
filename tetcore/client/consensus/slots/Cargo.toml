@@ -1,0 +1,41 @@
+[package]
+name = "tc-consensus-slots"
+version = "0.8.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+description = "Generic slots-based utilities for consensus"
+edition = "2018"
+build = "build.rs"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/tc-consensus-slots"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
+tc-client-api = { version = "2.0.0", path = "../../api" }
+tet-core = { version = "2.0.0", path = "../../../primitives/core" }
+tp-trie = { version = "2.0.0", path = "../../../primitives/trie" }
+tp-application-crypto = { version = "2.0.0", path = "../../../primitives/application-crypto" }
+arithmetic = { version = "2.0.0", path = "../../../primitives/arithmetic" }
+tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-consensus-slots = { version = "0.8.0", path = "../../../primitives/consensus/slots" }
+tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
+tp-api = { version = "2.0.0", path = "../../../primitives/api" }
+tc-telemetry = { version = "2.0.0", path = "../../telemetry" }
+tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
+futures = "0.3.9"
+futures-timer = "3.0.1"
+parking_lot = "0.11.1"
+log = "0.4.11"
+thiserror = "1.0.21"
+
+[dev-dependencies]
+tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }

@@ -1,0 +1,40 @@
+[package]
+name = "tp-api"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Tetcore runtime api primitives"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
+tp-api-proc-macro = { version = "2.0.0", path = "proc-macro" }
+tet-core = { version = "2.0.0", default-features = false, path = "../core" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
+tp-version = { version = "2.0.0", default-features = false, path = "../version" }
+tp-state-machine = { version = "0.8.0", optional = true, path = "../state-machine" }
+tetsy-hash-db = { version = "0.15.2", optional = true }
+thiserror = { version = "1.0.21", optional = true }
+
+[dev-dependencies]
+tp-test-primitives = { version = "2.0.0", path = "../test-primitives" }
+
+[features]
+default = [ "std" ]
+std = [
+	"codec/std",
+	"tet-core/std",
+	"tetcore-std/std",
+	"tp-runtime/std",
+	"tp-state-machine",
+	"tp-version/std",
+	"tetsy-hash-db",
+	"thiserror",
+]

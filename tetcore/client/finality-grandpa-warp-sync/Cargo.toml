@@ -1,0 +1,30 @@
+[package]
+description = "A request-response protocol for handling grandpa warp sync requests"
+name = "tc-finality-grandpa-warp-sync"
+version = "0.8.0"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+publish = false
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+tc-network = { version = "0.8.0", path = "../network" }
+tc-finality-grandpa = { version = "0.8.0", path = "../finality-grandpa" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tc-client-api = { version = "2.0.0", path = "../api" }
+tc-service = { version = "0.8.0", path = "../service" }
+futures = "0.3.8"
+log = "0.4.11"
+derive_more = "0.99.11"
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
+prost = "0.6.1"
+num-traits = "0.2.14"
+parking_lot = "0.11.1"

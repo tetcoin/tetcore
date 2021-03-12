@@ -1,0 +1,38 @@
+[package]
+name = "pallet-scored-pool"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FRAME pallet for scored pools"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+serde = { version = "1.0.101", optional = true }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+frame-support = { version = "2.0.0", default-features = false, path = "../support" }
+frame-system = { version = "2.0.0", default-features = false, path = "../system" }
+
+[dev-dependencies]
+pallet-balances = { version = "2.0.0", path = "../balances" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"serde",
+	"tp-io/std",
+	"tp-runtime/std",
+	"tetcore-std/std",
+	"frame-support/std",
+	"frame-system/std",
+]

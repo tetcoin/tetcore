@@ -1,0 +1,35 @@
+[package]
+name = "pallet-node-authorization"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FRAME pallet for node authorization"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+serde = { version = "1.0.101", optional = true }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+frame-support = { version = "2.0.0", default-features = false, path = "../support" }
+frame-system = { version = "2.0.0", default-features = false, path = "../system" }
+tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+
+[features]
+default = ["std"]
+std = [
+	"serde",
+	"codec/std",
+	"frame-support/std",
+	"frame-system/std",
+	"tet-core/std",
+	"tp-io/std",
+	"tp-runtime/std",
+	"tetcore-std/std",
+]

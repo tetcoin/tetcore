@@ -1,0 +1,71 @@
+[package]
+name = "pallet-contracts"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FRAME pallet for WASM contracts"
+readme = "README.md"
+
+# Prevent publish until we are ready to release 3.0.0
+publish = false
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
+frame-support = { version = "2.0.0", default-features = false, path = "../support" }
+frame-system = { version = "2.0.0", default-features = false, path = "../system" }
+pallet-contracts-primitives = { version = "2.0.0", default-features = false, path = "common" }
+pallet-contracts-proc-macro = { version = "0.1.0", path = "proc-macro" }
+tetsy-wasm = { version = "0.41.0", default-features = false }
+pwasm-utils = { version = "0.16", default-features = false }
+serde = { version = "1.0.101", optional = true, features = ["derive"] }
+tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tp-sandbox = { version = "0.8.0", default-features = false, path = "../../primitives/sandbox" }
+twasmi-validation = { version = "0.3.0", default-features = false }
+
+# Only used in benchmarking to generate random contract code
+rand = { version = "0.7.0", optional = true, default-features = false }
+rand_pcg = { version = "0.2.1", optional = true }
+
+[dev-dependencies]
+assert_matches = "1.3.0"
+hex-literal = "0.3.1"
+pallet-balances = { version = "2.0.0", path = "../balances" }
+pallet-timestamp = { version = "2.0.0", path = "../timestamp" }
+pallet-randomness-collective-flip = { version = "2.0.0", path = "../randomness-collective-flip" }
+paste = "1.0"
+pretty_assertions = "0.6.1"
+wat = "1.0"
+
+[features]
+default = ["std"]
+std = [
+	"serde",
+	"codec/std",
+	"tet-core/std",
+	"tp-runtime/std",
+	"tp-io/std",
+	"tetcore-std/std",
+	"tp-sandbox/std",
+	"frame-support/std",
+	"frame-system/std",
+	"tetsy-wasm/std",
+	"pwasm-utils/std",
+	"twasmi-validation/std",
+	"pallet-contracts-primitives/std",
+	"pallet-contracts-proc-macro/full",
+]
+runtime-benchmarks = [
+	"frame-benchmarking",
+	"rand",
+	"rand_pcg",
+]

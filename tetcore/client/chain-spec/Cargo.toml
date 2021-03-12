@@ -1,0 +1,32 @@
+[package]
+name = "tc-chain-spec"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/tc-chain-spec"
+description = "Tetcore chain configurations."
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+tc-chain-spec-derive = { version = "2.0.0", path = "./derive" }
+impl-trait-for-tuples = "0.2.0"
+tc-network = { version = "0.8.0", path = "../network" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
+serde = { version = "1.0.101", features = ["derive"] }
+serde_json = "1.0.41"
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+chain-spec = { version = "2.0.0", path = "../../primitives/chain-spec" }
+tc-telemetry = { version = "2.0.0", path = "../telemetry" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
+tc-consensus-babe = { version = "0.8.0-rc6", path = "../consensus/babe" }
+tp-consensus-babe = { version = "0.8.0-rc6", path = "../../primitives/consensus/babe" }
+tc-consensus-epochs = { version = "0.8.0-rc6", path = "../consensus/epochs" }
+tc-finality-grandpa = { version = "0.8.0-rc6", path = "../finality-grandpa" }

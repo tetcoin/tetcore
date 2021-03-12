@@ -1,0 +1,34 @@
+[package]
+name = "tetcore-test-client"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+publish = false
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1" }
+futures = "0.3.9"
+futures01 = { package = "futures", version = "0.1.29" }
+tetsy-hash-db = "0.15.2"
+hex = "0.4"
+serde = "1.0.55"
+serde_json = "1.0.55"
+tc-client-api = { version = "2.0.0", path = "../../client/api" }
+tc-client-db = { version = "0.8.0", features = ["test-helpers"], path = "../../client/db" }
+tc-consensus = { version = "0.8.0", path = "../../client/consensus/common" }
+tc-executor = { version = "0.8.0", path = "../../client/executor" }
+tc-light = { version = "2.0.0", path = "../../client/light" }
+tc-service = { version = "0.8.0", default-features = false, features = ["test-helpers"],  path = "../../client/service" }
+tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
+tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
+tet-core = { version = "2.0.0", path = "../../primitives/core" }
+tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
+tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
+tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }

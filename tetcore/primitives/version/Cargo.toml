@@ -1,0 +1,32 @@
+[package]
+name = "tp-version"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Version module for the Tetcore runtime; Provides a function that returns the runtime version."
+documentation = "https://docs.rs/tp-version"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+
+[dependencies]
+impl-serde = { version = "0.3.1", optional = true }
+serde = { version = "1.0.101", optional = true, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
+tp-runtime = { version = "2.0.0", default-features = false, path = "../runtime" }
+
+[features]
+default = ["std"]
+std = [
+	"impl-serde",
+	"serde",
+	"codec/std",
+	"tetcore-std/std",
+	"tp-runtime/std",
+]
