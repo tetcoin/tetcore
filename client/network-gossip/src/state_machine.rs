@@ -25,7 +25,7 @@ use std::iter;
 use std::time;
 use log::{debug, error, trace};
 use lru::LruCache;
-use libp2p::PeerId;
+use tetsy_libp2p::PeerId;
 use prometheus_endpoint::{register, Counter, PrometheusError, Registry, U64};
 use sp_runtime::traits::{Block as BlockT, Hash, HashFor};
 use sc_network::ObservedRole;

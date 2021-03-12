@@ -42,7 +42,7 @@ use std::{collections::HashMap, pin::Pin, task::{Context, Poll}, time::Duration}
 use wasm_timer::Instant;
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
 
-pub use libp2p::PeerId;
+pub use tetsy_libp2p::PeerId;
 
 /// We don't accept nodes whose reputation is under this value.
 const BANNED_THRESHOLD: i32 = 82 * (i32::min_value() / 100);
@@ -721,7 +721,7 @@ pub enum DropReason {
 
 #[cfg(test)]
 mod tests {
-	use libp2p::PeerId;
+	use tetsy_libp2p::PeerId;
 	use futures::prelude::*;
 	use super::{PeersetConfig, Peerset, Message, IncomingIndex, ReputationChange, SetConfig, SetId, BANNED_THRESHOLD};
 	use std::{pin::Pin, task::Poll, thread, time::Duration};

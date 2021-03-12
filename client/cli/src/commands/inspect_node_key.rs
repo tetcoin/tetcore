@@ -19,7 +19,7 @@
 
 use crate::{Error, NetworkSchemeFlag};
 use std::fs;
-use libp2p::identity::{PublicKey, ed25519};
+use tetsy_libp2p::identity::{PublicKey, ed25519};
 use std::path::PathBuf;
 use structopt::StructOpt;
 

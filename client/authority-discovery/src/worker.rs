@@ -30,7 +30,7 @@ use futures::{FutureExt, Stream, StreamExt, stream::Fuse};
 use addr_cache::AddrCache;
 use async_trait::async_trait;
 use codec::Decode;
-use libp2p::{core::multiaddr, multihash::{Multihash, Hasher}};
+use tetsy_libp2p::{core::multiaddr, multihash::{Multihash, Hasher}};
 use log::{debug, error, log_enabled};
 use prometheus_endpoint::{Counter, CounterVec, Gauge, Opts, U64, register};
 use prost::Message;
@@ -115,7 +115,7 @@ pub struct Worker<Client, Network, Block, DhtEventStream> {
 	/// Queue of throttled lookups pending to be passed to the network.
 	pending_lookups: Vec<AuthorityId>,
 	/// Set of in-flight lookups.
-	in_flight_lookups: HashMap<libp2p::kad::record::Key, AuthorityId>,
+	in_flight_lookups: HashMap<tetsy_libp2p::kad::record::Key, AuthorityId>,
 
 	addr_cache: addr_cache::AddrCache,
 
@@ -448,7 +448,7 @@ where
 
 	fn handle_dht_value_found_event(
 		&mut self,
-		values: Vec<(libp2p::kad::record::Key, Vec<u8>)>,
+		values: Vec<(tetsy_libp2p::kad::record::Key, Vec<u8>)>,
 	) -> Result<()> {
 		// Ensure `values` is not empty and all its keys equal.
 		let remote_key = values.iter().fold(Ok(None), |acc, (key, _)| {
@@ -566,10 +566,10 @@ where
 #[async_trait]
 pub trait NetworkProvider: NetworkStateInfo {
 	/// Start putting a value in the Dht.
-	fn put_value(&self, key: libp2p::kad::record::Key, value: Vec<u8>);
+	fn put_value(&self, key: tetsy_libp2p::kad::record::Key, value: Vec<u8>);
 
 	/// Start getting a value from the Dht.
-	fn get_value(&self, key: &libp2p::kad::record::Key);
+	fn get_value(&self, key: &tetsy_libp2p::kad::record::Key);
 }
 
 #[async_trait::async_trait]
@@ -578,16 +578,16 @@ where
 	B: BlockT + 'static,
 	H: ExHashT,
 {
-	fn put_value(&self, key: libp2p::kad::record::Key, value: Vec<u8>) {
+	fn put_value(&self, key: tetsy_libp2p::kad::record::Key, value: Vec<u8>) {
 		self.put_value(key, value)
 	}
-	fn get_value(&self, key: &libp2p::kad::record::Key) {
+	fn get_value(&self, key: &tetsy_libp2p::kad::record::Key) {
 		self.get_value(key)
 	}
 }
 
-fn hash_authority_id(id: &[u8]) -> libp2p::kad::record::Key {
-	libp2p::kad::record::Key::new(&libp2p::multihash::Sha2_256::digest(id))
+fn hash_authority_id(id: &[u8]) -> tetsy_libp2p::kad::record::Key {
+	tetsy_libp2p::kad::record::Key::new(&tetsy_libp2p::multihash::Sha2_256::digest(id))
 }
 
 /// Prometheus metrics for a [`Worker`].

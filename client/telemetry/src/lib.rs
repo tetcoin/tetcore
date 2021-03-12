@@ -37,14 +37,14 @@
 #![warn(missing_docs)]
 
 use futures::{channel::mpsc, prelude::*};
-use libp2p::Multiaddr;
+use tetsy_libp2p::Multiaddr;
 use log::{error, warn};
 use serde::Serialize;
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
 use std::collections::HashMap;
 use tracing::Id;
 
-pub use libp2p::wasm_ext::ExtTransport;
+pub use tetsy_libp2p::wasm_ext::ExtTransport;
 pub use serde_json;
 pub use tracing;
 

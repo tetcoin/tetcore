@@ -27,7 +27,7 @@ use std::{
 	task::{Poll, Context as FutureContext}
 };
 
-use libp2p::build_multiaddr;
+use tetsy_libp2p::build_multiaddr;
 use log::trace;
 use sc_network::block_request_handler::{self, BlockRequestHandler};
 use sp_blockchain::{
@@ -56,7 +56,7 @@ use sc_network::{
 	Multiaddr,
 };
 use sc_network::config::{NetworkConfiguration, NonDefaultSetConfig, TransportConfig};
-use libp2p::PeerId;
+use tetsy_libp2p::PeerId;
 use parking_lot::Mutex;
 use sp_core::H256;
 use sc_network::config::ProtocolConfig;

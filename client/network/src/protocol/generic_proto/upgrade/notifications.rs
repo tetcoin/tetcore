@@ -39,7 +39,7 @@
 use bytes::BytesMut;
 use futures::prelude::*;
 use asynchronous_codec::Framed;
-use libp2p::core::{UpgradeInfo, InboundUpgrade, OutboundUpgrade, upgrade};
+use tetsy_libp2p::core::{UpgradeInfo, InboundUpgrade, OutboundUpgrade, upgrade};
 use log::error;
 use std::{borrow::Cow, convert::{Infallible, TryFrom as _}, io, iter, mem, pin::Pin, task::{Context, Poll}};
 use unsigned_varint::codec::UviBytes;
@@ -440,7 +440,7 @@ mod tests {
 
 	use async_std::net::{TcpListener, TcpStream};
 	use futures::{prelude::*, channel::oneshot};
-	use libp2p::core::upgrade;
+	use tetsy_libp2p::core::upgrade;
 	use std::borrow::Cow;
 
 	#[test]

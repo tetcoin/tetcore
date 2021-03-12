@@ -265,7 +265,7 @@ pub mod gossip;
 pub mod network_state;
 
 #[doc(inline)]
-pub use libp2p::{multiaddr, Multiaddr, PeerId};
+pub use tetsy_libp2p::{multiaddr, Multiaddr, PeerId};
 pub use protocol::{event::{DhtEvent, Event, ObservedRole}, sync::SyncState, PeerInfo};
 pub use service::{
 	NetworkService, NetworkWorker, RequestFailure, OutboundFailure, NotificationSender,

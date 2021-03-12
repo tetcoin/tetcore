@@ -25,11 +25,11 @@ use crate::{
 
 use bytes::Bytes;
 use futures::channel::oneshot;
-use libp2p::NetworkBehaviour;
-use libp2p::core::{Multiaddr, PeerId, PublicKey};
-use libp2p::identify::IdentifyInfo;
-use libp2p::kad::record;
-use libp2p::swarm::{NetworkBehaviourAction, NetworkBehaviourEventProcess, PollParameters};
+use tetsy_libp2p::NetworkBehaviour;
+use tetsy_libp2p::core::{Multiaddr, PeerId, PublicKey};
+use tetsy_libp2p::identify::IdentifyInfo;
+use tetsy_libp2p::kad::record;
+use tetsy_libp2p::swarm::{NetworkBehaviourAction, NetworkBehaviourEventProcess, PollParameters};
 use log::debug;
 use prost::Message;
 use sp_consensus::{BlockOrigin, import_queue::{IncomingBlock, Origin}};

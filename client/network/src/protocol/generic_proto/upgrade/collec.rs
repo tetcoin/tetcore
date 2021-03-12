@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use futures::prelude::*;
-use libp2p::core::upgrade::{InboundUpgrade, ProtocolName, UpgradeInfo};
+use tetsy_libp2p::core::upgrade::{InboundUpgrade, ProtocolName, UpgradeInfo};
 use std::{iter::FromIterator, pin::Pin, task::{Context, Poll}, vec};
 
 // TODO: move this to libp2p => https://github.com/libp2p/rust-libp2p/issues/1445

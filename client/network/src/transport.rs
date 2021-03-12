@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use libp2p::{
+use tetsy_libp2p::{
 	PeerId, Transport,
 	core::{
 		self, either::EitherTransport, muxing::StreamMuxerBox,
@@ -25,7 +25,7 @@ use libp2p::{
 	mplex, identity, bandwidth, wasm_ext, noise
 };
 #[cfg(not(target_os = "unknown"))]
-use libp2p::{tcp, dns, websocket};
+use tetsy_libp2p::{tcp, dns, websocket};
 use std::{sync::Arc, time::Duration};
 
 pub use self::bandwidth::BandwidthSinks;
@@ -73,7 +73,7 @@ pub fn build_transport(
 	});
 
 	let transport = transport.or_transport(if memory_only {
-		OptionalTransport::some(libp2p::core::transport::MemoryTransport::default())
+		OptionalTransport::some(tetsy_libp2p::core::transport::MemoryTransport::default())
 	} else {
 		OptionalTransport::none()
 	});
@@ -103,10 +103,10 @@ pub fn build_transport(
 		mplex_config.set_max_buffer_behaviour(mplex::MaxBufferBehaviour::Block);
 		mplex_config.set_max_buffer_size(usize::MAX);
 
-		let mut yamux_config = libp2p::yamux::YamuxConfig::default();
+		let mut yamux_config = tetsy_libp2p::yamux::YamuxConfig::default();
 		// Enable proper flow-control: window updates are only sent when
 		// buffered data has been consumed.
-		yamux_config.set_window_update_mode(libp2p::yamux::WindowUpdateMode::on_read());
+		yamux_config.set_window_update_mode(tetsy_libp2p::yamux::WindowUpdateMode::on_read());
 		yamux_config.set_max_buffer_size(yamux_maximum_buffer_size);
 
 		if let Some(yamux_window_size) = yamux_window_size {

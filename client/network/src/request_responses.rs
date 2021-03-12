@@ -36,7 +36,7 @@
 //!
 
 use futures::{channel::{mpsc, oneshot}, prelude::*};
-use libp2p::{
+use tetsy_libp2p::{
 	core::{
 		connection::{ConnectionId, ListenerId},
 		ConnectedPoint, Multiaddr, PeerId,
@@ -57,7 +57,7 @@ use std::{
 use wasm_timer::Instant;
 use crate::ReputationChange;
 
-pub use libp2p::request_response::{InboundFailure, OutboundFailure, RequestId};
+pub use tetsy_libp2p::request_response::{InboundFailure, OutboundFailure, RequestId};
 
 /// Configuration for a single request-response protocol.
 #[derive(Debug, Clone)]
@@ -850,12 +850,12 @@ mod tests {
 	use futures::channel::{mpsc, oneshot};
 	use futures::executor::LocalPool;
 	use futures::task::Spawn;
-	use libp2p::identity::Keypair;
-	use libp2p::Multiaddr;
-	use libp2p::core::upgrade;
-	use libp2p::core::transport::{Transport, MemoryTransport};
-	use libp2p::noise;
-	use libp2p::swarm::{Swarm, SwarmEvent};
+	use tetsy_libp2p::identity::Keypair;
+	use tetsy_libp2p::Multiaddr;
+	use tetsy_libp2p::core::upgrade;
+	use tetsy_libp2p::core::transport::{Transport, MemoryTransport};
+	use tetsy_libp2p::noise;
+	use tetsy_libp2p::swarm::{Swarm, SwarmEvent};
 	use std::{iter, time::Duration};
 
 	fn build_swarm(list: impl Iterator<Item = ProtocolConfig>) -> (Swarm<RequestResponsesBehaviour>, Multiaddr) {
@@ -868,7 +868,7 @@ mod tests {
 		let transport = MemoryTransport
 			.upgrade(upgrade::Version::V1)
 			.authenticate(noise::NoiseConfig::xx(noise_keys).into_authenticated())
-			.multiplex(libp2p::yamux::YamuxConfig::default())
+			.multiplex(tetsy_libp2p::yamux::YamuxConfig::default())
 			.boxed();
 
 		let behaviour = RequestResponsesBehaviour::new(list).unwrap();

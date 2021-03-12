@@ -20,7 +20,7 @@
 use crate::Error;
 use structopt::StructOpt;
 use std::{path::PathBuf, fs};
-use libp2p::identity::{ed25519 as tetsy_libp2p_ed25519, PublicKey};
+use tetsy_libp2p::identity::{ed25519 as tetsy_libp2p_ed25519, PublicKey};
 
 /// The `generate-node-key` command
 #[derive(Debug, StructOpt)]
