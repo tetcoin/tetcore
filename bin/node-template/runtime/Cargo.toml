@@ -4,8 +4,10 @@ version = "2.0.0"
 authors = ["Anonymous"]
 edition = "2018"
 license = "Unlicense"
-homepage = "https://github.com/tetcoin/tetcore"
-repository = "https://github.com/tetcoin/tetcore/"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

@@ -6,7 +6,7 @@ edition = "2018"
 description = "Integration tests for application-crypto"
 license = "Apache-2.0"
 publish = false
-homepage = "https://github.com/tetcoin/tetcore"
+homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore/"
 
 [package.metadata.docs.rs]

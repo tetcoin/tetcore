@@ -4,8 +4,10 @@ edition = '2018'
 name = 'pallet-template'
 version = "2.0.0"
 license = "Unlicense"
-homepage = "https://github.com/tetcoin/tetcore"
-repository = "https://github.com/tetcoin/tetcore/"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
 description = "FRAME pallet template for defining custom runtime logic."
 readme = "README.md"
 

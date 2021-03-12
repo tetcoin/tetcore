@@ -5,7 +5,7 @@ authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support
 description = "Utilities for creating a browser light-client."
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://github.com/tetcoin/tetcore"
+homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore/"
 readme = "README.md"
 

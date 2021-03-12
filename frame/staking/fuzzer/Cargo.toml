@@ -5,7 +5,7 @@ authors = ["Automatically generated"]
 publish = false
 edition = "2018"
 license = "Apache-2.0"
-homepage = "https://github.com/tetcoin/tetcore"
+homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "FRAME pallet staking fuzzing"
 

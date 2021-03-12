@@ -6,8 +6,11 @@ edition = "2018"
 build = "build.rs"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 publish = false
-homepage = "https://github.com/tetcoin/tetcore"
-repository = "https://github.com/tetcoin/tetcore/"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/tc-authority-discovery"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

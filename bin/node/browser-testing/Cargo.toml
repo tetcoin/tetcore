@@ -5,6 +5,10 @@ authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support
 description = "Tests for the in-browser light client."
 edition = "2018"
 license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
 
 [dependencies]
 futures-timer = "3.0.2"
