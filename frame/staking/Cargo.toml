@@ -4,8 +4,11 @@ version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
-repository = "https://github.com/tetcoin/tetcore/"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/staking"
 description = "FRAME pallet staking"
 readme = "README.md"
 
