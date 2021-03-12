@@ -51,7 +51,7 @@ use tetcore_std::vec::Vec;
 ///     param: u32,
 /// }
 /// ```
-pub use sp_runtime_interface_proc_macro::PassByCodec;
+pub use tp_runtime_interface_proc_macro::PassByCodec;
 
 /// Derive macro for implementing [`PassBy`] with the [`Inner`] strategy.
 ///
@@ -76,7 +76,7 @@ pub use sp_runtime_interface_proc_macro::PassByCodec;
 ///     data: [u8; 32],
 /// }
 /// ```
-pub use sp_runtime_interface_proc_macro::PassByInner;
+pub use tp_runtime_interface_proc_macro::PassByInner;
 
 /// Derive macro for implementing [`PassBy`] with the [`Enum`] strategy.
 ///
@@ -98,7 +98,7 @@ pub use sp_runtime_interface_proc_macro::PassByInner;
 ///     //Why(u32),
 /// }
 /// ```
-pub use sp_runtime_interface_proc_macro::PassByEnum;
+pub use tp_runtime_interface_proc_macro::PassByEnum;
 
 /// Something that should be passed between wasm and the host using the given strategy.
 ///

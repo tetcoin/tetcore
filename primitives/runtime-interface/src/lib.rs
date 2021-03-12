@@ -273,7 +273,7 @@ pub use tetcore_std;
 /// The macro supports any kind of argument type, as long as it implements [`RIType`] and the
 /// required `FromFFIValue`/`IntoFFIValue`. The macro will convert each
 /// argument to the corresponding FFI representation and will call into the host using this FFI
-/// representation. On the host each argument is converted back to the native representation and
+/// representation. On the host each argument is converted back to the native representation andt
 /// the native implementation is called. Any return value is handled in the same way.
 ///
 /// # Wasm only interfaces
@@ -293,7 +293,7 @@ pub use tetcore_std;
 /// flag, as tracing doesn't cost you anything by default anyways (it is added as a no-op) but is
 /// super useful for debugging later.
 ///
-pub use sp_runtime_interface_proc_macro::runtime_interface;
+pub use tp_runtime_interface_proc_macro::runtime_interface;
 
 #[doc(hidden)]
 #[cfg(feature = "std")]
