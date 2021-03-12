@@ -9,14 +9,14 @@ and they map to the same implementation as the native calls.
 # Using a type in a runtime interface
 <!-- markdown-link-check-disable -->
 Any type that should be used in a runtime interface as argument or return value needs to
-implement [`RIType`]. The associated type [`FFIType`](https:/docs.rs/tp-runtime-interface/latest/sp_runtime_interface/trait.RIType.html#associatedtype.FFIType)
+implement [`RIType`]. The associated type [`FFIType`](https:/docs.rs/tp-runtime-interface/latest/tp_runtime_interface/trait.RIType.html#associatedtype.FFIType)
 is the type that is used in the FFI function to represent the actual type. For example `[T]` is
 represented by an `u64`. The slice pointer and the length will be mapped to an `u64` value.
-For more information see this [table](https:/docs.rs/tp-runtime-interface/latest/sp_runtime_interface/#ffi-type-and-conversion).
+For more information see this [table](https:/docs.rs/tp-runtime-interface/latest/tp_runtime_interface/#ffi-type-and-conversion).
 The FFI function definition is used when calling from the wasm runtime into the node.
 
 Traits are used to convert from a type to the corresponding
-[`RIType::FFIType`](https:/docs.rs/tp-runtime-interface/latest/sp_runtime_interface/trait.RIType.html#associatedtype.FFIType).
+[`RIType::FFIType`](https:/docs.rs/tp-runtime-interface/latest/tp_runtime_interface/trait.RIType.html#associatedtype.FFIType).
 Depending on where and how a type should be used in a function signature, a combination of the
 following traits need to be implemented:
 <!-- markdown-link-check-enable -->
@@ -27,7 +27,7 @@ following traits need to be implemented:
 The traits are implemented for most of the common types like `[T]`, `Vec<T>`, arrays and
 primitive types.
 
-For custom types, we provide the [`PassBy`](https://docs.rs/tp-runtime-interface/latest/sp_runtime_interface/pass_by#PassBy) trait and strategies that define
+For custom types, we provide the [`PassBy`](https://docs.rs/tp-runtime-interface/latest/tp_runtime_interface/pass_by#PassBy) trait and strategies that define
 how a type is passed between the wasm runtime and the node. Each strategy also provides a derive
 macro to simplify the implementation.
 
@@ -44,7 +44,7 @@ the data is passed.
 Declaring a runtime interface is similar to declaring a trait in Rust:
 
 ```rust
-#[sp_runtime_interface::runtime_interface]
+#[tp_runtime_interface::runtime_interface]
 trait RuntimeInterface {
     fn some_function(value: &[u8]) -> bool {
         value.iter().all(|v| *v > 125)
@@ -53,7 +53,7 @@ trait RuntimeInterface {
 ```
 
 For more information on declaring a runtime interface, see
-[`#[runtime_interface]`](https://docs.rs/tp-runtime-interface/latest/sp_runtime_interface/attr.runtime_interface.html).
+[`#[runtime_interface]`](https://docs.rs/tp-runtime-interface/latest/tp_runtime_interface/attr.runtime_interface.html).
 
 # FFI type and conversion
 
@@ -81,8 +81,8 @@ the host side and how they are converted into the corresponding type.
 | `[u8; N]` | `u32` | `v.as_ptr()` |
 | `*const T` | `u32` | `Identity` |
 | `Option<T>` | `u64` | `let e = v.encode();`<br><br><code>e.len() 32bit << 32 &#124; e.as_ptr() 32bit</code> |
-| [`T where T: PassBy<PassBy=Inner>`](https://docs.rs/tp-runtime-interface/latest/sp_runtime_interface/pass_by#Inner) | Depends on inner | Depends on inner |
-| [`T where T: PassBy<PassBy=Codec>`](https://docs.rs/tp-runtime-interface/latest/sp_runtime_interface/pass_by#Codec) | `u64`| <code>v.len() 32bit << 32 &#124; v.as_ptr() 32bit</code> |
+| [`T where T: PassBy<PassBy=Inner>`](https://docs.rs/tp-runtime-interface/latest/tp_runtime_interface/pass_by#Inner) | Depends on inner | Depends on inner |
+| [`T where T: PassBy<PassBy=Codec>`](https://docs.rs/tp-runtime-interface/latest/tp_runtime_interface/pass_by#Codec) | `u64`| <code>v.len() 32bit << 32 &#124; v.as_ptr() 32bit</code> |
 
 `Identity` means that the value is converted directly into the corresponding FFI type.
 

@@ -43,7 +43,7 @@ use tetcore_std::vec::Vec;
 /// # Example
 ///
 /// ```
-/// # use sp_runtime_interface::pass_by::PassByCodec;
+/// # use tp_runtime_interface::pass_by::PassByCodec;
 /// # use codec::{Encode, Decode};
 /// #[derive(PassByCodec, Encode, Decode)]
 /// struct EncodableType {
@@ -64,13 +64,13 @@ pub use tp_runtime_interface_proc_macro::PassByCodec;
 /// # Example
 ///
 /// ```
-/// # use sp_runtime_interface::pass_by::PassByInner;
+/// # use tp_runtime_interface::pass_by::PassByInner;
 /// #[derive(PassByInner)]
 /// struct Data([u8; 32]);
 /// ```
 ///
 /// ```
-/// # use sp_runtime_interface::pass_by::PassByInner;
+/// # use tp_runtime_interface::pass_by::PassByInner;
 /// #[derive(PassByInner)]
 /// struct Data {
 ///     data: [u8; 32],
@@ -89,7 +89,7 @@ pub use tp_runtime_interface_proc_macro::PassByInner;
 /// # Example
 ///
 /// ```
-/// # use sp_runtime_interface::pass_by::PassByEnum;
+/// # use tp_runtime_interface::pass_by::PassByEnum;
 /// #[derive(PassByEnum, Copy, Clone)]
 /// enum Data {
 ///     Okay,
@@ -208,7 +208,7 @@ impl<T: PassBy> FromFFIValue for T {
 ///
 /// # Example
 /// ```
-/// # use sp_runtime_interface::pass_by::{PassBy, Codec};
+/// # use tp_runtime_interface::pass_by::{PassBy, Codec};
 /// #[derive(codec::Encode, codec::Decode)]
 /// struct Test;
 ///
@@ -305,7 +305,7 @@ pub trait PassByInner: Sized {
 ///
 /// # Example
 /// ```
-/// # use sp_runtime_interface::pass_by::{PassBy, Inner, PassByInner};
+/// # use tp_runtime_interface::pass_by::{PassBy, Inner, PassByInner};
 /// struct Test([u8; 32]);
 ///
 /// impl PassBy for Test {
@@ -379,7 +379,7 @@ impl<T: PassByInner<Inner = I>, I: RIType> RIType for Inner<T, I> {
 ///
 /// # Example
 /// ```
-/// # use sp_runtime_interface::pass_by::{PassBy, Enum};
+/// # use tp_runtime_interface::pass_by::{PassBy, Enum};
 /// #[derive(Clone, Copy)]
 /// enum Test {
 ///     Test1,

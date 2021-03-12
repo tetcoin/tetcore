@@ -94,7 +94,7 @@ sp_api::decl_runtime_apis! {
 }
 
 /// Interface that provides functions for benchmarking the runtime.
-#[sp_runtime_interface::runtime_interface]
+#[tp_runtime_interface::runtime_interface]
 pub trait Benchmarking {
 	/// Get the number of nanoseconds passed since the UNIX epoch
 	///

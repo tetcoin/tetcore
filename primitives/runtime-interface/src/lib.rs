@@ -61,7 +61,7 @@
 //! Declaring a runtime interface is similar to declaring a trait in Rust:
 //!
 //! ```
-//! #[sp_runtime_interface::runtime_interface]
+//! #[tp_runtime_interface::runtime_interface]
 //! trait RuntimeInterface {
 //!     fn some_function(value: &[u8]) -> bool {
 //!         value.iter().all(|v| *v > 125)
@@ -105,7 +105,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-extern crate self as sp_runtime_interface;
+extern crate self as tp_runtime_interface;
 
 #[doc(hidden)]
 #[cfg(feature = "std")]
@@ -127,7 +127,7 @@ pub use tetcore_std;
 /// The macro expects the runtime interface declaration as trait declaration:
 ///
 /// ```
-/// # use sp_runtime_interface::runtime_interface;
+/// # use tp_runtime_interface::runtime_interface;
 ///
 /// #[runtime_interface]
 /// trait Interface {

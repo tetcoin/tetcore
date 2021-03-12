@@ -515,8 +515,8 @@ fn benchmark_add_one(i: u64) -> u64 {
 
 /// The `benchmark_add_one` function as function pointer.
 #[cfg(not(feature = "std"))]
-static BENCHMARK_ADD_ONE: sp_runtime_interface::wasm::ExchangeableFunction<fn(u64) -> u64> =
-	sp_runtime_interface::wasm::ExchangeableFunction::new(benchmark_add_one);
+static BENCHMARK_ADD_ONE: tp_runtime_interface::wasm::ExchangeableFunction<fn(u64) -> u64> =
+	tp_runtime_interface::wasm::ExchangeableFunction::new(benchmark_add_one);
 
 fn code_using_trie() -> u64 {
 	let pairs = [

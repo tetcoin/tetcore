@@ -99,7 +99,7 @@ pub fn generate_runtime_interface_include() -> TokenStream {
 /// Generates the access to the `tp-runtime-interface` crate.
 pub fn generate_crate_access() -> TokenStream {
 	if env::var("CARGO_PKG_NAME").unwrap() == "tp-runtime-interface" {
-		quote!( sp_runtime_interface )
+		quote!( tp_runtime_interface )
 	} else {
 		quote!( proc_macro_runtime_interface )
 	}

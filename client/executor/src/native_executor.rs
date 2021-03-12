@@ -562,7 +562,7 @@ impl<D: NativeExecutionDispatch> sp_core::traits::CallInWasm for NativeExecutor<
 /// executor aware of the host functions for these interfaces.
 ///
 /// ```
-/// # use sp_runtime_interface::runtime_interface;
+/// # use tp_runtime_interface::runtime_interface;
 ///
 /// #[runtime_interface]
 /// trait MyInterface {
@@ -621,7 +621,7 @@ macro_rules! native_executor_instance {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_runtime_interface::runtime_interface;
+	use tp_runtime_interface::runtime_interface;
 
 	#[runtime_interface]
 	trait MyInterface {

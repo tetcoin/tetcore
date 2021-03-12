@@ -20,7 +20,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use sp_core::wasm_export_functions;
-use sp_runtime_interface::runtime_interface;
+use tp_runtime_interface::runtime_interface;
 
 // Include the WASM binary
 #[cfg(feature = "std")]

@@ -32,7 +32,7 @@ macro_rules! map {
 	);
 }
 
-use sp_runtime_interface::pass_by::{PassByEnum, PassByInner};
+use tp_runtime_interface::pass_by::{PassByEnum, PassByInner};
 use tetcore_std::prelude::*;
 use tetcore_std::ops::Deref;
 #[cfg(feature = "std")]

@@ -42,7 +42,7 @@ use crate::crypto::Ss58Codec;
 #[cfg(feature = "std")]
 use serde::{de, Serializer, Serialize, Deserializer, Deserialize};
 use crate::crypto::{Public as TraitPublic, CryptoTypePublicPair, UncheckedFrom, CryptoType, Derive, CryptoTypeId};
-use sp_runtime_interface::pass_by::PassByInner;
+use tp_runtime_interface::pass_by::PassByInner;
 use tetcore_std::ops::Deref;
 
 /// An identifier used to match public keys against ed25519 keys

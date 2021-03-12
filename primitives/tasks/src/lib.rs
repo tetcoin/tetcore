@@ -153,7 +153,7 @@ mod inner {
 			let ptr: fn(Vec<u8>) -> Vec<u8> = mem::transmute(func_ref);
 			(ptr)(payload)
 		};
-		sp_runtime_interface::pack_ptr_and_len(output.as_ptr() as usize as _, output.len() as _)
+		tp_runtime_interface::pack_ptr_and_len(output.as_ptr() as usize as _, output.len() as _)
 	}
 
 	/// Spawn new runtime task (wasm).

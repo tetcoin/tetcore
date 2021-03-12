@@ -56,8 +56,8 @@ use sp_core::{
 #[cfg(feature = "std")]
 use sp_trie::{TrieConfiguration, trie_types::Layout};
 
-use sp_runtime_interface::{runtime_interface, Pointer};
-use sp_runtime_interface::pass_by::PassBy;
+use tp_runtime_interface::{runtime_interface, Pointer};
+use tp_runtime_interface::pass_by::PassBy;
 
 use codec::{Encode, Decode};
 
@@ -1034,7 +1034,7 @@ pub trait Logging {
 pub struct Crossing<T: Encode + Decode>(T);
 
 impl<T: Encode + Decode> PassBy for Crossing<T> {
-	type PassBy = sp_runtime_interface::pass_by::Codec<Self>;
+	type PassBy = tp_runtime_interface::pass_by::Codec<Self>;
 }
 
 impl<T: Encode + Decode> Crossing<T> {

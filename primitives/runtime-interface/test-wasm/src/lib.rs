@@ -19,7 +19,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_runtime_interface::runtime_interface;
+use tp_runtime_interface::runtime_interface;
 
 #[cfg(not(feature = "std"))]
 use tetcore_std::{prelude::*, mem, convert::TryFrom};

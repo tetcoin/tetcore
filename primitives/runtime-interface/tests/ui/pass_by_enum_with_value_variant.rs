@@ -1,4 +1,4 @@
-use sp_runtime_interface::pass_by::PassByEnum;
+use tp_runtime_interface::pass_by::PassByEnum;
 
 #[derive(PassByEnum)]
 enum Test {

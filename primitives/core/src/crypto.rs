@@ -39,7 +39,7 @@ use base58::{FromBase58, ToBase58};
 use crate::hexdisplay::HexDisplay;
 #[doc(hidden)]
 pub use tetcore_std::ops::Deref;
-use sp_runtime_interface::pass_by::PassByInner;
+use tp_runtime_interface::pass_by::PassByInner;
 /// Trait to zeroize a memory buffer.
 pub use zeroize::Zeroize;
 /// Trait for accessing reference to `SecretString`.

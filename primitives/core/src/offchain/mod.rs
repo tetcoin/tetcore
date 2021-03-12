@@ -20,7 +20,7 @@
 use codec::{Encode, Decode};
 use tetcore_std::{prelude::{Vec, Box}, convert::TryFrom};
 use crate::{OpaquePeerId, RuntimeDebug};
-use sp_runtime_interface::pass_by::{PassByCodec, PassByInner, PassByEnum};
+use tp_runtime_interface::pass_by::{PassByCodec, PassByInner, PassByEnum};
 
 pub use crate::crypto::KeyTypeId;
 
