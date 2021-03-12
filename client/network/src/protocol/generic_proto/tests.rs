@@ -28,7 +28,7 @@ use tetsy_libp2p::core::{
 	transport::MemoryTransport,
 	upgrade
 };
-use tetsy_libp2p::{identity, noise, yamux};
+use tetsy_libp2p::{identity, noise, remux};
 use tetsy_libp2p::swarm::{
 	Swarm, ProtocolsHandler, IntoProtocolsHandler, PollParameters,
 	NetworkBehaviour, NetworkBehaviourAction
@@ -55,7 +55,7 @@ fn build_nodes() -> (Swarm<CustomProtoWithAddr>, Swarm<CustomProtoWithAddr>) {
 		let transport = MemoryTransport
 			.upgrade(upgrade::Version::V1)
 			.authenticate(noise::NoiseConfig::xx(noise_keys).into_authenticated())
-			.multiplex(yamux::YamuxConfig::default())
+			.multiplex(remux::RemuxConfig::default())
 			.timeout(Duration::from_secs(20))
 			.boxed();
 

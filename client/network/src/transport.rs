@@ -35,10 +35,10 @@ pub use self::bandwidth::BandwidthSinks;
 /// If `memory_only` is true, then only communication within the same process are allowed. Only
 /// addresses with the format `/memory/...` are allowed.
 ///
-/// `yamux_window_size` is the maximum size of the Yamux receive windows. `None` to leave the
+/// `remux_window_size` is the maximum size of the Remux receive windows. `None` to leave the
 /// default (256kiB).
 ///
-/// `yamux_maximum_buffer_size` is the maximum allowed size of the Yamux buffer. This should be
+/// `remux_maximum_buffer_size` is the maximum allowed size of the Remux buffer. This should be
 /// set either to the maximum of all the maximum allowed sizes of messages frames of all
 /// high-level protocols combined, or to some generously high value if you are sure that a maximum
 /// size is enforced on all high-level protocols.
@@ -49,8 +49,8 @@ pub fn build_transport(
 	keypair: identity::Keypair,
 	memory_only: bool,
 	wasm_external_transport: Option<wasm_ext::ExtTransport>,
-	yamux_window_size: Option<u32>,
-	yamux_maximum_buffer_size: usize,
+	remux_window_size: Option<u32>,
+	remux_maximum_buffer_size: usize,
 ) -> (Boxed<(PeerId, StreamMuxerBox)>, Arc<BandwidthSinks>) {
 	// Build the base layer of the transport.
 	let transport = if let Some(t) = wasm_external_transport {
@@ -103,17 +103,17 @@ pub fn build_transport(
 		mplex_config.set_max_buffer_behaviour(mplex::MaxBufferBehaviour::Block);
 		mplex_config.set_max_buffer_size(usize::MAX);
 
-		let mut yamux_config = tetsy_libp2p::yamux::YamuxConfig::default();
+		let mut remux_config = tetsy_libp2p::remux::RemuxConfig::default();
 		// Enable proper flow-control: window updates are only sent when
 		// buffered data has been consumed.
-		yamux_config.set_window_update_mode(tetsy_libp2p::yamux::WindowUpdateMode::on_read());
-		yamux_config.set_max_buffer_size(yamux_maximum_buffer_size);
+		remux_config.set_window_update_mode(tetsy_libp2p::remux::WindowUpdateMode::on_read());
+		remux_config.set_max_buffer_size(remux_maximum_buffer_size);
 
-		if let Some(yamux_window_size) = yamux_window_size {
-			yamux_config.set_receive_window_size(yamux_window_size);
+		if let Some(remux_window_size) = remux_window_size {
+			remux_config.set_receive_window_size(remux_window_size);
 		}
 
-		core::upgrade::SelectUpgrade::new(yamux_config, mplex_config)
+		core::upgrade::SelectUpgrade::new(remux_config, mplex_config)
 	};
 
 	let transport = transport.upgrade(upgrade::Version::V1Lazy)

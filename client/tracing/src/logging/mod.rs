@@ -108,7 +108,7 @@ where
 		.add_directive(parse_default_directive("info").expect("provided directive is valid"))
 		// Disable info logging by default for some modules.
 		.add_directive(parse_default_directive("ws=off").expect("provided directive is valid"))
-		.add_directive(parse_default_directive("yamux=off").expect("provided directive is valid"))
+		.add_directive(parse_default_directive("remux=off").expect("provided directive is valid"))
 		.add_directive(
 			parse_default_directive("cranelift_codegen=off").expect("provided directive is valid"),
 		)

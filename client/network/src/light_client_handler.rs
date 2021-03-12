@@ -1326,7 +1326,7 @@ mod tests {
 		},
 		noise::{self, Keypair, X25519, NoiseConfig},
 		swarm::{NetworkBehaviour, NetworkBehaviourAction, PollParameters},
-		yamux
+		remux
 	};
 	use sc_client_api::{StorageProof, RemoteReadChildRequest, FetchChecker};
 	use sp_blockchain::{Error as ClientError};
@@ -1360,7 +1360,7 @@ mod tests {
 		let transport = MemoryTransport::default()
 			.upgrade(upgrade::Version::V1)
 			.authenticate(NoiseConfig::xx(dh_key).into_authenticated())
-			.multiplex(yamux::YamuxConfig::default())
+			.multiplex(remux::RemuxConfig::default())
 			.boxed();
 		Swarm::new(transport, LightClientHandler::new(cf, client, checker, ps), local_peer)
 	}

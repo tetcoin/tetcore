@@ -831,7 +831,7 @@ mod tests {
 	use tetsy_libp2p::core::transport::{Transport, MemoryTransport};
 	use tetsy_libp2p::noise;
 	use tetsy_libp2p::swarm::Swarm;
-	use tetsy_libp2p::yamux;
+	use tetsy_libp2p::remux;
 	use std::{collections::HashSet, task::Poll};
 	use super::{DiscoveryConfig, DiscoveryOut, protocol_name_from_protocol_id};
 
@@ -852,7 +852,7 @@ mod tests {
 			let transport = MemoryTransport
 				.upgrade(upgrade::Version::V1)
 				.authenticate(noise::NoiseConfig::xx(noise_keys).into_authenticated())
-				.multiplex(yamux::YamuxConfig::default())
+				.multiplex(remux::RemuxConfig::default())
 				.boxed();
 
 			let behaviour = {

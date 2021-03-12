@@ -293,13 +293,13 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkWorker<B, H> {
 						(false, wasm_external_transport)
 				};
 
-				// The yamux buffer size limit is configured to be equal to the maximum frame size
+				// The remux buffer size limit is configured to be equal to the maximum frame size
 				// of all protocols. 10 bytes are added to each limit for the length prefix that
 				// is not included in the upper layer protocols limit but is still present in the
-				// yamux buffer. These 10 bytes correspond to the maximum size required to encode
+				// remux buffer. These 10 bytes correspond to the maximum size required to encode
 				// a variable-length-encoding 64bits number. In other words, we make the
 				// assumption that no notification larger than 2^64 will ever be sent.
-				let yamux_maximum_buffer_size = {
+				let remux_maximum_buffer_size = {
 					let requests_max = params.network_config
 						.request_response_protocols.iter()
 						.map(|cfg| usize::try_from(cfg.max_request_size).unwrap_or(usize::max_value()));
@@ -328,8 +328,8 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkWorker<B, H> {
 					local_identity,
 					config_mem,
 					config_wasm,
-					params.network_config.yamux_window_size,
-					yamux_maximum_buffer_size
+					params.network_config.remux_window_size,
+					remux_maximum_buffer_size
 				)
 			};
 

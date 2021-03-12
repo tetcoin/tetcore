@@ -868,7 +868,7 @@ mod tests {
 		let transport = MemoryTransport
 			.upgrade(upgrade::Version::V1)
 			.authenticate(noise::NoiseConfig::xx(noise_keys).into_authenticated())
-			.multiplex(tetsy_libp2p::yamux::YamuxConfig::default())
+			.multiplex(tetsy_libp2p::remux::RemuxConfig::default())
 			.boxed();
 
 		let behaviour = RequestResponsesBehaviour::new(list).unwrap();

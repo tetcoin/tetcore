@@ -406,13 +406,13 @@ pub struct NetworkConfiguration {
 	/// presence of potentially adversarial nodes.
 	pub kademlia_disjoint_query_paths: bool,
 
-	/// Size of Yamux receive window of all substreams. `None` for the default (256kiB).
+	/// Size of Remux receive window of all substreams. `None` for the default (256kiB).
 	/// Any value less than 256kiB is invalid.
 	///
 	/// # Context
 	///
-	/// By design, notifications substreams on top of Yamux connections only allow up to `N` bytes
-	/// to be transferred at a time, where `N` is the Yamux receive window size configurable here.
+	/// By design, notifications substreams on top of Remux connections only allow up to `N` bytes
+	/// to be transferred at a time, where `N` is the Remux receive window size configurable here.
 	/// This means, in practice, that every `N` bytes must be acknowledged by the receiver before
 	/// the sender can send more data. The maximum bandwidth of each notifications substream is
 	/// therefore `N / round_trip_time`.
@@ -422,10 +422,10 @@ pub struct NetworkConfiguration {
 	/// that some Tetcore users mis-use notification protocols to send large amounts of data.
 	/// As such, this option isn't designed to stay and will likely get removed in the future.
 	///
-	/// Note that configuring a value here isn't a modification of the Yamux protocol, but rather
+	/// Note that configuring a value here isn't a modification of the Remux protocol, but rather
 	/// a modification of the way the implementation works. Different nodes with different
 	/// configured values remain compatible with each other.
-	pub yamux_window_size: Option<u32>,
+	pub remux_window_size: Option<u32>,
 }
 
 impl NetworkConfiguration {
@@ -455,7 +455,7 @@ impl NetworkConfiguration {
 			max_parallel_downloads: 5,
 			allow_non_globals_in_dht: false,
 			kademlia_disjoint_query_paths: false,
-			yamux_window_size: None,
+			remux_window_size: None,
 		}
 	}
 
