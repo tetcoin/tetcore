@@ -70,7 +70,7 @@ impl ConvertibleToWasm for ReturnCode {
 	type NativeType = Self;
 	const VALUE_TYPE: ValueType = ValueType::I32;
 	fn to_typed_value(self) -> tp_sandbox::Value {
-		sp_sandbox::Value::I32(self as i32)
+		tp_sandbox:::Value::I32(self as i32)
 	}
 	fn from_typed_value(_: tp_sandbox::Value) -> Option<Self> {
 		debug_assert!(false, "We will never receive a ReturnCode but only send it to wasm.");
@@ -329,7 +329,7 @@ where
 	/// the result of the sandbox is evaluated.
 	pub fn to_execution_result(
 		self,
-		sandbox_result: Result<sp_sandbox::ReturnValue, tp_sandbox::Error>,
+		sandbox_result: Result<tp_sandbox:::ReturnValue, tp_sandbox::Error>,
 	) -> ExecResult {
 		// If a trap reason is set we base our decision solely on that.
 		if let Some(trap_reason) = self.trap_reason {
@@ -372,10 +372,10 @@ where
 			//
 			// Because panics are really undesirable in the runtime code, we treat this as
 			// a trap for now. Eventually, we might want to revisit this.
-			Err(sp_sandbox::Error::Module) =>
+			Err(tp_sandbox:::Error::Module) =>
 				Err("validation error")?,
 			// Any other kind of a trap should result in a failure.
-			Err(sp_sandbox::Error::Execution) | Err(sp_sandbox::Error::OutOfBounds) =>
+			Err(tp_sandbox:::Error::Execution) | Err(tp_sandbox:::Error::OutOfBounds) =>
 				Err(Error::<E::T>::ContractTrapped)?
 		}
 	}

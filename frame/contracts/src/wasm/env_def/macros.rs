@@ -112,9 +112,9 @@ macro_rules! unmarshall_then_body_then_marshall {
 		});
 		let r = body().map_err(|reason| {
 			$ctx.set_trap_reason(reason);
-			sp_sandbox::HostError
+			tp_sandbox:::HostError
 		})?;
-		return Ok(sp_sandbox::ReturnValue::Value({ use $crate::wasm::env_def::ConvertibleToWasm; r.to_typed_value() }))
+		return Ok(tp_sandbox:::ReturnValue::Value({ use $crate::wasm::env_def::ConvertibleToWasm; r.to_typed_value() }))
 	});
 	( $args_iter:ident, $ctx:ident, ( $( $names:ident : $params:ty ),* ) => $body:tt ) => ({
 		let body = $crate::wasm::env_def::macros::constrain_closure::<(), _>(|| {
@@ -122,9 +122,9 @@ macro_rules! unmarshall_then_body_then_marshall {
 		});
 		body().map_err(|reason| {
 			$ctx.set_trap_reason(reason);
-			sp_sandbox::HostError
+			tp_sandbox:::HostError
 		})?;
-		return Ok(sp_sandbox::ReturnValue::Unit)
+		return Ok(tp_sandbox:::ReturnValue::Unit)
 	})
 }
 
@@ -133,8 +133,8 @@ macro_rules! define_func {
 	( < E: $seal_ty:tt > $name:ident ( $ctx: ident $(, $names:ident : $params:ty)*) $(-> $returns:ty)* => $body:tt ) => {
 		fn $name< E: $seal_ty >(
 			$ctx: &mut $crate::wasm::Runtime<E>,
-			args: &[sp_sandbox::Value],
-		) -> Result<sp_sandbox::ReturnValue, tp_sandbox::HostError>
+			args: &[tp_sandbox:::Value],
+		) -> Result<tp_sandbox:::ReturnValue, tp_sandbox::HostError>
 			where
 				<E::T as frame_system::Config>::AccountId:
 					tet_core::crypto::UncheckedFrom<<E::T as frame_system::Config>::Hash> +
@@ -232,7 +232,7 @@ mod tests {
 	fn macro_unmarshall_then_body_then_marshall_value_or_trap() {
 		fn test_value(
 			_ctx: &mut TestRuntime,
-			args: &[sp_sandbox::Value],
+			args: &[tp_sandbox:::Value],
 		) -> Result<ReturnValue, tp_sandbox::HostError> {
 			let mut args = args.iter();
 			unmarshall_then_body_then_marshall!(
@@ -260,7 +260,7 @@ mod tests {
 	fn macro_unmarshall_then_body_then_marshall_unit() {
 		fn test_unit(
 			ctx: &mut TestRuntime,
-			args: &[sp_sandbox::Value],
+			args: &[tp_sandbox:::Value],
 		) -> Result<ReturnValue, tp_sandbox::HostError> {
 			let mut args = args.iter();
 			unmarshall_then_body_then_marshall!(
@@ -289,8 +289,8 @@ mod tests {
 				Err(TrapReason::Termination)
 			}
 		});
-		let _f: fn(&mut Runtime<MockExt>, &[sp_sandbox::Value])
-			-> Result<sp_sandbox::ReturnValue, tp_sandbox::HostError> = seal_gas::<MockExt>;
+		let _f: fn(&mut Runtime<MockExt>, &[tp_sandbox:::Value])
+			-> Result<tp_sandbox:::ReturnValue, tp_sandbox::HostError> = seal_gas::<MockExt>;
 	}
 
 	#[test]
