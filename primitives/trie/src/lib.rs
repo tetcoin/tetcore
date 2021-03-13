@@ -58,12 +58,12 @@ impl<H: Hasher> TrieLayout for Layout<H> {
 }
 
 impl<H: Hasher> TrieConfiguration for Layout<H> {
-	fn trie_root<I, A, B>(input: I) -> <Self::Hash as Hasher>::Out where
+	fn tetsy_trie_root<I, A, B>(input: I) -> <Self::Hash as Hasher>::Out where
 		I: IntoIterator<Item = (A, B)>,
 		A: AsRef<[u8]> + Ord,
 		B: AsRef<[u8]>,
 	{
-		tetsy_trie_root::trie_root_no_extension::<H, TrieStream, _, _, _>(input)
+		tetsy_trie_root::tetsy_trie_root_no_extension::<H, TrieStream, _, _, _>(input)
 	}
 
 	fn trie_root_unhashed<I, A, B>(input: I) -> Vec<u8> where
@@ -94,17 +94,17 @@ pub type HashDB<'a, H> = dyn tetsy_hash_db::HashDB<H, tetsy_trie_db::DBValue> + 
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 /// This uses a `KeyFunction` for prefixing keys internally (avoiding
 /// key conflict for non random keys).
-pub type PrefixedMemoryDB<H> = memory_db::MemoryDB<
+pub type PrefixedMemoryDB<H> = tetsy_memory_db::MemoryDB<
 	H, memory_db::PrefixedKey<H>, tetsy_trie_db::DBValue, MemTracker
 >;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 /// This uses a noops `KeyFunction` (key addressing must be hashed or using
 /// an encoding scheme that avoid key conflict).
-pub type MemoryDB<H> = memory_db::MemoryDB<
+pub type MemoryDB<H> = tetsy_memory_db::MemoryDB<
 	H, memory_db::HashKey<H>, tetsy_trie_db::DBValue, MemTracker,
 >;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
-pub type GenericMemoryDB<H, KF> = memory_db::MemoryDB<
+pub type GenericMemoryDB<H, KF> = tetsy_memory_db::MemoryDB<
 	H, KF, tetsy_trie_db::DBValue, MemTracker
 >;
 
