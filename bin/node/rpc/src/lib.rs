@@ -106,12 +106,12 @@ pub struct FullDeps<C, P, SC, B> {
 }
 
 /// A IO handler that uses all Full RPC extensions.
-pub type IoHandler = jsonrpc_core::IoHandler<sc_rpc::Metadata>;
+pub type IoHandler = tetsy_jsonrpc_core::IoHandler<sc_rpc::Metadata>;
 
 /// Instantiate all Full RPC extensions.
 pub fn create_full<C, P, SC, B>(
 	deps: FullDeps<C, P, SC, B>,
-) -> jsonrpc_core::IoHandler<sc_rpc_api::Metadata> where
+) -> tetsy_jsonrpc_core::IoHandler<sc_rpc_api::Metadata> where
 	C: ProvideRuntimeApi<Block> + HeaderBackend<Block> + AuxStore +
 		HeaderMetadata<Block, Error=BlockChainError> + Sync + Send + 'static,
 	C::Api: tetcore_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
@@ -128,7 +128,7 @@ pub fn create_full<C, P, SC, B>(
 	use pallet_contracts_rpc::{Contracts, ContractsApi};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
 
-	let mut io = jsonrpc_core::IoHandler::default();
+	let mut io = tetsy_jsonrpc_core::IoHandler::default();
 	let FullDeps {
 		client,
 		pool,
@@ -206,12 +206,12 @@ pub fn create_full<C, P, SC, B>(
 /// Instantiate all Light RPC extensions.
 pub fn create_light<C, P, M, F>(
 	deps: LightDeps<C, F, P>,
-) -> jsonrpc_core::IoHandler<M> where
+) -> tetsy_jsonrpc_core::IoHandler<M> where
 	C: sp_blockchain::HeaderBackend<Block>,
 	C: Send + Sync + 'static,
 	F: sc_client_api::light::Fetcher<Block> + 'static,
 	P: TransactionPool + 'static,
-	M: jsonrpc_core::Metadata + Default,
+	M: tetsy_jsonrpc_core::Metadata + Default,
 {
 	use tetcore_frame_rpc_system::{LightSystem, SystemApi};
 
@@ -221,7 +221,7 @@ pub fn create_light<C, P, M, F>(
 		remote_blockchain,
 		fetcher
 	} = deps;
-	let mut io = jsonrpc_core::IoHandler::default();
+	let mut io = tetsy_jsonrpc_core::IoHandler::default();
 	io.extend_with(
 		SystemApi::<Hash, AccountId, Index>::to_delegate(LightSystem::new(client, remote_blockchain, fetcher, pool))
 	);

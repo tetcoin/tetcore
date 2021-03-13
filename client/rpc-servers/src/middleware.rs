@@ -18,7 +18,7 @@
 
 //! Middleware for RPC requests.
 
-use jsonrpc_core::{
+use tetsy_jsonrpc_core::{
 	Middleware as RequestMiddleware, Metadata,
 	Request, Response, FutureResponse, FutureOutput
 };

@@ -21,9 +21,9 @@
 pub mod error;
 pub mod helpers;
 
-use jsonrpc_core::Result as RpcResult;
-use jsonrpc_derive::rpc;
-use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
+use tetsy_jsonrpc_core::Result as RpcResult;
+use tetsy_jsonrpc_derive::rpc;
+use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
 use tet_core::Bytes;
 use tet_core::storage::{StorageKey, StorageData, StorageChangeSet};
 use sp_version::RuntimeVersion;

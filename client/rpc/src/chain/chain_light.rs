@@ -21,7 +21,7 @@
 use std::sync::Arc;
 use futures::{future::ready, FutureExt, TryFutureExt};
 use rpc::futures::future::{result, Future, Either};
-use jsonrpc_pubsub::manager::SubscriptionManager;
+use tetsy_jsonrpc_pubsub::manager::SubscriptionManager;
 
 use sc_client_api::light::{Fetcher, RemoteBodyRequest, RemoteBlockchain};
 use sp_runtime::{

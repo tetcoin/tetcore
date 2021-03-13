@@ -97,7 +97,7 @@ impl<T> MallocSizeOfWasm for T {}
 
 /// RPC handlers that can perform RPC queries.
 #[derive(Clone)]
-pub struct RpcHandlers(Arc<jsonrpc_core::MetaIoHandler<sc_rpc::Metadata, sc_rpc_server::RpcMiddleware>>);
+pub struct RpcHandlers(Arc<tetsy_jsonrpc_core::MetaIoHandler<sc_rpc::Metadata, sc_rpc_server::RpcMiddleware>>);
 
 impl RpcHandlers {
 	/// Starts an RPC query.
@@ -119,7 +119,7 @@ impl RpcHandlers {
 
 	/// Provides access to the underlying `MetaIoHandler`
 	pub fn io_handler(&self)
-		-> Arc<jsonrpc_core::MetaIoHandler<sc_rpc::Metadata, sc_rpc_server::RpcMiddleware>> {
+		-> Arc<tetsy_jsonrpc_core::MetaIoHandler<sc_rpc::Metadata, sc_rpc_server::RpcMiddleware>> {
 		self.0.clone()
 	}
 }

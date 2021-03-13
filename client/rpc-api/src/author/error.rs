@@ -19,7 +19,7 @@
 //! Authoring RPC module errors.
 
 use crate::errors;
-use jsonrpc_core as rpc;
+use tetsy_jsonrpc_core as rpc;
 use sp_runtime::transaction_validity::InvalidTransaction;
 
 /// Author RPC Result type.

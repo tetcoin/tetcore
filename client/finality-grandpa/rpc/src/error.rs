@@ -56,13 +56,13 @@ impl From<Error> for ErrorCode {
 	}
 }
 
-impl From<Error> for jsonrpc_core::Error {
+impl From<Error> for tetsy_jsonrpc_core::Error {
 	fn from(error: Error) -> Self {
 		let message = format!("{}", error);
 		let code = ErrorCode::from(error);
-		jsonrpc_core::Error {
+		tetsy_jsonrpc_core::Error {
 			message,
-			code: jsonrpc_core::ErrorCode::ServerError(code as i64),
+			code: tetsy_jsonrpc_core::ErrorCode::ServerError(code as i64),
 			data: None,
 		}
 	}

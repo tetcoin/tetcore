@@ -20,9 +20,9 @@
 
 pub mod error;
 
-use jsonrpc_core::Result as RpcResult;
-use jsonrpc_derive::rpc;
-use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
+use tetsy_jsonrpc_core::Result as RpcResult;
+use tetsy_jsonrpc_derive::rpc;
+use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
 use sp_rpc::{number::NumberOrHex, list::ListOrValue};
 use self::error::{FutureResult, Result};
 

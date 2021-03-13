@@ -28,7 +28,7 @@ pub struct FullDeps<C, P> {
 /// Instantiate all full RPC extensions.
 pub fn create_full<C, P>(
 	deps: FullDeps<C, P>,
-) -> jsonrpc_core::IoHandler<sc_rpc::Metadata> where
+) -> tetsy_jsonrpc_core::IoHandler<sc_rpc::Metadata> where
 	C: ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error=BlockChainError> + 'static,
 	C: Send + Sync + 'static,
@@ -40,7 +40,7 @@ pub fn create_full<C, P>(
 	use tetcore_frame_rpc_system::{FullSystem, SystemApi};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
 
-	let mut io = jsonrpc_core::IoHandler::default();
+	let mut io = tetsy_jsonrpc_core::IoHandler::default();
 	let FullDeps {
 		client,
 		pool,

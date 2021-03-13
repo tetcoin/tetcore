@@ -26,7 +26,7 @@ use sp_blockchain::HeaderBackend;
 use std::sync::Arc;
 use sp_runtime::generic::BlockId;
 
-use jsonrpc_derive::rpc;
+use tetsy_jsonrpc_derive::rpc;
 
 type SharedAuthoritySet<TBl> =
 	sc_finality_grandpa::SharedAuthoritySet<<TBl as BlockT>::Hash, NumberFor<TBl>>;
@@ -37,7 +37,7 @@ type SharedEpochChanges<TBl> = sc_consensus_epochs::SharedEpochChanges<TBl, sc_c
 enum Error<Block: BlockT> {
 	#[error(transparent)]
 	Blockchain(#[from] sp_blockchain::Error),
-	
+
 	#[error("Failed to load the block weight for block {0:?}")]
 	LoadingBlockWeightFailed(<Block as BlockT>::Hash),
 
@@ -45,15 +45,15 @@ enum Error<Block: BlockT> {
 	JsonRpc(String),
 }
 
-impl<Block: BlockT> From<Error<Block>> for jsonrpc_core::Error {
+impl<Block: BlockT> From<Error<Block>> for tetsy_jsonrpc_core::Error {
 	fn from(error: Error<Block>) -> Self {
 		let message = match error {
 			Error::JsonRpc(s) => s,
 			_ => error.to_string(),
 		};
-		jsonrpc_core::Error {
+		tetsy_jsonrpc_core::Error {
 			message,
-			code:  jsonrpc_core::ErrorCode::ServerError(1),
+			code:  tetsy_jsonrpc_core::ErrorCode::ServerError(1),
 			data: None,
 		}
 	}
@@ -63,9 +63,9 @@ impl<Block: BlockT> From<Error<Block>> for jsonrpc_core::Error {
 #[rpc]
 pub trait SyncStateRpcApi {
 	/// Returns the json-serialized chainspec running the node, with a sync state.
-	#[rpc(name = "sync_state_genSyncSpec", returns = "jsonrpc_core::Value")]
+	#[rpc(name = "sync_state_genSyncSpec", returns = "tetsy_jsonrpc_core::Value")]
 	fn system_gen_sync_spec(&self, raw: bool)
-		-> jsonrpc_core::Result<jsonrpc_core::Value>;
+		-> tetsy_jsonrpc_core::Result<tetsy_jsonrpc_core::Value>;
 }
 
 /// The handler for sync state RPC calls.
@@ -94,7 +94,7 @@ impl<TBl, TCl> SyncStateRpcHandler<TBl, TCl>
 			chain_spec, client, shared_authority_set, shared_epoch_changes, deny_unsafe,
 		}
 	}
-	
+
 	fn build_sync_state(&self) -> Result<sc_chain_spec::LightSyncState<TBl>, Error<TBl>> {
 		let finalized_hash = self.client.info().finalized_hash;
 		let finalized_header = self.client.header(BlockId::Hash(finalized_hash))?
@@ -121,7 +121,7 @@ impl<TBl, TCl> SyncStateRpcApi for SyncStateRpcHandler<TBl, TCl>
 		TCl: HeaderBackend<TBl> + sc_client_api::AuxStore + 'static,
 {
 	fn system_gen_sync_spec(&self, raw: bool)
-		-> jsonrpc_core::Result<jsonrpc_core::Value>
+		-> tetsy_jsonrpc_core::Result<tetsy_jsonrpc_core::Value>
 	{
 		if let Err(err) = self.deny_unsafe.check_if_safe() {
 			return Err(err.into());
@@ -139,6 +139,6 @@ impl<TBl, TCl> SyncStateRpcApi for SyncStateRpcHandler<TBl, TCl>
 	}
 }
 
-fn map_error<Block: BlockT, S: ToString>(error: S) -> jsonrpc_core::Error {
+fn map_error<Block: BlockT, S: ToString>(error: S) -> tetsy_jsonrpc_core::Error {
 	Error::<Block>::JsonRpc(error.to_string()).into()
 }

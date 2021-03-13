@@ -21,8 +21,8 @@
 pub mod error;
 pub mod hash;
 
-use jsonrpc_derive::rpc;
-use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
+use tetsy_jsonrpc_derive::rpc;
+use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
 use tet_core::Bytes;
 use sp_transaction_pool::TransactionStatus;
 use self::error::{FutureResult, Result};

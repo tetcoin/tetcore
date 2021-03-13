@@ -29,7 +29,7 @@ use sc_rpc::author::{
 	AuthorClient,
 	hash::ExtrinsicOrHash,
 };
-use jsonrpc_core_client::{
+use tetsy_jsonrpc_core_client::{
 	transports::http,
 	RpcError,
 };

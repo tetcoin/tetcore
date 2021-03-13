@@ -230,7 +230,7 @@ Client
 * Rename all the election operations (#6245)
 * Sentry nodes and validator nodes also imply reserved (#6251)
 * Fix peerset not filtering incoming connections in reserved-only (#6249)
-* Use Subscription Manager from `jsonrpc-pubsub` (#6208)
+* Use Subscription Manager from `tetsy-jsonrpc-pubsub` (#6208)
 * Add a Tetcore networking Grafana dashboard template (#6171)
 * Add tetkey inspect-node-key (#6153)
 

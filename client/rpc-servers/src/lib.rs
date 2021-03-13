@@ -23,7 +23,7 @@
 mod middleware;
 
 use std::io;
-use jsonrpc_core::{IoHandlerExtension, MetaIoHandler};
+use tetsy_jsonrpc_core::{IoHandlerExtension, MetaIoHandler};
 use log::error;
 use pubsub::PubSubMetadata;
 
@@ -116,7 +116,7 @@ mod inner {
 	/// Start WS server listening on given address.
 	///
 	/// **Note**: Only available if `not(target_os = "unknown")`.
-	pub fn start_ws<M: pubsub::PubSubMetadata + From<jsonrpc_core::futures::sync::mpsc::Sender<String>>> (
+	pub fn start_ws<M: pubsub::PubSubMetadata + From<tetsy_jsonrpc_core::futures::sync::mpsc::Sender<String>>> (
 		addr: &std::net::SocketAddr,
 		max_connections: Option<usize>,
 		cors: Option<&Vec<String>>,

@@ -25,7 +25,7 @@ mod state_light;
 mod tests;
 
 use std::sync::Arc;
-use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
+use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use rpc::{Result as RpcResult, futures::{Future, future::result}};
 
 use sc_rpc_api::{DenyUnsafe, state::ReadProof};

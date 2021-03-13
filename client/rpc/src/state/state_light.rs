@@ -30,7 +30,7 @@ use futures::{
 	StreamExt as _, TryStreamExt as _,
 };
 use tetsy_hash_db::Hasher;
-use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
+use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use log::warn;
 use parking_lot::Mutex;
 use rpc::{

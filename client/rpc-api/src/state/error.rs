@@ -19,7 +19,7 @@
 //! State RPC errors.
 
 use crate::errors;
-use jsonrpc_core as rpc;
+use tetsy_jsonrpc_core as rpc;
 
 /// State RPC Result type.
 pub type Result<T> = std::result::Result<T, Error>;

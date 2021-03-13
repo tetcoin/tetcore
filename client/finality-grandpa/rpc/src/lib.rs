@@ -22,9 +22,9 @@
 use std::sync::Arc;
 use futures::{FutureExt, TryFutureExt, TryStreamExt, StreamExt};
 use log::warn;
-use jsonrpc_derive::rpc;
-use jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
-use jsonrpc_core::futures::{
+use tetsy_jsonrpc_derive::rpc;
+use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
+use tetsy_jsonrpc_core::futures::{
 	sink::Sink as Sink01,
 	stream::Stream as Stream01,
 	future::Future as Future01,
@@ -44,7 +44,7 @@ use report::{ReportAuthoritySet, ReportVoterState, ReportedRoundStates};
 use notification::JustificationNotification;
 
 type FutureResult<T> =
-	Box<dyn jsonrpc_core::futures::Future<Item = T, Error = jsonrpc_core::Error> + Send>;
+	Box<dyn tetsy_jsonrpc_core::futures::Future<Item = T, Error = tetsy_jsonrpc_core::Error> + Send>;
 
 /// Provides RPC methods for interacting with GRANDPA.
 #[rpc]
@@ -80,7 +80,7 @@ pub trait GrandpaApi<Notification, Hash, Number> {
 		&self,
 		metadata: Option<Self::Metadata>,
 		id: SubscriptionId
-	) -> jsonrpc_core::Result<bool>;
+	) -> tetsy_jsonrpc_core::Result<bool>;
 
 	/// Prove finality for the given block number by returning the Justification for the last block
 	/// in the set and all the intermediary headers to link them together.
@@ -139,7 +139,7 @@ where
 	fn round_state(&self) -> FutureResult<ReportedRoundStates> {
 		let round_states = ReportedRoundStates::from(&self.authority_set, &self.voter_state);
 		let future = async move { round_states }.boxed();
-		Box::new(future.map_err(jsonrpc_core::Error::from).compat())
+		Box::new(future.map_err(tetsy_jsonrpc_core::Error::from).compat())
 	}
 
 	fn subscribe_justifications(
@@ -164,7 +164,7 @@ where
 		&self,
 		_metadata: Option<Self::Metadata>,
 		id: SubscriptionId
-	) -> jsonrpc_core::Result<bool> {
+	) -> tetsy_jsonrpc_core::Result<bool> {
 		Ok(self.manager.cancel(id))
 	}
 
@@ -180,7 +180,7 @@ where
 					warn!("Error proving finality: {}", e);
 					error::Error::ProveFinalityFailed(e)
 				})
-				.map_err(jsonrpc_core::Error::from)
+				.map_err(tetsy_jsonrpc_core::Error::from)
 				.compat()
 		)
 	}
@@ -190,7 +190,7 @@ where
 mod tests {
 	use super::*;
 	use std::{collections::HashSet, convert::TryInto, sync::Arc};
-	use jsonrpc_core::{Notification, Output, types::Params};
+	use tetsy_jsonrpc_core::{Notification, Output, types::Params};
 
 	use tetsy_scale_codec::{Encode, Decode};
 	use sc_block_builder::BlockBuilder;
@@ -299,7 +299,7 @@ mod tests {
 	}
 
 	fn setup_io_handler<VoterState>(voter_state: VoterState) -> (
-		jsonrpc_core::MetaIoHandler<sc_rpc::Metadata>,
+		tetsy_jsonrpc_core::MetaIoHandler<sc_rpc::Metadata>,
 		GrandpaJustificationSender<Block>,
 	) where
 		VoterState: ReportVoterState + Send + Sync + 'static,
@@ -311,7 +311,7 @@ mod tests {
 		voter_state: VoterState,
 		finality_proof: Option<FinalityProof<Header>>,
 	) -> (
-		jsonrpc_core::MetaIoHandler<sc_rpc::Metadata>,
+		tetsy_jsonrpc_core::MetaIoHandler<sc_rpc::Metadata>,
 		GrandpaJustificationSender<Block>,
 	) where
 		VoterState: ReportVoterState + Send + Sync + 'static,
@@ -327,7 +327,7 @@ mod tests {
 			finality_proof_provider,
 		);
 
-		let mut io = jsonrpc_core::MetaIoHandler::default();
+		let mut io = tetsy_jsonrpc_core::MetaIoHandler::default();
 		io.extend_with(GrandpaApi::to_delegate(handler));
 
 		(io, justification_sender)
@@ -367,8 +367,8 @@ mod tests {
 		assert_eq!(io.handle_request_sync(request, meta), Some(response.into()));
 	}
 
-	fn setup_session() -> (sc_rpc::Metadata, jsonrpc_core::futures::sync::mpsc::Receiver<String>) {
-		let (tx, rx) = jsonrpc_core::futures::sync::mpsc::channel(1);
+	fn setup_session() -> (sc_rpc::Metadata, tetsy_jsonrpc_core::futures::sync::mpsc::Receiver<String>) {
+		let (tx, rx) = tetsy_jsonrpc_core::futures::sync::mpsc::channel(1);
 		let meta = sc_rpc::Metadata::new(tx);
 		(meta, rx)
 	}

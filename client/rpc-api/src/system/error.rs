@@ -19,7 +19,7 @@
 //! System RPC module errors.
 
 use crate::system::helpers::Health;
-use jsonrpc_core as rpc;
+use tetsy_jsonrpc_core as rpc;
 
 /// System RPC Result type.
 pub type Result<T> = std::result::Result<T, Error>;

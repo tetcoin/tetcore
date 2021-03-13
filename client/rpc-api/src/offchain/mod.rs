@@ -20,7 +20,7 @@
 
 pub mod error;
 
-use jsonrpc_derive::rpc;
+use tetsy_jsonrpc_derive::rpc;
 use self::error::Result;
 use tet_core::{Bytes, offchain::StorageKind};
 

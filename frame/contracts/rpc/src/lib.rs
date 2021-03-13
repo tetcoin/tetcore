@@ -20,8 +20,8 @@
 use std::sync::Arc;
 
 use codec::Codec;
-use jsonrpc_core::{Error, ErrorCode, Result};
-use jsonrpc_derive::rpc;
+use tetsy_jsonrpc_core::{Error, ErrorCode, Result};
+use tetsy_jsonrpc_derive::rpc;
 use pallet_contracts_primitives::RentProjection;
 use serde::{Deserialize, Serialize};
 use sp_api::ProvideRuntimeApi;

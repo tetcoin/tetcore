@@ -21,11 +21,11 @@ use std::sync::Arc;
 
 use codec::{self, Codec, Decode, Encode};
 use sc_client_api::light::{future_header, RemoteBlockchain, Fetcher, RemoteCallRequest};
-use jsonrpc_core::{
+use tetsy_jsonrpc_core::{
 	Error as RpcError, ErrorCode,
 	futures::future::{self as rpc_future,result, Future},
 };
-use jsonrpc_derive::rpc;
+use tetsy_jsonrpc_derive::rpc;
 use futures::future::{ready, TryFutureExt};
 use sp_blockchain::{
 	HeaderBackend,

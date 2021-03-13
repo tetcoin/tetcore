@@ -22,7 +22,7 @@
 
 use core::marker::PhantomData;
 use futures::compat::Future01CompatExt;
-use jsonrpc_client_transports::RpcError;
+use tetsy_jsonrpc_client_transports::RpcError;
 use codec::{DecodeAll, FullCodec, FullEncode};
 use serde::{de::DeserializeOwned, Serialize};
 use frame_support::storage::generator::{
@@ -35,8 +35,8 @@ use sc_rpc_api::state::StateClient;
 ///
 /// ```no_run
 /// # use futures::compat::Future01CompatExt;
-/// # use jsonrpc_client_transports::RpcError;
-/// # use jsonrpc_client_transports::transports::http;
+/// # use tetsy_jsonrpc_client_transports::RpcError;
+/// # use tetsy_jsonrpc_client_transports::transports::http;
 /// # use codec::Encode;
 /// # use frame_support::{decl_storage, decl_module};
 /// # use tetcore_frame_rpc_support::StorageQuery;

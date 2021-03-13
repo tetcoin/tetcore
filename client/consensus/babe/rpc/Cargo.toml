@@ -15,9 +15,9 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 tc-consensus-babe = { version = "0.8.0", path = "../" }
 tc-rpc-api = { version = "0.8.0", path = "../../../rpc-api" }
-jsonrpc-core = "15.1.0"
-jsonrpc-core-client = "15.1.0"
-jsonrpc-derive = "15.1.0"
+tetsy-jsonrpc-core = "15.1.0"
+tetsy-jsonrpc-core-client = "15.1.0"
+tetsy-jsonrpc-derive = "15.1.0"
 tp-consensus-babe = { version = "0.8.0", path = "../../../../primitives/consensus/babe" }
 serde = { version = "1.0.104", features=["derive"] }
 tp-blockchain = { version = "2.0.0", path = "../../../../primitives/blockchain" }

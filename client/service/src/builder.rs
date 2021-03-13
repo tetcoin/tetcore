@@ -32,7 +32,7 @@ use sp_consensus::{
 	block_validation::{BlockAnnounceValidator, DefaultBlockAnnounceValidator, Chain},
 	import_queue::ImportQueue,
 };
-use jsonrpc_pubsub::manager::SubscriptionManager;
+use tetsy_jsonrpc_pubsub::manager::SubscriptionManager;
 use futures::{
 	FutureExt, StreamExt,
 	future::ready,

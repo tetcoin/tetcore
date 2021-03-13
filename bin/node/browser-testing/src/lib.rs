@@ -31,7 +31,7 @@
 use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen::JsValue;
-use jsonrpc_core::types::{MethodCall, Success, Version, Params, Id};
+use tetsy_jsonrpc_core::types::{MethodCall, Success, Version, Params, Id};
 use serde::de::DeserializeOwned;
 
 wasm_bindgen_test_configure!(run_in_browser);

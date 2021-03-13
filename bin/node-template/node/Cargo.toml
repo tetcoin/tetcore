@@ -39,7 +39,7 @@ tc-client-api = { version = "2.0.0", path = "../../../client/api" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
 
 # These dependencies are used for the node template's RPCs
-jsonrpc-core = "15.1.0"
+tetsy-jsonrpc-core = "15.1.0"
 tc-rpc = { version = "2.0.0", path = "../../../client/rpc" }
 tp-api = { version = "2.0.0", path = "../../../primitives/api" }
 tc-rpc-api = { version = "0.8.0", path = "../../../client/rpc-api" }

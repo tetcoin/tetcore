@@ -20,11 +20,11 @@
 
 use sc_consensus_babe::{Epoch, authorship, Config};
 use futures::{FutureExt as _, TryFutureExt as _};
-use jsonrpc_core::{
+use tetsy_jsonrpc_core::{
 	Error as RpcError,
 	futures::future as rpc_future,
 };
-use jsonrpc_derive::rpc;
+use tetsy_jsonrpc_derive::rpc;
 use sc_consensus_epochs::{descendent_query, Epoch as EpochT, SharedEpochChanges};
 use sp_consensus_babe::{
 	AuthorityId,
@@ -193,11 +193,11 @@ pub enum Error {
 	StringError(String)
 }
 
-impl From<Error> for jsonrpc_core::Error {
+impl From<Error> for tetsy_jsonrpc_core::Error {
 	fn from(error: Error) -> Self {
-		jsonrpc_core::Error {
+		tetsy_jsonrpc_core::Error {
 			message: format!("{}", error),
-			code: jsonrpc_core::ErrorCode::ServerError(1234),
+			code: tetsy_jsonrpc_core::ErrorCode::ServerError(1234),
 			data: None,
 		}
 	}
@@ -247,7 +247,7 @@ mod tests {
 
 	use std::sync::Arc;
 	use sc_consensus_babe::{Config, block_import, AuthorityPair};
-	use jsonrpc_core::IoHandler;
+	use tetsy_jsonrpc_core::IoHandler;
 
 	/// creates keystore backed by a temp file
 	fn create_temp_keystore<P: AppPair>(

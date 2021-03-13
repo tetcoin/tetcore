@@ -22,7 +22,7 @@ pub mod error;
 pub mod helpers;
 
 use crate::helpers::Receiver;
-use jsonrpc_derive::rpc;
+use tetsy_jsonrpc_derive::rpc;
 use futures::{future::BoxFuture, compat::Compat};
 
 use self::error::Result as SystemResult;
@@ -75,15 +75,15 @@ pub trait SystemApi<Hash, Number> {
 	/// Returns currently connected peers
 	#[rpc(name = "system_peers", returns = "Vec<PeerInfo<Hash, Number>>")]
 	fn system_peers(&self)
-		-> Compat<BoxFuture<'static, jsonrpc_core::Result<Vec<PeerInfo<Hash, Number>>>>>;
+		-> Compat<BoxFuture<'static, tetsy_jsonrpc_core::Result<Vec<PeerInfo<Hash, Number>>>>>;
 
 	/// Returns current state of the network.
 	///
 	/// **Warning**: This API is not stable.
 	// TODO: make this stable and move structs https://github.com/tetcoin/tetcore/issues/1890
-	#[rpc(name = "system_networkState", returns = "jsonrpc_core::Value")]
+	#[rpc(name = "system_networkState", returns = "tetsy_jsonrpc_core::Value")]
 	fn system_network_state(&self)
-		-> Compat<BoxFuture<'static, jsonrpc_core::Result<jsonrpc_core::Value>>>;
+		-> Compat<BoxFuture<'static, tetsy_jsonrpc_core::Result<tetsy_jsonrpc_core::Value>>>;
 
 	/// Adds a reserved peer. Returns the empty string or an error. The string
 	/// parameter should encode a `p2p` multiaddr.
@@ -92,13 +92,13 @@ pub trait SystemApi<Hash, Number> {
 	/// is an example of a valid, passing multiaddr with PeerId attached.
 	#[rpc(name = "system_addReservedPeer", returns = "()")]
 	fn system_add_reserved_peer(&self, peer: String)
-		-> Compat<BoxFuture<'static, Result<(), jsonrpc_core::Error>>>;
+		-> Compat<BoxFuture<'static, Result<(), tetsy_jsonrpc_core::Error>>>;
 
 	/// Remove a reserved peer. Returns the empty string or an error. The string
 	/// should encode only the PeerId e.g. `QmSk5HQbn6LhUwDiNMseVUjuRYhEtYj4aUZ6WfWoGURpdV`.
 	#[rpc(name = "system_removeReservedPeer", returns = "()")]
 	fn system_remove_reserved_peer(&self, peer_id: String)
-		-> Compat<BoxFuture<'static, Result<(), jsonrpc_core::Error>>>;
+		-> Compat<BoxFuture<'static, Result<(), tetsy_jsonrpc_core::Error>>>;
 
 	/// Returns the roles the node is running as.
 	#[rpc(name = "system_nodeRoles", returns = "Vec<NodeRole>")]
@@ -116,10 +116,10 @@ pub trait SystemApi<Hash, Number> {
 	/// `sync=debug,state=trace`
 	#[rpc(name = "system_addLogFilter", returns = "()")]
 	fn system_add_log_filter(&self, directives: String)
-		-> Result<(), jsonrpc_core::Error>;
+		-> Result<(), tetsy_jsonrpc_core::Error>;
 
 	/// Resets the log filter to Tetcore defaults
 	#[rpc(name = "system_resetLogFilter", returns = "()")]
 	fn system_reset_log_filter(&self)
-		-> Result<(), jsonrpc_core::Error>;
+		-> Result<(), tetsy_jsonrpc_core::Error>;
 }
