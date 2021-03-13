@@ -5,9 +5,12 @@ authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support
 description = "Tetcore utility for building WASM binaries"
 edition = "2018"
 readme = "README.md"
-repository = "https://github.com/tetcoin/tetcore/"
 license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/wasm-builder"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
