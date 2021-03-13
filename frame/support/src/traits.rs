@@ -1934,7 +1934,7 @@ pub trait GenesisBuild<T, I=()>: Default + MaybeSerializeDeserialize {
 	fn build(&self);
 
 	/// Build the storage using `build` inside default storage.
-	fn build_storage(&self) -> Result<sp_runtime::Storage, String> {
+	fn build_storage(&self) -> Result<tp_runtime::Storage, String> {
 		let mut storage = Default::default();
 		self.assimilate_storage(&mut storage)?;
 		Ok(storage)

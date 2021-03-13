@@ -915,7 +915,7 @@ pub fn show_benchmark_debug_info(
 	verify: &bool,
 	error_message: &str,
 ) -> tp_runtime::RuntimeString {
-	sp_runtime::format_runtime_string!(
+	tp_runtime::format_runtime_string!(
 		"\n* Pallet: {}\n\
 		* Benchmark: {}\n\
 		* Lowest_range_values: {:?}\n\

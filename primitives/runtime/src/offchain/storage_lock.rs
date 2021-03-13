@@ -437,7 +437,7 @@ pub trait BlockNumberProvider {
 	/// Provides an abstraction over an arbitrary way of providing the
 	/// current block number.
 	///
-	/// In case of using crate `sp_runtime` without the crate `frame`
+	/// In case of using crate `tp_runtime` without the crate `frame`
 	/// system, it is already implemented for
 	/// `frame_system::Module<T: Config>` as:
 	///

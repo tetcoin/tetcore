@@ -110,7 +110,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 		}
 
 		impl<#type_impl_gen> From<#error_ident<#type_use_gen>>
-			for #frame_support::sp_runtime::DispatchError
+			for #frame_support::tp_runtime::DispatchError
 			#config_where_clause
 		{
 			fn from(err: #error_ident<#type_use_gen>) -> Self {
@@ -120,7 +120,7 @@ pub fn expand_error(def: &mut Def) -> proc_macro2::TokenStream {
 				>::index::<Pallet<#type_use_gen>>()
 					.expect("Every active module has an index in the runtime; qed") as u8;
 
-				#frame_support::sp_runtime::DispatchError::Module {
+				#frame_support::tp_runtime::DispatchError::Module {
 					index,
 					error: err.as_u8(),
 					message: Some(err.as_str()),

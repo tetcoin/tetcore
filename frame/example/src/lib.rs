@@ -589,7 +589,7 @@ impl<T: Config> Module<T> {
 // sender of the transaction (if signed) are also provided.
 //
 // The full list of hooks that can be added to a signed extension can be found
-// [here](https://crates.tetcoin.org/sp_runtime/traits/trait.SignedExtension.html).
+// [here](https://crates.tetcoin.org/tp_runtime/traits/trait.SignedExtension.html).
 //
 // The signed extensions are aggregated in the runtime file of a tetcore chain. All extensions
 // should be aggregated in a tuple and passed to the `CheckedExtrinsic` and `UncheckedExtrinsic`
@@ -637,7 +637,7 @@ where
 		// check for `set_dummy`
 		match call.is_sub_type() {
 			Some(Call::set_dummy(..)) => {
-				sp_runtime::print("set_dummy was received.");
+				tp_runtime::print("set_dummy was received.");
 
 				let mut valid_tx = ValidTransaction::default();
 				valid_tx.priority = Bounded::max_value();

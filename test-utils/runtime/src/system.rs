@@ -338,9 +338,9 @@ fn info_expect_equal_hash(given: &Hash, expected: &Hash) {
 #[cfg(not(feature = "std"))]
 fn info_expect_equal_hash(given: &Hash, expected: &Hash) {
 	if given != expected {
-		sp_runtime::print("Hash not equal");
-		sp_runtime::print(given.as_bytes());
-		sp_runtime::print(expected.as_bytes());
+		tp_runtime::print("Hash not equal");
+		tp_runtime::print(given.as_bytes());
+		tp_runtime::print(expected.as_bytes());
 	}
 }
 

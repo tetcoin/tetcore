@@ -82,9 +82,9 @@ pub fn build(input: TokenStream) -> TokenStream {
 	let test_module = generate_test_module(&input);
 
 	let imports = match crate_name("tp-runtime") {
-		Ok(sp_runtime) => {
-			let ident = syn::Ident::new(&sp_runtime, Span::call_site());
-			quote!( extern crate #ident as _sp_runtime; )
+		Ok(tp_runtime) => {
+			let ident = syn::Ident::new(&tp_runtime, Span::call_site());
+			quote!( extern crate #ident as _tp_runtime; )
 		},
 		Err(e) => syn::Error::new(Span::call_site(), &e).to_compile_error(),
 	};
@@ -366,16 +366,16 @@ fn generate_piecewise_linear(points: Vec<(u32, u32)>) -> TokenStream2 {
 
 		points_tokens.extend(quote!(
 			(
-				_sp_runtime::Perbill::from_parts(#x_perbill),
-				_sp_runtime::Perbill::from_parts(#y_perbill),
+				_tp_runtime::Perbill::from_parts(#x_perbill),
+				_tp_runtime::Perbill::from_parts(#y_perbill),
 			),
 		));
 	}
 
 	quote!(
-		_sp_runtime::curve::PiecewiseLinear::<'static> {
+		_tp_runtime::curve::PiecewiseLinear::<'static> {
 			points: & [ #points_tokens ],
-			maximum: _sp_runtime::Perbill::from_parts(#max),
+			maximum: _tp_runtime::Perbill::from_parts(#max),
 		}
 	)
 }

@@ -53,7 +53,7 @@ impl frame_system::Config for Test {
 	type BlockNumber = BlockNumber;
 	type Call = Call;
 	type Hash = tet_core::H256;
-	type Hashing = ::sp_runtime::traits::BlakeTwo256;
+	type Hashing = ::tp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = Indices;
 	type Header = tp_runtime::testing::Header;
@@ -100,7 +100,7 @@ impl pallet_session::historical::Config for Test {
 	type FullIdentificationOf = pallet_staking::ExposureOf<Test>;
 }
 
-sp_runtime::impl_opaque_keys! {
+tp_runtime::impl_opaque_keys! {
 	pub struct SessionKeys {
 		pub foo: tp_runtime::testing::UintAuthorityId,
 	}
@@ -108,7 +108,7 @@ sp_runtime::impl_opaque_keys! {
 
 pub struct TestSessionHandler;
 impl pallet_session::SessionHandler<AccountId> for TestSessionHandler {
-	const KEY_TYPE_IDS: &'static [sp_runtime::KeyTypeId] = &[];
+	const KEY_TYPE_IDS: &'static [tp_runtime::KeyTypeId] = &[];
 
 	fn on_genesis_session<Ks: tp_runtime::traits::OpaqueKeys>(_validators: &[(AccountId, Ks)]) {}
 

@@ -21,11 +21,11 @@ criterion_main!(benches);
 
 fn benchmark(c: &mut Criterion) {
 	trie_bench::standard_benchmark::<
-		sp_trie::Layout<sp_runtime::traits::BlakeTwo256>,
+		sp_trie::Layout<tp_runtime::traits::BlakeTwo256>,
 		sp_trie::TrieStream,
 	>(c, "tetcore-blake2");
 	trie_bench::standard_benchmark::<
-		sp_trie::Layout<sp_runtime::traits::BlakeTwo256>,
+		sp_trie::Layout<tp_runtime::traits::BlakeTwo256>,
 		sp_trie::TrieStream,
 	>(c, "tetcore-keccak");
 }

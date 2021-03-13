@@ -196,7 +196,7 @@ pub fn block_id_to_lookup_key<Block>(
 	id: BlockId<Block>
 ) -> Result<Option<Vec<u8>>, tp_blockchain::Error> where
 	Block: BlockT,
-	::sp_runtime::traits::NumberFor<Block>: UniqueSaturatedFrom<u64> + UniqueSaturatedInto<u64>,
+	::tp_runtime::traits::NumberFor<Block>: UniqueSaturatedFrom<u64> + UniqueSaturatedInto<u64>,
 {
 	Ok(match id {
 		BlockId::Number(n) => db.get(

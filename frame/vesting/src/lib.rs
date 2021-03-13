@@ -141,7 +141,7 @@ decl_storage! {
 				// Total genesis `balance` minus `liquid` equals funds locked for vesting
 				let locked = balance.saturating_sub(liquid);
 				let length_as_balance = T::BlockNumberToBalance::convert(length);
-				let per_block = locked / length_as_balance.max(sp_runtime::traits::One::one());
+				let per_block = locked / length_as_balance.max(tp_runtime::traits::One::one());
 
 				Vesting::<T>::insert(who, VestingInfo {
 					locked: locked,

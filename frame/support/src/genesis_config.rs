@@ -86,10 +86,10 @@ macro_rules! impl_outer_config {
 				)*
 			}
 			#[cfg(any(feature = "std", test))]
-			impl $crate::sp_runtime::BuildStorage for $main {
+			impl $crate::tp_runtime::BuildStorage for $main {
 				fn assimilate_storage(
 					&self,
-					storage: &mut $crate::sp_runtime::Storage,
+					storage: &mut $crate::tp_runtime::Storage,
 				) -> std::result::Result<(), String> {
 					$(
 						if let Some(ref extra) = self.[< $snake $(_ $instance )? >] {
@@ -120,7 +120,7 @@ macro_rules! impl_outer_config {
 		$extra:ident;
 		$storage:ident;
 	) => {
-		$crate::sp_runtime::BuildModuleGenesisStorage::<$runtime, $module::$instance>::build_module_genesis_storage(
+		$crate::tp_runtime::BuildModuleGenesisStorage::<$runtime, $module::$instance>::build_module_genesis_storage(
 			$extra,
 			$storage,
 		)?;
@@ -132,7 +132,7 @@ macro_rules! impl_outer_config {
 		$extra:ident;
 		$storage:ident;
 	) => {
-		$crate::sp_runtime::BuildModuleGenesisStorage::
+		$crate::tp_runtime::BuildModuleGenesisStorage::
 			<$runtime, $module::__InherentHiddenInstance>::build_module_genesis_storage(
 				$extra,
 				$storage,

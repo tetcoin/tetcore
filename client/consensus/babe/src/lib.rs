@@ -616,7 +616,7 @@ where
 		&self,
 		_slot: Slot,
 		claim: &Self::Claim,
-	) -> Vec<sp_runtime::DigestItem<B::Hash>> {
+	) -> Vec<tp_runtime::DigestItem<B::Hash>> {
 		vec![
 			<DigestItemFor<B> as CompatibleDigestItem>::babe_pre_digest(claim.0.clone()),
 		]

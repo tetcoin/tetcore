@@ -520,7 +520,7 @@ impl<T: Config> Module<T> {
 		// coming from the host machine.
 		let deadline = tet_io::offchain::timestamp().add(Duration::from_millis(2_000));
 		// Initiate an external HTTP GET request.
-		// This is using high-level wrappers from `sp_runtime`, for the low-level calls that
+		// This is using high-level wrappers from `tp_runtime`, for the low-level calls that
 		// you can find in `tet_io`. The API is trying to be similar to `reqwest`, but
 		// since we are running in a custom WASM execution environment we can't simply
 		// import the library here.

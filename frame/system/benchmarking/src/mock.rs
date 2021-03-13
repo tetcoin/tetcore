@@ -60,7 +60,7 @@ impl frame_system::Config for Test {
 	type BlockNumber = BlockNumber;
 	type Call = Call;
 	type Hash = tet_core::H256;
-	type Hashing = ::sp_runtime::traits::BlakeTwo256;
+	type Hashing = ::tp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = tp_runtime::testing::Header;

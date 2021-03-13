@@ -648,7 +648,7 @@ impl GenesisConfig {
 	/// Direct implementation of `GenesisBuild::build_storage`.
 	///
 	/// Kept in order not to break dependency.
-	pub fn build_storage<T: Config>(&self) -> Result<sp_runtime::Storage, String> {
+	pub fn build_storage<T: Config>(&self) -> Result<tp_runtime::Storage, String> {
 		<Self as GenesisBuild<T>>::build_storage(self)
 	}
 
@@ -757,7 +757,7 @@ pub struct AccountInfo<Index, AccountData> {
 
 /// Stores the `spec_version` and `spec_name` of when the last runtime upgrade
 /// happened.
-#[derive(sp_runtime::RuntimeDebug, Encode, Decode)]
+#[derive(tp_runtime::RuntimeDebug, Encode, Decode)]
 #[cfg_attr(feature = "std", derive(PartialEq))]
 pub struct LastRuntimeUpgradeInfo {
 	pub spec_version: codec::Compact<u32>,
@@ -1350,7 +1350,7 @@ impl<T: Config> Module<T> {
 			match r {
 				Ok(_) => Event::ExtrinsicSuccess(info),
 				Err(err) => {
-					sp_runtime::print(err);
+					tp_runtime::print(err);
 					Event::ExtrinsicFailed(err.error, info)
 				},
 			}

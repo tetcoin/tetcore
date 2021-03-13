@@ -187,7 +187,7 @@ mod tests {
 		type BlockNumber = BlockNumber;
 		type Call = Call;
 		type Hash = H256;
-		type Hashing = ::sp_runtime::traits::BlakeTwo256;
+		type Hashing = ::tp_runtime::traits::BlakeTwo256;
 		type AccountId = AuthorityId;
 		type Lookup = IdentityLookup<Self::AccountId>;
 		type Header = Header;

@@ -73,11 +73,11 @@ macro_rules! impl_runtime_metadata {
 				$crate::metadata::RuntimeMetadataLastVersion {
 						modules: $crate::__runtime_modules_to_metadata!($runtime;; $( $rest )*),
 						extrinsic: $crate::metadata::ExtrinsicMetadata {
-							version: <$ext as $crate::sp_runtime::traits::ExtrinsicMetadata>::VERSION,
+							version: <$ext as $crate::tp_runtime::traits::ExtrinsicMetadata>::VERSION,
 							signed_extensions: <
 									<
-										$ext as $crate::sp_runtime::traits::ExtrinsicMetadata
-									>::SignedExtensions as $crate::sp_runtime::traits::SignedExtension
+										$ext as $crate::tp_runtime::traits::ExtrinsicMetadata
+									>::SignedExtensions as $crate::tp_runtime::traits::SignedExtension
 								>::identifier()
 									.into_iter()
 									.map($crate::metadata::DecodeDifferent::Encode)

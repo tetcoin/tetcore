@@ -24,7 +24,7 @@ pub type MockUncheckedExtrinsic<T, Signature = (), Extra = ()> = generic::Unchec
 	<T as crate::Config>::AccountId, <T as crate::Config>::Call, Signature, Extra,
 >;
 
-/// An implementation of `sp_runtime::traits::Block` to be used in tests.
+/// An implementation of `tp_runtime::traits::Block` to be used in tests.
 pub type MockBlock<T> = generic::Block<
 	generic::Header<<T as crate::Config>::BlockNumber, tp_runtime::traits::BlakeTwo256>,
 	MockUncheckedExtrinsic<T>,

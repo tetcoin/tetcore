@@ -145,7 +145,7 @@ pub trait SimpleSlotWorker<B: BlockT> {
 		&self,
 		slot: Slot,
 		claim: &Self::Claim,
-	) -> Vec<sp_runtime::DigestItem<B::Hash>>;
+	) -> Vec<tp_runtime::DigestItem<B::Hash>>;
 
 	/// Returns a function which produces a `BlockImportParams`.
 	fn block_import_params(&self) -> Box<
@@ -302,7 +302,7 @@ pub trait SimpleSlotWorker<B: BlockT> {
 		// deadline our production to approx. the end of the slot
 		let proposing = awaiting_proposer.and_then(move |proposer| proposer.propose(
 			slot_info.inherent_data,
-			sp_runtime::generic::Digest {
+			tp_runtime::generic::Digest {
 				logs,
 			},
 			slot_remaining_duration,

@@ -38,11 +38,11 @@ macro_rules! format_runtime_string {
 	($($args:tt)*) => {{
 		#[cfg(feature = "std")]
 		{
-			sp_runtime::RuntimeString::Owned(format!($($args)*))
+			tp_runtime::RuntimeString::Owned(format!($($args)*))
 		}
 		#[cfg(not(feature = "std"))]
 		{
-			sp_runtime::RuntimeString::Owned(tetcore_std::alloc::format!($($args)*).as_bytes().to_vec())
+			tp_runtime::RuntimeString::Owned(tetcore_std::alloc::format!($($args)*).as_bytes().to_vec())
 		}
 	}};
 }

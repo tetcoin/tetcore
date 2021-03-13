@@ -843,7 +843,7 @@ decl_module! {
 		/// Weight: see `begin_block`
 		fn on_initialize(n: T::BlockNumber) -> Weight {
 			Self::begin_block(n).unwrap_or_else(|e| {
-				sp_runtime::print(e);
+				tp_runtime::print(e);
 				0
 			})
 		}
@@ -1662,7 +1662,7 @@ impl<T: Config> Module<T> {
 			Ok(0) => Ok(()), // PreimageStatus::Missing is variant 0
 			Ok(1) => Err(Error::<T>::DuplicatePreimage.into()),
 			_ => {
-				sp_runtime::print("Failed to decode `PreimageStatus` variant");
+				tp_runtime::print("Failed to decode `PreimageStatus` variant");
 				Err(Error::<T>::NotImminent.into())
 			}
 		}
@@ -1693,14 +1693,14 @@ impl<T: Config> Module<T> {
 			Ok(1) => (), // Check that input exists and is second variant.
 			Ok(0) => return Err(Error::<T>::PreimageMissing.into()),
 			_ => {
-				sp_runtime::print("Failed to decode `PreimageStatus` variant");
+				tp_runtime::print("Failed to decode `PreimageStatus` variant");
 				return Err(Error::<T>::PreimageMissing.into());
 			}
 		}
 
 		// Decode the length of the vector.
 		let len = codec::Compact::<u32>::decode(&mut input).map_err(|_| {
-			sp_runtime::print("Failed to decode `PreimageStatus` variant");
+			tp_runtime::print("Failed to decode `PreimageStatus` variant");
 			DispatchError::from(Error::<T>::PreimageMissing)
 		})?.0;
 
@@ -1768,8 +1768,8 @@ fn decode_compact_u32_at(key: &[u8]) -> Option<u32> {
 	match codec::Compact::<u32>::decode(&mut input) {
 		Ok(c) => Some(c.0),
 		Err(_) => {
-			sp_runtime::print("Failed to decode compact u32 at:");
-			sp_runtime::print(key);
+			tp_runtime::print("Failed to decode compact u32 at:");
+			tp_runtime::print(key);
 			None
 		}
 	}

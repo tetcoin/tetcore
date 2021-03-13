@@ -341,7 +341,7 @@ impl<AId> SessionHandler<AId> for Tuple {
 /// `SessionHandler` for tests that use `UintAuthorityId` as `Keys`.
 pub struct TestSessionHandler;
 impl<AId> SessionHandler<AId> for TestSessionHandler {
-	const KEY_TYPE_IDS: &'static [KeyTypeId] = &[sp_runtime::key_types::DUMMY];
+	const KEY_TYPE_IDS: &'static [KeyTypeId] = &[tp_runtime::key_types::DUMMY];
 
 	fn on_genesis_session<Ks: OpaqueKeys>(_: &[(AId, Ks)]) {}
 

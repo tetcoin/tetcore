@@ -51,7 +51,7 @@ fn build_test_full_node(config: config::NetworkConfiguration)
 			&mut self,
 			origin: tp_consensus::BlockOrigin,
 			header: B::Header,
-			justification: Option<sp_runtime::Justification>,
+			justification: Option<tp_runtime::Justification>,
 			body: Option<Vec<B::Extrinsic>>,
 		) -> Result<
 			(
@@ -63,9 +63,9 @@ fn build_test_full_node(config: config::NetworkConfiguration)
 			let maybe_keys = header
 				.digest()
 				.log(|l| {
-					l.try_as_raw(sp_runtime::generic::OpaqueDigestItemId::Consensus(b"aura"))
+					l.try_as_raw(tp_runtime::generic::OpaqueDigestItemId::Consensus(b"aura"))
 						.or_else(|| {
-							l.try_as_raw(sp_runtime::generic::OpaqueDigestItemId::Consensus(b"babe"))
+							l.try_as_raw(tp_runtime::generic::OpaqueDigestItemId::Consensus(b"babe"))
 						})
 				})
 				.map(|blob| {

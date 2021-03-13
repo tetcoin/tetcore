@@ -122,7 +122,7 @@ benchmarks! {
 fn check_membership_proof_setup<T: Config>(
 	n: u32,
 ) -> (
-	(sp_runtime::KeyTypeId, &'static [u8; 32]),
+	(tp_runtime::KeyTypeId, &'static [u8; 32]),
 	sp_session::MembershipProof,
 ) {
 	pallet_staking::ValidatorCount::put(n);
@@ -164,7 +164,7 @@ fn check_membership_proof_setup<T: Config>(
 		Session::<T>::rotate_session();
 	}
 
-	let key = (sp_runtime::KeyTypeId(*b"babe"), &[0u8; 32]);
+	let key = (tp_runtime::KeyTypeId(*b"babe"), &[0u8; 32]);
 
 	(key, Historical::<T>::prove(key).unwrap())
 }

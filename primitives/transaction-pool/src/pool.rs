@@ -149,7 +149,7 @@ pub type PoolFuture<T, E> = std::pin::Pin<Box<dyn Future<Output=Result<T, E>> + 
 /// In-pool transaction interface.
 ///
 /// The pool is container of transactions that are implementing this trait.
-/// See `sp_runtime::ValidTransaction` for details about every field.
+/// See `tp_runtime::ValidTransaction` for details about every field.
 pub trait InPoolTransaction {
 	/// Transaction type.
 	type Transaction;

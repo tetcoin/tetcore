@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #[doc(hidden)]
-pub use crate::sp_runtime::traits::ValidateUnsigned;
+pub use crate::tp_runtime::traits::ValidateUnsigned;
 #[doc(hidden)]
-pub use crate::sp_runtime::transaction_validity::{
+pub use crate::tp_runtime::transaction_validity::{
 	TransactionValidity, UnknownTransaction, TransactionValidityError, TransactionSource,
 };
 

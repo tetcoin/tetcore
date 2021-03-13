@@ -664,7 +664,7 @@ impl<T: Config> pallet_session::OneSessionHandler<T::AccountId> for Module<T> {
 			let validator_set_count = keys.len() as u32;
 			let offence = UnresponsivenessOffence { session_index, validator_set_count, offenders };
 			if let Err(e) = T::ReportUnresponsiveness::report_offence(vec![], offence) {
-				sp_runtime::print(e);
+				tp_runtime::print(e);
 			}
 		}
 	}

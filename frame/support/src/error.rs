@@ -25,7 +25,7 @@ pub use frame_metadata::{ModuleErrorMetadata, ErrorMetadata, DecodeDifferent};
 /// Declare an error type for a runtime module.
 ///
 /// `decl_error!` supports only variants that do not hold any data. The dispatchable
-/// functions return [`DispatchResult`](sp_runtime::DispatchResult). The error type
+/// functions return [`DispatchResult`](tp_runtime::DispatchResult). The error type
 /// implements `From<ErrorType> for DispatchResult` to make the error type usable as error
 /// in the dispatchable functions.
 ///
@@ -144,7 +144,7 @@ macro_rules! decl_error {
 		}
 
 		impl<$generic: $trait $(, $inst_generic: $instance)?> From<$error<$generic $(, $inst_generic)?>>
-			for $crate::sp_runtime::DispatchError
+			for $crate::tp_runtime::DispatchError
 		$( where $( $where_ty: $where_bound ),* )?
 		{
 			fn from(err: $error<$generic $(, $inst_generic)?>) -> Self {
@@ -152,7 +152,7 @@ macro_rules! decl_error {
 					::index::<$module<$generic $(, $inst_generic)?>>()
 					.expect("Every active module has an index in the runtime; qed") as u8;
 
-				$crate::sp_runtime::DispatchError::Module {
+				$crate::tp_runtime::DispatchError::Module {
 					index,
 					error: err.as_u8(),
 					message: Some(err.as_str()),

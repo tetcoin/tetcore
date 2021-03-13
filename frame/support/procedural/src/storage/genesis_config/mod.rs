@@ -133,7 +133,7 @@ fn impl_build_storage(
 	let builder_blocks = &builders.blocks;
 
 	let build_storage_impl_trait = quote!(
-		#scrate::sp_runtime::BuildModuleGenesisStorage<#runtime_generic, #inherent_instance>
+		#scrate::tp_runtime::BuildModuleGenesisStorage<#runtime_generic, #inherent_instance>
 	);
 
 	quote!{
@@ -141,7 +141,7 @@ fn impl_build_storage(
 		impl#genesis_impl GenesisConfig#genesis_struct #genesis_where_clause {
 			/// Build the storage for this module.
 			pub fn build_storage #fn_generic (&self) -> std::result::Result<
-				#scrate::sp_runtime::Storage,
+				#scrate::tp_runtime::Storage,
 				String
 			> #fn_where_clause {
 				let mut storage = Default::default();
@@ -152,7 +152,7 @@ fn impl_build_storage(
 			/// Assimilate the storage for this module into pre-existing overlays.
 			pub fn assimilate_storage #fn_generic (
 				&self,
-				storage: &mut #scrate::sp_runtime::Storage,
+				storage: &mut #scrate::tp_runtime::Storage,
 			) -> std::result::Result<(), String> #fn_where_clause {
 				#scrate::BasicExternalities::execute_with_storage(storage, || {
 					#( #builder_blocks )*
@@ -167,7 +167,7 @@ fn impl_build_storage(
 		{
 			fn build_module_genesis_storage(
 				&self,
-				storage: &mut #scrate::sp_runtime::Storage,
+				storage: &mut #scrate::tp_runtime::Storage,
 			) -> std::result::Result<(), String> {
 				self.assimilate_storage::<#fn_traitinstance> (storage)
 			}

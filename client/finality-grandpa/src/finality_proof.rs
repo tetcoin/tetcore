@@ -842,7 +842,7 @@ pub(crate) mod tests {
 						let next_authorities: Vec<_> = j.1.iter().map(|i| (AuthorityId::from_slice(&[*i; 32]), 1u64)).collect();
 						set_id_next += 1;
 						header.digest_mut().logs.push(
-							sp_runtime::generic::DigestItem::Consensus(
+							tp_runtime::generic::DigestItem::Consensus(
 								sp_finality_grandpa::GRANDPA_ENGINE_ID,
 								sp_finality_grandpa::ConsensusLog::ScheduledChange(
 									sp_finality_grandpa::ScheduledChange { delay: 0u64, next_authorities }

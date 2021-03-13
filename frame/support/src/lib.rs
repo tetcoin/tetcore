@@ -1480,7 +1480,7 @@ pub mod pallet_prelude {
 /// Macro will add the following attribute on it:
 /// * `#[cfg(feature = "std")]`
 ///
-/// Macro will implement `sp_runtime::BuildModuleGenesisStorage` using `()` as second generic for
+/// Macro will implement `tp_runtime::BuildModuleGenesisStorage` using `()` as second generic for
 /// non-instantiable pallets.
 ///
 /// # Inherent: `#[pallet::inherent]` optional
@@ -1516,7 +1516,7 @@ pub mod pallet_prelude {
 /// I.e. a trait implementation with bound `T: Config`, of trait `ValidateUnsigned` for type
 /// `Pallet<T>`, and some optional where clause.
 ///
-/// NOTE: There is also `sp_runtime::traits::SignedExtension` that can be used to add some specific
+/// NOTE: There is also `tp_runtime::traits::SignedExtension` that can be used to add some specific
 /// logic for transaction validation.
 ///
 /// ### Macro expansion

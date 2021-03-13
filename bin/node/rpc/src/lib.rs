@@ -122,7 +122,7 @@ pub fn create_full<C, P, SC, B>(
 	P: TransactionPool + 'static,
 	SC: SelectChain<Block> +'static,
 	B: sc_client_api::Backend<Block> + Send + Sync + 'static,
-	B::State: sc_client_api::backend::StateBackend<sp_runtime::traits::HashFor<Block>>,
+	B::State: sc_client_api::backend::StateBackend<tp_runtime::traits::HashFor<Block>>,
 {
 	use tetcore_frame_rpc_system::{FullSystem, SystemApi};
 	use pallet_contracts_rpc::{Contracts, ContractsApi};

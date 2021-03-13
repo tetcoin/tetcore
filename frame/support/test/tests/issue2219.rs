@@ -15,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use frame_support::sp_runtime::generic;
-use frame_support::sp_runtime::traits::{BlakeTwo256, Verify};
+use frame_support::tp_runtime::generic;
+use frame_support::tp_runtime::traits::{BlakeTwo256, Verify};
 use frame_support::codec::{Encode, Decode};
 use tet_core::{H256, sr25519};
 use serde::{Serialize, Deserialize};

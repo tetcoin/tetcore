@@ -109,7 +109,7 @@ impl From<Keyring> for &'static str {
 
 impl From<Keyring> for tp_runtime::MultiSigner {
 	fn from(x: Keyring) -> Self {
-		sp_runtime::MultiSigner::Sr25519(x.into())
+		tp_runtime::MultiSigner::Sr25519(x.into())
 	}
 }
 

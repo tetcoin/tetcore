@@ -17,7 +17,7 @@
 
 use crate::pallet::Def;
 
-/// * implement the trait `sp_runtime::BuildModuleGenesisStorage`
+/// * implement the trait `tp_runtime::BuildModuleGenesisStorage`
 /// * add #[cfg(features = "std")] to GenesisBuild implementation.
 pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 	let genesis_config = if let Some(genesis_config) = &def.genesis_config {
@@ -54,12 +54,12 @@ pub fn expand_genesis_build(def: &mut Def) -> proc_macro2::TokenStream {
 
 	quote::quote_spanned!(genesis_build.attr_span =>
 		#[cfg(feature = "std")]
-		impl<#type_impl_gen> #frame_support::sp_runtime::BuildModuleGenesisStorage<#trait_use_gen>
+		impl<#type_impl_gen> #frame_support::tp_runtime::BuildModuleGenesisStorage<#trait_use_gen>
 			for #gen_cfg_ident<#gen_cfg_use_gen> #where_clause
 		{
 			fn build_module_genesis_storage(
 				&self,
-				storage: &mut #frame_support::sp_runtime::Storage,
+				storage: &mut #frame_support::tp_runtime::Storage,
 			) -> std::result::Result<(), std::string::String> {
 				#frame_support::BasicExternalities::execute_with_storage(storage, || {
 					<Self as #frame_support::traits::GenesisBuild<#type_use_gen>>::build(self);
