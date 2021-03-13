@@ -65,7 +65,7 @@ fn fuse_nibbles_node<'a>(nibbles: &'a [u8], kind: NodeKind) -> impl Iterator<Ite
 }
 
 
-impl trie_root::TrieStream for TrieStream {
+impl tetsy_trie_root::TrieStream for TrieStream {
 
 	fn new() -> Self {
 		TrieStream {
