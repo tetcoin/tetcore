@@ -77,7 +77,7 @@ use tet_core::{
 	crypto::Public,
 };
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-use sp_application_crypto::AppKey;
+use tet_application_crypto::AppKey;
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
 use sc_telemetry::{telemetry, CONSENSUS_INFO, CONSENSUS_DEBUG};
 use parking_lot::RwLock;

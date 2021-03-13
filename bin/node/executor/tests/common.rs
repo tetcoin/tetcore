@@ -47,7 +47,7 @@ pub const TEST_KEY_TYPE_ID: KeyTypeId = KeyTypeId(*b"test");
 
 pub mod sr25519 {
 	mod app_sr25519 {
-		use sp_application_crypto::{app_crypto, sr25519};
+		use tet_application_crypto::{app_crypto, sr25519};
 		use super::super::TEST_KEY_TYPE_ID;
 		app_crypto!(sr25519, TEST_KEY_TYPE_ID);
 	}

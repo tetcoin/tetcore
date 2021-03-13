@@ -37,10 +37,10 @@ use tetcore_std::vec::Vec;
 use crate::digests::{NextConfigDescriptor, NextEpochDescriptor};
 
 /// Key type for BABE module.
-pub const KEY_TYPE: tet_core::crypto::KeyTypeId = sp_application_crypto::key_types::BABE;
+pub const KEY_TYPE: tet_core::crypto::KeyTypeId = tet_application_crypto::key_types::BABE;
 
 mod app {
-	use sp_application_crypto::{app_crypto, key_types::BABE, sr25519};
+	use tet_application_crypto::{app_crypto, key_types::BABE, sr25519};
 	app_crypto!(sr25519, BABE);
 }
 
@@ -270,7 +270,7 @@ where
 	H: Header,
 {
 	use digests::*;
-	use sp_application_crypto::RuntimeAppPublic;
+	use tet_application_crypto::RuntimeAppPublic;
 
 	let find_pre_digest = |header: &H| {
 		header

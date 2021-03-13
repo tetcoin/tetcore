@@ -27,11 +27,11 @@ pub mod inherents;
 
 pub mod sr25519 {
 	mod app_sr25519 {
-		use sp_application_crypto::{app_crypto, key_types::AURA, sr25519};
+		use tet_application_crypto::{app_crypto, key_types::AURA, sr25519};
 		app_crypto!(sr25519, AURA);
 	}
 
-	sp_application_crypto::with_pair! {
+	tet_application_crypto::with_pair! {
 		/// An Aura authority keypair using S/R 25519 as its crypto.
 		pub type AuthorityPair = app_sr25519::Pair;
 	}
@@ -45,11 +45,11 @@ pub mod sr25519 {
 
 pub mod ed25519 {
 	mod app_ed25519 {
-		use sp_application_crypto::{app_crypto, key_types::AURA, ed25519};
+		use tet_application_crypto::{app_crypto, key_types::AURA, ed25519};
 		app_crypto!(ed25519, AURA);
 	}
 
-	sp_application_crypto::with_pair! {
+	tet_application_crypto::with_pair! {
 		/// An Aura authority keypair using Ed25519 as its crypto.
 		pub type AuthorityPair = app_ed25519::Pair;
 	}

@@ -21,8 +21,8 @@
 
 use codec::{Encode, Decode};
 
-use sp_application_crypto::sr25519;
-pub use sp_application_crypto;
+use tet_application_crypto::sr25519;
+pub use tet_application_crypto;
 
 pub use tet_core::{hash::H256, RuntimeDebug};
 use sp_runtime::traits::{BlakeTwo256, Verify, Extrinsic as ExtrinsicT,};

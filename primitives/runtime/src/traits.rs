@@ -38,7 +38,7 @@ pub use arithmetic::traits::{
 	SaturatedConversion, Zero, One, Bounded, CheckedAdd, CheckedSub, CheckedMul, CheckedDiv,
 	CheckedShl, CheckedShr, IntegerSquareRoot
 };
-use sp_application_crypto::AppKey;
+use tet_application_crypto::AppKey;
 use impl_trait_for_tuples::impl_for_tuples;
 use crate::DispatchResult;
 
@@ -126,19 +126,19 @@ pub trait AppVerify {
 }
 
 impl<
-	S: Verify<Signer = <<T as AppKey>::Public as sp_application_crypto::AppPublic>::Generic> + From<T>,
-	T: sp_application_crypto::Wraps<Inner=S> + sp_application_crypto::AppKey + sp_application_crypto::AppSignature +
+	S: Verify<Signer = <<T as AppKey>::Public as tet_application_crypto::AppPublic>::Generic> + From<T>,
+	T: tet_application_crypto::Wraps<Inner=S> + tet_application_crypto::AppKey + tet_application_crypto::AppSignature +
 		AsRef<S> + AsMut<S> + From<S>,
 > AppVerify for T where
 	<S as Verify>::Signer: IdentifyAccount<AccountId = <S as Verify>::Signer>,
-	<<T as AppKey>::Public as sp_application_crypto::AppPublic>::Generic:
-		IdentifyAccount<AccountId = <<T as AppKey>::Public as sp_application_crypto::AppPublic>::Generic>,
+	<<T as AppKey>::Public as tet_application_crypto::AppPublic>::Generic:
+		IdentifyAccount<AccountId = <<T as AppKey>::Public as tet_application_crypto::AppPublic>::Generic>,
 {
 	type AccountId = <T as AppKey>::Public;
 	fn verify<L: Lazy<[u8]>>(&self, msg: L, signer: &<T as AppKey>::Public) -> bool {
-		use sp_application_crypto::IsWrappedBy;
+		use tet_application_crypto::IsWrappedBy;
 		let inner: &S = self.as_ref();
-		let inner_pubkey = <<T as AppKey>::Public as sp_application_crypto::AppPublic>::Generic::from_ref(&signer);
+		let inner_pubkey = <<T as AppKey>::Public as tet_application_crypto::AppPublic>::Generic::from_ref(&signer);
 		Verify::verify(inner, msg, inner_pubkey)
 	}
 }
@@ -1414,7 +1414,7 @@ mod tests {
 
 	mod t {
 		use tet_core::crypto::KeyTypeId;
-		use sp_application_crypto::{app_crypto, sr25519};
+		use tet_application_crypto::{app_crypto, sr25519};
 		app_crypto!(sr25519, KeyTypeId(*b"test"));
 	}
 

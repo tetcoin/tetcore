@@ -32,7 +32,7 @@ use tetcore_test_runtime_client::{
 	runtime::TestAPI,
 };
 use sp_api::ProvideRuntimeApi;
-use sp_application_crypto::sr25519::{AppPair, AppPublic};
+use tet_application_crypto::sr25519::{AppPair, AppPublic};
 
 #[test]
 fn sr25519_works_in_runtime() {

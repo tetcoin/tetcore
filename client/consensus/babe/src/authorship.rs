@@ -18,7 +18,7 @@
 
 //! BABE authority selection and slot claiming.
 
-use sp_application_crypto::AppKey;
+use tet_application_crypto::AppKey;
 use sp_consensus_babe::{
 	BABE_VRF_PREFIX, AuthorityId, BabeAuthorityWeight, make_transcript, make_transcript_data,
 	Slot,

@@ -36,14 +36,14 @@ use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use log::debug;
 
 /// Key type for GRANDPA module.
-pub const KEY_TYPE: tet_core::crypto::KeyTypeId = sp_application_crypto::key_types::GRANDPA;
+pub const KEY_TYPE: tet_core::crypto::KeyTypeId = tet_application_crypto::key_types::GRANDPA;
 
 mod app {
-	use sp_application_crypto::{app_crypto, key_types::GRANDPA, ed25519};
+	use tet_application_crypto::{app_crypto, key_types::GRANDPA, ed25519};
 	app_crypto!(ed25519, GRANDPA);
 }
 
-sp_application_crypto::with_pair! {
+tet_application_crypto::with_pair! {
 	/// The grandpa crypto scheme defined via the keypair type.
 	pub type AuthorityPair = app::Pair;
 }
@@ -363,7 +363,7 @@ where
 	H: Encode,
 	N: Encode,
 {
-	use sp_application_crypto::RuntimeAppPublic;
+	use tet_application_crypto::RuntimeAppPublic;
 
 	localized_payload_with_buffer(round, set_id, message, buf);
 
@@ -391,7 +391,7 @@ where
 	N: Encode,
 {
 	use tet_core::crypto::Public;
-	use sp_application_crypto::AppKey;
+	use tet_application_crypto::AppKey;
 	use tetcore_std::convert::TryInto;
 
 	let encoded = localized_payload(round, set_id, &message);

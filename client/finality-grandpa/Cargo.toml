@@ -25,7 +25,7 @@ log = "0.4.8"
 parking_lot = "0.11.1"
 rand = "0.7.2"
 tetsy-scale-codec = { version = "2.0.1", features = ["derive"] }
-tp-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
 arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }

@@ -35,7 +35,7 @@ use serde::{Deserialize, Serialize};
 use tet_core::{
 	crypto::Public,
 };
-use sp_application_crypto::AppKey;
+use tet_application_crypto::AppKey;
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sc_rpc_api::DenyUnsafe;
 use sp_api::{ProvideRuntimeApi, BlockId};
@@ -239,7 +239,7 @@ mod tests {
 		TestClientBuilderExt,
 		TestClientBuilder,
 	};
-	use sp_application_crypto::AppPair;
+	use tet_application_crypto::AppPair;
 	use sp_keyring::Sr25519Keyring;
 	use tet_core::{crypto::key_types::BABE};
 	use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};

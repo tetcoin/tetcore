@@ -80,7 +80,7 @@ use std::{
 };
 use sp_consensus::{ImportResult, CanAuthorWith, import_queue::BoxJustificationImport};
 use tet_core::crypto::Public;
-use sp_application_crypto::AppKey;
+use tet_application_crypto::AppKey;
 use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sp_runtime::{
 	generic::{BlockId, OpaqueDigestItemId}, Justification,

@@ -19,7 +19,7 @@ use std::sync::Arc;
 use node_runtime::{
 	Executive, Indices, Runtime, UncheckedExtrinsic,
 };
-use sp_application_crypto::AppKey;
+use tet_application_crypto::AppKey;
 use tet_core::{
 	offchain::{
 		TransactionPoolExt,

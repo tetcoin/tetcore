@@ -19,7 +19,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 tp-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
 tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-application-crypto = { version = "2.0.0", path = "../../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.0.0", path = "../../../primitives/application-crypto" }
 tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
 num-bigint = "0.2.3"
 num-rational = "0.2.2"

@@ -30,7 +30,7 @@ use frame_support::{
 	Parameter,
 };
 use frame_system::{ensure_none, ensure_signed};
-use sp_application_crypto::Public;
+use tet_application_crypto::Public;
 use sp_runtime::{
 	generic::DigestItem,
 	traits::{Hash, IsMember, One, SaturatedConversion, Saturating},

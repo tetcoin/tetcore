@@ -36,7 +36,7 @@ pub use tetcore_std;
 pub use paste;
 
 #[doc(hidden)]
-pub use sp_application_crypto as app_crypto;
+pub use tet_application_crypto as app_crypto;
 
 #[cfg(feature = "std")]
 pub use tet_core::storage::{Storage, StorageChild};
@@ -68,7 +68,7 @@ pub use generic::{DigestItem, Digest};
 
 /// Re-export this since it's part of the API of this crate.
 pub use tet_core::{TypeId, crypto::{key_types, KeyTypeId, CryptoType, CryptoTypeId, AccountId32}};
-pub use sp_application_crypto::{RuntimeAppPublic, BoundToRuntimeAppPublic};
+pub use tet_application_crypto::{RuntimeAppPublic, BoundToRuntimeAppPublic};
 
 /// Re-export `RuntimeDebug`, to avoid dependency clutter.
 pub use tet_core::RuntimeDebug;

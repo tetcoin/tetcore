@@ -55,7 +55,7 @@ tet-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
 tp-session = { version = "2.0.0", path = "../../primitives/session" }
 tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
-tp-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
 tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
 tp-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
 tc-network = { version = "0.8.0", path = "../network" }

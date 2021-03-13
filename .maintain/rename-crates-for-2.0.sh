@@ -35,7 +35,7 @@ TO_RENAME=(
     # OLD-CRATE-NAME NEW-CRATE-NAME
 
     # post initial rename fixes
-    "tc-application-crypto tp-application-crypto"
+    "tc-application-crypto tet-application-crypto"
     "tp-transaction-pool-api tp-transaction-pool"
     "tp-transaction-pool-runtime-api tp-transaction-pool"
     "tp-core-storage tetcore-storage"
@@ -48,7 +48,7 @@ TO_RENAME=(
     "tc-database tc-client-db"
 
     # PRIMITIVES
-    "tetcore-application-crypto tp-application-crypto"
+    "tetcore-application-crypto tet-application-crypto"
     "tetcore-authority-discovery-primitives tp-authority-discovery"
     "tetcore-block-builder-runtime-api tp-block-builder"
     "tetcore-consensus-aura-primitives tp-consensus-aura"

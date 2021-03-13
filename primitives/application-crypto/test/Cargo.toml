@@ -1,5 +1,5 @@
 [package]
-name = "tp-application-crypto-test"
+name = "tet-application-crypto-test"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
@@ -18,4 +18,4 @@ tp-keystore = { version = "0.8.0", path = "../../keystore", default-features = f
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }
 tp-runtime = { version = "2.0.0", path = "../../runtime" }
 tp-api = { version = "2.0.0", path = "../../api" }
-tp-application-crypto = { version = "2.0.0", path = "../" }
+tet-application-crypto = { version = "2.0.0", path = "../" }

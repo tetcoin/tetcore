@@ -13,7 +13,7 @@ publish = false
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 tp-consensus-aura = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/aura" }
 tp-consensus-babe = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/babe" }
 tp-block-builder = { version = "2.0.0", default-features = false, path = "../../primitives/block-builder" }
@@ -63,7 +63,7 @@ default = [
 	"std",
 ]
 std = [
-	"tp-application-crypto/std",
+	"tet-application-crypto/std",
 	"tp-consensus-aura/std",
 	"tp-consensus-babe/std",
 	"tp-block-builder/std",

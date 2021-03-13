@@ -28,7 +28,7 @@ frame-support = { version = "2.0.0", default-features = false, path = "../suppor
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 pallet-session = { version = "2.0.0", default-features = false, features = ["historical"], path = "../session" }
 pallet-authorship = { version = "2.0.0", default-features = false, path = "../authorship" }
-tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 
 # Optional imports for benchmarking
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
@@ -61,7 +61,7 @@ std = [
 	"pallet-session/std",
 	"frame-system/std",
 	"pallet-authorship/std",
-	"tp-application-crypto/std",
+	"tet-application-crypto/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking",

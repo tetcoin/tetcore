@@ -85,7 +85,7 @@ impl UintAuthorityId {
 	}
 }
 
-impl sp_application_crypto::RuntimeAppPublic for UintAuthorityId {
+impl tet_application_crypto::RuntimeAppPublic for UintAuthorityId {
 	const ID: KeyTypeId = key_types::DUMMY;
 	const CRYPTO_ID: CryptoTypeId = CryptoTypeId(*b"dumm");
 

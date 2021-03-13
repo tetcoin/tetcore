@@ -74,7 +74,7 @@ mod tests;
 mod benchmarking;
 pub mod weights;
 
-use sp_application_crypto::RuntimeAppPublic;
+use tet_application_crypto::RuntimeAppPublic;
 use codec::{Encode, Decode};
 use tet_core::offchain::OpaqueNetworkState;
 use tetcore_std::prelude::*;
@@ -106,11 +106,11 @@ pub use weights::WeightInfo;
 
 pub mod sr25519 {
 	mod app_sr25519 {
-		use sp_application_crypto::{app_crypto, key_types::IM_ONLINE, sr25519};
+		use tet_application_crypto::{app_crypto, key_types::IM_ONLINE, sr25519};
 		app_crypto!(sr25519, IM_ONLINE);
 	}
 
-	sp_application_crypto::with_pair! {
+	tet_application_crypto::with_pair! {
 		/// An i'm online keypair using sr25519 as its crypto.
 		pub type AuthorityPair = app_sr25519::Pair;
 	}
@@ -124,11 +124,11 @@ pub mod sr25519 {
 
 pub mod ed25519 {
 	mod app_ed25519 {
-		use sp_application_crypto::{app_crypto, key_types::IM_ONLINE, ed25519};
+		use tet_application_crypto::{app_crypto, key_types::IM_ONLINE, ed25519};
 		app_crypto!(ed25519, IM_ONLINE);
 	}
 
-	sp_application_crypto::with_pair! {
+	tet_application_crypto::with_pair! {
 		/// An i'm online keypair using ed25519 as its crypto.
 		pub type AuthorityPair = app_ed25519::Pair;
 	}

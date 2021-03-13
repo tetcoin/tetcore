@@ -56,7 +56,7 @@ use sp_blockchain::{
 };
 use sp_block_builder::BlockBuilder as BlockBuilderApi;
 use tet_core::crypto::Public;
-use sp_application_crypto::{AppKey, AppPublic};
+use tet_application_crypto::{AppKey, AppPublic};
 use sp_runtime::{generic::{BlockId, OpaqueDigestItemId}, traits::NumberFor, Justification};
 use sp_runtime::traits::{Block as BlockT, Header, DigestItemFor, Zero, Member};
 use sp_api::ProvideRuntimeApi;
@@ -256,7 +256,7 @@ where
 		expected_author.and_then(|p| {
 			if SyncCryptoStore::has_keys(
 				 &*self.keystore,
-				 &[(p.to_raw_vec(), sp_application_crypto::key_types::AURA)],
+				 &[(p.to_raw_vec(), tet_application_crypto::key_types::AURA)],
 			) {
 				Some(p.clone())
 			} else {
@@ -888,7 +888,7 @@ mod tests {
 	use sp_runtime::traits::Header as _;
 	use tetcore_test_runtime_client::{TestClient, runtime::{Header, H256}};
 	use sc_keystore::LocalKeystore;
-	use sp_application_crypto::key_types::AURA;
+	use tet_application_crypto::key_types::AURA;
 
 	type Error = sp_blockchain::Error;
 

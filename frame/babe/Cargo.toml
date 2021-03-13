@@ -24,7 +24,7 @@ pallet-authorship = { version = "2.0.0", default-features = false, path = "../au
 pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
 pallet-timestamp = { version = "2.0.0", default-features = false, path = "../timestamp" }
 serde = { version = "1.0.101", optional = true }
-tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 tp-consensus-babe = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/babe" }
 tp-consensus-vrf = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/vrf" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
@@ -54,7 +54,7 @@ std = [
 	"pallet-session/std",
 	"pallet-timestamp/std",
 	"serde",
-	"tp-application-crypto/std",
+	"tet-application-crypto/std",
 	"tp-consensus-babe/std",
 	"tp-consensus-vrf/std",
 	"tp-inherents/std",

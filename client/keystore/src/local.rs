@@ -38,7 +38,7 @@ use sp_keystore::{
 	SyncCryptoStore,
 	vrf::{VRFTranscriptData, VRFSignature, make_transcript},
 };
-use sp_application_crypto::{ed25519, sr25519, ecdsa, AppPair, AppKey, IsWrappedBy};
+use tet_application_crypto::{ed25519, sr25519, ecdsa, AppPair, AppKey, IsWrappedBy};
 
 use crate::{Result, Error};
 
@@ -496,7 +496,7 @@ mod tests {
 		crypto::Ss58Codec,
 		testing::SR25519,
 	};
-	use sp_application_crypto::{ed25519, sr25519, AppPublic};
+	use tet_application_crypto::{ed25519, sr25519, AppPublic};
 	use std::{
 		fs,
 		str::FromStr,

@@ -118,7 +118,7 @@ mod tests {
 	use crate as pallet_authority_discovery;
 	use super::*;
 	use sp_authority_discovery::AuthorityPair;
-	use sp_application_crypto::Pair;
+	use tet_application_crypto::Pair;
 	use tet_core::{crypto::key_types, H256};
 	use tet_io::TestExternalities;
 	use sp_runtime::{

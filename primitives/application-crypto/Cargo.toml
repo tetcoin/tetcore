@@ -1,5 +1,5 @@
 [package]
-name = "tp-application-crypto"
+name = "tet-application-crypto"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
@@ -9,7 +9,7 @@ keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
 categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
-documentation = "https://docs.rs/tp-application-crypto"
+documentation = "https://docs.rs/tet-application-crypto"
 readme = "README.md"
 
 [package.metadata.docs.rs]

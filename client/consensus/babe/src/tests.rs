@@ -48,7 +48,7 @@ use rand_chacha::{
 	ChaChaRng,
 };
 use sc_keystore::LocalKeystore;
-use sp_application_crypto::key_types::BABE;
+use tet_application_crypto::key_types::BABE;
 
 type Item = DigestItem<Hash>;
 

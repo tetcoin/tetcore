@@ -17,7 +17,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 tp-authority-discovery = { version = "2.0.0", default-features = false, path = "../../primitives/authority-discovery" }
-tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
@@ -34,7 +34,7 @@ tp-staking = { version = "2.0.0", default-features = false, path = "../../primit
 [features]
 default = ["std"]
 std = [
-	"tp-application-crypto/std",
+	"tet-application-crypto/std",
 	"tp-authority-discovery/std",
 	"codec/std",
 	"tetcore-std/std",

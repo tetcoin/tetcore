@@ -77,7 +77,7 @@ pub mod report {
 	pub const KEY_TYPE: KeyTypeId = key_types::REPORTING;
 
 	mod app {
-		use sp_application_crypto::{app_crypto, sr25519};
+		use tet_application_crypto::{app_crypto, sr25519};
 		app_crypto!(sr25519, super::KEY_TYPE);
 	}
 

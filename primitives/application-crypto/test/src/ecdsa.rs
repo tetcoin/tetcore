@@ -31,7 +31,7 @@ use tetcore_test_runtime_client::{
 	runtime::TestAPI,
 };
 use sp_api::ProvideRuntimeApi;
-use sp_application_crypto::ecdsa::{AppPair, AppPublic};
+use tet_application_crypto::ecdsa::{AppPair, AppPublic};
 
 #[test]
 fn ecdsa_works_in_runtime() {

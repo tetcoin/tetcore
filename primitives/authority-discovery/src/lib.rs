@@ -22,7 +22,7 @@
 use tetcore_std::vec::Vec;
 
 mod app {
-	use sp_application_crypto::{
+	use tet_application_crypto::{
 		key_types::AUTHORITY_DISCOVERY,
 		app_crypto,
 		sr25519,
@@ -30,7 +30,7 @@ mod app {
 	app_crypto!(sr25519, AUTHORITY_DISCOVERY);
 }
 
-sp_application_crypto::with_pair! {
+tet_application_crypto::with_pair! {
 	/// An authority discovery authority keypair.
 	pub type AuthorityPair = app::Pair;
 }

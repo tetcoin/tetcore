@@ -49,7 +49,7 @@ use authorities::AuthoritySet;
 use sc_block_builder::BlockBuilderProvider;
 use sc_consensus::LongestChain;
 use sc_keystore::LocalKeystore;
-use sp_application_crypto::key_types::GRANDPA;
+use tet_application_crypto::key_types::GRANDPA;
 
 type TestLinkHalf =
 	LinkHalf<Block, PeersFullClient, LongestChain<tetcore_test_runtime_client::Backend, Block>>;

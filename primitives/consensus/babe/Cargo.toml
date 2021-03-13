@@ -16,7 +16,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../application-crypto" }
+tet-application-crypto = { version = "2.0.0", default-features = false, path = "../../application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 merlin = { version = "2.0", default-features = false }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../std" }
@@ -33,7 +33,7 @@ tp-timestamp = { version = "2.0.0", default-features = false, path = "../../time
 [features]
 default = ["std"]
 std = [
-	"tp-application-crypto/std",
+	"tet-application-crypto/std",
 	"codec/std",
 	"merlin/std",
 	"tetcore-std/std",

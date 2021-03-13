@@ -16,7 +16,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
@@ -39,7 +39,7 @@ parking_lot = "0.11.1"
 [features]
 default = ["std"]
 std = [
-	"tp-application-crypto/std",
+	"tet-application-crypto/std",
 	"codec/std",
 	"tp-inherents/std",
 	"tetcore-std/std",
