@@ -244,7 +244,7 @@ pub fn child_trie_root<L: TrieConfiguration, I, A, B>(
 		A: AsRef<[u8]> + Ord,
 		B: AsRef<[u8]>,
 {
-	L::trie_root(input)
+	L::tetsy_trie_root(input)
 }
 
 /// Determine a child trie root given a hash DB and delta values. H is the default hasher,
