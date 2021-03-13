@@ -10,7 +10,6 @@ homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
 documentation = "https://docs.rs/rack-timestamp"
 description = "FRAME Timestamp Module"
-documentation = "https://docs.rs/pallet-timestamp"
 readme = "README.md"
 
 [package.metadata.docs.rs]
