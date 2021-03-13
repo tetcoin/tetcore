@@ -36,8 +36,8 @@ use prometheus_endpoint::Registry;
 use std::{pin::Pin, sync::Arc, task::{Context, Poll}};
 
 use sp_keystore::SyncCryptoStorePtr;
-use finality_grandpa::Message::{Prevote, Precommit, PrimaryPropose};
-use finality_grandpa::{voter, voter_set::VoterSet};
+use tetsy_finality_grandpa::Message::{Prevote, Precommit, PrimaryPropose};
+use tetsy_finality_grandpa::{voter, voter_set::VoterSet};
 use sc_network::{NetworkService, ReputationChange};
 use sc_network_gossip::{GossipEngine, Network as GossipNetwork};
 use tetsy_scale_codec::{Encode, Decode};
@@ -786,7 +786,7 @@ fn check_compact_commit<Block: BlockT>(
 		.enumerate()
 	{
 		use crate::communication::gossip::Misbehavior;
-		use finality_grandpa::Message as GrandpaMessage;
+		use tetsy_finality_grandpa::Message as GrandpaMessage;
 
 		if !sp_finality_grandpa::check_message_signature_with_buffer(
 			&GrandpaMessage::Precommit(precommit.clone()),

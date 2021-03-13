@@ -1104,7 +1104,7 @@ fn voter_persists_its_votes() {
 					runtime_handle.spawn(alice_voter2(peers, net.clone()));
 
 					// and we push our own prevote for block 30
-					let prevote = finality_grandpa::Prevote {
+					let prevote = tetsy_finality_grandpa::Prevote {
 						target_number: 30,
 						target_hash: block_30_hash,
 					};
@@ -1357,7 +1357,7 @@ where
 
 #[test]
 fn grandpa_environment_respects_voting_rules() {
-	use finality_grandpa::Chain;
+	use tetsy_finality_grandpa::Chain;
 
 	let peers = &[Ed25519Keyring::Alice];
 	let voters = make_ids(peers);
@@ -1450,7 +1450,7 @@ fn grandpa_environment_respects_voting_rules() {
 
 #[test]
 fn grandpa_environment_never_overwrites_round_voter_state() {
-	use finality_grandpa::voter::Environment;
+	use tetsy_finality_grandpa::voter::Environment;
 
 	let peers = &[Ed25519Keyring::Alice];
 	let voters = make_ids(peers);
@@ -1463,9 +1463,9 @@ fn grandpa_environment_never_overwrites_round_voter_state() {
 	let (keystore, _keystore_path) = create_keystore(peers[0]);
 	let environment = test_environment(&link, Some(keystore), network_service.clone(), ());
 
-	let round_state = || finality_grandpa::round::State::genesis(Default::default());
+	let round_state = || tetsy_finality_grandpa::round::State::genesis(Default::default());
 	let base = || Default::default();
-	let historical_votes = || finality_grandpa::HistoricalVotes::new();
+	let historical_votes = || tetsy_finality_grandpa::HistoricalVotes::new();
 
 	let get_current_round = |n| {
 		let current_rounds = environment
@@ -1494,7 +1494,7 @@ fn grandpa_environment_never_overwrites_round_voter_state() {
 
 	let info = peer.client().info();
 
-	let prevote = finality_grandpa::Prevote {
+	let prevote = tetsy_finality_grandpa::Prevote {
 		target_hash: info.best_hash,
 		target_number: info.best_number,
 	};
@@ -1542,22 +1542,22 @@ fn imports_justification_for_regular_blocks_on_import() {
 		let round = 1;
 		let set_id = 0;
 
-		let precommit = finality_grandpa::Precommit {
+		let precommit = tetsy_finality_grandpa::Precommit {
 			target_hash: block_hash,
 			target_number: *block.header.number(),
 		};
 
-		let msg = finality_grandpa::Message::Precommit(precommit.clone());
+		let msg = tetsy_finality_grandpa::Message::Precommit(precommit.clone());
 		let encoded = sp_finality_grandpa::localized_payload(round, set_id, &msg);
 		let signature = peers[0].sign(&encoded[..]).into();
 
-		let precommit = finality_grandpa::SignedPrecommit {
+		let precommit = tetsy_finality_grandpa::SignedPrecommit {
 			precommit,
 			signature,
 			id: peers[0].public().into(),
 		};
 
-		let commit = finality_grandpa::Commit {
+		let commit = tetsy_finality_grandpa::Commit {
 			target_hash: block_hash,
 			target_number: *block.header.number(),
 			precommits: vec![precommit],
@@ -1595,7 +1595,7 @@ fn imports_justification_for_regular_blocks_on_import() {
 
 #[test]
 fn grandpa_environment_doesnt_send_equivocation_reports_for_itself() {
-	use finality_grandpa::voter::Environment;
+	use tetsy_finality_grandpa::voter::Environment;
 
 	let alice = Ed25519Keyring::Alice;
 	let voters = make_ids(&[alice]);
@@ -1610,7 +1610,7 @@ fn grandpa_environment_doesnt_send_equivocation_reports_for_itself() {
 	};
 
 	let signed_prevote = {
-		let prevote = finality_grandpa::Prevote {
+		let prevote = tetsy_finality_grandpa::Prevote {
 			target_hash: H256::random(),
 			target_number: 1,
 		};
@@ -1619,7 +1619,7 @@ fn grandpa_environment_doesnt_send_equivocation_reports_for_itself() {
 		(prevote, signed)
 	};
 
-	let mut equivocation = finality_grandpa::Equivocation {
+	let mut equivocation = tetsy_finality_grandpa::Equivocation {
 		round_number: 1,
 		identity: alice.public().into(),
 		first: signed_prevote.clone(),

@@ -30,7 +30,7 @@ use tetsy_scale_codec::{Decode, Encode};
 use parking_lot::RwLock;
 
 use sc_client_api::{backend::{Backend, apply_aux}, utils::is_descendent_of};
-use finality_grandpa::{
+use tetsy_finality_grandpa::{
 	BlockNumberOps, Error as GrandpaError, round::State as RoundState,
 	voter, voter_set::VoterSet,
 };
@@ -60,7 +60,7 @@ use sp_finality_grandpa::{
 };
 use prometheus_endpoint::{register, Counter, Gauge, PrometheusError, U64};
 
-type HistoricalVotes<Block> = finality_grandpa::HistoricalVotes<
+type HistoricalVotes<Block> = tetsy_finality_grandpa::HistoricalVotes<
 	<Block as BlockT>::Hash,
 	NumberFor<Block>,
 	AuthoritySignature,
@@ -1133,7 +1133,7 @@ where
 	fn prevote_equivocation(
 		&self,
 		_round: RoundNumber,
-		equivocation: finality_grandpa::Equivocation<Self::Id, Prevote<Block>, Self::Signature>,
+		equivocation: tetsy_finality_grandpa::Equivocation<Self::Id, Prevote<Block>, Self::Signature>,
 	) {
 		warn!(target: "afg", "Detected prevote equivocation in the finality worker: {:?}", equivocation);
 		if let Err(err) = self.report_equivocation(equivocation.into()) {
@@ -1144,7 +1144,7 @@ where
 	fn precommit_equivocation(
 		&self,
 		_round: RoundNumber,
-		equivocation: finality_grandpa::Equivocation<Self::Id, Precommit<Block>, Self::Signature>,
+		equivocation: tetsy_finality_grandpa::Equivocation<Self::Id, Precommit<Block>, Self::Signature>,
 	) {
 		warn!(target: "afg", "Detected precommit equivocation in the finality worker: {:?}", equivocation);
 		if let Err(err) = self.report_equivocation(equivocation.into()) {

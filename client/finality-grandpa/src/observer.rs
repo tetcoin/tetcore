@@ -22,7 +22,7 @@ use std::task::{Context, Poll};
 
 use futures::prelude::*;
 
-use finality_grandpa::{
+use tetsy_finality_grandpa::{
 	BlockNumberOps, Error as GrandpaError, voter, voter_set::VoterSet
 };
 use log::{debug, info, warn};
@@ -48,7 +48,7 @@ struct ObserverChain<'a, Block: BlockT, Client> {
 	_phantom: PhantomData<Block>,
 }
 
-impl<'a, Block, Client> finality_grandpa::Chain<Block::Hash, NumberFor<Block>>
+impl<'a, Block, Client> tetsy_finality_grandpa::Chain<Block::Hash, NumberFor<Block>>
 	for ObserverChain<'a, Block, Client> where
 		Block: BlockT,
 		Client: HeaderMetadata<Block, Error = sp_blockchain::Error>,
@@ -88,7 +88,7 @@ where
 	let observer = commits.try_fold(last_finalized_number, move |last_finalized_number, global| {
 		let (round, commit, callback) = match global {
 			voter::CommunicationIn::Commit(round, commit, callback) => {
-				let commit = finality_grandpa::Commit::from(commit);
+				let commit = tetsy_finality_grandpa::Commit::from(commit);
 				(round, commit, callback)
 			},
 			voter::CommunicationIn::CatchUp(..) => {
@@ -103,7 +103,7 @@ where
 			return future::ok(last_finalized_number);
 		}
 
-		let validation_result = match finality_grandpa::validate_commit(
+		let validation_result = match tetsy_finality_grandpa::validate_commit(
 			&commit,
 			&voters,
 			&ObserverChain { client: &client, _phantom: PhantomData },

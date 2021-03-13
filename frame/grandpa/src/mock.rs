@@ -20,7 +20,7 @@
 #![cfg(test)]
 
 use crate::{AuthorityId, AuthorityList, ConsensusLog, Module, Config};
-use ::grandpa as finality_grandpa;
+use ::grandpa as tetsy_finality_grandpa;
 use codec::Encode;
 use frame_support::{
 	impl_outer_dispatch, impl_outer_event, impl_outer_origin, parameter_types,
@@ -394,12 +394,12 @@ pub fn generate_equivocation_proof(
 	vote2: (RoundNumber, H256, u64, &Ed25519Keyring),
 ) -> sp_finality_grandpa::EquivocationProof<H256, u64> {
 	let signed_prevote = |round, hash, number, keyring: &Ed25519Keyring| {
-		let prevote = finality_grandpa::Prevote {
+		let prevote = tetsy_finality_grandpa::Prevote {
 			target_hash: hash,
 			target_number: number,
 		};
 
-		let prevote_msg = finality_grandpa::Message::Prevote(prevote.clone());
+		let prevote_msg = tetsy_finality_grandpa::Message::Prevote(prevote.clone());
 		let payload = sp_finality_grandpa::localized_payload(round, set_id, &prevote_msg);
 		let signed = keyring.sign(&payload).into();
 		(prevote, signed)

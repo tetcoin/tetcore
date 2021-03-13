@@ -35,7 +35,7 @@ use tetcore_utils::mpsc::TracingUnboundedReceiver;
 use futures::prelude::*;
 use futures::stream::{Fuse, StreamExt};
 use futures_timer::Delay;
-use finality_grandpa::voter;
+use tetsy_finality_grandpa::voter;
 use parking_lot::Mutex;
 use prometheus_endpoint::{
 	Gauge, U64, PrometheusError, register, Registry,
@@ -552,7 +552,7 @@ mod tests {
 	use futures::future::Either;
 	use futures_timer::Delay;
 	use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender};
-	use finality_grandpa::Precommit;
+	use tetsy_finality_grandpa::Precommit;
 
 	#[derive(Clone)]
 	struct TestChainState {
@@ -812,7 +812,7 @@ mod tests {
 			finality_grandpa::SignedPrevote {
 				id: Default::default(),
 				signature: Default::default(),
-				prevote: finality_grandpa::Prevote {
+				prevote: tetsy_finality_grandpa::Prevote {
 					target_hash: header.hash(),
 					target_number: *header.number(),
 				},
@@ -823,7 +823,7 @@ mod tests {
 			finality_grandpa::SignedPrecommit {
 				id: Default::default(),
 				signature: Default::default(),
-				precommit: finality_grandpa::Precommit {
+				precommit: tetsy_finality_grandpa::Precommit {
 					target_hash: header.hash(),
 					target_number: *header.number(),
 				},
@@ -840,7 +840,7 @@ mod tests {
 			signed_precommit(&h2),
 		];
 
-		let unknown_catch_up = finality_grandpa::CatchUp {
+		let unknown_catch_up = tetsy_finality_grandpa::CatchUp {
 			round_number: 1,
 			prevotes,
 			precommits,
@@ -878,7 +878,7 @@ mod tests {
 			finality_grandpa::SignedPrevote {
 				id: Default::default(),
 				signature: Default::default(),
-				prevote: finality_grandpa::Prevote {
+				prevote: tetsy_finality_grandpa::Prevote {
 					target_hash: header.hash(),
 					target_number: *header.number(),
 				},
@@ -889,7 +889,7 @@ mod tests {
 			finality_grandpa::SignedPrecommit {
 				id: Default::default(),
 				signature: Default::default(),
-				precommit: finality_grandpa::Precommit {
+				precommit: tetsy_finality_grandpa::Precommit {
 					target_hash: header.hash(),
 					target_number: *header.number(),
 				},
@@ -906,7 +906,7 @@ mod tests {
 			signed_precommit(&h2),
 		];
 
-		let unknown_catch_up = finality_grandpa::CatchUp {
+		let unknown_catch_up = tetsy_finality_grandpa::CatchUp {
 			round_number: 1,
 			prevotes,
 			precommits,
@@ -1014,7 +1014,7 @@ mod tests {
 	fn test_catch_up() -> Arc<Mutex<Option<CommunicationIn<Block>>>> {
 		let header = make_header(5);
 
-		let unknown_catch_up = finality_grandpa::CatchUp {
+		let unknown_catch_up = tetsy_finality_grandpa::CatchUp {
 			round_number: 1,
 			precommits: vec![],
 			prevotes: vec![],

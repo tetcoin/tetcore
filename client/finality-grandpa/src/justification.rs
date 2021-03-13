@@ -21,8 +21,8 @@ use std::sync::Arc;
 
 use sp_blockchain::{Error as ClientError, HeaderBackend};
 use tetsy_scale_codec::{Encode, Decode};
-use finality_grandpa::voter_set::VoterSet;
-use finality_grandpa::{Error as GrandpaError};
+use tetsy_finality_grandpa::voter_set::VoterSet;
+use tetsy_finality_grandpa::{Error as GrandpaError};
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::{NumberFor, Block as BlockT, Header as HeaderT};
 use sp_finality_grandpa::AuthorityId;
@@ -95,7 +95,7 @@ impl<Block: BlockT> GrandpaJustification<Block> {
 		set_id: u64,
 		voters: &VoterSet<AuthorityId>,
 	) -> Result<GrandpaJustification<Block>, ClientError> where
-		NumberFor<Block>: finality_grandpa::BlockNumberOps,
+		NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps,
 	{
 
 		let justification = GrandpaJustification::<Block>::decode(&mut &*encoded)
@@ -112,13 +112,13 @@ impl<Block: BlockT> GrandpaJustification<Block> {
 	/// Validate the commit and the votes' ancestry proofs.
 	pub(crate) fn verify(&self, set_id: u64, voters: &VoterSet<AuthorityId>) -> Result<(), ClientError>
 	where
-		NumberFor<Block>: finality_grandpa::BlockNumberOps,
+		NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps,
 	{
-		use finality_grandpa::Chain;
+		use tetsy_finality_grandpa::Chain;
 
 		let ancestry_chain = AncestryChain::<Block>::new(&self.votes_ancestries);
 
-		match finality_grandpa::validate_commit(
+		match tetsy_finality_grandpa::validate_commit(
 			&self.commit,
 			voters,
 			&ancestry_chain,
@@ -197,8 +197,8 @@ impl<Block: BlockT> AncestryChain<Block> {
 	}
 }
 
-impl<Block: BlockT> finality_grandpa::Chain<Block::Hash, NumberFor<Block>> for AncestryChain<Block> where
-	NumberFor<Block>: finality_grandpa::BlockNumberOps
+impl<Block: BlockT> tetsy_finality_grandpa::Chain<Block::Hash, NumberFor<Block>> for AncestryChain<Block> where
+	NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps
 {
 	fn ancestry(&self, base: Block::Hash, block: Block::Hash) -> Result<Vec<Block::Hash>, GrandpaError> {
 		let mut route = Vec::new();

@@ -37,7 +37,7 @@ pub trait RpcFinalityProofProvider<Block: BlockT> {
 impl<B, Block> RpcFinalityProofProvider<Block> for FinalityProofProvider<B, Block>
 where
 	Block: BlockT,
-	NumberFor<Block>: finality_grandpa::BlockNumberOps,
+	NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps,
 	B: sc_client_api::backend::Backend<Block> + Send + Sync + 'static,
 {
 	fn rpc_prove_finality(

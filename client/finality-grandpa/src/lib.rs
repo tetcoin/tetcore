@@ -82,9 +82,9 @@ use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
 use sc_telemetry::{telemetry, CONSENSUS_INFO, CONSENSUS_DEBUG};
 use parking_lot::RwLock;
 
-use finality_grandpa::Error as GrandpaError;
-use finality_grandpa::{voter, voter_set::VoterSet};
-pub use finality_grandpa::BlockNumberOps;
+use tetsy_finality_grandpa::Error as GrandpaError;
+use tetsy_finality_grandpa::{voter, voter_set::VoterSet};
+pub use tetsy_finality_grandpa::BlockNumberOps;
 
 use std::{fmt, io};
 use std::sync::Arc;
@@ -129,7 +129,7 @@ pub use justification::GrandpaJustification;
 pub use voting_rule::{
 	BeforeBestBlockBy, ThreeQuartersOfTheUnfinalizedChain, VotingRule, VotingRulesBuilder
 };
-pub use finality_grandpa::voter::report;
+pub use tetsy_finality_grandpa::voter::report;
 pub use finality_proof::{prove_warp_sync, WarpSyncFragmentCache};
 
 use aux_schema::PersistentData;
@@ -146,10 +146,10 @@ use std::marker::PhantomData;
 mod tests;
 
 /// A GRANDPA message for a tetcore chain.
-pub type Message<Block> = finality_grandpa::Message<<Block as BlockT>::Hash, NumberFor<Block>>;
+pub type Message<Block> = tetsy_finality_grandpa::Message<<Block as BlockT>::Hash, NumberFor<Block>>;
 
 /// A signed message.
-pub type SignedMessage<Block> = finality_grandpa::SignedMessage<
+pub type SignedMessage<Block> = tetsy_finality_grandpa::SignedMessage<
 	<Block as BlockT>::Hash,
 	NumberFor<Block>,
 	AuthoritySignature,
@@ -157,27 +157,27 @@ pub type SignedMessage<Block> = finality_grandpa::SignedMessage<
 >;
 
 /// A primary propose message for this chain's block type.
-pub type PrimaryPropose<Block> = finality_grandpa::PrimaryPropose<<Block as BlockT>::Hash, NumberFor<Block>>;
+pub type PrimaryPropose<Block> = tetsy_finality_grandpa::PrimaryPropose<<Block as BlockT>::Hash, NumberFor<Block>>;
 /// A prevote message for this chain's block type.
-pub type Prevote<Block> = finality_grandpa::Prevote<<Block as BlockT>::Hash, NumberFor<Block>>;
+pub type Prevote<Block> = tetsy_finality_grandpa::Prevote<<Block as BlockT>::Hash, NumberFor<Block>>;
 /// A precommit message for this chain's block type.
-pub type Precommit<Block> = finality_grandpa::Precommit<<Block as BlockT>::Hash, NumberFor<Block>>;
+pub type Precommit<Block> = tetsy_finality_grandpa::Precommit<<Block as BlockT>::Hash, NumberFor<Block>>;
 /// A catch up message for this chain's block type.
-pub type CatchUp<Block> = finality_grandpa::CatchUp<
+pub type CatchUp<Block> = tetsy_finality_grandpa::CatchUp<
 	<Block as BlockT>::Hash,
 	NumberFor<Block>,
 	AuthoritySignature,
 	AuthorityId,
 >;
 /// A commit message for this chain's block type.
-pub type Commit<Block> = finality_grandpa::Commit<
+pub type Commit<Block> = tetsy_finality_grandpa::Commit<
 	<Block as BlockT>::Hash,
 	NumberFor<Block>,
 	AuthoritySignature,
 	AuthorityId,
 >;
 /// A compact commit message for this chain's block type.
-pub type CompactCommit<Block> = finality_grandpa::CompactCommit<
+pub type CompactCommit<Block> = tetsy_finality_grandpa::CompactCommit<
 	<Block as BlockT>::Hash,
 	NumberFor<Block>,
 	AuthoritySignature,
@@ -186,7 +186,7 @@ pub type CompactCommit<Block> = finality_grandpa::CompactCommit<
 /// A global communication input stream for commits and catch up messages. Not
 /// exposed publicly, used internally to simplify types in the communication
 /// layer.
-type CommunicationIn<Block> = finality_grandpa::voter::CommunicationIn<
+type CommunicationIn<Block> = tetsy_finality_grandpa::voter::CommunicationIn<
 	<Block as BlockT>::Hash,
 	NumberFor<Block>,
 	AuthoritySignature,
@@ -196,7 +196,7 @@ type CommunicationIn<Block> = finality_grandpa::voter::CommunicationIn<
 /// Global communication input stream for commits and catch up messages, with
 /// the hash type not being derived from the block, useful for forcing the hash
 /// to some type (e.g. `H256`) when the compiler can't do the inference.
-type CommunicationInH<Block, H> = finality_grandpa::voter::CommunicationIn<
+type CommunicationInH<Block, H> = tetsy_finality_grandpa::voter::CommunicationIn<
 	H,
 	NumberFor<Block>,
 	AuthoritySignature,
@@ -206,7 +206,7 @@ type CommunicationInH<Block, H> = finality_grandpa::voter::CommunicationIn<
 /// Global communication sink for commits with the hash type not being derived
 /// from the block, useful for forcing the hash to some type (e.g. `H256`) when
 /// the compiler can't do the inference.
-type CommunicationOutH<Block, H> = finality_grandpa::voter::CommunicationOut<
+type CommunicationOutH<Block, H> = tetsy_finality_grandpa::voter::CommunicationOut<
 	H,
 	NumberFor<Block>,
 	AuthoritySignature,
@@ -419,7 +419,7 @@ impl<H, N> From<ClientError> for CommandOrError<H, N> {
 }
 
 impl<H, N> From<finality_grandpa::Error> for CommandOrError<H, N> {
-	fn from(e: finality_grandpa::Error) -> Self {
+	fn from(e: tetsy_finality_grandpa::Error) -> Self {
 		CommandOrError::Error(Error::from(e))
 	}
 }

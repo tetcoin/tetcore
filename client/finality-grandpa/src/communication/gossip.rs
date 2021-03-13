@@ -1851,7 +1851,7 @@ mod tests {
 			round: Round(1),
 			set_id: SetId(set_id),
 			message: SignedMessage::<Block> {
-				message: finality_grandpa::Message::Prevote(finality_grandpa::Prevote {
+				message: tetsy_finality_grandpa::Message::Prevote(finality_grandpa::Prevote {
 					target_hash: Default::default(),
 					target_number: 10,
 				}),
@@ -1864,7 +1864,7 @@ mod tests {
 			round: Round(1),
 			set_id: SetId(set_id),
 			message: SignedMessage::<Block> {
-				message: finality_grandpa::Message::Prevote(finality_grandpa::Prevote {
+				message: tetsy_finality_grandpa::Message::Prevote(finality_grandpa::Prevote {
 					target_hash: Default::default(),
 					target_number: 10,
 				}),
@@ -1896,7 +1896,7 @@ mod tests {
 			let mut inner = val.inner.write();
 			inner.validate_catch_up_message(&peer, &FullCatchUpMessage {
 				set_id: SetId(set_id),
-				message: finality_grandpa::CatchUp {
+				message: tetsy_finality_grandpa::CatchUp {
 					round_number: 10,
 					prevotes: Default::default(),
 					precommits: Default::default(),
@@ -1932,7 +1932,7 @@ mod tests {
 
 			completed_rounds.push(environment::CompletedRound {
 				number: 2,
-				state: finality_grandpa::round::State::genesis(Default::default()),
+				state: tetsy_finality_grandpa::round::State::genesis(Default::default()),
 				base: Default::default(),
 				votes: Default::default(),
 			});
@@ -2531,7 +2531,7 @@ mod tests {
 		// create a commit for round 1 of set id 1
 		// targeting a block at height 2
 		let commit = {
-			let commit = finality_grandpa::CompactCommit {
+			let commit = tetsy_finality_grandpa::CompactCommit {
 				target_hash: H256::random(),
 				target_number: 2,
 				precommits: Vec::new(),
@@ -2576,7 +2576,7 @@ mod tests {
 		let (val, _) = GossipValidator::<Block>::new(config(), voter_set_state(), None);
 
 		let commit = |round, set_id, target_number| {
-			let commit = finality_grandpa::CompactCommit {
+			let commit = tetsy_finality_grandpa::CompactCommit {
 				target_hash: H256::random(),
 				target_number,
 				precommits: Vec::new(),

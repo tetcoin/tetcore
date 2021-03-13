@@ -39,7 +39,7 @@
 use log::trace;
 use std::sync::Arc;
 
-use finality_grandpa::BlockNumberOps;
+use tetsy_finality_grandpa::BlockNumberOps;
 use tetsy_scale_codec::{Encode, Decode};
 use sp_blockchain::{Backend as BlockchainBackend, Error as ClientError, Result as ClientResult};
 use sp_runtime::{

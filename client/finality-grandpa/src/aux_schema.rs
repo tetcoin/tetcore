@@ -23,7 +23,7 @@ use tetsy_scale_codec::{Encode, Decode};
 use sc_client_api::backend::AuxStore;
 use sp_blockchain::{Result as ClientResult, Error as ClientError};
 use forktree::ForkTree;
-use finality_grandpa::round::State as RoundState;
+use tetsy_finality_grandpa::round::State as RoundState;
 use sp_runtime::traits::{Block as BlockT, NumberFor};
 use log::{info, warn};
 use sp_finality_grandpa::{AuthorityList, SetId, RoundNumber};

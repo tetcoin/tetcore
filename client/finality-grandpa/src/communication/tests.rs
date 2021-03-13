@@ -146,7 +146,7 @@ fn config() -> crate::Config {
 fn voter_set_state() -> SharedVoterSetState<Block> {
 	use crate::authorities::AuthoritySet;
 	use crate::environment::VoterSetState;
-	use finality_grandpa::round::State as RoundState;
+	use tetsy_finality_grandpa::round::State as RoundState;
 	use tet_core::{crypto::Public, H256};
 	use sp_finality_grandpa::AuthorityId;
 
@@ -230,7 +230,7 @@ fn good_commit_leads_to_relay() {
 		let target_hash: Hash = [1; 32].into();
 		let target_number = 500;
 
-		let precommit = finality_grandpa::Precommit { target_hash: target_hash.clone(), target_number };
+		let precommit = tetsy_finality_grandpa::Precommit { target_hash: target_hash.clone(), target_number };
 		let payload = sp_finality_grandpa::localized_payload(
 			round, set_id, &finality_grandpa::Message::Precommit(precommit.clone())
 		);
@@ -378,7 +378,7 @@ fn bad_commit_leads_to_report() {
 		let target_hash: Hash = [1; 32].into();
 		let target_number = 500;
 
-		let precommit = finality_grandpa::Precommit { target_hash: target_hash.clone(), target_number };
+		let precommit = tetsy_finality_grandpa::Precommit { target_hash: target_hash.clone(), target_number };
 		let payload = sp_finality_grandpa::localized_payload(
 			round, set_id, &finality_grandpa::Message::Precommit(precommit.clone())
 		);

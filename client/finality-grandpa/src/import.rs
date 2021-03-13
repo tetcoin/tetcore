@@ -83,7 +83,7 @@ impl<Backend, Block: BlockT, Client, SC: Clone> Clone for
 
 impl<BE, Block: BlockT, Client, SC> JustificationImport<Block>
 	for GrandpaBlockImport<BE, Block, Client, SC> where
-		NumberFor<Block>: finality_grandpa::BlockNumberOps,
+		NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps,
 		DigestFor<Block>: Encode,
 		BE: Backend<Block>,
 		Client: crate::ClientForGrandpa<Block, BE>,
@@ -215,7 +215,7 @@ pub(crate) fn find_forced_change<B: BlockT>(header: &B::Header)
 impl<BE, Block: BlockT, Client, SC>
 	GrandpaBlockImport<BE, Block, Client, SC>
 where
-	NumberFor<Block>: finality_grandpa::BlockNumberOps,
+	NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps,
 	DigestFor<Block>: Encode,
 	BE: Backend<Block>,
 	Client: crate::ClientForGrandpa<Block, BE>,
@@ -403,7 +403,7 @@ where
 
 impl<BE, Block: BlockT, Client, SC> BlockImport<Block>
 	for GrandpaBlockImport<BE, Block, Client, SC> where
-		NumberFor<Block>: finality_grandpa::BlockNumberOps,
+		NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps,
 		DigestFor<Block>: Encode,
 		BE: Backend<Block>,
 		Client: crate::ClientForGrandpa<Block, BE>,
@@ -605,7 +605,7 @@ impl<BE, Block: BlockT, Client, SC> GrandpaBlockImport<BE, Block, Client, SC>
 where
 	BE: Backend<Block>,
 	Client: crate::ClientForGrandpa<Block, BE>,
-	NumberFor<Block>: finality_grandpa::BlockNumberOps,
+	NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps,
 {
 	/// Import a block justification and finalize the block.
 	///

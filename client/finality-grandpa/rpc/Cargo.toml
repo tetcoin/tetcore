@@ -14,7 +14,7 @@ tc-rpc = { version = "2.0.0", path = "../../rpc" }
 tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
 tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-finality-grandpa = { version = "0.13.0", features = ["derive-codec"] }
+tetsy-finality-grandpa = { version = "0.13.0", features = ["derive-codec"] }
 tetsy-jsonrpc-core = "15.1.0"
 tetsy-jsonrpc-core-client = "15.1.0"
 tetsy-jsonrpc-derive = "15.1.0"

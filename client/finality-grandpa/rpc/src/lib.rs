@@ -450,22 +450,22 @@ mod tests {
 			let round = 1;
 			let set_id = 0;
 
-			let precommit = finality_grandpa::Precommit {
+			let precommit = tetsy_finality_grandpa::Precommit {
 				target_hash: block_hash,
 				target_number: *block.header.number(),
 			};
 
-			let msg = finality_grandpa::Message::Precommit(precommit.clone());
+			let msg = tetsy_finality_grandpa::Message::Precommit(precommit.clone());
 			let encoded = sp_finality_grandpa::localized_payload(round, set_id, &msg);
 			let signature = peers[0].sign(&encoded[..]).into();
 
-			let precommit = finality_grandpa::SignedPrecommit {
+			let precommit = tetsy_finality_grandpa::SignedPrecommit {
 				precommit,
 				signature,
 				id: peers[0].public().into(),
 			};
 
-			let commit = finality_grandpa::Commit {
+			let commit = tetsy_finality_grandpa::Commit {
 				target_hash: block_hash,
 				target_number: *block.header.number(),
 				precommits: vec![precommit],
