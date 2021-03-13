@@ -29,8 +29,8 @@ tetsy-memory-db = { version = "0.26.0", default-features = false }
 tet-core = { version = "2.0.0", default-features = false, path = "../core" }
 
 [dev-dependencies]
-trie-bench = "0.27.0"
-trie-standardmap = "0.15.2"
+tetsy-trie-bench = "0.27.0"
+tetsy-trie-standardmap = "0.15.2"
 criterion = "0.3.3"
 hex-literal = "0.3.1"
 tp-runtime = { version = "2.0.0", path = "../runtime" }
