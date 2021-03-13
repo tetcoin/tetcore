@@ -56,7 +56,7 @@ impl frame_system::Config for Test {
 	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = Indices;
-	type Header = sp_runtime::testing::Header;
+	type Header = tp_runtime::testing::Header;
 	type Event = ();
 	type BlockHashCount = ();
 	type Version = ();
@@ -102,7 +102,7 @@ impl pallet_session::historical::Config for Test {
 
 sp_runtime::impl_opaque_keys! {
 	pub struct SessionKeys {
-		pub foo: sp_runtime::testing::UintAuthorityId,
+		pub foo: tp_runtime::testing::UintAuthorityId,
 	}
 }
 
@@ -110,9 +110,9 @@ pub struct TestSessionHandler;
 impl pallet_session::SessionHandler<AccountId> for TestSessionHandler {
 	const KEY_TYPE_IDS: &'static [sp_runtime::KeyTypeId] = &[];
 
-	fn on_genesis_session<Ks: sp_runtime::traits::OpaqueKeys>(_validators: &[(AccountId, Ks)]) {}
+	fn on_genesis_session<Ks: tp_runtime::traits::OpaqueKeys>(_validators: &[(AccountId, Ks)]) {}
 
-	fn on_new_session<Ks: sp_runtime::traits::OpaqueKeys>(
+	fn on_new_session<Ks: tp_runtime::traits::OpaqueKeys>(
 		_: bool,
 		_: &[(AccountId, Ks)],
 		_: &[(AccountId, Ks)],
@@ -134,7 +134,7 @@ impl pallet_session::Config for Test {
 	type WeightInfo = ();
 }
 pallet_staking_reward_curve::build! {
-	const I_NPOS: sp_runtime::curve::PiecewiseLinear<'static> = curve!(
+	const I_NPOS: tp_runtime::curve::PiecewiseLinear<'static> = curve!(
 		min_inflation: 0_025_000,
 		max_inflation: 0_100_000,
 		ideal_stake: 0_500_000,
@@ -144,12 +144,12 @@ pallet_staking_reward_curve::build! {
 	);
 }
 parameter_types! {
-	pub const RewardCurve: &'static sp_runtime::curve::PiecewiseLinear<'static> = &I_NPOS;
+	pub const RewardCurve: &'static tp_runtime::curve::PiecewiseLinear<'static> = &I_NPOS;
 	pub const MaxNominatorRewardedPerValidator: u32 = 64;
 	pub const MaxIterations: u32 = 20;
 }
 
-pub type Extrinsic = sp_runtime::testing::TestXt<Call, ()>;
+pub type Extrinsic = tp_runtime::testing::TestXt<Call, ()>;
 
 impl<C> frame_system::offchain::SendTransactionTypes<C> for Test where
 	Call: From<C>,

@@ -84,11 +84,11 @@
 //!
 //! We only send polite messages to peers,
 
-use sp_runtime::traits::{NumberFor, Block as BlockT, Zero};
+use tp_runtime::traits::{NumberFor, Block as BlockT, Zero};
 use sc_network_gossip::{MessageIntent, ValidatorContext};
 use sc_network::{ObservedRole, PeerId, ReputationChange};
 use tetsy_scale_codec::{Encode, Decode};
-use sp_finality_grandpa::AuthorityId;
+use tp_finality_grandpa::AuthorityId;
 
 use sc_telemetry::{telemetry, CONSENSUS_DEBUG};
 use log::{trace, debug};

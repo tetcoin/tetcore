@@ -27,8 +27,8 @@ pub mod weights;
 
 use tetcore_std::prelude::*;
 use codec::Codec;
-use sp_runtime::MultiAddress;
-use sp_runtime::traits::{
+use tp_runtime::MultiAddress;
+use tp_runtime::traits::{
 	StaticLookup, Member, LookupError, Zero, Saturating, AtLeast32Bit
 };
 use frame_support::{Parameter, decl_module, decl_error, decl_event, decl_storage, ensure};

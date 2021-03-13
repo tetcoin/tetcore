@@ -18,13 +18,13 @@
 
 //! Testing block import logic.
 
-use sp_consensus::ImportedAux;
-use sp_consensus::import_queue::{
+use tp_consensus::ImportedAux;
+use tp_consensus::import_queue::{
 	import_single_block, BasicQueue, BlockImportError, BlockImportResult, IncomingBlock,
 };
 use tetcore_test_runtime_client::{self, prelude::*};
 use tetcore_test_runtime_client::runtime::{Block, Hash};
-use sp_runtime::generic::BlockId;
+use tp_runtime::generic::BlockId;
 use sc_block_builder::BlockBuilderProvider;
 use super::*;
 

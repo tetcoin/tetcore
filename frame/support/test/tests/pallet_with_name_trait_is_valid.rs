@@ -56,23 +56,23 @@ frame_support::decl_module! {
 	}
 }
 
-impl<T: Trait> sp_runtime::traits::ValidateUnsigned for Module<T> {
+impl<T: Trait> tp_runtime::traits::ValidateUnsigned for Module<T> {
 	type Call = Call<T>;
 
 	fn validate_unsigned(
-		_source: sp_runtime::transaction_validity::TransactionSource,
+		_source: tp_runtime::transaction_validity::TransactionSource,
 		_call: &Self::Call,
-	) -> sp_runtime::transaction_validity::TransactionValidity {
+	) -> tp_runtime::transaction_validity::TransactionValidity {
 		unimplemented!();
 	}
 }
 
-pub const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"12345678";
+pub const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = *b"12345678";
 
-impl<T: Trait> sp_inherents::ProvideInherent for Module<T> {
+impl<T: Trait> tp_inherents::ProvideInherent for Module<T> {
 	type Call = Call<T>;
-	type Error = sp_inherents::MakeFatalError<sp_inherents::Error>;
-	const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = INHERENT_IDENTIFIER;
+	type Error = tp_inherents::MakeFatalError<sp_inherents::Error>;
+	const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = INHERENT_IDENTIFIER;
 
 	fn create_inherent(_data: &sp_inherents::InherentData) -> Option<Self::Call> {
 		unimplemented!();
@@ -94,9 +94,9 @@ mod tests {
 		frame_system::CheckNonce<Runtime>,
 		frame_system::CheckWeight<Runtime>,
 	);
-	type TestBlock = sp_runtime::generic::Block<TestHeader, TestUncheckedExtrinsic>;
-	type TestHeader = sp_runtime::generic::Header<u64, sp_runtime::traits::BlakeTwo256>;
-	type TestUncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<
+	type TestBlock = tp_runtime::generic::Block<TestHeader, TestUncheckedExtrinsic>;
+	type TestHeader = tp_runtime::generic::Header<u64, tp_runtime::traits::BlakeTwo256>;
+	type TestUncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<
 		<Runtime as frame_system::Config>::AccountId,
 		<Runtime as frame_system::Config>::Call,
 		(),
@@ -125,9 +125,9 @@ mod tests {
 		type BlockNumber = u64;
 		type Hash = tet_core::H256;
 		type Call = Call;
-		type Hashing = sp_runtime::traits::BlakeTwo256;
+		type Hashing = tp_runtime::traits::BlakeTwo256;
 		type AccountId = u64;
-		type Lookup = sp_runtime::traits::IdentityLookup<Self::AccountId>;
+		type Lookup = tp_runtime::traits::IdentityLookup<Self::AccountId>;
 		type Header = TestHeader;
 		type Event = ();
 		type BlockHashCount = BlockHashCount;

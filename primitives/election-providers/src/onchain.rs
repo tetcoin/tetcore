@@ -18,7 +18,7 @@
 //! An implementation of [`ElectionProvider`] that does an on-chain sequential phragmen.
 
 use crate::{ElectionDataProvider, ElectionProvider};
-use sp_npos_elections::*;
+use tp_npos_elections::*;
 use tetcore_std::{collections::btree_map::BTreeMap, marker::PhantomData, prelude::*};
 
 /// Errors of the on-chain election.
@@ -29,7 +29,7 @@ pub enum Error {
 }
 
 impl From<sp_npos_elections::Error> for Error {
-	fn from(e: sp_npos_elections::Error) -> Self {
+	fn from(e: tp_npos_elections::Error) -> Self {
 		Error::NposElections(e)
 	}
 }
@@ -90,8 +90,8 @@ impl<T: Config> ElectionProvider<T::AccountId, T::BlockNumber> for OnChainSequen
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_npos_elections::Support;
-	use sp_runtime::Perbill;
+	use tp_npos_elections::Support;
+	use tp_runtime::Perbill;
 
 	type AccountId = u64;
 	type BlockNumber = u32;

@@ -20,8 +20,8 @@
 
 use sc_network;
 use sc_keystore;
-use sp_consensus;
-use sp_blockchain;
+use tp_consensus;
+use tp_blockchain;
 
 /// Service Result typedef.
 pub type Result<T> = std::result::Result<T, Error>;
@@ -32,13 +32,13 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[non_exhaustive]
 pub enum Error {
 	#[error(transparent)]
-	Client(#[from] sp_blockchain::Error),
+	Client(#[from] tp_blockchain::Error),
 	
 	#[error(transparent)]
 	Io(#[from] std::io::Error),
 	
 	#[error(transparent)]
-	Consensus(#[from] sp_consensus::Error),
+	Consensus(#[from] tp_consensus::Error),
 	
 	#[error(transparent)]
 	Network(#[from] sc_network::error::Error),

@@ -24,11 +24,11 @@ use tetsy_jsonrpc_core::{Error, ErrorCode, Result};
 use tetsy_jsonrpc_derive::rpc;
 use pallet_contracts_primitives::RentProjection;
 use serde::{Deserialize, Serialize};
-use sp_api::ProvideRuntimeApi;
-use sp_blockchain::HeaderBackend;
+use tp_api::ProvideRuntimeApi;
+use tp_blockchain::HeaderBackend;
 use tet_core::{Bytes, H256};
-use sp_rpc::number;
-use sp_runtime::{
+use tp_rpc::number;
+use tp_runtime::{
 	generic::BlockId,
 	traits::{Block as BlockT, Header as HeaderT},
 	DispatchError,

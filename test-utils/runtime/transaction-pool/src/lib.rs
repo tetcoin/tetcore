@@ -21,7 +21,7 @@
 
 use codec::Encode;
 use parking_lot::RwLock;
-use sp_runtime::{
+use tp_runtime::{
 	generic::{self, BlockId},
 	traits::{BlakeTwo256, Hash as HashT, Block as _, Header as _},
 	transaction_validity::{
@@ -34,14 +34,14 @@ use tetcore_test_runtime_client::{
 	runtime::{Index, AccountId, Block, BlockNumber, Extrinsic, Hash, Header, Transfer},
 	AccountKeyring::{self, *},
 };
-use sp_blockchain::CachedHeaderMetadata;
+use tp_blockchain::CachedHeaderMetadata;
 use futures::future::ready;
 
 /// Error type used by [`TestApi`].
 #[derive(Debug, derive_more::From, derive_more::Display)]
 pub struct Error(sp_transaction_pool::error::Error);
 
-impl sp_transaction_pool::error::IntoPoolError for Error {
+impl tp_transaction_pool::error::IntoPoolError for Error {
 	fn into_pool_error(self) -> Result<sp_transaction_pool::error::Error, Self> {
 		Ok(self.0)
 	}
@@ -348,7 +348,7 @@ impl sc_transaction_graph::ChainApi for TestApi {
 	}
 }
 
-impl sp_blockchain::HeaderMetadata<Block> for TestApi {
+impl tp_blockchain::HeaderMetadata<Block> for TestApi {
 	type Error = Error;
 
 	fn header_metadata(

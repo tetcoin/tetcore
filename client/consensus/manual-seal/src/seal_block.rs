@@ -20,21 +20,21 @@
 
 use crate::{Error, rpc, CreatedBlock, ConsensusDataProvider};
 use std::sync::Arc;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{Block as BlockT, Header as HeaderT},
 	generic::BlockId,
 };
 use futures::prelude::*;
 use sc_transaction_pool::txpool;
-use sp_consensus::{
+use tp_consensus::{
 	self, BlockImport, Environment, Proposer, ForkChoiceStrategy,
 	BlockImportParams, BlockOrigin, ImportResult, SelectChain,
 };
-use sp_blockchain::HeaderBackend;
+use tp_blockchain::HeaderBackend;
 use std::collections::HashMap;
 use std::time::Duration;
-use sp_inherents::InherentDataProviders;
-use sp_api::{ProvideRuntimeApi, TransactionFor};
+use tp_inherents::InherentDataProviders;
+use tp_api::{ProvideRuntimeApi, TransactionFor};
 
 /// max duration for creating a proposal in secs
 pub const MAX_PROPOSAL_DURATION: u64 = 10;
@@ -85,7 +85,7 @@ pub async fn seal_block<B, BI, SC, C, E, P>(
 )
 	where
 		B: BlockT,
-		BI: BlockImport<B, Error = sp_consensus::Error, Transaction = sp_api::TransactionFor<C, B>>
+		BI: BlockImport<B, Error = tp_consensus::Error, Transaction = tp_api::TransactionFor<C, B>>
 			+ Send + Sync + 'static,
 		C: HeaderBackend<B> + ProvideRuntimeApi<B>,
 		E: Environment<B>,

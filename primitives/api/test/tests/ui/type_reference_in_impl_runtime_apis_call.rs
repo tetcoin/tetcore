@@ -1,4 +1,4 @@
-use sp_runtime::traits::{GetNodeBlockType, Block as BlockT};
+use tp_runtime::traits::{GetNodeBlockType, Block as BlockT};
 use tetcore_test_runtime_client::runtime::Block;
 
 /// The declaration of the `Runtime` type and the implementation of the `GetNodeBlockType`
@@ -21,8 +21,8 @@ sp_api::impl_runtime_apis! {
 		}
 	}
 
-	impl sp_api::Core<Block> for Runtime {
-		fn version() -> sp_api::RuntimeVersion {
+	impl tp_api::Core<Block> for Runtime {
+		fn version() -> tp_api::RuntimeVersion {
 			unimplemented!()
 		}
 		fn execute_block(_: Block) {

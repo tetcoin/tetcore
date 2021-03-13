@@ -18,7 +18,7 @@
 use std::{pin::Pin, time::Duration, marker::PhantomData};
 use futures::{prelude::*, task::Context, task::Poll};
 use futures_timer::Delay;
-use sp_runtime::{Justification, traits::{Block as BlockT, Header as HeaderT, NumberFor}};
+use tp_runtime::{Justification, traits::{Block as BlockT, Header as HeaderT, NumberFor}};
 use tetcore_utils::mpsc::{TracingUnboundedSender, tracing_unbounded, TracingUnboundedReceiver};
 use prometheus_endpoint::Registry;
 
@@ -418,7 +418,7 @@ mod tests {
 		BlockCheckParams, BlockImport, BlockImportParams, ImportResult, JustificationImport,
 	};
 	use futures::{executor::block_on, Future};
-	use sp_test_primitives::{Block, BlockNumber, Extrinsic, Hash, Header};
+	use tp_test_primitives::{Block, BlockNumber, Extrinsic, Hash, Header};
 	use std::collections::HashMap;
 
 	impl Verifier<Block> for () {

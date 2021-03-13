@@ -22,15 +22,15 @@ use std::sync::Arc;
 use std::collections::{BTreeMap, HashMap};
 use std::future::Future;
 
-use sp_runtime::{
+use tp_runtime::{
 	traits::{
 		Block as BlockT, Header as HeaderT, NumberFor,
 	},
 	generic::BlockId
 };
 use tet_core::{ChangesTrieConfigurationRange, storage::PrefixedStorageKey};
-use sp_state_machine::StorageProof;
-use sp_blockchain::{
+use tp_state_machine::StorageProof;
+use tp_blockchain::{
 	HeaderMetadata, well_known_cache_keys, HeaderBackend, Cache as BlockchainCache,
 	Error as ClientError, Result as ClientResult,
 };
@@ -310,8 +310,8 @@ pub fn future_header<Block: BlockT, F: Fetcher<Block>>(
 pub mod tests {
 	use futures::future::Ready;
 	use parking_lot::Mutex;
-	use sp_blockchain::Error as ClientError;
-	use sp_test_primitives::{Block, Header, Extrinsic};
+	use tp_blockchain::Error as ClientError;
+	use tp_test_primitives::{Block, Header, Extrinsic};
 	use super::*;
 
 	#[derive(Debug, thiserror::Error)]

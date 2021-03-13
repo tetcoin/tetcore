@@ -32,11 +32,11 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId, traits::{Block as BlockT, DigestFor, NumberFor, HashFor},
 };
 use futures::prelude::*;
-pub use sp_inherents::InherentData;
+pub use tp_inherents::InherentData;
 
 pub mod block_validation;
 pub mod offline_tracker;
@@ -53,7 +53,7 @@ pub use block_import::{
 	ImportResult, JustificationImport,
 };
 pub use select_chain::SelectChain;
-pub use sp_state_machine::Backend as StateBackend;
+pub use tp_state_machine::Backend as StateBackend;
 pub use import_queue::DefaultImportQueue;
 
 /// Block status.
@@ -95,7 +95,7 @@ pub struct Proposal<Block: BlockT, Transaction> {
 	/// Optional proof that was recorded while building the block.
 	pub proof: Option<sp_state_machine::StorageProof>,
 	/// The storage changes while building this block.
-	pub storage_changes: sp_state_machine::StorageChanges<Transaction, HashFor<Block>, NumberFor<Block>>,
+	pub storage_changes: tp_state_machine::StorageChanges<Transaction, HashFor<Block>, NumberFor<Block>>,
 }
 
 /// Used as parameter to [`Proposer`] to tell the requirement on recording a proof.
@@ -227,7 +227,7 @@ impl<T> CanAuthorWithNativeVersion<T> {
 	}
 }
 
-impl<T: sp_version::GetRuntimeVersion<Block>, Block: BlockT> CanAuthorWith<Block>
+impl<T: tp_version::GetRuntimeVersion<Block>, Block: BlockT> CanAuthorWith<Block>
 	for CanAuthorWithNativeVersion<T>
 {
 	fn can_author_with(&self, at: &BlockId<Block>) -> Result<(), String> {

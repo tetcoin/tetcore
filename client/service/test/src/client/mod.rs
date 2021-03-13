@@ -18,7 +18,7 @@
 
 use tetsy_scale_codec::{Encode, Decode, Joiner};
 use sc_executor::native_executor_instance;
-use sp_state_machine::{StateMachine, OverlayedChanges, ExecutionStrategy, InMemoryBackend};
+use tp_state_machine::{StateMachine, OverlayedChanges, ExecutionStrategy, InMemoryBackend};
 use tetcore_test_runtime_client::{
 	prelude::*,
 	runtime::{
@@ -36,22 +36,22 @@ use sc_client_db::{
 };
 use sc_block_builder::BlockBuilderProvider;
 use sc_service::client::{self, Client, LocalCallExecutor, new_in_mem};
-use sp_runtime::traits::{
+use tp_runtime::traits::{
 	BlakeTwo256, Block as BlockT, Header as HeaderT,
 };
 use tetcore_test_runtime::TestAPI;
-use sp_state_machine::backend::Backend as _;
-use sp_api::ProvideRuntimeApi;
+use tp_state_machine::backend::Backend as _;
+use tp_api::ProvideRuntimeApi;
 use tet_core::{H256, ChangesTrieConfiguration, blake2_256, testing::TaskExecutor};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
-use sp_consensus::{
+use tp_consensus::{
 	BlockOrigin, SelectChain, BlockImport, Error as ConsensusError, BlockCheckParams, ImportResult,
 	BlockStatus, BlockImportParams, ForkChoiceStrategy,
 };
 use tetcore_storage::StorageKey;
-use sp_trie::{TrieConfiguration, trie_types::Layout};
-use sp_runtime::{generic::BlockId, DigestItem};
+use tp_trie::{TrieConfiguration, trie_types::Layout};
+use tp_runtime::{generic::BlockId, DigestItem};
 use hex_literal::hex;
 
 mod light;
@@ -163,7 +163,7 @@ fn construct_block(
 	};
 	let hash = header.hash();
 	let mut overlay = OverlayedChanges::default();
-	let backend_runtime_code = sp_state_machine::backend::BackendRuntimeCode::new(&backend);
+	let backend_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&backend);
 	let runtime_code = backend_runtime_code.runtime_code().expect("Code is part of the backend");
 	let task_executor = Box::new(TaskExecutor::new());
 
@@ -244,7 +244,7 @@ fn construct_genesis_should_work_with_native() {
 
 	let backend = InMemoryBackend::from(storage);
 	let (b1data, _b1hash) = block1(genesis_hash, &backend);
-	let backend_runtime_code = sp_state_machine::backend::BackendRuntimeCode::new(&backend);
+	let backend_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&backend);
 	let runtime_code = backend_runtime_code.runtime_code().expect("Code is part of the backend");
 
 	let mut overlay = OverlayedChanges::default();
@@ -278,7 +278,7 @@ fn construct_genesis_should_work_with_wasm() {
 
 	let backend = InMemoryBackend::from(storage);
 	let (b1data, _b1hash) = block1(genesis_hash, &backend);
-	let backend_runtime_code = sp_state_machine::backend::BackendRuntimeCode::new(&backend);
+	let backend_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&backend);
 	let runtime_code = backend_runtime_code.runtime_code().expect("Code is part of the backend");
 
 	let mut overlay = OverlayedChanges::default();
@@ -312,7 +312,7 @@ fn construct_genesis_with_bad_transaction_should_panic() {
 
 	let backend = InMemoryBackend::from(storage);
 	let (b1data, _b1hash) = block1(genesis_hash, &backend);
-	let backend_runtime_code = sp_state_machine::backend::BackendRuntimeCode::new(&backend);
+	let backend_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&backend);
 	let runtime_code = backend_runtime_code.runtime_code().expect("Code is part of the backend");
 
 	let mut overlay = OverlayedChanges::default();

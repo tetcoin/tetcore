@@ -21,7 +21,7 @@
 #![warn(missing_docs)]
 
 use frame_support::{RuntimeDebug, debug};
-use sp_runtime::traits::{self, Saturating, One};
+use tp_runtime::traits::{self, Saturating, One};
 use tetcore_std::fmt;
 #[cfg(not(feature = "std"))]
 use tetcore_std::prelude::Vec;
@@ -388,7 +388,7 @@ mod tests {
 
 	use codec::Decode;
 	use tet_core::H256;
-	use sp_runtime::traits::Keccak256;
+	use tp_runtime::traits::Keccak256;
 
 	pub(crate) fn hex(s: &str) -> H256 {
 		s.parse().unwrap()

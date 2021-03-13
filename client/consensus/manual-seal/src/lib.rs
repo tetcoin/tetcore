@@ -20,14 +20,14 @@
 //! This is suitable for a testing environment.
 
 use futures::prelude::*;
-use sp_consensus::{
+use tp_consensus::{
 	Environment, Proposer, SelectChain, BlockImport,
 	ForkChoiceStrategy, BlockImportParams, BlockOrigin,
 	import_queue::{Verifier, BasicQueue, CacheKeyId, BoxBlockImport},
 };
-use sp_blockchain::HeaderBackend;
-use sp_inherents::InherentDataProviders;
-use sp_runtime::{traits::Block as BlockT, Justification};
+use tp_blockchain::HeaderBackend;
+use tp_inherents::InherentDataProviders;
+use tp_runtime::{traits::Block as BlockT, Justification};
 use sc_client_api::backend::{Backend as ClientBackend, Finalizer};
 use sc_transaction_pool::txpool;
 use std::{sync::Arc, marker::PhantomData};
@@ -47,7 +47,7 @@ pub use self::{
 	seal_block::{SealBlockParams, seal_block, MAX_PROPOSAL_DURATION},
 	rpc::{EngineCommand, CreatedBlock},
 };
-use sp_api::{ProvideRuntimeApi, TransactionFor};
+use tp_api::{ProvideRuntimeApi, TransactionFor};
 
 /// The verifier for the manual seal engine; instantly finalizes.
 struct ManualSealVerifier;
@@ -158,7 +158,7 @@ pub async fn run_manual_seal<B, BI, CB, E, C, A, SC, CS>(
 	where
 		A: txpool::ChainApi<Block=B> + 'static,
 		B: BlockT + 'static,
-		BI: BlockImport<B, Error = sp_consensus::Error, Transaction = sp_api::TransactionFor<C, B>>
+		BI: BlockImport<B, Error = tp_consensus::Error, Transaction = tp_api::TransactionFor<C, B>>
 			+ Send + Sync + 'static,
 		C: HeaderBackend<B> + Finalizer<B, CB> + ProvideRuntimeApi<B> + 'static,
 		CB: ClientBackend<B> + 'static,
@@ -225,7 +225,7 @@ pub async fn run_instant_seal<B, BI, CB, E, C, A, SC>(
 	where
 		A: txpool::ChainApi<Block=B> + 'static,
 		B: BlockT + 'static,
-		BI: BlockImport<B, Error = sp_consensus::Error, Transaction = sp_api::TransactionFor<C, B>>
+		BI: BlockImport<B, Error = tp_consensus::Error, Transaction = tp_api::TransactionFor<C, B>>
 			+ Send + Sync + 'static,
 		C: HeaderBackend<B> + Finalizer<B, CB> + ProvideRuntimeApi<B> + 'static,
 		CB: ClientBackend<B> + 'static,
@@ -272,10 +272,10 @@ mod tests {
 	};
 	use sc_transaction_pool::{BasicPool, RevalidationType, txpool::Options};
 	use tetcore_test_runtime_transaction_pool::{TestApi, uxt};
-	use sp_transaction_pool::{TransactionPool, MaintainedTransactionPool, TransactionSource};
-	use sp_runtime::generic::BlockId;
-	use sp_consensus::ImportedAux;
-	use sp_inherents::InherentDataProviders;
+	use tp_transaction_pool::{TransactionPool, MaintainedTransactionPool, TransactionSource};
+	use tp_runtime::generic::BlockId;
+	use tp_consensus::ImportedAux;
+	use tp_inherents::InherentDataProviders;
 	use sc_basic_authorship::ProposerFactory;
 	use sc_client_api::BlockBackend;
 

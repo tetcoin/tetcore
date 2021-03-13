@@ -22,14 +22,14 @@
 use tetcore_std::{result::Result, prelude::*};
 
 use codec::{Encode, Decode};
-use sp_inherents::{Error, InherentIdentifier, InherentData, IsFatalError};
-use sp_runtime::RuntimeString;
+use tp_inherents::{Error, InherentIdentifier, InherentData, IsFatalError};
+use tp_runtime::RuntimeString;
 
 /// The identifier for the `uncles` inherent.
 pub const INHERENT_IDENTIFIER: InherentIdentifier = *b"uncles00";
 
 /// Errors that can occur while checking the authorship inherent.
-#[derive(Encode, sp_runtime::RuntimeDebug)]
+#[derive(Encode, tp_runtime::RuntimeDebug)]
 #[cfg_attr(feature = "std", derive(Decode))]
 pub enum InherentError {
 	Uncles(RuntimeString),
@@ -70,7 +70,7 @@ impl<F, H> InherentDataProvider<F, H> {
 }
 
 #[cfg(feature = "std")]
-impl<F, H: Encode + std::fmt::Debug> sp_inherents::ProvideInherentData for InherentDataProvider<F, H>
+impl<F, H: Encode + std::fmt::Debug> tp_inherents::ProvideInherentData for InherentDataProvider<F, H>
 where F: Fn() -> Vec<H>
 {
 	fn inherent_identifier(&self) -> &'static InherentIdentifier {

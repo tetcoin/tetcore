@@ -18,7 +18,7 @@
 
 use serde::{Serialize, Deserialize};
 use tetsy_scale_codec::Encode;
-use sp_runtime::traits::Block as BlockT;
+use tp_runtime::traits::Block as BlockT;
 use sc_finality_grandpa::GrandpaJustification;
 
 /// An encoded justification proving that the given header has been finalized

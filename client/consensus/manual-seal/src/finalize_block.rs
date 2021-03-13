@@ -19,7 +19,7 @@
 //! Block finalization utilities
 
 use crate::rpc;
-use sp_runtime::{
+use tp_runtime::{
 	Justification,
 	traits::Block as BlockT,
 	generic::BlockId,

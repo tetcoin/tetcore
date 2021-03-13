@@ -35,8 +35,8 @@ use std::borrow::Cow;
 use node_testing::bench::{BenchDb, Profile, BlockType, KeyTypes, DatabaseType};
 use node_primitives::Block;
 use sc_client_api::backend::Backend;
-use sp_runtime::generic::BlockId;
-use sp_state_machine::InspectState;
+use tp_runtime::generic::BlockId;
+use tp_state_machine::InspectState;
 
 use crate::{
 	common::SizeType,

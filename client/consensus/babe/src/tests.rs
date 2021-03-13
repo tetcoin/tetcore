@@ -24,21 +24,21 @@
 use super::*;
 use authorship::claim_slot;
 use tet_core::crypto::Pair;
-use sp_keystore::{
+use tp_keystore::{
 	SyncCryptoStore,
 	vrf::make_transcript as transcript_from_data,
 };
-use sp_consensus_babe::{AuthorityPair, Slot, AllowedSlots, make_transcript, make_transcript_data};
+use tp_consensus_babe::{AuthorityPair, Slot, AllowedSlots, make_transcript, make_transcript_data};
 use sc_consensus_slots::BackoffAuthoringOnFinalizedHeadLagging;
 use sc_block_builder::{BlockBuilder, BlockBuilderProvider};
-use sp_consensus::{
+use tp_consensus::{
 	NoNetwork as DummyOracle, Proposal, RecordProof, AlwaysCanAuthor,
 	import_queue::{BoxBlockImport, BoxJustificationImport},
 };
 use sc_network_test::*;
 use sc_network_test::{Block as TestBlock, PeersClient};
 use sc_network::config::ProtocolConfig;
-use sp_runtime::{generic::DigestItem, traits::{Block as BlockT, DigestFor}};
+use tp_runtime::{generic::DigestItem, traits::{Block as BlockT, DigestFor}};
 use sc_client_api::{BlockchainEvents, backend::TransactionFor};
 use log::debug;
 use std::{time::Duration, cell::RefCell, task::Poll};
@@ -52,7 +52,7 @@ use tet_application_crypto::key_types::BABE;
 
 type Item = DigestItem<Hash>;
 
-type Error = sp_blockchain::Error;
+type Error = tp_blockchain::Error;
 
 type TestClient = tetcore_test_runtime_client::client::Client<
 	tetcore_test_runtime_client::Backend,
@@ -430,7 +430,7 @@ fn run_one_test(
 			backoff_authoring_blocks: Some(BackoffAuthoringOnFinalizedHeadLagging::default()),
 			babe_link: data.link.clone(),
 			keystore,
-			can_author_with: sp_consensus::AlwaysCanAuthor,
+			can_author_with: tp_consensus::AlwaysCanAuthor,
 		}).expect("Starts babe"));
 	}
 	futures::executor::block_on(future::select(
@@ -577,7 +577,7 @@ fn propose_and_import_block<Transaction>(
 		parent_pre_digest.slot() + 1
 	});
 
-	let pre_digest = sp_runtime::generic::Digest {
+	let pre_digest = tp_runtime::generic::Digest {
 		logs: vec![
 			Item::babe_pre_digest(
 				PreDigest::SecondaryPlain(SecondaryPlainPreDigest {

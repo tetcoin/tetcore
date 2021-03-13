@@ -24,7 +24,7 @@ use frame_benchmarking::account;
 use frame_system::RawOrigin;
 use tet_io::hashing::blake2_256;
 use rand_chacha::{rand_core::{RngCore, SeedableRng}, ChaChaRng};
-use sp_npos_elections::*;
+use tp_npos_elections::*;
 
 const SEED: u32 = 0;
 
@@ -292,7 +292,7 @@ pub fn get_seq_phragmen_solution<T: Config>(
 ) {
 	let iters = offchain_election::get_balancing_iters::<T>();
 
-	let sp_npos_elections::ElectionResult {
+	let tp_npos_elections::ElectionResult {
 		winners,
 		assignments,
 	} = <Module<T>>::do_phragmen::<OffchainAccuracy>(iters).unwrap();

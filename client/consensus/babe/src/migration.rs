@@ -22,7 +22,7 @@ use crate::{
 	Epoch, AuthorityId, BabeAuthorityWeight, BabeGenesisConfiguration,
 	BabeEpochConfiguration, VRF_OUTPUT_LENGTH, NextEpochDescriptor,
 };
-use sp_consensus_slots::Slot;
+use tp_consensus_slots::Slot;
 
 /// BABE epoch information, version 0.
 #[derive(Decode, Encode, PartialEq, Eq, Clone, Debug)]

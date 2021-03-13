@@ -114,7 +114,7 @@ mod benchmarking;
 pub mod weights;
 
 use tetcore_std::{fmt::Debug, prelude::*};
-use sp_runtime::{RuntimeDebug, traits::{
+use tp_runtime::{RuntimeDebug, traits::{
 	Member, AtLeast32BitUnsigned, Zero, StaticLookup, Saturating, CheckedSub, CheckedAdd
 }};
 use codec::{Encode, Decode, HasCompact};
@@ -1088,7 +1088,7 @@ mod tests {
 
 	use frame_support::{assert_ok, assert_noop, parameter_types};
 	use tet_core::H256;
-	use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
+	use tp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 	use pallet_balances::Error as BalancesError;
 
 	type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;

@@ -31,8 +31,8 @@ use frame_support::{
 	traits::Get,
 	weights::Weight,
 };
-use sp_runtime::{traits::{Hash, Zero}, Perbill};
-use sp_staking::{
+use tp_runtime::{traits::{Hash, Zero}, Perbill};
+use tp_staking::{
 	SessionIndex,
 	offence::{Offence, ReportOffence, Kind, OnOffenceHandler, OffenceDetails, OffenceError},
 };

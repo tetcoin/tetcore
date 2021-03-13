@@ -22,7 +22,7 @@ use crate::{
 };
 use tet_core::crypto::UncheckedFrom;
 use tetcore_std::prelude::*;
-use sp_runtime::traits::{Bounded, Zero, Convert, Saturating};
+use tp_runtime::traits::{Bounded, Zero, Convert, Saturating};
 use frame_support::{
 	dispatch::DispatchResult,
 	traits::{ExistenceRequirement, Currency, Time, Randomness},
@@ -732,7 +732,7 @@ mod tests {
 		Error,
 	};
 	use crate::tests::test_utils::{place_contract, set_balance, get_balance};
-	use sp_runtime::DispatchError;
+	use tp_runtime::DispatchError;
 	use assert_matches::assert_matches;
 	use std::{cell::RefCell, collections::HashMap, marker::PhantomData, rc::Rc};
 

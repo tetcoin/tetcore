@@ -19,13 +19,13 @@
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
-use sp_blockchain::{Error as ClientError, HeaderBackend};
+use tp_blockchain::{Error as ClientError, HeaderBackend};
 use tetsy_scale_codec::{Encode, Decode};
 use tetsy_finality_grandpa::voter_set::VoterSet;
 use tetsy_finality_grandpa::{Error as GrandpaError};
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{NumberFor, Block as BlockT, Header as HeaderT};
-use sp_finality_grandpa::AuthorityId;
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{NumberFor, Block as BlockT, Header as HeaderT};
+use tp_finality_grandpa::AuthorityId;
 
 use crate::{Commit, Error};
 

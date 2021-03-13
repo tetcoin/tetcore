@@ -20,10 +20,10 @@
 
 use std::sync::Arc;
 
-use sp_blockchain::{Error as ClientError, Result as ClientResult};
+use tp_blockchain::{Error as ClientError, Result as ClientResult};
 use codec::{Encode, Decode};
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 use tetcore_database::{Database, Transaction};
 use crate::utils::{self, meta_keys};
 

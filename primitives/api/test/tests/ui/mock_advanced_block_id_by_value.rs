@@ -1,5 +1,5 @@
 use tetcore_test_runtime_client::runtime::Block;
-use sp_api::ApiError;
+use tp_api::ApiError;
 
 sp_api::decl_runtime_apis! {
 	pub trait Api {

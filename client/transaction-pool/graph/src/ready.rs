@@ -25,11 +25,11 @@ use std::{
 
 use serde::Serialize;
 use log::trace;
-use sp_runtime::traits::Member;
-use sp_runtime::transaction_validity::{
+use tp_runtime::traits::Member;
+use tp_runtime::transaction_validity::{
 	TransactionTag as Tag,
 };
-use sp_transaction_pool::error;
+use tp_transaction_pool::error;
 
 use crate::{
 	base_pool::Transaction,
@@ -553,7 +553,7 @@ fn remove_item<T: PartialEq>(vec: &mut Vec<T>, item: &T) {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_runtime::transaction_validity::TransactionSource as Source;
+	use tp_runtime::transaction_validity::TransactionSource as Source;
 
 	fn tx(id: u8) -> Transaction<u64, Vec<u8>> {
 		Transaction {

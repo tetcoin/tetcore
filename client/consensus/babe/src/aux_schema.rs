@@ -24,9 +24,9 @@ use log::info;
 use codec::{Decode, Encode};
 
 use sc_client_api::backend::AuxStore;
-use sp_blockchain::{Result as ClientResult, Error as ClientError};
-use sp_runtime::traits::Block as BlockT;
-use sp_consensus_babe::{BabeBlockWeight, BabeGenesisConfiguration};
+use tp_blockchain::{Result as ClientResult, Error as ClientError};
+use tp_runtime::traits::Block as BlockT;
+use tp_consensus_babe::{BabeBlockWeight, BabeGenesisConfiguration};
 use sc_consensus_epochs::{EpochChangesFor, SharedEpochChanges, migration::EpochChangesForV0};
 use crate::{Epoch, migration::EpochV0};
 
@@ -142,10 +142,10 @@ mod test {
 	use forktree::ForkTree;
 	use tetcore_test_runtime_client;
 	use tet_core::H256;
-	use sp_runtime::traits::NumberFor;
-	use sp_consensus_babe::{AllowedSlots, BabeGenesisConfiguration};
+	use tp_runtime::traits::NumberFor;
+	use tp_consensus_babe::{AllowedSlots, BabeGenesisConfiguration};
 	use sc_consensus_epochs::{PersistedEpoch, PersistedEpochHeader, EpochHeader};
-	use sp_consensus::Error as ConsensusError;
+	use tp_consensus::Error as ConsensusError;
 	use sc_network_test::Block as TestBlock;
 
 	#[test]

@@ -24,7 +24,7 @@ pub mod hash;
 use tetsy_jsonrpc_derive::rpc;
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
 use tet_core::Bytes;
-use sp_transaction_pool::TransactionStatus;
+use tp_transaction_pool::TransactionStatus;
 use self::error::{FutureResult, Result};
 
 pub use self::gen_client::Client as AuthorClient;

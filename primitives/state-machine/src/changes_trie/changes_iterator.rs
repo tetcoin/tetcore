@@ -24,7 +24,7 @@ use codec::{Decode, Encode, Codec};
 use tetsy_hash_db::Hasher;
 use num_traits::Zero;
 use tet_core::storage::PrefixedStorageKey;
-use sp_trie::Recorder;
+use tp_trie::Recorder;
 use crate::changes_trie::{AnchorBlockId, ConfigurationRange, RootsStorage, Storage, BlockNumber};
 use crate::changes_trie::input::{DigestIndex, ExtrinsicIndex, DigestIndexValue, ExtrinsicIndexValue};
 use crate::changes_trie::storage::{TrieBackendAdapter, InMemoryStorage};
@@ -381,7 +381,7 @@ mod tests {
 	use crate::changes_trie::Configuration;
 	use crate::changes_trie::input::InputPair;
 	use crate::changes_trie::storage::InMemoryStorage;
-	use sp_runtime::traits::BlakeTwo256;
+	use tp_runtime::traits::BlakeTwo256;
 	use super::*;
 
 	fn child_key() -> PrefixedStorageKey {

@@ -42,13 +42,13 @@ use prometheus_endpoint::{
 	PrometheusError, Opts, register, U64
 };
 use prost::Message as _;
-use sp_consensus::{
+use tp_consensus::{
 	BlockOrigin,
 	block_validation::BlockAnnounceValidator,
 	import_queue::{BlockImportResult, BlockImportError, IncomingBlock, Origin}
 };
-use sp_runtime::{generic::BlockId, Justification};
-use sp_runtime::traits::{
+use tp_runtime::{generic::BlockId, Justification};
+use tp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, NumberFor, Zero, CheckedSub
 };
 use arithmetic::traits::SaturatedConversion;

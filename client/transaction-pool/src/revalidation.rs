@@ -21,9 +21,9 @@
 use std::{sync::Arc, pin::Pin, collections::{HashMap, HashSet, BTreeMap}};
 
 use sc_transaction_graph::{ChainApi, Pool, ExtrinsicHash, NumberFor, ValidatedTransaction};
-use sp_runtime::traits::{Zero, SaturatedConversion};
-use sp_runtime::generic::BlockId;
-use sp_runtime::transaction_validity::TransactionValidityError;
+use tp_runtime::traits::{Zero, SaturatedConversion};
+use tp_runtime::generic::BlockId;
+use tp_runtime::transaction_validity::TransactionValidityError;
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
 
 use futures::prelude::*;
@@ -363,7 +363,7 @@ where
 mod tests {
 	use super::*;
 	use sc_transaction_graph::Pool;
-	use sp_transaction_pool::TransactionSource;
+	use tp_transaction_pool::TransactionSource;
 	use tetcore_test_runtime_transaction_pool::{TestApi, uxt};
 	use futures::executor::block_on;
 	use tetcore_test_runtime_client::AccountKeyring::*;

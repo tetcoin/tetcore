@@ -28,13 +28,13 @@
 
 use tetcore_std::prelude::*;
 use codec::{Encode, Decode};
-use sp_runtime::KeyTypeId;
-use sp_runtime::traits::{Convert, OpaqueKeys};
-use sp_session::{MembershipProof, ValidatorCount};
+use tp_runtime::KeyTypeId;
+use tp_runtime::traits::{Convert, OpaqueKeys};
+use tp_session::{MembershipProof, ValidatorCount};
 use frame_support::{decl_module, decl_storage};
 use frame_support::{Parameter, print};
-use sp_trie::{MemoryDB, Trie, TrieMut, Recorder, EMPTY_PREFIX};
-use sp_trie::trie_types::{TrieDBMut, TrieDB};
+use tp_trie::{MemoryDB, Trie, TrieMut, Recorder, EMPTY_PREFIX};
+use tp_trie::trie_types::{TrieDBMut, TrieDB};
 use super::{SessionIndex, Module as SessionModule};
 
 mod shared;
@@ -209,7 +209,7 @@ impl<T: Config> ProvingTrie<T> {
 	}
 
 	fn from_nodes(root: T::Hash, nodes: &[Vec<u8>]) -> Self {
-		use sp_trie::HashDBT;
+		use tp_trie::HashDBT;
 
 		let mut memory_db = MemoryDB::default();
 		for node in nodes {
@@ -320,8 +320,8 @@ impl<T: Config, D: AsRef<[u8]>> frame_support::traits::KeyOwnerProofSystem<(KeyT
 #[cfg(test)]
 pub(crate) mod tests {
 	use super::*;
-	use sp_runtime::key_types::DUMMY;
-	use sp_runtime::testing::UintAuthorityId;
+	use tp_runtime::key_types::DUMMY;
+	use tp_runtime::testing::UintAuthorityId;
 	use crate::mock::{
 		NEXT_VALIDATORS, force_new_session,
 		set_next_validators, Test, System, Session,

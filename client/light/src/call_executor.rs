@@ -26,19 +26,19 @@ use codec::{Encode, Decode};
 use tet_core::{
 	convert_hash, NativeOrEncoded, traits::{CodeExecutor, SpawnNamed},
 };
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId, traits::{One, Block as BlockT, Header as HeaderT, HashFor},
 };
 use externalities::Extensions;
-use sp_state_machine::{
+use tp_state_machine::{
 	self, Backend as StateBackend, OverlayedChanges, ExecutionStrategy, create_proof_check_backend,
 	execution_proof_check_on_trie_backend, ExecutionManager, StorageProof,
 };
 use tetsy_hash_db::Hasher;
 
-use sp_api::{ProofRecorder, InitializeBlock, StorageTransactionCache};
+use tp_api::{ProofRecorder, InitializeBlock, StorageTransactionCache};
 
-use sp_blockchain::{Error as ClientError, Result as ClientResult};
+use tp_blockchain::{Error as ClientError, Result as ClientResult};
 
 use sc_client_api::{
 	backend::RemoteBackend,
@@ -156,7 +156,7 @@ impl<Block, B, Local> CallExecutor<Block> for
 		}
 	}
 
-	fn prove_at_trie_state<S: sp_state_machine::TrieBackendStorage<HashFor<Block>>>(
+	fn prove_at_trie_state<S: tp_state_machine::TrieBackendStorage<HashFor<Block>>>(
 		&self,
 		_state: &sp_state_machine::TrieBackend<S, HashFor<Block>>,
 		_changes: &mut OverlayedChanges,
@@ -190,7 +190,7 @@ pub fn prove_execution<Block, S, E>(
 	let trie_state = state.as_trie_backend()
 		.ok_or_else(||
 			Box::new(sp_state_machine::ExecutionError::UnableToGenerateProof) as
-				Box<dyn sp_state_machine::Error>
+				Box<dyn tp_state_machine::Error>
 		)?;
 
 	// prepare execution environment + record preparation proof
@@ -272,7 +272,7 @@ pub fn check_execution_proof_with_make_header<Header, E, H, MakeNextHeader>(
 	let next_header = make_next_header(&request.header);
 
 	// TODO: Remove when solved: https://github.com/tetcoin/tetcore/issues/5047
-	let backend_runtime_code = sp_state_machine::backend::BackendRuntimeCode::new(&trie_backend);
+	let backend_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&trie_backend);
 	let runtime_code = backend_runtime_code.runtime_code()
 		.map_err(|_e| ClientError::RuntimeCodeMissing)?;
 

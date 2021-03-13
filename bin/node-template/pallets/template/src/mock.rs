@@ -1,7 +1,7 @@
 use crate as pallet_template;
 use tet_core::H256;
 use frame_support::parameter_types;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup}, testing::Header,
 };
 use frame_system as system;

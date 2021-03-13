@@ -31,17 +31,17 @@ use rpc::{Result as RpcResult, futures::{Future, future::result}};
 use sc_rpc_api::{DenyUnsafe, state::ReadProof};
 use sc_client_api::light::{RemoteBlockchain, Fetcher};
 use tet_core::{Bytes, storage::{StorageKey, PrefixedStorageKey, StorageData, StorageChangeSet}};
-use sp_version::RuntimeVersion;
-use sp_runtime::traits::Block as BlockT;
+use tp_version::RuntimeVersion;
+use tp_runtime::traits::Block as BlockT;
 
-use sp_api::{Metadata, ProvideRuntimeApi, CallApiAt};
+use tp_api::{Metadata, ProvideRuntimeApi, CallApiAt};
 
 use self::error::{Error, FutureResult};
 
 pub use sc_rpc_api::state::*;
 pub use sc_rpc_api::child_state::*;
 use sc_client_api::{ExecutorProvider, StorageProvider, BlockchainEvents, Backend, ProofProvider};
-use sp_blockchain::{HeaderMetadata, HeaderBackend};
+use tp_blockchain::{HeaderMetadata, HeaderBackend};
 
 const STORAGE_KEYS_PAGED_MAX_COUNT: u32 = 1000;
 
@@ -177,10 +177,10 @@ pub fn new_full<BE, Block: BlockT, Client>(
 		Block: BlockT + 'static,
 		BE: Backend<Block> + 'static,
 		Client: ExecutorProvider<Block> + StorageProvider<Block, BE> + ProofProvider<Block> + HeaderBackend<Block>
-			+ HeaderMetadata<Block, Error = sp_blockchain::Error> + BlockchainEvents<Block>
-			+ CallApiAt<Block, Error = sp_blockchain::Error>
+			+ HeaderMetadata<Block, Error = tp_blockchain::Error> + BlockchainEvents<Block>
+			+ CallApiAt<Block, Error = tp_blockchain::Error>
 			+ ProvideRuntimeApi<Block> + Send + Sync + 'static,
-		Client::Api: Metadata<Block, Error = sp_blockchain::Error>,
+		Client::Api: Metadata<Block, Error = tp_blockchain::Error>,
 {
 	let child_backend = Box::new(
 		self::state_full::FullState::new(client.clone(), subscriptions.clone())
@@ -201,7 +201,7 @@ pub fn new_light<BE, Block: BlockT, Client, F: Fetcher<Block>>(
 		Block: BlockT + 'static,
 		BE: Backend<Block> + 'static,
 		Client: ExecutorProvider<Block> + StorageProvider<Block, BE>
-			+ HeaderMetadata<Block, Error = sp_blockchain::Error>
+			+ HeaderMetadata<Block, Error = tp_blockchain::Error>
 			+ ProvideRuntimeApi<Block> + HeaderBackend<Block> + BlockchainEvents<Block>
 			+ Send + Sync + 'static,
 		F: Send + Sync + 'static,
@@ -441,6 +441,6 @@ impl<Block, Client> ChildStateApi<Block::Hash> for ChildState<Block, Client>
 	}
 }
 
-fn client_err(err: sp_blockchain::Error) -> Error {
+fn client_err(err: tp_blockchain::Error) -> Error {
 	Error::Client(Box::new(err))
 }

@@ -50,7 +50,7 @@ pub use frame_metadata::{
 ///#     type DbWeight = ();
 ///# }
 ///#
-///# type UncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<(), (), (), ()>;
+///# type UncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<(), (), (), ()>;
 ///
 /// struct Runtime;
 /// frame_support::impl_runtime_metadata! {
@@ -259,11 +259,11 @@ mod tests {
 	};
 	use codec::{Encode, Decode};
 	use crate::traits::Get;
-	use sp_runtime::transaction_validity::TransactionValidityError;
+	use tp_runtime::transaction_validity::TransactionValidityError;
 
 	#[derive(Clone, Eq, Debug, PartialEq, Encode, Decode)]
 	struct TestExtension;
-	impl sp_runtime::traits::SignedExtension for TestExtension {
+	impl tp_runtime::traits::SignedExtension for TestExtension {
 		type AccountId = u32;
 		type Call = ();
 		type AdditionalSigned = u32;
@@ -276,7 +276,7 @@ mod tests {
 
 	#[derive(Clone, Eq, Debug, PartialEq, Encode, Decode)]
 	struct TestExtension2;
-	impl sp_runtime::traits::SignedExtension for TestExtension2 {
+	impl tp_runtime::traits::SignedExtension for TestExtension2 {
 		type AccountId = u32;
 		type Call = ();
 		type AdditionalSigned = u32;
@@ -289,7 +289,7 @@ mod tests {
 
 	struct TestExtrinsic;
 
-	impl sp_runtime::traits::ExtrinsicMetadata for TestExtrinsic {
+	impl tp_runtime::traits::ExtrinsicMetadata for TestExtrinsic {
 		const VERSION: u8 = 1;
 		type SignedExtensions = (TestExtension, TestExtension2);
 	}

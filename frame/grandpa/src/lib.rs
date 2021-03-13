@@ -29,7 +29,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 // re-export since this is necessary for `impl_apis` in runtime.
-pub use sp_finality_grandpa as fg_primitives;
+pub use tp_finality_grandpa as fg_primitives;
 
 use tetcore_std::prelude::*;
 
@@ -44,13 +44,13 @@ use frame_support::{
 	storage, traits::KeyOwnerProofSystem, weights::{Pays, Weight}, Parameter,
 };
 use frame_system::{ensure_none, ensure_root, ensure_signed};
-use sp_runtime::{
+use tp_runtime::{
 	generic::DigestItem,
 	traits::Zero,
 	DispatchResult, KeyTypeId,
 };
-use sp_session::{GetSessionNumber, GetValidatorCount};
-use sp_staking::SessionIndex;
+use tp_session::{GetSessionNumber, GetValidatorCount};
+use tp_staking::SessionIndex;
 
 mod equivocation;
 mod default_weights;
@@ -583,7 +583,7 @@ impl<T: Config> Module<T> {
 	}
 }
 
-impl<T: Config> sp_runtime::BoundToRuntimeAppPublic for Module<T> {
+impl<T: Config> tp_runtime::BoundToRuntimeAppPublic for Module<T> {
 	type Public = AuthorityId;
 }
 

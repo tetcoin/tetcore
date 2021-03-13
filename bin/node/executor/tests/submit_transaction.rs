@@ -26,7 +26,7 @@ use tet_core::{
 		testing::TestTransactionPoolExt,
 	},
 };
-use sp_keystore::{KeystoreExt, SyncCryptoStore, testing::KeyStore};
+use tp_keystore::{KeystoreExt, SyncCryptoStore, testing::KeyStore};
 use frame_system::{
 	offchain::{
 		Signer,
@@ -217,8 +217,8 @@ fn should_submit_signed_twice_from_all_accounts() {
 #[test]
 fn submitted_transaction_should_be_valid() {
 	use codec::Encode;
-	use sp_runtime::transaction_validity::{TransactionSource, TransactionTag};
-	use sp_runtime::traits::StaticLookup;
+	use tp_runtime::transaction_validity::{TransactionSource, TransactionTag};
+	use tp_runtime::traits::StaticLookup;
 
 	let mut t = new_test_ext(compact_code_unwrap(), false);
 	let (pool, state) = TestTransactionPoolExt::new();

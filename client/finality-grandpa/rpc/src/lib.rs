@@ -37,7 +37,7 @@ mod notification;
 mod report;
 
 use sc_finality_grandpa::GrandpaJustificationStream;
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 use finality::{EncodedFinalityProof, RpcFinalityProofProvider};
 use report::{ReportAuthoritySet, ReportVoterState, ReportedRoundStates};
@@ -198,11 +198,11 @@ mod tests {
 		report, AuthorityId, GrandpaJustificationSender, GrandpaJustification,
 		FinalityProof,
 	};
-	use sp_blockchain::HeaderBackend;
-	use sp_consensus::RecordProof;
+	use tp_blockchain::HeaderBackend;
+	use tp_consensus::RecordProof;
 	use tet_core::crypto::Public;
-	use sp_keyring::Ed25519Keyring;
-	use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
+	use tp_keyring::Ed25519Keyring;
+	use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 	use tetcore_test_runtime_client::{
 		runtime::{Block, Header, H256},
 		DefaultTestClientBuilderExt,
@@ -456,7 +456,7 @@ mod tests {
 			};
 
 			let msg = tetsy_finality_grandpa::Message::Precommit(precommit.clone());
-			let encoded = sp_finality_grandpa::localized_payload(round, set_id, &msg);
+			let encoded = tp_finality_grandpa::localized_payload(round, set_id, &msg);
 			let signature = peers[0].sign(&encoded[..]).into();
 
 			let precommit = tetsy_finality_grandpa::SignedPrecommit {

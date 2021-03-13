@@ -8,11 +8,11 @@
 use std::sync::Arc;
 
 use node_template_runtime::{opaque::Block, AccountId, Balance, Index};
-use sp_api::ProvideRuntimeApi;
-use sp_blockchain::{Error as BlockChainError, HeaderMetadata, HeaderBackend};
-use sp_block_builder::BlockBuilder;
+use tp_api::ProvideRuntimeApi;
+use tp_blockchain::{Error as BlockChainError, HeaderMetadata, HeaderBackend};
+use tp_block_builder::BlockBuilder;
 pub use sc_rpc_api::DenyUnsafe;
-use sp_transaction_pool::TransactionPool;
+use tp_transaction_pool::TransactionPool;
 
 
 /// Full client dependencies.

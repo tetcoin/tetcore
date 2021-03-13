@@ -20,7 +20,7 @@ use crate::{
 	CliConfiguration, error, params::{PruningParams, SharedParams, BlockNumberOrHash},
 };
 use log::info;
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use std::{fmt::Debug, str::FromStr, io::Write, sync::Arc};
 use structopt::StructOpt;
 use sc_client_api::{StorageProvider, UsageProvider};

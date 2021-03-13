@@ -18,7 +18,7 @@
 use crate::*;
 use mock::{*, Origin};
 use tet_core::H256;
-use sp_runtime::{DispatchError, DispatchErrorWithPostInfo, traits::{Header, BlakeTwo256}};
+use tp_runtime::{DispatchError, DispatchErrorWithPostInfo, traits::{Header, BlakeTwo256}};
 use frame_support::{
 	weights::WithPostDispatchInfo,
 	dispatch::PostDispatchInfo,

@@ -21,7 +21,7 @@
 
 #![recursion_limit="128"]
 
-use sp_runtime::{generic, traits::{BlakeTwo256, Verify}, DispatchError};
+use tp_runtime::{generic, traits::{BlakeTwo256, Verify}, DispatchError};
 use tet_core::{H256, sr25519};
 use tetcore_std::cell::RefCell;
 use frame_support::traits::PalletInfo as _;

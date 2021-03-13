@@ -21,7 +21,7 @@
 use tetcore_std::vec::Vec;
 
 use codec::{Encode, Decode};
-use sp_runtime::Perbill;
+use tp_runtime::Perbill;
 
 use crate::SessionIndex;
 
@@ -91,7 +91,7 @@ pub trait Offence<Offender> {
 }
 
 /// Errors that may happen on offence reports.
-#[derive(PartialEq, sp_runtime::RuntimeDebug)]
+#[derive(PartialEq, tp_runtime::RuntimeDebug)]
 pub enum OffenceError {
 	/// The report has already been sumbmitted.
 	DuplicateReport,
@@ -100,7 +100,7 @@ pub enum OffenceError {
 	Other(u8),
 }
 
-impl sp_runtime::traits::Printable for OffenceError {
+impl tp_runtime::traits::Printable for OffenceError {
 	fn print(&self) {
 		"OffenceError".print();
 		match self {
@@ -181,7 +181,7 @@ impl<Reporter, Offender, Res: Default> OnOffenceHandler<Reporter, Offender, Res>
 }
 
 /// A details about an offending authority for a particular kind of offence.
-#[derive(Clone, PartialEq, Eq, Encode, Decode, sp_runtime::RuntimeDebug)]
+#[derive(Clone, PartialEq, Eq, Encode, Decode, tp_runtime::RuntimeDebug)]
 pub struct OffenceDetails<Reporter, Offender> {
 	/// The offending authority id
 	pub offender: Offender,

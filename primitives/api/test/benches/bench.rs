@@ -20,11 +20,11 @@ use tetcore_test_runtime_client::{
 	DefaultTestClientBuilderExt, TestClientBuilder,
 	TestClientBuilderExt, runtime::TestAPI,
 };
-use sp_runtime::generic::BlockId;
-use sp_state_machine::ExecutionStrategy;
-use sp_api::ProvideRuntimeApi;
+use tp_runtime::generic::BlockId;
+use tp_state_machine::ExecutionStrategy;
+use tp_api::ProvideRuntimeApi;
 
-fn sp_api_benchmark(c: &mut Criterion) {
+fn tp_api_benchmark(c: &mut Criterion) {
 	c.bench_function("add one with same runtime api", |b| {
 		let client = tetcore_test_runtime_client::new();
 		let runtime_api = client.runtime_api();
@@ -70,5 +70,5 @@ fn sp_api_benchmark(c: &mut Criterion) {
 	});
 }
 
-criterion_group!(benches, sp_api_benchmark);
+criterion_group!(benches, tp_api_benchmark);
 criterion_main!(benches);

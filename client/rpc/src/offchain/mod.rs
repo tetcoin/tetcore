@@ -56,7 +56,7 @@ impl<T: OffchainStorage + 'static> OffchainApi for Offchain<T> {
 		self.deny_unsafe.check_if_safe()?;
 
 		let prefix = match kind {
-			StorageKind::PERSISTENT => sp_offchain::STORAGE_PREFIX,
+			StorageKind::PERSISTENT => tp_offchain::STORAGE_PREFIX,
 			StorageKind::LOCAL => return Err(Error::UnavailableStorageKind),
 		};
 		self.storage.write().set(prefix, &*key, &*value);
@@ -68,7 +68,7 @@ impl<T: OffchainStorage + 'static> OffchainApi for Offchain<T> {
 		self.deny_unsafe.check_if_safe()?;
 
 		let prefix = match kind {
-			StorageKind::PERSISTENT => sp_offchain::STORAGE_PREFIX,
+			StorageKind::PERSISTENT => tp_offchain::STORAGE_PREFIX,
 			StorageKind::LOCAL => return Err(Error::UnavailableStorageKind),
 		};
 		Ok(self.storage.read().get(prefix, &*key).map(Into::into))

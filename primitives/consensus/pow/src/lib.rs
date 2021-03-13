@@ -20,7 +20,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use tetcore_std::vec::Vec;
-use sp_runtime::ConsensusEngineId;
+use tp_runtime::ConsensusEngineId;
 use codec::Decode;
 
 /// The `ConsensusEngineId` of PoW.

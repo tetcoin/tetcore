@@ -21,9 +21,9 @@
 use std::sync::Arc;
 use std::marker::PhantomData;
 use sc_client_api::backend;
-use sp_consensus::{SelectChain, Error as ConsensusError};
-use sp_blockchain::{Backend, HeaderBackend};
-use sp_runtime::{
+use tp_consensus::{SelectChain, Error as ConsensusError};
+use tp_blockchain::{Backend, HeaderBackend};
+use tp_runtime::{
 	traits::{NumberFor, Block as BlockT},
 	generic::BlockId,
 };
@@ -58,7 +58,7 @@ impl<B, Block> LongestChain<B, Block>
 		}
 	}
 
-	fn best_block_header(&self) -> sp_blockchain::Result<<Block as BlockT>::Header> {
+	fn best_block_header(&self) -> tp_blockchain::Result<<Block as BlockT>::Header> {
 		let info = self.backend.blockchain().info();
 		let import_lock = self.backend.get_import_lock();
 		let best_hash = self.backend
@@ -70,7 +70,7 @@ impl<B, Block> LongestChain<B, Block>
 			.expect("given block hash was fetched from block in db; qed"))
 	}
 
-	fn leaves(&self) -> Result<Vec<<Block as BlockT>::Hash>, sp_blockchain::Error> {
+	fn leaves(&self) -> Result<Vec<<Block as BlockT>::Hash>, tp_blockchain::Error> {
 		self.backend.blockchain().leaves()
 	}
 }

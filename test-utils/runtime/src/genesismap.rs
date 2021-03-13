@@ -23,7 +23,7 @@ use super::{AuthorityId, AccountId, wasm_binary_unwrap, system};
 use codec::{Encode, KeyedVec, Joiner};
 use tet_core::{ChangesTrieConfiguration, map};
 use tet_core::storage::{well_known_keys, Storage};
-use sp_runtime::traits::{Block as BlockT, Hash as HashT, Header as HeaderT};
+use tp_runtime::traits::{Block as BlockT, Hash as HashT, Header as HeaderT};
 use sc_service::client::genesis;
 
 /// Configuration of a general Tetcore test genesis block.

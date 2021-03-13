@@ -86,7 +86,7 @@ use frame_support::traits::{
 	Currency, Get, Imbalance, OnUnbalanced, ExistenceRequirement::{AllowDeath},
 	ReservableCurrency};
 
-use sp_runtime::{Permill, RuntimeDebug, DispatchResult, traits::{
+use tp_runtime::{Permill, RuntimeDebug, DispatchResult, traits::{
 	Zero, StaticLookup, AccountIdConversion, Saturating, BadOrigin
 }};
 

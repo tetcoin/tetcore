@@ -26,10 +26,10 @@ use std::hash::Hash as StdHash;
 use parking_lot::{Mutex, RwLock, RwLockUpgradableReadGuard};
 use linked_hash_map::{LinkedHashMap, Entry};
 use tetsy_hash_db::Hasher;
-use sp_runtime::traits::{Block as BlockT, Header, HashFor, NumberFor};
+use tp_runtime::traits::{Block as BlockT, Header, HashFor, NumberFor};
 use tet_core::hexdisplay::HexDisplay;
 use tet_core::storage::ChildInfo;
-use sp_state_machine::{
+use tp_state_machine::{
 	backend::Backend as StateBackend, TrieBackend, StorageKey, StorageValue,
 	StorageCollection, ChildStorageCollection,
 };
@@ -304,7 +304,7 @@ pub struct CachingState<S, B: BlockT> {
 	/// Usage statistics
 	usage: StateUsageStats,
 	/// State machine registered stats
-	overlay_stats: sp_state_machine::StateMachineStats,
+	overlay_stats: tp_state_machine::StateMachineStats,
 	/// Backing state.
 	state: S,
 	/// Cache data.
@@ -449,7 +449,7 @@ impl<S: StateBackend<HashFor<B>>, B: BlockT> CachingState<S, B> {
 	) -> Self {
 		CachingState {
 			usage: StateUsageStats::new(),
-			overlay_stats: sp_state_machine::StateMachineStats::default(),
+			overlay_stats: tp_state_machine::StateMachineStats::default(),
 			state,
 			cache: CacheChanges {
 				shared_cache,
@@ -679,7 +679,7 @@ impl<S: StateBackend<HashFor<B>>, B: BlockT> StateBackend<HashFor<B>> for Cachin
 		self.overlay_stats.add(stats);
 	}
 
-	fn usage_info(&self) -> sp_state_machine::UsageInfo {
+	fn usage_info(&self) -> tp_state_machine::UsageInfo {
 		let mut info = self.usage.take();
 		info.include_state_machine_states(&self.overlay_stats);
 		info
@@ -864,7 +864,7 @@ impl<S: StateBackend<HashFor<B>>, B: BlockT> StateBackend<HashFor<B>> for Syncin
 		self.caching_state().register_overlay_stats(stats);
 	}
 
-	fn usage_info(&self) -> sp_state_machine::UsageInfo {
+	fn usage_info(&self) -> tp_state_machine::UsageInfo {
 		self.caching_state().usage_info()
 	}
 }
@@ -890,11 +890,11 @@ impl<S, B: BlockT> Drop for SyncingCachingState<S, B> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_runtime::{
+	use tp_runtime::{
 		traits::BlakeTwo256,
 		testing::{H256, Block as RawBlock, ExtrinsicWrapper},
 	};
-	use sp_state_machine::InMemoryBackend;
+	use tp_state_machine::InMemoryBackend;
 
 	type Block = RawBlock<ExtrinsicWrapper<u32>>;
 
@@ -1407,11 +1407,11 @@ mod qc {
 	use quickcheck::{quickcheck, TestResult, Arbitrary};
 
 	use super::*;
-	use sp_runtime::{
+	use tp_runtime::{
 		traits::BlakeTwo256,
 		testing::{H256, Block as RawBlock, ExtrinsicWrapper},
 	};
-	use sp_state_machine::InMemoryBackend;
+	use tp_state_machine::InMemoryBackend;
 
 	type Block = RawBlock<ExtrinsicWrapper<u32>>;
 

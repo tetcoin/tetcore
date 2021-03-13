@@ -28,7 +28,7 @@ use tetcore_std::{marker::PhantomData, vec::Vec};
 use codec::{Encode, Decode};
 use tetsy_wasm::elements;
 use pwasm_utils::rules;
-use sp_runtime::RuntimeDebug;
+use tp_runtime::RuntimeDebug;
 
 /// How many API calls are executed in a single batch. The reason for increasing the amount
 /// of API calls in batches (per benchmark component increase) is so that the linear regression

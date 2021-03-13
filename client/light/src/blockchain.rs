@@ -21,10 +21,10 @@
 
 use std::sync::Arc;
 
-use sp_runtime::{Justification, generic::BlockId};
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor, Zero};
+use tp_runtime::{Justification, generic::BlockId};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor, Zero};
 
-use sp_blockchain::{
+use tp_blockchain::{
 	HeaderMetadata, CachedHeaderMetadata, Error as ClientError, Result as ClientResult,
 };
 pub use sc_client_api::{
@@ -179,7 +179,7 @@ impl<S: Storage<Block>, Block: BlockT> ProvideChtRoots<Block> for Blockchain<S> 
 		&self,
 		cht_size: NumberFor<Block>,
 		block: NumberFor<Block>,
-	) -> sp_blockchain::Result<Option<Block::Hash>> {
+	) -> tp_blockchain::Result<Option<Block::Hash>> {
 		self.storage().header_cht_root(cht_size, block)
 	}
 
@@ -187,7 +187,7 @@ impl<S: Storage<Block>, Block: BlockT> ProvideChtRoots<Block> for Blockchain<S> 
 		&self,
 		cht_size: NumberFor<Block>,
 		block: NumberFor<Block>,
-	) -> sp_blockchain::Result<Option<Block::Hash>> {
+	) -> tp_blockchain::Result<Option<Block::Hash>> {
 		self.storage().changes_trie_cht_root(cht_size, block)
 	}
 }

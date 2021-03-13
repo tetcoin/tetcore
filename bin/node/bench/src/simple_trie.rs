@@ -20,7 +20,7 @@ use std::{collections::HashMap, sync::Arc};
 
 use tetsy_kvdb::KeyValueDB;
 use node_primitives::Hash;
-use sp_trie::DBValue;
+use tp_trie::DBValue;
 use tetsy_hash_db::{HashDB, AsHashDB, Prefix, Hasher as _};
 
 pub type Hasher = tet_core::Blake2Hasher;
@@ -41,7 +41,7 @@ impl<'a> AsHashDB<Hasher, DBValue> for SimpleTrie<'a> {
 
 impl<'a> HashDB<Hasher, DBValue> for SimpleTrie<'a> {
 	fn get(&self, key: &Hash, prefix: Prefix) -> Option<DBValue> {
-		let key = sp_trie::prefixed_key::<Hasher>(key, prefix);
+		let key = tp_trie::prefixed_key::<Hasher>(key, prefix);
 		if let Some(value) = self.overlay.get(&key) {
 			return value.clone();
 		}
@@ -59,12 +59,12 @@ impl<'a> HashDB<Hasher, DBValue> for SimpleTrie<'a> {
 	}
 
 	fn emplace(&mut self, key: Hash, prefix: Prefix, value: DBValue) {
-		let key = sp_trie::prefixed_key::<Hasher>(&key, prefix);
+		let key = tp_trie::prefixed_key::<Hasher>(&key, prefix);
 		self.overlay.insert(key, Some(value));
 	}
 
 	fn remove(&mut self, key: &Hash, prefix: Prefix) {
-		let key = sp_trie::prefixed_key::<Hasher>(key, prefix);
+		let key = tp_trie::prefixed_key::<Hasher>(key, prefix);
 		self.overlay.insert(key, None);
 	}
 }

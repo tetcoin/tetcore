@@ -73,8 +73,8 @@ use num_traits::{One, Zero};
 use codec::{Decode, Encode};
 use tet_core;
 use tet_core::storage::PrefixedStorageKey;
-use sp_trie::{MemoryDB, DBValue, TrieMut};
-use sp_trie::trie_types::TrieDBMut;
+use tp_trie::{MemoryDB, DBValue, TrieMut};
+use tp_trie::trie_types::TrieDBMut;
 use crate::{
 	StorageKey,
 	backend::Backend,
@@ -165,7 +165,7 @@ pub trait Storage<H: Hasher, Number: BlockNumber>: RootsStorage<H, Number> {
 pub struct TrieBackendStorageAdapter<'a, H: Hasher, Number: BlockNumber>(pub &'a dyn Storage<H, Number>);
 
 impl<'a, H: Hasher, N: BlockNumber> crate::TrieBackendStorage<H> for TrieBackendStorageAdapter<'a, H, N> {
-	type Overlay = sp_trie::MemoryDB<H>;
+	type Overlay = tp_trie::MemoryDB<H>;
 
 	fn get(&self, key: &H::Out, prefix: Prefix) -> Result<Option<DBValue>, String> {
 		self.0.get(key, prefix)

@@ -18,12 +18,12 @@
 //! Integration tests for ed25519
 
 use std::sync::Arc;
-use sp_runtime::generic::BlockId;
+use tp_runtime::generic::BlockId;
 use tet_core::{
 	crypto::Pair,
 	testing::ED25519,
 };
-use sp_keystore::{
+use tp_keystore::{
 	SyncCryptoStore,
 	testing::KeyStore,
 };
@@ -31,7 +31,7 @@ use tetcore_test_runtime_client::{
 	TestClientBuilder, DefaultTestClientBuilderExt, TestClientBuilderExt,
 	runtime::TestAPI,
 };
-use sp_api::ProvideRuntimeApi;
+use tp_api::ProvideRuntimeApi;
 use tet_application_crypto::ed25519::{AppPair, AppPublic};
 
 #[test]

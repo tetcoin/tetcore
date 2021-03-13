@@ -19,9 +19,9 @@
 //! Extensions for manual seal to produce blocks valid for any runtime.
 use super::Error;
 
-use sp_runtime::traits::{Block as BlockT, DigestFor};
-use sp_inherents::InherentData;
-use sp_consensus::BlockImportParams;
+use tp_runtime::traits::{Block as BlockT, DigestFor};
+use tp_inherents::InherentData;
+use tp_consensus::BlockImportParams;
 
 pub mod babe;
 

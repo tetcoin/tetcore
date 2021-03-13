@@ -44,7 +44,7 @@ pub fn generate_hidden_includes(unique_id: &'static str) -> TokenStream {
 				quote!(
 					#[doc(hidden)]
 					mod #mod_name {
-						pub extern crate #client_name as sp_api;
+						pub extern crate #client_name as tp_api;
 					}
 				)
 			},
@@ -60,7 +60,7 @@ pub fn generate_hidden_includes(unique_id: &'static str) -> TokenStream {
 /// Generates the access to the `sc_client` crate.
 pub fn generate_crate_access(unique_id: &'static str) -> TokenStream {
 	if env::var("CARGO_PKG_NAME").unwrap() == "tp-api" {
-		quote!( sp_api )
+		quote!( tp_api )
 	} else {
 		let mod_name = generate_hidden_includes_mod_name(unique_id);
 		quote!( self::#mod_name::sp_api )

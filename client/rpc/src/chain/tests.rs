@@ -23,7 +23,7 @@ use tetcore_test_runtime_client::{
 	sp_consensus::BlockOrigin,
 	runtime::{H256, Block, Header},
 };
-use sp_rpc::list::ListOrValue;
+use tp_rpc::list::ListOrValue;
 use sc_block_builder::BlockBuilderProvider;
 use futures::{executor, compat::{Future01CompatExt, Stream01CompatExt}};
 use crate::testing::TaskExecutor;

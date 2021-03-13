@@ -28,9 +28,9 @@ use sc_service::{
 	config::{Configuration}, error::{Error as ServiceError},
 	RpcHandlers, TaskManager,
 };
-use sp_inherents::InherentDataProviders;
+use tp_inherents::InherentDataProviders;
 use sc_network::{Event, NetworkService};
-use sp_runtime::traits::Block as BlockT;
+use tp_runtime::traits::Block as BlockT;
 use futures::prelude::*;
 use sc_client_api::{ExecutorProvider, RemoteBackend};
 use node_executor::Executor;
@@ -84,7 +84,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		client.clone(),
 	)?;
 
-	let inherent_data_providers = sp_inherents::InherentDataProviders::new();
+	let inherent_data_providers = tp_inherents::InherentDataProviders::new();
 
 	let import_queue = sc_consensus_babe::import_queue(
 		babe_link.clone(),
@@ -391,7 +391,7 @@ pub fn new_light_base(mut config: Configuration) -> Result<(
 		client.clone(),
 	)?;
 
-	let inherent_data_providers = sp_inherents::InherentDataProviders::new();
+	let inherent_data_providers = tp_inherents::InherentDataProviders::new();
 
 	let import_queue = sc_consensus_babe::import_queue(
 		babe_link,
@@ -467,7 +467,7 @@ mod tests {
 	use std::{sync::Arc, borrow::Cow, any::Any, convert::TryInto};
 	use sc_consensus_babe::{CompatibleDigestItem, BabeIntermediate, INTERMEDIATE_KEY};
 	use sc_consensus_epochs::descendent_query;
-	use sp_consensus::{
+	use tp_consensus::{
 		Environment, Proposer, BlockImportParams, BlockOrigin, ForkChoiceStrategy, BlockImport,
 		RecordProof,
 	};
@@ -480,18 +480,18 @@ mod tests {
 		H256,
 		Public
 	};
-	use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-	use sp_runtime::{
+	use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+	use tp_runtime::{
 		generic::{BlockId, Era, Digest, SignedPayload},
 		traits::{Block as BlockT, Header as HeaderT},
 		traits::Verify,
 	};
-	use sp_timestamp;
-	use sp_keyring::AccountKeyring;
+	use tp_timestamp;
+	use tp_keyring::AccountKeyring;
 	use sc_service_test::TestNetNode;
 	use crate::service::{new_full_base, new_light_base, NewFullBase};
-	use sp_runtime::{key_types::BABE, traits::IdentifyAccount, RuntimeAppPublic};
-	use sp_transaction_pool::{MaintainedTransactionPool, ChainEvent};
+	use tp_runtime::{key_types::BABE, traits::IdentifyAccount, RuntimeAppPublic};
+	use tp_transaction_pool::{MaintainedTransactionPool, ChainEvent};
 	use sc_client_api::BlockBackend;
 	use sc_keystore::LocalKeystore;
 
@@ -505,7 +505,7 @@ mod tests {
 		let keystore_path = tempfile::tempdir().expect("Creates keystore path");
 		let keystore: SyncCryptoStorePtr = Arc::new(LocalKeystore::open(keystore_path.path(), None)
 			.expect("Creates keystore"));
-		let alice: sp_consensus_babe::AuthorityId = SyncCryptoStore::sr25519_generate_new(&*keystore, BABE, Some("//Alice"))
+		let alice: tp_consensus_babe::AuthorityId = SyncCryptoStore::sr25519_generate_new(&*keystore, BABE, Some("//Alice"))
 			.expect("Creates authority pair").into();
 
 		let chain_spec = crate::chain_spec::tests::integration_test_config_with_single_authority();

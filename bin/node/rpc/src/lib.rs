@@ -32,7 +32,7 @@
 
 use std::sync::Arc;
 
-use sp_keystore::SyncCryptoStorePtr;
+use tp_keystore::SyncCryptoStorePtr;
 use node_primitives::{Block, BlockNumber, AccountId, Index, Balance, Hash};
 use sc_consensus_babe::{Config, Epoch};
 use sc_consensus_babe_rpc::BabeRpcHandler;
@@ -42,13 +42,13 @@ use sc_finality_grandpa::{
 };
 use sc_finality_grandpa_rpc::GrandpaRpcHandler;
 pub use sc_rpc_api::DenyUnsafe;
-use sp_api::ProvideRuntimeApi;
-use sp_block_builder::BlockBuilder;
-use sp_blockchain::{Error as BlockChainError, HeaderMetadata, HeaderBackend};
-use sp_consensus::SelectChain;
-use sp_consensus_babe::BabeApi;
+use tp_api::ProvideRuntimeApi;
+use tp_block_builder::BlockBuilder;
+use tp_blockchain::{Error as BlockChainError, HeaderMetadata, HeaderBackend};
+use tp_consensus::SelectChain;
+use tp_consensus_babe::BabeApi;
 use sc_rpc::SubscriptionTaskExecutor;
-use sp_transaction_pool::TransactionPool;
+use tp_transaction_pool::TransactionPool;
 use sc_client_api::AuxStore;
 
 /// Light client extra dependencies.
@@ -207,7 +207,7 @@ pub fn create_full<C, P, SC, B>(
 pub fn create_light<C, P, M, F>(
 	deps: LightDeps<C, F, P>,
 ) -> tetsy_jsonrpc_core::IoHandler<M> where
-	C: sp_blockchain::HeaderBackend<Block>,
+	C: tp_blockchain::HeaderBackend<Block>,
 	C: Send + Sync + 'static,
 	F: sc_client_api::light::Fetcher<Block> + 'static,
 	P: TransactionPool + 'static,

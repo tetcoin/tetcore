@@ -599,15 +599,15 @@ pub fn verify_encoded_lazy<V: Verify, T: codec::Encode>(
 ///
 /// ```rust
 /// # fn main() {
-/// sp_runtime::assert_eq_error_rate!(10, 10, 0);
-/// sp_runtime::assert_eq_error_rate!(10, 11, 1);
-/// sp_runtime::assert_eq_error_rate!(12, 10, 2);
+/// tp_runtime::assert_eq_error_rate!(10, 10, 0);
+/// tp_runtime::assert_eq_error_rate!(10, 11, 1);
+/// tp_runtime::assert_eq_error_rate!(12, 10, 2);
 /// # }
 /// ```
 ///
 /// ```rust,should_panic
 /// # fn main() {
-/// sp_runtime::assert_eq_error_rate!(12, 10, 1);
+/// tp_runtime::assert_eq_error_rate!(12, 10, 1);
 /// # }
 /// ```
 #[macro_export]
@@ -787,7 +787,7 @@ mod tests {
 	#[test]
 	#[should_panic(expected = "Signature verification has not been called")]
 	fn batching_still_finishes_when_not_called_directly() {
-		let mut ext = sp_state_machine::BasicExternalities::default();
+		let mut ext = tp_state_machine::BasicExternalities::default();
 		ext.register_extension(
 			tet_core::traits::TaskExecutorExt::new(tet_core::testing::TaskExecutor::new()),
 		);
@@ -805,7 +805,7 @@ mod tests {
 	#[test]
 	#[should_panic(expected = "Hey, I'm an error")]
 	fn batching_does_not_panic_while_thread_is_already_panicking() {
-		let mut ext = sp_state_machine::BasicExternalities::default();
+		let mut ext = tp_state_machine::BasicExternalities::default();
 		ext.register_extension(
 			tet_core::traits::TaskExecutorExt::new(tet_core::testing::TaskExecutor::new()),
 		);

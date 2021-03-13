@@ -22,11 +22,11 @@ use std::{sync::Arc, collections::{HashMap, hash_map::Entry}};
 use parking_lot::RwLock;
 
 use sc_client_api::blockchain::{well_known_cache_keys::{self, Id as CacheKeyId}, Cache as BlockchainCache};
-use sp_blockchain::{Result as ClientResult, HeaderMetadataCache};
+use tp_blockchain::{Result as ClientResult, HeaderMetadataCache};
 use tetcore_database::{Database, Transaction};
 use codec::{Encode, Decode};
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor, Zero};
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor, Zero};
 use crate::utils::{self, COLUMN_META};
 use crate::DbHash;
 
@@ -249,7 +249,7 @@ impl<'a, Block: BlockT> DbCacheTransaction<'a, Block> {
 			.cloned()
 			.collect::<Vec<_>>();
 
-		let mut insert_op = |name: CacheKeyId, value: Option<Vec<u8>>| -> Result<(), sp_blockchain::Error> {
+		let mut insert_op = |name: CacheKeyId, value: Option<Vec<u8>>| -> Result<(), tp_blockchain::Error> {
 			let cache = self.cache.get_cache(name)?;
 			let cache_ops = self.cache_at_ops.entry(name).or_default();
 			cache.on_block_insert(

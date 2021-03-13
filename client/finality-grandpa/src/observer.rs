@@ -26,12 +26,12 @@ use tetsy_finality_grandpa::{
 	BlockNumberOps, Error as GrandpaError, voter, voter_set::VoterSet
 };
 use log::{debug, info, warn};
-use sp_keystore::SyncCryptoStorePtr;
-use sp_consensus::SelectChain;
+use tp_keystore::SyncCryptoStorePtr;
+use tp_consensus::SelectChain;
 use sc_client_api::backend::Backend;
 use tetcore_utils::mpsc::TracingUnboundedReceiver;
-use sp_runtime::traits::{NumberFor, Block as BlockT};
-use sp_blockchain::HeaderMetadata;
+use tp_runtime::traits::{NumberFor, Block as BlockT};
+use tp_blockchain::HeaderMetadata;
 
 use crate::{
 	global_communication, CommandOrError, CommunicationIn, Config, environment,
@@ -40,7 +40,7 @@ use crate::{
 use crate::authorities::SharedAuthoritySet;
 use crate::communication::{Network as NetworkT, NetworkBridge};
 use crate::notification::GrandpaJustificationSender;
-use sp_finality_grandpa::AuthorityId;
+use tp_finality_grandpa::AuthorityId;
 use std::marker::{PhantomData, Unpin};
 
 struct ObserverChain<'a, Block: BlockT, Client> {
@@ -51,7 +51,7 @@ struct ObserverChain<'a, Block: BlockT, Client> {
 impl<'a, Block, Client> tetsy_finality_grandpa::Chain<Block::Hash, NumberFor<Block>>
 	for ObserverChain<'a, Block, Client> where
 		Block: BlockT,
-		Client: HeaderMetadata<Block, Error = sp_blockchain::Error>,
+		Client: HeaderMetadata<Block, Error = tp_blockchain::Error>,
 		NumberFor<Block>: BlockNumberOps,
 {
 	fn ancestry(&self, base: Block::Hash, block: Block::Hash) -> Result<Vec<Block::Hash>, GrandpaError> {
@@ -163,7 +163,7 @@ pub fn run_grandpa_observer<BE, Block: BlockT, Client, N, SC>(
 	config: Config,
 	link: LinkHalf<Block, Client, SC>,
 	network: N,
-) -> sp_blockchain::Result<impl Future<Output = ()> + Unpin + Send + 'static>
+) -> tp_blockchain::Result<impl Future<Output = ()> + Unpin + Send + 'static>
 where
 	BE: Backend<Block> + Unpin + 'static,
 	N: NetworkT<Block> + Send + Clone + 'static,
@@ -390,7 +390,7 @@ mod tests {
 	use crate::{aux_schema,	communication::tests::{Event, make_test_network}};
 	use tetcore_test_runtime_client::{TestClientBuilder, TestClientBuilderExt};
 	use sc_network::PeerId;
-	use sp_blockchain::HeaderBackend as _;
+	use tp_blockchain::HeaderBackend as _;
 
 	use futures::executor;
 

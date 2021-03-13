@@ -32,8 +32,8 @@ use tetsy_libp2p::kad::record;
 use tetsy_libp2p::swarm::{NetworkBehaviourAction, NetworkBehaviourEventProcess, PollParameters};
 use log::debug;
 use prost::Message;
-use sp_consensus::{BlockOrigin, import_queue::{IncomingBlock, Origin}};
-use sp_runtime::{traits::{Block as BlockT, NumberFor}, Justification};
+use tp_consensus::{BlockOrigin, import_queue::{IncomingBlock, Origin}};
+use tp_runtime::{traits::{Block as BlockT, NumberFor}, Justification};
 use std::{
 	borrow::Cow,
 	collections::{HashSet, VecDeque},

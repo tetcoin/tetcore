@@ -18,7 +18,7 @@
 
 //! Light client components.
 
-use sp_runtime::traits::{Block as BlockT, HashFor};
+use tp_runtime::traits::{Block as BlockT, HashFor};
 use std::sync::Arc;
 use tet_core::traits::{CodeExecutor, SpawnNamed};
 

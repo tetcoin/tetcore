@@ -19,7 +19,7 @@
 //! Functionality for reading and storing children hashes from db.
 
 use codec::{Encode, Decode};
-use sp_blockchain;
+use tp_blockchain;
 use std::hash::Hash;
 use tetcore_database::{Database, Transaction};
 use crate::DbHash;
@@ -28,7 +28,7 @@ use crate::DbHash;
 pub fn read_children<
 	K: Eq + Hash + Clone + Encode + Decode,
 	V: Eq + Hash + Clone + Encode + Decode,
->(db: &dyn Database<DbHash>, column: u32, prefix: &[u8], parent_hash: K) -> sp_blockchain::Result<Vec<V>> {
+>(db: &dyn Database<DbHash>, column: u32, prefix: &[u8], parent_hash: K) -> tp_blockchain::Result<Vec<V>> {
 	let mut buf = prefix.to_vec();
 	parent_hash.using_encoded(|s| buf.extend(s));
 

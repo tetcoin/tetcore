@@ -22,7 +22,7 @@ use frame_support::weights::{Weight, DispatchClass};
 use codec::{Encode, Decode};
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize};
-use sp_runtime::traits::{AtLeast32BitUnsigned, Zero};
+use tp_runtime::traits::{AtLeast32BitUnsigned, Zero};
 
 /// The base fee and adjusted weight and length fees constitute the _inclusion fee_.
 #[derive(Encode, Decode, Clone, Eq, PartialEq)]

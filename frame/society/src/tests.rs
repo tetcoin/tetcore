@@ -21,7 +21,7 @@ use super::*;
 use mock::*;
 
 use frame_support::{assert_ok, assert_noop};
-use sp_runtime::traits::BadOrigin;
+use tp_runtime::traits::BadOrigin;
 use tet_core::blake2_256;
 
 #[test]

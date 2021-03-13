@@ -18,8 +18,8 @@
 
 use std::{pin::Pin, time::Duration, collections::HashMap, any::Any, borrow::Cow};
 use sc_client_api::ImportNotifications;
-use sp_runtime::{DigestItem, traits::Block as BlockT, generic::BlockId};
-use sp_consensus::{Proposal, BlockOrigin, BlockImportParams, import_queue::BoxBlockImport};
+use tp_runtime::{DigestItem, traits::Block as BlockT, generic::BlockId};
+use tp_consensus::{Proposal, BlockOrigin, BlockImportParams, import_queue::BoxBlockImport};
 use futures::{prelude::*, task::{Context, Poll}};
 use futures_timer::Delay;
 use log::*;
@@ -40,23 +40,23 @@ pub struct MiningMetadata<H, D> {
 }
 
 /// A build of mining, containing the metadata and the block proposal.
-pub struct MiningBuild<Block: BlockT, Algorithm: PowAlgorithm<Block>, C: sp_api::ProvideRuntimeApi<Block>> {
+pub struct MiningBuild<Block: BlockT, Algorithm: PowAlgorithm<Block>, C: tp_api::ProvideRuntimeApi<Block>> {
 	/// Mining metadata.
 	pub metadata: MiningMetadata<Block::Hash, Algorithm::Difficulty>,
 	/// Mining proposal.
-	pub proposal: Proposal<Block, sp_api::TransactionFor<C, Block>>,
+	pub proposal: Proposal<Block, tp_api::TransactionFor<C, Block>>,
 }
 
 /// Mining worker that exposes structs to query the current mining build and submit mined blocks.
-pub struct MiningWorker<Block: BlockT, Algorithm: PowAlgorithm<Block>, C: sp_api::ProvideRuntimeApi<Block>> {
+pub struct MiningWorker<Block: BlockT, Algorithm: PowAlgorithm<Block>, C: tp_api::ProvideRuntimeApi<Block>> {
 	pub(crate) build: Option<MiningBuild<Block, Algorithm, C>>,
 	pub(crate) algorithm: Algorithm,
-	pub(crate) block_import: BoxBlockImport<Block, sp_api::TransactionFor<C, Block>>,
+	pub(crate) block_import: BoxBlockImport<Block, tp_api::TransactionFor<C, Block>>,
 }
 
 impl<Block, Algorithm, C> MiningWorker<Block, Algorithm, C> where
 	Block: BlockT,
-	C: sp_api::ProvideRuntimeApi<Block>,
+	C: tp_api::ProvideRuntimeApi<Block>,
 	Algorithm: PowAlgorithm<Block>,
 	Algorithm::Difficulty: 'static,
 {

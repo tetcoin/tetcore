@@ -21,9 +21,9 @@
 //! This is used instead of `futures_timer::Interval` because it was unreliable.
 
 use super::{SlotCompatible, Slot};
-use sp_consensus::Error;
+use tp_consensus::Error;
 use futures::{prelude::*, task::Context, task::Poll};
-use sp_inherents::{InherentData, InherentDataProviders};
+use tp_inherents::{InherentData, InherentDataProviders};
 
 use std::{pin::Pin, time::{Duration, Instant}};
 use futures_timer::Delay;

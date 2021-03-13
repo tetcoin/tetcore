@@ -19,7 +19,7 @@
 
 use tetcore_std::{prelude::*, result::Result, convert::TryFrom};
 use codec::{Encode, EncodeLike, Decode, Output, Input};
-use sp_runtime::{RuntimeDebug, traits::{Saturating, Zero}};
+use tp_runtime::{RuntimeDebug, traits::{Saturating, Zero}};
 use crate::{Conviction, ReferendumIndex, Delegations};
 
 /// A number of lock periods, plus a vote, one way or the other.

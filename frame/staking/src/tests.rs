@@ -19,10 +19,10 @@
 
 use super::*;
 use mock::*;
-use sp_runtime::{
+use tp_runtime::{
 	assert_eq_error_rate, traits::BadOrigin,
 };
-use sp_staking::offence::OffenceDetails;
+use tp_staking::offence::OffenceDetails;
 use frame_support::{
 	assert_ok, assert_noop, StorageMap,
 	traits::{Currency, ReservableCurrency, OnInitialize, OnFinalize},
@@ -1839,11 +1839,11 @@ fn bond_with_duplicate_vote_should_be_ignored_by_npos_election() {
 			assert_ok!(Staking::nominate(Origin::signed(4), vec![21, 31]));
 
 			// winners should be 21 and 31. Otherwise this election is taking duplicates into account.
-			let sp_npos_elections::ElectionResult {
+			let tp_npos_elections::ElectionResult {
 				winners,
 				assignments,
 			} = Staking::do_phragmen::<Perbill>(0).unwrap();
-			let winners = sp_npos_elections::to_without_backing(winners);
+			let winners = tp_npos_elections::to_without_backing(winners);
 
 			assert_eq!(winners, vec![31, 21]);
 			// only distribution to 21 and 31.
@@ -1887,12 +1887,12 @@ fn bond_with_duplicate_vote_should_be_ignored_by_npos_election_elected() {
 
 			// winners should be 21 and 31. Otherwise this election is taking duplicates into account.
 
-			let sp_npos_elections::ElectionResult {
+			let tp_npos_elections::ElectionResult {
 				winners,
 				assignments,
 			} = Staking::do_phragmen::<Perbill>(0).unwrap();
 
-			let winners = sp_npos_elections::to_without_backing(winners);
+			let winners = tp_npos_elections::to_without_backing(winners);
 			assert_eq!(winners, vec![21, 11]);
 			// only distribution to 21 and 31.
 			assert_eq!(assignments.iter().find(|a| a.who == 1).unwrap().distribution.len(), 2);
@@ -2912,7 +2912,7 @@ mod offchain_election {
 		assert_noop, assert_ok, assert_err_with_weight,
 		dispatch::DispatchResultWithPostInfo,
 	};
-	use sp_runtime::transaction_validity::TransactionSource;
+	use tp_runtime::transaction_validity::TransactionSource;
 	use mock::*;
 	use parking_lot::RwLock;
 	use tet_core::offchain::{
@@ -2920,7 +2920,7 @@ mod offchain_election {
 		OffchainExt, TransactionPoolExt,
 	};
 	use tet_io::TestExternalities;
-	use sp_npos_elections::StakedAssignment;
+	use tp_npos_elections::StakedAssignment;
 	use frame_support::traits::OffchainWorker;
 	use std::sync::Arc;
 	use tetcore_test_utils::assert_eq_uvec;
@@ -3462,7 +3462,7 @@ mod offchain_election {
 			};
 
 			assert_eq!(
-				<Staking as sp_runtime::traits::ValidateUnsigned>::validate_unsigned(
+				<Staking as tp_runtime::traits::ValidateUnsigned>::validate_unsigned(
 					TransactionSource::Local,
 					&inner,
 				),
@@ -3506,7 +3506,7 @@ mod offchain_election {
 			};
 
 			assert_eq!(
-				<Staking as sp_runtime::traits::ValidateUnsigned>::validate_unsigned(
+				<Staking as tp_runtime::traits::ValidateUnsigned>::validate_unsigned(
 					TransactionSource::Local,
 					&inner,
 				),
@@ -3555,7 +3555,7 @@ mod offchain_election {
 
 			// pass this call to ValidateUnsigned
 			assert_eq!(
-				<Staking as sp_runtime::traits::ValidateUnsigned>::validate_unsigned(
+				<Staking as tp_runtime::traits::ValidateUnsigned>::validate_unsigned(
 					TransactionSource::Local,
 					&inner,
 				),
@@ -4112,7 +4112,7 @@ mod offchain_election {
 
 		ext.execute_with(|| {
 			use offchain_election::OFFCHAIN_HEAD_DB;
-			use sp_runtime::offchain::storage::StorageValueRef;
+			use tp_runtime::offchain::storage::StorageValueRef;
 
 			run_to_block(12);
 
@@ -4136,7 +4136,7 @@ mod offchain_election {
 
 		ext.execute_with(|| {
 			use offchain_election::OFFCHAIN_HEAD_DB;
-			use sp_runtime::offchain::storage::StorageValueRef;
+			use tp_runtime::offchain::storage::StorageValueRef;
 			let storage = StorageValueRef::persistent(&OFFCHAIN_HEAD_DB);
 
 			run_to_block(12);

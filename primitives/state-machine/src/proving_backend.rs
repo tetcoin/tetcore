@@ -22,11 +22,11 @@ use parking_lot::RwLock;
 use codec::{Decode, Codec};
 use log::debug;
 use tetsy_hash_db::{Hasher, HashDB, EMPTY_PREFIX, Prefix};
-use sp_trie::{
+use tp_trie::{
 	MemoryDB, empty_child_trie_root, read_trie_value_with, read_child_trie_value_with,
 	record_all_keys, StorageProof,
 };
-pub use sp_trie::{Recorder, trie_types::{Layout, TrieError}};
+pub use tp_trie::{Recorder, trie_types::{Layout, TrieError}};
 use crate::trie_backend::TrieBackend;
 use crate::trie_backend_essence::{Ephemeral, TrieBackendEssence, TrieBackendStorage};
 use crate::{Error, ExecutionError, Backend, DBValue};
@@ -303,8 +303,8 @@ mod tests {
 	use crate::trie_backend::tests::test_trie;
 	use super::*;
 	use crate::proving_backend::create_proof_check_backend;
-	use sp_trie::PrefixedMemoryDB;
-	use sp_runtime::traits::BlakeTwo256;
+	use tp_trie::PrefixedMemoryDB;
+	use tp_runtime::traits::BlakeTwo256;
 
 	fn test_proving<'a>(
 		trie_backend: &'a TrieBackend<PrefixedMemoryDB<BlakeTwo256>,BlakeTwo256>,

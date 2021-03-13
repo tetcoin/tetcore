@@ -15,15 +15,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use sp_api::{
+use tp_api::{
 	RuntimeApiInfo, decl_runtime_apis, impl_runtime_apis, mock_impl_runtime_apis,
 	ApiError,
 	ApiExt,
 };
-use sp_runtime::{traits::{GetNodeBlockType, Block as BlockT}, generic::BlockId};
+use tp_runtime::{traits::{GetNodeBlockType, Block as BlockT}, generic::BlockId};
 use tet_core::NativeOrEncoded;
 use tetcore_test_runtime_client::runtime::Block;
-use sp_blockchain::Result;
+use tp_blockchain::Result;
 
 /// The declaration of the `Runtime` type and the implementation of the `GetNodeBlockType`
 /// trait are done by the `construct_runtime!` macro in a real runtime.
@@ -72,8 +72,8 @@ impl_runtime_apis! {
 		fn same_name() {}
 	}
 
-	impl sp_api::Core<Block> for Runtime {
-		fn version() -> sp_version::RuntimeVersion {
+	impl tp_api::Core<Block> for Runtime {
+		fn version() -> tp_version::RuntimeVersion {
 			unimplemented!()
 		}
 		fn execute_block(_: Block) {
@@ -180,7 +180,7 @@ fn check_runtime_api_versions_contains<T: RuntimeApiInfo + ?Sized>() {
 fn check_runtime_api_versions() {
 	check_runtime_api_versions_contains::<dyn Api<Block, Error = ()>>();
 	check_runtime_api_versions_contains::<dyn ApiWithCustomVersion<Block, Error = ()>>();
-	check_runtime_api_versions_contains::<dyn sp_api::Core<Block, Error = ()>>();
+	check_runtime_api_versions_contains::<dyn tp_api::Core<Block, Error = ()>>();
 }
 
 #[test]

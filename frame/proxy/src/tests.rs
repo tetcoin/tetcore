@@ -27,7 +27,7 @@ use frame_support::{
 };
 use codec::{Encode, Decode};
 use tet_core::H256;
-use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
+use tp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 use crate as proxy;
 
 impl_outer_origin! {

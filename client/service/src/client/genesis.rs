@@ -18,7 +18,7 @@
 
 //! Tool for creating the genesis block.
 
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, Hash as HashT, Zero};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, Hash as HashT, Zero};
 
 /// Create a genesis block, given the initial storage.
 pub fn construct_genesis_block<

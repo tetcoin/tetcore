@@ -140,7 +140,7 @@ mod changes_trie {
 
 #[cfg(feature = "std")]
 mod std_reexport {
-	pub use sp_trie::{trie_types::{Layout, TrieDBMut}, StorageProof, TrieMut, DBValue, MemoryDB};
+	pub use tp_trie::{trie_types::{Layout, TrieDBMut}, StorageProof, TrieMut, DBValue, MemoryDB};
 	pub use crate::testing::TestExternalities;
 	pub use crate::basic::BasicExternalities;
 	pub use crate::read_only::{ReadOnlyExternalities, InspectState};
@@ -868,7 +868,7 @@ mod tests {
 	use tet_core::{
 		map, traits::{Externalities, RuntimeCode}, testing::TaskExecutor,
 	};
-	use sp_runtime::traits::BlakeTwo256;
+	use tp_runtime::traits::BlakeTwo256;
 	use std::{result, collections::HashMap};
 	use codec::Decode;
 	use tet_core::{

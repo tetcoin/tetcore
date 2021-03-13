@@ -28,13 +28,13 @@ use codec::{Decode, Encode};
 use tet_core::ChangesTrieConfiguration;
 use tet_core::storage::{well_known_keys, ChildInfo};
 use tet_core::offchain::storage::InMemOffchainStorage;
-use sp_state_machine::{
+use tp_state_machine::{
 	Backend as StateBackend, TrieBackend, InMemoryBackend, ChangesTrieTransaction,
 	StorageCollection, ChildStorageCollection,
 };
-use sp_runtime::{generic::BlockId, Justification, Storage};
-use sp_runtime::traits::{Block as BlockT, NumberFor, Zero, Header, HashFor};
-use sp_blockchain::{Error as ClientError, Result as ClientResult};
+use tp_runtime::{generic::BlockId, Justification, Storage};
+use tp_runtime::traits::{Block as BlockT, NumberFor, Zero, Header, HashFor};
+use tp_blockchain::{Error as ClientError, Result as ClientResult};
 use sc_client_api::{
 	backend::{
 		AuxStore, Backend as ClientBackend, BlockImportOperation, RemoteBackend, NewBlockState,
@@ -508,7 +508,7 @@ impl<H: Hasher> StateBackend<H> for GenesisOrUnavailableState<H>
 
 	fn register_overlay_stats(&mut self, _stats: &sp_state_machine::StateMachineStats) { }
 
-	fn usage_info(&self) -> sp_state_machine::UsageInfo {
+	fn usage_info(&self) -> tp_state_machine::UsageInfo {
 		sp_state_machine::UsageInfo::empty()
 	}
 

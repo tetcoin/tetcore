@@ -25,7 +25,7 @@ use frame_support::{
 	weights::Weight,
 };
 use tet_core::H256;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup, BadOrigin},
 	testing::Header, Perbill,
 };

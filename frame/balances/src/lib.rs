@@ -113,7 +113,7 @@
 //!
 //! ```
 //! use frame_support::traits::{WithdrawReasons, LockableCurrency};
-//! use sp_runtime::traits::Bounded;
+//! use tp_runtime::traits::Bounded;
 //! pub trait Config: frame_system::Config {
 //! 	type Currency: LockableCurrency<Self::AccountId, Moment=Self::BlockNumber>;
 //! }
@@ -168,7 +168,7 @@ use frame_support::{
 		ExistenceRequirement::AllowDeath, BalanceStatus as Status,
 	}
 };
-use sp_runtime::{
+use tp_runtime::{
 	RuntimeDebug, DispatchResult, DispatchError,
 	traits::{
 		Zero, AtLeast32BitUnsigned, StaticLookup, Member, CheckedAdd, CheckedSub,

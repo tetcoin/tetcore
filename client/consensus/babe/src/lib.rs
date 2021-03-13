@@ -65,7 +65,7 @@
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
-pub use sp_consensus_babe::{
+pub use tp_consensus_babe::{
 	BabeApi, ConsensusLog, BABE_ENGINE_ID, BabeEpochConfiguration, BabeGenesisConfiguration,
 	AuthorityId, AuthorityPair, AuthoritySignature, BabeAuthorityWeight, VRF_OUTPUT_LENGTH,
 	digests::{
@@ -73,34 +73,34 @@ pub use sp_consensus_babe::{
 		PrimaryPreDigest, SecondaryPlainPreDigest,
 	},
 };
-pub use sp_consensus::SyncOracle;
+pub use tp_consensus::SyncOracle;
 use std::{
 	collections::HashMap, sync::Arc, u64, pin::Pin, time::{Instant, Duration},
 	any::Any, borrow::Cow, convert::TryInto,
 };
-use sp_consensus::{ImportResult, CanAuthorWith, import_queue::BoxJustificationImport};
+use tp_consensus::{ImportResult, CanAuthorWith, import_queue::BoxJustificationImport};
 use tet_core::crypto::Public;
 use tet_application_crypto::AppKey;
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-use sp_runtime::{
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_runtime::{
 	generic::{BlockId, OpaqueDigestItemId}, Justification,
 	traits::{Block as BlockT, Header, DigestItemFor, Zero},
 };
-use sp_api::{ProvideRuntimeApi, NumberFor};
+use tp_api::{ProvideRuntimeApi, NumberFor};
 use parking_lot::Mutex;
-use sp_inherents::{InherentDataProviders, InherentData};
+use tp_inherents::{InherentDataProviders, InherentData};
 use sc_telemetry::{telemetry, CONSENSUS_TRACE, CONSENSUS_DEBUG};
-use sp_consensus::{
+use tp_consensus::{
 	BlockImport, Environment, Proposer, BlockCheckParams,
 	ForkChoiceStrategy, BlockImportParams, BlockOrigin, Error as ConsensusError,
 	SelectChain, SlotData, import_queue::{Verifier, BasicQueue, DefaultImportQueue, CacheKeyId},
 };
-use sp_consensus_babe::inherents::BabeInherentData;
-use sp_timestamp::{TimestampInherentData, InherentType as TimestampInherent};
+use tp_consensus_babe::inherents::BabeInherentData;
+use tp_timestamp::{TimestampInherentData, InherentType as TimestampInherent};
 use sc_client_api::{
 	backend::AuxStore, BlockchainEvents, ProvideUncles,
 };
-use sp_block_builder::BlockBuilder as BlockBuilderApi;
+use tp_block_builder::BlockBuilder as BlockBuilderApi;
 use futures::channel::mpsc::{channel, Sender, Receiver};
 use retain_mut::RetainMut;
 
@@ -114,14 +114,14 @@ use sc_consensus_slots::{
 use sc_consensus_epochs::{
 	descendent_query, SharedEpochChanges, EpochChangesFor, Epoch as EpochT, ViableEpochDescriptor,
 };
-use sp_blockchain::{
+use tp_blockchain::{
 	Result as ClientResult, Error as ClientError,
 	HeaderBackend, ProvideCache, HeaderMetadata
 };
 use schnorrkel::SignatureError;
 use codec::{Encode, Decode};
-use sp_api::ApiExt;
-use sp_consensus_slots::Slot;
+use tp_api::ApiExt;
+use tp_consensus_slots::Slot;
 
 mod verification;
 mod migration;
@@ -310,14 +310,14 @@ impl Config {
 	/// Either fetch the slot duration from disk or compute it from the genesis
 	/// state.
 	pub fn get_or_compute<B: BlockT, C>(client: &C) -> ClientResult<Self> where
-		C: AuxStore + ProvideRuntimeApi<B>, C::Api: BabeApi<B, Error = sp_blockchain::Error>,
+		C: AuxStore + ProvideRuntimeApi<B>, C::Api: BabeApi<B, Error = tp_blockchain::Error>,
 	{
 		trace!(target: "babe", "Getting slot duration");
 		match sc_consensus_slots::SlotDuration::get_or_compute(client, |a, b| {
-			let has_api_v1 = a.has_api_with::<dyn BabeApi<B, Error = sp_blockchain::Error>, _>(
+			let has_api_v1 = a.has_api_with::<dyn BabeApi<B, Error = tp_blockchain::Error>, _>(
 				&b, |v| v == 1,
 			)?;
-			let has_api_v2 = a.has_api_with::<dyn BabeApi<B, Error = sp_blockchain::Error>, _>(
+			let has_api_v2 = a.has_api_with::<dyn BabeApi<B, Error = tp_blockchain::Error>, _>(
 				&b, |v| v == 2,
 			)?;
 
@@ -416,8 +416,8 @@ pub fn start_babe<B, C, SC, E, I, SO, CAW, BS, Error>(BabeParams {
 	C::Api: BabeApi<B>,
 	SC: SelectChain<B> + 'static,
 	E: Environment<B, Error = Error> + Send + Sync + 'static,
-	E::Proposer: Proposer<B, Error = Error, Transaction = sp_api::TransactionFor<C, B>>,
-	I: BlockImport<B, Error = ConsensusError, Transaction = sp_api::TransactionFor<C, B>> + Send
+	E::Proposer: Proposer<B, Error = Error, Transaction = tp_api::TransactionFor<C, B>>,
+	I: BlockImport<B, Error = ConsensusError, Transaction = tp_api::TransactionFor<C, B>> + Send
 		+ Sync + 'static,
 	Error: std::error::Error + Send + From<ConsensusError> + From<I::Error> + 'static,
 	SO: SyncOracle + Send + Sync + Clone + 'static,
@@ -523,8 +523,8 @@ where
 		HeaderMetadata<B, Error = ClientError>,
 	C::Api: BabeApi<B>,
 	E: Environment<B, Error = Error>,
-	E::Proposer: Proposer<B, Error = Error, Transaction = sp_api::TransactionFor<C, B>>,
-	I: BlockImport<B, Transaction = sp_api::TransactionFor<C, B>> + Send + Sync + 'static,
+	E::Proposer: Proposer<B, Error = Error, Transaction = tp_api::TransactionFor<C, B>>,
+	I: BlockImport<B, Transaction = tp_api::TransactionFor<C, B>> + Send + Sync + 'static,
 	SO: SyncOracle + Send + Clone,
 	BS: BackoffAuthoringBlocksStrategy<NumberFor<B>>,
 	Error: std::error::Error + Send + From<ConsensusError> + From<I::Error> + 'static,
@@ -533,7 +533,7 @@ where
 	type Claim = (PreDigest, AuthorityId);
 	type SyncOracle = SO;
 	type CreateProposer = Pin<Box<
-		dyn Future<Output = Result<E::Proposer, sp_consensus::Error>> + Send + 'static
+		dyn Future<Output = Result<E::Proposer, tp_consensus::Error>> + Send + 'static
 	>>;
 	type Proposer = E::Proposer;
 	type BlockImport = I;
@@ -645,11 +645,11 @@ where
 				&public_type_pair,
 				header_hash.as_ref()
 			)
-			.map_err(|e| sp_consensus::Error::CannotSign(
+			.map_err(|e| tp_consensus::Error::CannotSign(
 				public.clone(), e.to_string(),
 			))?;
 			let signature: AuthoritySignature = signature.clone().try_into()
-				.map_err(|_| sp_consensus::Error::InvalidSignature(
+				.map_err(|_| tp_consensus::Error::InvalidSignature(
 					signature, public
 				))?;
 			let digest_item = <DigestItemFor<B> as CompatibleDigestItem>::babe_seal(signature.into());
@@ -801,7 +801,7 @@ impl SlotCompatible for TimeSource {
 	fn extract_timestamp_and_slot(
 		&self,
 		data: &InherentData,
-	) -> Result<(TimestampInherent, Slot, std::time::Duration), sp_consensus::Error> {
+	) -> Result<(TimestampInherent, Slot, std::time::Duration), tp_consensus::Error> {
 		trace!(target: "babe", "extract timestamp");
 		data.timestamp_inherent_data()
 			.and_then(|t| data.babe_inherent_data().map(|a| (t, a)))
@@ -835,7 +835,7 @@ impl<Block: BlockT> BabeLink<Block> {
 pub struct BabeVerifier<Block: BlockT, Client, SelectChain, CAW> {
 	client: Arc<Client>,
 	select_chain: SelectChain,
-	inherent_data_providers: sp_inherents::InherentDataProviders,
+	inherent_data_providers: tp_inherents::InherentDataProviders,
 	config: Config,
 	epoch_changes: SharedEpochChanges<Block, Epoch>,
 	time_source: TimeSource,
@@ -846,9 +846,9 @@ impl<Block, Client, SelectChain, CAW> BabeVerifier<Block, Client, SelectChain, C
 where
 	Block: BlockT,
 	Client: AuxStore + HeaderBackend<Block> + HeaderMetadata<Block> + ProvideRuntimeApi<Block>,
-	Client::Api: BlockBuilderApi<Block, Error = sp_blockchain::Error>
-		+ BabeApi<Block, Error = sp_blockchain::Error>,
-	SelectChain: sp_consensus::SelectChain<Block>,
+	Client::Api: BlockBuilderApi<Block, Error = tp_blockchain::Error>
+		+ BabeApi<Block, Error = tp_blockchain::Error>,
+	SelectChain: tp_consensus::SelectChain<Block>,
 	CAW: CanAuthorWith<Block>,
 {
 	fn check_inherents(
@@ -969,10 +969,10 @@ impl<Block, Client, SelectChain, CAW> Verifier<Block>
 	for BabeVerifier<Block, Client, SelectChain, CAW>
 where
 	Block: BlockT,
-	Client: HeaderMetadata<Block, Error = sp_blockchain::Error> + HeaderBackend<Block> + ProvideRuntimeApi<Block>
+	Client: HeaderMetadata<Block, Error = tp_blockchain::Error> + HeaderBackend<Block> + ProvideRuntimeApi<Block>
 		+ Send + Sync + AuxStore + ProvideCache<Block>,
-	Client::Api: BlockBuilderApi<Block, Error = sp_blockchain::Error> + BabeApi<Block, Error = sp_blockchain::Error>,
-	SelectChain: sp_consensus::SelectChain<Block>,
+	Client::Api: BlockBuilderApi<Block, Error = tp_blockchain::Error> + BabeApi<Block, Error = tp_blockchain::Error>,
+	SelectChain: tp_consensus::SelectChain<Block>,
 	CAW: CanAuthorWith<Block> + Send + Sync,
 {
 	fn verify(
@@ -1099,7 +1099,7 @@ where
 pub fn register_babe_inherent_data_provider(
 	inherent_data_providers: &InherentDataProviders,
 	slot_duration: u64,
-) -> Result<(), sp_consensus::Error> {
+) -> Result<(), tp_consensus::Error> {
 	debug!(target: "babe", "Registering");
 	if !inherent_data_providers.has_provider(&sp_consensus_babe::inherents::INHERENT_IDENTIFIER) {
 		inherent_data_providers
@@ -1155,14 +1155,14 @@ impl<Block: BlockT, Client, I> BabeBlockImport<Block, Client, I> {
 
 impl<Block, Client, Inner> BlockImport<Block> for BabeBlockImport<Block, Client, Inner> where
 	Block: BlockT,
-	Inner: BlockImport<Block, Transaction = sp_api::TransactionFor<Client, Block>> + Send + Sync,
+	Inner: BlockImport<Block, Transaction = tp_api::TransactionFor<Client, Block>> + Send + Sync,
 	Inner::Error: Into<ConsensusError>,
-	Client: HeaderBackend<Block> + HeaderMetadata<Block, Error = sp_blockchain::Error>
+	Client: HeaderBackend<Block> + HeaderMetadata<Block, Error = tp_blockchain::Error>
 		+ AuxStore + ProvideRuntimeApi<Block> + ProvideCache<Block> + Send + Sync,
 	Client::Api: BabeApi<Block> + ApiExt<Block>,
 {
 	type Error = ConsensusError;
-	type Transaction = sp_api::TransactionFor<Client, Block>;
+	type Transaction = tp_api::TransactionFor<Client, Block>;
 
 	fn import_block(
 		&mut self,
@@ -1411,7 +1411,7 @@ fn prune_finalized<Block, Client>(
 	epoch_changes: &mut EpochChangesFor<Block, Epoch>,
 ) -> Result<(), ConsensusError> where
 	Block: BlockT,
-	Client: HeaderBackend<Block> + HeaderMetadata<Block, Error = sp_blockchain::Error>,
+	Client: HeaderBackend<Block> + HeaderMetadata<Block, Error = tp_blockchain::Error>,
 {
 	let info = client.info();
 
@@ -1447,7 +1447,7 @@ pub fn block_import<Client, Block: BlockT, I>(
 	wrapped_block_import: I,
 	client: Arc<Client>,
 ) -> ClientResult<(BabeBlockImport<Block, Client, I>, BabeLink<Block>)> where
-	Client: AuxStore + HeaderBackend<Block> + HeaderMetadata<Block, Error = sp_blockchain::Error>,
+	Client: AuxStore + HeaderBackend<Block> + HeaderMetadata<Block, Error = tp_blockchain::Error>,
 {
 	let epoch_changes = aux_schema::load_epoch_changes::<Block, _>(&*client, &config)?;
 	let link = BabeLink {
@@ -1494,12 +1494,12 @@ pub fn import_queue<Block: BlockT, Client, SelectChain, Inner, CAW>(
 	registry: Option<&Registry>,
 	can_author_with: CAW,
 ) -> ClientResult<DefaultImportQueue<Block, Client>> where
-	Inner: BlockImport<Block, Error = ConsensusError, Transaction = sp_api::TransactionFor<Client, Block>>
+	Inner: BlockImport<Block, Error = ConsensusError, Transaction = tp_api::TransactionFor<Client, Block>>
 		+ Send + Sync + 'static,
 	Client: ProvideRuntimeApi<Block> + ProvideCache<Block> + Send + Sync + AuxStore + 'static,
-	Client: HeaderBackend<Block> + HeaderMetadata<Block, Error = sp_blockchain::Error>,
-	Client::Api: BlockBuilderApi<Block> + BabeApi<Block> + ApiExt<Block, Error = sp_blockchain::Error>,
-	SelectChain: sp_consensus::SelectChain<Block> + 'static,
+	Client: HeaderBackend<Block> + HeaderMetadata<Block, Error = tp_blockchain::Error>,
+	Client::Api: BlockBuilderApi<Block> + BabeApi<Block> + ApiExt<Block, Error = tp_blockchain::Error>,
+	SelectChain: tp_consensus::SelectChain<Block> + 'static,
 	CAW: CanAuthorWith<Block> + Send + Sync + 'static,
 {
 	register_babe_inherent_data_provider(&inherent_data_providers, babe_link.config.slot_duration)?;

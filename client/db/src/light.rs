@@ -29,7 +29,7 @@ use sc_client_api::{
 	},
 	Storage,
 };
-use sp_blockchain::{
+use tp_blockchain::{
 	CachedHeaderMetadata, HeaderMetadata, HeaderMetadataCache,
 	Error as ClientError, Result as ClientResult,
 	HeaderBackend as BlockchainHeaderBackend,
@@ -37,8 +37,8 @@ use sp_blockchain::{
 };
 use tetcore_database::{Database, Transaction};
 use codec::{Decode, Encode};
-use sp_runtime::generic::{DigestItem, BlockId};
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, Zero, One, NumberFor, HashFor};
+use tp_runtime::generic::{DigestItem, BlockId};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, Zero, One, NumberFor, HashFor};
 use crate::cache::{DbCacheSync, DbCache, ComplexBlockId, EntryType as CacheEntryType};
 use crate::utils::{self, meta_keys, DatabaseType, Meta, read_db, block_id_to_lookup_key, read_meta};
 use crate::{DatabaseSettings, FrozenForDuration, DbHash};
@@ -240,7 +240,7 @@ impl<Block: BlockT> LightStorage<Block> {
 		// handle reorg.
 		let meta = self.meta.read();
 		if meta.best_hash != Default::default() {
-			let tree_route = sp_blockchain::tree_route(self, meta.best_hash, route_to)?;
+			let tree_route = tp_blockchain::tree_route(self, meta.best_hash, route_to)?;
 
 			// update block number to hash lookup entries.
 			for retracted in tree_route.retracted() {
@@ -627,9 +627,9 @@ fn cht_key<N: TryInto<u32>>(cht_type: u8, block: N) -> ClientResult<[u8; 5]> {
 pub(crate) mod tests {
 	use sc_client_api::cht;
 	use tet_core::ChangesTrieConfiguration;
-	use sp_runtime::generic::{DigestItem, ChangesTrieSignal};
-	use sp_runtime::testing::{H256 as Hash, Header, Block as RawBlock, ExtrinsicWrapper};
-	use sp_blockchain::{lowest_common_ancestor, tree_route};
+	use tp_runtime::generic::{DigestItem, ChangesTrieSignal};
+	use tp_runtime::testing::{H256 as Hash, Header, Block as RawBlock, ExtrinsicWrapper};
+	use tp_blockchain::{lowest_common_ancestor, tree_route};
 	use super::*;
 
 	type Block = RawBlock<ExtrinsicWrapper<u32>>;

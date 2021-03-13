@@ -56,7 +56,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use tetcore_std::{prelude::*, convert::TryInto};
-use sp_runtime::traits::Hash;
+use tp_runtime::traits::Hash;
 use frame_support::{
 	decl_module, decl_storage, traits::Randomness,
 	weights::Weight
@@ -135,7 +135,7 @@ mod tests {
 	use crate as pallet_randomness_collective_flip;
 	use super::*;
 	use tet_core::H256;
-	use sp_runtime::{
+	use tp_runtime::{
 		testing::Header,
 		traits::{BlakeTwo256, Header as _, IdentityLookup},
 	};

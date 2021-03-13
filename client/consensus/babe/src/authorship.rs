@@ -19,16 +19,16 @@
 //! BABE authority selection and slot claiming.
 
 use tet_application_crypto::AppKey;
-use sp_consensus_babe::{
+use tp_consensus_babe::{
 	BABE_VRF_PREFIX, AuthorityId, BabeAuthorityWeight, make_transcript, make_transcript_data,
 	Slot,
 };
-use sp_consensus_babe::digests::{
+use tp_consensus_babe::digests::{
 	PreDigest, PrimaryPreDigest, SecondaryPlainPreDigest, SecondaryVRFPreDigest,
 };
-use sp_consensus_vrf::schnorrkel::{VRFOutput, VRFProof};
+use tp_consensus_vrf::schnorrkel::{VRFOutput, VRFProof};
 use tet_core::{U256, blake2_256, crypto::Public};
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use codec::Encode;
 use schnorrkel::{
 	keys::PublicKey,
@@ -292,7 +292,7 @@ mod tests {
 	use super::*;
 	use std::sync::Arc;
 	use tet_core::{sr25519::Pair, crypto::Pair as _};
-	use sp_consensus_babe::{AuthorityId, BabeEpochConfiguration, AllowedSlots};
+	use tp_consensus_babe::{AuthorityId, BabeEpochConfiguration, AllowedSlots};
 	use sc_keystore::LocalKeystore;
 
 	#[test]

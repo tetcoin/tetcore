@@ -22,7 +22,7 @@ use std::fs;
 use std::io::{Read, Write, ErrorKind};
 use std::path::{Path, PathBuf};
 
-use sp_runtime::traits::Block as BlockT;
+use tp_runtime::traits::Block as BlockT;
 use crate::utils::DatabaseType;
 use tetsy_kvdb_rocksdb::{Database, DatabaseConfig};
 
@@ -36,7 +36,7 @@ const CURRENT_VERSION: u32 = 2;
 const V1_NUM_COLUMNS: u32 = 11;
 
 /// Upgrade database to current version.
-pub fn upgrade_db<Block: BlockT>(db_path: &Path, db_type: DatabaseType) -> sp_blockchain::Result<()> {
+pub fn upgrade_db<Block: BlockT>(db_path: &Path, db_type: DatabaseType) -> tp_blockchain::Result<()> {
 	let is_empty = db_path.read_dir().map_or(true, |mut d| d.next().is_none());
 	if !is_empty {
 		let db_version = current_version(db_path)?;
@@ -54,9 +54,9 @@ pub fn upgrade_db<Block: BlockT>(db_path: &Path, db_type: DatabaseType) -> sp_bl
 /// Migration from version1 to version2:
 /// 1) the number of columns has changed from 11 to 12;
 /// 2) transactions column is added;
-fn migrate_1_to_2<Block: BlockT>(db_path: &Path, _db_type: DatabaseType) -> sp_blockchain::Result<()> {
+fn migrate_1_to_2<Block: BlockT>(db_path: &Path, _db_type: DatabaseType) -> tp_blockchain::Result<()> {
 	let db_path = db_path.to_str()
-		.ok_or_else(|| sp_blockchain::Error::Backend("Invalid database path".into()))?;
+		.ok_or_else(|| tp_blockchain::Error::Backend("Invalid database path".into()))?;
 	let db_cfg = DatabaseConfig::with_columns(V1_NUM_COLUMNS);
 	let db = Database::open(&db_cfg, db_path).map_err(db_err)?;
 	db.add_column().map_err(db_err)
@@ -64,8 +64,8 @@ fn migrate_1_to_2<Block: BlockT>(db_path: &Path, _db_type: DatabaseType) -> sp_b
 
 /// Reads current database version from the file at given path.
 /// If the file does not exist returns 0.
-fn current_version(path: &Path) -> sp_blockchain::Result<u32> {
-	let unknown_version_err = || sp_blockchain::Error::Backend("Unknown database version".into());
+fn current_version(path: &Path) -> tp_blockchain::Result<u32> {
+	let unknown_version_err = || tp_blockchain::Error::Backend("Unknown database version".into());
 
 	match fs::File::open(version_file_path(path)) {
 		Err(ref err) if err.kind() == ErrorKind::NotFound => Ok(0),
@@ -79,13 +79,13 @@ fn current_version(path: &Path) -> sp_blockchain::Result<u32> {
 }
 
 /// Maps database error to client error
-fn db_err(err: std::io::Error) -> sp_blockchain::Error {
+fn db_err(err: std::io::Error) -> tp_blockchain::Error {
 	sp_blockchain::Error::Backend(format!("{}", err))
 }
 
 /// Writes current database version to the file.
 /// Creates a new file if the version file does not exist yet.
-fn update_version(path: &Path) -> sp_blockchain::Result<()> {
+fn update_version(path: &Path) -> tp_blockchain::Result<()> {
 	fs::create_dir_all(path).map_err(db_err)?;
 	let mut file = fs::File::create(version_file_path(path)).map_err(db_err)?;
 	file.write_all(format!("{}", CURRENT_VERSION).as_bytes()).map_err(db_err)?;
@@ -114,7 +114,7 @@ mod tests {
 		}
 	}
 
-	fn open_database(db_path: &Path) -> sp_blockchain::Result<()> {
+	fn open_database(db_path: &Path) -> tp_blockchain::Result<()> {
 		crate::utils::open_database::<Block>(&DatabaseSettings {
 			state_cache_size: 0,
 			state_cache_child_ratio: None,

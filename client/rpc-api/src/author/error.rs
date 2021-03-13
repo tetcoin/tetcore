@@ -20,7 +20,7 @@
 
 use crate::errors;
 use tetsy_jsonrpc_core as rpc;
-use sp_runtime::transaction_validity::InvalidTransaction;
+use tp_runtime::transaction_validity::InvalidTransaction;
 
 /// Author RPC Result type.
 pub type Result<T> = std::result::Result<T, Error>;
@@ -102,7 +102,7 @@ const UNSUPPORTED_KEY_TYPE: i64 = POOL_INVALID_TX + 7;
 
 impl From<Error> for rpc::Error {
 	fn from(e: Error) -> Self {
-		use sp_transaction_pool::error::{Error as PoolError};
+		use tp_transaction_pool::error::{Error as PoolError};
 
 		match e {
 			Error::BadFormat(e) => rpc::Error {

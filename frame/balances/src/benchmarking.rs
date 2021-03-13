@@ -23,7 +23,7 @@ use super::*;
 
 use frame_system::RawOrigin;
 use frame_benchmarking::{benchmarks, account, whitelisted_caller};
-use sp_runtime::traits::Bounded;
+use tp_runtime::traits::Bounded;
 
 use crate::Module as Balances;
 

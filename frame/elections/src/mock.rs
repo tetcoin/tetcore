@@ -24,7 +24,7 @@ use frame_support::{
 	traits::{ChangeMembers, Currency, LockIdentifier},
 };
 use tet_core::H256;
-use sp_runtime::{
+use tp_runtime::{
 	BuildStorage, testing::Header, traits::{BlakeTwo256, IdentityLookup},
 };
 use crate as elections;
@@ -125,8 +125,8 @@ impl elections::Config for Test {
 	type ModuleId = ElectionModuleId;
 }
 
-pub type Block = sp_runtime::generic::Block<Header, UncheckedExtrinsic>;
-pub type UncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<u32, u64, Call, ()>;
+pub type Block = tp_runtime::generic::Block<Header, UncheckedExtrinsic>;
+pub type UncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<u32, u64, Call, ()>;
 
 use frame_system as system;
 frame_support::construct_runtime!(

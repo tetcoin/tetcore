@@ -18,8 +18,8 @@
 //! Miscellaneous additional datatypes.
 
 use codec::{Encode, Decode};
-use sp_runtime::RuntimeDebug;
-use sp_runtime::traits::{Zero, Bounded, CheckedAdd, CheckedSub, CheckedMul, CheckedDiv, Saturating};
+use tp_runtime::RuntimeDebug;
+use tp_runtime::traits::{Zero, Bounded, CheckedAdd, CheckedSub, CheckedMul, CheckedDiv, Saturating};
 use crate::{Vote, VoteThreshold, AccountVote, Conviction};
 
 /// Info regarding an ongoing referendum.

@@ -25,8 +25,8 @@ use parking_lot::Mutex;
 use codec::{Encode, Decode};
 use forktree::ForkTree;
 use sc_client_api::utils::is_descendent_of;
-use sp_blockchain::{HeaderMetadata, HeaderBackend, Error as ClientError};
-use sp_runtime::traits::{Block as BlockT, NumberFor, One, Zero};
+use tp_blockchain::{HeaderMetadata, HeaderBackend, Error as ClientError};
+use tp_runtime::traits::{Block as BlockT, NumberFor, One, Zero};
 
 /// A builder for `is_descendent_of` functions.
 pub trait IsDescendentOfBuilder<Hash> {

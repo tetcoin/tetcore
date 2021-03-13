@@ -283,7 +283,7 @@ mod tests {
 		ord_parameter_types
 	};
 	use tet_core::H256;
-	use sp_runtime::{traits::{BlakeTwo256, IdentityLookup, BadOrigin}, testing::Header};
+	use tp_runtime::{traits::{BlakeTwo256, IdentityLookup, BadOrigin}, testing::Header};
 	use frame_system::EnsureSignedBy;
 
 	impl_outer_origin! {

@@ -29,11 +29,11 @@ use codec::{Encode, Decode, Input, Error};
 use tet_core::{offchain::KeyTypeId, ChangesTrieConfiguration, OpaqueMetadata, RuntimeDebug};
 use tet_application_crypto::{ed25519, sr25519, ecdsa, RuntimeAppPublic};
 use tetsy_trie_db::{TrieMut, Trie};
-use sp_trie::{PrefixedMemoryDB, StorageProof};
-use sp_trie::trie_types::{TrieDB, TrieDBMut};
+use tp_trie::{PrefixedMemoryDB, StorageProof};
+use tp_trie::trie_types::{TrieDB, TrieDBMut};
 
-use sp_api::{decl_runtime_apis, impl_runtime_apis};
-use sp_runtime::{
+use tp_api::{decl_runtime_apis, impl_runtime_apis};
+use tp_runtime::{
 	create_runtime_str, impl_opaque_keys,
 	ApplyExtrinsicResult, Perbill,
 	transaction_validity::{
@@ -46,24 +46,24 @@ use sp_runtime::{
 	},
 };
 #[cfg(feature = "std")]
-use sp_runtime::traits::NumberFor;
-use sp_version::RuntimeVersion;
+use tp_runtime::traits::NumberFor;
+use tp_version::RuntimeVersion;
 pub use tet_core::hash::H256;
 #[cfg(any(feature = "std", test))]
-use sp_version::NativeVersion;
+use tp_version::NativeVersion;
 use frame_support::{
 	impl_outer_origin, parameter_types,
 	traits::KeyOwnerProofSystem,
 	weights::RuntimeDbWeight,
 };
 use frame_system::limits::{BlockWeights, BlockLength};
-use sp_inherents::{CheckInherentsResult, InherentData};
+use tp_inherents::{CheckInherentsResult, InherentData};
 use cfg_if::cfg_if;
 
 // Ensure Babe and Aura use the same crypto to simplify things a bit.
-pub use sp_consensus_babe::{AuthorityId, Slot, AllowedSlots};
+pub use tp_consensus_babe::{AuthorityId, Slot, AllowedSlots};
 
-pub type AuraId = sp_consensus_aura::sr25519::AuthorityId;
+pub type AuraId = tp_consensus_aura::sr25519::AuthorityId;
 
 // Include the WASM binary
 #[cfg(feature = "std")]
@@ -113,7 +113,7 @@ impl Transfer {
 	/// Convert into a signed extrinsic.
 	#[cfg(feature = "std")]
 	pub fn into_signed_tx(self) -> Extrinsic {
-		let signature = sp_keyring::AccountKeyring::from_public(&self.from)
+		let signature = tp_keyring::AccountKeyring::from_public(&self.from)
 			.expect("Creates keyring from public key.").sign(&self.encode()).into();
 		Extrinsic::Transfer {
 			transfer: self,
@@ -127,7 +127,7 @@ impl Transfer {
 	/// which should be considered as block being full.
 	#[cfg(feature = "std")]
 	pub fn into_resources_exhausting_tx(self) -> Extrinsic {
-		let signature = sp_keyring::AccountKeyring::from_public(&self.from)
+		let signature = tp_keyring::AccountKeyring::from_public(&self.from)
 			.expect("Creates keyring from public key.").sign(&self.encode()).into();
 		Extrinsic::Transfer {
 			transfer: self,
@@ -169,7 +169,7 @@ impl BlindCheckable for Extrinsic {
 		match self {
 			Extrinsic::AuthoritiesChange(new_auth) => Ok(Extrinsic::AuthoritiesChange(new_auth)),
 			Extrinsic::Transfer { transfer, signature, exhaust_resources_when_not_first } => {
-				if sp_runtime::verify_encoded_lazy(&signature, &transfer, &transfer.from) {
+				if tp_runtime::verify_encoded_lazy(&signature, &transfer, &transfer.from) {
 					Ok(Extrinsic::Transfer { transfer, signature, exhaust_resources_when_not_first })
 				} else {
 					Err(InvalidTransaction::BadProof.into())
@@ -204,12 +204,12 @@ impl ExtrinsicT for Extrinsic {
 	}
 }
 
-impl sp_runtime::traits::Dispatchable for Extrinsic {
+impl tp_runtime::traits::Dispatchable for Extrinsic {
 	type Origin = Origin;
 	type Config = ();
 	type Info = ();
 	type PostInfo = ();
-	fn dispatch(self, _origin: Self::Origin) -> sp_runtime::DispatchResultWithInfo<Self::PostInfo> {
+	fn dispatch(self, _origin: Self::Origin) -> tp_runtime::DispatchResultWithInfo<Self::PostInfo> {
 		panic!("This implemention should not be used for actual dispatch.");
 	}
 }
@@ -246,17 +246,17 @@ pub type BlockNumber = u64;
 /// Index of a transaction.
 pub type Index = u64;
 /// The item of a block digest.
-pub type DigestItem = sp_runtime::generic::DigestItem<H256>;
+pub type DigestItem = tp_runtime::generic::DigestItem<H256>;
 /// The digest of a block.
-pub type Digest = sp_runtime::generic::Digest<H256>;
+pub type Digest = tp_runtime::generic::Digest<H256>;
 /// A test block.
-pub type Block = sp_runtime::generic::Block<Header, Extrinsic>;
+pub type Block = tp_runtime::generic::Block<Header, Extrinsic>;
 /// A test block's header.
-pub type Header = sp_runtime::generic::Header<BlockNumber, Hashing>;
+pub type Header = tp_runtime::generic::Header<BlockNumber, Hashing>;
 
 /// Run whatever tests we have.
 pub fn run_tests(mut input: &[u8]) -> Vec<u8> {
-	use sp_runtime::print;
+	use tp_runtime::print;
 
 	print("run_tests...");
 	let block = Block::decode(&mut input).unwrap();
@@ -563,7 +563,7 @@ impl_opaque_keys! {
 cfg_if! {
 	if #[cfg(feature = "std")] {
 		impl_runtime_apis! {
-			impl sp_api::Core<Block> for Runtime {
+			impl tp_api::Core<Block> for Runtime {
 				fn version() -> RuntimeVersion {
 					version()
 				}
@@ -577,13 +577,13 @@ cfg_if! {
 				}
 			}
 
-			impl sp_api::Metadata<Block> for Runtime {
+			impl tp_api::Metadata<Block> for Runtime {
 				fn metadata() -> OpaqueMetadata {
 					unimplemented!()
 				}
 			}
 
-			impl sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block> for Runtime {
+			impl tp_transaction_pool::runtime_api::TaggedTransactionQueue<Block> for Runtime {
 				fn validate_transaction(
 					_source: TransactionSource,
 					utx: <Block as BlockT>::Extrinsic,
@@ -602,7 +602,7 @@ cfg_if! {
 				}
 			}
 
-			impl sp_block_builder::BlockBuilder<Block> for Runtime {
+			impl tp_block_builder::BlockBuilder<Block> for Runtime {
 				fn apply_extrinsic(extrinsic: <Block as BlockT>::Extrinsic) -> ApplyExtrinsicResult {
 					system::execute_transaction(extrinsic)
 				}
@@ -716,7 +716,7 @@ cfg_if! {
 				}
 			}
 
-			impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
+			impl tp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
 				fn slot_duration() -> u64 { 1000 }
 				fn authorities() -> Vec<AuraId> {
 					system::authorities().into_iter().map(|a| {
@@ -726,8 +726,8 @@ cfg_if! {
 				}
 			}
 
-			impl sp_consensus_babe::BabeApi<Block> for Runtime {
-				fn configuration() -> sp_consensus_babe::BabeGenesisConfiguration {
+			impl tp_consensus_babe::BabeApi<Block> for Runtime {
+				fn configuration() -> tp_consensus_babe::BabeGenesisConfiguration {
 					sp_consensus_babe::BabeGenesisConfiguration {
 						slot_duration: 1000,
 						epoch_length: EpochDuration::get(),
@@ -743,39 +743,39 @@ cfg_if! {
 					<pallet_babe::Module<Runtime>>::current_epoch_start()
 				}
 
-				fn current_epoch() -> sp_consensus_babe::Epoch {
+				fn current_epoch() -> tp_consensus_babe::Epoch {
 					<pallet_babe::Module<Runtime>>::current_epoch()
 				}
 
-				fn next_epoch() -> sp_consensus_babe::Epoch {
+				fn next_epoch() -> tp_consensus_babe::Epoch {
 					<pallet_babe::Module<Runtime>>::next_epoch()
 				}
 
 				fn submit_report_equivocation_unsigned_extrinsic(
-					_equivocation_proof: sp_consensus_babe::EquivocationProof<
+					_equivocation_proof: tp_consensus_babe::EquivocationProof<
 						<Block as BlockT>::Header,
 					>,
-					_key_owner_proof: sp_consensus_babe::OpaqueKeyOwnershipProof,
+					_key_owner_proof: tp_consensus_babe::OpaqueKeyOwnershipProof,
 				) -> Option<()> {
 					None
 				}
 
 				fn generate_key_ownership_proof(
-					_slot: sp_consensus_babe::Slot,
-					_authority_id: sp_consensus_babe::AuthorityId,
+					_slot: tp_consensus_babe::Slot,
+					_authority_id: tp_consensus_babe::AuthorityId,
 				) -> Option<sp_consensus_babe::OpaqueKeyOwnershipProof> {
 					None
 				}
 			}
 
-			impl sp_offchain::OffchainWorkerApi<Block> for Runtime {
+			impl tp_offchain::OffchainWorkerApi<Block> for Runtime {
 				fn offchain_worker(header: &<Block as BlockT>::Header) {
 					let ex = Extrinsic::IncludeData(header.number.encode());
 					tet_io::offchain::submit_transaction(ex.encode()).unwrap();
 				}
 			}
 
-			impl sp_session::SessionKeys<Block> for Runtime {
+			impl tp_session::SessionKeys<Block> for Runtime {
 				fn generate_session_keys(_: Option<Vec<u8>>) -> Vec<u8> {
 					SessionKeys::generate(None)
 				}
@@ -787,24 +787,24 @@ cfg_if! {
 				}
 			}
 
-			impl sp_finality_grandpa::GrandpaApi<Block> for Runtime {
-				fn grandpa_authorities() -> sp_finality_grandpa::AuthorityList {
+			impl tp_finality_grandpa::GrandpaApi<Block> for Runtime {
+				fn grandpa_authorities() -> tp_finality_grandpa::AuthorityList {
 					Vec::new()
 				}
 
 				fn submit_report_equivocation_unsigned_extrinsic(
-					_equivocation_proof: sp_finality_grandpa::EquivocationProof<
+					_equivocation_proof: tp_finality_grandpa::EquivocationProof<
 						<Block as BlockT>::Hash,
 						NumberFor<Block>,
 					>,
-					_key_owner_proof: sp_finality_grandpa::OpaqueKeyOwnershipProof,
+					_key_owner_proof: tp_finality_grandpa::OpaqueKeyOwnershipProof,
 				) -> Option<()> {
 					None
 				}
 
 				fn generate_key_ownership_proof(
-					_set_id: sp_finality_grandpa::SetId,
-					_authority_id: sp_finality_grandpa::AuthorityId,
+					_set_id: tp_finality_grandpa::SetId,
+					_authority_id: tp_finality_grandpa::AuthorityId,
 				) -> Option<sp_finality_grandpa::OpaqueKeyOwnershipProof> {
 					None
 				}
@@ -818,7 +818,7 @@ cfg_if! {
 		}
 	} else {
 		impl_runtime_apis! {
-			impl sp_api::Core<Block> for Runtime {
+			impl tp_api::Core<Block> for Runtime {
 				fn version() -> RuntimeVersion {
 					version()
 				}
@@ -832,13 +832,13 @@ cfg_if! {
 				}
 			}
 
-			impl sp_api::Metadata<Block> for Runtime {
+			impl tp_api::Metadata<Block> for Runtime {
 				fn metadata() -> OpaqueMetadata {
 					unimplemented!()
 				}
 			}
 
-			impl sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block> for Runtime {
+			impl tp_transaction_pool::runtime_api::TaggedTransactionQueue<Block> for Runtime {
 				fn validate_transaction(
 					_source: TransactionSource,
 					utx: <Block as BlockT>::Extrinsic,
@@ -857,7 +857,7 @@ cfg_if! {
 				}
 			}
 
-			impl sp_block_builder::BlockBuilder<Block> for Runtime {
+			impl tp_block_builder::BlockBuilder<Block> for Runtime {
 				fn apply_extrinsic(extrinsic: <Block as BlockT>::Extrinsic) -> ApplyExtrinsicResult {
 					system::execute_transaction(extrinsic)
 				}
@@ -975,7 +975,7 @@ cfg_if! {
 				}
 			}
 
-			impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
+			impl tp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
 				fn slot_duration() -> u64 { 1000 }
 				fn authorities() -> Vec<AuraId> {
 					system::authorities().into_iter().map(|a| {
@@ -985,8 +985,8 @@ cfg_if! {
 				}
 			}
 
-			impl sp_consensus_babe::BabeApi<Block> for Runtime {
-				fn configuration() -> sp_consensus_babe::BabeGenesisConfiguration {
+			impl tp_consensus_babe::BabeApi<Block> for Runtime {
+				fn configuration() -> tp_consensus_babe::BabeGenesisConfiguration {
 					sp_consensus_babe::BabeGenesisConfiguration {
 						slot_duration: 1000,
 						epoch_length: EpochDuration::get(),
@@ -1002,39 +1002,39 @@ cfg_if! {
 					<pallet_babe::Module<Runtime>>::current_epoch_start()
 				}
 
-				fn current_epoch() -> sp_consensus_babe::Epoch {
+				fn current_epoch() -> tp_consensus_babe::Epoch {
 					<pallet_babe::Module<Runtime>>::current_epoch()
 				}
 
-				fn next_epoch() -> sp_consensus_babe::Epoch {
+				fn next_epoch() -> tp_consensus_babe::Epoch {
 					<pallet_babe::Module<Runtime>>::next_epoch()
 				}
 
 				fn submit_report_equivocation_unsigned_extrinsic(
-					_equivocation_proof: sp_consensus_babe::EquivocationProof<
+					_equivocation_proof: tp_consensus_babe::EquivocationProof<
 						<Block as BlockT>::Header,
 					>,
-					_key_owner_proof: sp_consensus_babe::OpaqueKeyOwnershipProof,
+					_key_owner_proof: tp_consensus_babe::OpaqueKeyOwnershipProof,
 				) -> Option<()> {
 					None
 				}
 
 				fn generate_key_ownership_proof(
-					_slot: sp_consensus_babe::Slot,
-					_authority_id: sp_consensus_babe::AuthorityId,
+					_slot: tp_consensus_babe::Slot,
+					_authority_id: tp_consensus_babe::AuthorityId,
 				) -> Option<sp_consensus_babe::OpaqueKeyOwnershipProof> {
 					None
 				}
 			}
 
-			impl sp_offchain::OffchainWorkerApi<Block> for Runtime {
+			impl tp_offchain::OffchainWorkerApi<Block> for Runtime {
 				fn offchain_worker(header: &<Block as BlockT>::Header) {
 					let ex = Extrinsic::IncludeData(header.number.encode());
 					tet_io::offchain::submit_transaction(ex.encode()).unwrap()
 				}
 			}
 
-			impl sp_session::SessionKeys<Block> for Runtime {
+			impl tp_session::SessionKeys<Block> for Runtime {
 				fn generate_session_keys(_: Option<Vec<u8>>) -> Vec<u8> {
 					SessionKeys::generate(None)
 				}
@@ -1148,14 +1148,14 @@ fn test_read_child_storage() {
 
 fn test_witness(proof: StorageProof, root: crate::Hash) {
 	use externalities::Externalities;
-	let db: sp_trie::MemoryDB<crate::Hashing> = proof.into_memory_db();
-	let backend = sp_state_machine::TrieBackend::<_, crate::Hashing>::new(
+	let db: tp_trie::MemoryDB<crate::Hashing> = proof.into_memory_db();
+	let backend = tp_state_machine::TrieBackend::<_, crate::Hashing>::new(
 		db,
 		root,
 	);
-	let mut overlay = sp_state_machine::OverlayedChanges::default();
-	let mut cache = sp_state_machine::StorageTransactionCache::<_, _, BlockNumber>::default();
-	let mut ext = sp_state_machine::Ext::new(
+	let mut overlay = tp_state_machine::OverlayedChanges::default();
+	let mut cache = tp_state_machine::StorageTransactionCache::<_, _, BlockNumber>::default();
+	let mut ext = tp_state_machine::Ext::new(
 		&mut overlay,
 		&mut cache,
 		&backend,
@@ -1178,10 +1178,10 @@ mod tests {
 		DefaultTestClientBuilderExt, TestClientBuilder,
 		runtime::TestAPI,
 	};
-	use sp_api::ProvideRuntimeApi;
-	use sp_runtime::generic::BlockId;
+	use tp_api::ProvideRuntimeApi;
+	use tp_runtime::generic::BlockId;
 	use tet_core::storage::well_known_keys::HEAP_PAGES;
-	use sp_state_machine::ExecutionStrategy;
+	use tp_state_machine::ExecutionStrategy;
 	use codec::Encode;
 	use sc_block_builder::BlockBuilderProvider;
 
@@ -1230,11 +1230,11 @@ mod tests {
 	}
 
 	fn witness_backend() -> (sp_trie::MemoryDB<crate::Hashing>, crate::Hash) {
-		use sp_trie::TrieMut;
+		use tp_trie::TrieMut;
 		let mut root = crate::Hash::default();
-		let mut mdb = sp_trie::MemoryDB::<crate::Hashing>::default();
+		let mut mdb = tp_trie::MemoryDB::<crate::Hashing>::default();
 		{
-			let mut trie = sp_trie::trie_types::TrieDBMut::new(&mut mdb, &mut root);
+			let mut trie = tp_trie::trie_types::TrieDBMut::new(&mut mdb, &mut root);
 			trie.insert(b"value3", &[142]).expect("insert failed");
 			trie.insert(b"value4", &[124]).expect("insert failed");
 		};
@@ -1244,11 +1244,11 @@ mod tests {
 	#[test]
 	fn witness_backend_works() {
 		let (db, root) = witness_backend();
-		let backend = sp_state_machine::TrieBackend::<_, crate::Hashing>::new(
+		let backend = tp_state_machine::TrieBackend::<_, crate::Hashing>::new(
 			db,
 			root,
 		);
-		let proof = sp_state_machine::prove_read(backend, vec![b"value3"]).unwrap();
+		let proof = tp_state_machine::prove_read(backend, vec![b"value3"]).unwrap();
 		let client = TestClientBuilder::new()
 			.set_execution_strategy(ExecutionStrategy::Both)
 			.build();

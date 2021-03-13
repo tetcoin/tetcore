@@ -68,15 +68,15 @@ use sc_client_api::{
 };
 use tetsy_scale_codec::{Decode, Encode};
 use prometheus_endpoint::{PrometheusError, Registry};
-use sp_api::ProvideRuntimeApi;
-use sp_blockchain::{HeaderBackend, Error as ClientError, HeaderMetadata};
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{NumberFor, Block as BlockT, DigestFor, Zero};
-use sp_consensus::{SelectChain, BlockImport};
+use tp_api::ProvideRuntimeApi;
+use tp_blockchain::{HeaderBackend, Error as ClientError, HeaderMetadata};
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{NumberFor, Block as BlockT, DigestFor, Zero};
+use tp_consensus::{SelectChain, BlockImport};
 use tet_core::{
 	crypto::Public,
 };
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use tet_application_crypto::AppKey;
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
 use sc_telemetry::{telemetry, CONSENSUS_INFO, CONSENSUS_DEBUG};
@@ -136,10 +136,10 @@ use aux_schema::PersistentData;
 use environment::{Environment, VoterSetState};
 use until_imported::UntilGlobalMessageBlocksImported;
 use communication::{NetworkBridge, Network as NetworkT};
-use sp_finality_grandpa::{AuthorityList, AuthoritySignature, SetId};
+use tp_finality_grandpa::{AuthorityList, AuthoritySignature, SetId};
 
 // Re-export these two because it's just so damn convenient.
-pub use sp_finality_grandpa::{AuthorityId, AuthorityPair, GrandpaApi, ScheduledChange};
+pub use tp_finality_grandpa::{AuthorityId, AuthorityPair, GrandpaApi, ScheduledChange};
 use std::marker::PhantomData;
 
 #[cfg(test)]
@@ -332,9 +332,9 @@ impl<Block: BlockT, Client> BlockStatus<Block> for Arc<Client> where
 /// tracking issue <https://github.com/rust-lang/rust/issues/41517>
 pub trait ClientForGrandpa<Block, BE>:
 	LockImportRun<Block, BE> + Finalizer<Block, BE> + AuxStore
-	+ HeaderMetadata<Block, Error = sp_blockchain::Error> + HeaderBackend<Block>
+	+ HeaderMetadata<Block, Error = tp_blockchain::Error> + HeaderBackend<Block>
 	+ BlockchainEvents<Block> + ProvideRuntimeApi<Block> + ExecutorProvider<Block>
-	+ BlockImport<Block, Transaction = TransactionFor<BE, Block>, Error = sp_consensus::Error>
+	+ BlockImport<Block, Transaction = TransactionFor<BE, Block>, Error = tp_consensus::Error>
 	where
 		BE: Backend<Block>,
 		Block: BlockT,
@@ -345,9 +345,9 @@ impl<Block, BE, T> ClientForGrandpa<Block, BE> for T
 		BE: Backend<Block>,
 		Block: BlockT,
 		T: LockImportRun<Block, BE> + Finalizer<Block, BE> + AuxStore
-			+ HeaderMetadata<Block, Error = sp_blockchain::Error> + HeaderBackend<Block>
+			+ HeaderMetadata<Block, Error = tp_blockchain::Error> + HeaderBackend<Block>
 			+ BlockchainEvents<Block> + ProvideRuntimeApi<Block> + ExecutorProvider<Block>
-			+ BlockImport<Block, Transaction = TransactionFor<BE, Block>, Error = sp_consensus::Error>,
+			+ BlockImport<Block, Transaction = TransactionFor<BE, Block>, Error = tp_consensus::Error>,
 {}
 
 /// Something that one can ask to do a block sync request.
@@ -688,7 +688,7 @@ pub fn grandpa_peers_set_config() -> sc_network::config::NonDefaultSetConfig {
 /// block import worker that has already been instantiated with `block_import`.
 pub fn run_grandpa_voter<Block: BlockT, BE: 'static, C, N, SC, VR>(
 	grandpa_params: GrandpaParams<Block, C, N, SC, VR>,
-) -> sp_blockchain::Result<impl Future<Output = ()> + Unpin + Send + 'static>
+) -> tp_blockchain::Result<impl Future<Output = ()> + Unpin + Send + 'static>
 where
 	Block::Hash: Ord,
 	BE: Backend<Block> + 'static,
@@ -698,7 +698,7 @@ where
 	NumberFor<Block>: BlockNumberOps,
 	DigestFor<Block>: Encode,
 	C: ClientForGrandpa<Block, BE> + 'static,
-	C::Api: GrandpaApi<Block, Error = sp_blockchain::Error>,
+	C::Api: GrandpaApi<Block, Error = tp_blockchain::Error>,
 {
 	let GrandpaParams {
 		mut config,
@@ -824,7 +824,7 @@ where
 	Block: BlockT,
 	B: Backend<Block> + 'static,
 	C: ClientForGrandpa<Block, B> + 'static,
-	C::Api: GrandpaApi<Block, Error = sp_blockchain::Error>,
+	C::Api: GrandpaApi<Block, Error = tp_blockchain::Error>,
 	N: NetworkT<Block> + Sync,
 	NumberFor<Block>: BlockNumberOps,
 	SC: SelectChain<Block> + 'static,
@@ -1042,7 +1042,7 @@ where
 	NumberFor<Block>: BlockNumberOps,
 	SC: SelectChain<Block> + 'static,
 	C: ClientForGrandpa<Block, B> + 'static,
-	C::Api: GrandpaApi<Block, Error = sp_blockchain::Error>,
+	C::Api: GrandpaApi<Block, Error = tp_blockchain::Error>,
 	VR: VotingRule<Block, C> + Clone + 'static,
 {
 	type Output = Result<(), Error>;

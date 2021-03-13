@@ -34,7 +34,7 @@ pub use self::block_builder_ext::BlockBuilderExt;
 use tet_core::{sr25519, ChangesTrieConfiguration};
 use tet_core::storage::{ChildInfo, Storage, StorageChild};
 use tetcore_test_runtime::genesismap::{GenesisConfig, additional_storage_with_genesis};
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, Hash as HashT, NumberFor, HashFor};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, Hash as HashT, NumberFor, HashFor};
 use sc_client_api::light::{
 	RemoteCallRequest, RemoteChangesRequest, RemoteBodyRequest,
 	Fetcher, RemoteHeaderRequest, RemoteReadRequest, RemoteReadChildRequest,
@@ -258,10 +258,10 @@ impl<B> TestClientBuilderExt<B> for TestClientBuilder<
 }
 
 /// Type of optional fetch callback.
-type MaybeFetcherCallback<Req, Resp> = Option<Box<dyn Fn(Req) -> Result<Resp, sp_blockchain::Error> + Send + Sync>>;
+type MaybeFetcherCallback<Req, Resp> = Option<Box<dyn Fn(Req) -> Result<Resp, tp_blockchain::Error> + Send + Sync>>;
 
 /// Type of fetcher future result.
-type FetcherFutureResult<Resp> = futures::future::Ready<Result<Resp, sp_blockchain::Error>>;
+type FetcherFutureResult<Resp> = futures::future::Ready<Result<Resp, tp_blockchain::Error>>;
 
 /// Implementation of light client fetcher used in tests.
 #[derive(Default)]

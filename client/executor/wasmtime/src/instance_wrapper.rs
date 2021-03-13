@@ -396,7 +396,7 @@ impl InstanceWrapper {
 	/// to get more details.
 	pub fn allocate(
 		&self,
-		allocator: &mut sp_allocator::FreeingBumpHeapAllocator,
+		allocator: &mut tp_allocator::FreeingBumpHeapAllocator,
 		size: WordSize,
 	) -> Result<Pointer<u8>> {
 		unsafe {
@@ -413,7 +413,7 @@ impl InstanceWrapper {
 	/// Returns `Err` in case the given memory region cannot be deallocated.
 	pub fn deallocate(
 		&self,
-		allocator: &mut sp_allocator::FreeingBumpHeapAllocator,
+		allocator: &mut tp_allocator::FreeingBumpHeapAllocator,
 		ptr: Pointer<u8>,
 	) -> Result<()> {
 		unsafe {

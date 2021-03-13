@@ -23,21 +23,21 @@ use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 
 use tetsy_hash_db::{Prefix, Hasher};
-use sp_trie::{MemoryDB, prefixed_key};
+use tp_trie::{MemoryDB, prefixed_key};
 use tet_core::{
 	storage::{ChildInfo, TrackedStorageKey},
 	hexdisplay::HexDisplay
 };
-use sp_runtime::traits::{Block as BlockT, HashFor};
-use sp_runtime::Storage;
-use sp_state_machine::{
+use tp_runtime::traits::{Block as BlockT, HashFor};
+use tp_runtime::Storage;
+use tp_state_machine::{
 	DBValue, backend::Backend as StateBackend, StorageCollection, ChildStorageCollection
 };
 use tetsy_kvdb::{KeyValueDB, DBTransaction};
 use crate::storage_cache::{CachingState, SharedCache, new_shared_cache};
 
-type DbState<B> = sp_state_machine::TrieBackend<
-	Arc<dyn sp_state_machine::Storage<HashFor<B>>>, HashFor<B>
+type DbState<B> = tp_state_machine::TrieBackend<
+	Arc<dyn tp_state_machine::Storage<HashFor<B>>>, HashFor<B>
 >;
 
 type State<B> = CachingState<DbState<B>, B>;
@@ -47,7 +47,7 @@ struct StorageDb<Block: BlockT> {
 	_block: std::marker::PhantomData<Block>,
 }
 
-impl<Block: BlockT> sp_state_machine::Storage<HashFor<Block>> for StorageDb<Block> {
+impl<Block: BlockT> tp_state_machine::Storage<HashFor<Block>> for StorageDb<Block> {
 	fn get(&self, key: &Block::Hash, prefix: Prefix) -> Result<Option<DBValue>, String> {
 		let key = prefixed_key::<HashFor<Block>>(key, prefix);
 		self.db.get(0, &key)
@@ -492,7 +492,7 @@ impl<B: BlockT> StateBackend<HashFor<B>> for BenchmarkingState<B> {
 		self.state.borrow_mut().as_mut().map(|s| s.register_overlay_stats(stats));
 	}
 
-	fn usage_info(&self) -> sp_state_machine::UsageInfo {
+	fn usage_info(&self) -> tp_state_machine::UsageInfo {
 		self.state.borrow().as_ref().map_or(sp_state_machine::UsageInfo::empty(), |s| s.usage_info())
 	}
 }
@@ -506,7 +506,7 @@ impl<Block: BlockT> std::fmt::Debug for BenchmarkingState<Block> {
 #[cfg(test)]
 mod test {
 	use crate::bench::BenchmarkingState;
-	use sp_state_machine::backend::Backend as _;
+	use tp_state_machine::backend::Backend as _;
 
 	#[test]
 	fn read_to_main_and_child_tries() {

@@ -24,7 +24,7 @@ use crate::util;
 use std::{cell::RefCell, rc::Rc};
 use log::trace;
 use codec::{Encode, Decode};
-use sp_allocator::FreeingBumpHeapAllocator;
+use tp_allocator::FreeingBumpHeapAllocator;
 use sc_executor_common::error::Result;
 use sc_executor_common::sandbox::{self, SandboxCapabilities, SupervisorFuncIndex};
 use tet_core::sandbox as sandbox_primitives;

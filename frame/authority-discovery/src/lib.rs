@@ -25,7 +25,7 @@
 
 use tetcore_std::prelude::*;
 use frame_support::{decl_module, decl_storage};
-use sp_authority_discovery::AuthorityId;
+use tp_authority_discovery::AuthorityId;
 
 /// The module's config trait.
 pub trait Config: frame_system::Config + pallet_session::Config {}
@@ -81,7 +81,7 @@ impl<T: Config> Module<T> {
 	}
 }
 
-impl<T: Config> sp_runtime::BoundToRuntimeAppPublic for Module<T> {
+impl<T: Config> tp_runtime::BoundToRuntimeAppPublic for Module<T> {
 	type Public = AuthorityId;
 }
 
@@ -117,11 +117,11 @@ impl<T: Config> pallet_session::OneSessionHandler<T::AccountId> for Module<T> {
 mod tests {
 	use crate as pallet_authority_discovery;
 	use super::*;
-	use sp_authority_discovery::AuthorityPair;
+	use tp_authority_discovery::AuthorityPair;
 	use tet_application_crypto::Pair;
 	use tet_core::{crypto::key_types, H256};
 	use tet_io::TestExternalities;
-	use sp_runtime::{
+	use tp_runtime::{
 		testing::{Header, UintAuthorityId}, traits::{ConvertInto, IdentityLookup, OpaqueKeys},
 		Perbill, KeyTypeId,
 	};

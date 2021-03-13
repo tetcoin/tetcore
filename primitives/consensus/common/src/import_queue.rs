@@ -28,7 +28,7 @@
 
 use std::collections::HashMap;
 
-use sp_runtime::{Justification, traits::{Block as BlockT, Header as _, NumberFor}};
+use tp_runtime::{Justification, traits::{Block as BlockT, Header as _, NumberFor}};
 
 use crate::{
 	error::Error as ConsensusError,
@@ -43,7 +43,7 @@ pub use basic_queue::BasicQueue;
 /// A commonly-used Import Queue type.
 ///
 /// This defines the transaction type of the `BasicQueue` to be the transaction type for a client.
-pub type DefaultImportQueue<Block, Client> = BasicQueue<Block, sp_api::TransactionFor<Client, Block>>;
+pub type DefaultImportQueue<Block, Client> = BasicQueue<Block, tp_api::TransactionFor<Client, Block>>;
 
 mod basic_queue;
 pub mod buffered_link;

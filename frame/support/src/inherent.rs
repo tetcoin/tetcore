@@ -20,7 +20,7 @@ pub use crate::tetcore_std::vec::Vec;
 #[doc(hidden)]
 pub use crate::sp_runtime::traits::{Block as BlockT, Extrinsic};
 #[doc(hidden)]
-pub use sp_inherents::{InherentData, ProvideInherent, CheckInherentsResult, IsFatalError};
+pub use tp_inherents::{InherentData, ProvideInherent, CheckInherentsResult, IsFatalError};
 
 
 /// Implement the outer inherent.
@@ -141,7 +141,7 @@ macro_rules! impl_outer_inherent {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_runtime::{traits, testing::{Header, self}};
+	use tp_runtime::{traits, testing::{Header, self}};
 	use crate::traits::IsSubType;
 
 	#[derive(codec::Encode, codec::Decode, Clone, PartialEq, Eq, Debug, serde::Serialize)]
@@ -194,8 +194,8 @@ mod tests {
 	struct ModuleTest;
 	impl ProvideInherent for ModuleTest {
 		type Call = CallTest;
-		type Error = sp_inherents::MakeFatalError<()>;
-		const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"test1235";
+		type Error = tp_inherents::MakeFatalError<()>;
+		const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = *b"test1235";
 
 		fn create_inherent(_: &InherentData) -> Option<Self::Call> {
 			Some(CallTest::Something)
@@ -212,8 +212,8 @@ mod tests {
 	struct ModuleTest2;
 	impl ProvideInherent for ModuleTest2 {
 		type Call = CallTest2;
-		type Error = sp_inherents::MakeFatalError<()>;
-		const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"test1234";
+		type Error = tp_inherents::MakeFatalError<()>;
+		const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = *b"test1234";
 
 		fn create_inherent(_: &InherentData) -> Option<Self::Call> {
 			Some(CallTest2::Something)

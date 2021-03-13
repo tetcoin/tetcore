@@ -213,8 +213,8 @@ mod tests {
 		ExecutionStrategy, TestClientBuilderExt, DefaultTestClientBuilderExt,
 		TestClientBuilder, runtime::TestAPI,
 	};
-	use sp_api::ProvideRuntimeApi;
-	use sp_runtime::generic::BlockId;
+	use tp_api::ProvideRuntimeApi;
+	use tp_runtime::generic::BlockId;
 
 	#[test]
 	fn ensure_runtime_logger_works() {

@@ -24,7 +24,7 @@ use tetsy_finality_grandpa::voter_set::VoterSet;
 use tetsy_scale_codec::{Encode, Decode};
 use log::debug;
 use sc_telemetry::{telemetry, CONSENSUS_INFO};
-use sp_finality_grandpa::{AuthorityId, AuthorityList};
+use tp_finality_grandpa::{AuthorityId, AuthorityList};
 
 use std::cmp::Ord;
 use std::fmt::Debug;

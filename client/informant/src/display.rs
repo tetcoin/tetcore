@@ -21,7 +21,7 @@ use ansi_term::Colour;
 use log::info;
 use sc_client_api::ClientInfo;
 use sc_network::{NetworkStatus, SyncState};
-use sp_runtime::traits::{Block as BlockT, CheckedDiv, NumberFor, Saturating, Zero};
+use tp_runtime::traits::{Block as BlockT, CheckedDiv, NumberFor, Saturating, Zero};
 use std::{
 	convert::{TryFrom, TryInto},
 	fmt,

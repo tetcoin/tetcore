@@ -20,7 +20,7 @@ use crate::{
 	CliConfiguration, error, params::{ImportParams, SharedParams, BlockNumberOrHash},
 };
 use sc_client_api::{BlockBackend, UsageProvider};
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use std::{fmt::Debug, str::FromStr, sync::Arc};
 use structopt::StructOpt;
 

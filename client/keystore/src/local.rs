@@ -31,7 +31,7 @@ use tet_core::{
 	sr25519::{Public as Sr25519Public, Pair as Sr25519Pair},
 	Encode,
 };
-use sp_keystore::{
+use tp_keystore::{
 	CryptoStore,
 	SyncCryptoStorePtr,
 	Error as TraitError,

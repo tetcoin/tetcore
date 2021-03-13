@@ -29,7 +29,7 @@ use sc_executor_common::{
 	error::{Result, WasmError},
 	wasm_runtime::{WasmModule, WasmInstance, InvokeMethod},
 };
-use sp_allocator::FreeingBumpHeapAllocator;
+use tp_allocator::FreeingBumpHeapAllocator;
 use tp_runtime_interface::unpack_ptr_and_len;
 use tetcore_wasm_interface::{Function, Pointer, WordSize, Value};
 use wasmtime::{Config, Engine, Store};

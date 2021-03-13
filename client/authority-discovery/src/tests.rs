@@ -22,9 +22,9 @@ use std::sync::Arc;
 use futures::{channel::mpsc::channel, executor::LocalPool, task::LocalSpawn};
 use tetsy_libp2p::core::{multiaddr::{Multiaddr, Protocol}, PeerId};
 
-use sp_authority_discovery::AuthorityId;
+use tp_authority_discovery::AuthorityId;
 use tet_core::crypto::key_types;
-use sp_keystore::{CryptoStore, testing::KeyStore};
+use tp_keystore::{CryptoStore, testing::KeyStore};
 
 #[test]
 fn get_addresses_and_authority_id() {

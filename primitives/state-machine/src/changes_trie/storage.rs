@@ -20,8 +20,8 @@
 use std::collections::{BTreeMap, HashSet, HashMap};
 use tetsy_hash_db::{Hasher, Prefix, EMPTY_PREFIX};
 use tet_core::storage::PrefixedStorageKey;
-use sp_trie::DBValue;
-use sp_trie::MemoryDB;
+use tp_trie::DBValue;
+use tp_trie::MemoryDB;
 use parking_lot::RwLock;
 use crate::{
 	StorageKey,

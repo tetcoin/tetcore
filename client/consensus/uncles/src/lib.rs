@@ -19,13 +19,13 @@
 //! Uncles functionality for Tetcore.
 #![forbid(unsafe_code, missing_docs)]
 
-use sp_consensus::SelectChain;
-use sp_inherents::{InherentDataProviders};
+use tp_consensus::SelectChain;
+use tp_inherents::{InherentDataProviders};
 use log::warn;
 use sc_client_api::ProvideUncles;
-use sp_runtime::traits::{Block as BlockT, Header};
+use tp_runtime::traits::{Block as BlockT, Header};
 use std::sync::Arc;
-use sp_authorship;
+use tp_authorship;
 
 /// Maximum uncles generations we may provide to the runtime.
 const MAX_UNCLE_GENERATIONS: u32 = 8;
@@ -35,7 +35,7 @@ pub fn register_uncles_inherent_data_provider<B, C, SC>(
 	client: Arc<C>,
 	select_chain: SC,
 	inherent_data_providers: &InherentDataProviders,
-) -> Result<(), sp_consensus::Error> where
+) -> Result<(), tp_consensus::Error> where
 	B: BlockT,
 	C: ProvideUncles<B> + Send + Sync + 'static,
 	SC: SelectChain<B> + 'static,
@@ -60,7 +60,7 @@ pub fn register_uncles_inherent_data_provider<B, C, SC>(
 					}
 				}
 			}))
-		.map_err(|err| sp_consensus::Error::InherentData(err.into()))?;
+		.map_err(|err| tp_consensus::Error::InherentData(err.into()))?;
 	}
 	Ok(())
 }

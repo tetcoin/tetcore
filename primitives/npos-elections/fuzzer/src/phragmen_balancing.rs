@@ -21,11 +21,11 @@ mod common;
 
 use common::*;
 use honggfuzz::fuzz;
-use sp_npos_elections::{
+use tp_npos_elections::{
 	assignment_ratio_to_staked_normalized, is_score_better, seq_phragmen, to_supports,
 	to_without_backing, EvaluateSupport, VoteWeight,
 };
-use sp_runtime::Perbill;
+use tp_runtime::Perbill;
 use rand::{self, SeedableRng};
 
 fn main() {
@@ -82,7 +82,7 @@ fn main() {
 			};
 
 			if iterations > 0 {
-				let balanced = seq_phragmen::<AccountId, sp_runtime::Perbill>(
+				let balanced = seq_phragmen::<AccountId, tp_runtime::Perbill>(
 					to_elect,
 					candidates,
 					voters,

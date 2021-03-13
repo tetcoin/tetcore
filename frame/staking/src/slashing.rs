@@ -53,7 +53,7 @@ use super::{
 	EraIndex, Config, Module, Store, BalanceOf, Exposure, Perbill, SessionInterface,
 	NegativeImbalanceOf, UnappliedSlash, Error,
 };
-use sp_runtime::{traits::{Zero, Saturating}, RuntimeDebug, DispatchResult};
+use tp_runtime::{traits::{Zero, Saturating}, RuntimeDebug, DispatchResult};
 use frame_support::{
 	StorageMap, StorageDoubleMap, ensure,
 	traits::{Currency, OnUnbalanced, Imbalance},

@@ -44,9 +44,9 @@ mod utils;
 /// # Example
 ///
 /// ```rust
-/// use sp_version::create_runtime_str;
+/// use tp_version::create_runtime_str;
 /// #
-/// # use sp_runtime::traits::{GetNodeBlockType, Block as BlockT};
+/// # use tp_runtime::traits::{GetNodeBlockType, Block as BlockT};
 /// # use test_client::runtime::Block;
 /// #
 /// # /// The declaration of the `Runtime` type and the implementation of the `GetNodeBlockType`
@@ -56,7 +56,7 @@ mod utils;
 /// #     type NodeBlock = Block;
 /// # }
 /// #
-/// # sp_api::decl_runtime_apis! {
+/// # tp_api::decl_runtime_apis! {
 /// #     /// Declare the api trait.
 /// #     pub trait Balance {
 /// #         /// Get the balance.
@@ -70,9 +70,9 @@ mod utils;
 /// # }
 ///
 /// /// All runtime api implementations need to be done in one call of the macro!
-/// sp_api::impl_runtime_apis! {
-/// #   impl sp_api::Core<Block> for Runtime {
-/// #       fn version() -> sp_version::RuntimeVersion {
+/// tp_api::impl_runtime_apis! {
+/// #   impl tp_api::Core<Block> for Runtime {
+/// #       fn version() -> tp_version::RuntimeVersion {
 /// #           unimplemented!()
 /// #       }
 /// #       fn execute_block(_block: Block) {}
@@ -96,7 +96,7 @@ mod utils;
 /// }
 ///
 /// /// Runtime version. This needs to be declared for each runtime.
-/// pub const VERSION: sp_version::RuntimeVersion = sp_version::RuntimeVersion {
+/// pub const VERSION: tp_version::RuntimeVersion = tp_version::RuntimeVersion {
 ///     spec_name: create_runtime_str!("node"),
 ///     impl_name: create_runtime_str!("test-node"),
 ///     authoring_version: 1,
@@ -128,7 +128,7 @@ pub fn impl_runtime_apis(input: TokenStream) -> TokenStream {
 /// # Example
 ///
 /// ```rust
-/// sp_api::decl_runtime_apis! {
+/// tp_api::decl_runtime_apis! {
 ///     /// Declare the api trait.
 ///     pub trait Balance {
 ///         /// Get the balance.
@@ -160,7 +160,7 @@ pub fn impl_runtime_apis(input: TokenStream) -> TokenStream {
 /// spec version!). Such a method also does not need to be implemented in the runtime.
 ///
 /// ```rust
-/// sp_api::decl_runtime_apis! {
+/// tp_api::decl_runtime_apis! {
 ///     /// Declare the api trait.
 ///     #[api_version(2)]
 ///     pub trait Balance {

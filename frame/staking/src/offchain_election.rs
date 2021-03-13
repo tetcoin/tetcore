@@ -24,11 +24,11 @@ use crate::{
 use codec::Decode;
 use frame_support::{traits::Get, weights::Weight, IterableStorageMap};
 use frame_system::offchain::SubmitTransaction;
-use sp_npos_elections::{
+use tp_npos_elections::{
 	to_support_map, EvaluateSupport, reduce, Assignment, ElectionResult, ElectionScore,
 	ExtendedBalance, CompactSolution,
 };
-use sp_runtime::{
+use tp_runtime::{
 	offchain::storage::StorageValueRef, traits::TrailingZeroInput, RuntimeDebug,
 };
 use tetcore_std::{convert::TryInto, prelude::*};
@@ -52,7 +52,7 @@ pub enum OffchainElectionError {
 }
 
 impl From<sp_npos_elections::Error> for OffchainElectionError {
-	fn from(e: sp_npos_elections::Error) -> Self {
+	fn from(e: tp_npos_elections::Error) -> Self {
 		Self::InternalElectionError(e)
 	}
 }
@@ -361,10 +361,10 @@ pub fn prepare_submission<T: Config>(
 	};
 
 	// Clean winners.
-	let winners = sp_npos_elections::to_without_backing(winners);
+	let winners = tp_npos_elections::to_without_backing(winners);
 
 	// convert into absolute value and to obtain the reduced version.
-	let mut staked = sp_npos_elections::assignment_ratio_to_staked(
+	let mut staked = tp_npos_elections::assignment_ratio_to_staked(
 		assignments,
 		<Module<T>>::slashable_balance_of_fn(),
 	);
@@ -375,7 +375,7 @@ pub fn prepare_submission<T: Config>(
 	}
 
 	// Convert back to ratio assignment. This takes less space.
-	let low_accuracy_assignment = sp_npos_elections::assignment_staked_to_ratio_normalized(staked)
+	let low_accuracy_assignment = tp_npos_elections::assignment_staked_to_ratio_normalized(staked)
 		.map_err(|e| OffchainElectionError::from(e))?;
 
 	// compact encode the assignment.
@@ -410,7 +410,7 @@ pub fn prepare_submission<T: Config>(
 	let score = {
 		let compact = compact.clone();
 		let assignments = compact.into_assignment(nominator_at, validator_at).unwrap();
-		let staked = sp_npos_elections::assignment_ratio_to_staked(
+		let staked = tp_npos_elections::assignment_ratio_to_staked(
 			assignments.clone(),
 			<Module<T>>::slashable_balance_of_fn(),
 		);

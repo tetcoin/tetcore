@@ -22,9 +22,9 @@ use crate::{NetworkStatus, NetworkState, NetworkStatusSinks, config::Configurati
 use futures_timer::Delay;
 use prometheus_endpoint::{register, Gauge, U64, Registry, PrometheusError, Opts, GaugeVec};
 use sc_telemetry::{telemetry, TETCORE_INFO};
-use sp_api::ProvideRuntimeApi;
-use sp_runtime::traits::{NumberFor, Block, SaturatedConversion, UniqueSaturatedInto};
-use sp_transaction_pool::{PoolStatus, MaintainedTransactionPool};
+use tp_api::ProvideRuntimeApi;
+use tp_runtime::traits::{NumberFor, Block, SaturatedConversion, UniqueSaturatedInto};
+use tp_transaction_pool::{PoolStatus, MaintainedTransactionPool};
 use tetcore_utils::metrics::register_globals;
 use tetcore_utils::mpsc::TracingUnboundedReceiver;
 use sc_client_api::{ClientInfo, UsageProvider};

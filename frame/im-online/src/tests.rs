@@ -28,7 +28,7 @@ use tet_core::offchain::{
 	testing::{TestOffchainExt, TestTransactionPoolExt},
 };
 use frame_support::{dispatch, assert_noop};
-use sp_runtime::{testing::UintAuthorityId, transaction_validity::TransactionValidityError};
+use tp_runtime::{testing::UintAuthorityId, transaction_validity::TransactionValidityError};
 
 #[test]
 fn test_unresponsiveness_slash_fraction() {

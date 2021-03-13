@@ -42,7 +42,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use tetcore_std::prelude::*;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{StaticLookup, Zero}
 };
 use frame_support::{
@@ -246,7 +246,7 @@ mod tests {
 	};
 	use tet_core::H256;
 	use frame_system::EnsureSignedBy;
-	use sp_runtime::{
+	use tp_runtime::{
 		testing::Header, traits::{BlakeTwo256, IdentityLookup, BadOrigin},
 	};
 

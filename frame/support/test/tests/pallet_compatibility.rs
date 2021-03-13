@@ -208,10 +208,10 @@ impl frame_system::Config for Runtime {
 	type Index = u64;
 	type BlockNumber = u32;
 	type Call = Call;
-	type Hash = sp_runtime::testing::H256;
-	type Hashing = sp_runtime::traits::BlakeTwo256;
+	type Hash = tp_runtime::testing::H256;
+	type Hashing = tp_runtime::traits::BlakeTwo256;
 	type AccountId = u64;
-	type Lookup = sp_runtime::traits::IdentityLookup<Self::AccountId>;
+	type Lookup = tp_runtime::traits::IdentityLookup<Self::AccountId>;
 	type Header = Header;
 	type Event = Event;
 	type BlockHashCount = BlockHashCount;
@@ -237,9 +237,9 @@ impl pallet_old::Config for Runtime {
 	type Balance = u64;
 }
 
-pub type Header = sp_runtime::generic::Header<u32, sp_runtime::traits::BlakeTwo256>;
-pub type Block = sp_runtime::generic::Block<Header, UncheckedExtrinsic>;
-pub type UncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<u32, Call, (), ()>;
+pub type Header = tp_runtime::generic::Header<u32, tp_runtime::traits::BlakeTwo256>;
+pub type Block = tp_runtime::generic::Block<Header, UncheckedExtrinsic>;
+pub type UncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<u32, Call, (), ()>;
 
 frame_support::construct_runtime!(
 	pub enum Runtime where

@@ -71,8 +71,8 @@ use tetcore_std::prelude::*;
 use tetcore_std::map;
 use tetcore_std::marker::PhantomData;
 use tetcore_std::fmt::Debug;
-use sp_version::RuntimeVersion;
-use sp_runtime::{
+use tp_version::RuntimeVersion;
+use tp_runtime::{
 	RuntimeDebug, Perbill, DispatchError, Either, generic,
 	traits::{
 		self, CheckEqual, AtLeast32Bit, Zero, Lookup, LookupError,
@@ -657,7 +657,7 @@ impl GenesisConfig {
 	/// Kept in order not to break dependency.
 	pub fn assimilate_storage<T: Config>(
 		&self,
-		storage: &mut sp_runtime::Storage
+		storage: &mut tp_runtime::Storage
 	) -> Result<(), String> {
 		<Self as GenesisBuild<T>>::assimilate_storage(self, storage)
 	}
@@ -761,7 +761,7 @@ pub struct AccountInfo<Index, AccountData> {
 #[cfg_attr(feature = "std", derive(PartialEq))]
 pub struct LastRuntimeUpgradeInfo {
 	pub spec_version: codec::Compact<u32>,
-	pub spec_name: sp_runtime::RuntimeString,
+	pub spec_name: tp_runtime::RuntimeString,
 }
 
 impl LastRuntimeUpgradeInfo {
@@ -774,7 +774,7 @@ impl LastRuntimeUpgradeInfo {
 }
 
 impl From<sp_version::RuntimeVersion> for LastRuntimeUpgradeInfo {
-	fn from(version: sp_version::RuntimeVersion) -> Self {
+	fn from(version: tp_version::RuntimeVersion) -> Self {
 		Self {
 			spec_version: version.spec_version.into(),
 			spec_name: version.spec_name,
@@ -1394,7 +1394,7 @@ impl<T: Config> Module<T> {
 	/// Checks the given code if it is a valid runtime wasm blob by instantianting
 	/// it and extracting the runtime version of it. It checks that the runtime version
 	/// of the old and new runtime has the same spec name and that the spec version is increasing.
-	pub fn can_set_code(code: &[u8]) -> Result<(), sp_runtime::DispatchError> {
+	pub fn can_set_code(code: &[u8]) -> Result<(), tp_runtime::DispatchError> {
 		let current_version = T::Version::get();
 		let new_version = tet_io::misc::runtime_version(&code)
 			.and_then(|v| RuntimeVersion::decode(&mut &v[..]).ok())

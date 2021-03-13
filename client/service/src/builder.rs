@@ -28,7 +28,7 @@ use sc_client_api::{
 };
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender};
 use sc_chain_spec::get_extension;
-use sp_consensus::{
+use tp_consensus::{
 	block_validation::{BlockAnnounceValidator, DefaultBlockAnnounceValidator, Chain},
 	import_queue::ImportQueue,
 };
@@ -43,11 +43,11 @@ use log::{info, warn};
 use sc_network::config::{Role, OnDemand};
 use sc_network::NetworkService;
 use sc_network::block_request_handler::{self, BlockRequestHandler};
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{
 	Block as BlockT, HashFor, Zero, BlockIdTo,
 };
-use sp_api::{ProvideRuntimeApi, CallApiAt};
+use tp_api::{ProvideRuntimeApi, CallApiAt};
 use sc_executor::{NativeExecutor, NativeExecutionDispatch, RuntimeInfo};
 use std::sync::Arc;
 use wasm_timer::SystemTime;
@@ -57,22 +57,22 @@ use sc_telemetry::{
 	TelemetryConnectionNotifier,
 	TETCORE_INFO,
 };
-use sp_transaction_pool::MaintainedTransactionPool;
+use tp_transaction_pool::MaintainedTransactionPool;
 use prometheus_endpoint::Registry;
 use sc_client_db::{Backend, DatabaseSettings};
 use tet_core::traits::{
 	CodeExecutor,
 	SpawnNamed,
 };
-use sp_keystore::{CryptoStore, SyncCryptoStore, SyncCryptoStorePtr};
-use sp_runtime::BuildStorage;
+use tp_keystore::{CryptoStore, SyncCryptoStore, SyncCryptoStorePtr};
+use tp_runtime::BuildStorage;
 use sc_client_api::{
 	BlockBackend, BlockchainEvents,
 	backend::StorageProvider,
 	proof_provider::ProofProvider,
 	execution_extensions::ExecutionExtensions
 };
-use sp_blockchain::{HeaderMetadata, HeaderBackend};
+use tp_blockchain::{HeaderMetadata, HeaderBackend};
 
 /// A utility trait for building an RPC extension given a `DenyUnsafe` instance.
 /// This is useful since at service definition time we don't know whether the
@@ -548,7 +548,7 @@ pub fn spawn_tasks<TBl, TBackend, TExPool, TRpc, TCl>(
 			sc_offchain::OffchainWorkerApi<TBl> +
 			sp_transaction_pool::runtime_api::TaggedTransactionQueue<TBl> +
 			sp_session::SessionKeys<TBl> +
-			sp_api::ApiErrorExt<Error = sp_blockchain::Error> +
+			sp_api::ApiErrorExt<Error = tp_blockchain::Error> +
 			sp_api::ApiExt<TBl, StateBackend = TBackend::State>,
 		TBl: BlockT,
 		TBackend: 'static + sc_client_api::backend::Backend<TBl> + Send,
@@ -735,7 +735,7 @@ fn gen_handler<TBl, TBackend, TExPool, TRpc, TCl>(
 		TRpc: sc_rpc::RpcExtension<sc_rpc::Metadata>,
 		<TCl as ProvideRuntimeApi<TBl>>::Api:
 			sp_session::SessionKeys<TBl> +
-			sp_api::Metadata<TBl, Error = sp_blockchain::Error>,
+			sp_api::Metadata<TBl, Error = tp_blockchain::Error>,
 {
 	use sc_rpc::{chain, state, author, system, offchain};
 

@@ -26,7 +26,7 @@ use tetsy_jsonrpc_derive::rpc;
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
 use tet_core::Bytes;
 use tet_core::storage::{StorageKey, StorageData, StorageChangeSet};
-use sp_version::RuntimeVersion;
+use tp_version::RuntimeVersion;
 use self::error::FutureResult;
 
 pub use self::gen_client::Client as StateClient;

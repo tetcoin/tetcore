@@ -3,9 +3,9 @@ use node_template_runtime::{
 	AccountId, AuraConfig, BalancesConfig, GenesisConfig, GrandpaConfig,
 	SudoConfig, SystemConfig, WASM_BINARY, Signature
 };
-use sp_consensus_aura::sr25519::AuthorityId as AuraId;
-use sp_finality_grandpa::AuthorityId as GrandpaId;
-use sp_runtime::traits::{Verify, IdentifyAccount};
+use tp_consensus_aura::sr25519::AuthorityId as AuraId;
+use tp_finality_grandpa::AuthorityId as GrandpaId;
+use tp_runtime::traits::{Verify, IdentifyAccount};
 use sc_service::ChainType;
 
 // The URL for the telemetry server.

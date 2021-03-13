@@ -29,10 +29,10 @@ use futures::task::LocalSpawn;
 use tetsy_libp2p::{kad, core::multiaddr, PeerId};
 use prometheus_endpoint::prometheus::default_registry;
 
-use sp_api::{ProvideRuntimeApi, ApiRef};
+use tp_api::{ProvideRuntimeApi, ApiRef};
 use tet_core::crypto::Public;
-use sp_keystore::{testing::KeyStore, CryptoStore};
-use sp_runtime::traits::{Zero, Block as BlockT, NumberFor};
+use tp_keystore::{testing::KeyStore, CryptoStore};
+use tp_runtime::traits::{Zero, Block as BlockT, NumberFor};
 use tetcore_test_runtime_client::runtime::Block;
 
 use super::*;
@@ -57,7 +57,7 @@ impl<Block: BlockT> HeaderBackend<Block> for TestApi {
 	fn header(
 		&self,
 		_id: BlockId<Block>,
-	) -> std::result::Result<Option<Block::Header>, sp_blockchain::Error> {
+	) -> std::result::Result<Option<Block::Header>, tp_blockchain::Error> {
 		Ok(None)
 	}
 
@@ -75,21 +75,21 @@ impl<Block: BlockT> HeaderBackend<Block> for TestApi {
 	fn status(
 		&self,
 		_id: BlockId<Block>,
-	) -> std::result::Result<sc_client_api::blockchain::BlockStatus, sp_blockchain::Error> {
+	) -> std::result::Result<sc_client_api::blockchain::BlockStatus, tp_blockchain::Error> {
 		Ok(sc_client_api::blockchain::BlockStatus::Unknown)
 	}
 
 	fn number(
 		&self,
 		_hash: Block::Hash,
-	) -> std::result::Result<Option<NumberFor<Block>>, sp_blockchain::Error> {
+	) -> std::result::Result<Option<NumberFor<Block>>, tp_blockchain::Error> {
 		Ok(None)
 	}
 
 	fn hash(
 		&self,
 		_number: NumberFor<Block>,
-	) -> std::result::Result<Option<Block::Hash>, sp_blockchain::Error> {
+	) -> std::result::Result<Option<Block::Hash>, tp_blockchain::Error> {
 		Ok(None)
 	}
 }
@@ -100,7 +100,7 @@ pub(crate) struct RuntimeApi {
 
 sp_api::mock_impl_runtime_apis! {
 	impl AuthorityDiscoveryApi<Block> for RuntimeApi {
-		type Error = sp_blockchain::Error;
+		type Error = tp_blockchain::Error;
 
 		fn authorities(&self) -> Vec<AuthorityId> {
 			self.authorities.clone()

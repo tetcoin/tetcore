@@ -20,11 +20,11 @@
 use codec::Decode;
 use sc_network::config::{IncomingRequest, OutgoingResponse, ProtocolId, RequestResponseConfig};
 use sc_client_api::Backend;
-use sp_runtime::traits::NumberFor;
+use tp_runtime::traits::NumberFor;
 use futures::channel::{mpsc, oneshot};
 use futures::stream::StreamExt;
 use log::debug;
-use sp_runtime::traits::Block as BlockT;
+use tp_runtime::traits::Block as BlockT;
 use std::time::Duration;
 use std::sync::Arc;
 use sc_service::{SpawnTaskHandle, config::{Configuration, Role}};

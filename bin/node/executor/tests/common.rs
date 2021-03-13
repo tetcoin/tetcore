@@ -18,14 +18,14 @@
 use codec::{Encode, Decode};
 use frame_system::offchain::AppCrypto;
 use frame_support::Hashable;
-use sp_state_machine::TestExternalities as CoreTestExternalities;
+use tp_state_machine::TestExternalities as CoreTestExternalities;
 use tet_core::{
 	NeverNativeValue, NativeOrEncoded,
 	crypto::KeyTypeId,
 	sr25519::Signature,
 	traits::{CodeExecutor, RuntimeCode},
 };
-use sp_runtime::{
+use tp_runtime::{
 	ApplyExtrinsicResult,
 	MultiSigner,
 	MultiSignature,
@@ -146,7 +146,7 @@ pub fn construct_block(
 	parent_hash: Hash,
 	extrinsics: Vec<CheckedExtrinsic>,
 ) -> (Vec<u8>, Hash) {
-	use sp_trie::{TrieConfiguration, trie_types::Layout};
+	use tp_trie::{TrieConfiguration, trie_types::Layout};
 
 	// sign extrinsics.
 	let extrinsics = extrinsics.into_iter().map(sign).collect::<Vec<_>>();

@@ -21,7 +21,7 @@ use std::ops::Range;
 use std::collections::{HashMap, BTreeMap};
 use log::trace;
 use tetsy_libp2p::PeerId;
-use sp_runtime::traits::{Block as BlockT, NumberFor, One};
+use tp_runtime::traits::{Block as BlockT, NumberFor, One};
 use crate::protocol::message;
 
 /// Block data with origin.
@@ -210,7 +210,7 @@ impl<B: BlockT> BlockCollection<B> {
 mod test {
 	use super::{BlockCollection, BlockData, BlockRangeState};
 	use crate::{protocol::message, PeerId};
-	use sp_runtime::testing::{Block as RawBlock, ExtrinsicWrapper};
+	use tp_runtime::testing::{Block as RawBlock, ExtrinsicWrapper};
 	use tet_core::H256;
 
 	type Block = RawBlock<ExtrinsicWrapper<u64>>;

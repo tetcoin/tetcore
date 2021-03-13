@@ -27,16 +27,16 @@
 
 use hash_db;
 use codec::Encode;
-use sp_trie;
+use tp_trie;
 
 use tet_core::{H256, convert_hash};
-use sp_runtime::traits::{Header as HeaderT, AtLeast32Bit, Zero, One};
-use sp_state_machine::{
+use tp_runtime::traits::{Header as HeaderT, AtLeast32Bit, Zero, One};
+use tp_state_machine::{
 	MemoryDB, TrieBackend, Backend as StateBackend, StorageProof, InMemoryBackend,
 	prove_read_on_trie_backend, read_proof_check, read_proof_check_on_proving_backend
 };
 
-use sp_blockchain::{Error as ClientError, Result as ClientResult};
+use tp_blockchain::{Error as ClientError, Result as ClientResult};
 
 /// The size of each CHT. This value is passed to every CHT-related function from
 /// production code. Other values are passed from tests.
@@ -92,7 +92,7 @@ pub fn compute_root<Header, Hasher, I>(
 		Hasher::Out: Ord,
 		I: IntoIterator<Item=ClientResult<Option<Header::Hash>>>,
 {
-	use sp_trie::TrieConfiguration;
+	use tp_trie::TrieConfiguration;
 	Ok(sp_trie::trie_types::Layout::<Hasher>::trie_root(
 		build_pairs::<Header, I>(cht_size, cht_num, hashes)?
 	))
@@ -334,7 +334,7 @@ pub fn decode_cht_value(value: &[u8]) -> Option<H256> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_runtime::{generic, traits::BlakeTwo256};
+	use tp_runtime::{generic, traits::BlakeTwo256};
 
 	type Header = generic::Header<u64, BlakeTwo256>;
 

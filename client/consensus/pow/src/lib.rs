@@ -42,27 +42,27 @@ use std::{
 use futures::{prelude::*, future::Either};
 use parking_lot::Mutex;
 use sc_client_api::{BlockOf, backend::AuxStore, BlockchainEvents};
-use sp_blockchain::{HeaderBackend, ProvideCache, well_known_cache_keys::Id as CacheKeyId};
-use sp_block_builder::BlockBuilder as BlockBuilderApi;
-use sp_runtime::{Justification, RuntimeString};
-use sp_runtime::generic::{BlockId, Digest, DigestItem};
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
-use sp_api::ProvideRuntimeApi;
-use sp_consensus_pow::{Seal, TotalDifficulty, POW_ENGINE_ID};
-use sp_inherents::{InherentDataProviders, InherentData};
-use sp_consensus::{
+use tp_blockchain::{HeaderBackend, ProvideCache, well_known_cache_keys::Id as CacheKeyId};
+use tp_block_builder::BlockBuilder as BlockBuilderApi;
+use tp_runtime::{Justification, RuntimeString};
+use tp_runtime::generic::{BlockId, Digest, DigestItem};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
+use tp_api::ProvideRuntimeApi;
+use tp_consensus_pow::{Seal, TotalDifficulty, POW_ENGINE_ID};
+use tp_inherents::{InherentDataProviders, InherentData};
+use tp_consensus::{
 	BlockImportParams, BlockOrigin, ForkChoiceStrategy, SyncOracle, Environment, Proposer,
 	SelectChain, Error as ConsensusError, CanAuthorWith, RecordProof, BlockImport,
 	BlockCheckParams, ImportResult,
 };
-use sp_consensus::import_queue::{
+use tp_consensus::import_queue::{
 	BoxBlockImport, BasicQueue, Verifier, BoxJustificationImport,
 };
 use codec::{Encode, Decode};
 use prometheus_endpoint::Registry;
 use sc_client_api;
 use log::*;
-use sp_timestamp::{InherentError as TIError, TimestampInherentData};
+use tp_timestamp::{InherentError as TIError, TimestampInherentData};
 
 use crate::worker::UntilImportedOrTimeout;
 
@@ -206,7 +206,7 @@ pub struct PowBlockImport<B: BlockT, I, C, S, Algorithm, CAW> {
 	inner: I,
 	select_chain: S,
 	client: Arc<C>,
-	inherent_data_providers: sp_inherents::InherentDataProviders,
+	inherent_data_providers: tp_inherents::InherentDataProviders,
 	check_inherents_after: <<B as BlockT>::Header as HeaderT>::Number,
 	can_author_with: CAW,
 }
@@ -229,10 +229,10 @@ impl<B: BlockT, I: Clone, C, S: Clone, Algorithm: Clone, CAW: Clone> Clone
 
 impl<B, I, C, S, Algorithm, CAW> PowBlockImport<B, I, C, S, Algorithm, CAW> where
 	B: BlockT,
-	I: BlockImport<B, Transaction = sp_api::TransactionFor<C, B>> + Send + Sync,
+	I: BlockImport<B, Transaction = tp_api::TransactionFor<C, B>> + Send + Sync,
 	I::Error: Into<ConsensusError>,
 	C: ProvideRuntimeApi<B> + Send + Sync + HeaderBackend<B> + AuxStore + ProvideCache<B> + BlockOf,
-	C::Api: BlockBuilderApi<B, Error = sp_blockchain::Error>,
+	C::Api: BlockBuilderApi<B, Error = tp_blockchain::Error>,
 	Algorithm: PowAlgorithm<B>,
 	CAW: CanAuthorWith<B>,
 {
@@ -243,7 +243,7 @@ impl<B, I, C, S, Algorithm, CAW> PowBlockImport<B, I, C, S, Algorithm, CAW> wher
 		algorithm: Algorithm,
 		check_inherents_after: <<B as BlockT>::Header as HeaderT>::Number,
 		select_chain: S,
-		inherent_data_providers: sp_inherents::InherentDataProviders,
+		inherent_data_providers: tp_inherents::InherentDataProviders,
 		can_author_with: CAW,
 	) -> Self {
 		Self {
@@ -310,17 +310,17 @@ impl<B, I, C, S, Algorithm, CAW> PowBlockImport<B, I, C, S, Algorithm, CAW> wher
 
 impl<B, I, C, S, Algorithm, CAW> BlockImport<B> for PowBlockImport<B, I, C, S, Algorithm, CAW> where
 	B: BlockT,
-	I: BlockImport<B, Transaction = sp_api::TransactionFor<C, B>> + Send + Sync,
+	I: BlockImport<B, Transaction = tp_api::TransactionFor<C, B>> + Send + Sync,
 	I::Error: Into<ConsensusError>,
 	S: SelectChain<B>,
 	C: ProvideRuntimeApi<B> + Send + Sync + HeaderBackend<B> + AuxStore + ProvideCache<B> + BlockOf,
-	C::Api: BlockBuilderApi<B, Error = sp_blockchain::Error>,
+	C::Api: BlockBuilderApi<B, Error = tp_blockchain::Error>,
 	Algorithm: PowAlgorithm<B>,
 	Algorithm::Difficulty: 'static,
 	CAW: CanAuthorWith<B>,
 {
 	type Error = ConsensusError;
-	type Transaction = sp_api::TransactionFor<C, B>;
+	type Transaction = tp_api::TransactionFor<C, B>;
 
 	fn check_block(
 		&mut self,
@@ -485,7 +485,7 @@ impl<B: BlockT, Algorithm> Verifier<B> for PowVerifier<B, Algorithm> where
 /// Register the PoW inherent data provider, if not registered already.
 pub fn register_pow_inherent_data_provider(
 	inherent_data_providers: &InherentDataProviders,
-) -> Result<(), sp_consensus::Error> {
+) -> Result<(), tp_consensus::Error> {
 	if !inherent_data_providers.has_provider(&sp_timestamp::INHERENT_IDENTIFIER) {
 		inherent_data_providers
 			.register_provider(sp_timestamp::InherentDataProvider)
@@ -538,14 +538,14 @@ pub fn import_queue<B, Transaction, Algorithm>(
 /// `pre_runtime` is a parameter that allows a custom additional pre-runtime digest to be inserted
 /// for blocks being built. This can encode authorship information, or just be a graffiti.
 pub fn start_mining_worker<Block, C, S, Algorithm, E, SO, CAW>(
-	block_import: BoxBlockImport<Block, sp_api::TransactionFor<C, Block>>,
+	block_import: BoxBlockImport<Block, tp_api::TransactionFor<C, Block>>,
 	client: Arc<C>,
 	select_chain: S,
 	algorithm: Algorithm,
 	mut env: E,
 	mut sync_oracle: SO,
 	pre_runtime: Option<Vec<u8>>,
-	inherent_data_providers: sp_inherents::InherentDataProviders,
+	inherent_data_providers: tp_inherents::InherentDataProviders,
 	timeout: Duration,
 	build_time: Duration,
 	can_author_with: CAW,
@@ -557,7 +557,7 @@ pub fn start_mining_worker<Block, C, S, Algorithm, E, SO, CAW>(
 	Algorithm::Difficulty: 'static,
 	E: Environment<Block> + Send + Sync + 'static,
 	E::Error: std::fmt::Debug,
-	E::Proposer: Proposer<Block, Transaction = sp_api::TransactionFor<C, Block>>,
+	E::Proposer: Proposer<Block, Transaction = tp_api::TransactionFor<C, Block>>,
 	SO: SyncOracle + Clone + Send + Sync + 'static,
 	CAW: CanAuthorWith<Block> + Clone + Send + 'static,
 {

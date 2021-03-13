@@ -23,10 +23,10 @@ use std::sync::Arc;
 use tetcore_std::{ops::Deref, boxed::Box, vec::Vec};
 use crate::{warn, debug};
 use tetsy_hash_db::{self, Hasher, Prefix};
-use sp_trie::{Trie, MemoryDB, PrefixedMemoryDB, DBValue,
+use tp_trie::{Trie, MemoryDB, PrefixedMemoryDB, DBValue,
 	empty_child_trie_root, read_trie_value, read_child_trie_value,
 	for_keys_in_child_trie, KeySpacedDB, TrieDBIterator};
-use sp_trie::trie_types::{TrieDB, TrieError, Layout};
+use tp_trie::trie_types::{TrieDB, TrieError, Layout};
 use crate::{backend::Consolidate, StorageKey, StorageValue};
 use tet_core::storage::ChildInfo;
 use codec::Encode;
@@ -434,7 +434,7 @@ impl<S: TrieBackendStorage<H>, H: Hasher> tetsy_hash_db::HashDBRef<H, DBValue>
 #[cfg(test)]
 mod test {
 	use tet_core::{Blake2Hasher, H256};
-	use sp_trie::{TrieMut, PrefixedMemoryDB, trie_types::TrieDBMut, KeySpacedDBMut};
+	use tp_trie::{TrieMut, PrefixedMemoryDB, trie_types::TrieDBMut, KeySpacedDBMut};
 	use super::*;
 
 	#[test]

@@ -38,12 +38,12 @@ use std::{collections::{HashMap, HashSet}, sync::Arc, pin::Pin, convert::TryInto
 use futures::{prelude::*, future::{self, ready}, channel::oneshot};
 use parking_lot::Mutex;
 
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	traits::{Block as BlockT, NumberFor, AtLeast32Bit, Extrinsic, Zero},
 };
 use tet_core::traits::SpawnNamed;
-use sp_transaction_pool::{
+use tp_transaction_pool::{
 	TransactionPool, PoolStatus, ImportNotificationStream, TxHash, TransactionFor,
 	TransactionStatusStreamFor, MaintainedTransactionPool, PoolFuture, ChainEvent,
 	TransactionSource,
@@ -333,7 +333,7 @@ impl<PoolApi, Block> TransactionPool for BasicPool<PoolApi, Block>
 impl<Block, Client, Fetcher> LightPool<Block, Client, Fetcher>
 where
 	Block: BlockT,
-	Client: sp_blockchain::HeaderBackend<Block> + 'static,
+	Client: tp_blockchain::HeaderBackend<Block> + 'static,
 	Fetcher: sc_client_api::Fetcher<Block> + 'static,
 {
 	/// Create new basic transaction pool for a light node with the provided api.
@@ -354,11 +354,11 @@ where
 impl<Block, Client> FullPool<Block, Client>
 where
 	Block: BlockT,
-	Client: sp_api::ProvideRuntimeApi<Block>
+	Client: tp_api::ProvideRuntimeApi<Block>
 		+ sc_client_api::BlockBackend<Block>
-		+ sp_runtime::traits::BlockIdTo<Block>,
+		+ tp_runtime::traits::BlockIdTo<Block>,
 	Client: sc_client_api::ExecutorProvider<Block> + Send + Sync + 'static,
-	Client::Api: sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
+	Client::Api: tp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
 	sp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
 {
 	/// Create new basic transaction pool for a full node with the provided api.
@@ -380,15 +380,15 @@ where
 	}
 }
 
-impl<Block, Client> sp_transaction_pool::LocalTransactionPool
+impl<Block, Client> tp_transaction_pool::LocalTransactionPool
 	for BasicPool<FullChainApi<Client, Block>, Block>
 where
 	Block: BlockT,
-	Client: sp_api::ProvideRuntimeApi<Block>
+	Client: tp_api::ProvideRuntimeApi<Block>
 		+ sc_client_api::BlockBackend<Block>
-		+ sp_runtime::traits::BlockIdTo<Block>,
+		+ tp_runtime::traits::BlockIdTo<Block>,
 	Client: Send + Sync + 'static,
-	Client::Api: sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
+	Client::Api: tp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
 	sp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
 {
 	type Block = Block;
@@ -398,11 +398,11 @@ where
 	fn submit_local(
 		&self,
 		at: &BlockId<Self::Block>,
-		xt: sp_transaction_pool::LocalTransactionFor<Self>,
+		xt: tp_transaction_pool::LocalTransactionFor<Self>,
 	) -> Result<Self::Hash, Self::Error> {
 		use sc_transaction_graph::ValidatedTransaction;
-		use sp_runtime::traits::SaturatedConversion;
-		use sp_runtime::transaction_validity::TransactionValidityError;
+		use tp_runtime::traits::SaturatedConversion;
+		use tp_runtime::transaction_validity::TransactionValidityError;
 
 		let validity = self
 			.api

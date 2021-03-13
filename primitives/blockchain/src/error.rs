@@ -18,11 +18,11 @@
 //! Tetcore client possible errors.
 
 use std::{self, result};
-use sp_state_machine;
-use sp_runtime::transaction_validity::TransactionValidityError;
-use sp_consensus;
+use tp_state_machine;
+use tp_runtime::transaction_validity::TransactionValidityError;
+use tp_consensus;
 use codec::Error as CodecError;
-use sp_api::ApiError;
+use tp_api::ApiError;
 
 /// Client Result type alias
 pub type Result<T> = result::Result<T, Error>;
@@ -51,7 +51,7 @@ pub enum Error {
 	OneShotCancelled(#[from] futures::channel::oneshot::Canceled),
 
 	#[error(transparent)]
-	Consensus(#[from] sp_consensus::Error),
+	Consensus(#[from] tp_consensus::Error),
 
 	#[error("Backend error: {0}")]
 	Backend(String),
@@ -70,7 +70,7 @@ pub enum Error {
 
 	// `inner` cannot be made member, since it lacks `std::error::Error` trait bounds.
 	#[error("Execution failed: {0:?}")]
-	Execution(Box<dyn sp_state_machine::Error>),
+	Execution(Box<dyn tp_state_machine::Error>),
 
 	#[error("Blockchain")]
 	Blockchain(#[source] Box<Error>),
@@ -171,14 +171,14 @@ pub enum Error {
 	Storage(String),
 }
 
-impl From<Box<dyn sp_state_machine::Error + Send + Sync + 'static>> for Error {
-	fn from(e: Box<dyn sp_state_machine::Error + Send + Sync + 'static>) -> Self {
+impl From<Box<dyn tp_state_machine::Error + Send + Sync + 'static>> for Error {
+	fn from(e: Box<dyn tp_state_machine::Error + Send + Sync + 'static>) -> Self {
 		Self::from_state(e)
 	}
 }
 
-impl From<Box<dyn sp_state_machine::Error>> for Error {
-	fn from(e: Box<dyn sp_state_machine::Error>) -> Self {
+impl From<Box<dyn tp_state_machine::Error>> for Error {
+	fn from(e: Box<dyn tp_state_machine::Error>) -> Self {
 		Self::from_state(e)
 	}
 }
@@ -190,7 +190,7 @@ impl Error {
 	}
 
 	/// Chain a state error.
-	pub fn from_state(e: Box<dyn sp_state_machine::Error>) -> Self {
+	pub fn from_state(e: Box<dyn tp_state_machine::Error>) -> Self {
 		Error::Execution(e)
 	}
 

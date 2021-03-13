@@ -26,7 +26,7 @@ use futures::channel::mpsc::{channel, Sender, Receiver};
 use tetsy_libp2p::PeerId;
 use log::trace;
 use prometheus_endpoint::Registry;
-use sp_runtime::traits::Block as BlockT;
+use tp_runtime::traits::Block as BlockT;
 use std::{
 	borrow::Cow,
 	collections::{HashMap, VecDeque},
@@ -305,7 +305,7 @@ mod tests {
 	use quickcheck::{Arbitrary, Gen, QuickCheck};
 	use rand::Rng;
 	use sc_network::ObservedRole;
-	use sp_runtime::{testing::H256, traits::{Block as BlockT}};
+	use tp_runtime::{testing::H256, traits::{Block as BlockT}};
 	use std::borrow::Cow;
 	use std::convert::TryInto;
 	use std::sync::{Arc, Mutex};

@@ -22,7 +22,7 @@ use futures::{future::{ready, Ready}, executor::block_on};
 use sc_transaction_graph::*;
 use codec::Encode;
 use tetcore_test_runtime::{Block, Extrinsic, Transfer, H256, AccountId};
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	transaction_validity::{
 		ValidTransaction, InvalidTransaction, TransactionValidity, TransactionTag as Tag,
@@ -51,7 +51,7 @@ fn to_tag(nonce: u64, from: AccountId) -> Tag {
 
 impl ChainApi for TestApi {
 	type Block = Block;
-	type Error = sp_transaction_pool::error::Error;
+	type Error = tp_transaction_pool::error::Error;
 	type ValidationFuture = Ready<sp_transaction_pool::error::Result<TransactionValidity>>;
 	type BodyFuture = Ready<sp_transaction_pool::error::Result<Option<Vec<Extrinsic>>>>;
 

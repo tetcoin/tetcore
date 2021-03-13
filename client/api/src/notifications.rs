@@ -25,7 +25,7 @@ use std::{
 
 use fnv::{FnvHashSet, FnvHashMap};
 use tet_core::storage::{StorageKey, StorageData};
-use sp_runtime::traits::Block as BlockT;
+use tp_runtime::traits::Block as BlockT;
 use tetcore_utils::mpsc::{TracingUnboundedSender, TracingUnboundedReceiver, tracing_unbounded};
 use prometheus_endpoint::{Registry, CounterVec, Opts, U64, register};
 
@@ -357,7 +357,7 @@ impl<Block: BlockT> StorageNotifications<Block> {
 
 #[cfg(test)]
 mod tests {
-	use sp_runtime::testing::{H256 as Hash, Block as RawBlock, ExtrinsicWrapper};
+	use tp_runtime::testing::{H256 as Hash, Block as RawBlock, ExtrinsicWrapper};
 	use super::*;
 	use std::iter::{empty, Empty};
 

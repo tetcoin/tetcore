@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use crate::error::Error;
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 
 /// The SelectChain trait defines the strategy upon which the head is chosen

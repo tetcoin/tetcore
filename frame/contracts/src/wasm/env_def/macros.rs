@@ -134,7 +134,7 @@ macro_rules! define_func {
 		fn $name< E: $seal_ty >(
 			$ctx: &mut $crate::wasm::Runtime<E>,
 			args: &[sp_sandbox::Value],
-		) -> Result<sp_sandbox::ReturnValue, sp_sandbox::HostError>
+		) -> Result<sp_sandbox::ReturnValue, tp_sandbox::HostError>
 			where
 				<E::T as frame_system::Config>::AccountId:
 					tet_core::crypto::UncheckedFrom<<E::T as frame_system::Config>::Hash> +
@@ -212,8 +212,8 @@ macro_rules! define_env {
 mod tests {
 	use tetsy_wasm::elements::FunctionType;
 	use tetsy_wasm::elements::ValueType;
-	use sp_runtime::traits::Zero;
-	use sp_sandbox::{ReturnValue, Value};
+	use tp_runtime::traits::Zero;
+	use tp_sandbox::{ReturnValue, Value};
 	use crate::{
 		wasm::{Runtime, runtime::TrapReason, tests::MockExt},
 		exec::Ext,
@@ -233,7 +233,7 @@ mod tests {
 		fn test_value(
 			_ctx: &mut TestRuntime,
 			args: &[sp_sandbox::Value],
-		) -> Result<ReturnValue, sp_sandbox::HostError> {
+		) -> Result<ReturnValue, tp_sandbox::HostError> {
 			let mut args = args.iter();
 			unmarshall_then_body_then_marshall!(
 				args,
@@ -261,7 +261,7 @@ mod tests {
 		fn test_unit(
 			ctx: &mut TestRuntime,
 			args: &[sp_sandbox::Value],
-		) -> Result<ReturnValue, sp_sandbox::HostError> {
+		) -> Result<ReturnValue, tp_sandbox::HostError> {
 			let mut args = args.iter();
 			unmarshall_then_body_then_marshall!(
 				args,
@@ -290,7 +290,7 @@ mod tests {
 			}
 		});
 		let _f: fn(&mut Runtime<MockExt>, &[sp_sandbox::Value])
-			-> Result<sp_sandbox::ReturnValue, sp_sandbox::HostError> = seal_gas::<MockExt>;
+			-> Result<sp_sandbox::ReturnValue, tp_sandbox::HostError> = seal_gas::<MockExt>;
 	}
 
 	#[test]

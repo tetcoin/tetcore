@@ -17,11 +17,11 @@
 
 //! Inherents for BABE
 
-use sp_inherents::{Error, InherentData, InherentIdentifier};
+use tp_inherents::{Error, InherentData, InherentIdentifier};
 #[cfg(feature = "std")]
-use sp_inherents::{InherentDataProviders, ProvideInherentData};
+use tp_inherents::{InherentDataProviders, ProvideInherentData};
 #[cfg(feature = "std")]
-use sp_timestamp::TimestampInherentData;
+use tp_timestamp::TimestampInherentData;
 
 #[cfg(feature = "std")]
 use codec::Decode;
@@ -31,7 +31,7 @@ use tetcore_std::result::Result;
 pub const INHERENT_IDENTIFIER: InherentIdentifier = *b"babeslot";
 
 /// The type of the BABE inherent.
-pub type InherentType = sp_consensus_slots::Slot;
+pub type InherentType = tp_consensus_slots::Slot;
 /// Auxiliary trait to extract BABE inherent data.
 pub trait BabeInherentData {
 	/// Get BABE inherent data.

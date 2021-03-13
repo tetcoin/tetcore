@@ -152,7 +152,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use tetcore_std::prelude::*;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{Dispatchable, SaturatedConversion, CheckedAdd, CheckedMul},
 	DispatchResult
 };

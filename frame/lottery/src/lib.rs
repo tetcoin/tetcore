@@ -55,7 +55,7 @@ mod benchmarking;
 pub mod weights;
 
 use tetcore_std::prelude::*;
-use sp_runtime::{
+use tp_runtime::{
 	DispatchError, ModuleId,
 	traits::{AccountIdConversion, Saturating, Zero},
 };

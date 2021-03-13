@@ -71,7 +71,7 @@ use frame_support::traits::{
 	Currency, Get, Imbalance, OnUnbalanced, ExistenceRequirement::{KeepAlive},
 	ReservableCurrency, WithdrawReasons
 };
-use sp_runtime::{Permill, ModuleId, RuntimeDebug, traits::{
+use tp_runtime::{Permill, ModuleId, RuntimeDebug, traits::{
 	Zero, StaticLookup, AccountIdConversion, Saturating
 }};
 use frame_support::weights::{Weight, DispatchClass};

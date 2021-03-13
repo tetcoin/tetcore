@@ -34,9 +34,9 @@ use tetsy_finality_grandpa::{
 	BlockNumberOps, Error as GrandpaError, round::State as RoundState,
 	voter, voter_set::VoterSet,
 };
-use sp_blockchain::HeaderMetadata;
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{
+use tp_blockchain::HeaderMetadata;
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, NumberFor, Zero,
 };
 use sc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_INFO};
@@ -46,7 +46,7 @@ use crate::{
 	PrimaryPropose, SignedMessage, VoterCommand,
 };
 
-use sp_consensus::SelectChain;
+use tp_consensus::SelectChain;
 
 use crate::authorities::{AuthoritySet, SharedAuthoritySet};
 use crate::communication::Network as NetworkT;
@@ -54,7 +54,7 @@ use crate::notification::GrandpaJustificationSender;
 use crate::justification::GrandpaJustification;
 use crate::until_imported::UntilVoteTargetImported;
 use crate::voting_rule::VotingRule;
-use sp_finality_grandpa::{
+use tp_finality_grandpa::{
 	AuthorityId, AuthoritySignature, Equivocation, EquivocationProof,
 	GrandpaApi, RoundNumber, SetId,
 };
@@ -480,7 +480,7 @@ where
 	Block: BlockT,
 	BE: Backend<Block>,
 	C: crate::ClientForGrandpa<Block, BE>,
-	C::Api: GrandpaApi<Block, Error = sp_blockchain::Error>,
+	C::Api: GrandpaApi<Block, Error = tp_blockchain::Error>,
 	N: NetworkT<Block>,
 	SC: SelectChain<Block> + 'static,
 {
@@ -695,11 +695,11 @@ pub(crate) fn ancestry<Block: BlockT, Client>(
 	block: Block::Hash,
 ) -> Result<Vec<Block::Hash>, GrandpaError>
 where
-	Client: HeaderMetadata<Block, Error = sp_blockchain::Error>,
+	Client: HeaderMetadata<Block, Error = tp_blockchain::Error>,
 {
 	if base == block { return Err(GrandpaError::NotDescendent) }
 
-	let tree_route_res = sp_blockchain::tree_route(&**client, block, base);
+	let tree_route_res = tp_blockchain::tree_route(&**client, block, base);
 
 	let tree_route = match tree_route_res {
 		Ok(tree_route) => tree_route,
@@ -726,7 +726,7 @@ where
 	Block: 'static,
 	B: Backend<Block>,
 	C: crate::ClientForGrandpa<Block, B> + 'static,
-	C::Api: GrandpaApi<Block, Error = sp_blockchain::Error>,
+	C::Api: GrandpaApi<Block, Error = tp_blockchain::Error>,
 	N: NetworkT<Block> + 'static + Send + Sync,
 	SC: SelectChain<Block> + 'static,
 	VR: VotingRule<Block, C>,

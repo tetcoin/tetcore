@@ -18,7 +18,7 @@
 
 //! Transaction pool error.
 
-use sp_transaction_pool::error::Error as TxPoolError;
+use tp_transaction_pool::error::Error as TxPoolError;
 
 /// Transaction pool result.
 pub type Result<T> = std::result::Result<T, Error>;
@@ -31,7 +31,7 @@ pub enum Error {
 	Pool(#[from] TxPoolError),
 
 	#[error("Blockchain error")]
-	Blockchain(#[from] sp_blockchain::Error),
+	Blockchain(#[from] tp_blockchain::Error),
 
 	#[error("Block conversion error: {0}")]
 	BlockIdConversion(String),
@@ -41,7 +41,7 @@ pub enum Error {
 }
 
 
-impl sp_transaction_pool::error::IntoPoolError for Error {
+impl tp_transaction_pool::error::IntoPoolError for Error {
 	fn into_pool_error(self) -> std::result::Result<TxPoolError, Self> {
 		match self {
 			Error::Pool(e) => Ok(e),

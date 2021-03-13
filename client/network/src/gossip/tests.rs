@@ -21,7 +21,7 @@ use crate::gossip::QueuedSender;
 use crate::{config,  Event, NetworkService, NetworkWorker};
 
 use futures::prelude::*;
-use sp_runtime::traits::{Block as BlockT, Header as _};
+use tp_runtime::traits::{Block as BlockT, Header as _};
 use std::{borrow::Cow, sync::Arc, time::Duration};
 use tetcore_test_runtime_client::{TestClientBuilder, TestClientBuilderExt as _};
 
@@ -46,10 +46,10 @@ fn build_test_full_node(network_config: config::NetworkConfiguration)
 
 	#[derive(Clone)]
 	struct PassThroughVerifier(bool);
-	impl<B: BlockT> sp_consensus::import_queue::Verifier<B> for PassThroughVerifier {
+	impl<B: BlockT> tp_consensus::import_queue::Verifier<B> for PassThroughVerifier {
 		fn verify(
 			&mut self,
-			origin: sp_consensus::BlockOrigin,
+			origin: tp_consensus::BlockOrigin,
 			header: B::Header,
 			justification: Option<sp_runtime::Justification>,
 			body: Option<Vec<B::Extrinsic>>,
@@ -75,7 +75,7 @@ fn build_test_full_node(network_config: config::NetworkConfiguration)
 					)]
 				});
 
-			let mut import = sp_consensus::BlockImportParams::new(origin, header);
+			let mut import = tp_consensus::BlockImportParams::new(origin, header);
 			import.body = body;
 			import.finalized = self.0;
 			import.justification = justification;

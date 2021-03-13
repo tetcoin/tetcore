@@ -18,10 +18,10 @@
 
 use crate::error::Error;
 use futures::{future, prelude::*};
-use sp_runtime::traits::Block as BlockT;
-use sp_runtime::generic::BlockId;
+use tp_runtime::traits::Block as BlockT;
+use tp_runtime::generic::BlockId;
 use codec::Encode;
-use sp_consensus::import_queue::ImportQueue;
+use tp_consensus::import_queue::ImportQueue;
 use sc_client_api::{BlockBackend, UsageProvider};
 
 use std::pin::Pin;

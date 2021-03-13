@@ -45,8 +45,8 @@ use std::collections::{BTreeSet, BTreeMap};
 
 use log::warn;
 
-use sp_blockchain::{Error as ClientError, Result as ClientResult};
-use sp_runtime::traits::{
+use tp_blockchain::{Error as ClientError, Result as ClientResult};
+use tp_runtime::traits::{
 	Block as BlockT, NumberFor, Zero, Bounded, CheckedSub
 };
 
@@ -788,7 +788,7 @@ pub fn destroy_fork<Block: BlockT, T: CacheItemT, S: Storage<Block, T>, Tx: Stor
 
 /// Blockchain related functions.
 mod chain {
-	use sp_runtime::traits::Header as HeaderT;
+	use tp_runtime::traits::Header as HeaderT;
 	use super::*;
 
 	/// Is the block1 connected both ends of the range.
@@ -862,7 +862,7 @@ fn read_forks<Block: BlockT, T: CacheItemT, S: Storage<Block, T>>(
 #[cfg(test)]
 mod tests {
 	use tetcore_test_runtime_client::runtime::H256;
-	use sp_runtime::testing::{Header, Block as RawBlock, ExtrinsicWrapper};
+	use tp_runtime::testing::{Header, Block as RawBlock, ExtrinsicWrapper};
 	use crate::cache::list_storage::tests::{DummyStorage, FaultyStorage, DummyTransaction};
 	use super::*;
 

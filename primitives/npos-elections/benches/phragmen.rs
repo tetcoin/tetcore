@@ -25,11 +25,11 @@ extern crate test;
 use test::Bencher;
 
 use rand::{self, Rng};
-use sp_npos_elections::{ElectionResult, VoteWeight};
+use tp_npos_elections::{ElectionResult, VoteWeight};
 
 use std::collections::BTreeMap;
-use sp_runtime::{Perbill, PerThing, traits::Zero};
-use sp_npos_elections::{
+use tp_runtime::{Perbill, PerThing, traits::Zero};
+use tp_npos_elections::{
 	balance_solution, assignment_ratio_to_staked, to_support_map, to_without_backing, VoteWeight,
 	ExtendedBalance, Assignment, StakedAssignment, IdentifierT, assignment_ratio_to_staked,
 	seq_phragmen,

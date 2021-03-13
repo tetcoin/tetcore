@@ -19,7 +19,7 @@
 
 use codec::Encode;
 use crate::{self as pallet_babe, Config, CurrentSlot};
-use sp_runtime::{
+use tp_runtime::{
 	Perbill, impl_opaque_keys,
 	curve::PiecewiseLinear,
 	testing::{Digest, DigestItem, Header, TestXt,},
@@ -33,9 +33,9 @@ use frame_support::{
 };
 use tet_io;
 use tet_core::{H256, U256, crypto::{IsWrappedBy, KeyTypeId, Pair}};
-use sp_consensus_babe::{AuthorityId, AuthorityPair, Slot};
-use sp_consensus_vrf::schnorrkel::{VRFOutput, VRFProof};
-use sp_staking::SessionIndex;
+use tp_consensus_babe::{AuthorityId, AuthorityPair, Slot};
+use tp_consensus_vrf::schnorrkel::{VRFOutput, VRFProof};
+use tp_staking::SessionIndex;
 use pallet_staking::EraIndex;
 use pallet_session::historical as pallet_session_historical;
 
@@ -81,7 +81,7 @@ impl frame_system::Config for Test {
 	type Call = Call;
 	type Hash = H256;
 	type Version = ();
-	type Hashing = sp_runtime::traits::BlakeTwo256;
+	type Hashing = tp_runtime::traits::BlakeTwo256;
 	type AccountId = DummyValidatorId;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
@@ -293,12 +293,12 @@ pub fn start_era(era_index: EraIndex) {
 }
 
 pub fn make_primary_pre_digest(
-	authority_index: sp_consensus_babe::AuthorityIndex,
-	slot: sp_consensus_babe::Slot,
+	authority_index: tp_consensus_babe::AuthorityIndex,
+	slot: tp_consensus_babe::Slot,
 	vrf_output: VRFOutput,
 	vrf_proof: VRFProof,
 ) -> Digest {
-	let digest_data = sp_consensus_babe::digests::PreDigest::Primary(
+	let digest_data = tp_consensus_babe::digests::PreDigest::Primary(
 		sp_consensus_babe::digests::PrimaryPreDigest {
 			authority_index,
 			slot,
@@ -311,10 +311,10 @@ pub fn make_primary_pre_digest(
 }
 
 pub fn make_secondary_plain_pre_digest(
-	authority_index: sp_consensus_babe::AuthorityIndex,
-	slot: sp_consensus_babe::Slot,
+	authority_index: tp_consensus_babe::AuthorityIndex,
+	slot: tp_consensus_babe::Slot,
 ) -> Digest {
-	let digest_data = sp_consensus_babe::digests::PreDigest::SecondaryPlain(
+	let digest_data = tp_consensus_babe::digests::PreDigest::SecondaryPlain(
 		sp_consensus_babe::digests::SecondaryPlainPreDigest {
 			authority_index,
 			slot,
@@ -325,12 +325,12 @@ pub fn make_secondary_plain_pre_digest(
 }
 
 pub fn make_secondary_vrf_pre_digest(
-	authority_index: sp_consensus_babe::AuthorityIndex,
-	slot: sp_consensus_babe::Slot,
+	authority_index: tp_consensus_babe::AuthorityIndex,
+	slot: tp_consensus_babe::Slot,
 	vrf_output: VRFOutput,
 	vrf_proof: VRFProof,
 ) -> Digest {
-	let digest_data = sp_consensus_babe::digests::PreDigest::SecondaryVRF(
+	let digest_data = tp_consensus_babe::digests::PreDigest::SecondaryVRF(
 		sp_consensus_babe::digests::SecondaryVRFPreDigest {
 			authority_index,
 			slot,
@@ -347,9 +347,9 @@ pub fn make_vrf_output(
 	pair: &sp_consensus_babe::AuthorityPair
 ) -> (VRFOutput, VRFProof, [u8; 32]) {
 	let pair = tet_core::sr25519::Pair::from_ref(pair).as_ref();
-	let transcript = sp_consensus_babe::make_transcript(&Babe::randomness(), slot, 0);
+	let transcript = tp_consensus_babe::make_transcript(&Babe::randomness(), slot, 0);
 	let vrf_inout = pair.vrf_sign(transcript);
-	let vrf_randomness: sp_consensus_vrf::schnorrkel::Randomness = vrf_inout.0
+	let vrf_randomness: tp_consensus_vrf::schnorrkel::Randomness = vrf_inout.0
 		.make_bytes::<[u8; 32]>(&sp_consensus_babe::BABE_VRF_INOUT_CONTEXT);
 	let vrf_output = VRFOutput(vrf_inout.0.to_output());
 	let vrf_proof = VRFProof(vrf_inout.1);
@@ -436,8 +436,8 @@ pub fn generate_equivocation_proof(
 	offender_authority_index: u32,
 	offender_authority_pair: &AuthorityPair,
 	slot: Slot,
-) -> sp_consensus_babe::EquivocationProof<Header> {
-	use sp_consensus_babe::digests::CompatibleDigestItem;
+) -> tp_consensus_babe::EquivocationProof<Header> {
+	use tp_consensus_babe::digests::CompatibleDigestItem;
 
 	let current_block = System::block_number();
 	let current_slot = CurrentSlot::get();

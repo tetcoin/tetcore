@@ -19,7 +19,7 @@
 //! Genesis Configuration.
 
 use crate::keyring::*;
-use sp_keyring::{Ed25519Keyring, Sr25519Keyring};
+use tp_keyring::{Ed25519Keyring, Sr25519Keyring};
 use node_runtime::{
 	GenesisConfig, BalancesConfig, SessionConfig, StakingConfig, SystemConfig,
 	GrandpaConfig, IndicesConfig, ContractsConfig, SocietyConfig, wasm_binary_unwrap,
@@ -27,7 +27,7 @@ use node_runtime::{
 };
 use node_runtime::constants::currency::*;
 use tet_core::ChangesTrieConfiguration;
-use sp_runtime::Perbill;
+use tp_runtime::Perbill;
 
 /// Create genesis runtime configuration for tests.
 pub fn config(support_changes_trie: bool, code: Option<&[u8]>) -> GenesisConfig {

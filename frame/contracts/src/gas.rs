@@ -17,7 +17,7 @@
 
 use crate::Config;
 use tetcore_std::marker::PhantomData;
-use sp_runtime::traits::Zero;
+use tp_runtime::traits::Zero;
 use frame_support::dispatch::{
 	DispatchResultWithPostInfo, PostDispatchInfo, DispatchErrorWithPostInfo,
 };

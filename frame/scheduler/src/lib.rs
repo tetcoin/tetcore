@@ -56,7 +56,7 @@ pub mod weights;
 
 use tetcore_std::{prelude::*, marker::PhantomData, borrow::Borrow};
 use codec::{Encode, Decode, Codec};
-use sp_runtime::{RuntimeDebug, traits::{Zero, One, BadOrigin, Saturating}};
+use tp_runtime::{RuntimeDebug, traits::{Zero, One, BadOrigin, Saturating}};
 use frame_support::{
 	decl_module, decl_storage, decl_event, decl_error, IterableStorageMap,
 	dispatch::{Dispatchable, DispatchError, DispatchResult, Parameter},
@@ -727,7 +727,7 @@ mod tests {
 		weights::constants::RocksDbWeight,
 	};
 	use tet_core::H256;
-	use sp_runtime::{
+	use tp_runtime::{
 		Perbill,
 		testing::Header,
 		traits::{BlakeTwo256, IdentityLookup},

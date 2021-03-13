@@ -18,7 +18,7 @@
 #![recursion_limit="128"]
 
 use codec::{Codec, EncodeLike, Encode, Decode};
-use sp_runtime::{generic, BuildStorage, traits::{BlakeTwo256, Verify}};
+use tp_runtime::{generic, BuildStorage, traits::{BlakeTwo256, Verify}};
 use frame_support::{
 	Parameter, traits::Get, parameter_types,
 	metadata::{
@@ -27,7 +27,7 @@ use frame_support::{
 	},
 	StorageValue, StorageMap, StorageDoubleMap,
 };
-use sp_inherents::{ProvideInherent, InherentData, InherentIdentifier, MakeFatalError};
+use tp_inherents::{ProvideInherent, InherentData, InherentIdentifier, MakeFatalError};
 use tet_core::{H256, sr25519};
 
 mod system;
@@ -100,7 +100,7 @@ mod module1 {
 		}
 	}
 
-	#[derive(PartialEq, Eq, Clone, sp_runtime::RuntimeDebug, Encode, Decode)]
+	#[derive(PartialEq, Eq, Clone, tp_runtime::RuntimeDebug, Encode, Decode)]
 	pub enum Origin<T: Config<I>, I> where T::BlockNumber: From<u32> {
 		Members(u32),
 		_Phantom(std::marker::PhantomData<(T, I)>),
@@ -162,7 +162,7 @@ mod module2 {
 		}
 	}
 
-	#[derive(PartialEq, Eq, Clone, sp_runtime::RuntimeDebug, Encode, Decode)]
+	#[derive(PartialEq, Eq, Clone, tp_runtime::RuntimeDebug, Encode, Decode)]
 	pub enum Origin<T: Config<I>, I=DefaultInstance> {
 		Members(u32),
 		_Phantom(std::marker::PhantomData<(T, I)>),

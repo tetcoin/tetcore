@@ -16,7 +16,7 @@
 // limitations under the License.
 
 //! Error types in Consensus
-use sp_version::RuntimeVersion;
+use tp_version::RuntimeVersion;
 use tet_core::ed25519::Public;
 use std::error;
 
@@ -44,7 +44,7 @@ pub enum Error {
 	FaultyTimer(#[from] std::io::Error),
 	/// Error while working with inherent data.
 	#[error("InherentData error: {0}")]
-	InherentData(#[from] sp_inherents::Error),
+	InherentData(#[from] tp_inherents::Error),
 	/// Unable to propose a block.
 	#[error("Unable to create block proposal.")]
 	CannotPropose,

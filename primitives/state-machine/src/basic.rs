@@ -22,8 +22,8 @@ use std::{
 };
 use crate::{Backend, StorageKey, StorageValue};
 use tetsy_hash_db::Hasher;
-use sp_trie::{TrieConfiguration, empty_child_trie_root};
-use sp_trie::trie_types::Layout;
+use tp_trie::{TrieConfiguration, empty_child_trie_root};
+use tp_trie::trie_types::Layout;
 use tet_core::{
 	storage::{
 		well_known_keys::is_child_storage_key, Storage,

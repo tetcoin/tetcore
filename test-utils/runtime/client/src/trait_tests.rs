@@ -27,10 +27,10 @@ use crate::{
 };
 use sc_client_api::backend;
 use sc_client_api::blockchain::{Backend as BlockChainBackendT, HeaderBackend};
-use sp_consensus::BlockOrigin;
+use tp_consensus::BlockOrigin;
 use tetcore_test_runtime::{self, Transfer};
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{Block as BlockT, HashFor};
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{Block as BlockT, HashFor};
 use sc_block_builder::BlockBuilderProvider;
 
 /// helper to test the `leaves` implementation for various backends

@@ -39,7 +39,7 @@ use self::{
 use frame_benchmarking::{benchmarks, account, whitelisted_caller};
 use frame_system::{Module as System, RawOrigin};
 use tetsy_wasm::elements::{Instruction, ValueType, BlockType};
-use sp_runtime::traits::{Hash, Bounded, Zero};
+use tp_runtime::traits::{Hash, Bounded, Zero};
 use tetcore_std::{default::Default, convert::{TryInto}, vec::Vec, vec};
 use pallet_contracts_primitives::RentProjection;
 
@@ -975,7 +975,7 @@ benchmarks! {
 		let keys = (0 .. r * API_BENCHMARK_BATCH_SIZE)
 			.flat_map(|n| T::Hashing::hash_of(&n).as_ref().to_vec())
 			.collect::<Vec<_>>();
-		let key_len = tetcore_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
+		let key_len = tetcore_std::mem::size_of::<<T::Hashing as tp_runtime::traits::Hash>::Output>();
 		let code = WasmModule::<T>::from(ModuleDefinition {
 			memory: Some(ImportedMemory::max::<T>()),
 			imported_functions: vec![ImportedFunction {
@@ -1039,7 +1039,7 @@ benchmarks! {
 			.map(|n| T::Hashing::hash_of(&n).as_ref().to_vec())
 			.collect::<Vec<_>>();
 		let key_bytes = keys.iter().flatten().cloned().collect::<Vec<_>>();
-		let key_len = tetcore_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
+		let key_len = tetcore_std::mem::size_of::<<T::Hashing as tp_runtime::traits::Hash>::Output>();
 		let code = WasmModule::<T>::from(ModuleDefinition {
 			memory: Some(ImportedMemory::max::<T>()),
 			imported_functions: vec![ImportedFunction {
@@ -1079,7 +1079,7 @@ benchmarks! {
 		let keys = (0 .. r * API_BENCHMARK_BATCH_SIZE)
 			.map(|n| T::Hashing::hash_of(&n).as_ref().to_vec())
 			.collect::<Vec<_>>();
-		let key_len = tetcore_std::mem::size_of::<<T::Hashing as sp_runtime::traits::Hash>::Output>();
+		let key_len = tetcore_std::mem::size_of::<<T::Hashing as tp_runtime::traits::Hash>::Output>();
 		let key_bytes = keys.iter().flatten().cloned().collect::<Vec<_>>();
 		let key_bytes_len = key_bytes.len();
 		let code = WasmModule::<T>::from(ModuleDefinition {

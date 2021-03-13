@@ -21,7 +21,7 @@
 #![warn(missing_docs)]
 use std::io;
 use tet_core::crypto::KeyTypeId;
-use sp_keystore::Error as TraitError;
+use tp_keystore::Error as TraitError;
 
 /// Local keystore implementation
 mod local;

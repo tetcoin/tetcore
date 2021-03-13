@@ -54,7 +54,7 @@ use crate::{
 };
 use codec::Decode;
 use frame_support::weights::Weight;
-use sp_runtime::DispatchError;
+use tp_runtime::DispatchError;
 use tetcore_std::{
 	marker::PhantomData,
 	vec::Vec,

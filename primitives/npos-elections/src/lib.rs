@@ -41,8 +41,8 @@
 //!   denoting the amount of support given to that particular target.
 //!
 //! ```rust
-//! # use sp_npos_elections::*;
-//! # use sp_runtime::Perbill;
+//! # use tp_npos_elections::*;
+//! # use tp_runtime::Perbill;
 //! // the winners.
 //! let winners = vec![(1, 100), (2, 50)];
 //! let assignments = vec![
@@ -218,7 +218,7 @@ pub trait CompactSolution: Sized {
 }
 
 // re-export the compact solution type.
-pub use sp_npos_elections_compact::generate_solution_type;
+pub use tp_npos_elections_compact::generate_solution_type;
 
 /// an aggregator trait for a generic type of a voter/target identifier. This usually maps to
 /// tetcore's account id.

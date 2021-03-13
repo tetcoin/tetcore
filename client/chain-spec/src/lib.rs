@@ -118,7 +118,7 @@ pub use sc_chain_spec_derive::{ChainSpecExtension, ChainSpecGroup};
 pub use chain_spec::{Properties, ChainType};
 
 use serde::{Serialize, de::DeserializeOwned};
-use sp_runtime::BuildStorage;
+use tp_runtime::BuildStorage;
 use sc_network::config::MultiaddrWithPeerId;
 use sc_telemetry::TelemetryEndpoints;
 use tet_core::storage::Storage;

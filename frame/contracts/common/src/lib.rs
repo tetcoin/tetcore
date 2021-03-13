@@ -21,7 +21,7 @@
 
 use bitflags::bitflags;
 use codec::{Decode, Encode};
-use sp_runtime::{DispatchError, RuntimeDebug};
+use tp_runtime::{DispatchError, RuntimeDebug};
 use tetcore_std::prelude::*;
 
 /// Result type of a `bare_call` call.

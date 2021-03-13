@@ -27,7 +27,7 @@ use codec::{Encode, Decode};
 use tetcore_std::prelude::*;
 use tetcore_std::marker::PhantomData;
 use tet_io::hashing::blake2_256;
-use sp_runtime::traits::{Bounded, Saturating, Zero};
+use tp_runtime::traits::{Bounded, Saturating, Zero};
 use tet_core::crypto::UncheckedFrom;
 use frame_support::{
 	dispatch::DispatchResult,
@@ -291,7 +291,7 @@ where
 	/// This generator uses inner counter for account id and applies the hash over `AccountId +
 	/// accountid_counter`.
 	pub fn generate_trie_id(account_id: &AccountIdOf<T>) -> TrieId {
-		use sp_runtime::traits::Hash;
+		use tp_runtime::traits::Hash;
 		// Note that skipping a value due to error is not an issue here.
 		// We only need uniqueness, not sequence.
 		let new_seed = AccountCounter::mutate(|v| {

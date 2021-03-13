@@ -37,7 +37,7 @@ pub enum Error {
 	Service(#[from] sc_service::Error),
 
 	#[error(transparent)]
-	Client(#[from] sp_blockchain::Error),
+	Client(#[from] tp_blockchain::Error),
 
 	#[error(transparent)]
 	Codec(#[from] tetsy_scale_codec::Error),

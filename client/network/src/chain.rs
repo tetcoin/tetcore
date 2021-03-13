@@ -18,9 +18,9 @@
 
 //! Blockchain access trait
 
-use sp_blockchain::{Error, HeaderBackend, HeaderMetadata};
+use tp_blockchain::{Error, HeaderBackend, HeaderMetadata};
 use sc_client_api::{BlockBackend, ProofProvider};
-use sp_runtime::traits::{Block as BlockT, BlockIdTo};
+use tp_runtime::traits::{Block as BlockT, BlockIdTo};
 
 /// Local client abstraction for the network.
 pub trait Client<Block: BlockT>: HeaderBackend<Block> + ProofProvider<Block> + BlockIdTo<Block, Error = Error>

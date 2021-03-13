@@ -26,7 +26,7 @@ use frame_support::{
 	impl_outer_event, traits::Filter,
 };
 use tet_core::H256;
-use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
+use tp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 use crate as multisig;
 
 impl_outer_origin! {

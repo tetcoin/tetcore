@@ -1,4 +1,4 @@
-use sp_runtime::traits::GetNodeBlockType;
+use tp_runtime::traits::GetNodeBlockType;
 use tetcore_test_runtime_client::runtime::Block;
 
 /// The declaration of the `Runtime` type and the implementation of the `GetNodeBlockType`

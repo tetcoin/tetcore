@@ -42,10 +42,10 @@ use std::{
 	hash::Hasher as _,
 };
 use tet_core::traits::FetchRuntimeCode;
-use sp_state_machine::BasicExternalities;
-use sp_blockchain::Result;
+use tp_state_machine::BasicExternalities;
+use tp_blockchain::Result;
 use sc_executor::RuntimeInfo;
-use sp_version::RuntimeVersion;
+use tp_version::RuntimeVersion;
 use tet_core::traits::RuntimeCode;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -100,7 +100,7 @@ pub enum WasmOverrideError {
 	DuplicateRuntime(Vec<String>),
 }
 
-impl From<WasmOverrideError> for sp_blockchain::Error {
+impl From<WasmOverrideError> for tp_blockchain::Error {
 	fn from(err: WasmOverrideError) -> Self {
 		Self::Application(Box::new(err))
 	}
@@ -144,7 +144,7 @@ where
 	/// Returns a hashmap of the runtime version and wasm runtime code.
 	fn scrape_overrides(dir: &Path, executor: &E) -> Result<HashMap<u32, WasmBlob>> {
 
-		let handle_err = |e: std::io::Error | -> sp_blockchain::Error {
+		let handle_err = |e: std::io::Error | -> tp_blockchain::Error {
 			WasmOverrideError::Io(dir.to_owned(), e).into()
 		};
 

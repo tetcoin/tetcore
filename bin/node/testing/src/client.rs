@@ -18,7 +18,7 @@
 
 //! Utilities to build a `TestClient` for `node-runtime`.
 
-use sp_runtime::BuildStorage;
+use tp_runtime::BuildStorage;
 use sc_service::client;
 /// Re-export test-client utilities.
 pub use tetcore_test_client::*;

@@ -38,12 +38,12 @@ use futures::{prelude::*, future::{self, Either}};
 use futures_timer::Delay;
 use log::{debug, error, info, warn};
 use parking_lot::Mutex;
-use sp_api::{ProvideRuntimeApi, ApiRef};
+use tp_api::{ProvideRuntimeApi, ApiRef};
 use arithmetic::traits::BaseArithmetic;
-use sp_consensus::{BlockImport, Proposer, SyncOracle, SelectChain, CanAuthorWith, SlotData, RecordProof};
-use sp_consensus_slots::Slot;
-use sp_inherents::{InherentData, InherentDataProviders};
-use sp_runtime::{
+use tp_consensus::{BlockImport, Proposer, SyncOracle, SelectChain, CanAuthorWith, SlotData, RecordProof};
+use tp_consensus_slots::Slot;
+use tp_inherents::{InherentData, InherentDataProviders};
+use tp_runtime::{
 	generic::BlockId,
 	traits::{Block as BlockT, Header, HashFor, NumberFor}
 };
@@ -93,7 +93,7 @@ pub trait SimpleSlotWorker<B: BlockT> {
 	type SyncOracle: SyncOracle;
 
 	/// The type of future resolving to the proposer.
-	type CreateProposer: Future<Output = Result<Self::Proposer, sp_consensus::Error>>
+	type CreateProposer: Future<Output = Result<Self::Proposer, tp_consensus::Error>>
 		+ Send + Unpin + 'static;
 
 	/// The type of proposer to use to build blocks.
@@ -117,7 +117,7 @@ pub trait SimpleSlotWorker<B: BlockT> {
 		&self,
 		header: &B::Header,
 		slot: Slot,
-	) -> Result<Self::EpochData, sp_consensus::Error>;
+	) -> Result<Self::EpochData, tp_consensus::Error>;
 
 	/// Returns the number of authorities given the epoch data.
 	/// None indicate that the authorities information is incomplete.
@@ -307,7 +307,7 @@ pub trait SimpleSlotWorker<B: BlockT> {
 			},
 			slot_remaining_duration,
 			RecordProof::No,
-		).map_err(|e| sp_consensus::Error::ClientImport(format!("{:?}", e))));
+		).map_err(|e| tp_consensus::Error::ClientImport(format!("{:?}", e))));
 
 		let proposal_work =
 			futures::future::select(proposing, proposing_remaining).map(move |v| match v {
@@ -396,7 +396,7 @@ pub trait SlotCompatible {
 	fn extract_timestamp_and_slot(
 		&self,
 		inherent: &InherentData,
-	) -> Result<(u64, Slot, std::time::Duration), sp_consensus::Error>;
+	) -> Result<(u64, Slot, std::time::Duration), tp_consensus::Error>;
 }
 
 /// Start a new slot worker.
@@ -518,10 +518,10 @@ impl<T: Clone + Send + Sync + 'static> SlotDuration<T> {
 	///
 	/// `slot_key` is marked as `'static`, as it should really be a
 	/// compile-time constant.
-	pub fn get_or_compute<B: BlockT, C, CB>(client: &C, cb: CB) -> sp_blockchain::Result<Self> where
+	pub fn get_or_compute<B: BlockT, C, CB>(client: &C, cb: CB) -> tp_blockchain::Result<Self> where
 		C: sc_client_api::backend::AuxStore,
 		C: ProvideRuntimeApi<B>,
-		CB: FnOnce(ApiRef<C::Api>, &BlockId<B>) -> sp_blockchain::Result<T>,
+		CB: FnOnce(ApiRef<C::Api>, &BlockId<B>) -> tp_blockchain::Result<T>,
 		T: SlotData + Encode + Decode + Debug,
 	{
 		let slot_duration = match client.get_aux(T::SLOT_KEY)? {
@@ -534,7 +534,7 @@ impl<T: Clone + Send + Sync + 'static> SlotDuration<T> {
 					})
 				}),
 			None => {
-				use sp_runtime::traits::Zero;
+				use tp_runtime::traits::Zero;
 				let genesis_slot_duration =
 					cb(client.runtime_api(), &BlockId::number(Zero::zero()))?;
 
@@ -719,7 +719,7 @@ mod test {
 	use std::time::{Duration, Instant};
 	use crate::{BackoffAuthoringOnFinalizedHeadLagging, BackoffAuthoringBlocksStrategy};
 	use tetcore_test_runtime_client::runtime::Block;
-	use sp_api::NumberFor;
+	use tp_api::NumberFor;
 
 	const SLOT_DURATION: Duration = Duration::from_millis(6000);
 

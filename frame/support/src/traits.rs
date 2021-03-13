@@ -22,7 +22,7 @@
 use tetcore_std::{prelude::*, result, marker::PhantomData, ops::Div, fmt::Debug};
 use codec::{FullCodec, Codec, Encode, Decode, EncodeLike};
 use tet_core::u32_trait::Value as U32;
-use sp_runtime::{
+use tp_runtime::{
 	RuntimeDebug, ConsensusEngineId, DispatchResult, DispatchError,
 	traits::{
 		MaybeSerializeDeserialize, AtLeast32Bit, Saturating, TrailingZeroInput, Bounded, Zero,
@@ -1941,7 +1941,7 @@ pub trait GenesisBuild<T, I=()>: Default + MaybeSerializeDeserialize {
 	}
 
 	/// Assimilate the storage for this module into pre-existing overlays.
-	fn assimilate_storage(&self, storage: &mut sp_runtime::Storage) -> Result<(), String> {
+	fn assimilate_storage(&self, storage: &mut tp_runtime::Storage) -> Result<(), String> {
 		sp_state_machine::BasicExternalities::execute_with_storage(storage, || {
 			self.build();
 			Ok(())

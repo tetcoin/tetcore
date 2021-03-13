@@ -112,8 +112,8 @@ use frame_support::{
 	weights::Weight,
 };
 use frame_system::{ensure_root, ensure_signed};
-use sp_npos_elections::{ElectionResult, ExtendedBalance};
-use sp_runtime::{
+use tp_npos_elections::{ElectionResult, ExtendedBalance};
+use tp_runtime::{
 	traits::{Saturating, StaticLookup, Zero},
 	DispatchError, Perbill, RuntimeDebug,
 };
@@ -861,7 +861,7 @@ impl<T: Config> Module<T> {
 		let weight_candidates = candidates_and_deposit.len() as u32;
 		let weight_voters = voters_and_votes.len() as u32;
 		let weight_edges = num_edges;
-		let _ = sp_npos_elections::seq_phragmen::<T::AccountId, Perbill>(
+		let _ = tp_npos_elections::seq_phragmen::<T::AccountId, Perbill>(
 			num_to_elect,
 			candidate_ids,
 			voters_and_votes.clone(),
@@ -1045,7 +1045,7 @@ mod tests {
 	};
 	use tetcore_test_utils::assert_eq_uvec;
 	use tet_core::H256;
-	use sp_runtime::{
+	use tp_runtime::{
 		testing::Header, BuildStorage, DispatchResult,
 		traits::{BlakeTwo256, IdentityLookup},
 	};
@@ -1173,8 +1173,8 @@ mod tests {
 		type WeightInfo = ();
 	}
 
-	pub type Block = sp_runtime::generic::Block<Header, UncheckedExtrinsic>;
-	pub type UncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<u32, u64, Call, ()>;
+	pub type Block = tp_runtime::generic::Block<Header, UncheckedExtrinsic>;
+	pub type UncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<u32, u64, Call, ()>;
 
 	frame_support::construct_runtime!(
 		pub enum Test where

@@ -63,7 +63,7 @@ frame_support::decl_error! {
 }
 
 /// Origin for the system module.
-#[derive(PartialEq, Eq, Clone, sp_runtime::RuntimeDebug, Encode, Decode)]
+#[derive(PartialEq, Eq, Clone, tp_runtime::RuntimeDebug, Encode, Decode)]
 pub enum RawOrigin<AccountId> {
 	Root,
 	Signed(AccountId),

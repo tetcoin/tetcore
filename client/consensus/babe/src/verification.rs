@@ -17,15 +17,15 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 //! Verification for BABE headers.
-use sp_runtime::{traits::Header, traits::DigestItemFor};
+use tp_runtime::{traits::Header, traits::DigestItemFor};
 use tet_core::{Pair, Public};
-use sp_consensus_babe::{make_transcript, AuthoritySignature, AuthorityPair, AuthorityId};
-use sp_consensus_babe::digests::{
+use tp_consensus_babe::{make_transcript, AuthoritySignature, AuthorityPair, AuthorityId};
+use tp_consensus_babe::digests::{
 	PreDigest, PrimaryPreDigest, SecondaryPlainPreDigest, SecondaryVRFPreDigest,
 	CompatibleDigestItem
 };
 use sc_consensus_slots::CheckedHeader;
-use sp_consensus_slots::Slot;
+use tp_consensus_slots::Slot;
 use log::{debug, trace};
 use super::{find_pre_digest, babe_err, Epoch, BlockT, Error};
 use super::authorship::{calculate_primary_threshold, check_primary_threshold, secondary_slot_author};

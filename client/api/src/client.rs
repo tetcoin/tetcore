@@ -20,17 +20,17 @@
 
 use std::{fmt, collections::HashSet, sync::Arc, convert::TryFrom};
 use tet_core::storage::StorageKey;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{Block as BlockT, NumberFor},
 	generic::{BlockId, SignedBlock},
 	Justification,
 };
-use sp_consensus::BlockOrigin;
+use tp_consensus::BlockOrigin;
 
 use crate::blockchain::Info;
 use crate::notifications::StorageEventStream;
 use tetcore_utils::mpsc::TracingUnboundedReceiver;
-use sp_blockchain;
+use tp_blockchain;
 
 /// Type that implements `futures::Stream` of block import events.
 pub type ImportNotifications<Block> = TracingUnboundedReceiver<BlockImportNotification<Block>>;
@@ -73,7 +73,7 @@ pub trait BlockchainEvents<Block: BlockT> {
 		&self,
 		filter_keys: Option<&[StorageKey]>,
 		child_filter_keys: Option<&[(StorageKey, Option<Vec<StorageKey>>)]>,
-	) -> sp_blockchain::Result<StorageEventStream<Block::Hash>>;
+	) -> tp_blockchain::Result<StorageEventStream<Block::Hash>>;
 }
 
 /// Interface for fetching block data.
@@ -82,26 +82,26 @@ pub trait BlockBackend<Block: BlockT> {
 	fn block_body(
 		&self,
 		id: &BlockId<Block>
-	) -> sp_blockchain::Result<Option<Vec<<Block as BlockT>::Extrinsic>>>;
+	) -> tp_blockchain::Result<Option<Vec<<Block as BlockT>::Extrinsic>>>;
 
 	/// Get full block by id.
-	fn block(&self, id: &BlockId<Block>) -> sp_blockchain::Result<Option<SignedBlock<Block>>>;
+	fn block(&self, id: &BlockId<Block>) -> tp_blockchain::Result<Option<SignedBlock<Block>>>;
 
 	/// Get block status.
-	fn block_status(&self, id: &BlockId<Block>) -> sp_blockchain::Result<sp_consensus::BlockStatus>;
+	fn block_status(&self, id: &BlockId<Block>) -> tp_blockchain::Result<sp_consensus::BlockStatus>;
 
 	/// Get block justification set by id.
-	fn justification(&self, id: &BlockId<Block>) -> sp_blockchain::Result<Option<Justification>>;
+	fn justification(&self, id: &BlockId<Block>) -> tp_blockchain::Result<Option<Justification>>;
 
 	/// Get block hash by number.
-	fn block_hash(&self, number: NumberFor<Block>) -> sp_blockchain::Result<Option<Block::Hash>>;
+	fn block_hash(&self, number: NumberFor<Block>) -> tp_blockchain::Result<Option<Block::Hash>>;
 }
 
 /// Provide a list of potential uncle headers for a given block.
 pub trait ProvideUncles<Block: BlockT> {
 	/// Gets the uncles of the block with `target_hash` going back `max_generation` ancestors.
 	fn uncles(&self, target_hash: Block::Hash, max_generation: NumberFor<Block>)
-		-> sp_blockchain::Result<Vec<Block::Header>>;
+		-> tp_blockchain::Result<Vec<Block::Header>>;
 }
 
 /// Client info
@@ -254,7 +254,7 @@ pub struct FinalityNotification<Block: BlockT> {
 	pub header: Block::Header,
 }
 
-impl<B: BlockT> TryFrom<BlockImportNotification<B>> for sp_transaction_pool::ChainEvent<B> {
+impl<B: BlockT> TryFrom<BlockImportNotification<B>> for tp_transaction_pool::ChainEvent<B> {
 	type Error = ();
 
 	fn try_from(n: BlockImportNotification<B>) -> Result<Self, ()> {
@@ -269,7 +269,7 @@ impl<B: BlockT> TryFrom<BlockImportNotification<B>> for sp_transaction_pool::Cha
 	}
 }
 
-impl<B: BlockT> From<FinalityNotification<B>> for sp_transaction_pool::ChainEvent<B> {
+impl<B: BlockT> From<FinalityNotification<B>> for tp_transaction_pool::ChainEvent<B> {
 	fn from(n: FinalityNotification<B>) -> Self {
 		Self::Finalized {
 			hash: n.hash,

@@ -26,7 +26,7 @@ mod shared_params;
 mod transaction_pool_params;
 
 use std::{fmt::Debug, str::FromStr, convert::TryFrom};
-use sp_runtime::{generic::BlockId, traits::{Block as BlockT, NumberFor}};
+use tp_runtime::{generic::BlockId, traits::{Block as BlockT, NumberFor}};
 use tet_core::crypto::Ss58AddressFormat;
 use crate::arg_enums::{OutputType, CryptoScheme};
 use structopt::StructOpt;
@@ -165,8 +165,8 @@ pub struct NetworkSchemeFlag {
 mod tests {
 	use super::*;
 
-	type Header = sp_runtime::generic::Header<u32, sp_runtime::traits::BlakeTwo256>;
-	type Block = sp_runtime::generic::Block<Header, sp_runtime::OpaqueExtrinsic>;
+	type Header = tp_runtime::generic::Header<u32, tp_runtime::traits::BlakeTwo256>;
+	type Block = tp_runtime::generic::Block<Header, tp_runtime::OpaqueExtrinsic>;
 
 	#[test]
 	fn parse_block_number() {

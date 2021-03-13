@@ -57,7 +57,7 @@ use frame_support::{
 	traits::Get,
 };
 use tet_core::crypto::KeyTypeId;
-use sp_runtime::{
+use tp_runtime::{
 	RuntimeDebug,
 	offchain::{http, Duration, storage::StorageValueRef},
 	traits::Zero,
@@ -87,7 +87,7 @@ pub const KEY_TYPE: KeyTypeId = KeyTypeId(*b"btc!");
 /// the types with this pallet-specific identifier.
 pub mod crypto {
 	use super::KEY_TYPE;
-	use sp_runtime::{
+	use tp_runtime::{
 		app_crypto::{app_crypto, sr25519},
 		traits::Verify,
 	};

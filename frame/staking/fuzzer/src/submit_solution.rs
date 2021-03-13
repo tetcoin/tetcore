@@ -25,7 +25,7 @@ use mock::Test;
 use pallet_staking::testing_utils::*;
 use frame_support::{assert_ok, storage::StorageValue, traits::UnfilteredDispatchable};
 use frame_system::RawOrigin;
-use sp_runtime::DispatchError;
+use tp_runtime::DispatchError;
 use tet_core::offchain::{testing::TestOffchainExt, OffchainExt};
 use pallet_staking::{EraElectionStatus, ElectionStatus, Module as Staking, Call as StakingCall};
 

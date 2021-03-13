@@ -28,9 +28,9 @@ use tet_core::{NativeOrEncoded, NeverNativeValue};
 use tet_core::storage::well_known_keys;
 use tet_core::traits::{CodeExecutor, RuntimeCode};
 use frame_support::Hashable;
-use sp_state_machine::TestExternalities as CoreTestExternalities;
+use tp_state_machine::TestExternalities as CoreTestExternalities;
 use sc_executor::{NativeExecutor, RuntimeInfo, WasmExecutionMethod, Externalities};
-use sp_runtime::traits::BlakeTwo256;
+use tp_runtime::traits::BlakeTwo256;
 
 criterion_group!(benches, bench_execute_block);
 criterion_main!(benches);
@@ -77,7 +77,7 @@ fn construct_block<E: Externalities>(
 	parent_hash: Hash,
 	extrinsics: Vec<CheckedExtrinsic>,
 ) -> (Vec<u8>, Hash) {
-	use sp_trie::{TrieConfiguration, trie_types::Layout};
+	use tp_trie::{TrieConfiguration, trie_types::Layout};
 
 	// sign extrinsics.
 	let extrinsics = extrinsics.into_iter().map(sign).collect::<Vec<_>>();

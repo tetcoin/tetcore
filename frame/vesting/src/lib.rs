@@ -53,7 +53,7 @@ pub mod weights;
 use tetcore_std::prelude::*;
 use tetcore_std::fmt::Debug;
 use codec::{Encode, Decode};
-use sp_runtime::{DispatchResult, RuntimeDebug, traits::{
+use tp_runtime::{DispatchResult, RuntimeDebug, traits::{
 	StaticLookup, Zero, AtLeast32BitUnsigned, MaybeSerializeDeserialize, Convert
 }};
 use frame_support::{decl_module, decl_event, decl_storage, decl_error, ensure};
@@ -129,7 +129,7 @@ decl_storage! {
 	add_extra_genesis {
 		config(vesting): Vec<(T::AccountId, T::BlockNumber, T::BlockNumber, BalanceOf<T>)>;
 		build(|config: &GenesisConfig<T>| {
-			use sp_runtime::traits::Saturating;
+			use tp_runtime::traits::Saturating;
 			// Generate initial vesting configuration
 			// * who - Account which we are generating vesting configuration for
 			// * begin - Block when the account will start to vest
@@ -393,7 +393,7 @@ mod tests {
 
 	use frame_support::{assert_ok, assert_noop, parameter_types};
 	use tet_core::H256;
-	use sp_runtime::{
+	use tp_runtime::{
 		testing::Header,
 		traits::{BlakeTwo256, IdentityLookup, Identity, BadOrigin},
 	};

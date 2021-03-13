@@ -19,7 +19,7 @@
 //! Extrinsics status updates.
 
 use futures::Stream;
-use sp_transaction_pool::TransactionStatus;
+use tp_transaction_pool::TransactionStatus;
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender, TracingUnboundedReceiver};
 
 /// Extrinsic watcher.

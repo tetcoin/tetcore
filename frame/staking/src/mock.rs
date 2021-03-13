@@ -27,15 +27,15 @@ use frame_support::{
 };
 use tet_core::H256;
 use tet_io;
-use sp_npos_elections::{
+use tp_npos_elections::{
 	to_support_map, EvaluateSupport, reduce, ExtendedBalance, StakedAssignment, ElectionScore,
 };
-use sp_runtime::{
+use tp_runtime::{
 	curve::PiecewiseLinear,
 	testing::{Header, TestXt, UintAuthorityId},
 	traits::{IdentityLookup, Zero},
 };
-use sp_staking::offence::{OffenceDetails, OnOffenceHandler};
+use tp_staking::offence::{OffenceDetails, OnOffenceHandler};
 use std::{cell::RefCell, collections::HashSet};
 
 pub const INIT_TIMESTAMP: u64 = 30_000;
@@ -79,7 +79,7 @@ impl pallet_session::OneSessionHandler<AccountId> for OtherSessionHandler {
 	}
 }
 
-impl sp_runtime::BoundToRuntimeAppPublic for OtherSessionHandler {
+impl tp_runtime::BoundToRuntimeAppPublic for OtherSessionHandler {
 	type Public = UintAuthorityId;
 }
 
@@ -892,13 +892,13 @@ pub(crate) fn prepare_submission_with(
 	tweak: impl FnOnce(&mut Vec<StakedAssignment<AccountId>>),
 ) -> (CompactAssignments, Vec<ValidatorIndex>, ElectionScore) {
 	// run election on the default stuff.
-	let sp_npos_elections::ElectionResult {
+	let tp_npos_elections::ElectionResult {
 		winners,
 		assignments,
 	} = Staking::do_phragmen::<OffchainAccuracy>(iterations).unwrap();
-	let winners = sp_npos_elections::to_without_backing(winners);
+	let winners = tp_npos_elections::to_without_backing(winners);
 
-	let mut staked = sp_npos_elections::assignment_ratio_to_staked(
+	let mut staked = tp_npos_elections::assignment_ratio_to_staked(
 		assignments,
 		Staking::slashable_balance_of_fn(),
 	);
@@ -932,11 +932,11 @@ pub(crate) fn prepare_submission_with(
 			)
 	};
 
-	let assignments_reduced = sp_npos_elections::assignment_staked_to_ratio(staked);
+	let assignments_reduced = tp_npos_elections::assignment_staked_to_ratio(staked);
 
 	// re-compute score by converting, yet again, into staked type
 	let score = if compute_real_score {
-		let staked = sp_npos_elections::assignment_ratio_to_staked(
+		let staked = tp_npos_elections::assignment_ratio_to_staked(
 			assignments_reduced.clone(),
 			Staking::slashable_balance_of_fn(),
 		);

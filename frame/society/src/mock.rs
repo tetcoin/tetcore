@@ -25,7 +25,7 @@ use frame_support::{
 	traits::{OnInitialize, OnFinalize, TestRandomness},
 };
 use tet_core::H256;
-use sp_runtime::{
+use tp_runtime::{
 	testing::Header,
 	traits::{BlakeTwo256, IdentityLookup},
 };

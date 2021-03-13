@@ -58,7 +58,7 @@ use frame_support::{
 	},
 	dispatch::DispatchResult,
 };
-use sp_runtime::{
+use tp_runtime::{
 	FixedU128, FixedPointNumber, FixedPointOperand, Perquintill, RuntimeDebug,
 	transaction_validity::{
 		TransactionPriority, ValidTransaction, TransactionValidityError, TransactionValidity,
@@ -277,7 +277,7 @@ decl_module! {
 			// loss.
 			use tetcore_std::convert::TryInto;
 			assert!(
-				<Multiplier as sp_runtime::traits::Bounded>::max_value() >=
+				<Multiplier as tp_runtime::traits::Bounded>::max_value() >=
 				Multiplier::checked_from_integer(
 					T::BlockWeights::get().max_block.try_into().unwrap()
 				).unwrap(),
@@ -613,7 +613,7 @@ mod tests {
 	};
 	use pallet_balances::Call as BalancesCall;
 	use tet_core::H256;
-	use sp_runtime::{
+	use tp_runtime::{
 		testing::{Header, TestXt},
 		traits::{BlakeTwo256, IdentityLookup},
 		Perbill,

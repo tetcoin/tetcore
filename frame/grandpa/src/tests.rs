@@ -31,8 +31,8 @@ use frame_support::{
 use frame_system::{EventRecord, Phase};
 use pallet_session::OneSessionHandler;
 use tet_core::H256;
-use sp_keyring::Ed25519Keyring;
-use sp_runtime::testing::Digest;
+use tp_keyring::Ed25519Keyring;
+use tp_runtime::testing::Digest;
 
 #[test]
 fn authorities_change_logged() {
@@ -706,7 +706,7 @@ fn report_equivocation_invalid_equivocation_proof() {
 
 #[test]
 fn report_equivocation_validate_unsigned_prevents_duplicates() {
-	use sp_runtime::transaction_validity::{
+	use tp_runtime::transaction_validity::{
 		InvalidTransaction, TransactionLongevity, TransactionPriority, TransactionSource,
 		TransactionValidity, ValidTransaction,
 	};
@@ -740,7 +740,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 
 		// only local/inblock reports are allowed
 		assert_eq!(
-			<Grandpa as sp_runtime::traits::ValidateUnsigned>::validate_unsigned(
+			<Grandpa as tp_runtime::traits::ValidateUnsigned>::validate_unsigned(
 				TransactionSource::External,
 				&call,
 			),
@@ -755,7 +755,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 		);
 
 		assert_eq!(
-			<Grandpa as sp_runtime::traits::ValidateUnsigned>::validate_unsigned(
+			<Grandpa as tp_runtime::traits::ValidateUnsigned>::validate_unsigned(
 				TransactionSource::Local,
 				&call,
 			),
@@ -769,7 +769,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 		);
 
 		// the pre dispatch checks should also pass
-		assert_ok!(<Grandpa as sp_runtime::traits::ValidateUnsigned>::pre_dispatch(&call));
+		assert_ok!(<Grandpa as tp_runtime::traits::ValidateUnsigned>::pre_dispatch(&call));
 
 		// we submit the report
 		Grandpa::report_equivocation_unsigned(Origin::none(), equivocation_proof, key_owner_proof)
@@ -777,7 +777,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 
 		// the report should now be considered stale and the transaction is invalid
 		assert_err!(
-			<Grandpa as sp_runtime::traits::ValidateUnsigned>::pre_dispatch(&call),
+			<Grandpa as tp_runtime::traits::ValidateUnsigned>::pre_dispatch(&call),
 			InvalidTransaction::Stale,
 		);
 	});

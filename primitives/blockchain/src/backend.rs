@@ -19,9 +19,9 @@
 
 use std::sync::Arc;
 
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
-use sp_runtime::generic::BlockId;
-use sp_runtime::Justification;
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
+use tp_runtime::generic::BlockId;
+use tp_runtime::Justification;
 use log::warn;
 use parking_lot::RwLock;
 
@@ -271,7 +271,7 @@ pub enum BlockStatus {
 /// A list of all well known keys in the blockchain cache.
 pub mod well_known_cache_keys {
 	/// The type representing cache keys.
-	pub type Id = sp_consensus::import_queue::CacheKeyId;
+	pub type Id = tp_consensus::import_queue::CacheKeyId;
 
 	/// A list of authorities.
 	pub const AUTHORITIES: Id = *b"auth";

@@ -22,7 +22,7 @@ use tet_core::{
 	Pair, hexdisplay::HexDisplay,
 	crypto::{Ss58Codec, Ss58AddressFormat},
 };
-use sp_runtime::{MultiSigner, traits::IdentifyAccount};
+use tp_runtime::{MultiSigner, traits::IdentifyAccount};
 use crate::{OutputType, error::{self, Error}};
 use serde_json::json;
 use tet_core::crypto::{SecretString, Zeroize, ExposeSecret};

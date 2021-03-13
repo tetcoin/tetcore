@@ -15,19 +15,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use sp_api::ProvideRuntimeApi;
+use tp_api::ProvideRuntimeApi;
 use tetcore_test_runtime_client::{
 	prelude::*,
 	DefaultTestClientBuilderExt, TestClientBuilder,
 	runtime::{TestAPI, DecodeFails, Transfer, Block},
 };
-use sp_runtime::{generic::BlockId, traits::{Header as HeaderT, HashFor}};
-use sp_state_machine::{
+use tp_runtime::{generic::BlockId, traits::{Header as HeaderT, HashFor}};
+use tp_state_machine::{
 	ExecutionStrategy, create_proof_check_backend,
 	execution_proof_check_on_trie_backend,
 };
 
-use sp_consensus::SelectChain;
+use tp_consensus::SelectChain;
 use codec::Encode;
 use sc_block_builder::BlockBuilderProvider;
 

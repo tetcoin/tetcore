@@ -20,7 +20,7 @@ use crate::error;
 use crate::params::{GenericNumber, PruningParams, SharedParams};
 use crate::CliConfiguration;
 use sc_service::chain_ops::revert_chain;
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use std::fmt::Debug;
 use std::str::FromStr;
 use std::sync::Arc;

@@ -19,8 +19,8 @@
 
 use crate::{warn, debug};
 use tetsy_hash_db::Hasher;
-use sp_trie::{Trie, delta_trie_root, empty_child_trie_root, child_delta_trie_root};
-use sp_trie::trie_types::{TrieDB, TrieError, Layout};
+use tp_trie::{Trie, delta_trie_root, empty_child_trie_root, child_delta_trie_root};
+use tp_trie::trie_types::{TrieDB, TrieError, Layout};
 use tet_core::storage::{ChildInfo, ChildType};
 use codec::{Codec, Decode};
 use crate::{
@@ -252,8 +252,8 @@ pub mod tests {
 	use std::{collections::HashSet, iter};
 	use tet_core::H256;
 	use codec::Encode;
-	use sp_trie::{TrieMut, PrefixedMemoryDB, trie_types::TrieDBMut, KeySpacedDBMut};
-	use sp_runtime::traits::BlakeTwo256;
+	use tp_trie::{TrieMut, PrefixedMemoryDB, trie_types::TrieDBMut, KeySpacedDBMut};
+	use tp_runtime::traits::BlakeTwo256;
 	use super::*;
 
 	const CHILD_KEY_1: &[u8] = b"sub1";

@@ -78,8 +78,8 @@
 //! ## Example
 //!
 //! ```rust
-//! # use sp_election_providers::*;
-//! # use sp_npos_elections::{Support, Assignment};
+//! # use tp_election_providers::*;
+//! # use tp_npos_elections::{Support, Assignment};
 //!
 //! type AccountId = u64;
 //! type Balance = u64;
@@ -163,7 +163,7 @@ use tetcore_std::{prelude::*, fmt::Debug};
 
 /// Re-export some type as they are used in the interface.
 pub use arithmetic::PerThing;
-pub use sp_npos_elections::{Assignment, ExtendedBalance, PerThing128, Supports, VoteWeight};
+pub use tp_npos_elections::{Assignment, ExtendedBalance, PerThing128, Supports, VoteWeight};
 
 /// Something that can provide the data to an [`ElectionProvider`].
 pub trait ElectionDataProvider<AccountId, BlockNumber> {

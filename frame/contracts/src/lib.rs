@@ -111,7 +111,7 @@ use crate::{
 use tet_core::crypto::UncheckedFrom;
 use tetcore_std::{prelude::*, marker::PhantomData, fmt::Debug};
 use codec::{Codec, Encode, Decode};
-use sp_runtime::{
+use tp_runtime::{
 	traits::{
 		Hash, StaticLookup, Zero, MaybeSerializeDeserialize, Member, Convert, Saturating,
 	},

@@ -41,8 +41,8 @@ use prometheus_endpoint::{
 	Gauge, U64, PrometheusError, register, Registry,
 };
 use sc_client_api::{BlockImportNotification, ImportNotifications};
-use sp_finality_grandpa::AuthorityId;
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
+use tp_finality_grandpa::AuthorityId;
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 
 use std::collections::{HashMap, VecDeque};
 use std::pin::Pin;
@@ -547,7 +547,7 @@ mod tests {
 	use super::*;
 	use crate::{CatchUp, CompactCommit};
 	use tetcore_test_runtime_client::runtime::{Block, Hash, Header};
-	use sp_consensus::BlockOrigin;
+	use tp_consensus::BlockOrigin;
 	use sc_client_api::BlockImportNotification;
 	use futures::future::Either;
 	use futures_timer::Delay;

@@ -27,7 +27,7 @@
 //!        unimplemented!()
 //!    }
 //!    fn test(dynamic_variable: i32) {
-//!        for _ in 0..dynamic_variable { sp_tasks::spawn(my_parallel_computator, vec![]); }
+//!        for _ in 0..dynamic_variable { tp_tasks::spawn(my_parallel_computator, vec![]); }
 //!    }
 //! ```
 //!
@@ -42,7 +42,7 @@
 //!
 //!    fn test(computation_payload: Vec<u8>) {
 //!        let parallel_tasks = (0..STATIC_VARIABLE).map(|idx|
-//!            sp_tasks::spawn(my_parallel_computator, computation_payload.chunks(10).nth(idx as _).encode())
+//!            tp_tasks::spawn(my_parallel_computator, computation_payload.chunks(10).nth(idx as _).encode())
 //!        );
 //!    }
 //! ```

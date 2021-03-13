@@ -24,7 +24,7 @@ use crate::{
 use std::{sync::Arc, convert::TryFrom};
 use structopt::StructOpt;
 use tet_core::{crypto::KeyTypeId, crypto::SecretString};
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sc_keystore::LocalKeystore;
 use sc_service::config::{KeystoreConfig, BasePath};
 
@@ -130,7 +130,7 @@ mod tests {
 			"test".into()
 		}
 
-		fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static sp_version::RuntimeVersion {
+		fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static tp_version::RuntimeVersion {
 			unimplemented!("Not required in tests")
 		}
 

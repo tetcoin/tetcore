@@ -26,7 +26,7 @@ use inflector::Inflector;
 
 use crate::BenchmarkCmd;
 use frame_benchmarking::{BenchmarkBatch, BenchmarkSelector, Analysis, RegressionModel};
-use sp_runtime::traits::Zero;
+use tp_runtime::traits::Zero;
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 const TEMPLATE: &str = include_str!("./template.hbs");

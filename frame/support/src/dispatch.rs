@@ -28,7 +28,7 @@ pub use crate::weights::{
 	GetDispatchInfo, DispatchInfo, WeighData, ClassifyDispatch, TransactionPriority, Weight,
 	PaysFee, PostDispatchInfo, WithPostDispatchInfo,
 };
-pub use sp_runtime::{traits::Dispatchable, DispatchError};
+pub use tp_runtime::{traits::Dispatchable, DispatchError};
 pub use crate::traits::{
 	CallMetadata, GetCallMetadata, GetCallName, UnfilteredDispatchable, GetPalletVersion,
 };
@@ -43,7 +43,7 @@ pub type DispatchResultWithPostInfo =
 /// dispatchable functions and is automatically converted to the augmented type. Should be
 /// used whenever the `PostDispatchInfo` does not need to be overwritten. As this should
 /// be the common case it is the implicit return type when none is specified.
-pub type DispatchResult = Result<(), sp_runtime::DispatchError>;
+pub type DispatchResult = Result<(), tp_runtime::DispatchError>;
 
 /// The error type contained in a `DispatchResultWithPostInfo`.
 pub type DispatchErrorWithPostInfo =

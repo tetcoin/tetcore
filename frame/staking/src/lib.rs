@@ -304,7 +304,7 @@ use frame_support::{
 	}
 };
 use pallet_session::historical;
-use sp_runtime::{
+use tp_runtime::{
 	Percent, Perbill, PerU16, RuntimeDebug, DispatchError,
 	curve::PiecewiseLinear,
 	traits::{
@@ -316,17 +316,17 @@ use sp_runtime::{
 		TransactionSource, TransactionPriority,
 	},
 };
-use sp_staking::{
+use tp_staking::{
 	SessionIndex,
 	offence::{OnOffenceHandler, OffenceDetails, Offence, ReportOffence, OffenceError},
 };
 #[cfg(feature = "std")]
-use sp_runtime::{Serialize, Deserialize};
+use tp_runtime::{Serialize, Deserialize};
 use frame_system::{
 	self as system, ensure_signed, ensure_root, ensure_none,
 	offchain::SendTransactionTypes,
 };
-use sp_npos_elections::{
+use tp_npos_elections::{
 	ExtendedBalance, Assignment, ElectionScore, ElectionResult as PrimitiveElectionResult,
 	to_support_map, EvaluateSupport, seq_phragmen, generate_solution_type, is_score_better,
 	SupportMap, VoteWeight, CompactSolution, PerThing128,
@@ -1405,7 +1405,7 @@ decl_module! {
 				)
 			);
 
-			use sp_runtime::UpperOf;
+			use tp_runtime::UpperOf;
 			// see the documentation of `Assignment::try_normalize`. Now we can ensure that this
 			// will always return `Ok`.
 			// 1. Maximum sum of Vec<ChainAccuracy> must fit into `UpperOf<ChainAccuracy>`.
@@ -2684,7 +2684,7 @@ impl<T: Config> Module<T> {
 		}
 
 		// convert into staked assignments.
-		let staked_assignments = sp_npos_elections::assignment_ratio_to_staked(
+		let staked_assignments = tp_npos_elections::assignment_ratio_to_staked(
 			assignments,
 			Self::slashable_balance_of_fn(),
 		);
@@ -2945,7 +2945,7 @@ impl<T: Config> Module<T> {
 				.collect::<Vec<T::AccountId>>();
 			let assignments = phragmen_result.assignments;
 
-			let staked_assignments = sp_npos_elections::assignment_ratio_to_staked(
+			let staked_assignments = tp_npos_elections::assignment_ratio_to_staked(
 				assignments,
 				Self::slashable_balance_of_fn(),
 			);

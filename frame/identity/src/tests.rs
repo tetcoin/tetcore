@@ -19,14 +19,14 @@
 
 use super::*;
 
-use sp_runtime::traits::BadOrigin;
+use tp_runtime::traits::BadOrigin;
 use frame_support::{
 	assert_ok, assert_noop, impl_outer_origin, parameter_types,
 	ord_parameter_types,
 };
 use tet_core::H256;
 use frame_system::{EnsureSignedBy, EnsureOneOf, EnsureRoot};
-use sp_runtime::{
+use tp_runtime::{
 	testing::Header, traits::{BlakeTwo256, IdentityLookup},
 };
 

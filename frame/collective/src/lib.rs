@@ -45,7 +45,7 @@
 use tetcore_std::{prelude::*, result};
 use tet_core::u32_trait::Value as U32;
 use tet_io::storage;
-use sp_runtime::{RuntimeDebug, traits::Hash};
+use tp_runtime::{RuntimeDebug, traits::Hash};
 
 use frame_support::{
 	codec::{Decode, Encode},
@@ -964,7 +964,7 @@ mod tests {
 	use frame_system::{self as system, EventRecord, Phase};
 	use hex_literal::hex;
 	use tet_core::H256;
-	use sp_runtime::{
+	use tp_runtime::{
 		traits::{BlakeTwo256, IdentityLookup}, testing::Header,
 		BuildStorage,
 	};
@@ -1033,8 +1033,8 @@ mod tests {
 		type WeightInfo = ();
 	}
 
-	pub type Block = sp_runtime::generic::Block<Header, UncheckedExtrinsic>;
-	pub type UncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<u32, u64, Call, ()>;
+	pub type Block = tp_runtime::generic::Block<Header, UncheckedExtrinsic>;
+	pub type UncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<u32, u64, Call, ()>;
 
 	frame_support::construct_runtime!(
 		pub enum Test where

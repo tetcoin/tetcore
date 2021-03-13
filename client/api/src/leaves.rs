@@ -21,9 +21,9 @@
 use std::collections::BTreeMap;
 use std::cmp::Reverse;
 use tetcore_database::{Database, Transaction};
-use sp_runtime::traits::AtLeast32Bit;
+use tp_runtime::traits::AtLeast32Bit;
 use codec::{Encode, Decode};
-use sp_blockchain::{Error, Result};
+use tp_blockchain::{Error, Result};
 
 type DbHash = [u8; 32];
 

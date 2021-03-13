@@ -27,10 +27,10 @@ use frame_support::{decl_module, decl_storage, decl_error, dispatch, ensure};
 use frame_support::traits::{FindAuthor, VerifySeal, Get};
 use codec::{Encode, Decode};
 use frame_system::ensure_none;
-use sp_runtime::traits::{Header as HeaderT, One, Zero};
+use tp_runtime::traits::{Header as HeaderT, One, Zero};
 use frame_support::weights::{Weight, DispatchClass};
-use sp_inherents::{InherentIdentifier, ProvideInherent, InherentData};
-use sp_authorship::{INHERENT_IDENTIFIER, UnclesInherentData, InherentError};
+use tp_inherents::{InherentIdentifier, ProvideInherent, InherentData};
+use tp_authorship::{INHERENT_IDENTIFIER, UnclesInherentData, InherentError};
 
 const MAX_UNCLES: usize = 10;
 
@@ -144,7 +144,7 @@ where
 	}
 }
 
-#[derive(Encode, Decode, sp_runtime::RuntimeDebug)]
+#[derive(Encode, Decode, tp_runtime::RuntimeDebug)]
 #[cfg_attr(any(feature = "std", test), derive(PartialEq))]
 enum UncleEntryItem<BlockNumber, Hash, Author> {
 	InclusionHeight(BlockNumber),
@@ -399,7 +399,7 @@ mod tests {
 	use crate as pallet_authorship;
 	use super::*;
 	use tet_core::H256;
-	use sp_runtime::{
+	use tp_runtime::{
 		traits::{BlakeTwo256, IdentityLookup}, testing::Header, generic::DigestItem,
 	};
 	use frame_support::{parameter_types, ConsensusEngineId};

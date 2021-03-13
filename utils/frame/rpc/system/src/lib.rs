@@ -27,17 +27,17 @@ use tetsy_jsonrpc_core::{
 };
 use tetsy_jsonrpc_derive::rpc;
 use futures::future::{ready, TryFutureExt};
-use sp_blockchain::{
+use tp_blockchain::{
 	HeaderBackend,
 	Error as ClientError
 };
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	traits,
 };
 use tet_core::{hexdisplay::HexDisplay, Bytes};
-use sp_transaction_pool::{TransactionPool, InPoolTransaction};
-use sp_block_builder::BlockBuilder;
+use tp_transaction_pool::{TransactionPool, InPoolTransaction};
+use tp_block_builder::BlockBuilder;
 use sc_rpc_api::DenyUnsafe;
 
 pub use frame_system_rpc_runtime_api::AccountNonceApi;
@@ -102,7 +102,7 @@ impl<P: TransactionPool, C, B> FullSystem<P, C, B> {
 impl<P, C, Block, AccountId, Index> SystemApi<<Block as traits::Block>::Hash, AccountId, Index>
 	for FullSystem<P, C, Block>
 where
-	C: sp_api::ProvideRuntimeApi<Block>,
+	C: tp_api::ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block>,
 	C: Send + Sync + 'static,
 	C::Api: AccountNonceApi<Block, AccountId, Index>,
@@ -290,7 +290,7 @@ mod tests {
 	use futures::executor::block_on;
 	use tetcore_test_runtime_client::{runtime::Transfer, AccountKeyring};
 	use sc_transaction_pool::BasicPool;
-	use sp_runtime::{ApplyExtrinsicResult, transaction_validity::{TransactionValidityError, InvalidTransaction}};
+	use tp_runtime::{ApplyExtrinsicResult, transaction_validity::{TransactionValidityError, InvalidTransaction}};
 
 	#[test]
 	fn should_return_next_nonce_for_some_account() {
@@ -306,7 +306,7 @@ mod tests {
 			client.clone(),
 		);
 
-		let source = sp_runtime::transaction_validity::TransactionSource::External;
+		let source = tp_runtime::transaction_validity::TransactionSource::External;
 		let new_transaction = |nonce: u64| {
 			let t = Transfer {
 				from: AccountKeyring::Alice.into(),

@@ -23,7 +23,7 @@ use frame_support::{
 };
 use pallet_mmr_primitives::{LeafDataProvider, Compact};
 use tet_core::H256;
-use sp_runtime::{
+use tp_runtime::{
 	testing::Header,
 	traits::{
 		BlakeTwo256, Keccak256, IdentityLookup,

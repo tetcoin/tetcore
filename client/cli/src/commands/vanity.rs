@@ -25,7 +25,7 @@ use crate::{
 use tet_core::crypto::{Ss58Codec, Ss58AddressFormat};
 use structopt::StructOpt;
 use rand::{rngs::OsRng, RngCore};
-use sp_runtime::traits::IdentifyAccount;
+use tp_runtime::traits::IdentifyAccount;
 use utils::print_from_uri;
 
 /// The `vanity` command

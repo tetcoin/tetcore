@@ -20,7 +20,7 @@
 use super::*;
 use frame_support::{traits::OnInitialize, assert_ok};
 use tet_core::crypto::key_types::DUMMY;
-use sp_runtime::testing::UintAuthorityId;
+use tp_runtime::testing::UintAuthorityId;
 use mock::{
 	SESSION_CHANGED, TEST_SESSION_CHANGED, authorities, force_new_session,
 	set_next_validators, set_session_length, session_changed, Origin, System, Session,

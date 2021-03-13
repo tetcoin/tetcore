@@ -28,12 +28,12 @@ use tet_core::{
 	ExecutionContext,
 	offchain::{self, OffchainExt, TransactionPoolExt},
 };
-use sp_keystore::{KeystoreExt, SyncCryptoStorePtr};
-use sp_runtime::{
+use tp_keystore::{KeystoreExt, SyncCryptoStorePtr};
+use tp_runtime::{
 	generic::BlockId,
 	traits,
 };
-use sp_state_machine::{ExecutionStrategy, ExecutionManager, DefaultHandler};
+use tp_state_machine::{ExecutionStrategy, ExecutionManager, DefaultHandler};
 use externalities::Extensions;
 use parking_lot::RwLock;
 
@@ -90,7 +90,7 @@ pub struct ExecutionExtensions<Block: traits::Block> {
 	// extension to be a `Weak` reference.
 	// That's also the reason why it's being registered lazily instead of
 	// during initialization.
-	transaction_pool: RwLock<Option<Weak<dyn sp_transaction_pool::OffchainSubmitTransaction<Block>>>>,
+	transaction_pool: RwLock<Option<Weak<dyn tp_transaction_pool::OffchainSubmitTransaction<Block>>>>,
 	extensions_factory: RwLock<Box<dyn ExtensionsFactory>>,
 }
 
@@ -133,7 +133,7 @@ impl<Block: traits::Block> ExecutionExtensions<Block> {
 
 	/// Register transaction pool extension.
 	pub fn register_transaction_pool<T>(&self, pool: &Arc<T>)
-		where T: sp_transaction_pool::OffchainSubmitTransaction<Block> + 'static
+		where T: tp_transaction_pool::OffchainSubmitTransaction<Block> + 'static
 	{
 		*self.transaction_pool.write() = Some(Arc::downgrade(&pool) as _);
 	}
@@ -205,7 +205,7 @@ impl<Block: traits::Block> ExecutionExtensions<Block> {
 /// A wrapper type to pass `BlockId` to the actual transaction pool.
 struct TransactionPoolAdapter<Block: traits::Block> {
 	at: BlockId<Block>,
-	pool: Arc<dyn sp_transaction_pool::OffchainSubmitTransaction<Block>>,
+	pool: Arc<dyn tp_transaction_pool::OffchainSubmitTransaction<Block>>,
 }
 
 impl<Block: traits::Block> offchain::TransactionPool for TransactionPoolAdapter<Block> {

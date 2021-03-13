@@ -29,7 +29,7 @@ use frame_support::{
 	storage,
 };
 use tet_core::H256;
-use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
+use tp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 use crate as utility;
 
 // example module to test behaviors.
@@ -334,7 +334,7 @@ fn batch_early_exit_works() {
 
 #[test]
 fn batch_weight_calculation_doesnt_overflow() {
-	use sp_runtime::Perbill;
+	use tp_runtime::Perbill;
 	new_test_ext().execute_with(|| {
 		let big_call = Call::System(SystemCall::fill_block(Perbill::from_percent(50)));
 		assert_eq!(big_call.get_dispatch_info().weight, Weight::max_value() / 2);

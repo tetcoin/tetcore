@@ -26,7 +26,7 @@ use tetsy_jsonrpc_core::{
 };
 use tetsy_jsonrpc_derive::rpc;
 use sc_consensus_epochs::{descendent_query, Epoch as EpochT, SharedEpochChanges};
-use sp_consensus_babe::{
+use tp_consensus_babe::{
 	AuthorityId,
 	BabeApi as BabeRuntimeApi,
 	digests::PreDigest,
@@ -36,12 +36,12 @@ use tet_core::{
 	crypto::Public,
 };
 use tet_application_crypto::AppKey;
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use sc_rpc_api::DenyUnsafe;
-use sp_api::{ProvideRuntimeApi, BlockId};
-use sp_runtime::traits::{Block as BlockT, Header as _};
-use sp_consensus::{SelectChain, Error as ConsensusError};
-use sp_blockchain::{HeaderBackend, HeaderMetadata, Error as BlockChainError};
+use tp_api::{ProvideRuntimeApi, BlockId};
+use tp_runtime::traits::{Block as BlockT, Header as _};
+use tp_consensus::{SelectChain, Error as ConsensusError};
+use tp_blockchain::{HeaderBackend, HeaderMetadata, Error as BlockChainError};
 use std::{collections::HashMap, sync::Arc};
 
 type FutureResult<T> = Box<dyn rpc_future::Future<Item = T, Error = RpcError> + Send>;
@@ -240,9 +240,9 @@ mod tests {
 		TestClientBuilder,
 	};
 	use tet_application_crypto::AppPair;
-	use sp_keyring::Sr25519Keyring;
+	use tp_keyring::Sr25519Keyring;
 	use tet_core::{crypto::key_types::BABE};
-	use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+	use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 	use sc_keystore::LocalKeystore;
 
 	use std::sync::Arc;

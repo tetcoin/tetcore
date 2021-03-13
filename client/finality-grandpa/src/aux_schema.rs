@@ -21,12 +21,12 @@
 use std::fmt::Debug;
 use tetsy_scale_codec::{Encode, Decode};
 use sc_client_api::backend::AuxStore;
-use sp_blockchain::{Result as ClientResult, Error as ClientError};
+use tp_blockchain::{Result as ClientResult, Error as ClientError};
 use forktree::ForkTree;
 use tetsy_finality_grandpa::round::State as RoundState;
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 use log::{info, warn};
-use sp_finality_grandpa::{AuthorityList, SetId, RoundNumber};
+use tp_finality_grandpa::{AuthorityList, SetId, RoundNumber};
 
 use crate::authorities::{
 	AuthoritySet, AuthoritySetChanges, SharedAuthoritySet, PendingChange, DelayKind,
@@ -525,7 +525,7 @@ pub(crate) fn load_authorities<B: AuxStore, H: Decode, N: Decode + Clone + Ord>(
 
 #[cfg(test)]
 mod test {
-	use sp_finality_grandpa::AuthorityId;
+	use tp_finality_grandpa::AuthorityId;
 	use tet_core::H256;
 	use tetcore_test_runtime_client;
 	use super::*;

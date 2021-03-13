@@ -18,7 +18,7 @@
 
 //! RPC interface for the `ManualSeal` Engine.
 
-use sp_consensus::ImportedAux;
+use tp_consensus::ImportedAux;
 use tetsy_jsonrpc_core::Error;
 use tetsy_jsonrpc_derive::rpc;
 use futures::{
@@ -28,7 +28,7 @@ use futures::{
 	SinkExt
 };
 use serde::{Deserialize, Serialize};
-use sp_runtime::Justification;
+use tp_runtime::Justification;
 pub use self::gen_client::Client as ManualSealClient;
 
 /// Future's type for jsonrpc

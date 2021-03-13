@@ -22,9 +22,9 @@
 //! `CompatibleDigestItem` trait to appear in public interfaces.
 
 use tet_core::Pair;
-use sp_consensus_aura::AURA_ENGINE_ID;
-use sp_runtime::generic::{DigestItem, OpaqueDigestItemId};
-use sp_consensus_slots::Slot;
+use tp_consensus_aura::AURA_ENGINE_ID;
+use tp_runtime::generic::{DigestItem, OpaqueDigestItemId};
+use tp_consensus_slots::Slot;
 use codec::{Encode, Codec};
 use std::fmt::Debug;
 

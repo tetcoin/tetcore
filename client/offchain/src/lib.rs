@@ -42,18 +42,18 @@ use std::{
 
 use parking_lot::Mutex;
 use threadpool::ThreadPool;
-use sp_api::{ApiExt, ProvideRuntimeApi};
+use tp_api::{ApiExt, ProvideRuntimeApi};
 use futures::future::Future;
 use log::{debug, warn};
 use sc_network::{ExHashT, NetworkService, NetworkStateInfo, PeerId};
 use tet_core::{offchain::{self, OffchainStorage}, ExecutionContext, traits::SpawnNamed};
-use sp_runtime::{generic::BlockId, traits::{self, Header}};
+use tp_runtime::{generic::BlockId, traits::{self, Header}};
 use futures::{prelude::*, future::ready};
 
 mod api;
 use api::SharedClient;
 
-pub use sp_offchain::{OffchainWorkerApi, STORAGE_PREFIX};
+pub use tp_offchain::{OffchainWorkerApi, STORAGE_PREFIX};
 
 /// NetworkProvider provides [`OffchainWorkers`] with all necessary hooks into the
 /// underlying Tetcore networking.
@@ -243,8 +243,8 @@ mod tests {
 		DefaultTestClientBuilderExt, ClientBlockImportExt,
 	};
 	use sc_transaction_pool::{BasicPool, FullChainApi};
-	use sp_transaction_pool::{TransactionPool, InPoolTransaction};
-	use sp_consensus::BlockOrigin;
+	use tp_transaction_pool::{TransactionPool, InPoolTransaction};
+	use tp_consensus::BlockOrigin;
 	use sc_client_api::Backend as _;
 	use sc_block_builder::BlockBuilderProvider as _;
 
@@ -274,13 +274,13 @@ mod tests {
 		Arc<BasicPool<FullChainApi<TestClient, Block>, Block>>
 	);
 
-	impl sp_transaction_pool::OffchainSubmitTransaction<Block> for TestPool {
+	impl tp_transaction_pool::OffchainSubmitTransaction<Block> for TestPool {
 		fn submit_at(
 			&self,
 			at: &BlockId<Block>,
 			extrinsic: <Block as traits::Block>::Extrinsic,
 		) -> Result<(), ()> {
-			let source = sp_transaction_pool::TransactionSource::Local;
+			let source = tp_transaction_pool::TransactionSource::Local;
 			futures::executor::block_on(self.0.submit_one(&at, source, extrinsic))
 				.map(|_| ())
 				.map_err(|_| ())

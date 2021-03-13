@@ -23,7 +23,7 @@ use frame_support::{
 	dispatch::{UnfilteredDispatchable, Parameter},
 	storage::unhashed,
 };
-use sp_runtime::DispatchError;
+use tp_runtime::DispatchError;
 use tet_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
 
 pub struct SomeType1;
@@ -260,18 +260,18 @@ pub mod pallet {
 		}
 	}
 
-	#[derive(codec::Encode, sp_runtime::RuntimeDebug)]
+	#[derive(codec::Encode, tp_runtime::RuntimeDebug)]
 	#[cfg_attr(feature = "std", derive(codec::Decode))]
 	pub enum InherentError {
 	}
 
-	impl sp_inherents::IsFatalError for InherentError {
+	impl tp_inherents::IsFatalError for InherentError {
 		fn is_fatal_error(&self) -> bool {
 			unimplemented!();
 		}
 	}
 
-	pub const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"testpall";
+	pub const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = *b"testpall";
 }
 
 // Test that a pallet with non generic event and generic genesis_config is correctly handled
@@ -348,10 +348,10 @@ impl frame_system::Config for Runtime {
 	type Index = u64;
 	type BlockNumber = u32;
 	type Call = Call;
-	type Hash = sp_runtime::testing::H256;
-	type Hashing = sp_runtime::traits::BlakeTwo256;
+	type Hash = tp_runtime::testing::H256;
+	type Hashing = tp_runtime::traits::BlakeTwo256;
 	type AccountId = u64;
-	type Lookup = sp_runtime::traits::IdentityLookup<Self::AccountId>;
+	type Lookup = tp_runtime::traits::IdentityLookup<Self::AccountId>;
 	type Header = Header;
 	type Event = Event;
 	type BlockHashCount = BlockHashCount;
@@ -378,9 +378,9 @@ impl pallet2::Config for Runtime {
 	type Event = Event;
 }
 
-pub type Header = sp_runtime::generic::Header<u32, sp_runtime::traits::BlakeTwo256>;
-pub type Block = sp_runtime::generic::Block<Header, UncheckedExtrinsic>;
-pub type UncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<u32, Call, (), ()>;
+pub type Header = tp_runtime::generic::Header<u32, tp_runtime::traits::BlakeTwo256>;
+pub type Block = tp_runtime::generic::Block<Header, UncheckedExtrinsic>;
+pub type UncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<u32, Call, (), ()>;
 
 frame_support::construct_runtime!(
 	pub enum Runtime where

@@ -22,9 +22,9 @@
 //! # Example
 //!
 //! ```
-//! use sp_consensus::import_queue::Link;
-//! # use sp_consensus::import_queue::buffered_link::buffered_link;
-//! # use sp_test_primitives::Block;
+//! use tp_consensus::import_queue::Link;
+//! # use tp_consensus::import_queue::buffered_link::buffered_link;
+//! # use tp_test_primitives::Block;
 //! # struct DummyLink; impl Link<Block> for DummyLink {}
 //! # let mut my_link = DummyLink;
 //! let (mut tx, mut rx) = buffered_link::<Block>();
@@ -39,7 +39,7 @@
 //!
 
 use futures::prelude::*;
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 use tetcore_utils::mpsc::{TracingUnboundedSender, TracingUnboundedReceiver, tracing_unbounded};
 use std::{pin::Pin, task::Context, task::Poll};
 use crate::import_queue::{Origin, Link, BlockImportResult, BlockImportError};
@@ -150,7 +150,7 @@ impl<B: BlockT> BufferedLinkReceiver<B> {
 
 #[cfg(test)]
 mod tests {
-	use sp_test_primitives::Block;
+	use tp_test_primitives::Block;
 
 	#[test]
 	fn is_closed() {

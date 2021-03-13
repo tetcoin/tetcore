@@ -18,7 +18,7 @@
 use super::Runtime;
 use crate::exec::Ext;
 
-use sp_sandbox::Value;
+use tp_sandbox::Value;
 use tetsy_wasm::elements::{FunctionType, ValueType};
 
 #[macro_use]
@@ -71,7 +71,7 @@ pub(crate) type HostFunc<E> =
 	fn(
 		&mut Runtime<E>,
 		&[sp_sandbox::Value]
-	) -> Result<sp_sandbox::ReturnValue, sp_sandbox::HostError>;
+	) -> Result<sp_sandbox::ReturnValue, tp_sandbox::HostError>;
 
 pub(crate) trait FunctionImplProvider<E: Ext> {
 	fn impls<F: FnMut(&[u8], HostFunc<E>)>(f: &mut F);

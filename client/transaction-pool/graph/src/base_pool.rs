@@ -30,14 +30,14 @@ use std::{
 use log::{trace, debug, warn};
 use serde::Serialize;
 use tet_core::hexdisplay::HexDisplay;
-use sp_runtime::traits::Member;
-use sp_runtime::transaction_validity::{
+use tp_runtime::traits::Member;
+use tp_runtime::transaction_validity::{
 	TransactionTag as Tag,
 	TransactionLongevity as Longevity,
 	TransactionPriority as Priority,
 	TransactionSource as Source,
 };
-use sp_transaction_pool::{error, PoolStatus, InPoolTransaction};
+use tp_transaction_pool::{error, PoolStatus, InPoolTransaction};
 
 use crate::future::{FutureTransactions, WaitingTransaction};
 use crate::ready::ReadyTransactions;

@@ -25,7 +25,7 @@ use std::{pin::Pin, task::{Context, Poll}, time::Duration};
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 
 use sc_network::PeerId;
-use sp_runtime::traits::{NumberFor, Block as BlockT};
+use tp_runtime::traits::{NumberFor, Block as BlockT};
 use super::gossip::{NeighborPacket, GossipMessage};
 
 // How often to rebroadcast, in cases where no new packets are created.

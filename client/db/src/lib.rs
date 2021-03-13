@@ -58,23 +58,23 @@ use sc_client_api::{
 	backend::{NewBlockState, PrunableStateChangesTrieStorage, ProvideChtRoots},
 	leaves::{LeafSet, FinalizationDisplaced}, cht,
 };
-use sp_blockchain::{
+use tp_blockchain::{
 	Result as ClientResult, Error as ClientError,
 	well_known_cache_keys, HeaderBackend,
 };
 use codec::{Decode, Encode};
 use tetsy_hash_db::Prefix;
-use sp_trie::{MemoryDB, PrefixedMemoryDB, prefixed_key};
+use tp_trie::{MemoryDB, PrefixedMemoryDB, prefixed_key};
 use tetcore_database::Transaction;
 use tet_core::{Hasher, ChangesTrieConfiguration};
 use tet_core::offchain::OffchainOverlayedChange;
 use tet_core::storage::{well_known_keys, ChildInfo};
 use arithmetic::traits::Saturating;
-use sp_runtime::{generic::{DigestItem, BlockId}, Justification, Storage};
-use sp_runtime::traits::{
+use tp_runtime::{generic::{DigestItem, BlockId}, Justification, Storage};
+use tp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, NumberFor, Zero, One, SaturatedConversion, HashFor,
 };
-use sp_state_machine::{
+use tp_state_machine::{
 	DBValue, ChangesTrieTransaction, ChangesTrieCacheAction, UsageInfo as StateUsageInfo,
 	StorageCollection, ChildStorageCollection, OffchainChangesCollection,
 	backend::Backend as StateBackend, StateMachineStats,
@@ -82,7 +82,7 @@ use sp_state_machine::{
 use crate::utils::{DatabaseType, Meta, meta_keys, read_db, read_meta};
 use crate::changes_tries_storage::{DbChangesTrieStorage, DbChangesTrieStorageTransaction};
 use sc_state_db::StateDb;
-use sp_blockchain::{CachedHeaderMetadata, HeaderMetadata, HeaderMetadataCache};
+use tp_blockchain::{CachedHeaderMetadata, HeaderMetadata, HeaderMetadataCache};
 use crate::storage_cache::{CachingState, SyncingCachingState, SharedCache, new_shared_cache};
 use crate::stats::StateUsageStats;
 
@@ -100,8 +100,8 @@ const CACHE_HEADERS: usize = 8;
 const DEFAULT_CHILD_RATIO: (usize, usize) = (1, 10);
 
 /// DB-backed patricia trie state, transaction type is an overlay of changes to commit.
-pub type DbState<B> = sp_state_machine::TrieBackend<
-	Arc<dyn sp_state_machine::Storage<HashFor<B>>>, HashFor<B>
+pub type DbState<B> = tp_state_machine::TrieBackend<
+	Arc<dyn tp_state_machine::Storage<HashFor<B>>>, HashFor<B>
 >;
 
 const DB_HASH_LEN: usize = 32;
@@ -533,7 +533,7 @@ impl<Block: BlockT> sc_client_api::blockchain::Backend<Block> for BlockchainDb<B
 							Ok(hashes) => {
 								let extrinsics: ClientResult<Vec<Block::Extrinsic>> = hashes.into_iter().map(
 									|h| self.extrinsic(&h) .and_then(|maybe_ex| maybe_ex.ok_or_else(
-										|| sp_blockchain::Error::Backend(
+										|| tp_blockchain::Error::Backend(
 											format!("Missing transaction: {}", h))))
 								).collect();
 								Ok(Some(extrinsics?))
@@ -585,7 +585,7 @@ impl<Block: BlockT> sc_client_api::blockchain::ProvideCache<Block> for Blockchai
 }
 
 impl<Block: BlockT> HeaderMetadata<Block> for BlockchainDb<Block> {
-	type Error = sp_blockchain::Error;
+	type Error = tp_blockchain::Error;
 
 	fn header_metadata(&self, hash: Block::Hash) -> Result<CachedHeaderMetadata<Block>, Self::Error> {
 		self.header_metadata_cache.header_metadata(hash).map_or_else(|| {
@@ -614,7 +614,7 @@ impl<Block: BlockT> ProvideChtRoots<Block> for BlockchainDb<Block> {
 		&self,
 		cht_size: NumberFor<Block>,
 		block: NumberFor<Block>,
-	) -> sp_blockchain::Result<Option<Block::Hash>> {
+	) -> tp_blockchain::Result<Option<Block::Hash>> {
 		let cht_number = match cht::block_to_cht_number(cht_size, block) {
 			Some(number) => number,
 			None => return Ok(None),
@@ -638,7 +638,7 @@ impl<Block: BlockT> ProvideChtRoots<Block> for BlockchainDb<Block> {
 		&self,
 		cht_size: NumberFor<Block>,
 		block: NumberFor<Block>,
-	) -> sp_blockchain::Result<Option<Block::Hash>> {
+	) -> tp_blockchain::Result<Option<Block::Hash>> {
 		let cht_number = match cht::block_to_cht_number(cht_size, block) {
 			Some(number) => number,
 			None => return Ok(None),
@@ -826,7 +826,7 @@ struct StorageDb<Block: BlockT> {
 	prefix_keys: bool,
 }
 
-impl<Block: BlockT> sp_state_machine::Storage<HashFor<Block>> for StorageDb<Block> {
+impl<Block: BlockT> tp_state_machine::Storage<HashFor<Block>> for StorageDb<Block> {
 	fn get(&self, key: &Block::Hash, prefix: Prefix) -> Result<Option<DBValue>, String> {
 		if self.prefix_keys {
 			let key = prefixed_key::<HashFor<Block>>(key, prefix);
@@ -858,7 +858,7 @@ impl<Block: BlockT> DbGenesisStorage<Block> {
 	}
 }
 
-impl<Block: BlockT> sp_state_machine::Storage<HashFor<Block>> for DbGenesisStorage<Block> {
+impl<Block: BlockT> tp_state_machine::Storage<HashFor<Block>> for DbGenesisStorage<Block> {
 	fn get(&self, _key: &Block::Hash, _prefix: Prefix) -> Result<Option<DBValue>, String> {
 		Ok(None)
 	}
@@ -970,7 +970,7 @@ impl<Block: BlockT> Backend<Block> {
 		let is_archive_pruning = config.state_pruning.is_archive();
 		let blockchain = BlockchainDb::new(db.clone(), config.transaction_storage.clone())?;
 		let meta = blockchain.meta.clone();
-		let map_e = |e: sc_state_db::Error<io::Error>| sp_blockchain::Error::from_state_db(e);
+		let map_e = |e: sc_state_db::Error<io::Error>| tp_blockchain::Error::from_state_db(e);
 		let state_db: StateDb<_, _> = StateDb::new(
 			config.state_pruning.clone(),
 			!config.source.supports_ref_counting(),
@@ -1037,7 +1037,7 @@ impl<Block: BlockT> Backend<Block> {
 
 		// cannot find tree route with empty DB.
 		if meta.best_hash != Default::default() {
-			let tree_route = sp_blockchain::tree_route(
+			let tree_route = tp_blockchain::tree_route(
 				&self.blockchain,
 				meta.best_hash,
 				route_to,
@@ -1161,7 +1161,7 @@ impl<Block: BlockT> Backend<Block> {
 
 			trace!(target: "db", "Canonicalize block #{} ({:?})", new_canonical, hash);
 			let commit = self.storage.state_db.canonicalize_block(&hash)
-				.map_err(|e: sc_state_db::Error<io::Error>| sp_blockchain::Error::from_state_db(e))?;
+				.map_err(|e: sc_state_db::Error<io::Error>| tp_blockchain::Error::from_state_db(e))?;
 			apply_state_commit(transaction, commit);
 		};
 
@@ -1305,7 +1305,7 @@ impl<Block: BlockT> Backend<Block> {
 					number_u64,
 					&pending_block.header.parent_hash(),
 					changeset,
-				).map_err(|e: sc_state_db::Error<io::Error>| sp_blockchain::Error::from_state_db(e))?;
+				).map_err(|e: sc_state_db::Error<io::Error>| tp_blockchain::Error::from_state_db(e))?;
 				apply_state_commit(&mut transaction, commit);
 
 				// Check if need to finalize. Genesis is always finalized instantly.
@@ -1470,7 +1470,7 @@ impl<Block: BlockT> Backend<Block> {
 			transaction.set_from_vec(columns::META, meta_keys::FINALIZED_BLOCK, lookup_key);
 
 			let commit = self.storage.state_db.canonicalize_block(&f_hash)
-				.map_err(|e: sc_state_db::Error<io::Error>| sp_blockchain::Error::from_state_db(e))?;
+				.map_err(|e: sc_state_db::Error<io::Error>| tp_blockchain::Error::from_state_db(e))?;
 			apply_state_commit(transaction, commit);
 
 			if !f_num.is_zero() {
@@ -1735,13 +1735,13 @@ impl<Block: BlockT> sc_client_api::backend::Backend<Block> for Backend<Block> {
 				let mut transaction = Transaction::new();
 				let removed_number = best_number;
 				let removed = self.blockchain.header(BlockId::Number(best_number))?.ok_or_else(
-					|| sp_blockchain::Error::UnknownBlock(
+					|| tp_blockchain::Error::UnknownBlock(
 						format!("Error reverting to {}. Block hash not found.", best_number)))?;
 				let removed_hash = removed.hash();
 
 				let prev_number = best_number.saturating_sub(One::one());
 				let prev_hash = self.blockchain.hash(prev_number)?.ok_or_else(
-					|| sp_blockchain::Error::UnknownBlock(
+					|| tp_blockchain::Error::UnknownBlock(
 						format!("Error reverting to {}. Block hash not found.", best_number))
 				)?;
 
@@ -1914,11 +1914,11 @@ pub(crate) mod tests {
 	use tet_core::H256;
 	use sc_client_api::backend::{Backend as BTrait, BlockImportOperation as Op};
 	use sc_client_api::blockchain::Backend as BLBTrait;
-	use sp_runtime::testing::{Header, Block as RawBlock, ExtrinsicWrapper};
-	use sp_runtime::traits::{Hash, BlakeTwo256};
-	use sp_runtime::generic::DigestItem;
-	use sp_state_machine::{TrieMut, TrieDBMut};
-	use sp_blockchain::{lowest_common_ancestor, tree_route};
+	use tp_runtime::testing::{Header, Block as RawBlock, ExtrinsicWrapper};
+	use tp_runtime::traits::{Hash, BlakeTwo256};
+	use tp_runtime::generic::DigestItem;
+	use tp_state_machine::{TrieMut, TrieDBMut};
+	use tp_blockchain::{lowest_common_ancestor, tree_route};
 
 	pub(crate) type Block = RawBlock<ExtrinsicWrapper<u64>>;
 
@@ -1956,7 +1956,7 @@ pub(crate) mod tests {
 		extrinsics_root: H256,
 		body: Vec<ExtrinsicWrapper<u64>>,
 	) -> H256 {
-		use sp_runtime::testing::Digest;
+		use tp_runtime::testing::Digest;
 
 		let mut digest = Digest::default();
 		let mut changes_trie_update = Default::default();

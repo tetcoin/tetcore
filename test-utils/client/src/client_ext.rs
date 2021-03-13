@@ -20,13 +20,13 @@
 use sc_service::client::Client;
 use sc_client_api::backend::Finalizer;
 use sc_client_api::client::BlockBackend;
-use sp_consensus::{
+use tp_consensus::{
 	BlockImportParams, BlockImport, BlockOrigin, Error as ConsensusError,
 	ForkChoiceStrategy,
 };
-use sp_runtime::Justification;
-use sp_runtime::traits::{Block as BlockT};
-use sp_runtime::generic::BlockId;
+use tp_runtime::Justification;
+use tp_runtime::traits::{Block as BlockT};
+use tp_runtime::generic::BlockId;
 use codec::alloc::collections::hash_map::HashMap;
 
 /// Extension trait for a test client.
@@ -36,7 +36,7 @@ pub trait ClientExt<Block: BlockT>: Sized {
 		&self,
 		id: BlockId<Block>,
 		justification: Option<Justification>,
-	) -> sp_blockchain::Result<()>;
+	) -> tp_blockchain::Result<()>;
 
 	/// Returns hash of the genesis block.
 	fn genesis_hash(&self) -> <Block as BlockT>::Hash;
@@ -74,7 +74,7 @@ impl<B, E, RA, Block> ClientExt<Block> for Client<B, E, Block, RA>
 		&self,
 		id: BlockId<Block>,
 		justification: Option<Justification>,
-	) -> sp_blockchain::Result<()> {
+	) -> tp_blockchain::Result<()> {
 		Finalizer::finalize_block(self, id, justification, true)
 	}
 

@@ -19,9 +19,9 @@
 //! A manual sealing engine: the engine listens for rpc calls to seal blocks and create forks.
 //! This is suitable for a testing environment.
 
-use sp_consensus::{Error as ConsensusError, ImportResult};
-use sp_blockchain::Error as BlockchainError;
-use sp_inherents::Error as InherentsError;
+use tp_consensus::{Error as ConsensusError, ImportResult};
+use tp_blockchain::Error as BlockchainError;
+use tp_inherents::Error as InherentsError;
 use futures::channel::{oneshot, mpsc::SendError};
 
 /// Error code for rpc

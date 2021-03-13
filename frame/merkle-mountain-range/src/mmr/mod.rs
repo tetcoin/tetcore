@@ -20,7 +20,7 @@ pub mod utils;
 mod mmr;
 
 use crate::primitives::FullLeaf;
-use sp_runtime::traits;
+use tp_runtime::traits;
 
 pub use self::mmr::{Mmr, verify_leaf_proof};
 

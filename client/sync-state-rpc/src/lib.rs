@@ -21,10 +21,10 @@
 
 #![deny(unused_crate_dependencies)]
 
-use sp_runtime::traits::{Block as BlockT, NumberFor};
-use sp_blockchain::HeaderBackend;
+use tp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_blockchain::HeaderBackend;
 use std::sync::Arc;
-use sp_runtime::generic::BlockId;
+use tp_runtime::generic::BlockId;
 
 use tetsy_jsonrpc_derive::rpc;
 
@@ -36,7 +36,7 @@ type SharedEpochChanges<TBl> = sc_consensus_epochs::SharedEpochChanges<TBl, sc_c
 #[allow(missing_docs)]
 enum Error<Block: BlockT> {
 	#[error(transparent)]
-	Blockchain(#[from] sp_blockchain::Error),
+	Blockchain(#[from] tp_blockchain::Error),
 
 	#[error("Failed to load the block weight for block {0:?}")]
 	LoadingBlockWeightFailed(<Block as BlockT>::Hash),
@@ -98,7 +98,7 @@ impl<TBl, TCl> SyncStateRpcHandler<TBl, TCl>
 	fn build_sync_state(&self) -> Result<sc_chain_spec::LightSyncState<TBl>, Error<TBl>> {
 		let finalized_hash = self.client.info().finalized_hash;
 		let finalized_header = self.client.header(BlockId::Hash(finalized_hash))?
-			.ok_or_else(|| sp_blockchain::Error::MissingHeader(finalized_hash.to_string()))?;
+			.ok_or_else(|| tp_blockchain::Error::MissingHeader(finalized_hash.to_string()))?;
 
 		let finalized_block_weight = sc_consensus_babe::aux_schema::load_block_weight(
 				&*self.client,

@@ -43,11 +43,11 @@ use sc_network::{
 	NetworkStateInfo,
 	PeerId,
 };
-use sp_authority_discovery::{AuthorityDiscoveryApi, AuthorityId, AuthoritySignature, AuthorityPair};
+use tp_authority_discovery::{AuthorityDiscoveryApi, AuthorityId, AuthoritySignature, AuthorityPair};
 use tet_core::crypto::{key_types, Pair};
-use sp_keystore::CryptoStore;
-use sp_runtime::{traits::Block as BlockT, generic::BlockId};
-use sp_api::ProvideRuntimeApi;
+use tp_keystore::CryptoStore;
+use tp_runtime::{traits::Block as BlockT, generic::BlockId};
+use tp_api::ProvideRuntimeApi;
 
 mod addr_cache;
 /// Dht payload schemas generated from Protobuf definitions via Prost crate in build.rs.
@@ -132,7 +132,7 @@ where
 	Network: NetworkProvider,
 	Client: ProvideRuntimeApi<Block> + Send + Sync + 'static + HeaderBackend<Block>,
 	<Client as ProvideRuntimeApi<Block>>::Api:
-		AuthorityDiscoveryApi<Block, Error = sp_blockchain::Error>,
+		AuthorityDiscoveryApi<Block, Error = tp_blockchain::Error>,
 	DhtEventStream: Stream<Item = DhtEvent> + Unpin,
 {
 	/// Construct a [`Worker`].

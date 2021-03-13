@@ -65,7 +65,7 @@ use frame_support::traits::{
 	ReservableCurrency
 };
 
-use sp_runtime::{ Percent, RuntimeDebug, traits::{
+use tp_runtime::{ Percent, RuntimeDebug, traits::{
 	Zero, AccountIdConversion, Hash, BadOrigin
 }};
 use frame_support::traits::{Contains, ContainsLengthBound, OnUnbalanced, EnsureOrigin};

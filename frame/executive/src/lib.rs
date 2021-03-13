@@ -51,7 +51,7 @@
 //! `Executive` type declaration from the node template.
 //!
 //! ```
-//! # use sp_runtime::generic;
+//! # use tp_runtime::generic;
 //! # use frame_executive as executive;
 //! # pub struct UncheckedExtrinsic {};
 //! # pub struct Header {};
@@ -60,10 +60,10 @@
 //! # pub type Balances = u64;
 //! # pub type AllModules = u64;
 //! # pub enum Runtime {};
-//! # use sp_runtime::transaction_validity::{
+//! # use tp_runtime::transaction_validity::{
 //! #    TransactionValidity, UnknownTransaction, TransactionSource,
 //! # };
-//! # use sp_runtime::traits::ValidateUnsigned;
+//! # use tp_runtime::traits::ValidateUnsigned;
 //! # impl ValidateUnsigned for Runtime {
 //! #     type Call = ();
 //! #
@@ -82,7 +82,7 @@
 //! the on runtime upgrade logic of all modules is called.
 //!
 //! ```
-//! # use sp_runtime::generic;
+//! # use tp_runtime::generic;
 //! # use frame_executive as executive;
 //! # pub struct UncheckedExtrinsic {};
 //! # pub struct Header {};
@@ -91,10 +91,10 @@
 //! # pub type Balances = u64;
 //! # pub type AllModules = u64;
 //! # pub enum Runtime {};
-//! # use sp_runtime::transaction_validity::{
+//! # use tp_runtime::transaction_validity::{
 //! #    TransactionValidity, UnknownTransaction, TransactionSource,
 //! # };
-//! # use sp_runtime::traits::ValidateUnsigned;
+//! # use tp_runtime::traits::ValidateUnsigned;
 //! # impl ValidateUnsigned for Runtime {
 //! #     type Call = ();
 //! #
@@ -121,7 +121,7 @@ use frame_support::{
 	traits::{OnInitialize, OnFinalize, OnRuntimeUpgrade, OffchainWorker},
 	dispatch::PostDispatchInfo,
 };
-use sp_runtime::{
+use tp_runtime::{
 	generic::Digest, ApplyExtrinsicResult,
 	traits::{
 		self, Header, Zero, One, Checkable, Applyable, CheckEqual, ValidateUnsigned, NumberFor,
@@ -298,7 +298,7 @@ where
 			// any initial checks
 			Self::initial_checks(&block);
 
-			let signature_batching = sp_runtime::SignatureBatching::start();
+			let signature_batching = tp_runtime::SignatureBatching::start();
 
 			// execute extrinsics
 			let (header, extrinsics) = block.deconstruct();
@@ -474,7 +474,7 @@ where
 mod tests {
 	use super::*;
 	use tet_core::H256;
-	use sp_runtime::{
+	use tp_runtime::{
 		generic::{Era, DigestItem}, DispatchError, testing::{Digest, Header, Block},
 		traits::{Header as HeaderT, BlakeTwo256, IdentityLookup},
 		transaction_validity::{
@@ -496,7 +496,7 @@ mod tests {
 
 	mod custom {
 		use frame_support::weights::{Weight, DispatchClass};
-		use sp_runtime::transaction_validity::{
+		use tp_runtime::transaction_validity::{
 			UnknownTransaction, TransactionSource, TransactionValidity
 		};
 
@@ -556,7 +556,7 @@ mod tests {
 			}
 		}
 
-		impl<T: Config> sp_runtime::traits::ValidateUnsigned for Module<T> {
+		impl<T: Config> tp_runtime::traits::ValidateUnsigned for Module<T> {
 			type Call = Call<T>;
 
 			fn validate_unsigned(
@@ -648,7 +648,7 @@ mod tests {
 
 	pub struct RuntimeVersion;
 	impl frame_support::traits::Get<sp_version::RuntimeVersion> for RuntimeVersion {
-		fn get() -> sp_version::RuntimeVersion {
+		fn get() -> tp_version::RuntimeVersion {
 			RUNTIME_VERSION.with(|v| v.borrow().clone())
 		}
 	}
@@ -664,9 +664,9 @@ mod tests {
 		frame_system::CheckWeight<Runtime>,
 		pallet_transaction_payment::ChargeTransactionPayment<Runtime>,
 	);
-	type TestXt = sp_runtime::testing::TestXt<Call, SignedExtra>;
+	type TestXt = tp_runtime::testing::TestXt<Call, SignedExtra>;
 	type TestBlock = Block<TestXt>;
-	type TestUncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<
+	type TestUncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<
 		<Runtime as frame_system::Config>::AccountId,
 		<Runtime as frame_system::Config>::Call,
 		(),
@@ -1001,7 +1001,7 @@ mod tests {
 			assert!(frame_system::LastRuntimeUpgrade::<Runtime>::exists());
 			assert!(!Executive::runtime_upgraded());
 
-			RUNTIME_VERSION.with(|v| *v.borrow_mut() = sp_version::RuntimeVersion {
+			RUNTIME_VERSION.with(|v| *v.borrow_mut() = tp_version::RuntimeVersion {
 				spec_version: 1,
 				..Default::default()
 			});
@@ -1011,7 +1011,7 @@ mod tests {
 				frame_system::LastRuntimeUpgrade::<Runtime>::get(),
 			);
 
-			RUNTIME_VERSION.with(|v| *v.borrow_mut() = sp_version::RuntimeVersion {
+			RUNTIME_VERSION.with(|v| *v.borrow_mut() = tp_version::RuntimeVersion {
 				spec_version: 1,
 				spec_name: "test".into(),
 				..Default::default()
@@ -1022,7 +1022,7 @@ mod tests {
 				frame_system::LastRuntimeUpgrade::<Runtime>::get(),
 			);
 
-			RUNTIME_VERSION.with(|v| *v.borrow_mut() = sp_version::RuntimeVersion {
+			RUNTIME_VERSION.with(|v| *v.borrow_mut() = tp_version::RuntimeVersion {
 				spec_version: 1,
 				spec_name: "test".into(),
 				impl_version: 2,
@@ -1050,7 +1050,7 @@ mod tests {
 		];
 
 		for (spec_version, spec_name, c_spec_version, c_spec_name, result) in test_data {
-			let current = sp_version::RuntimeVersion {
+			let current = tp_version::RuntimeVersion {
 				spec_version: c_spec_version,
 				spec_name: c_spec_name.into(),
 				..Default::default()
@@ -1069,7 +1069,7 @@ mod tests {
 	fn custom_runtime_upgrade_is_called_before_modules() {
 		new_test_ext(1).execute_with(|| {
 			// Make sure `on_runtime_upgrade` is called.
-			RUNTIME_VERSION.with(|v| *v.borrow_mut() = sp_version::RuntimeVersion {
+			RUNTIME_VERSION.with(|v| *v.borrow_mut() = tp_version::RuntimeVersion {
 				spec_version: 1,
 				..Default::default()
 			});
@@ -1091,7 +1091,7 @@ mod tests {
 	fn all_weights_are_recorded_correctly() {
 		new_test_ext(1).execute_with(|| {
 			// Make sure `on_runtime_upgrade` is called for maximum complexity
-			RUNTIME_VERSION.with(|v| *v.borrow_mut() = sp_version::RuntimeVersion {
+			RUNTIME_VERSION.with(|v| *v.borrow_mut() = tp_version::RuntimeVersion {
 				spec_version: 1,
 				..Default::default()
 			});

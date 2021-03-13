@@ -27,7 +27,7 @@ use sc_light::{
 	backend::{Backend, GenesisOrUnavailableState},
 };
 use std::sync::Arc;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{BlakeTwo256, HashFor, NumberFor},
 	generic::BlockId, traits::{Block as _, Header as HeaderT}, Digest,
 };
@@ -36,8 +36,8 @@ use parking_lot::Mutex;
 use tetcore_test_runtime_client::{
 	runtime::{Hash, Block, Header}, TestClient, ClientBlockImportExt,
 };
-use sp_api::{InitializeBlock, StorageTransactionCache, ProofRecorder};
-use sp_consensus::BlockOrigin;
+use tp_api::{InitializeBlock, StorageTransactionCache, ProofRecorder};
+use tp_consensus::BlockOrigin;
 use sc_executor::{NativeExecutor, WasmExecutionMethod, RuntimeVersion, NativeVersion};
 use tet_core::{H256, NativeOrEncoded, testing::TaskExecutor};
 use sc_client_api::{
@@ -49,13 +49,13 @@ use sc_client_api::{
 };
 use externalities::Extensions;
 use sc_block_builder::BlockBuilderProvider;
-use sp_blockchain::{
+use tp_blockchain::{
 	BlockStatus, Result as ClientResult, Error as ClientError, CachedHeaderMetadata,
 	HeaderBackend, well_known_cache_keys
 };
 use std::panic::UnwindSafe;
 use std::cell::RefCell;
-use sp_state_machine::{OverlayedChanges, ExecutionManager};
+use tp_state_machine::{OverlayedChanges, ExecutionManager};
 use tetsy_scale_codec::{Decode, Encode};
 use super::prepare_client_with_key_changes;
 use tetcore_test_runtime_client::{
@@ -63,7 +63,7 @@ use tetcore_test_runtime_client::{
 };
 
 use tet_core::{blake2_256, ChangesTrieConfiguration, storage::{well_known_keys, StorageKey, ChildInfo}};
-use sp_state_machine::Backend as _;
+use tp_state_machine::Backend as _;
 
 pub type DummyBlockchain = Blockchain<DummyStorage>;
 
@@ -81,7 +81,7 @@ impl DummyStorage {
 	}
 }
 
-impl sp_blockchain::HeaderBackend<Block> for DummyStorage {
+impl tp_blockchain::HeaderBackend<Block> for DummyStorage {
 	fn header(&self, _id: BlockId<Block>) -> ClientResult<Option<Header>> {
 		Err(ClientError::Backend("Test error".into()))
 	}
@@ -111,7 +111,7 @@ impl sp_blockchain::HeaderBackend<Block> for DummyStorage {
 	}
 }
 
-impl sp_blockchain::HeaderMetadata<Block> for DummyStorage {
+impl tp_blockchain::HeaderMetadata<Block> for DummyStorage {
 	type Error = ClientError;
 
 	fn header_metadata(&self, hash: Hash) -> Result<CachedHeaderMetadata<Block>, Self::Error> {
@@ -242,7 +242,7 @@ impl CallExecutor<Block> for DummyCallExecutor {
 		unreachable!()
 	}
 
-	fn prove_at_trie_state<S: sp_state_machine::TrieBackendStorage<HashFor<Block>>>(
+	fn prove_at_trie_state<S: tp_state_machine::TrieBackendStorage<HashFor<Block>>>(
 		&self,
 		_trie_state: &sp_state_machine::TrieBackend<S, HashFor<Block>>,
 		_overlay: &mut OverlayedChanges,
@@ -565,7 +565,7 @@ fn prepare_for_header_proof_check(insert_cht: bool) -> (TestChecker, Hash, Heade
 }
 
 fn header_with_computed_extrinsics_root(extrinsics: Vec<Extrinsic>) -> Header {
-	use sp_trie::{TrieConfiguration, trie_types::Layout};
+	use tp_trie::{TrieConfiguration, trie_types::Layout};
 	let iter = extrinsics.iter().map(Encode::encode);
 	let extrinsics_root = Layout::<BlakeTwo256>::ordered_trie_root(iter);
 

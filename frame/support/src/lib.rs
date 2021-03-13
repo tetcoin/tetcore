@@ -39,11 +39,11 @@ pub use once_cell;
 pub use paste;
 #[cfg(feature = "std")]
 #[doc(hidden)]
-pub use sp_state_machine::BasicExternalities;
+pub use tp_state_machine::BasicExternalities;
 #[doc(hidden)]
 pub use tet_io::{storage::root as storage_root, self};
 #[doc(hidden)]
-pub use sp_runtime::RuntimeDebug;
+pub use tp_runtime::RuntimeDebug;
 
 #[macro_use]
 pub mod debug;
@@ -78,7 +78,7 @@ pub use self::storage::{
 	IterableStorageDoubleMap, migration
 };
 pub use self::dispatch::{Parameter, Callable};
-pub use sp_runtime::{self, ConsensusEngineId, print, traits::Printable};
+pub use tp_runtime::{self, ConsensusEngineId, print, traits::Printable};
 
 /// A type that cannot be instantiated.
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -1044,8 +1044,8 @@ pub mod pallet_prelude {
 		storage::types::{StorageValue, StorageMap, StorageDoubleMap, ValueQuery, OptionQuery},
 	};
 	pub use codec::{Encode, Decode};
-	pub use sp_inherents::{InherentData, InherentIdentifier, ProvideInherent};
-	pub use sp_runtime::{
+	pub use tp_inherents::{InherentData, InherentIdentifier, ProvideInherent};
+	pub use tp_runtime::{
 		traits::{MaybeSerializeDeserialize, Member, ValidateUnsigned},
 		transaction_validity::{
 			TransactionSource, TransactionValidity, ValidTransaction, TransactionPriority,
@@ -1730,18 +1730,18 @@ pub mod pallet_prelude {
 ///
 /// 	// Regular rust code needed for implementing ProvideInherent trait
 ///
-/// 	#[derive(codec::Encode, sp_runtime::RuntimeDebug)]
+/// 	#[derive(codec::Encode, tp_runtime::RuntimeDebug)]
 /// 	#[cfg_attr(feature = "std", derive(codec::Decode))]
 /// 	pub enum InherentError {
 /// 	}
 ///
-/// 	impl sp_inherents::IsFatalError for InherentError {
+/// 	impl tp_inherents::IsFatalError for InherentError {
 /// 		fn is_fatal_error(&self) -> bool {
 /// 			unimplemented!();
 /// 		}
 /// 	}
 ///
-/// 	pub const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"testpall";
+/// 	pub const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = *b"testpall";
 /// }
 /// ```
 ///
@@ -1857,18 +1857,18 @@ pub mod pallet_prelude {
 ///
 /// 	// Regular rust code needed for implementing ProvideInherent trait
 ///
-/// 	#[derive(codec::Encode, sp_runtime::RuntimeDebug)]
+/// 	#[derive(codec::Encode, tp_runtime::RuntimeDebug)]
 /// 	#[cfg_attr(feature = "std", derive(codec::Decode))]
 /// 	pub enum InherentError {
 /// 	}
 ///
-/// 	impl sp_inherents::IsFatalError for InherentError {
+/// 	impl tp_inherents::IsFatalError for InherentError {
 /// 		fn is_fatal_error(&self) -> bool {
 /// 			unimplemented!();
 /// 		}
 /// 	}
 ///
-/// 	pub const INHERENT_IDENTIFIER: sp_inherents::InherentIdentifier = *b"testpall";
+/// 	pub const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = *b"testpall";
 /// }
 /// ```
 ///

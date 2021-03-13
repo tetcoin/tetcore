@@ -29,7 +29,7 @@ pub use utils::*;
 pub use analysis::{Analysis, BenchmarkSelector, RegressionModel};
 #[doc(hidden)]
 pub use tet_io::storage::root as storage_root;
-pub use sp_runtime::traits::Zero;
+pub use tp_runtime::traits::Zero;
 pub use frame_support;
 pub use paste;
 pub use tetcore_storage::TrackedStorageKey;
@@ -914,7 +914,7 @@ pub fn show_benchmark_debug_info(
 	repeat: &u32,
 	verify: &bool,
 	error_message: &str,
-) -> sp_runtime::RuntimeString {
+) -> tp_runtime::RuntimeString {
 	sp_runtime::format_runtime_string!(
 		"\n* Pallet: {}\n\
 		* Benchmark: {}\n\

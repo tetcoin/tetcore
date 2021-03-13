@@ -23,11 +23,11 @@ use rpc::futures::future::result;
 use tetsy_jsonrpc_pubsub::manager::SubscriptionManager;
 
 use sc_client_api::{BlockchainEvents, BlockBackend};
-use sp_runtime::{generic::{BlockId, SignedBlock}, traits::{Block as BlockT}};
+use tp_runtime::{generic::{BlockId, SignedBlock}, traits::{Block as BlockT}};
 
 use super::{ChainBackend, client_err, error::FutureResult};
 use std::marker::PhantomData;
-use sp_blockchain::HeaderBackend;
+use tp_blockchain::HeaderBackend;
 
 /// Blockchain API backend for full nodes. Reads all the data from local database.
 pub struct FullChain<Block: BlockT, Client> {

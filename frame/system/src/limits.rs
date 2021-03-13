@@ -26,7 +26,7 @@
 //! which should be passed to `frame_system` configuration when runtime is being set up.
 
 use frame_support::weights::{Weight, DispatchClass, constants, PerDispatchClass, OneOrMany};
-use sp_runtime::{RuntimeDebug, Perbill};
+use tp_runtime::{RuntimeDebug, Perbill};
 
 /// Block length limit configuration.
 #[derive(RuntimeDebug, Clone, codec::Encode, codec::Decode)]

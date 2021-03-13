@@ -31,24 +31,24 @@ use frame_support::{
 };
 use frame_system::{ensure_none, ensure_signed};
 use tet_application_crypto::Public;
-use sp_runtime::{
+use tp_runtime::{
 	generic::DigestItem,
 	traits::{Hash, IsMember, One, SaturatedConversion, Saturating},
 	ConsensusEngineId, KeyTypeId,
 };
-use sp_session::{GetSessionNumber, GetValidatorCount};
+use tp_session::{GetSessionNumber, GetValidatorCount};
 use tetcore_std::{prelude::*, result};
-use sp_timestamp::OnTimestampSet;
+use tp_timestamp::OnTimestampSet;
 
-use sp_consensus_babe::{
+use tp_consensus_babe::{
 	digests::{NextConfigDescriptor, NextEpochDescriptor, PreDigest},
 	inherents::{BabeInherentData, INHERENT_IDENTIFIER},
 	BabeAuthorityWeight, ConsensusLog, Epoch, EquivocationProof, Slot, BABE_ENGINE_ID,
 };
-use sp_consensus_vrf::schnorrkel;
-use sp_inherents::{InherentData, InherentIdentifier, MakeFatalError, ProvideInherent};
+use tp_consensus_vrf::schnorrkel;
+use tp_inherents::{InherentData, InherentIdentifier, MakeFatalError, ProvideInherent};
 
-pub use sp_consensus_babe::{AuthorityId, PUBLIC_KEY_LENGTH, RANDOMNESS_LENGTH, VRF_OUTPUT_LENGTH};
+pub use tp_consensus_babe::{AuthorityId, PUBLIC_KEY_LENGTH, RANDOMNESS_LENGTH, VRF_OUTPUT_LENGTH};
 
 mod equivocation;
 mod default_weights;
@@ -621,7 +621,7 @@ impl<T: Config> Module<T> {
 							schnorrkel::PublicKey::from_bytes(author.0.as_slice()).ok()
 						})
 						.and_then(|pubkey| {
-							let transcript = sp_consensus_babe::make_transcript(
+							let transcript = tp_consensus_babe::make_transcript(
 								&Self::randomness(),
 								current_slot,
 								EpochIndex::get(),
@@ -765,7 +765,7 @@ impl<T: Config> frame_support::traits::Lateness<T::BlockNumber> for Module<T> {
 	}
 }
 
-impl<T: Config> sp_runtime::BoundToRuntimeAppPublic for Module<T> {
+impl<T: Config> tp_runtime::BoundToRuntimeAppPublic for Module<T> {
 	type Public = AuthorityId;
 }
 

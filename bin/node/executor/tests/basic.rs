@@ -22,7 +22,7 @@ use frame_support::{
 	weights::{GetDispatchInfo, DispatchInfo, DispatchClass},
 };
 use tet_core::{NeverNativeValue, traits::Externalities, storage::well_known_keys};
-use sp_runtime::{
+use tp_runtime::{
 	ApplyExtrinsicResult,
 	traits::Hash as HashT,
 	transaction_validity::InvalidTransaction,

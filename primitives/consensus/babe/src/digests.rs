@@ -23,9 +23,9 @@ use super::{
 };
 use codec::{Codec, Decode, Encode};
 use tetcore_std::vec::Vec;
-use sp_runtime::{generic::OpaqueDigestItemId, DigestItem, RuntimeDebug};
+use tp_runtime::{generic::OpaqueDigestItemId, DigestItem, RuntimeDebug};
 
-use sp_consensus_vrf::schnorrkel::{Randomness, VRFOutput, VRFProof};
+use tp_consensus_vrf::schnorrkel::{Randomness, VRFOutput, VRFProof};
 
 /// Raw BABE primary slot assignment pre-digest.
 #[derive(Clone, RuntimeDebug, Encode, Decode)]

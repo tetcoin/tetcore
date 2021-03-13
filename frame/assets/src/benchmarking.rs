@@ -18,7 +18,7 @@
 //! Assets pallet benchmarking.
 
 use super::*;
-use sp_runtime::traits::Bounded;
+use tp_runtime::traits::Bounded;
 use frame_system::RawOrigin as SystemOrigin;
 use frame_benchmarking::{benchmarks, account, whitelisted_caller};
 

@@ -25,10 +25,10 @@ use std::convert::TryInto;
 use log::debug;
 
 use codec::Decode;
-use sp_trie::DBValue;
+use tp_trie::DBValue;
 use tetcore_database::Transaction;
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, Zero,
 	UniqueSaturatedFrom, UniqueSaturatedInto,
 };
@@ -93,7 +93,7 @@ pub enum DatabaseType {
 ///
 /// In the current database schema, this kind of key is only used for
 /// lookups into an index, NOT for storing header data or others.
-pub fn number_index_key<N: TryInto<u32>>(n: N) -> sp_blockchain::Result<NumberIndexKey> {
+pub fn number_index_key<N: TryInto<u32>>(n: N) -> tp_blockchain::Result<NumberIndexKey> {
 	let n = n.try_into().map_err(|_|
 		sp_blockchain::Error::Backend("Block number cannot be converted to u32".into())
 	)?;
@@ -111,7 +111,7 @@ pub fn number_index_key<N: TryInto<u32>>(n: N) -> sp_blockchain::Result<NumberIn
 pub fn number_and_hash_to_lookup_key<N, H>(
 	number: N,
 	hash: H,
-) -> sp_blockchain::Result<Vec<u8>>	where
+) -> tp_blockchain::Result<Vec<u8>>	where
 	N: TryInto<u32>,
 	H: AsRef<[u8]>,
 {
@@ -122,7 +122,7 @@ pub fn number_and_hash_to_lookup_key<N, H>(
 
 /// Convert block lookup key into block number.
 /// all block lookup keys start with the block number.
-pub fn lookup_key_to_number<N>(key: &[u8]) -> sp_blockchain::Result<N> where
+pub fn lookup_key_to_number<N>(key: &[u8]) -> tp_blockchain::Result<N> where
 	N: From<u32>
 {
 	if key.len() < 4 {
@@ -139,7 +139,7 @@ pub fn remove_number_to_key_mapping<N: TryInto<u32>>(
 	transaction: &mut Transaction<DbHash>,
 	key_lookup_col: u32,
 	number: N,
-) -> sp_blockchain::Result<()> {
+) -> tp_blockchain::Result<()> {
 	transaction.remove(key_lookup_col, number_index_key(number)?.as_ref());
 	Ok(())
 }
@@ -150,7 +150,7 @@ pub fn remove_key_mappings<N: TryInto<u32>, H: AsRef<[u8]>>(
 	key_lookup_col: u32,
 	number: N,
 	hash: H,
-) -> sp_blockchain::Result<()> {
+) -> tp_blockchain::Result<()> {
 	remove_number_to_key_mapping(transaction, key_lookup_col, number)?;
 	transaction.remove(key_lookup_col, hash.as_ref());
 	Ok(())
@@ -163,7 +163,7 @@ pub fn insert_number_to_key_mapping<N: TryInto<u32> + Clone, H: AsRef<[u8]>>(
 	key_lookup_col: u32,
 	number: N,
 	hash: H,
-) -> sp_blockchain::Result<()> {
+) -> tp_blockchain::Result<()> {
 	transaction.set_from_vec(
 		key_lookup_col,
 		number_index_key(number.clone())?.as_ref(),
@@ -178,7 +178,7 @@ pub fn insert_hash_to_key_mapping<N: TryInto<u32>, H: AsRef<[u8]> + Clone>(
 	key_lookup_col: u32,
 	number: N,
 	hash: H,
-) -> sp_blockchain::Result<()> {
+) -> tp_blockchain::Result<()> {
 	transaction.set_from_vec(
 		key_lookup_col,
 		hash.as_ref(),
@@ -194,7 +194,7 @@ pub fn block_id_to_lookup_key<Block>(
 	db: &dyn Database<DbHash>,
 	key_lookup_col: u32,
 	id: BlockId<Block>
-) -> Result<Option<Vec<u8>>, sp_blockchain::Error> where
+) -> Result<Option<Vec<u8>>, tp_blockchain::Error> where
 	Block: BlockT,
 	::sp_runtime::traits::NumberFor<Block>: UniqueSaturatedFrom<u64> + UniqueSaturatedInto<u64>,
 {
@@ -211,9 +211,9 @@ pub fn block_id_to_lookup_key<Block>(
 pub fn open_database<Block: BlockT>(
 	config: &DatabaseSettings,
 	db_type: DatabaseType,
-) -> sp_blockchain::Result<Arc<dyn Database<DbHash>>> {
+) -> tp_blockchain::Result<Arc<dyn Database<DbHash>>> {
 	#[allow(unused)]
-	fn db_open_error(feat: &'static str) -> sp_blockchain::Error {
+	fn db_open_error(feat: &'static str) -> tp_blockchain::Error {
 		sp_blockchain::Error::Backend(
 			format!("`{}` feature not enabled, database can not be opened", feat),
 		)
@@ -228,7 +228,7 @@ pub fn open_database<Block: BlockT>(
 			// and now open database assuming that it has the latest version
 			let mut db_config = tetsy_kvdb_rocksdb::DatabaseConfig::with_columns(NUM_COLUMNS);
 			let path = path.to_str()
-				.ok_or_else(|| sp_blockchain::Error::Backend("Invalid database path".into()))?;
+				.ok_or_else(|| tp_blockchain::Error::Backend("Invalid database path".into()))?;
 
 			let mut memory_budget = std::collections::HashMap::new();
 			match db_type {
@@ -268,7 +268,7 @@ pub fn open_database<Block: BlockT>(
 			db_config.memory_budget = memory_budget;
 
 			let db = tetsy_kvdb_rocksdb::Database::open(&db_config, &path)
-				.map_err(|err| sp_blockchain::Error::Backend(format!("{}", err)))?;
+				.map_err(|err| tp_blockchain::Error::Backend(format!("{}", err)))?;
 			tetcore_database::as_database(db)
 		},
 		#[cfg(not(any(feature = "with-tetsy-kvdb-rocksdb", test)))]
@@ -278,7 +278,7 @@ pub fn open_database<Block: BlockT>(
 		#[cfg(feature = "with-tetsy-db")]
 		DatabaseSettingsSrc::TetsyDb { path } => {
 			crate::tetsy_db::open(&path, db_type)
-				.map_err(|e| sp_blockchain::Error::Backend(format!("{:?}", e)))?
+				.map_err(|e| tp_blockchain::Error::Backend(format!("{:?}", e)))?
 		},
 		#[cfg(not(feature = "with-tetsy-db"))]
 		DatabaseSettingsSrc::TetsyDb { .. } => {
@@ -293,7 +293,7 @@ pub fn open_database<Block: BlockT>(
 }
 
 /// Check database type.
-pub fn check_database_type(db: &dyn Database<DbHash>, db_type: DatabaseType) -> sp_blockchain::Result<()> {
+pub fn check_database_type(db: &dyn Database<DbHash>, db_type: DatabaseType) -> tp_blockchain::Result<()> {
 	match db.get(COLUMN_META, meta_keys::TYPE) {
 		Some(stored_type) => {
 			if db_type.as_str().as_bytes() != &*stored_type {
@@ -317,7 +317,7 @@ pub fn read_db<Block>(
 	col_index: u32,
 	col: u32,
 	id: BlockId<Block>
-) -> sp_blockchain::Result<Option<DBValue>>
+) -> tp_blockchain::Result<Option<DBValue>>
 	where
 		Block: BlockT,
 {
@@ -334,7 +334,7 @@ pub fn remove_from_db<Block>(
 	col_index: u32,
 	col: u32,
 	id: BlockId<Block>,
-) -> sp_blockchain::Result<()>
+) -> tp_blockchain::Result<()>
 where
 	Block: BlockT,
 {
@@ -350,7 +350,7 @@ pub fn read_header<Block: BlockT>(
 	col_index: u32,
 	col: u32,
 	id: BlockId<Block>,
-) -> sp_blockchain::Result<Option<Block::Header>> {
+) -> tp_blockchain::Result<Option<Block::Header>> {
 	match read_db(db, col_index, col, id)? {
 		Some(header) => match Block::Header::decode(&mut &header[..]) {
 			Ok(header) => Ok(Some(header)),
@@ -368,7 +368,7 @@ pub fn require_header<Block: BlockT>(
 	col_index: u32,
 	col: u32,
 	id: BlockId<Block>,
-) -> sp_blockchain::Result<Block::Header> {
+) -> tp_blockchain::Result<Block::Header> {
 	read_header(db, col_index, col, id)
 		.and_then(|header| header.ok_or_else(||
 			sp_blockchain::Error::UnknownBlock(format!("Require header: {}", id))
@@ -394,7 +394,7 @@ pub fn read_meta<Block>(db: &dyn Database<DbHash>, col_header: u32) -> Result<
 		}),
 	};
 
-	let load_meta_block = |desc, key| -> Result<_, sp_blockchain::Error> {
+	let load_meta_block = |desc, key| -> Result<_, tp_blockchain::Error> {
 		if let Some(Some(header)) = match db.get(COLUMN_META, key) {
 				Some(id) => db.get(col_header, &id).map(|b| Block::Header::decode(&mut &b[..]).ok()),
 				None => None,
@@ -421,7 +421,7 @@ pub fn read_meta<Block>(db: &dyn Database<DbHash>, col_header: u32) -> Result<
 }
 
 /// Read genesis hash from database.
-pub fn read_genesis_hash<Hash: Decode>(db: &dyn Database<DbHash>) -> sp_blockchain::Result<Option<Hash>> {
+pub fn read_genesis_hash<Hash: Decode>(db: &dyn Database<DbHash>) -> tp_blockchain::Result<Option<Hash>> {
 	match db.get(COLUMN_META, meta_keys::GENESIS_HASH) {
 		Some(h) => match Decode::decode(&mut &h[..]) {
 			Ok(h) => Ok(Some(h)),
@@ -446,7 +446,7 @@ impl DatabaseType {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_runtime::testing::{Block as RawBlock, ExtrinsicWrapper};
+	use tp_runtime::testing::{Block as RawBlock, ExtrinsicWrapper};
 	type Block = RawBlock<ExtrinsicWrapper<u32>>;
 
 	#[test]

@@ -348,7 +348,7 @@ impl Consolidate for Vec<(
 	}
 }
 
-impl<H: Hasher, KF: sp_trie::KeyFunction<H>> Consolidate for sp_trie::GenericMemoryDB<H, KF> {
+impl<H: Hasher, KF: tp_trie::KeyFunction<H>> Consolidate for tp_trie::GenericMemoryDB<H, KF> {
 	fn consolidate(&mut self, other: Self) {
 		sp_trie::GenericMemoryDB::consolidate(self, other)
 	}
@@ -356,12 +356,12 @@ impl<H: Hasher, KF: sp_trie::KeyFunction<H>> Consolidate for sp_trie::GenericMem
 
 /// Insert input pairs into memory db.
 #[cfg(test)]
-pub(crate) fn insert_into_memory_db<H, I>(mdb: &mut sp_trie::MemoryDB<H>, input: I) -> Option<H::Out>
+pub(crate) fn insert_into_memory_db<H, I>(mdb: &mut tp_trie::MemoryDB<H>, input: I) -> Option<H::Out>
 	where
 		H: Hasher,
 		I: IntoIterator<Item=(StorageKey, StorageValue)>,
 {
-	use sp_trie::{TrieMut, trie_types::TrieDBMut};
+	use tp_trie::{TrieMut, trie_types::TrieDBMut};
 
 	let mut root = <H as Hasher>::Out::default();
 	{

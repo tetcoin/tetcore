@@ -96,7 +96,7 @@ mod benchmarking;
 pub mod weights;
 
 use tetcore_std::{result, cmp};
-use sp_inherents::{ProvideInherent, InherentData, InherentIdentifier};
+use tp_inherents::{ProvideInherent, InherentData, InherentIdentifier};
 #[cfg(feature = "std")]
 use frame_support::debug;
 use frame_support::{
@@ -104,14 +104,14 @@ use frame_support::{
 	traits::{Time, UnixTime, Get},
 	weights::{DispatchClass, Weight},
 };
-use sp_runtime::{
+use tp_runtime::{
 	RuntimeString,
 	traits::{
 		AtLeast32Bit, Zero, SaturatedConversion, Scale,
 	}
 };
 use frame_system::ensure_none;
-use sp_timestamp::{
+use tp_timestamp::{
 	InherentError, INHERENT_IDENTIFIER, InherentType,
 	OnTimestampSet,
 };
@@ -296,7 +296,7 @@ mod tests {
 	use frame_support::{assert_ok, parameter_types};
 	use tet_io::TestExternalities;
 	use tet_core::H256;
-	use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
+	use tp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 
 	pub fn new_test_ext() -> TestExternalities {
 		let t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();

@@ -81,8 +81,8 @@ use tetcore_std::prelude::*;
 use tetcore_std::{fmt::Debug, ops::Add, iter::once};
 use enumflags2::BitFlags;
 use codec::{Encode, Decode};
-use sp_runtime::{DispatchError, RuntimeDebug, DispatchResult};
-use sp_runtime::traits::{StaticLookup, Zero, AppendZerosInput, Saturating};
+use tp_runtime::{DispatchError, RuntimeDebug, DispatchResult};
+use tp_runtime::traits::{StaticLookup, Zero, AppendZerosInput, Saturating};
 use frame_support::{
 	decl_module, decl_event, decl_storage, ensure, decl_error,
 	dispatch::DispatchResultWithPostInfo,

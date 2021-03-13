@@ -18,7 +18,7 @@
 //! Block announcement validation.
 
 use crate::BlockStatus;
-use sp_runtime::{generic::BlockId, traits::Block};
+use tp_runtime::{generic::BlockId, traits::Block};
 use std::{error::Error, future::Future, pin::Pin, sync::Arc};
 use futures::FutureExt as _;
 

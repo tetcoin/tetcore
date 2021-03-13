@@ -45,7 +45,7 @@ pub mod weights;
 use tetcore_std::prelude::*;
 use codec::{Encode, Decode};
 use tet_io::hashing::blake2_256;
-use sp_runtime::{DispatchResult, traits::{Dispatchable, Zero, Hash, Member, Saturating}};
+use tp_runtime::{DispatchResult, traits::{Dispatchable, Zero, Hash, Member, Saturating}};
 use frame_support::{
 	decl_module, decl_event, decl_error, decl_storage, Parameter, ensure, RuntimeDebug, traits::{
 		Get, ReservableCurrency, Currency, InstanceFilter, OriginTrait, IsType, IsSubType,

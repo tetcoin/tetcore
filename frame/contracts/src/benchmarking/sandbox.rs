@@ -24,7 +24,7 @@ use super::{
 	code::WasmModule,
 };
 use tet_core::crypto::UncheckedFrom;
-use sp_sandbox::{EnvironmentDefinitionBuilder, Instance, Memory};
+use tp_sandbox::{EnvironmentDefinitionBuilder, Instance, Memory};
 
 /// Minimal execution environment without any exported functions.
 pub struct Sandbox {

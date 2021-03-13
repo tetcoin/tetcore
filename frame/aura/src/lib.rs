@@ -52,13 +52,13 @@ use frame_support::{
 	decl_storage, decl_module, Parameter, traits::{Get, FindAuthor},
 	ConsensusEngineId,
 };
-use sp_runtime::{
+use tp_runtime::{
 	RuntimeAppPublic,
 	traits::{SaturatedConversion, Saturating, Zero, Member, IsMember}, generic::DigestItem,
 };
-use sp_timestamp::OnTimestampSet;
-use sp_inherents::{InherentIdentifier, InherentData, ProvideInherent, MakeFatalError};
-use sp_consensus_aura::{
+use tp_timestamp::OnTimestampSet;
+use tp_inherents::{InherentIdentifier, InherentData, ProvideInherent, MakeFatalError};
+use tp_consensus_aura::{
 	AURA_ENGINE_ID, ConsensusLog, AuthorityIndex,
 	inherents::{INHERENT_IDENTIFIER, AuraInherentData},
 };
@@ -108,7 +108,7 @@ impl<T: Config> Module<T> {
 	}
 }
 
-impl<T: Config> sp_runtime::BoundToRuntimeAppPublic for Module<T> {
+impl<T: Config> tp_runtime::BoundToRuntimeAppPublic for Module<T> {
 	type Public = T::AuthorityId;
 }
 

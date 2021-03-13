@@ -25,7 +25,7 @@ use frame_support::{
 	weights::{Weight, constants::WEIGHT_PER_SECOND},
 };
 use frame_system as system;
-use sp_runtime::{
+use tp_runtime::{
 	traits::IdentityLookup,
 	testing::{Header, UintAuthorityId},
 };
@@ -54,7 +54,7 @@ impl frame_system::Config for Test {
 	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = IdentityLookup<Self::AccountId>;
-	type Header = sp_runtime::testing::Header;
+	type Header = tp_runtime::testing::Header;
 	type Event = Event;
 	type BlockHashCount = ();
 	type Version = ();
@@ -94,7 +94,7 @@ impl pallet_session::historical::Config for Test {
 
 sp_runtime::impl_opaque_keys! {
 	pub struct SessionKeys {
-		pub foo: sp_runtime::testing::UintAuthorityId,
+		pub foo: tp_runtime::testing::UintAuthorityId,
 	}
 }
 
@@ -102,9 +102,9 @@ pub struct TestSessionHandler;
 impl pallet_session::SessionHandler<AccountId> for TestSessionHandler {
 	const KEY_TYPE_IDS: &'static [sp_runtime::KeyTypeId] = &[];
 
-	fn on_genesis_session<Ks: sp_runtime::traits::OpaqueKeys>(_validators: &[(AccountId, Ks)]) {}
+	fn on_genesis_session<Ks: tp_runtime::traits::OpaqueKeys>(_validators: &[(AccountId, Ks)]) {}
 
-	fn on_new_session<Ks: sp_runtime::traits::OpaqueKeys>(
+	fn on_new_session<Ks: tp_runtime::traits::OpaqueKeys>(
 		_: bool,
 		_: &[(AccountId, Ks)],
 		_: &[(AccountId, Ks)],
@@ -131,7 +131,7 @@ impl pallet_session::Config for Test {
 	type WeightInfo = ();
 }
 pallet_staking_reward_curve::build! {
-	const I_NPOS: sp_runtime::curve::PiecewiseLinear<'static> = curve!(
+	const I_NPOS: tp_runtime::curve::PiecewiseLinear<'static> = curve!(
 		min_inflation: 0_025_000,
 		max_inflation: 0_100_000,
 		ideal_stake: 0_500_000,
@@ -141,11 +141,11 @@ pallet_staking_reward_curve::build! {
 	);
 }
 parameter_types! {
-	pub const RewardCurve: &'static sp_runtime::curve::PiecewiseLinear<'static> = &I_NPOS;
+	pub const RewardCurve: &'static tp_runtime::curve::PiecewiseLinear<'static> = &I_NPOS;
 	pub const MaxNominatorRewardedPerValidator: u32 = 64;
 }
 
-pub type Extrinsic = sp_runtime::testing::TestXt<Call, ()>;
+pub type Extrinsic = tp_runtime::testing::TestXt<Call, ()>;
 
 impl pallet_staking::Config for Test {
 	type Currency = Balances;
@@ -199,8 +199,8 @@ impl<T> frame_system::offchain::SendTransactionTypes<T> for Test where Call: Fro
 
 impl crate::Config for Test {}
 
-pub type Block = sp_runtime::generic::Block<Header, UncheckedExtrinsic>;
-pub type UncheckedExtrinsic = sp_runtime::generic::UncheckedExtrinsic<u32, Call, u64, ()>;
+pub type Block = tp_runtime::generic::Block<Header, UncheckedExtrinsic>;
+pub type UncheckedExtrinsic = tp_runtime::generic::UncheckedExtrinsic<u32, Call, u64, ()>;
 
 frame_support::construct_runtime!(
 	pub enum Test where

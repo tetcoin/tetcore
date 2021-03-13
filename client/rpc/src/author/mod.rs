@@ -24,7 +24,7 @@ mod tests;
 use std::{sync::Arc, convert::TryInto};
 use log::warn;
 
-use sp_blockchain::{Error as ClientError, HeaderBackend};
+use tp_blockchain::{Error as ClientError, HeaderBackend};
 
 use rpc::futures::{
 	Sink, Future,
@@ -36,14 +36,14 @@ use sc_rpc_api::DenyUnsafe;
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use codec::{Encode, Decode};
 use tet_core::Bytes;
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-use sp_api::ProvideRuntimeApi;
-use sp_runtime::generic;
-use sp_transaction_pool::{
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_api::ProvideRuntimeApi;
+use tp_runtime::generic;
+use tp_transaction_pool::{
 	TransactionPool, InPoolTransaction, TransactionStatus, TransactionSource,
 	BlockHash, TxHash, TransactionFor, error::IntoPoolError,
 };
-use sp_session::SessionKeys;
+use tp_session::SessionKeys;
 
 /// Re-export the API for backward compatibility.
 pub use sc_rpc_api::author::*;

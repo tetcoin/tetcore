@@ -25,7 +25,7 @@ use frame_support::{
 	traits::{Currency, Get, EnsureOrigin, OnInitialize, UnfilteredDispatchable, schedule::DispatchTime},
 };
 use frame_system::{RawOrigin, Module as System, self, EventRecord};
-use sp_runtime::traits::{Bounded, One};
+use tp_runtime::traits::{Bounded, One};
 
 use crate::Module as Democracy;
 

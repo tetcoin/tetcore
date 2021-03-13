@@ -24,13 +24,13 @@ use rpc::futures::future::{result, Future, Either};
 use tetsy_jsonrpc_pubsub::manager::SubscriptionManager;
 
 use sc_client_api::light::{Fetcher, RemoteBodyRequest, RemoteBlockchain};
-use sp_runtime::{
+use tp_runtime::{
 	generic::{BlockId, SignedBlock},
 	traits::{Block as BlockT},
 };
 
 use super::{ChainBackend, client_err, error::FutureResult};
-use sp_blockchain::HeaderBackend;
+use tp_blockchain::HeaderBackend;
 use sc_client_api::BlockchainEvents;
 
 /// Blockchain API backend for light nodes. Reads all the data from local

@@ -263,7 +263,7 @@ use frame_support::{
 use tetcore_std::prelude::*;
 use frame_system::{ensure_signed, ensure_root};
 use codec::{Encode, Decode};
-use sp_runtime::{
+use tp_runtime::{
 	traits::{
 		SignedExtension, Bounded, SaturatedConversion, DispatchInfoOf,
 	},
@@ -712,7 +712,7 @@ mod tests {
 	use tet_core::H256;
 	// The testing primitives are very useful for avoiding having to work with signatures
 	// or public keys. `u64` is used as the `AccountId` and no `Signature`s are required.
-	use sp_runtime::{
+	use tp_runtime::{
 		testing::Header,
 		traits::{BlakeTwo256, IdentityLookup},
 	};

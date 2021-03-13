@@ -22,12 +22,12 @@
 use std::{borrow::Cow, fs::File, path::PathBuf, sync::Arc, collections::HashMap};
 use serde::{Serialize, Deserialize};
 use tet_core::storage::{StorageKey, StorageData, ChildInfo, Storage, StorageChild};
-use sp_runtime::BuildStorage;
+use tp_runtime::BuildStorage;
 use serde_json as json;
 use crate::{RuntimeGenesis, ChainType, extension::GetExtension, Properties};
 use sc_network::config::MultiaddrWithPeerId;
 use sc_telemetry::TelemetryEndpoints;
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 enum GenesisSource<G> {
 	File(PathBuf),
@@ -404,7 +404,7 @@ pub struct LightSyncState<Block: BlockT> {
 	/// The epoch changes tree for babe.
 	pub babe_epoch_changes: sc_consensus_epochs::EpochChangesFor<Block, sc_consensus_babe::Epoch>,
 	/// The babe weight of the finalized block.
-	pub babe_finalized_block_weight: sp_consensus_babe::BabeBlockWeight,
+	pub babe_finalized_block_weight: tp_consensus_babe::BabeBlockWeight,
 	/// The authority set for grandpa.
 	pub grandpa_authority_set: sc_finality_grandpa::AuthoritySet<<Block as BlockT>::Hash, NumberFor<Block>>,
 }
@@ -446,7 +446,7 @@ impl<Block: BlockT> LightSyncState<Block> {
 pub struct SerializableLightSyncState {
 	finalized_block_header: StorageData,
 	babe_epoch_changes: StorageData,
-	babe_finalized_block_weight: sp_consensus_babe::BabeBlockWeight,
+	babe_finalized_block_weight: tp_consensus_babe::BabeBlockWeight,
 	grandpa_authority_set: StorageData,
 }
 

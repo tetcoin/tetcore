@@ -24,14 +24,14 @@ use std::{
 use crate::{base_pool as base, watcher::Watcher};
 
 use futures::Future;
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	traits::{self, SaturatedConversion, Block as BlockT},
 	transaction_validity::{
 		TransactionValidity, TransactionTag as Tag, TransactionValidityError, TransactionSource,
 	},
 };
-use sp_transaction_pool::error;
+use tp_transaction_pool::error;
 use wasm_timer::Instant;
 use futures::channel::mpsc::Receiver;
 
@@ -460,8 +460,8 @@ mod tests {
 	use parking_lot::Mutex;
 	use futures::executor::block_on;
 	use super::*;
-	use sp_transaction_pool::TransactionStatus;
-	use sp_runtime::{
+	use tp_transaction_pool::TransactionStatus;
+	use tp_runtime::{
 		traits::Hash,
 		transaction_validity::{ValidTransaction, InvalidTransaction, TransactionSource},
 	};

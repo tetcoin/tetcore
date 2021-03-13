@@ -28,19 +28,19 @@
 
 use codec::Encode;
 
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	traits::{Header as HeaderT, Hash, Block as BlockT, HashFor, DigestFor, NumberFor, One},
 };
-use sp_blockchain::{ApplyExtrinsicFailed, Error};
+use tp_blockchain::{ApplyExtrinsicFailed, Error};
 use tet_core::ExecutionContext;
-use sp_api::{
+use tp_api::{
 	Core, ApiExt, ApiErrorFor, ApiRef, ProvideRuntimeApi, StorageChanges, StorageProof,
 	TransactionOutcome,
 };
-use sp_consensus::RecordProof;
+use tp_consensus::RecordProof;
 
-pub use sp_block_builder::BlockBuilder as BlockBuilderApi;
+pub use tp_block_builder::BlockBuilder as BlockBuilderApi;
 
 use sc_client_api::backend;
 
@@ -84,13 +84,13 @@ pub trait BlockBuilderProvider<B, Block, RA>
 		parent: &BlockId<Block>,
 		inherent_digests: DigestFor<Block>,
 		record_proof: R,
-	) -> sp_blockchain::Result<BlockBuilder<Block, RA, B>>;
+	) -> tp_blockchain::Result<BlockBuilder<Block, RA, B>>;
 
 	/// Create a new block, built on the head of the chain.
 	fn new_block(
 		&self,
 		inherent_digests: DigestFor<Block>,
-	) -> sp_blockchain::Result<BlockBuilder<Block, RA, B>>;
+	) -> tp_blockchain::Result<BlockBuilder<Block, RA, B>>;
 }
 
 /// Utility for building new (valid) blocks from a stream of extrinsics.
@@ -212,7 +212,7 @@ where
 			&state,
 			changes_trie_state.as_ref(),
 			parent_hash,
-		).map_err(|e| sp_blockchain::Error::StorageChanges(e))?;
+		).map_err(|e| tp_blockchain::Error::StorageChanges(e))?;
 
 		Ok(BuiltBlock {
 			block: <Block as BlockT>::new(header, self.extrinsics),
@@ -226,7 +226,7 @@ where
 	/// Returns the inherents created by the runtime or an error if something failed.
 	pub fn create_inherents(
 		&mut self,
-		inherent_data: sp_inherents::InherentData,
+		inherent_data: tp_inherents::InherentData,
 	) -> Result<Vec<Block::Extrinsic>, ApiErrorFor<A, Block>> {
 		let block_id = self.block_id;
 		self.api.execute_in_transaction(move |api| {
@@ -244,9 +244,9 @@ where
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_blockchain::HeaderBackend;
+	use tp_blockchain::HeaderBackend;
 	use tet_core::Blake2Hasher;
-	use sp_state_machine::Backend;
+	use tp_state_machine::Backend;
 	use tetcore_test_runtime_client::{DefaultTestClientBuilderExt, TestClientBuilderExt};
 
 	#[test]
@@ -266,7 +266,7 @@ mod tests {
 
 		let proof = block.proof.expect("Proof is build on request");
 
-		let backend = sp_state_machine::create_proof_check_backend::<Blake2Hasher>(
+		let backend = tp_state_machine::create_proof_check_backend::<Blake2Hasher>(
 			block.storage_changes.transaction_storage_root,
 			proof,
 		).unwrap();

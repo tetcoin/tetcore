@@ -20,11 +20,11 @@ use tet_io::{
 	crypto::{ed25519_verify, sr25519_verify}, wasm_tracing,
 };
 #[cfg(not(feature = "std"))]
-use sp_runtime::{print, traits::{BlakeTwo256, Hash}};
+use tp_runtime::{print, traits::{BlakeTwo256, Hash}};
 #[cfg(not(feature = "std"))]
 use tet_core::{ed25519, sr25519};
 #[cfg(not(feature = "std"))]
-use sp_sandbox::Value;
+use tp_sandbox::Value;
 
 extern "C" {
 	#[allow(dead_code)]
@@ -162,8 +162,8 @@ tet_core::wasm_export_functions! {
 	}
 
 	fn test_sandbox_instantiate(code: Vec<u8>) -> u8 {
-		let env_builder = sp_sandbox::EnvironmentDefinitionBuilder::new();
-		let code = match sp_sandbox::Instance::new(&code, &env_builder, &mut ()) {
+		let env_builder = tp_sandbox::EnvironmentDefinitionBuilder::new();
+		let code = match tp_sandbox::Instance::new(&code, &env_builder, &mut ()) {
 			Ok(_) => 0,
 			Err(sp_sandbox::Error::Module) => 1,
 			Err(sp_sandbox::Error::Execution) => 2,
@@ -175,8 +175,8 @@ tet_core::wasm_export_functions! {
 
 
 	fn test_sandbox_get_global_val(code: Vec<u8>) -> i64 {
-		let env_builder = sp_sandbox::EnvironmentDefinitionBuilder::new();
-		let instance = if let Ok(i) = sp_sandbox::Instance::new(&code, &env_builder, &mut ()) {
+		let env_builder = tp_sandbox::EnvironmentDefinitionBuilder::new();
+		let instance = if let Ok(i) = tp_sandbox::Instance::new(&code, &env_builder, &mut ()) {
 			i
 		} else {
 			return 20;
@@ -323,14 +323,14 @@ tet_core::wasm_export_functions! {
 
 	fn test_spawn() {
 		let data = vec![1u8, 2u8];
-		let data_new = sp_tasks::spawn(tasks::incrementer, data).join();
+		let data_new = tp_tasks::spawn(tasks::incrementer, data).join();
 
 		assert_eq!(data_new, vec![2u8, 3u8]);
 	}
 
 	fn test_nested_spawn() {
 		let data = vec![7u8, 13u8];
-		let data_new = sp_tasks::spawn(tasks::parallel_incrementer, data).join();
+		let data_new = tp_tasks::spawn(tasks::parallel_incrementer, data).join();
 
 		assert_eq!(data_new, vec![10u8, 16u8]);
 	}
@@ -354,7 +354,7 @@ tet_core::wasm_export_functions! {
 
 	pub fn parallel_incrementer(data: Vec<u8>) -> Vec<u8> {
 	   let first = data.into_iter().map(|v| v + 2).collect::<Vec<_>>();
-	   let second = sp_tasks::spawn(incrementer, first).join();
+	   let second = tp_tasks::spawn(incrementer, first).join();
 	   second
 	}
  }
@@ -363,7 +363,7 @@ tet_core::wasm_export_functions! {
 fn execute_sandboxed(
 	code: &[u8],
 	args: &[Value],
-) -> Result<sp_sandbox::ReturnValue, sp_sandbox::HostError> {
+) -> Result<sp_sandbox::ReturnValue, tp_sandbox::HostError> {
 	struct State {
 		counter: u32,
 	}
@@ -371,11 +371,11 @@ fn execute_sandboxed(
 	fn env_assert(
 		_e: &mut State,
 		args: &[Value],
-	) -> Result<sp_sandbox::ReturnValue, sp_sandbox::HostError> {
+	) -> Result<sp_sandbox::ReturnValue, tp_sandbox::HostError> {
 		if args.len() != 1 {
 			return Err(sp_sandbox::HostError);
 		}
-		let condition = args[0].as_i32().ok_or_else(|| sp_sandbox::HostError)?;
+		let condition = args[0].as_i32().ok_or_else(|| tp_sandbox::HostError)?;
 		if condition != 0 {
 			Ok(sp_sandbox::ReturnValue::Unit)
 		} else {
@@ -385,11 +385,11 @@ fn execute_sandboxed(
 	fn env_inc_counter(
 		e: &mut State,
 		args: &[Value],
-	) -> Result<sp_sandbox::ReturnValue, sp_sandbox::HostError> {
+	) -> Result<sp_sandbox::ReturnValue, tp_sandbox::HostError> {
 		if args.len() != 1 {
 			return Err(sp_sandbox::HostError);
 		}
-		let inc_by = args[0].as_i32().ok_or_else(|| sp_sandbox::HostError)?;
+		let inc_by = args[0].as_i32().ok_or_else(|| tp_sandbox::HostError)?;
 		e.counter += inc_by as u32;
 		Ok(sp_sandbox::ReturnValue::Value(Value::I32(e.counter as i32)))
 	}
@@ -397,10 +397,10 @@ fn execute_sandboxed(
 	let mut state = State { counter: 0 };
 
 	let env_builder = {
-		let mut env_builder = sp_sandbox::EnvironmentDefinitionBuilder::new();
+		let mut env_builder = tp_sandbox::EnvironmentDefinitionBuilder::new();
 		env_builder.add_host_func("env", "assert", env_assert);
 		env_builder.add_host_func("env", "inc_counter", env_inc_counter);
-		let memory = match sp_sandbox::Memory::new(1, Some(16)) {
+		let memory = match tp_sandbox::Memory::new(1, Some(16)) {
 			Ok(m) => m,
 			Err(_) => unreachable!("
 				Memory::new() can return Err only if parameters are borked; \
@@ -412,8 +412,8 @@ fn execute_sandboxed(
 		env_builder
 	};
 
-	let mut instance = sp_sandbox::Instance::new(code, &env_builder, &mut state)?;
+	let mut instance = tp_sandbox::Instance::new(code, &env_builder, &mut state)?;
 	let result = instance.invoke("call", args, &mut state);
 
-	result.map_err(|_| sp_sandbox::HostError)
+	result.map_err(|_| tp_sandbox::HostError)
 }

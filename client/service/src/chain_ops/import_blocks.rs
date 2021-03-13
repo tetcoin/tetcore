@@ -21,12 +21,12 @@ use crate::error::Error;
 use sc_chain_spec::ChainSpec;
 use log::{warn, info};
 use futures::{future, prelude::*};
-use sp_runtime::traits::{
+use tp_runtime::traits::{
 	Block as BlockT, NumberFor, Zero, Header, MaybeSerializeDeserialize,
 };
-use sp_runtime::generic::SignedBlock;
+use tp_runtime::generic::SignedBlock;
 use codec::{Decode, IoReader as CodecIoReader};
-use sp_consensus::{
+use tp_consensus::{
 	BlockOrigin,
 	import_queue::{IncomingBlock, Link, BlockImportError, BlockImportResult, ImportQueue},
 };
@@ -37,7 +37,7 @@ use futures_timer::Delay;
 use std::task::Poll;
 use serde_json::{de::IoRead as JsonIoRead, Deserializer, StreamDeserializer};
 use std::convert::{TryFrom, TryInto};
-use sp_runtime::traits::{CheckedDiv, Saturating};
+use tp_runtime::traits::{CheckedDiv, Saturating};
 use sc_client_api::UsageProvider;
 
 /// Number of blocks we will add to the queue before waiting for the queue to catch up.

@@ -41,7 +41,7 @@ use rpc::{
 };
 
 use sc_rpc_api::state::ReadProof;
-use sp_blockchain::{Error as ClientError, HeaderBackend};
+use tp_blockchain::{Error as ClientError, HeaderBackend};
 use sc_client_api::{
 	BlockchainEvents,
 	light::{
@@ -53,8 +53,8 @@ use tet_core::{
 	Bytes, OpaqueMetadata,
 	storage::{StorageKey, PrefixedStorageKey, StorageData, StorageChangeSet},
 };
-use sp_version::RuntimeVersion;
-use sp_runtime::{generic::BlockId, traits::{Block as BlockT, HashFor}};
+use tp_version::RuntimeVersion;
+use tp_runtime::{generic::BlockId, traits::{Block as BlockT, HashFor}};
 
 use super::{StateBackend, ChildStateBackend, error::{FutureResult, Error}, client_err};
 

@@ -26,7 +26,7 @@
 //!
 //! Example:
 //! ```rust,no_run
-//! use sp_runtime::offchain::http::Request;
+//! use tp_runtime::offchain::http::Request;
 //!
 //! // initiate a GET request to localhost:1234
 //! let request: Request = Request::get("http://localhost:1234");

@@ -24,9 +24,9 @@ use log::{info, trace, warn};
 use tetsy_util_mem::MallocSizeOf;
 use sc_client_api::{BlockchainEvents, UsageProvider};
 use sc_network::NetworkStatus;
-use sp_blockchain::HeaderMetadata;
-use sp_runtime::traits::{Block as BlockT, Header};
-use sp_transaction_pool::TransactionPool;
+use tp_blockchain::HeaderMetadata;
+use tp_runtime::traits::{Block as BlockT, Header};
+use tp_transaction_pool::TransactionPool;
 use tetcore_utils::{status_sinks, mpsc::tracing_unbounded};
 use std::{fmt::Display, sync::Arc, time::Duration, collections::VecDeque};
 
@@ -125,7 +125,7 @@ where
 		// detect and log reorganizations.
 		if let Some((ref last_num, ref last_hash)) = last_best {
 			if n.header.parent_hash() != last_hash && n.is_new_best  {
-				let maybe_ancestor = sp_blockchain::lowest_common_ancestor(
+				let maybe_ancestor = tp_blockchain::lowest_common_ancestor(
 					&*client,
 					last_hash.clone(),
 					n.hash,

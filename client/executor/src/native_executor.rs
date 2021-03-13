@@ -28,7 +28,7 @@ use std::{
 	sync::{Arc, atomic::{AtomicU64, Ordering}, mpsc},
 };
 
-use sp_version::{NativeVersion, RuntimeVersion};
+use tp_version::{NativeVersion, RuntimeVersion};
 use codec::{Decode, Encode};
 use tet_core::{
 	NativeOrEncoded,
@@ -41,7 +41,7 @@ use log::trace;
 use tetcore_wasm_interface::{HostFunctions, Function};
 use sc_executor_common::wasm_runtime::{WasmInstance, WasmModule, InvokeMethod};
 use externalities::ExternalitiesExt as _;
-use sp_tasks::new_async_externalities;
+use tp_tasks::new_async_externalities;
 
 /// Default num of pages for the heap
 const DEFAULT_HEAP_PAGES: u64 = 1024;

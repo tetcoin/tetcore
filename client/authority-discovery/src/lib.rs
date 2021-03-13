@@ -35,9 +35,9 @@ use futures::Stream;
 
 use sc_client_api::blockchain::HeaderBackend;
 use sc_network::{DhtEvent, Multiaddr, PeerId};
-use sp_authority_discovery::{AuthorityDiscoveryApi, AuthorityId};
-use sp_runtime::traits::Block as BlockT;
-use sp_api::ProvideRuntimeApi;
+use tp_authority_discovery::{AuthorityDiscoveryApi, AuthorityId};
+use tp_runtime::traits::Block as BlockT;
+use tp_api::ProvideRuntimeApi;
 
 mod error;
 mod interval;
@@ -93,7 +93,7 @@ where
 	Block: BlockT + Unpin + 'static,
 	Network: NetworkProvider,
 	Client: ProvideRuntimeApi<Block> + Send + Sync + 'static + HeaderBackend<Block>,
-	<Client as ProvideRuntimeApi<Block>>::Api: AuthorityDiscoveryApi<Block, Error = sp_blockchain::Error>,
+	<Client as ProvideRuntimeApi<Block>>::Api: AuthorityDiscoveryApi<Block, Error = tp_blockchain::Error>,
 	DhtEventStream: Stream<Item = DhtEvent> + Unpin,
 {
 	new_worker_and_service_with_config(
@@ -121,7 +121,7 @@ where
 	Block: BlockT + Unpin + 'static,
 	Network: NetworkProvider,
 	Client: ProvideRuntimeApi<Block> + Send + Sync + 'static + HeaderBackend<Block>,
-	<Client as ProvideRuntimeApi<Block>>::Api: AuthorityDiscoveryApi<Block, Error = sp_blockchain::Error>,
+	<Client as ProvideRuntimeApi<Block>>::Api: AuthorityDiscoveryApi<Block, Error = tp_blockchain::Error>,
 	DhtEventStream: Stream<Item = DhtEvent> + Unpin,
 {
 	let (to_worker, from_service) = mpsc::channel(0);

@@ -26,7 +26,7 @@ use crate::error::{Error, WasmError};
 use parking_lot::Mutex;
 use codec::Decode;
 use tet_core::traits::{Externalities, RuntimeCode, FetchRuntimeCode};
-use sp_version::RuntimeVersion;
+use tp_version::RuntimeVersion;
 use std::panic::AssertUnwindSafe;
 use sc_executor_common::wasm_runtime::{WasmModule, WasmInstance};
 
@@ -292,7 +292,7 @@ pub fn create_wasm_runtime_with_code(
 }
 
 fn decode_version(version: &[u8]) -> Result<RuntimeVersion, WasmError> {
-	let v: RuntimeVersion = sp_api::OldRuntimeVersion::decode(&mut &version[..])
+	let v: RuntimeVersion = tp_api::OldRuntimeVersion::decode(&mut &version[..])
 		.map_err(|_|
 				 WasmError::Instantiation(
 					 "failed to decode \"Core_version\" result using old runtime version".into(),
@@ -372,7 +372,7 @@ fn create_versioned_wasm_runtime(
 mod tests {
 	use super::*;
 	use tetcore_wasm_interface::HostFunctions;
-	use sp_api::{Core, RuntimeApiInfo};
+	use tp_api::{Core, RuntimeApiInfo};
 	use tetcore_test_runtime::Block;
 	use codec::Encode;
 
@@ -386,13 +386,13 @@ mod tests {
 
 	#[test]
 	fn old_runtime_version_decodes() {
-		let old_runtime_version = sp_api::OldRuntimeVersion {
+		let old_runtime_version = tp_api::OldRuntimeVersion {
 			spec_name: "test".into(),
 			impl_name: "test".into(),
 			authoring_version: 1,
 			spec_version: 1,
 			impl_version: 1,
-			apis: sp_api::create_apis_vec!([(Core::<Block, Error = ()>::ID, 1)]),
+			apis: tp_api::create_apis_vec!([(Core::<Block, Error = ()>::ID, 1)]),
 		};
 
 		let version = decode_version(&old_runtime_version.encode()).unwrap();
@@ -401,13 +401,13 @@ mod tests {
 
 	#[test]
 	fn old_runtime_version_decodes_fails_with_version_3() {
-		let old_runtime_version = sp_api::OldRuntimeVersion {
+		let old_runtime_version = tp_api::OldRuntimeVersion {
 			spec_name: "test".into(),
 			impl_name: "test".into(),
 			authoring_version: 1,
 			spec_version: 1,
 			impl_version: 1,
-			apis: sp_api::create_apis_vec!([(Core::<Block, Error = ()>::ID, 3)]),
+			apis: tp_api::create_apis_vec!([(Core::<Block, Error = ()>::ID, 3)]),
 		};
 
 		decode_version(&old_runtime_version.encode()).unwrap_err();
@@ -415,13 +415,13 @@ mod tests {
 
 	#[test]
 	fn new_runtime_version_decodes() {
-		let old_runtime_version = sp_api::RuntimeVersion {
+		let old_runtime_version = tp_api::RuntimeVersion {
 			spec_name: "test".into(),
 			impl_name: "test".into(),
 			authoring_version: 1,
 			spec_version: 1,
 			impl_version: 1,
-			apis: sp_api::create_apis_vec!([(Core::<Block, Error = ()>::ID, 3)]),
+			apis: tp_api::create_apis_vec!([(Core::<Block, Error = ()>::ID, 3)]),
 			transaction_version: 3,
 		};
 

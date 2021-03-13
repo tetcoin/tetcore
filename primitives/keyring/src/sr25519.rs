@@ -22,7 +22,7 @@ use std::ops::Deref;
 use lazy_static::lazy_static;
 use tet_core::{sr25519::{Pair, Public, Signature}, Pair as PairT, Public as PublicT, H256};
 pub use tet_core::sr25519;
-use sp_runtime::AccountId32;
+use tp_runtime::AccountId32;
 
 /// Set of test accounts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, strum::Display, strum::EnumIter)]
@@ -107,7 +107,7 @@ impl From<Keyring> for &'static str {
 	}
 }
 
-impl From<Keyring> for sp_runtime::MultiSigner {
+impl From<Keyring> for tp_runtime::MultiSigner {
 	fn from(x: Keyring) -> Self {
 		sp_runtime::MultiSigner::Sr25519(x.into())
 	}

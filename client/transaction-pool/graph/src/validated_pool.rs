@@ -29,12 +29,12 @@ use crate::watcher::Watcher;
 use serde::Serialize;
 
 use parking_lot::{Mutex, RwLock};
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	traits::{self, SaturatedConversion},
 	transaction_validity::{TransactionTag as Tag, ValidTransaction, TransactionSource},
 };
-use sp_transaction_pool::{error, PoolStatus};
+use tp_transaction_pool::{error, PoolStatus};
 use wasm_timer::Instant;
 use futures::channel::mpsc::{channel, Sender};
 use retain_mut::RetainMut;

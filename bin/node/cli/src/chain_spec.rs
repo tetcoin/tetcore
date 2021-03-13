@@ -33,10 +33,10 @@ use sc_service::ChainType;
 use hex_literal::hex;
 use sc_telemetry::TelemetryEndpoints;
 use grandpa_primitives::{AuthorityId as GrandpaId};
-use sp_consensus_babe::{AuthorityId as BabeId};
+use tp_consensus_babe::{AuthorityId as BabeId};
 use pallet_im_online::sr25519::{AuthorityId as ImOnlineId};
-use sp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
-use sp_runtime::{Perbill, traits::{Verify, IdentifyAccount}};
+use tp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
+use tp_runtime::{Perbill, traits::{Verify, IdentifyAccount}};
 
 pub use node_primitives::{AccountId, Balance, Signature};
 pub use node_runtime::GenesisConfig;
@@ -387,7 +387,7 @@ pub(crate) mod tests {
 	use super::*;
 	use crate::service::{new_full_base, new_light_base, NewFullBase};
 	use sc_service_test;
-	use sp_runtime::BuildStorage;
+	use tp_runtime::BuildStorage;
 
 	fn local_testnet_genesis_instant_single() -> GenesisConfig {
 		testnet_genesis(

@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use sc_network::{ObservedRole, PeerId};
-use sp_runtime::traits::Block as BlockT;
+use tp_runtime::traits::Block as BlockT;
 
 /// Validates consensus messages.
 pub trait Validator<B: BlockT>: Send + Sync {

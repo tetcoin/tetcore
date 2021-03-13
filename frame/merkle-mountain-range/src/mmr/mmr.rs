@@ -33,7 +33,7 @@ pub fn verify_leaf_proof<H, L>(
 	leaf: Node<H, L>,
 	proof: primitives::Proof<H::Output>,
 ) -> Result<bool, Error> where
-	H: sp_runtime::traits::Hash,
+	H: tp_runtime::traits::Hash,
 	L: primitives::FullLeaf,
 {
 	let size = NodesUtils::new(proof.leaf_count).size();

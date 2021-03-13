@@ -29,21 +29,21 @@ use sc_network::config::ProtocolConfig;
 use parking_lot::{RwLock, Mutex};
 use futures_timer::Delay;
 use tokio::runtime::{Runtime, Handle};
-use sp_keyring::Ed25519Keyring;
+use tp_keyring::Ed25519Keyring;
 use sc_client_api::backend::TransactionFor;
-use sp_blockchain::Result;
-use sp_api::{ApiRef, ProvideRuntimeApi};
+use tp_blockchain::Result;
+use tp_api::{ApiRef, ProvideRuntimeApi};
 use tetcore_test_runtime_client::runtime::BlockNumber;
-use sp_consensus::{
+use tp_consensus::{
 	BlockOrigin, ForkChoiceStrategy, ImportedAux, BlockImportParams, ImportResult, BlockImport,
 	import_queue::BoxJustificationImport,
 };
 use std::{collections::{HashMap, HashSet}, pin::Pin};
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
-use sp_runtime::generic::{BlockId, DigestItem};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
+use tp_runtime::generic::{BlockId, DigestItem};
 use tet_core::H256;
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-use sp_finality_grandpa::{GRANDPA_ENGINE_ID, AuthorityList, EquivocationProof, GrandpaApi, OpaqueKeyOwnershipProof};
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_finality_grandpa::{GRANDPA_ENGINE_ID, AuthorityList, EquivocationProof, GrandpaApi, OpaqueKeyOwnershipProof};
 
 use authorities::AuthoritySet;
 use sc_block_builder::BlockBuilderProvider;
@@ -174,7 +174,7 @@ impl ProvideRuntimeApi<Block> for TestApi {
 
 sp_api::mock_impl_runtime_apis! {
 	impl GrandpaApi<Block> for RuntimeApi {
-		type Error = sp_blockchain::Error;
+		type Error = tp_blockchain::Error;
 
 		fn grandpa_authorities(&self) -> AuthorityList {
 			self.inner.genesis_authorities.clone()
@@ -1548,7 +1548,7 @@ fn imports_justification_for_regular_blocks_on_import() {
 		};
 
 		let msg = tetsy_finality_grandpa::Message::Precommit(precommit.clone());
-		let encoded = sp_finality_grandpa::localized_payload(round, set_id, &msg);
+		let encoded = tp_finality_grandpa::localized_payload(round, set_id, &msg);
 		let signature = peers[0].sign(&encoded[..]).into();
 
 		let precommit = tetsy_finality_grandpa::SignedPrecommit {
@@ -1632,7 +1632,7 @@ fn grandpa_environment_doesnt_send_equivocation_reports_for_itself() {
 
 	// reporting the equivocation should fail since the offender is a local
 	// authority (i.e. we have keys in our keystore for the given id)
-	let equivocation_proof = sp_finality_grandpa::Equivocation::Prevote(equivocation.clone());
+	let equivocation_proof = tp_finality_grandpa::Equivocation::Prevote(equivocation.clone());
 	assert!(matches!(
 		environment.report_equivocation(equivocation_proof),
 		Err(Error::Safety(_))
@@ -1641,6 +1641,6 @@ fn grandpa_environment_doesnt_send_equivocation_reports_for_itself() {
 	// if we set the equivocation offender to another id for which we don't have
 	// keys it should work
 	equivocation.identity = Default::default();
-	let equivocation_proof = sp_finality_grandpa::Equivocation::Prevote(equivocation);
+	let equivocation_proof = tp_finality_grandpa::Equivocation::Prevote(equivocation);
 	assert!(environment.report_equivocation(equivocation_proof).is_ok());
 }

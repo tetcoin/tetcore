@@ -18,7 +18,7 @@
 use crate::*;
 use tetcore_std::cell::RefCell;
 use tet_core::H256;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup},
 	testing::Header,
 };
@@ -40,12 +40,12 @@ const MAX_BLOCK_WEIGHT: Weight = 1024;
 parameter_types! {
 	pub const BlockHashCount: u64 = 10;
 	pub Version: RuntimeVersion = RuntimeVersion {
-		spec_name: sp_version::create_runtime_str!("test"),
-		impl_name: sp_version::create_runtime_str!("system-test"),
+		spec_name: tp_version::create_runtime_str!("test"),
+		impl_name: tp_version::create_runtime_str!("system-test"),
 		authoring_version: 1,
 		spec_version: 1,
 		impl_version: 1,
-		apis: sp_version::create_apis_vec!([]),
+		apis: tp_version::create_apis_vec!([]),
 		transaction_version: 1,
 	};
 	pub const DbWeight: RuntimeDbWeight = RuntimeDbWeight {
@@ -90,7 +90,7 @@ impl Dispatchable for Call {
 	type Info = DispatchInfo;
 	type PostInfo = PostDispatchInfo;
 	fn dispatch(self, _origin: Self::Origin)
-		-> sp_runtime::DispatchResultWithInfo<Self::PostInfo> {
+		-> tp_runtime::DispatchResultWithInfo<Self::PostInfo> {
 			panic!("Do not use dummy implementation for dispatch.");
 	}
 }

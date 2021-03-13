@@ -61,8 +61,8 @@ use codec::Encode;
 use tetcore_std::collections::btree_set::BTreeSet;
 use tetcore_std::convert::{TryInto, TryFrom};
 use tetcore_std::prelude::{Box, Vec};
-use sp_runtime::app_crypto::RuntimeAppPublic;
-use sp_runtime::traits::{Extrinsic as ExtrinsicT, IdentifyAccount, One};
+use tp_runtime::app_crypto::RuntimeAppPublic;
+use tp_runtime::traits::{Extrinsic as ExtrinsicT, IdentifyAccount, One};
 use frame_support::{debug, RuntimeDebug};
 
 /// Marker struct used to flag using all supported keys to sign a payload.
@@ -639,7 +639,7 @@ mod tests {
 	use codec::Decode;
 	use crate::mock::{Test as TestRuntime, Call};
 	use tet_core::offchain::{testing, TransactionPoolExt};
-	use sp_runtime::testing::{UintAuthorityId, TestSignature, TestXt};
+	use tp_runtime::testing::{UintAuthorityId, TestSignature, TestXt};
 
 	impl SigningTypes for TestRuntime {
 		type Public = UintAuthorityId;

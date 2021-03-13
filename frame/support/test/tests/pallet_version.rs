@@ -20,7 +20,7 @@
 #![recursion_limit="128"]
 
 use codec::{Decode, Encode};
-use sp_runtime::{generic, traits::{BlakeTwo256, Verify}, BuildStorage};
+use tp_runtime::{generic, traits::{BlakeTwo256, Verify}, BuildStorage};
 use frame_support::{
 	traits::{PALLET_VERSION_STORAGE_KEY_POSTFIX, PalletVersion, OnRuntimeUpgrade, GetPalletVersion},
 	crate_to_pallet_version, weights::Weight,
@@ -150,9 +150,9 @@ impl frame_system::Config for Runtime {
 	type BlockNumber = BlockNumber;
 	type Call = Call;
 	type Hash = H256;
-	type Hashing = sp_runtime::traits::BlakeTwo256;
+	type Hashing = tp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
-	type Lookup = sp_runtime::traits::IdentityLookup<Self::AccountId>;
+	type Lookup = tp_runtime::traits::IdentityLookup<Self::AccountId>;
 	type Header = Header;
 	type Event = Event;
 	type BlockHashCount = BlockHashCount;

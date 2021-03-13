@@ -35,9 +35,9 @@ use std::{
 };
 use codec::{Encode, Decode};
 use sc_client_api::BlockBackend;
-use sp_blockchain::HeaderBackend;
+use tp_blockchain::HeaderBackend;
 use tet_core::hexdisplay::HexDisplay;
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	traits::{Block, HashFor, NumberFor, Hash}
 };
@@ -108,7 +108,7 @@ pub trait ChainAccess<TBlock: Block>:
 
 impl<T, TBlock> ChainAccess<TBlock> for T where
 	TBlock: Block,
-	T: sp_blockchain::HeaderBackend<TBlock> + sc_client_api::BlockBackend<TBlock>,
+	T: tp_blockchain::HeaderBackend<TBlock> + sc_client_api::BlockBackend<TBlock>,
 {}
 
 /// Blockchain inspector.

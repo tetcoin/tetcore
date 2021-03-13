@@ -37,7 +37,7 @@
 //! ```rust
 //! # use codec::{Decode, Encode, Codec};
 //! // in your off-chain worker code
-//! use sp_runtime::offchain::{
+//! use tp_runtime::offchain::{
 //!		storage::StorageValueRef,
 //!		storage_lock::{StorageLock, Time},
 //! };

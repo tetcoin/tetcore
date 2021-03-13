@@ -30,7 +30,7 @@ use std::{
 use tetsy_libp2p::build_multiaddr;
 use log::trace;
 use sc_network::block_request_handler::{self, BlockRequestHandler};
-use sp_blockchain::{
+use tp_blockchain::{
 	HeaderBackend, Result as ClientResult,
 	well_known_cache_keys::{self, Id as CacheKeyId},
 	Info as BlockchainInfo,
@@ -42,13 +42,13 @@ use sc_client_api::{
 use sc_consensus::LongestChain;
 use sc_block_builder::{BlockBuilder, BlockBuilderProvider};
 use sc_network::config::Role;
-use sp_consensus::block_validation::{DefaultBlockAnnounceValidator, BlockAnnounceValidator};
-use sp_consensus::import_queue::{
+use tp_consensus::block_validation::{DefaultBlockAnnounceValidator, BlockAnnounceValidator};
+use tp_consensus::import_queue::{
 	BasicQueue, BoxJustificationImport, Verifier,
 };
-use sp_consensus::block_import::{BlockImport, ImportResult};
-use sp_consensus::Error as ConsensusError;
-use sp_consensus::{BlockOrigin, ForkChoiceStrategy, BlockImportParams, BlockCheckParams, JustificationImport};
+use tp_consensus::block_import::{BlockImport, ImportResult};
+use tp_consensus::Error as ConsensusError;
+use tp_consensus::{BlockOrigin, ForkChoiceStrategy, BlockImportParams, BlockCheckParams, JustificationImport};
 use futures::prelude::*;
 use futures::future::BoxFuture;
 use sc_network::{
@@ -60,16 +60,16 @@ use tetsy_libp2p::PeerId;
 use parking_lot::Mutex;
 use tet_core::H256;
 use sc_network::config::ProtocolConfig;
-use sp_runtime::generic::{BlockId, OpaqueDigestItemId};
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
-use sp_runtime::Justification;
+use tp_runtime::generic::{BlockId, OpaqueDigestItemId};
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
+use tp_runtime::Justification;
 use tetcore_test_runtime_client::{self, AccountKeyring};
 use sc_service::client::Client;
 pub use sc_network::config::EmptyTransactionPool;
 pub use tetcore_test_runtime_client::runtime::{Block, Extrinsic, Hash, Transfer};
 pub use tetcore_test_runtime_client::{TestClient, TestClientBuilder, TestClientBuilderExt};
 
-type AuthorityId = sp_consensus_babe::AuthorityId;
+type AuthorityId = tp_consensus_babe::AuthorityId;
 
 /// A Verifier that accepts all blocks and passes them on with the configured
 /// finality to be imported.

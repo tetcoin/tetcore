@@ -20,13 +20,13 @@
 use std::sync::Arc;
 use std::convert::TryInto;
 use codec::{Codec, Decode};
-use sp_blockchain::HeaderBackend;
+use tp_blockchain::HeaderBackend;
 use tetsy_jsonrpc_core::{Error as RpcError, ErrorCode, Result};
 use tetsy_jsonrpc_derive::rpc;
-use sp_runtime::{generic::BlockId, traits::{Block as BlockT, MaybeDisplay}};
-use sp_api::ProvideRuntimeApi;
+use tp_runtime::{generic::BlockId, traits::{Block as BlockT, MaybeDisplay}};
+use tp_api::ProvideRuntimeApi;
 use tet_core::Bytes;
-use sp_rpc::number::NumberOrHex;
+use tp_rpc::number::NumberOrHex;
 use pallet_transaction_payment_rpc_runtime_api::{FeeDetails, InclusionFee, RuntimeDispatchInfo};
 pub use pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi as TransactionPaymentRuntimeApi;
 pub use self::gen_client::Client as TransactionPaymentClient;

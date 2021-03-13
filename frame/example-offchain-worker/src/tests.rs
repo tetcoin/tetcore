@@ -27,11 +27,11 @@ use tet_core::{
 	sr25519::Signature,
 };
 
-use sp_keystore::{
+use tp_keystore::{
 	{KeystoreExt, SyncCryptoStore},
 	testing::KeyStore,
 };
-use sp_runtime::{
+use tp_runtime::{
 	RuntimeAppPublic,
 	testing::{Header, TestXt},
 	traits::{

@@ -22,7 +22,7 @@
 use super::*;
 use frame_system::RawOrigin;
 use frame_benchmarking::{benchmarks, account};
-use sp_runtime::traits::Bounded;
+use tp_runtime::traits::Bounded;
 use core::convert::TryInto;
 
 use crate::Module as Multisig;

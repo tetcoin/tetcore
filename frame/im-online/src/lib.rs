@@ -80,7 +80,7 @@ use tet_core::offchain::OpaqueNetworkState;
 use tetcore_std::prelude::*;
 use tetcore_std::convert::TryInto;
 use pallet_session::historical::IdentificationTuple;
-use sp_runtime::{
+use tp_runtime::{
 	offchain::storage::StorageValueRef,
 	RuntimeDebug,
 	traits::{Convert, Member, Saturating, AtLeast32BitUnsigned}, Perbill,
@@ -89,7 +89,7 @@ use sp_runtime::{
 		TransactionPriority,
 	},
 };
-use sp_staking::{
+use tp_staking::{
 	SessionIndex,
 	offence::{ReportOffence, Offence, Kind},
 };
@@ -610,7 +610,7 @@ impl<T: Config> Module<T> {
 	}
 }
 
-impl<T: Config> sp_runtime::BoundToRuntimeAppPublic for Module<T> {
+impl<T: Config> tp_runtime::BoundToRuntimeAppPublic for Module<T> {
 	type Public = T::AuthorityId;
 }
 

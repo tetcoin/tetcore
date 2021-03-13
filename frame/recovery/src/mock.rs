@@ -21,7 +21,7 @@ use super::*;
 
 use frame_support::{parameter_types, traits::{OnInitialize, OnFinalize}};
 use tet_core::H256;
-use sp_runtime::{
+use tp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup}, testing::Header,
 };
 use crate as recovery;

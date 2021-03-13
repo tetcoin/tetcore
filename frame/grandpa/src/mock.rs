@@ -29,17 +29,17 @@ use frame_support::{
 };
 use pallet_staking::EraIndex;
 use tet_core::{crypto::KeyTypeId, H256};
-use sp_finality_grandpa::{RoundNumber, SetId, GRANDPA_ENGINE_ID};
+use tp_finality_grandpa::{RoundNumber, SetId, GRANDPA_ENGINE_ID};
 use tet_io;
-use sp_keyring::Ed25519Keyring;
-use sp_runtime::{
+use tp_keyring::Ed25519Keyring;
+use tp_runtime::{
 	curve::PiecewiseLinear,
 	impl_opaque_keys,
 	testing::{Header, TestXt, UintAuthorityId},
 	traits::{IdentityLookup, OpaqueKeys},
 	DigestItem, Perbill,
 };
-use sp_staking::SessionIndex;
+use tp_staking::SessionIndex;
 
 impl_outer_origin! {
 	pub enum Origin for Test {}
@@ -88,7 +88,7 @@ impl frame_system::Config for Test {
 	type BlockNumber = u64;
 	type Call = Call;
 	type Hash = H256;
-	type Hashing = sp_runtime::traits::BlakeTwo256;
+	type Hashing = tp_runtime::traits::BlakeTwo256;
 	type AccountId = u64;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
@@ -392,7 +392,7 @@ pub fn generate_equivocation_proof(
 	set_id: SetId,
 	vote1: (RoundNumber, H256, u64, &Ed25519Keyring),
 	vote2: (RoundNumber, H256, u64, &Ed25519Keyring),
-) -> sp_finality_grandpa::EquivocationProof<H256, u64> {
+) -> tp_finality_grandpa::EquivocationProof<H256, u64> {
 	let signed_prevote = |round, hash, number, keyring: &Ed25519Keyring| {
 		let prevote = tetsy_finality_grandpa::Prevote {
 			target_hash: hash,
@@ -400,7 +400,7 @@ pub fn generate_equivocation_proof(
 		};
 
 		let prevote_msg = tetsy_finality_grandpa::Message::Prevote(prevote.clone());
-		let payload = sp_finality_grandpa::localized_payload(round, set_id, &prevote_msg);
+		let payload = tp_finality_grandpa::localized_payload(round, set_id, &prevote_msg);
 		let signed = keyring.sign(&payload).into();
 		(prevote, signed)
 	};

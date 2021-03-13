@@ -22,7 +22,7 @@ use futures::channel::{mpsc, oneshot};
 use futures::SinkExt;
 
 use sc_network::{Multiaddr, PeerId};
-use sp_authority_discovery::AuthorityId;
+use tp_authority_discovery::AuthorityId;
 
 /// Service to interact with the [`crate::Worker`].
 #[derive(Clone)]

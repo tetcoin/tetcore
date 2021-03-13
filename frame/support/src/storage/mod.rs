@@ -20,8 +20,8 @@
 use tetcore_std::prelude::*;
 use codec::{FullCodec, FullEncode, Encode, EncodeLike, Decode};
 use crate::hash::{Twox128, StorageHasher};
-use sp_runtime::generic::{Digest, DigestItem};
-pub use sp_runtime::TransactionOutcome;
+use tp_runtime::generic::{Digest, DigestItem};
+pub use tp_runtime::TransactionOutcome;
 
 pub mod unhashed;
 pub mod hashed;

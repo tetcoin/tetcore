@@ -18,8 +18,8 @@
 
 //! List-cache storage entries.
 
-use sp_blockchain::Result as ClientResult;
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_blockchain::Result as ClientResult;
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 use codec::{Encode, Decode};
 
 use crate::cache::{CacheItemT, ComplexBlockId};

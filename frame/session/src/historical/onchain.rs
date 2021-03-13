@@ -18,7 +18,7 @@
 //! On-chain logic to store a validator-set for deferred validation using an off-chain worker.
 
 use codec::Encode;
-use sp_runtime::traits::Convert;
+use tp_runtime::traits::Convert;
 
 use super::super::Config as SessionConfig;
 use super::super::{Module as SessionModule, SessionIndex};

@@ -59,7 +59,7 @@ use syn::parse::{Parse, ParseStream};
 ///
 /// ```
 /// # fn main() {}
-/// use sp_runtime::curve::PiecewiseLinear;
+/// use tp_runtime::curve::PiecewiseLinear;
 ///
 /// pallet_staking_reward_curve::build! {
 /// 	const I_NPOS: PiecewiseLinear<'static> = curve!(

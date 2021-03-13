@@ -19,9 +19,9 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use sp_runtime::{traits::Block as BlockT, ApplyExtrinsicResult};
+use tp_runtime::{traits::Block as BlockT, ApplyExtrinsicResult};
 
-use sp_inherents::{InherentData, CheckInherentsResult};
+use tp_inherents::{InherentData, CheckInherentsResult};
 
 sp_api::decl_runtime_apis! {
 	/// The `BlockBuilder` api trait that provides the required functionality for building a block.

@@ -71,8 +71,8 @@ use tet_core::{
 	hexdisplay::HexDisplay,
 };
 use smallvec::SmallVec;
-use sp_blockchain::{Error as ClientError};
-use sp_runtime::{
+use tp_blockchain::{Error as ClientError};
+use tp_runtime::{
 	traits::{Block, Header, NumberFor, Zero},
 	generic::BlockId,
 };
@@ -1329,7 +1329,7 @@ mod tests {
 		remux
 	};
 	use sc_client_api::{StorageProof, RemoteReadChildRequest, FetchChecker};
-	use sp_blockchain::{Error as ClientError};
+	use tp_blockchain::{Error as ClientError};
 	use tet_core::storage::ChildInfo;
 	use std::{
 		collections::{HashMap, HashSet},
@@ -1339,11 +1339,11 @@ mod tests {
 		sync::Arc,
 		task::{Context, Poll}
 	};
-	use sp_runtime::{generic::Header, traits::{BlakeTwo256, Block as BlockT, NumberFor}};
+	use tp_runtime::{generic::Header, traits::{BlakeTwo256, Block as BlockT, NumberFor}};
 	use super::{Event, LightClientHandler, Request, Response, OutboundProtocol, PeerStatus};
 	use void::Void;
 
-	type Block = sp_runtime::generic::Block<Header<u64, BlakeTwo256>, tetcore_test_runtime::Extrinsic>;
+	type Block = tp_runtime::generic::Block<Header<u64, BlakeTwo256>, tetcore_test_runtime::Extrinsic>;
 	type Handler = LightClientHandler<Block>;
 	type Swarm = tetsy_libp2p::swarm::Swarm<Handler>;
 
@@ -1453,7 +1453,7 @@ mod tests {
 		super::Config::new(&ProtocolId::from("foo"))
 	}
 
-	fn dummy_header() -> sp_test_primitives::Header {
+	fn dummy_header() -> tp_test_primitives::Header {
 		sp_test_primitives::Header {
 			parent_hash: Default::default(),
 			number: 0,

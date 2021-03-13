@@ -77,8 +77,8 @@ use log::{error, info, trace, warn};
 use metrics::{Metrics, MetricSources, Histogram, HistogramVec};
 use parking_lot::Mutex;
 use sc_peerset::PeersetHandle;
-use sp_consensus::import_queue::{BlockImportError, BlockImportResult, ImportQueue, Link};
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_consensus::import_queue::{BlockImportError, BlockImportResult, ImportQueue, Link};
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 use std::{
 	borrow::Cow,
@@ -1114,7 +1114,7 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkService<B, H> {
 	}
 }
 
-impl<B: BlockT + 'static, H: ExHashT> sp_consensus::SyncOracle
+impl<B: BlockT + 'static, H: ExHashT> tp_consensus::SyncOracle
 	for NetworkService<B, H>
 {
 	fn is_major_syncing(&mut self) -> bool {
@@ -1126,7 +1126,7 @@ impl<B: BlockT + 'static, H: ExHashT> sp_consensus::SyncOracle
 	}
 }
 
-impl<'a, B: BlockT + 'static, H: ExHashT> sp_consensus::SyncOracle
+impl<'a, B: BlockT + 'static, H: ExHashT> tp_consensus::SyncOracle
 	for &'a NetworkService<B, H>
 {
 	fn is_major_syncing(&mut self) -> bool {
@@ -1140,7 +1140,7 @@ impl<'a, B: BlockT + 'static, H: ExHashT> sp_consensus::SyncOracle
 
 impl<B, H> NetworkStateInfo for NetworkService<B, H>
 	where
-		B: sp_runtime::traits::Block,
+		B: tp_runtime::traits::Block,
 		H: ExHashT,
 {
 	/// Returns the local external addresses.

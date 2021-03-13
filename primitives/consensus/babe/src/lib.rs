@@ -24,14 +24,14 @@ pub mod digests;
 pub mod inherents;
 
 pub use merlin::Transcript;
-pub use sp_consensus_vrf::schnorrkel::{
+pub use tp_consensus_vrf::schnorrkel::{
 	Randomness, RANDOMNESS_LENGTH, VRF_OUTPUT_LENGTH, VRF_PROOF_LENGTH,
 };
 
 use codec::{Decode, Encode};
 #[cfg(feature = "std")]
-use sp_keystore::vrf::{VRFTranscriptData, VRFTranscriptValue};
-use sp_runtime::{traits::Header, ConsensusEngineId, RuntimeDebug};
+use tp_keystore::vrf::{VRFTranscriptData, VRFTranscriptValue};
+use tp_runtime::{traits::Header, ConsensusEngineId, RuntimeDebug};
 use tetcore_std::vec::Vec;
 
 use crate::digests::{NextConfigDescriptor, NextEpochDescriptor};
@@ -76,10 +76,10 @@ pub const MEDIAN_ALGORITHM_CARDINALITY: usize = 1200; // arbitrary suggestion by
 /// The index of an authority.
 pub type AuthorityIndex = u32;
 
-pub use sp_consensus_slots::Slot;
+pub use tp_consensus_slots::Slot;
 
 /// An equivocation proof for multiple block authorships on the same slot (i.e. double vote).
-pub type EquivocationProof<H> = sp_consensus_slots::EquivocationProof<H, AuthorityId>;
+pub type EquivocationProof<H> = tp_consensus_slots::EquivocationProof<H, AuthorityId>;
 
 /// The weight of an authority.
 // NOTE: we use a unique name for the weight to avoid conflicts with other
@@ -238,7 +238,7 @@ impl AllowedSlots {
 }
 
 #[cfg(feature = "std")]
-impl sp_consensus::SlotData for BabeGenesisConfiguration {
+impl tp_consensus::SlotData for BabeGenesisConfiguration {
 	fn slot_duration(&self) -> u64 {
 		self.slot_duration
 	}

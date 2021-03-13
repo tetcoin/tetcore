@@ -88,7 +88,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use tetcore_std::prelude::*;
-use sp_runtime::{DispatchResult, traits::StaticLookup};
+use tp_runtime::{DispatchResult, traits::StaticLookup};
 
 use frame_support::{
 	Parameter, decl_module, decl_event, decl_storage, decl_error, ensure,

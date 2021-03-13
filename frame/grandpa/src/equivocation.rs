@@ -41,15 +41,15 @@ use tetcore_std::prelude::*;
 
 use codec::{self as codec, Decode, Encode};
 use frame_support::{debug, traits::KeyOwnerProofSystem};
-use sp_finality_grandpa::{EquivocationProof, RoundNumber, SetId};
-use sp_runtime::{
+use tp_finality_grandpa::{EquivocationProof, RoundNumber, SetId};
+use tp_runtime::{
 	transaction_validity::{
 		InvalidTransaction, TransactionPriority, TransactionSource, TransactionValidity,
 		TransactionValidityError, ValidTransaction,
 	},
 	DispatchResult, Perbill,
 };
-use sp_staking::{
+use tp_staking::{
 	offence::{Kind, Offence, OffenceError, ReportOffence},
 	SessionIndex,
 };

@@ -21,12 +21,12 @@ use super::*;
 use std::cell::RefCell;
 use frame_support::{parameter_types, BasicExternalities};
 use tet_core::{crypto::key_types::DUMMY, H256};
-use sp_runtime::{
+use tp_runtime::{
 	Perbill, impl_opaque_keys,
 	traits::{BlakeTwo256, IdentityLookup, ConvertInto},
 	testing::{Header, UintAuthorityId},
 };
-use sp_staking::SessionIndex;
+use tp_staking::SessionIndex;
 use crate as pallet_session;
 #[cfg(feature = "historical")]
 use crate::historical as pallet_session_historical;
@@ -282,5 +282,5 @@ impl Config for Test {
 #[cfg(feature = "historical")]
 impl crate::historical::Config for Test {
 	type FullIdentification = u64;
-	type FullIdentificationOf = sp_runtime::traits::ConvertInto;
+	type FullIdentificationOf = tp_runtime::traits::ConvertInto;
 }

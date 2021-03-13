@@ -22,13 +22,13 @@
 use std::cell::RefCell;
 use crate::{Module, Config};
 use codec::Encode;
-use sp_runtime::Perbill;
-use sp_staking::{
+use tp_runtime::Perbill;
+use tp_staking::{
 	SessionIndex,
 	offence::{self, Kind, OffenceDetails},
 };
-use sp_runtime::testing::Header;
-use sp_runtime::traits::{IdentityLookup, BlakeTwo256};
+use tp_runtime::testing::Header;
+use tp_runtime::traits::{IdentityLookup, BlakeTwo256};
 use tet_core::H256;
 use frame_support::{
 	impl_outer_origin, impl_outer_event, parameter_types, StorageMap, StorageDoubleMap,

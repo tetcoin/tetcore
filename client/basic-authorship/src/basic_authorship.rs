@@ -23,20 +23,20 @@
 use std::{pin::Pin, time, sync::Arc};
 use sc_client_api::backend;
 use codec::Decode;
-use sp_consensus::{evaluation, Proposal, RecordProof};
+use tp_consensus::{evaluation, Proposal, RecordProof};
 use tet_core::traits::SpawnNamed;
-use sp_inherents::InherentData;
+use tp_inherents::InherentData;
 use log::{error, info, debug, trace, warn};
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	traits::{Block as BlockT, Hash as HashT, Header as HeaderT, DigestFor, BlakeTwo256},
 };
-use sp_transaction_pool::{TransactionPool, InPoolTransaction};
+use tp_transaction_pool::{TransactionPool, InPoolTransaction};
 use sc_telemetry::{telemetry, CONSENSUS_INFO};
 use sc_block_builder::{BlockBuilderApi, BlockBuilderProvider};
-use sp_api::{ProvideRuntimeApi, ApiExt};
+use tp_api::{ProvideRuntimeApi, ApiExt};
 use futures::{future, future::{Future, FutureExt}, channel::oneshot, select};
-use sp_blockchain::{HeaderBackend, ApplyExtrinsicFailed::Validity, Error::ApplyExtrinsicFailed};
+use tp_blockchain::{HeaderBackend, ApplyExtrinsicFailed::Validity, Error::ApplyExtrinsicFailed};
 use std::marker::PhantomData;
 
 use prometheus_endpoint::Registry as PrometheusRegistry;
@@ -99,7 +99,7 @@ impl<B, Block, C, A> ProposerFactory<A, B, C>
 		C: BlockBuilderProvider<B, Block, C> + HeaderBackend<Block> + ProvideRuntimeApi<Block>
 			+ Send + Sync + 'static,
 		C::Api: ApiExt<Block, StateBackend = backend::StateBackendFor<B, Block>>
-			+ BlockBuilderApi<Block, Error = sp_blockchain::Error>,
+			+ BlockBuilderApi<Block, Error = tp_blockchain::Error>,
 {
 	pub fn init_with_now(
 		&mut self,
@@ -129,7 +129,7 @@ impl<B, Block, C, A> ProposerFactory<A, B, C>
 	}
 }
 
-impl<A, B, Block, C> sp_consensus::Environment<Block> for
+impl<A, B, Block, C> tp_consensus::Environment<Block> for
 	ProposerFactory<A, B, C>
 		where
 			A: TransactionPool<Block = Block> + 'static,
@@ -138,11 +138,11 @@ impl<A, B, Block, C> sp_consensus::Environment<Block> for
 			C: BlockBuilderProvider<B, Block, C> + HeaderBackend<Block> + ProvideRuntimeApi<Block>
 				+ Send + Sync + 'static,
 			C::Api: ApiExt<Block, StateBackend = backend::StateBackendFor<B, Block>>
-				+ BlockBuilderApi<Block, Error = sp_blockchain::Error>,
+				+ BlockBuilderApi<Block, Error = tp_blockchain::Error>,
 {
 	type CreateProposer = future::Ready<Result<Self::Proposer, Self::Error>>;
 	type Proposer = Proposer<B, Block, C, A>;
-	type Error = sp_blockchain::Error;
+	type Error = tp_blockchain::Error;
 
 	fn init(
 		&mut self,
@@ -166,7 +166,7 @@ pub struct Proposer<B, Block: BlockT, C, A: TransactionPool> {
 	max_block_size: usize,
 }
 
-impl<A, B, Block, C> sp_consensus::Proposer<Block> for
+impl<A, B, Block, C> tp_consensus::Proposer<Block> for
 	Proposer<B, Block, C, A>
 		where
 			A: TransactionPool<Block = Block> + 'static,
@@ -175,13 +175,13 @@ impl<A, B, Block, C> sp_consensus::Proposer<Block> for
 			C: BlockBuilderProvider<B, Block, C> + HeaderBackend<Block> + ProvideRuntimeApi<Block>
 				+ Send + Sync + 'static,
 			C::Api: ApiExt<Block, StateBackend = backend::StateBackendFor<B, Block>>
-				+ BlockBuilderApi<Block, Error = sp_blockchain::Error>,
+				+ BlockBuilderApi<Block, Error = tp_blockchain::Error>,
 {
 	type Transaction = backend::TransactionFor<B, Block>;
 	type Proposal = Pin<Box<dyn Future<
 		Output = Result<Proposal<Block, Self::Transaction>, Self::Error>
 	> + Send>>;
-	type Error = sp_blockchain::Error;
+	type Error = tp_blockchain::Error;
 
 	fn propose(
 		self,
@@ -221,7 +221,7 @@ impl<A, B, Block, C> Proposer<B, Block, C, A>
 		C: BlockBuilderProvider<B, Block, C> + HeaderBackend<Block> + ProvideRuntimeApi<Block>
 			+ Send + Sync + 'static,
 		C::Api: ApiExt<Block, StateBackend = backend::StateBackendFor<B, Block>>
-			+ BlockBuilderApi<Block, Error = sp_blockchain::Error>,
+			+ BlockBuilderApi<Block, Error = tp_blockchain::Error>,
 {
 	async fn propose_with(
 		self,
@@ -229,7 +229,7 @@ impl<A, B, Block, C> Proposer<B, Block, C, A>
 		inherent_digests: DigestFor<Block>,
 		deadline: time::Instant,
 		record_proof: RecordProof,
-	) -> Result<Proposal<Block, backend::TransactionFor<B, Block>>, sp_blockchain::Error> {
+	) -> Result<Proposal<Block, backend::TransactionFor<B, Block>>, tp_blockchain::Error> {
 		/// If the block is full we will attempt to push at most
 		/// this number of transactions before quitting for real.
 		/// It allows us to increase block utilization.
@@ -370,15 +370,15 @@ mod tests {
 	use super::*;
 
 	use parking_lot::Mutex;
-	use sp_consensus::{BlockOrigin, Proposer};
+	use tp_consensus::{BlockOrigin, Proposer};
 	use tetcore_test_runtime_client::{
 		prelude::*, TestClientBuilder, runtime::{Extrinsic, Transfer}, TestClientBuilderExt,
 	};
-	use sp_transaction_pool::{ChainEvent, MaintainedTransactionPool, TransactionSource};
+	use tp_transaction_pool::{ChainEvent, MaintainedTransactionPool, TransactionSource};
 	use sc_transaction_pool::BasicPool;
-	use sp_api::Core;
-	use sp_blockchain::HeaderBackend;
-	use sp_runtime::traits::NumberFor;
+	use tp_api::Core;
+	use tp_blockchain::HeaderBackend;
+	use tp_runtime::traits::NumberFor;
 	use sc_client_api::Backend;
 
 	const SOURCE: TransactionSource = TransactionSource::External;

@@ -23,7 +23,7 @@ pub mod error;
 use tetsy_jsonrpc_core::Result as RpcResult;
 use tetsy_jsonrpc_derive::rpc;
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId};
-use sp_rpc::{number::NumberOrHex, list::ListOrValue};
+use tp_rpc::{number::NumberOrHex, list::ListOrValue};
 use self::error::{FutureResult, Result};
 
 pub use self::gen_client::Client as ChainClient;

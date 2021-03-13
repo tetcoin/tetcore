@@ -21,7 +21,7 @@ use prometheus_endpoint::{
 	register, U64, Registry, PrometheusError, Opts, CounterVec, Histogram, HistogramVec, HistogramOpts
 };
 
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 use crate::import_queue::{BlockImportResult, BlockImportError};
 

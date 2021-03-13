@@ -22,13 +22,13 @@
 use codec::{Encode, Decode};
 
 #[cfg(feature = "std")]
-use sp_runtime::{generic::BlockId, traits::Block as BlockT};
+use tp_runtime::{generic::BlockId, traits::Block as BlockT};
 #[cfg(feature = "std")]
-use sp_api::ProvideRuntimeApi;
+use tp_api::ProvideRuntimeApi;
 
 use tet_core::RuntimeDebug;
 use tet_core::crypto::KeyTypeId;
-use sp_staking::SessionIndex;
+use tp_staking::SessionIndex;
 use tetcore_std::vec::Vec;
 
 sp_api::decl_runtime_apis! {
@@ -113,7 +113,7 @@ pub fn generate_initial_session_keys<Block, T>(
 	client: std::sync::Arc<T>,
 	at: &BlockId<Block>,
 	seeds: Vec<String>,
-) -> Result<(), sp_api::ApiErrorFor<T, Block>>
+) -> Result<(), tp_api::ApiErrorFor<T, Block>>
 where
 	Block: BlockT,
 	T: ProvideRuntimeApi<Block>,

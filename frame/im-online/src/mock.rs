@@ -22,10 +22,10 @@
 use std::cell::RefCell;
 
 use crate::{Module, Config};
-use sp_runtime::Perbill;
-use sp_staking::{SessionIndex, offence::{ReportOffence, OffenceError}};
-use sp_runtime::testing::{Header, UintAuthorityId, TestXt};
-use sp_runtime::traits::{IdentityLookup, BlakeTwo256, ConvertInto};
+use tp_runtime::Perbill;
+use tp_staking::{SessionIndex, offence::{ReportOffence, OffenceError}};
+use tp_runtime::testing::{Header, UintAuthorityId, TestXt};
+use tp_runtime::traits::{IdentityLookup, BlakeTwo256, ConvertInto};
 use tet_core::H256;
 use frame_support::{impl_outer_origin, impl_outer_dispatch, parameter_types};
 

@@ -25,8 +25,8 @@
 //! This is used in conjunction with [`ProvingTrie`](super::ProvingTrie) and
 //! the off-chain indexing API.
 
-use sp_runtime::{offchain::storage::StorageValueRef, KeyTypeId};
-use sp_session::MembershipProof;
+use tp_runtime::{offchain::storage::StorageValueRef, KeyTypeId};
+use tp_session::MembershipProof;
 
 use super::super::{Module as SessionModule, SessionIndex};
 use super::{IdentificationTuple, ProvingTrie, Config};
@@ -151,7 +151,7 @@ mod tests {
 		StorageKind,
 	};
 
-	use sp_runtime::testing::UintAuthorityId;
+	use tp_runtime::testing::UintAuthorityId;
 	use frame_support::BasicExternalities;
 
 	type Historical = Module<Test>;

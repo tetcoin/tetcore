@@ -25,7 +25,7 @@ use tet_io::{
 };
 use frame_support::storage;
 use frame_support::{decl_storage, decl_module};
-use sp_runtime::{
+use tp_runtime::{
 	traits::Header as _, generic, ApplyExtrinsicResult,
 	transaction_validity::{
 		TransactionValidity, ValidTransaction, InvalidTransaction, TransactionValidityError,
@@ -243,7 +243,7 @@ pub fn finalize_block() -> Header {
 
 #[inline(always)]
 fn check_signature(utx: &Extrinsic) -> Result<(), TransactionValidityError> {
-	use sp_runtime::traits::BlindCheckable;
+	use tp_runtime::traits::BlindCheckable;
 	utx.clone().check().map_err(|_| InvalidTransaction::BadProof.into()).map(|_| ())
 }
 

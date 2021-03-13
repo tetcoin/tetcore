@@ -25,7 +25,7 @@ use tet_application_crypto::sr25519;
 pub use tet_application_crypto;
 
 pub use tet_core::{hash::H256, RuntimeDebug};
-use sp_runtime::traits::{BlakeTwo256, Verify, Extrinsic as ExtrinsicT,};
+use tp_runtime::traits::{BlakeTwo256, Verify, Extrinsic as ExtrinsicT,};
 
 /// Extrinsic for test-runtime.
 #[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug)]
@@ -70,13 +70,13 @@ pub type BlockNumber = u64;
 /// Index of a transaction.
 pub type Index = u64;
 /// The item of a block digest.
-pub type DigestItem = sp_runtime::generic::DigestItem<H256>;
+pub type DigestItem = tp_runtime::generic::DigestItem<H256>;
 /// The digest of a block.
-pub type Digest = sp_runtime::generic::Digest<H256>;
+pub type Digest = tp_runtime::generic::Digest<H256>;
 /// A test block.
-pub type Block = sp_runtime::generic::Block<Header, Extrinsic>;
+pub type Block = tp_runtime::generic::Block<Header, Extrinsic>;
 /// A test block's header.
-pub type Header = sp_runtime::generic::Header<BlockNumber, BlakeTwo256>;
+pub type Header = tp_runtime::generic::Header<BlockNumber, BlakeTwo256>;
 
 /// Changes trie configuration (optionally) used in tests.
 pub fn changes_trie_config() -> tet_core::ChangesTrieConfiguration {

@@ -28,18 +28,18 @@ use rpc::{Result as RpcResult, futures::{stream, Future, Sink, Stream, future::r
 
 use sc_rpc_api::state::ReadProof;
 use sc_client_api::backend::Backend;
-use sp_blockchain::{Result as ClientResult, Error as ClientError, HeaderMetadata, CachedHeaderMetadata, HeaderBackend};
+use tp_blockchain::{Result as ClientResult, Error as ClientError, HeaderMetadata, CachedHeaderMetadata, HeaderBackend};
 use sc_client_api::BlockchainEvents;
 use tet_core::{
 	Bytes, storage::{well_known_keys, StorageKey, StorageData, StorageChangeSet,
 	ChildInfo, ChildType, PrefixedStorageKey},
 };
-use sp_version::RuntimeVersion;
-use sp_runtime::{
+use tp_version::RuntimeVersion;
+use tp_runtime::{
 	generic::BlockId, traits::{Block as BlockT, NumberFor, SaturatedConversion, CheckedSub},
 };
 
-use sp_api::{Metadata, ProvideRuntimeApi, CallApiAt};
+use tp_api::{Metadata, ProvideRuntimeApi, CallApiAt};
 
 use super::{StateBackend, ChildStateBackend, error::{FutureResult, Error, Result}, client_err};
 use std::marker::PhantomData;
@@ -70,7 +70,7 @@ impl<BE, Block: BlockT, Client> FullState<BE, Block, Client>
 	where
 		BE: Backend<Block>,
 		Client: StorageProvider<Block, BE> + HeaderBackend<Block>
-			+ HeaderMetadata<Block, Error = sp_blockchain::Error>,
+			+ HeaderMetadata<Block, Error = tp_blockchain::Error>,
 		Block: BlockT + 'static,
 {
 	/// Create new state API backend for full nodes.
@@ -222,10 +222,10 @@ impl<BE, Block, Client> StateBackend<Block, Client> for FullState<BE, Block, Cli
 	Block: BlockT + 'static,
 	BE: Backend<Block> + 'static,
 	Client: ExecutorProvider<Block> + StorageProvider<Block, BE> + ProofProvider<Block> + HeaderBackend<Block>
-		+ HeaderMetadata<Block, Error = sp_blockchain::Error> + BlockchainEvents<Block>
-		+ CallApiAt<Block, Error = sp_blockchain::Error> + ProvideRuntimeApi<Block>
+		+ HeaderMetadata<Block, Error = tp_blockchain::Error> + BlockchainEvents<Block>
+		+ CallApiAt<Block, Error = tp_blockchain::Error> + ProvideRuntimeApi<Block>
 		+ Send + Sync + 'static,
-	Client::Api: Metadata<Block, Error = sp_blockchain::Error>,
+	Client::Api: Metadata<Block, Error = tp_blockchain::Error>,
 {
 	fn call(
 		&self,
@@ -527,10 +527,10 @@ impl<BE, Block, Client> ChildStateBackend<Block, Client> for FullState<BE, Block
 	Block: BlockT + 'static,
 	BE: Backend<Block> + 'static,
 	Client: ExecutorProvider<Block> + StorageProvider<Block, BE> + HeaderBackend<Block>
-		+ HeaderMetadata<Block, Error = sp_blockchain::Error> + BlockchainEvents<Block>
-		+ CallApiAt<Block, Error = sp_blockchain::Error> + ProvideRuntimeApi<Block>
+		+ HeaderMetadata<Block, Error = tp_blockchain::Error> + BlockchainEvents<Block>
+		+ CallApiAt<Block, Error = tp_blockchain::Error> + ProvideRuntimeApi<Block>
 		+ Send + Sync + 'static,
-	Client::Api: Metadata<Block, Error = sp_blockchain::Error>,
+	Client::Api: Metadata<Block, Error = tp_blockchain::Error>,
 {
 	fn storage_keys(
 		&self,

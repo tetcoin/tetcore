@@ -22,9 +22,9 @@ use std::sync::Arc;
 
 use sc_executor::RuntimeInfo;
 use tet_core::traits::{CodeExecutor, SpawnNamed};
-use sp_runtime::BuildStorage;
-use sp_runtime::traits::{Block as BlockT, HashFor};
-use sp_blockchain::Result as ClientResult;
+use tp_runtime::BuildStorage;
+use tp_runtime::traits::{Block as BlockT, HashFor};
+use tp_blockchain::Result as ClientResult;
 use prometheus_endpoint::Registry;
 
 use super::{call_executor::LocalCallExecutor, client::{Client, ClientConfig}};

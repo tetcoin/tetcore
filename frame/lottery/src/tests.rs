@@ -22,7 +22,7 @@ use mock::{
 	Lottery, Balances, Test, Origin, Call, SystemCall, BalancesCall,
 	new_test_ext, run_to_block
 };
-use sp_runtime::traits::{BadOrigin};
+use tp_runtime::traits::{BadOrigin};
 use frame_support::{assert_noop, assert_ok};
 use pallet_balances::Error as BalancesError;
 

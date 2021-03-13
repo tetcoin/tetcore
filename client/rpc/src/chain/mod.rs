@@ -34,8 +34,8 @@ use rpc::{
 
 use sc_client_api::{BlockchainEvents, light::{Fetcher, RemoteBlockchain}};
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
-use sp_rpc::{number::NumberOrHex, list::ListOrValue};
-use sp_runtime::{
+use tp_rpc::{number::NumberOrHex, list::ListOrValue};
+use tp_runtime::{
 	generic::{BlockId, SignedBlock},
 	traits::{Block as BlockT, Header, NumberFor},
 };
@@ -43,7 +43,7 @@ use sp_runtime::{
 use self::error::{Result, Error, FutureResult};
 
 pub use sc_rpc_api::chain::*;
-use sp_blockchain::HeaderBackend;
+use tp_blockchain::HeaderBackend;
 use sc_client_api::BlockBackend;
 
 /// Blockchain backend API
@@ -325,6 +325,6 @@ fn subscribe_headers<Block, Client, F, G, S, ERR>(
 	});
 }
 
-fn client_err(err: sp_blockchain::Error) -> Error {
+fn client_err(err: tp_blockchain::Error) -> Error {
 	Error::Client(Box::new(err))
 }

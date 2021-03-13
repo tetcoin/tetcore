@@ -33,7 +33,7 @@ use tetcore_test_runtime_client::{
 	runtime,
 };
 use sc_rpc_api::DenyUnsafe;
-use sp_runtime::generic::BlockId;
+use tp_runtime::generic::BlockId;
 use crate::testing::TaskExecutor;
 use futures::{executor, compat::Future01CompatExt};
 

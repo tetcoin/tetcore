@@ -31,8 +31,8 @@
 
 use codec::Encode;
 use blocks::BlockCollection;
-use sp_blockchain::{Error as ClientError, Info as BlockchainInfo, HeaderMetadata};
-use sp_consensus::{BlockOrigin, BlockStatus,
+use tp_blockchain::{Error as ClientError, Info as BlockchainInfo, HeaderMetadata};
+use tp_consensus::{BlockOrigin, BlockStatus,
 	block_validation::{BlockAnnounceValidator, Validation},
 	import_queue::{IncomingBlock, BlockImportResult, BlockImportError}
 };
@@ -43,7 +43,7 @@ use either::Either;
 use extra_requests::ExtraRequests;
 use tetsy_libp2p::PeerId;
 use log::{debug, trace, warn, info, error};
-use sp_runtime::{
+use tp_runtime::{
 	Justification,
 	generic::BlockId,
 	traits::{
@@ -1775,16 +1775,16 @@ fn fork_sync_request<B: BlockT>(
 }
 
 /// Returns `true` if the given `block` is a descendent of `base`.
-fn is_descendent_of<Block, T>(client: &T, base: &Block::Hash, block: &Block::Hash) -> sp_blockchain::Result<bool>
+fn is_descendent_of<Block, T>(client: &T, base: &Block::Hash, block: &Block::Hash) -> tp_blockchain::Result<bool>
 	where
 		Block: BlockT,
-		T: HeaderMetadata<Block, Error = sp_blockchain::Error> + ?Sized,
+		T: HeaderMetadata<Block, Error = tp_blockchain::Error> + ?Sized,
 {
 	if base == block {
 		return Ok(false);
 	}
 
-	let ancestor = sp_blockchain::lowest_common_ancestor(client, *block, *base)?;
+	let ancestor = tp_blockchain::lowest_common_ancestor(client, *block, *base)?;
 
 	Ok(ancestor.hash == *base)
 }
@@ -1897,8 +1897,8 @@ mod test {
 	use super::message::{FromBlock, BlockState, BlockData};
 	use super::*;
 	use sc_block_builder::BlockBuilderProvider;
-	use sp_blockchain::HeaderBackend;
-	use sp_consensus::block_validation::DefaultBlockAnnounceValidator;
+	use tp_blockchain::HeaderBackend;
+	use tp_consensus::block_validation::DefaultBlockAnnounceValidator;
 	use tetcore_test_runtime_client::{
 		runtime::{Block, Hash, Header},
 		ClientBlockImportExt, DefaultTestClientBuilderExt, TestClientBuilder, TestClientBuilderExt,

@@ -20,8 +20,8 @@
 #![cfg(test)]
 
 use crate as pallet_aura;
-use sp_consensus_aura::ed25519::AuthorityId;
-use sp_runtime::{
+use tp_consensus_aura::ed25519::AuthorityId;
+use tp_runtime::{
 	traits::IdentityLookup,
 	testing::{Header, UintAuthorityId},
 };

@@ -26,7 +26,7 @@ use frame_system::ensure_signed;
 use frame_support::{
 	dispatch::DispatchResult, decl_module, decl_storage, decl_event,
 };
-use sp_runtime::RuntimeDebug;
+use tp_runtime::RuntimeDebug;
 
 use codec::{Encode, Decode};
 use tetcore_std::vec::Vec;
@@ -73,7 +73,7 @@ impl EnlistedParticipant {
 	fn verify(&self, event_id: &[u8]) -> bool {
 		use tet_core::Public;
 		use std::convert::TryFrom;
-		use sp_runtime::traits::Verify;
+		use tp_runtime::traits::Verify;
 
 		match tet_core::sr25519::Signature::try_from(&self.signature[..]) {
 			Ok(signature) => {
@@ -138,7 +138,7 @@ fn validate_participants_parallel(event_id: &[u8], participants: &[EnlistedParti
 	event_id.encode_to(&mut async_payload);
 	participants[..participants.len() / 2].encode_to(&mut async_payload);
 
-	let handle = sp_tasks::spawn(spawn_verify, async_payload);
+	let handle = tp_tasks::spawn(spawn_verify, async_payload);
 	let mut result = true;
 
 	for participant in &participants[participants.len()/2+1..] {

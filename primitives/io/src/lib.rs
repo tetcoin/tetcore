@@ -44,7 +44,7 @@ use tet_core::{
 	storage::ChildInfo,
 };
 #[cfg(feature = "std")]
-use sp_keystore::{KeystoreExt, SyncCryptoStore};
+use tp_keystore::{KeystoreExt, SyncCryptoStore};
 
 use tet_core::{
 	OpaquePeerId, crypto::KeyTypeId, ed25519, sr25519, ecdsa, H256, LogLevel,
@@ -54,7 +54,7 @@ use tet_core::{
 };
 
 #[cfg(feature = "std")]
-use sp_trie::{TrieConfiguration, trie_types::Layout};
+use tp_trie::{TrieConfiguration, trie_types::Layout};
 
 use tp_runtime_interface::{runtime_interface, Pointer};
 use tp_runtime_interface::pass_by::PassBy;
@@ -417,7 +417,7 @@ pub trait Misc {
 	/// function in this blob.
 	fn runtime_version(&mut self, wasm: &[u8]) -> Option<Vec<u8>> {
 		// Create some dummy externalities, `Core_version` should not write data anyway.
-		let mut ext = sp_state_machine::BasicExternalities::default();
+		let mut ext = tp_state_machine::BasicExternalities::default();
 
 		self.extension::<CallInWasmExt>()
 			.expect("No `CallInWasmExt` associated for the current context!")
@@ -1342,7 +1342,7 @@ pub fn oom(_: core::alloc::Layout) -> ! {
 
 /// Type alias for Externalities implementation used in tests.
 #[cfg(feature = "std")]
-pub type TestExternalities = sp_state_machine::TestExternalities<tet_core::Blake2Hasher, u64>;
+pub type TestExternalities = tp_state_machine::TestExternalities<tet_core::Blake2Hasher, u64>;
 
 /// The host functions Tetcore provides for the Wasm runtime environment.
 ///
@@ -1367,7 +1367,7 @@ pub type TetcoreHostFunctions = (
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_state_machine::BasicExternalities;
+	use tp_state_machine::BasicExternalities;
 	use tet_core::{
 		storage::Storage, map, traits::TaskExecutorExt, testing::TaskExecutor,
 	};

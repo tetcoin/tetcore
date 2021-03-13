@@ -27,7 +27,7 @@ use log::{debug, error, trace};
 use lru::LruCache;
 use tetsy_libp2p::PeerId;
 use prometheus_endpoint::{register, Counter, PrometheusError, Registry, U64};
-use sp_runtime::traits::{Block as BlockT, Hash, HashFor};
+use tp_runtime::traits::{Block as BlockT, Hash, HashFor};
 use sc_network::ObservedRole;
 use wasm_timer::Instant;
 
@@ -494,7 +494,7 @@ impl Metrics {
 mod tests {
 	use futures::prelude::*;
 	use sc_network::{Event, ReputationChange};
-	use sp_runtime::testing::{H256, Block as RawBlock, ExtrinsicWrapper};
+	use tp_runtime::testing::{H256, Block as RawBlock, ExtrinsicWrapper};
 	use std::{borrow::Cow, pin::Pin, sync::{Arc, Mutex}};
 	use super::*;
 

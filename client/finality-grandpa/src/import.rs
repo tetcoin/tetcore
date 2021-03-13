@@ -22,20 +22,20 @@ use log::debug;
 use tetsy_scale_codec::Encode;
 use parking_lot::RwLockWriteGuard;
 
-use sp_blockchain::{BlockStatus, well_known_cache_keys};
+use tp_blockchain::{BlockStatus, well_known_cache_keys};
 use sc_client_api::{backend::Backend, utils::is_descendent_of};
 use tetcore_utils::mpsc::TracingUnboundedSender;
-use sp_api::TransactionFor;
+use tp_api::TransactionFor;
 
-use sp_consensus::{
+use tp_consensus::{
 	BlockImport, Error as ConsensusError,
 	BlockCheckParams, BlockImportParams, BlockOrigin, ImportResult, JustificationImport,
 	SelectChain,
 };
-use sp_finality_grandpa::{ConsensusLog, ScheduledChange, SetId, GRANDPA_ENGINE_ID};
-use sp_runtime::Justification;
-use sp_runtime::generic::{BlockId, OpaqueDigestItemId};
-use sp_runtime::traits::{
+use tp_finality_grandpa::{ConsensusLog, ScheduledChange, SetId, GRANDPA_ENGINE_ID};
+use tp_runtime::Justification;
+use tp_runtime::generic::{BlockId, OpaqueDigestItemId};
+use tp_runtime::traits::{
 	Block as BlockT, DigestFor, Header as HeaderT, NumberFor, Zero,
 };
 

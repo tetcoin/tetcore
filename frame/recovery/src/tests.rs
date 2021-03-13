@@ -22,7 +22,7 @@ use mock::{
 	Recovery, Balances, Test, Origin, Call, BalancesCall, RecoveryCall,
 	new_test_ext, run_to_block
 };
-use sp_runtime::traits::{BadOrigin};
+use tp_runtime::traits::{BadOrigin};
 use frame_support::{
 	assert_noop, assert_ok,
 	traits::{Currency},

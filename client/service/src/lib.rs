@@ -44,8 +44,8 @@ use futures::{Future, FutureExt, Stream, StreamExt, stream, compat::*};
 use sc_network::{NetworkStatus, network_state::NetworkState, PeerId};
 use log::{warn, debug, error};
 use codec::{Encode, Decode};
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use tetsy_util_mem::MallocSizeOf;
 use tetcore_utils::{status_sinks, mpsc::{tracing_unbounded, TracingUnboundedReceiver}};
 
@@ -65,7 +65,7 @@ pub use sc_chain_spec::{
 	ChainSpec, GenericChainSpec, Properties, RuntimeGenesis, Extension as ChainSpecExtension,
 	NoExtension, ChainType,
 };
-pub use sp_transaction_pool::{TransactionPool, InPoolTransaction, error::IntoPoolError};
+pub use tp_transaction_pool::{TransactionPool, InPoolTransaction, error::IntoPoolError};
 pub use sc_transaction_pool::txpool::Options as TransactionPoolOptions;
 pub use sc_rpc::Metadata as RpcMetadata;
 pub use sc_executor::NativeExecutionDispatch;
@@ -79,7 +79,7 @@ pub use sc_network::config::{
 pub use sc_tracing::TracingReceiver;
 pub use task_manager::SpawnTaskHandle;
 pub use task_manager::TaskManager;
-pub use sp_consensus::import_queue::ImportQueue;
+pub use tp_consensus::import_queue::ImportQueue;
 pub use self::client::{LocalCallExecutor, ClientConfig};
 use sc_client_api::{blockchain::HeaderBackend, BlockchainEvents};
 
@@ -177,7 +177,7 @@ pub struct PartialComponents<Client, Backend, SelectChain, ImportQueue, Transact
 	/// A shared transaction pool.
 	pub transaction_pool: Arc<TransactionPool>,
 	/// A registry of all providers of `InherentData`.
-	pub inherent_data_providers: sp_inherents::InherentDataProviders,
+	pub inherent_data_providers: tp_inherents::InherentDataProviders,
 	/// Everything else that needs to be passed into the main build function.
 	pub other: Other,
 }
@@ -499,7 +499,7 @@ fn transactions_to_propagate<Pool, B, H, E>(pool: &Pool)
 where
 	Pool: TransactionPool<Block=B, Hash=H, Error=E>,
 	B: BlockT,
-	H: std::hash::Hash + Eq + sp_runtime::traits::Member + sp_runtime::traits::MaybeSerialize,
+	H: std::hash::Hash + Eq + tp_runtime::traits::Member + tp_runtime::traits::MaybeSerialize,
 	E: IntoPoolError + From<sp_transaction_pool::error::Error>,
 {
 	pool.ready()
@@ -518,7 +518,7 @@ where
 	C: sc_network::config::Client<B> + Send + Sync,
 	Pool: 'static + TransactionPool<Block=B, Hash=H, Error=E>,
 	B: BlockT,
-	H: std::hash::Hash + Eq + sp_runtime::traits::Member + sp_runtime::traits::MaybeSerialize,
+	H: std::hash::Hash + Eq + tp_runtime::traits::Member + tp_runtime::traits::MaybeSerialize,
 	E: 'static + IntoPoolError + From<sp_transaction_pool::error::Error>,
 {
 	fn transactions(&self) -> Vec<(H, B::Extrinsic)> {
@@ -549,7 +549,7 @@ where
 
 		let best_block_id = BlockId::hash(self.client.info().best_hash);
 
-		let import_future = self.pool.submit_one(&best_block_id, sp_transaction_pool::TransactionSource::External, uxt);
+		let import_future = self.pool.submit_one(&best_block_id, tp_transaction_pool::TransactionSource::External, uxt);
 		Box::pin(async move {
 			match import_future.await {
 				Ok(_) => TransactionImport::NewGood,
@@ -586,8 +586,8 @@ where
 mod tests {
 	use super::*;
 	use futures::executor::block_on;
-	use sp_consensus::SelectChain;
-	use sp_runtime::traits::BlindCheckable;
+	use tp_consensus::SelectChain;
+	use tp_runtime::traits::BlindCheckable;
 	use tetcore_test_runtime_client::{prelude::*, runtime::{Extrinsic, Transfer}};
 	use sc_transaction_pool::BasicPool;
 
@@ -603,7 +603,7 @@ mod tests {
 			spawner,
 			client.clone(),
 		);
-		let source = sp_runtime::transaction_validity::TransactionSource::External;
+		let source = tp_runtime::transaction_validity::TransactionSource::External;
 		let best = longest_chain.best_chain().unwrap();
 		let transaction = Transfer {
 			amount: 5,

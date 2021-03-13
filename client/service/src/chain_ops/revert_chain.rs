@@ -18,7 +18,7 @@
 
 use crate::error::Error;
 use log::info;
-use sp_runtime::traits::{Block as BlockT, NumberFor, Zero};
+use tp_runtime::traits::{Block as BlockT, NumberFor, Zero};
 use sc_client_api::{Backend, UsageProvider};
 use std::sync::Arc;
 

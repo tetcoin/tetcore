@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use sp_blockchain::Error as ClientError;
+use tp_blockchain::Error as ClientError;
 use crate::protocol::sync::{PeerSync, PeerSyncState};
 use forktree::ForkTree;
 use tetsy_libp2p::PeerId;
 use log::{debug, trace, warn};
-use sp_runtime::traits::{Block as BlockT, NumberFor, Zero};
+use tp_runtime::traits::{Block as BlockT, NumberFor, Zero};
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::time::Duration;
 use wasm_timer::Instant;
@@ -344,12 +344,12 @@ impl<'a, B: BlockT> Matcher<'a, B> {
 #[cfg(test)]
 mod tests {
 	use crate::protocol::sync::PeerSync;
-	use sp_blockchain::Error as ClientError;
+	use tp_blockchain::Error as ClientError;
 	use quickcheck::{Arbitrary, Gen, QuickCheck, StdThreadGen};
 	use rand::Rng;
 	use std::collections::{HashMap, HashSet};
 	use super::*;
-	use sp_test_primitives::{Block, BlockNumber, Hash};
+	use tp_test_primitives::{Block, BlockNumber, Hash};
 
 	#[test]
 	fn requests_are_processed_in_order() {

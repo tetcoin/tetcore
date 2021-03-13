@@ -30,7 +30,7 @@ pub mod leaves;
 pub mod notifications;
 pub mod proof_provider;
 
-pub use sp_blockchain as blockchain;
+pub use tp_blockchain as blockchain;
 pub use backend::*;
 pub use notifications::*;
 pub use call_executor::*;
@@ -39,19 +39,19 @@ pub use light::*;
 pub use notifications::*;
 pub use proof_provider::*;
 
-pub use sp_state_machine::{StorageProof, ExecutionStrategy};
+pub use tp_state_machine::{StorageProof, ExecutionStrategy};
 
 /// Usage Information Provider interface
 ///
-pub trait UsageProvider<Block: sp_runtime::traits::Block> {
+pub trait UsageProvider<Block: tp_runtime::traits::Block> {
 	/// Get usage info about current client.
 	fn usage_info(&self) -> ClientInfo<Block>;
 }
 
 /// Utility methods for the client.
 pub mod utils {
-	use sp_blockchain::{HeaderBackend, HeaderMetadata, Error};
-	use sp_runtime::traits::Block as BlockT;
+	use tp_blockchain::{HeaderBackend, HeaderMetadata, Error};
+	use tp_runtime::traits::Block as BlockT;
 	use std::borrow::Borrow;
 
 	/// Returns a function for checking block ancestry, the returned function will
@@ -83,7 +83,7 @@ pub mod utils {
 				}
 			}
 
-			let ancestor = sp_blockchain::lowest_common_ancestor(client, *hash, *base)?;
+			let ancestor = tp_blockchain::lowest_common_ancestor(client, *hash, *base)?;
 
 			Ok(ancestor.hash == *base)
 		}

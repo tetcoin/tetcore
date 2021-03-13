@@ -22,7 +22,7 @@ use crate::{
 };
 use std::collections::{BTreeMap, HashMap};
 use tetsy_hash_db::Hasher;
-use sp_trie::{MemoryDB, empty_trie_root, Layout};
+use tp_trie::{MemoryDB, empty_trie_root, Layout};
 use codec::Codec;
 use tet_core::storage::{ChildInfo, Storage};
 
@@ -169,7 +169,7 @@ where
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_runtime::traits::BlakeTwo256;
+	use tp_runtime::traits::BlakeTwo256;
 	use crate::backend::Backend;
 
 	/// Assert in memory backend with only child trie keys works as trie backend.

@@ -20,9 +20,9 @@
 
 use codec::{Encode, Decode};
 use sc_client_api::backend::AuxStore;
-use sp_blockchain::{Result as ClientResult, Error as ClientError};
-use sp_consensus_slots::{EquivocationProof, Slot};
-use sp_runtime::traits::Header;
+use tp_blockchain::{Result as ClientResult, Error as ClientError};
+use tp_consensus_slots::{EquivocationProof, Slot};
+use tp_runtime::traits::Header;
 
 const SLOT_HEADER_MAP_KEY: &[u8] = b"slot_header_map";
 const SLOT_HEADER_START: &[u8] = b"slot_header_start";
@@ -137,7 +137,7 @@ pub fn check_equivocation<C, H, P>(
 mod test {
 	use tet_core::{sr25519, Pair};
 	use tet_core::hash::H256;
-	use sp_runtime::testing::{Header as HeaderTest, Digest as DigestTest};
+	use tp_runtime::testing::{Header as HeaderTest, Digest as DigestTest};
 	use tetcore_test_runtime_client;
 
 	use super::{MAX_SLOT_CAPACITY, PRUNING_BOUND, check_equivocation};

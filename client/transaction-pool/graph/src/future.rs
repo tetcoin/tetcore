@@ -24,7 +24,7 @@ use std::{
 };
 
 use tet_core::hexdisplay::HexDisplay;
-use sp_runtime::transaction_validity::{
+use tp_runtime::transaction_validity::{
 	TransactionTag as Tag,
 };
 use wasm_timer::Instant;
@@ -251,7 +251,7 @@ impl<Hash: hash::Hash + Eq + Clone, Ex> FutureTransactions<Hash, Ex> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_runtime::transaction_validity::TransactionSource;
+	use tp_runtime::transaction_validity::TransactionSource;
 
 	#[test]
 	fn can_track_heap_size() {

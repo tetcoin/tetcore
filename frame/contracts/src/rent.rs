@@ -31,7 +31,7 @@ use frame_support::{
 	traits::{Currency, ExistenceRequirement, Get, OnUnbalanced, WithdrawReasons},
 };
 use pallet_contracts_primitives::{ContractAccessError, RentProjection, RentProjectionResult};
-use sp_runtime::{
+use tp_runtime::{
 	DispatchError,
 	traits::{Bounded, CheckedDiv, CheckedMul, SaturatedConversion, Saturating, Zero},
 };

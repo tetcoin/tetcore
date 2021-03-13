@@ -62,7 +62,7 @@ use frame_support::{
 	decl_module, decl_storage,
 	weights::Weight,
 };
-use sp_runtime::traits;
+use tp_runtime::traits;
 
 mod default_weights;
 mod mmr;

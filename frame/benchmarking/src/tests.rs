@@ -21,7 +21,7 @@
 
 use super::*;
 use tetcore_std::prelude::*;
-use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::{H256, Header}};
+use tp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::{H256, Header}};
 use frame_support::{
 	dispatch::DispatchResult,
 	decl_module, decl_storage, impl_outer_origin, assert_ok, assert_err, ensure,

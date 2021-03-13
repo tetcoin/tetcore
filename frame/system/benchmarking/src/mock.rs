@@ -19,7 +19,7 @@
 
 #![cfg(test)]
 
-use sp_runtime::traits::IdentityLookup;
+use tp_runtime::traits::IdentityLookup;
 use frame_support::{
 	impl_outer_origin,
 	dispatch::{Dispatchable, DispatchInfo, PostDispatchInfo},
@@ -42,7 +42,7 @@ impl Dispatchable for Call {
 	type Info = DispatchInfo;
 	type PostInfo = PostDispatchInfo;
 	fn dispatch(self, _origin: Self::Origin)
-		-> sp_runtime::DispatchResultWithInfo<Self::PostInfo> {
+		-> tp_runtime::DispatchResultWithInfo<Self::PostInfo> {
 			panic!("Do not use dummy implementation for dispatch.");
 	}
 }
@@ -63,7 +63,7 @@ impl frame_system::Config for Test {
 	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = IdentityLookup<Self::AccountId>;
-	type Header = sp_runtime::testing::Header;
+	type Header = tp_runtime::testing::Header;
 	type Event = ();
 	type BlockHashCount = ();
 	type Version = ();

@@ -32,7 +32,7 @@
 #![recursion_limit="128"]
 
 use tetcore_std::prelude::*;
-use sp_runtime::{
+use tp_runtime::{
 	RuntimeDebug, DispatchResult, print,
 	traits::{Zero, One, StaticLookup, Saturating},
 };

@@ -25,8 +25,8 @@
 use std::sync::Arc;
 
 use sc_client_api::blockchain::HeaderBackend;
-use sp_runtime::generic::BlockId;
-use sp_runtime::traits::{Block as BlockT, Header, NumberFor, One, Zero};
+use tp_runtime::generic::BlockId;
+use tp_runtime::traits::{Block as BlockT, Header, NumberFor, One, Zero};
 
 /// A trait for custom voting rules in GRANDPA.
 pub trait VotingRule<Block, B>: Send + Sync where

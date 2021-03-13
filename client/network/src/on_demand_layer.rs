@@ -27,8 +27,8 @@ use sc_client_api::{
 	RemoteHeaderRequest, RemoteReadChildRequest, RemoteReadRequest, StorageProof, ChangesProof,
 };
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
-use sp_blockchain::Error as ClientError;
-use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
+use tp_blockchain::Error as ClientError;
+use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 use std::{collections::HashMap, pin::Pin, sync::Arc, task::Context, task::Poll};
 
 /// Implements the `Fetcher` trait of the client. Makes it possible for the light client to perform

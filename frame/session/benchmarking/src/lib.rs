@@ -37,7 +37,7 @@ use pallet_staking::{
 	benchmarking::create_validator_with_nominators, testing_utils::create_validators,
 	MAX_NOMINATIONS, RewardDestination,
 };
-use sp_runtime::traits::{One, StaticLookup};
+use tp_runtime::traits::{One, StaticLookup};
 
 const MAX_VALIDATORS: u32 = 1000;
 

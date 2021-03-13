@@ -21,7 +21,7 @@ use super::*;
 use mock::*;
 
 use frame_support::{assert_ok, assert_noop, traits::OnInitialize};
-use sp_runtime::traits::BadOrigin;
+use tp_runtime::traits::BadOrigin;
 
 type ScoredPool = Module<Test>;
 type System = frame_system::Module<Test>;

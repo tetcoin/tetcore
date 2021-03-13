@@ -36,13 +36,13 @@
 //!
 
 use frame_support::{debug, traits::KeyOwnerProofSystem};
-use sp_consensus_babe::{EquivocationProof, Slot};
-use sp_runtime::transaction_validity::{
+use tp_consensus_babe::{EquivocationProof, Slot};
+use tp_runtime::transaction_validity::{
 	InvalidTransaction, TransactionPriority, TransactionSource, TransactionValidity,
 	TransactionValidityError, ValidTransaction,
 };
-use sp_runtime::{DispatchResult, Perbill};
-use sp_staking::{
+use tp_runtime::{DispatchResult, Perbill};
+use tp_staking::{
 	offence::{Kind, Offence, OffenceError, ReportOffence},
 	SessionIndex,
 };

@@ -17,10 +17,10 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::*;
-use sp_transaction_pool::TransactionStatus;
+use tp_transaction_pool::TransactionStatus;
 use futures::executor::{block_on, block_on_stream};
 use txpool::{self, Pool};
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	transaction_validity::{ValidTransaction, TransactionSource, InvalidTransaction},
 };
@@ -34,7 +34,7 @@ use codec::Encode;
 use std::collections::BTreeSet;
 use sc_client_api::client::BlockchainEvents;
 use sc_block_builder::BlockBuilderProvider;
-use sp_consensus::BlockOrigin;
+use tp_consensus::BlockOrigin;
 
 fn pool() -> Pool<TestApi> {
 	Pool::new(Default::default(), TestApi::with_alice_nonce(209).into())

@@ -24,7 +24,7 @@ use arithmetic::{
 	traits::{One, SaturatedConversion, Zero},
 	PerThing,
 };
-use sp_runtime::assert_eq_error_rate;
+use tp_runtime::assert_eq_error_rate;
 use tetcore_std::collections::btree_map::BTreeMap;
 
 #[derive(Default, Debug)]

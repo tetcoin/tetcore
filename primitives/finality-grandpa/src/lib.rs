@@ -26,11 +26,11 @@ extern crate alloc;
 use serde::Serialize;
 
 use codec::{Encode, Decode, Input, Codec};
-use sp_runtime::{ConsensusEngineId, RuntimeDebug, traits::NumberFor};
+use tp_runtime::{ConsensusEngineId, RuntimeDebug, traits::NumberFor};
 use tetcore_std::borrow::Cow;
 use tetcore_std::vec::Vec;
 #[cfg(feature = "std")]
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 
 #[cfg(feature = "std")]
 use log::debug;

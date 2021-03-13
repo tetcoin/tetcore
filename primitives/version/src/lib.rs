@@ -27,13 +27,13 @@ use std::fmt;
 use std::collections::HashSet;
 
 use codec::{Encode, Decode};
-use sp_runtime::RuntimeString;
-pub use sp_runtime::create_runtime_str;
+use tp_runtime::RuntimeString;
+pub use tp_runtime::create_runtime_str;
 #[doc(hidden)]
 pub use tetcore_std;
 
 #[cfg(feature = "std")]
-use sp_runtime::{traits::Block as BlockT, generic::BlockId};
+use tp_runtime::{traits::Block as BlockT, generic::BlockId};
 
 /// The identity of a particular API interface that the runtime might provide.
 pub type ApiId = [u8; 8];
@@ -52,7 +52,7 @@ macro_rules! create_apis_vec {
 /// This triplet have different semantics and mis-interpretation could cause problems.
 /// In particular: bug fixes should result in an increment of `spec_version` and possibly `authoring_version`,
 /// absolutely not `impl_version` since they change the semantics of the runtime.
-#[derive(Clone, PartialEq, Eq, Encode, Decode, Default, sp_runtime::RuntimeDebug)]
+#[derive(Clone, PartialEq, Eq, Encode, Decode, Default, tp_runtime::RuntimeDebug)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "std", serde(rename_all = "camelCase"))]
 pub struct RuntimeVersion {

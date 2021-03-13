@@ -16,11 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use sp_consensus::BlockOrigin;
+use tp_consensus::BlockOrigin;
 use std::time::Duration;
 use futures::{Future, executor::block_on};
 use super::*;
-use sp_consensus::block_validation::Validation;
+use tp_consensus::block_validation::Validation;
 use tetcore_test_runtime::Header;
 
 fn test_ancestor_search_when_common_is(n: usize) {

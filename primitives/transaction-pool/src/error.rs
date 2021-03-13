@@ -17,7 +17,7 @@
 
 //! Transaction pool errors.
 
-use sp_runtime::transaction_validity::{
+use tp_runtime::transaction_validity::{
 	TransactionPriority as Priority, InvalidTransaction, UnknownTransaction,
 };
 

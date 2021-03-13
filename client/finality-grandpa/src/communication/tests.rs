@@ -24,13 +24,13 @@ use sc_network::{Event as NetworkEvent, ObservedRole, PeerId};
 use sc_network_test::{Block, Hash};
 use sc_network_gossip::Validator;
 use std::sync::Arc;
-use sp_keyring::Ed25519Keyring;
+use tp_keyring::Ed25519Keyring;
 use tetsy_scale_codec::Encode;
-use sp_runtime::traits::NumberFor;
+use tp_runtime::traits::NumberFor;
 use std::{borrow::Cow, pin::Pin, task::{Context, Poll}};
 use crate::communication::GRANDPA_PROTOCOL_NAME;
 use crate::environment::SharedVoterSetState;
-use sp_finality_grandpa::AuthorityList;
+use tp_finality_grandpa::AuthorityList;
 use super::gossip::{self, GossipValidator};
 use super::{VoterSet, Round, SetId};
 
@@ -148,7 +148,7 @@ fn voter_set_state() -> SharedVoterSetState<Block> {
 	use crate::environment::VoterSetState;
 	use tetsy_finality_grandpa::round::State as RoundState;
 	use tet_core::{crypto::Public, H256};
-	use sp_finality_grandpa::AuthorityId;
+	use tp_finality_grandpa::AuthorityId;
 
 	let state = RoundState::genesis((H256::zero(), 0));
 	let base = state.prevote_ghost.unwrap();
@@ -231,7 +231,7 @@ fn good_commit_leads_to_relay() {
 		let target_number = 500;
 
 		let precommit = tetsy_finality_grandpa::Precommit { target_hash: target_hash.clone(), target_number };
-		let payload = sp_finality_grandpa::localized_payload(
+		let payload = tp_finality_grandpa::localized_payload(
 			round, set_id, &finality_grandpa::Message::Precommit(precommit.clone())
 		);
 
@@ -241,7 +241,7 @@ fn good_commit_leads_to_relay() {
 		for (i, key) in private.iter().enumerate() {
 			precommits.push(precommit.clone());
 
-			let signature = sp_finality_grandpa::AuthoritySignature::from(key.sign(&payload[..]));
+			let signature = tp_finality_grandpa::AuthoritySignature::from(key.sign(&payload[..]));
 			auth_data.push((signature, public[i].0.clone()))
 		}
 
@@ -379,7 +379,7 @@ fn bad_commit_leads_to_report() {
 		let target_number = 500;
 
 		let precommit = tetsy_finality_grandpa::Precommit { target_hash: target_hash.clone(), target_number };
-		let payload = sp_finality_grandpa::localized_payload(
+		let payload = tp_finality_grandpa::localized_payload(
 			round, set_id, &finality_grandpa::Message::Precommit(precommit.clone())
 		);
 
@@ -389,7 +389,7 @@ fn bad_commit_leads_to_report() {
 		for (i, key) in private.iter().enumerate() {
 			precommits.push(precommit.clone());
 
-			let signature = sp_finality_grandpa::AuthoritySignature::from(key.sign(&payload[..]));
+			let signature = tp_finality_grandpa::AuthoritySignature::from(key.sign(&payload[..]));
 			auth_data.push((signature, public[i].0.clone()))
 		}
 

@@ -130,18 +130,18 @@
 #[cfg(feature = "std")]
 use serde::{Serialize, Deserialize};
 use codec::{Encode, Decode};
-use sp_runtime::{
+use tp_runtime::{
 	RuntimeDebug,
 	traits::SignedExtension,
 	generic::{CheckedExtrinsic, UncheckedExtrinsic},
 };
 use crate::dispatch::{DispatchErrorWithPostInfo, DispatchResultWithPostInfo, DispatchError};
-use sp_runtime::traits::SaturatedConversion;
+use tp_runtime::traits::SaturatedConversion;
 use arithmetic::{Perbill, traits::{BaseArithmetic, Saturating, Unsigned}};
 use smallvec::{smallvec, SmallVec};
 
 /// Re-export priority as type
-pub use sp_runtime::transaction_validity::TransactionPriority;
+pub use tp_runtime::transaction_validity::TransactionPriority;
 
 /// Numeric range of a transaction weight.
 pub type Weight = u64;
@@ -408,7 +408,7 @@ impl From<()> for PostDispatchInfo {
 	}
 }
 
-impl sp_runtime::traits::Printable for PostDispatchInfo {
+impl tp_runtime::traits::Printable for PostDispatchInfo {
 	fn print(&self) {
 		"actual_weight=".print();
 		match self.actual_weight {
@@ -614,7 +614,7 @@ where
 
 /// Implementation for test extrinsic.
 #[cfg(feature = "std")]
-impl<Call: Encode, Extra: Encode> GetDispatchInfo for sp_runtime::testing::TestXt<Call, Extra> {
+impl<Call: Encode, Extra: Encode> GetDispatchInfo for tp_runtime::testing::TestXt<Call, Extra> {
 	fn get_dispatch_info(&self) -> DispatchInfo {
 		// for testing: weight == size.
 		DispatchInfo {

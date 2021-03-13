@@ -29,11 +29,11 @@ use crate::client::{Client, Backend};
 use crate::keyring::*;
 use sc_client_db::PruningMode;
 use sc_executor::{NativeExecutor, WasmExecutionMethod};
-use sp_consensus::{
+use tp_consensus::{
 	BlockOrigin, BlockImport, BlockImportParams,
 	ForkChoiceStrategy, ImportResult, ImportedAux
 };
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId,
 	OpaqueExtrinsic,
 	traits::{Block as BlockT, Verify, Zero, IdentifyAccount},
@@ -51,9 +51,9 @@ use node_runtime::{
 	Signature,
 };
 use tet_core::{ExecutionContext, blake2_256, traits::SpawnNamed, Pair, Public, sr25519, ed25519};
-use sp_api::ProvideRuntimeApi;
-use sp_block_builder::BlockBuilder;
-use sp_inherents::InherentData;
+use tp_api::ProvideRuntimeApi;
+use tp_block_builder::BlockBuilder;
+use tp_inherents::InherentData;
 use sc_client_api::{
 	ExecutionStrategy, BlockBackend,
 	execution_extensions::{ExecutionExtensions, ExecutionStrategies},

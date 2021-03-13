@@ -23,7 +23,7 @@ use codec::Encode;
 use tetcore_std::vec;
 use tetcore_std::prelude::*;
 use tet_core::{ChangesTrieConfiguration, storage::well_known_keys};
-use sp_runtime::traits::Hash;
+use tp_runtime::traits::Hash;
 use frame_benchmarking::{benchmarks, whitelisted_caller};
 use frame_support::{
 	storage,

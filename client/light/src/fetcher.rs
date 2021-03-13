@@ -25,17 +25,17 @@ use std::marker::PhantomData;
 use tetsy_hash_db::{HashDB, Hasher, EMPTY_PREFIX};
 use codec::{Decode, Encode};
 use tet_core::{convert_hash, traits::{CodeExecutor, SpawnNamed}, storage::{ChildInfo, ChildType}};
-use sp_runtime::traits::{
+use tp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, Hash, HashFor, NumberFor,
 	AtLeast32Bit, CheckedConversion,
 };
-use sp_state_machine::{
+use tp_state_machine::{
 	ChangesTrieRootsStorage, ChangesTrieAnchorBlockId, ChangesTrieConfigurationRange,
 	InMemoryChangesTrieStorage, TrieBackend, read_proof_check, key_changes_proof_check_with_db,
 	read_child_proof_check,
 };
-pub use sp_state_machine::StorageProof;
-use sp_blockchain::{Error as ClientError, Result as ClientResult};
+pub use tp_state_machine::StorageProof;
+use tp_blockchain::{Error as ClientError, Result as ClientResult};
 
 pub use sc_client_api::{
 	light::{

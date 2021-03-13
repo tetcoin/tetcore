@@ -29,6 +29,6 @@ mod pool;
 #[cfg(feature = "std")]
 pub use pool::*;
 
-pub use sp_runtime::transaction_validity::{
+pub use tp_runtime::transaction_validity::{
 	TransactionLongevity, TransactionPriority, TransactionTag, TransactionSource,
 };

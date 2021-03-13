@@ -28,7 +28,7 @@ use tet_core::{
 	sr25519,
 	crypto::{Public, Ss58Codec},
 };
-use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 
 /// A utility to easily create a testnet chain spec definition with a given set
 /// of authorities and endowed accounts and/or generate random accounts.

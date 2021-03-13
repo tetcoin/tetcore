@@ -276,7 +276,7 @@ impl<H, N> externalities::ExtensionStore for TestExternalities<H, N> where
 mod tests {
 	use super::*;
 	use tet_core::{H256, traits::Externalities, storage::ChildInfo};
-	use sp_runtime::traits::BlakeTwo256;
+	use tp_runtime::traits::BlakeTwo256;
 	use hex_literal::hex;
 
 	#[test]

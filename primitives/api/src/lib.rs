@@ -34,11 +34,11 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 // Make doc tests happy
-extern crate self as sp_api;
+extern crate self as tp_api;
 
 #[doc(hidden)]
 #[cfg(feature = "std")]
-pub use sp_state_machine::{
+pub use tp_state_machine::{
 	OverlayedChanges, StorageProof, Backend as StateBackend, ChangesTrieState, InMemoryBackend,
 };
 #[doc(hidden)]
@@ -51,7 +51,7 @@ pub use tetsy_hash_db::Hasher;
 #[cfg(not(feature = "std"))]
 pub use tet_core::to_tetcore_wasm_fn_return_value;
 #[doc(hidden)]
-pub use sp_runtime::{
+pub use tp_runtime::{
 	traits::{
 		Block as BlockT, GetNodeBlockType, GetRuntimeBlockType, HashFor, NumberFor,
 		Header as HeaderT, Hash as HashT,
@@ -61,7 +61,7 @@ pub use sp_runtime::{
 #[doc(hidden)]
 pub use tet_core::{offchain, ExecutionContext};
 #[doc(hidden)]
-pub use sp_version::{ApiId, RuntimeVersion, ApisVec, create_apis_vec};
+pub use tp_version::{ApiId, RuntimeVersion, ApisVec, create_apis_vec};
 #[doc(hidden)]
 pub use tetcore_std::{slice, mem};
 #[cfg(feature = "std")]
@@ -91,7 +91,7 @@ pub const MAX_EXTRINSIC_DEPTH: u32 = 256;
 /// # Example
 ///
 /// ```rust
-/// sp_api::decl_runtime_apis! {
+/// tp_api::decl_runtime_apis! {
 ///     /// Declare the api trait.
 ///     pub trait Balance {
 ///         /// Get the balance.
@@ -125,7 +125,7 @@ pub const MAX_EXTRINSIC_DEPTH: u32 = 256;
 /// this method will be used to call the current default implementation.
 ///
 /// ```rust
-/// sp_api::decl_runtime_apis! {
+/// tp_api::decl_runtime_apis! {
 ///     /// Declare the api trait.
 ///     #[api_version(2)]
 ///     pub trait Balance {
@@ -149,7 +149,7 @@ pub const MAX_EXTRINSIC_DEPTH: u32 = 256;
 /// To check if a given runtime implements a runtime api trait, the `RuntimeVersion` has the
 /// function `has_api<A>()`. Also the `ApiExt` provides a function `has_api<A>(at: &BlockId)` to
 /// check if the runtime at the given block id implements the requested runtime api trait.
-pub use sp_api_proc_macro::decl_runtime_apis;
+pub use tp_api_proc_macro::decl_runtime_apis;
 
 /// Tags given trait implementations as runtime apis.
 ///
@@ -171,10 +171,10 @@ pub use sp_api_proc_macro::decl_runtime_apis;
 /// # Example
 ///
 /// ```rust
-/// use sp_version::create_runtime_str;
+/// use tp_version::create_runtime_str;
 /// #
-/// # use sp_runtime::traits::{GetNodeBlockType, Block as BlockT};
-/// # use sp_test_primitives::Block;
+/// # use tp_runtime::traits::{GetNodeBlockType, Block as BlockT};
+/// # use tp_test_primitives::Block;
 /// #
 /// # /// The declaration of the `Runtime` type and the implementation of the `GetNodeBlockType`
 /// # /// trait are done by the `construct_runtime!` macro in a real runtime.
@@ -183,7 +183,7 @@ pub use sp_api_proc_macro::decl_runtime_apis;
 /// #     type NodeBlock = Block;
 /// # }
 /// #
-/// # sp_api::decl_runtime_apis! {
+/// # tp_api::decl_runtime_apis! {
 /// #     /// Declare the api trait.
 /// #     pub trait Balance {
 /// #         /// Get the balance.
@@ -197,9 +197,9 @@ pub use sp_api_proc_macro::decl_runtime_apis;
 /// # }
 ///
 /// /// All runtime api implementations need to be done in one call of the macro!
-/// sp_api::impl_runtime_apis! {
-/// #   impl sp_api::Core<Block> for Runtime {
-/// #       fn version() -> sp_version::RuntimeVersion {
+/// tp_api::impl_runtime_apis! {
+/// #   impl tp_api::Core<Block> for Runtime {
+/// #       fn version() -> tp_version::RuntimeVersion {
 /// #           unimplemented!()
 /// #       }
 /// #       fn execute_block(_block: Block) {}
@@ -223,7 +223,7 @@ pub use sp_api_proc_macro::decl_runtime_apis;
 /// }
 ///
 /// /// Runtime version. This needs to be declared for each runtime.
-/// pub const VERSION: sp_version::RuntimeVersion = sp_version::RuntimeVersion {
+/// pub const VERSION: tp_version::RuntimeVersion = tp_version::RuntimeVersion {
 ///     spec_name: create_runtime_str!("node"),
 ///     impl_name: create_runtime_str!("test-node"),
 ///     authoring_version: 1,
@@ -236,7 +236,7 @@ pub use sp_api_proc_macro::decl_runtime_apis;
 ///
 /// # fn main() {}
 /// ```
-pub use sp_api_proc_macro::impl_runtime_apis;
+pub use tp_api_proc_macro::impl_runtime_apis;
 
 /// Mocks given trait implementations as runtime apis.
 ///
@@ -252,10 +252,10 @@ pub use sp_api_proc_macro::impl_runtime_apis;
 /// # Example
 ///
 /// ```rust
-/// # use sp_runtime::traits::Block as BlockT;
-/// # use sp_test_primitives::Block;
+/// # use tp_runtime::traits::Block as BlockT;
+/// # use tp_test_primitives::Block;
 /// #
-/// # sp_api::decl_runtime_apis! {
+/// # tp_api::decl_runtime_apis! {
 /// #     /// Declare the api trait.
 /// #     pub trait Balance {
 /// #         /// Get the balance.
@@ -272,7 +272,7 @@ pub use sp_api_proc_macro::impl_runtime_apis;
 /// }
 ///
 /// /// All runtime api mock implementations need to be done in one call of the macro!
-/// sp_api::mock_impl_runtime_apis! {
+/// tp_api::mock_impl_runtime_apis! {
 ///     impl Balance<Block> for MockApi {
 ///         /// Here we take the `&self` to access the instance.
 ///         fn get_balance(&self) -> u64 {
@@ -287,7 +287,7 @@ pub use sp_api_proc_macro::impl_runtime_apis;
 ///         /// Sets the error type that is being used by the mock implementation.
 ///         /// The error type is used by all runtime apis. It is only required to
 ///         /// be specified in one trait implementation.
-///         type Error = sp_api::ApiError;
+///         type Error = tp_api::ApiError;
 ///
 ///         fn build_block() -> Block {
 ///              unimplemented!("Not Required in tests")
@@ -311,12 +311,12 @@ pub use sp_api_proc_macro::impl_runtime_apis;
 ///
 /// ## Example
 /// ```rust
-/// # use sp_runtime::{traits::Block as BlockT, generic::BlockId};
-/// # use sp_test_primitives::Block;
+/// # use tp_runtime::{traits::Block as BlockT, generic::BlockId};
+/// # use tp_test_primitives::Block;
 /// # use tet_core::NativeOrEncoded;
 /// # use codec;
 /// #
-/// # sp_api::decl_runtime_apis! {
+/// # tp_api::decl_runtime_apis! {
 /// #     /// Declare the api trait.
 /// #     pub trait Balance {
 /// #         /// Get the balance.
@@ -329,9 +329,9 @@ pub use sp_api_proc_macro::impl_runtime_apis;
 ///     balance: u64,
 /// }
 ///
-/// sp_api::mock_impl_runtime_apis! {
+/// tp_api::mock_impl_runtime_apis! {
 ///     impl Balance<Block> for MockApi {
-///         type Error = sp_api::ApiError;
+///         type Error = tp_api::ApiError;
 ///         #[advanced]
 ///         fn get_balance(&self, at: &BlockId<Block>) -> Result<NativeOrEncoded<u64>, Self::Error> {
 ///             println!("Being called at: {}", at);
@@ -351,11 +351,11 @@ pub use sp_api_proc_macro::impl_runtime_apis;
 ///
 /// # fn main() {}
 /// ```
-pub use sp_api_proc_macro::mock_impl_runtime_apis;
+pub use tp_api_proc_macro::mock_impl_runtime_apis;
 
 /// A type that records all accessed trie nodes and generates a proof out of it.
 #[cfg(feature = "std")]
-pub type ProofRecorder<B> = sp_state_machine::ProofRecorder<HashFor<B>>;
+pub type ProofRecorder<B> = tp_state_machine::ProofRecorder<HashFor<B>>;
 
 /// A type that is used as cache for the storage transactions.
 #[cfg(feature = "std")]

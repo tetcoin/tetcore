@@ -116,9 +116,9 @@ pub mod weights;
 
 use tetcore_std::{prelude::*, marker::PhantomData, ops::{Sub, Rem}};
 use codec::Decode;
-use sp_runtime::{KeyTypeId, Perbill, RuntimeAppPublic, BoundToRuntimeAppPublic};
-use sp_runtime::traits::{Convert, Zero, Member, OpaqueKeys, Saturating};
-use sp_staking::SessionIndex;
+use tp_runtime::{KeyTypeId, Perbill, RuntimeAppPublic, BoundToRuntimeAppPublic};
+use tp_runtime::traits::{Convert, Zero, Member, OpaqueKeys, Saturating};
+use tp_staking::SessionIndex;
 use frame_support::{
 	ensure, decl_module, decl_event, decl_storage, decl_error, ConsensusEngineId, Parameter,
 	traits::{

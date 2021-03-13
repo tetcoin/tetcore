@@ -59,7 +59,7 @@ use frame_support::{traits::{Get, ReservableCurrency, Currency},
 	dispatch::{DispatchResultWithPostInfo, DispatchErrorWithPostInfo, PostDispatchInfo},
 };
 use frame_system::{self as system, ensure_signed, RawOrigin};
-use sp_runtime::{DispatchError, DispatchResult, traits::{Dispatchable, Zero}};
+use tp_runtime::{DispatchError, DispatchResult, traits::{Dispatchable, Zero}};
 pub use weights::WeightInfo;
 
 type BalanceOf<T> = <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;

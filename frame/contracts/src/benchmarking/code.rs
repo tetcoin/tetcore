@@ -30,8 +30,8 @@ use crate::Module as Contracts;
 use tetsy_wasm::elements::{Instruction, Instructions, FuncBody, ValueType, BlockType};
 use pwasm_utils::stack_height::inject_limiter;
 use tet_core::crypto::UncheckedFrom;
-use sp_runtime::traits::Hash;
-use sp_sandbox::{EnvironmentDefinitionBuilder, Memory};
+use tp_runtime::traits::Hash;
+use tp_sandbox::{EnvironmentDefinitionBuilder, Memory};
 use tetcore_std::{prelude::*, convert::TryFrom};
 
 /// Pass to `create_code` in order to create a compiled `WasmModule`.

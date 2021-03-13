@@ -35,13 +35,13 @@ use parking_lot::Mutex;
 use prometheus_endpoint::Registry;
 use std::{pin::Pin, sync::Arc, task::{Context, Poll}};
 
-use sp_keystore::SyncCryptoStorePtr;
+use tp_keystore::SyncCryptoStorePtr;
 use tetsy_finality_grandpa::Message::{Prevote, Precommit, PrimaryPropose};
 use tetsy_finality_grandpa::{voter, voter_set::VoterSet};
 use sc_network::{NetworkService, ReputationChange};
 use sc_network_gossip::{GossipEngine, Network as GossipNetwork};
 use tetsy_scale_codec::{Encode, Decode};
-use sp_runtime::traits::{Block as BlockT, Hash as HashT, Header as HeaderT, NumberFor};
+use tp_runtime::traits::{Block as BlockT, Hash as HashT, Header as HeaderT, NumberFor};
 use sc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_INFO};
 
 use crate::{
@@ -57,7 +57,7 @@ use gossip::{
 	PeerReport,
 	VoteMessage,
 };
-use sp_finality_grandpa::{
+use tp_finality_grandpa::{
 	AuthorityId, AuthoritySignature, SetId as SetIdNumber, RoundNumber,
 };
 use tetcore_utils::mpsc::TracingUnboundedReceiver;
@@ -690,7 +690,7 @@ impl<Block: BlockT> Sink<Message<Block>> for OutgoingMessages<Block>
 		// when locals exist, sign messages on import
 		if let Some(ref keystore) = self.keystore {
 			let target_hash = *(msg.target().0);
-			let signed = sp_finality_grandpa::sign_message(
+			let signed = tp_finality_grandpa::sign_message(
 				keystore.keystore(),
 				msg,
 				keystore.local_id().clone(),

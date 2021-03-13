@@ -20,7 +20,7 @@
 use super::*;
 use frame_support::{parameter_types, weights::Weight};
 use tet_core::H256;
-use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
+use tp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 use tet_io;
 use crate as sudo;
 use frame_support::traits::Filter;

@@ -28,8 +28,8 @@ use frame_system::{RawOrigin, Module as System, Config as SystemConfig};
 use frame_benchmarking::{benchmarks, account};
 use frame_support::traits::{Currency, OnInitialize};
 
-use sp_runtime::{Perbill, traits::{Convert, StaticLookup, Saturating, UniqueSaturatedInto}};
-use sp_staking::offence::{ReportOffence, Offence, OffenceDetails};
+use tp_runtime::{Perbill, traits::{Convert, StaticLookup, Saturating, UniqueSaturatedInto}};
+use tp_staking::offence::{ReportOffence, Offence, OffenceDetails};
 
 use pallet_balances::Config as BalancesConfig;
 use pallet_babe::BabeEquivocationOffence;

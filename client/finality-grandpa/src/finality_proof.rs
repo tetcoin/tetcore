@@ -41,13 +41,13 @@ use std::sync::Arc;
 
 use tetsy_finality_grandpa::BlockNumberOps;
 use tetsy_scale_codec::{Encode, Decode};
-use sp_blockchain::{Backend as BlockchainBackend, Error as ClientError, Result as ClientResult};
-use sp_runtime::{
+use tp_blockchain::{Backend as BlockchainBackend, Error as ClientError, Result as ClientResult};
+use tp_runtime::{
 	Justification, generic::BlockId,
 	traits::{NumberFor, Block as BlockT, Header as HeaderT, Zero, One},
 };
 use sc_client_api::backend::Backend;
-use sp_finality_grandpa::{AuthorityId, AuthorityList};
+use tp_finality_grandpa::{AuthorityId, AuthorityList};
 
 use crate::authorities::AuthoritySetChanges;
 use crate::justification::GrandpaJustification;
@@ -325,7 +325,7 @@ fn get_warp_sync_proof_fragment<Block: BlockT, B: BlockchainBackend<Block>>(
 	blockchain: &B,
 	index: NumberFor<Block>,
 	cache: &mut Option<&mut WarpSyncFragmentCache<Block::Header>>,
-) -> sp_blockchain::Result<Option<(AuthoritySetProofFragment<Block::Header>, NumberFor<Block>)>> {
+) -> tp_blockchain::Result<Option<(AuthoritySetProofFragment<Block::Header>, NumberFor<Block>)>> {
 	if let Some(cache) = cache.as_mut() {
 		if let Some(result) = cache.get_item(index) {
 			return Ok(result.clone());
@@ -335,7 +335,7 @@ fn get_warp_sync_proof_fragment<Block: BlockT, B: BlockchainBackend<Block>>(
 	let mut result = None;
 	let header = blockchain.expect_header(BlockId::number(index))?;
 
-	if let Some((block_number, sp_finality_grandpa::ScheduledChange {
+	if let Some((block_number, tp_finality_grandpa::ScheduledChange {
 		next_authorities: _,
 		delay,
 	})) = crate::import::find_forced_change::<Block>(&header) {
@@ -443,7 +443,7 @@ where
 			let dest = *current_block + delay;
 			at_block = Some((dest, next_authorities));
 		}
-		if let Some((block_number, sp_finality_grandpa::ScheduledChange {
+		if let Some((block_number, tp_finality_grandpa::ScheduledChange {
 			next_authorities,
 			delay,
 		})) = crate::import::find_forced_change::<Block>(&authorities_proof.header) {
@@ -597,7 +597,7 @@ pub(crate) mod tests {
 	use super::*;
 	use crate::authorities::AuthoritySetChanges;
 	use tet_core::crypto::Public;
-	use sp_finality_grandpa::AuthorityList;
+	use tp_finality_grandpa::AuthorityList;
 	use sc_client_api::NewBlockState;
 	use sc_client_api::in_mem::Blockchain as InMemoryBlockchain;
 	use tetcore_test_runtime_client::runtime::{Block, Header, H256};

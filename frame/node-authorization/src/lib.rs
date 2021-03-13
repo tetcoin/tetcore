@@ -438,7 +438,7 @@ mod tests {
 	};
 	use frame_system::EnsureSignedBy;
 	use tet_core::H256;
-	use sp_runtime::{traits::{BlakeTwo256, IdentityLookup, BadOrigin}, testing::Header};
+	use tp_runtime::{traits::{BlakeTwo256, IdentityLookup, BadOrigin}, testing::Header};
 
 	impl_outer_origin! {
 		pub enum Origin for Test where system = frame_system {}

@@ -19,7 +19,7 @@
 use serde::{Serialize, Deserialize};
 
 use sc_finality_grandpa::FinalityProofProvider;
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 #[derive(Serialize, Deserialize)]
 pub struct EncodedFinalityProof(pub tet_core::Bytes);

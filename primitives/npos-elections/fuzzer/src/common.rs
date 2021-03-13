@@ -20,9 +20,9 @@
 // Each function will be used based on which fuzzer binary is being used.
 #![allow(dead_code)]
 
-use sp_npos_elections::{ElectionResult, VoteWeight, phragmms, seq_phragmen};
+use tp_npos_elections::{ElectionResult, VoteWeight, phragmms, seq_phragmen};
 use tetcore_std::collections::btree_map::BTreeMap;
-use sp_runtime::Perbill;
+use tp_runtime::Perbill;
 use rand::{self, Rng, RngCore};
 
 /// converts x into the range [a, b] in a pseudo-fair way.
@@ -92,14 +92,14 @@ pub fn generate_random_npos_result(
 	(
 		match election_type {
 			ElectionType::Phragmen(conf) =>
-				seq_phragmen::<AccountId, sp_runtime::Perbill>(
+				seq_phragmen::<AccountId, tp_runtime::Perbill>(
 					to_elect,
 					candidates.clone(),
 					voters.clone(),
 					conf,
 				).unwrap(),
 			ElectionType::Phragmms(conf) =>
-				phragmms::<AccountId, sp_runtime::Perbill>(
+				phragmms::<AccountId, tp_runtime::Perbill>(
 					to_elect,
 					candidates.clone(),
 					voters.clone(),

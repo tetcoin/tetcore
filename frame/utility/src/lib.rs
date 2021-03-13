@@ -70,7 +70,7 @@ use frame_support::{
 	dispatch::{PostDispatchInfo, DispatchResultWithPostInfo},
 };
 use frame_system::{ensure_signed, ensure_root};
-use sp_runtime::{DispatchError, traits::Dispatchable};
+use tp_runtime::{DispatchError, traits::Dispatchable};
 pub use weights::WeightInfo;
 
 /// Configuration trait.

@@ -19,7 +19,7 @@
 use tetsy_libp2p::core::multiaddr::{Multiaddr, Protocol};
 use std::collections::HashMap;
 
-use sp_authority_discovery::AuthorityId;
+use tp_authority_discovery::AuthorityId;
 use sc_network::PeerId;
 
 /// Cache for [`AuthorityId`] -> [`Vec<Multiaddr>`] and [`PeerId`] -> [`AuthorityId`] mappings.
@@ -115,7 +115,7 @@ mod tests {
 	use quickcheck::{Arbitrary, Gen, QuickCheck, TestResult};
 	use rand::Rng;
 
-	use sp_authority_discovery::{AuthorityId, AuthorityPair};
+	use tp_authority_discovery::{AuthorityId, AuthorityPair};
 	use tet_core::crypto::Pair;
 
 	#[derive(Clone, Debug)]

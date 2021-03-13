@@ -27,7 +27,7 @@ use tetsy_wasm::elements::ValueType;
 use frame_support::{dispatch::DispatchError, ensure};
 use tetcore_std::prelude::*;
 use codec::{Decode, DecodeAll, Encode};
-use sp_runtime::traits::SaturatedConversion;
+use tp_runtime::traits::SaturatedConversion;
 use tet_core::crypto::UncheckedFrom;
 use tet_io::hashing::{
 	keccak_256,
@@ -69,10 +69,10 @@ pub enum ReturnCode {
 impl ConvertibleToWasm for ReturnCode {
 	type NativeType = Self;
 	const VALUE_TYPE: ValueType = ValueType::I32;
-	fn to_typed_value(self) -> sp_sandbox::Value {
+	fn to_typed_value(self) -> tp_sandbox::Value {
 		sp_sandbox::Value::I32(self as i32)
 	}
-	fn from_typed_value(_: sp_sandbox::Value) -> Option<Self> {
+	fn from_typed_value(_: tp_sandbox::Value) -> Option<Self> {
 		debug_assert!(false, "We will never receive a ReturnCode but only send it to wasm.");
 		None
 	}
@@ -294,7 +294,7 @@ pub struct Runtime<'a, E: Ext + 'a> {
 	ext: &'a mut E,
 	input_data: Option<Vec<u8>>,
 	schedule: &'a Schedule<E::T>,
-	memory: sp_sandbox::Memory,
+	memory: tp_sandbox::Memory,
 	gas_meter: &'a mut GasMeter<E::T>,
 	trap_reason: Option<TrapReason>,
 }
@@ -309,7 +309,7 @@ where
 		ext: &'a mut E,
 		input_data: Vec<u8>,
 		schedule: &'a Schedule<E::T>,
-		memory: sp_sandbox::Memory,
+		memory: tp_sandbox::Memory,
 		gas_meter: &'a mut GasMeter<E::T>,
 	) -> Self {
 		Runtime {
@@ -329,7 +329,7 @@ where
 	/// the result of the sandbox is evaluated.
 	pub fn to_execution_result(
 		self,
-		sandbox_result: Result<sp_sandbox::ReturnValue, sp_sandbox::Error>,
+		sandbox_result: Result<sp_sandbox::ReturnValue, tp_sandbox::Error>,
 	) -> ExecResult {
 		// If a trap reason is set we base our decision solely on that.
 		if let Some(trap_reason) = self.trap_reason {

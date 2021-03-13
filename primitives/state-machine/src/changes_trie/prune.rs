@@ -18,7 +18,7 @@
 //! Changes trie pruning-related functions.
 
 use tetsy_hash_db::Hasher;
-use sp_trie::Recorder;
+use tp_trie::Recorder;
 use log::warn;
 use num_traits::One;
 use crate::proving_backend::ProvingBackendRecorder;
@@ -114,12 +114,12 @@ fn prune_trie<H: Hasher, Number: BlockNumber, F: FnMut(H::Out)>(
 #[cfg(test)]
 mod tests {
 	use std::collections::HashSet;
-	use sp_trie::MemoryDB;
+	use tp_trie::MemoryDB;
 	use tet_core::H256;
 	use crate::backend::insert_into_memory_db;
 	use crate::changes_trie::storage::InMemoryStorage;
 	use codec::Encode;
-	use sp_runtime::traits::BlakeTwo256;
+	use tp_runtime::traits::BlakeTwo256;
 	use super::*;
 
 	fn prune_by_collect(

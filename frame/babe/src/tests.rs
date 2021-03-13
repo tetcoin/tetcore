@@ -25,7 +25,7 @@ use frame_support::{
 };
 use mock::*;
 use pallet_session::ShouldEndSession;
-use sp_consensus_babe::{AllowedSlots, Slot};
+use tp_consensus_babe::{AllowedSlots, Slot};
 use tet_core::crypto::Pair;
 
 const EMPTY_RANDOMNESS: [u8; 32] = [
@@ -102,7 +102,7 @@ fn first_block_epoch_zero_start() {
 		assert_eq!(pre_digest.logs.len(), 1);
 		assert_eq!(header.digest.logs[0], pre_digest.logs[0]);
 
-		let consensus_log = sp_consensus_babe::ConsensusLog::NextEpochData(
+		let consensus_log = tp_consensus_babe::ConsensusLog::NextEpochData(
 			sp_consensus_babe::digests::NextEpochDescriptor {
 				authorities: Babe::authorities(),
 				randomness: Babe::randomness(),
@@ -240,7 +240,7 @@ fn can_enact_next_config() {
 		Babe::on_finalize(9);
 		let header = System::finalize();
 
-		let consensus_log = sp_consensus_babe::ConsensusLog::NextConfigData(
+		let consensus_log = tp_consensus_babe::ConsensusLog::NextConfigData(
 			sp_consensus_babe::digests::NextConfigDescriptor::V1 {
 				c: (1, 4),
 				allowed_slots: AllowedSlots::PrimarySlots,
@@ -505,7 +505,7 @@ fn report_equivocation_invalid_key_owner_proof() {
 
 #[test]
 fn report_equivocation_invalid_equivocation_proof() {
-	use sp_runtime::traits::Header;
+	use tp_runtime::traits::Header;
 
 	let (pairs, mut ext) = new_test_ext_with_pairs(3);
 
@@ -610,7 +610,7 @@ fn report_equivocation_invalid_equivocation_proof() {
 
 #[test]
 fn report_equivocation_validate_unsigned_prevents_duplicates() {
-	use sp_runtime::transaction_validity::{
+	use tp_runtime::transaction_validity::{
 		InvalidTransaction, TransactionLongevity, TransactionPriority, TransactionSource,
 		TransactionValidity, ValidTransaction,
 	};
@@ -646,7 +646,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 
 		// only local/inblock reports are allowed
 		assert_eq!(
-			<Babe as sp_runtime::traits::ValidateUnsigned>::validate_unsigned(
+			<Babe as tp_runtime::traits::ValidateUnsigned>::validate_unsigned(
 				TransactionSource::External,
 				&inner,
 			),
@@ -656,7 +656,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 		// the transaction is valid when passed as local
 		let tx_tag = (offending_authority_pair.public(), CurrentSlot::get());
 		assert_eq!(
-			<Babe as sp_runtime::traits::ValidateUnsigned>::validate_unsigned(
+			<Babe as tp_runtime::traits::ValidateUnsigned>::validate_unsigned(
 				TransactionSource::Local,
 				&inner,
 			),
@@ -670,7 +670,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 		);
 
 		// the pre dispatch checks should also pass
-		assert_ok!(<Babe as sp_runtime::traits::ValidateUnsigned>::pre_dispatch(&inner));
+		assert_ok!(<Babe as tp_runtime::traits::ValidateUnsigned>::pre_dispatch(&inner));
 
 		// we submit the report
 		Babe::report_equivocation_unsigned(Origin::none(), equivocation_proof, key_owner_proof)
@@ -678,7 +678,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 
 		// the report should now be considered stale and the transaction is invalid
 		assert_err!(
-			<Babe as sp_runtime::traits::ValidateUnsigned>::pre_dispatch(&inner),
+			<Babe as tp_runtime::traits::ValidateUnsigned>::pre_dispatch(&inner),
 			InvalidTransaction::Stale,
 		);
 	});

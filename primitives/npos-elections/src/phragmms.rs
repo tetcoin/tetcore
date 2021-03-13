@@ -224,7 +224,7 @@ pub(crate) fn apply_elected<AccountId: IdentifierT>(
 mod tests {
 	use super::*;
 	use crate::{ElectionResult, Assignment};
-	use sp_runtime::{Perbill, Percent};
+	use tp_runtime::{Perbill, Percent};
 	use tetcore_std::rc::Rc;
 
 	#[test]

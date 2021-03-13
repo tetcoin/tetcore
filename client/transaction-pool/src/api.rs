@@ -27,12 +27,12 @@ use futures::{
 use sc_client_api::{
 	blockchain::HeaderBackend, light::{Fetcher, RemoteCallRequest, RemoteBodyRequest}, BlockBackend,
 };
-use sp_runtime::{
+use tp_runtime::{
 	generic::BlockId, traits::{self, Block as BlockT, BlockIdTo, Header as HeaderT, Hash as HashT},
 	transaction_validity::{TransactionValidity, TransactionSource},
 };
-use sp_transaction_pool::runtime_api::TaggedTransactionQueue;
-use sp_api::{ProvideRuntimeApi, ApiExt};
+use tp_transaction_pool::runtime_api::TaggedTransactionQueue;
+use tp_api::{ProvideRuntimeApi, ApiExt};
 use prometheus_endpoint::Registry as PrometheusRegistry;
 
 use crate::{metrics::{ApiMetrics, ApiMetricsExt}, error::{self, Error}};
@@ -310,7 +310,7 @@ impl<Client, F, Block> sc_transaction_graph::ChainApi for
 
 	fn block_body(&self, id: &BlockId<Self::Block>) -> Self::BodyFuture {
 		let header = self.client.header(*id)
-			.and_then(|h| h.ok_or_else(|| sp_blockchain::Error::UnknownBlock(format!("{}", id))));
+			.and_then(|h| h.ok_or_else(|| tp_blockchain::Error::UnknownBlock(format!("{}", id))));
 		let header = match header {
 			Ok(header) => header,
 			Err(err) => {

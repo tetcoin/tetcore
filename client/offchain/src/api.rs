@@ -34,7 +34,7 @@ use tet_core::offchain::{
 	Externalities as OffchainExt, HttpRequestId, Timestamp, HttpRequestStatus, HttpError,
 	OffchainStorage, OpaqueNetworkState, OpaqueMultiaddr, StorageKind,
 };
-pub use sp_offchain::STORAGE_PREFIX;
+pub use tp_offchain::STORAGE_PREFIX;
 pub use http::SharedClient;
 
 #[cfg(not(target_os = "unknown"))]

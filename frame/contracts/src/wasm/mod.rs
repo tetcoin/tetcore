@@ -136,7 +136,7 @@ where
 					)
 				});
 
-		let mut imports = sp_sandbox::EnvironmentDefinitionBuilder::new();
+		let mut imports = tp_sandbox::EnvironmentDefinitionBuilder::new();
 		imports.add_memory(self::prepare::IMPORT_MODULE_MEMORY, "memory", memory.clone());
 		runtime::Env::impls(&mut |name, func_ptr| {
 			imports.add_host_func(self::prepare::IMPORT_MODULE_FN, name, func_ptr);
@@ -152,7 +152,7 @@ where
 
 		// Instantiate the instance from the instrumented module code and invoke the contract
 		// entrypoint.
-		let result = sp_sandbox::Instance::new(&exec.prefab_module.code, &imports, &mut runtime)
+		let result = tp_sandbox::Instance::new(&exec.prefab_module.code, &imports, &mut runtime)
 			.and_then(|mut instance| instance.invoke(exec.entrypoint_name, &[], &mut runtime));
 		runtime.to_execution_result(result)
 	}
@@ -171,7 +171,7 @@ mod tests {
 	use std::collections::HashMap;
 	use tet_core::H256;
 	use hex_literal::hex;
-	use sp_runtime::DispatchError;
+	use tp_runtime::DispatchError;
 	use frame_support::{dispatch::DispatchResult, weights::Weight};
 	use assert_matches::assert_matches;
 	use pallet_contracts_primitives::{ExecReturnValue, ReturnFlags, ExecError, ErrorOrigin};

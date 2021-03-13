@@ -26,16 +26,16 @@ pub use sc_client_api::{
 	ForkBlocks, BadBlocks,
 };
 pub use sc_client_db::{Backend, self};
-pub use sp_consensus;
+pub use tp_consensus;
 pub use sc_executor::{NativeExecutor, WasmExecutionMethod, self};
-pub use sp_keyring::{
+pub use tp_keyring::{
 	AccountKeyring,
 	ed25519::Keyring as Ed25519Keyring,
 	sr25519::Keyring as Sr25519Keyring,
 };
-pub use sp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-pub use sp_runtime::{Storage, StorageChild};
-pub use sp_state_machine::ExecutionStrategy;
+pub use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
+pub use tp_runtime::{Storage, StorageChild};
+pub use tp_state_machine::ExecutionStrategy;
 pub use sc_service::{RpcHandlers, RpcSession, client};
 pub use self::client_ext::{ClientExt, ClientBlockImportExt};
 
@@ -45,7 +45,7 @@ use std::collections::{HashSet, HashMap};
 use futures::{future::{Future, FutureExt}, stream::StreamExt};
 use serde::Deserialize;
 use tet_core::storage::ChildInfo;
-use sp_runtime::{OpaqueExtrinsic, codec::Encode, traits::{Block as BlockT, BlakeTwo256}};
+use tp_runtime::{OpaqueExtrinsic, codec::Encode, traits::{Block as BlockT, BlakeTwo256}};
 use sc_service::client::{LocalCallExecutor, ClientConfig};
 use sc_client_api::BlockchainEvents;
 

@@ -52,7 +52,7 @@ use frame_support::{
 };
 use frame_system::{self as system, ensure_signed};
 use codec::{Encode, Decode};
-use sp_runtime::RuntimeDebug;
+use tp_runtime::RuntimeDebug;
 
 /// Pending atomic swap operation.
 #[derive(Clone, Eq, PartialEq, RuntimeDebug, Encode, Decode)]

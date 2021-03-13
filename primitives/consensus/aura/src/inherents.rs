@@ -17,16 +17,16 @@
 
 /// Contains the inherents for the AURA module
 
-use sp_inherents::{InherentIdentifier, InherentData, Error};
+use tp_inherents::{InherentIdentifier, InherentData, Error};
 
 #[cfg(feature = "std")]
-use sp_inherents::{InherentDataProviders, ProvideInherentData};
+use tp_inherents::{InherentDataProviders, ProvideInherentData};
 
 /// The Aura inherent identifier.
 pub const INHERENT_IDENTIFIER: InherentIdentifier = *b"auraslot";
 
 /// The type of the Aura inherent.
-pub type InherentType = sp_consensus_slots::Slot;
+pub type InherentType = tp_consensus_slots::Slot;
 
 /// Auxiliary trait to extract Aura inherent data.
 pub trait AuraInherentData {
@@ -84,7 +84,7 @@ impl ProvideInherentData for InherentDataProvider {
 		&self,
 		inherent_data: &mut InherentData,
 	) ->Result<(), Error> {
-		use sp_timestamp::TimestampInherentData;
+		use tp_timestamp::TimestampInherentData;
 
 		let timestamp = inherent_data.timestamp_inherent_data()?;
 		let slot = timestamp / self.slot_duration;

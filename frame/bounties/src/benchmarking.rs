@@ -21,7 +21,7 @@
 
 use super::*;
 
-use sp_runtime::traits::Bounded;
+use tp_runtime::traits::Bounded;
 use frame_system::{EventRecord, RawOrigin};
 use frame_benchmarking::{benchmarks, account, whitelisted_caller};
 use frame_support::traits::OnInitialize;
