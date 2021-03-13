@@ -585,7 +585,7 @@ impl<T: Config> Schedule<T> {
 }
 
 impl<'a, T: Config> rules::Rules for ScheduleRules<'a, T> {
-	fn instruction_cost(&self, instruction: &elements::Instruction) -> Option<u32> {
+	fn instruction_cost(&self, instruction: &twasm_utils::Instruction) -> Option<u32> {
 		use tetsy_wasm::elements::Instruction::*;
 		let w = &self.schedule.instruction_weights;
 		let max_params = self.schedule.limits.parameters;
