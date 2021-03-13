@@ -10,7 +10,6 @@ homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
 documentation = "https://docs.rs/tp-allocator"
 description = "Collection of allocator implementations."
-documentation = "https://docs.rs/tp-allocator"
 readme = "README.md"
 
 [package.metadata.docs.rs]
