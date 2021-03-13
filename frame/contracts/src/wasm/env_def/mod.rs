@@ -70,8 +70,8 @@ impl ConvertibleToWasm for u64 {
 pub(crate) type HostFunc<E> =
 	fn(
 		&mut Runtime<E>,
-		&[tp_sandbox:::Value]
-	) -> Result<tp_sandbox:::ReturnValue, tp_sandbox::HostError>;
+		&[tp_sandbox::Value]
+	) -> Result<tp_sandbox::ReturnValue, tp_sandbox::HostError>;
 
 pub(crate) trait FunctionImplProvider<E: Ext> {
 	fn impls<F: FnMut(&[u8], HostFunc<E>)>(f: &mut F);

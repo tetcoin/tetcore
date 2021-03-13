@@ -154,7 +154,7 @@ tet_core::wasm_export_functions! {
 				Value::I32(0x1336),
 			]
 		) {
-			Ok(tp_sandbox:::ReturnValue::Value(Value::I32(0x1337))) => true,
+			Ok(tp_sandbox::ReturnValue::Value(Value::I32(0x1337))) => true,
 			_ => false,
 		};
 
@@ -165,9 +165,9 @@ tet_core::wasm_export_functions! {
 		let env_builder = tp_sandbox::EnvironmentDefinitionBuilder::new();
 		let code = match tp_sandbox::Instance::new(&code, &env_builder, &mut ()) {
 			Ok(_) => 0,
-			Err(tp_sandbox:::Error::Module) => 1,
-			Err(tp_sandbox:::Error::Execution) => 2,
-			Err(tp_sandbox:::Error::OutOfBounds) => 3,
+			Err(tp_sandbox::Error::Module) => 1,
+			Err(tp_sandbox::Error::Execution) => 2,
+			Err(tp_sandbox::Error::OutOfBounds) => 3,
 		};
 
 		code
@@ -183,7 +183,7 @@ tet_core::wasm_export_functions! {
 		};
 
 		match instance.get_global_val("test_global") {
-			Some(tp_sandbox:::Value::I64(val)) => val,
+			Some(tp_sandbox::Value::I64(val)) => val,
 			None => 30,
 			val => 40,
 		}
@@ -363,7 +363,7 @@ tet_core::wasm_export_functions! {
 fn execute_sandboxed(
 	code: &[u8],
 	args: &[Value],
-) -> Result<tp_sandbox:::ReturnValue, tp_sandbox::HostError> {
+) -> Result<tp_sandbox::ReturnValue, tp_sandbox::HostError> {
 	struct State {
 		counter: u32,
 	}
@@ -371,27 +371,27 @@ fn execute_sandboxed(
 	fn env_assert(
 		_e: &mut State,
 		args: &[Value],
-	) -> Result<tp_sandbox:::ReturnValue, tp_sandbox::HostError> {
+	) -> Result<tp_sandbox::ReturnValue, tp_sandbox::HostError> {
 		if args.len() != 1 {
-			return Err(tp_sandbox:::HostError);
+			return Err(tp_sandbox::HostError);
 		}
 		let condition = args[0].as_i32().ok_or_else(|| tp_sandbox::HostError)?;
 		if condition != 0 {
-			Ok(tp_sandbox:::ReturnValue::Unit)
+			Ok(tp_sandbox::ReturnValue::Unit)
 		} else {
-			Err(tp_sandbox:::HostError)
+			Err(tp_sandbox::HostError)
 		}
 	}
 	fn env_inc_counter(
 		e: &mut State,
 		args: &[Value],
-	) -> Result<tp_sandbox:::ReturnValue, tp_sandbox::HostError> {
+	) -> Result<tp_sandbox::ReturnValue, tp_sandbox::HostError> {
 		if args.len() != 1 {
-			return Err(tp_sandbox:::HostError);
+			return Err(tp_sandbox::HostError);
 		}
 		let inc_by = args[0].as_i32().ok_or_else(|| tp_sandbox::HostError)?;
 		e.counter += inc_by as u32;
-		Ok(tp_sandbox:::ReturnValue::Value(Value::I32(e.counter as i32)))
+		Ok(tp_sandbox::ReturnValue::Value(Value::I32(e.counter as i32)))
 	}
 
 	let mut state = State { counter: 0 };
