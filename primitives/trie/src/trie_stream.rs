@@ -18,7 +18,7 @@
 //! `TrieStream` implementation for Tetcore's trie format.
 
 use tetsy_hash_db::Hasher;
-use trie_root;
+use tetsy_trie_root;
 use codec::Encode;
 use tetcore_std::vec::Vec;
 use crate::trie_constants;

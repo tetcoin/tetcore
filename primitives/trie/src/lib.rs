@@ -41,8 +41,8 @@ pub use tetsy_trie_db::{
 	Trie, TrieMut, DBValue, Recorder, CError, Query, TrieLayout, TrieConfiguration, nibble_ops, TrieDBIterator,
 };
 /// Various re-exports from the `memory-db` crate.
-pub use memory_db::KeyFunction;
-pub use memory_db::prefixed_key;
+pub use tetsy_memory_db::KeyFunction;
+pub use tetsy_memory_db::prefixed_key;
 /// Various re-exports from the `tetsy-hash-db` crate.
 pub use tetsy_hash_db::{HashDB as HashDBT, EMPTY_PREFIX};
 
