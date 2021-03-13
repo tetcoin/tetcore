@@ -22,7 +22,7 @@
 use tp_consensus::SelectChain;
 use tp_inherents::{InherentDataProviders};
 use log::warn;
-use sc_client_api::ProvideUncles;
+use tc_client_api::ProvideUncles;
 use tp_runtime::traits::{Block as BlockT, Header};
 use std::sync::Arc;
 use tp_authorship;
@@ -40,9 +40,9 @@ pub fn register_uncles_inherent_data_provider<B, C, SC>(
 	C: ProvideUncles<B> + Send + Sync + 'static,
 	SC: SelectChain<B> + 'static,
 {
-	if !inherent_data_providers.has_provider(&sp_authorship::INHERENT_IDENTIFIER) {
+	if !inherent_data_providers.has_provider(&tp_authorship::INHERENT_IDENTIFIER) {
 		inherent_data_providers
-			.register_provider(sp_authorship::InherentDataProvider::new(move || {
+			.register_provider(tp_authorship::InherentDataProvider::new(move || {
 				{
 					let chain_head = match select_chain.best_chain() {
 						Ok(x) => x,

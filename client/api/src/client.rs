@@ -88,7 +88,7 @@ pub trait BlockBackend<Block: BlockT> {
 	fn block(&self, id: &BlockId<Block>) -> tp_blockchain::Result<Option<SignedBlock<Block>>>;
 
 	/// Get block status.
-	fn block_status(&self, id: &BlockId<Block>) -> tp_blockchain::Result<sp_consensus::BlockStatus>;
+	fn block_status(&self, id: &BlockId<Block>) -> tp_blockchain::Result<tp_consensus::BlockStatus>;
 
 	/// Get block justification set by id.
 	fn justification(&self, id: &BlockId<Block>) -> tp_blockchain::Result<Option<Justification>>;
@@ -242,7 +242,7 @@ pub struct BlockImportNotification<Block: BlockT> {
 	/// Tree route from old best to new best parent.
 	///
 	/// If `None`, there was no re-org while importing.
-	pub tree_route: Option<Arc<sp_blockchain::TreeRoute<Block>>>,
+	pub tree_route: Option<Arc<tp_blockchain::TreeRoute<Block>>>,
 }
 
 /// Summary of a finalized block.

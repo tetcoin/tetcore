@@ -21,7 +21,7 @@
 use std::{sync::Arc, collections::{HashMap, hash_map::Entry}};
 use parking_lot::RwLock;
 
-use sc_client_api::blockchain::{well_known_cache_keys::{self, Id as CacheKeyId}, Cache as BlockchainCache};
+use tc_client_api::blockchain::{well_known_cache_keys::{self, Id as CacheKeyId}, Cache as BlockchainCache};
 use tp_blockchain::{Result as ClientResult, HeaderMetadataCache};
 use tetcore_database::{Database, Transaction};
 use codec::{Encode, Decode};

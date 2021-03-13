@@ -17,11 +17,11 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::params::node_key_params::NodeKeyParams;
-use sc_network::{
+use tc_network::{
 	config::{NetworkConfiguration, NodeKeyConfig, NonReservedPeerMode, SetConfig, TransportConfig},
 	multiaddr::Protocol,
 };
-use sc_service::{ChainSpec, ChainType, config::{Multiaddr, MultiaddrWithPeerId}};
+use tc_service::{ChainSpec, ChainType, config::{Multiaddr, MultiaddrWithPeerId}};
 use std::path::PathBuf;
 use structopt::StructOpt;
 

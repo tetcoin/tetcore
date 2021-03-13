@@ -18,7 +18,7 @@
 
 use serde::{Serialize, Deserialize};
 
-use sc_finality_grandpa::FinalityProofProvider;
+use tc_finality_grandpa::FinalityProofProvider;
 use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 #[derive(Serialize, Deserialize)]
@@ -31,19 +31,19 @@ pub trait RpcFinalityProofProvider<Block: BlockT> {
 	fn rpc_prove_finality(
 		&self,
 		block: NumberFor<Block>,
-	) -> Result<Option<EncodedFinalityProof>, sc_finality_grandpa::FinalityProofError>;
+	) -> Result<Option<EncodedFinalityProof>, tc_finality_grandpa::FinalityProofError>;
 }
 
 impl<B, Block> RpcFinalityProofProvider<Block> for FinalityProofProvider<B, Block>
 where
 	Block: BlockT,
 	NumberFor<Block>: tetsy_finality_grandpa::BlockNumberOps,
-	B: sc_client_api::backend::Backend<Block> + Send + Sync + 'static,
+	B: tc_client_api::backend::Backend<Block> + Send + Sync + 'static,
 {
 	fn rpc_prove_finality(
 		&self,
 		block: NumberFor<Block>,
-	) -> Result<Option<EncodedFinalityProof>, sc_finality_grandpa::FinalityProofError> {
+	) -> Result<Option<EncodedFinalityProof>, tc_finality_grandpa::FinalityProofError> {
 		self.prove_finality(block)
 			.map(|x| x.map(|y| EncodedFinalityProof(y.into())))
 	}

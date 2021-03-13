@@ -85,12 +85,12 @@
 //! We only send polite messages to peers,
 
 use tp_runtime::traits::{NumberFor, Block as BlockT, Zero};
-use sc_network_gossip::{MessageIntent, ValidatorContext};
-use sc_network::{ObservedRole, PeerId, ReputationChange};
+use tc_network_gossip::{MessageIntent, ValidatorContext};
+use tc_network::{ObservedRole, PeerId, ReputationChange};
 use tetsy_scale_codec::{Encode, Decode};
 use tp_finality_grandpa::AuthorityId;
 
-use sc_telemetry::{telemetry, CONSENSUS_DEBUG};
+use tc_telemetry::{telemetry, CONSENSUS_DEBUG};
 use log::{trace, debug};
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 use prometheus_endpoint::{CounterVec, Opts, PrometheusError, register, Registry, U64};
@@ -835,7 +835,7 @@ impl<Block: BlockT> Inner<Block> {
 			return Action::Discard(cost::UNKNOWN_VOTER);
 		}
 
-		if !sp_finality_grandpa::check_message_signature(
+		if !tp_finality_grandpa::check_message_signature(
 			&full.message.message,
 			&full.message.id,
 			&full.message.signature,
@@ -1302,7 +1302,7 @@ impl<Block: BlockT> GossipValidator<Block> {
 			None => None,
 		};
 
-		let (tx, rx) = tracing_unbounded("mpsc_grandpa_gossip_validator");
+		let (tx, rx) = tracing_unbounded("mptc_grandpa_gossip_validator");
 		let val = GossipValidator {
 			inner: parking_lot::RwLock::new(Inner::new(config)),
 			set_state,
@@ -1443,7 +1443,7 @@ impl<Block: BlockT> GossipValidator<Block> {
 	}
 }
 
-impl<Block: BlockT> sc_network_gossip::Validator<Block> for GossipValidator<Block> {
+impl<Block: BlockT> tc_network_gossip::Validator<Block> for GossipValidator<Block> {
 	fn new_peer(&self, context: &mut dyn ValidatorContext<Block>, who: &PeerId, roles: ObservedRole) {
 		let packet = {
 			let mut inner = self.inner.write();
@@ -1469,7 +1469,7 @@ impl<Block: BlockT> sc_network_gossip::Validator<Block> for GossipValidator<Bloc
 	}
 
 	fn validate(&self, context: &mut dyn ValidatorContext<Block>, who: &PeerId, data: &[u8])
-		-> sc_network_gossip::ValidationResult<Block::Hash>
+		-> tc_network_gossip::ValidationResult<Block::Hash>
 	{
 		let (action, broadcast_topics, peer_reply) = self.do_validate(who, data);
 
@@ -1486,15 +1486,15 @@ impl<Block: BlockT> sc_network_gossip::Validator<Block> for GossipValidator<Bloc
 			Action::Keep(topic, cb) => {
 				self.report(who.clone(), cb);
 				context.broadcast_message(topic, data.to_vec(), false);
-				sc_network_gossip::ValidationResult::ProcessAndKeep(topic)
+				tc_network_gossip::ValidationResult::ProcessAndKeep(topic)
 			}
 			Action::ProcessAndDiscard(topic, cb) => {
 				self.report(who.clone(), cb);
-				sc_network_gossip::ValidationResult::ProcessAndDiscard(topic)
+				tc_network_gossip::ValidationResult::ProcessAndDiscard(topic)
 			}
 			Action::Discard(cb) => {
 				self.report(who.clone(), cb);
-				sc_network_gossip::ValidationResult::Discard
+				tc_network_gossip::ValidationResult::Discard
 			}
 		}
 	}
@@ -1622,8 +1622,8 @@ pub(super) struct PeerReport {
 mod tests {
 	use super::*;
 	use super::environment::SharedVoterSetState;
-	use sc_network_gossip::Validator as GossipValidatorT;
-	use sc_network_test::Block;
+	use tc_network_gossip::Validator as GossipValidatorT;
+	use tc_network_test::Block;
 	use tet_core::{crypto::Public, H256};
 
 	// some random config (not really needed)

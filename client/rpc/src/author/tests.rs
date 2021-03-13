@@ -32,7 +32,7 @@ use tetcore_test_runtime_client::{
 	self, AccountKeyring, runtime::{Extrinsic, Transfer, SessionKeys, Block},
 	DefaultTestClientBuilderExt, TestClientBuilderExt, Backend, Client,
 };
-use sc_transaction_pool::{BasicPool, FullChainApi};
+use tc_transaction_pool::{BasicPool, FullChainApi};
 use futures::{executor, compat::Future01CompatExt};
 
 fn uxt(sender: AccountKeyring, nonce: u64) -> Extrinsic {

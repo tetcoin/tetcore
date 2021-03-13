@@ -68,9 +68,9 @@ impl ProvideInherentData for InherentDataProvider {
 		&self,
 		providers: &InherentDataProviders,
 	) ->Result<(), Error> {
-		if !providers.has_provider(&sp_timestamp::INHERENT_IDENTIFIER) {
+		if !providers.has_provider(&tp_timestamp::INHERENT_IDENTIFIER) {
 			// Add the timestamp inherent data provider, as we require it.
-			providers.register_provider(sp_timestamp::InherentDataProvider)
+			providers.register_provider(tp_timestamp::InherentDataProvider)
 		} else {
 			Ok(())
 		}
@@ -94,6 +94,6 @@ impl ProvideInherentData for InherentDataProvider {
 	fn error_to_string(&self, error: &[u8]) -> Option<String> {
 		use codec::Decode;
 
-		sp_inherents::Error::decode(&mut &error[..]).map(|e| e.into_string()).ok()
+		tp_inherents::Error::decode(&mut &error[..]).map(|e| e.into_string()).ok()
 	}
 }

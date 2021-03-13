@@ -31,7 +31,7 @@
 //!
 //! ```rust
 //! use std::collections::HashMap;
-//! use sc_chain_spec::{GenericChainSpec, ChainSpecExtension};
+//! use tc_chain_spec::{GenericChainSpec, ChainSpecExtension};
 //!
 //! #[derive(Clone, Debug, serde::Serialize, serde::Deserialize, ChainSpecExtension)]
 //! pub struct MyExtension {
@@ -49,7 +49,7 @@
 //! block number.
 //!
 //! ```rust
-//! use sc_chain_spec::{Forks, ChainSpecGroup, ChainSpecExtension, GenericChainSpec};
+//! use tc_chain_spec::{Forks, ChainSpecGroup, ChainSpecExtension, GenericChainSpec};
 //!
 //! #[derive(Clone, Debug, serde::Serialize, serde::Deserialize, ChainSpecGroup)]
 //! pub struct ClientParams {
@@ -84,7 +84,7 @@
 //!
 //! ```rust
 //! use serde::{Serialize, Deserialize};
-//! use sc_chain_spec::{Forks, GenericChainSpec, ChainSpecGroup, ChainSpecExtension};
+//! use tc_chain_spec::{Forks, GenericChainSpec, ChainSpecGroup, ChainSpecExtension};
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize, ChainSpecGroup)]
 //! pub struct ClientParams {
@@ -114,13 +114,13 @@ pub use chain_spec::{
 	ChainSpec as GenericChainSpec, NoExtension, LightSyncState, SerializableLightSyncState,
 };
 pub use extension::{Group, Fork, Forks, Extension, GetExtension, get_extension};
-pub use sc_chain_spec_derive::{ChainSpecExtension, ChainSpecGroup};
+pub use tc_chain_spec_derive::{ChainSpecExtension, ChainSpecGroup};
 pub use chain_spec::{Properties, ChainType};
 
 use serde::{Serialize, de::DeserializeOwned};
 use tp_runtime::BuildStorage;
-use sc_network::config::MultiaddrWithPeerId;
-use sc_telemetry::TelemetryEndpoints;
+use tc_network::config::MultiaddrWithPeerId;
+use tc_telemetry::TelemetryEndpoints;
 use tet_core::storage::Storage;
 
 /// A set of traits for the runtime genesis config.

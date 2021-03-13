@@ -20,9 +20,9 @@
 
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 use futures::prelude::*;
-use sc_network::{Event as NetworkEvent, ObservedRole, PeerId};
-use sc_network_test::{Block, Hash};
-use sc_network_gossip::Validator;
+use tc_network::{Event as NetworkEvent, ObservedRole, PeerId};
+use tc_network_test::{Block, Hash};
+use tc_network_gossip::Validator;
 use std::sync::Arc;
 use tp_keyring::Ed25519Keyring;
 use tetsy_scale_codec::Encode;
@@ -37,8 +37,8 @@ use super::{VoterSet, Round, SetId};
 #[derive(Debug)]
 pub(crate) enum Event {
 	EventStream(TracingUnboundedSender<NetworkEvent>),
-	WriteNotification(sc_network::PeerId, Vec<u8>),
-	Report(sc_network::PeerId, sc_network::ReputationChange),
+	WriteNotification(tc_network::PeerId, Vec<u8>),
+	Report(tc_network::PeerId, tc_network::ReputationChange),
 	Announce(Hash),
 }
 
@@ -47,14 +47,14 @@ pub(crate) struct TestNetwork {
 	sender: TracingUnboundedSender<Event>,
 }
 
-impl sc_network_gossip::Network<Block> for TestNetwork {
+impl tc_network_gossip::Network<Block> for TestNetwork {
 	fn event_stream(&self) -> Pin<Box<dyn Stream<Item = NetworkEvent> + Send>> {
 		let (tx, rx) = tracing_unbounded("test");
 		let _ = self.sender.unbounded_send(Event::EventStream(tx));
 		Box::pin(rx)
 	}
 
-	fn report_peer(&self, who: sc_network::PeerId, cost_benefit: sc_network::ReputationChange) {
+	fn report_peer(&self, who: tc_network::PeerId, cost_benefit: tc_network::ReputationChange) {
 		let _ = self.sender.unbounded_send(Event::Report(who, cost_benefit));
 	}
 
@@ -76,19 +76,19 @@ impl sc_network_gossip::Network<Block> for TestNetwork {
 impl super::Network<Block> for TestNetwork {
 	fn set_sync_fork_request(
 		&self,
-		_peers: Vec<sc_network::PeerId>,
+		_peers: Vec<tc_network::PeerId>,
 		_hash: Hash,
 		_number: NumberFor<Block>,
 	) {}
 }
 
-impl sc_network_gossip::ValidatorContext<Block> for TestNetwork {
+impl tc_network_gossip::ValidatorContext<Block> for TestNetwork {
 	fn broadcast_topic(&mut self, _: Hash, _: bool) { }
 
 	fn broadcast_message(&mut self, _: Hash, _: Vec<u8>, _: bool) {	}
 
-	fn send_message(&mut self, who: &sc_network::PeerId, data: Vec<u8>) {
-		<Self as sc_network_gossip::Network<Block>>::write_notification(
+	fn send_message(&mut self, who: &tc_network::PeerId, data: Vec<u8>) {
+		<Self as tc_network_gossip::Network<Block>>::write_notification(
 			self,
 			who.clone(),
 			GRANDPA_PROTOCOL_NAME.into(),
@@ -96,7 +96,7 @@ impl sc_network_gossip::ValidatorContext<Block> for TestNetwork {
 		);
 	}
 
-	fn send_topic(&mut self, _: &sc_network::PeerId, _: Hash, _: bool) { }
+	fn send_topic(&mut self, _: &tc_network::PeerId, _: Hash, _: bool) { }
 }
 
 pub(crate) struct Tester {
@@ -210,11 +210,11 @@ fn make_ids(keys: &[Ed25519Keyring]) -> AuthorityList {
 
 struct NoopContext;
 
-impl sc_network_gossip::ValidatorContext<Block> for NoopContext {
+impl tc_network_gossip::ValidatorContext<Block> for NoopContext {
 	fn broadcast_topic(&mut self, _: Hash, _: bool) { }
 	fn broadcast_message(&mut self, _: Hash, _: Vec<u8>, _: bool) { }
-	fn send_message(&mut self, _: &sc_network::PeerId, _: Vec<u8>) { }
-	fn send_topic(&mut self, _: &sc_network::PeerId, _: Hash, _: bool) { }
+	fn send_message(&mut self, _: &tc_network::PeerId, _: Vec<u8>) { }
+	fn send_topic(&mut self, _: &tc_network::PeerId, _: Hash, _: bool) { }
 }
 
 #[test]
@@ -259,7 +259,7 @@ fn good_commit_leads_to_relay() {
 		message: commit,
 	}).encode();
 
-	let id = sc_network::PeerId::random();
+	let id = tc_network::PeerId::random();
 	let global_topic = super::global_topic::<Block>(set_id);
 
 	let test = make_test_network().0
@@ -302,7 +302,7 @@ fn good_commit_leads_to_relay() {
 					});
 
 					// Add a random peer which will be the recipient of this message
-					let receiver_id = sc_network::PeerId::random();
+					let receiver_id = tc_network::PeerId::random();
 					let _ = sender.unbounded_send(NetworkEvent::NotificationStreamOpened {
 						remote: receiver_id.clone(),
 						protocol: GRANDPA_PROTOCOL_NAME.into(),
@@ -407,7 +407,7 @@ fn bad_commit_leads_to_report() {
 		message: commit,
 	}).encode();
 
-	let id = sc_network::PeerId::random();
+	let id = tc_network::PeerId::random();
 	let global_topic = super::global_topic::<Block>(set_id);
 
 	let test = make_test_network().0
@@ -485,7 +485,7 @@ fn bad_commit_leads_to_report() {
 
 #[test]
 fn peer_with_higher_view_leads_to_catch_up_request() {
-	let id = sc_network::PeerId::random();
+	let id = tc_network::PeerId::random();
 
 	let (tester, mut net) = make_test_network();
 	let test = tester
@@ -508,7 +508,7 @@ fn peer_with_higher_view_leads_to_catch_up_request() {
 
 			// neighbor packets are always discard
 			match result {
-				sc_network_gossip::ValidationResult::Discard => {},
+				tc_network_gossip::ValidationResult::Discard => {},
 				_ => panic!("wrong expected outcome from neighbor validation"),
 			}
 

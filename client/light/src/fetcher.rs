@@ -37,7 +37,7 @@ use tp_state_machine::{
 pub use tp_state_machine::StorageProof;
 use tp_blockchain::{Error as ClientError, Result as ClientResult};
 
-pub use sc_client_api::{
+pub use tc_client_api::{
 	light::{
 		RemoteCallRequest, RemoteHeaderRequest, RemoteReadRequest, RemoteReadChildRequest,
 		RemoteChangesRequest, ChangesProof, RemoteBodyRequest, Fetcher, FetchChecker,
@@ -316,7 +316,7 @@ impl<'a, H, Number, Hash> ChangesTrieRootsStorage<H, Number> for RootsStorage<'a
 	fn build_anchor(
 		&self,
 		_hash: H::Out,
-	) -> Result<sp_state_machine::ChangesTrieAnchorBlockId<H::Out, Number>, String> {
+	) -> Result<tp_state_machine::ChangesTrieAnchorBlockId<H::Out, Number>, String> {
 		Err("build_anchor is only called when building block".into())
 	}
 

@@ -475,7 +475,7 @@ impl NetworkBehaviour for RequestResponsesBehaviour {
 			}
 
 			// Poll request-responses protocols.
-			for (protocol, (behaviour, resp_builder)) in &mut self.protocols {
+			for (protocol, (behaviour, retp_builder)) in &mut self.protocols {
 				while let Poll::Ready(ev) = behaviour.poll(cx, params) {
 					let ev = match ev {
 						// Main events we are interested in.
@@ -527,11 +527,11 @@ impl NetworkBehaviour for RequestResponsesBehaviour {
 
 							// Submit the request to the "response builder" passed by the user at
 							// initialization.
-							if let Some(resp_builder) = resp_builder {
+							if let Some(retp_builder) = retp_builder {
 								// If the response builder is too busy, silently drop `tx`. This
 								// will be reported by the corresponding `RequestResponse` through
 								// an `InboundFailure::Omission` event.
-								let _ = resp_builder.try_send(IncomingRequest {
+								let _ = retp_builder.try_send(IncomingRequest {
 									peer: peer.clone(),
 									payload: request,
 									pending_response: tx,

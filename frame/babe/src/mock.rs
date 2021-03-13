@@ -299,14 +299,14 @@ pub fn make_primary_pre_digest(
 	vrf_proof: VRFProof,
 ) -> Digest {
 	let digest_data = tp_consensus_babe::digests::PreDigest::Primary(
-		sp_consensus_babe::digests::PrimaryPreDigest {
+		tp_consensus_babe::digests::PrimaryPreDigest {
 			authority_index,
 			slot,
 			vrf_output,
 			vrf_proof,
 		}
 	);
-	let log = DigestItem::PreRuntime(sp_consensus_babe::BABE_ENGINE_ID, digest_data.encode());
+	let log = DigestItem::PreRuntime(tp_consensus_babe::BABE_ENGINE_ID, digest_data.encode());
 	Digest { logs: vec![log] }
 }
 
@@ -315,12 +315,12 @@ pub fn make_secondary_plain_pre_digest(
 	slot: tp_consensus_babe::Slot,
 ) -> Digest {
 	let digest_data = tp_consensus_babe::digests::PreDigest::SecondaryPlain(
-		sp_consensus_babe::digests::SecondaryPlainPreDigest {
+		tp_consensus_babe::digests::SecondaryPlainPreDigest {
 			authority_index,
 			slot,
 		}
 	);
-	let log = DigestItem::PreRuntime(sp_consensus_babe::BABE_ENGINE_ID, digest_data.encode());
+	let log = DigestItem::PreRuntime(tp_consensus_babe::BABE_ENGINE_ID, digest_data.encode());
 	Digest { logs: vec![log] }
 }
 
@@ -331,26 +331,26 @@ pub fn make_secondary_vrf_pre_digest(
 	vrf_proof: VRFProof,
 ) -> Digest {
 	let digest_data = tp_consensus_babe::digests::PreDigest::SecondaryVRF(
-		sp_consensus_babe::digests::SecondaryVRFPreDigest {
+		tp_consensus_babe::digests::SecondaryVRFPreDigest {
 			authority_index,
 			slot,
 			vrf_output,
 			vrf_proof,
 		}
 	);
-	let log = DigestItem::PreRuntime(sp_consensus_babe::BABE_ENGINE_ID, digest_data.encode());
+	let log = DigestItem::PreRuntime(tp_consensus_babe::BABE_ENGINE_ID, digest_data.encode());
 	Digest { logs: vec![log] }
 }
 
 pub fn make_vrf_output(
 	slot: Slot,
-	pair: &sp_consensus_babe::AuthorityPair
+	pair: &tp_consensus_babe::AuthorityPair
 ) -> (VRFOutput, VRFProof, [u8; 32]) {
 	let pair = tet_core::sr25519::Pair::from_ref(pair).as_ref();
 	let transcript = tp_consensus_babe::make_transcript(&Babe::randomness(), slot, 0);
 	let vrf_inout = pair.vrf_sign(transcript);
 	let vrf_randomness: tp_consensus_vrf::schnorrkel::Randomness = vrf_inout.0
-		.make_bytes::<[u8; 32]>(&sp_consensus_babe::BABE_VRF_INOUT_CONTEXT);
+		.make_bytes::<[u8; 32]>(&tp_consensus_babe::BABE_VRF_INOUT_CONTEXT);
 	let vrf_output = VRFOutput(vrf_inout.0.to_output());
 	let vrf_proof = VRFProof(vrf_inout.1);
 
@@ -471,7 +471,7 @@ pub fn generate_equivocation_proof(
 	// restore previous runtime state
 	go_to_block(current_block, *current_slot);
 
-	sp_consensus_babe::EquivocationProof {
+	tp_consensus_babe::EquivocationProof {
 		slot,
 		offender: offender_authority_pair.public(),
 		first_header: h1,

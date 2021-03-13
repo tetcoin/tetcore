@@ -19,7 +19,7 @@
 use tet_core::offchain::{OffchainStorage, storage::InMemOffchainStorage};
 use std::sync::Arc;
 
-type TestBackend = sc_client_api::in_mem::Backend<tetcore_test_runtime::Block>;
+type TestBackend = tc_client_api::in_mem::Backend<tetcore_test_runtime::Block>;
 
 #[test]
 fn test_leaves_with_complex_block_tree() {

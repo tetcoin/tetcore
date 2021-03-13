@@ -8,6 +8,6 @@ mod cli;
 mod command;
 mod rpc;
 
-fn main() -> sc_cli::Result<()> {
+fn main() -> tc_cli::Result<()> {
 	command::run()
 }

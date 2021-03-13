@@ -58,14 +58,14 @@ use tetsy_libp2p::{
 };
 use nohash_hasher::IntMap;
 use prost::Message;
-use sc_client_api::{
+use tc_client_api::{
 	StorageProof,
 	light::{
 		self, RemoteReadRequest, RemoteBodyRequest, ChangesProof,
 		RemoteCallRequest, RemoteChangesRequest, RemoteHeaderRequest,
 	}
 };
-use sc_peerset::ReputationChange;
+use tc_peerset::ReputationChange;
 use tet_core::{
 	storage::{ChildInfo, ChildType,StorageKey, PrefixedStorageKey},
 	hexdisplay::HexDisplay,
@@ -304,7 +304,7 @@ pub struct LightClientHandler<B: Block> {
 	/// (Local) Request ID counter
 	next_request_id: RequestId,
 	/// Handle to use for reporting misbehaviour of peers.
-	peerset: sc_peerset::PeersetHandle,
+	peerset: tc_peerset::PeersetHandle,
 }
 
 impl<B> LightClientHandler<B>
@@ -316,7 +316,7 @@ where
 		cfg: Config,
 		chain: Arc<dyn Client<B>>,
 		checker: Arc<dyn light::FetchChecker<B>>,
-		peerset: sc_peerset::PeersetHandle,
+		peerset: tc_peerset::PeersetHandle,
 	) -> Self {
 		LightClientHandler {
 			config: cfg,
@@ -629,7 +629,7 @@ where
 		let prefixed_key = PrefixedStorageKey::new_ref(&request.storage_key);
 		let child_info = match ChildType::from_prefixed_key(prefixed_key) {
 			Some((ChildType::ParentKeyId, storage_key)) => Ok(ChildInfo::new_default(storage_key)),
-			None => Err(sp_blockchain::Error::InvalidChildStorageKey),
+			None => Err(tp_blockchain::Error::InvalidChildStorageKey),
 		};
 		let proof = match child_info.and_then(|child_info| self.chain.read_child_proof(
 			&BlockId::Hash(block),
@@ -1328,7 +1328,7 @@ mod tests {
 		swarm::{NetworkBehaviour, NetworkBehaviourAction, PollParameters},
 		remux
 	};
-	use sc_client_api::{StorageProof, RemoteReadChildRequest, FetchChecker};
+	use tc_client_api::{StorageProof, RemoteReadChildRequest, FetchChecker};
 	use tp_blockchain::{Error as ClientError};
 	use tet_core::storage::ChildInfo;
 	use std::{
@@ -1351,7 +1351,7 @@ mod tests {
 		StorageProof::empty().encode()
 	}
 
-	fn make_swarm(ok: bool, ps: sc_peerset::PeersetHandle, cf: super::Config) -> Swarm {
+	fn make_swarm(ok: bool, ps: tc_peerset::PeersetHandle, cf: super::Config) -> Swarm {
 		let client = Arc::new(tetcore_test_runtime_client::new());
 		let checker = Arc::new(DummyFetchChecker { ok, _mark: std::marker::PhantomData });
 		let id_key = identity::Keypair::generate_ed25519();
@@ -1454,7 +1454,7 @@ mod tests {
 	}
 
 	fn dummy_header() -> tp_test_primitives::Header {
-		sp_test_primitives::Header {
+		tp_test_primitives::Header {
 			parent_hash: Default::default(),
 			number: 0,
 			state_root: Default::default(),
@@ -1487,20 +1487,20 @@ mod tests {
 		}
 	}
 
-	fn peerset() -> (sc_peerset::Peerset, sc_peerset::PeersetHandle) {
-		let cfg = sc_peerset::SetConfig {
+	fn peerset() -> (tc_peerset::Peerset, tc_peerset::PeersetHandle) {
+		let cfg = tc_peerset::SetConfig {
 			in_peers: 128,
 			out_peers: 128,
 			bootnodes: Default::default(),
 			reserved_only: false,
 			reserved_nodes: Default::default(),
 		};
-		sc_peerset::Peerset::from_config(sc_peerset::PeersetConfig{ sets: vec![cfg] })
+		tc_peerset::Peerset::from_config(tc_peerset::PeersetConfig{ sets: vec![cfg] })
 	}
 
 	fn make_behaviour
 		( ok: bool
-		, ps: sc_peerset::PeersetHandle
+		, ps: tc_peerset::PeersetHandle
 		, cf: super::Config
 		) -> LightClientHandler<Block>
 	{

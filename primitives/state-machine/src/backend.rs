@@ -350,7 +350,7 @@ impl Consolidate for Vec<(
 
 impl<H: Hasher, KF: tp_trie::KeyFunction<H>> Consolidate for tp_trie::GenericMemoryDB<H, KF> {
 	fn consolidate(&mut self, other: Self) {
-		sp_trie::GenericMemoryDB::consolidate(self, other)
+		tp_trie::GenericMemoryDB::consolidate(self, other)
 	}
 }
 

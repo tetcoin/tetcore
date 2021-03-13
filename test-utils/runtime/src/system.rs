@@ -352,7 +352,7 @@ mod tests {
 	use tetcore_test_runtime_client::{AccountKeyring, Sr25519Keyring};
 	use crate::{Header, Transfer, wasm_binary_unwrap};
 	use tet_core::{NeverNativeValue, map, traits::{CodeExecutor, RuntimeCode}};
-	use sc_executor::{NativeExecutor, WasmExecutionMethod, native_executor_instance};
+	use tc_executor::{NativeExecutor, WasmExecutionMethod, native_executor_instance};
 	use tet_io::hashing::twox_128;
 
 	// Declare an instance of the native executor dispatch for the test runtime.

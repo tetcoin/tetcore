@@ -41,10 +41,10 @@ pub fn upgrade_db<Block: BlockT>(db_path: &Path, db_type: DatabaseType) -> tp_bl
 	if !is_empty {
 		let db_version = current_version(db_path)?;
 		match db_version {
-			0 => Err(sp_blockchain::Error::Backend(format!("Unsupported database version: {}", db_version)))?,
+			0 => Err(tp_blockchain::Error::Backend(format!("Unsupported database version: {}", db_version)))?,
 			1 => migrate_1_to_2::<Block>(db_path, db_type)?,
 			CURRENT_VERSION => (),
-			_ => Err(sp_blockchain::Error::Backend(format!("Future database version: {}", db_version)))?,
+			_ => Err(tp_blockchain::Error::Backend(format!("Future database version: {}", db_version)))?,
 		}
 	}
 
@@ -80,7 +80,7 @@ fn current_version(path: &Path) -> tp_blockchain::Result<u32> {
 
 /// Maps database error to client error
 fn db_err(err: std::io::Error) -> tp_blockchain::Error {
-	sp_blockchain::Error::Backend(format!("{}", err))
+	tp_blockchain::Error::Backend(format!("{}", err))
 }
 
 /// Writes current database version to the file.
@@ -101,7 +101,7 @@ fn version_file_path(path: &Path) -> PathBuf {
 
 #[cfg(test)]
 mod tests {
-	use sc_state_db::PruningMode;
+	use tc_state_db::PruningMode;
 	use crate::{DatabaseSettings, DatabaseSettingsSrc, KeepBlocks, TransactionStorageMode};
 	use crate::tests::Block;
 	use super::*;

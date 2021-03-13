@@ -22,8 +22,8 @@ use ansi_term::Colour;
 use futures::prelude::*;
 use log::{info, trace, warn};
 use tetsy_util_mem::MallocSizeOf;
-use sc_client_api::{BlockchainEvents, UsageProvider};
-use sc_network::NetworkStatus;
+use tc_client_api::{BlockchainEvents, UsageProvider};
+use tc_network::NetworkStatus;
 use tp_blockchain::HeaderMetadata;
 use tp_runtime::traits::{Block as BlockT, Header};
 use tp_transaction_pool::TransactionPool;
@@ -77,7 +77,7 @@ where
 	let mut display = display::InformantDisplay::new(format.clone());
 
 	let client_1 = client.clone();
-	let (network_status_sink, network_status_stream) = tracing_unbounded("mpsc_network_status");
+	let (network_status_sink, network_status_stream) = tracing_unbounded("mptc_network_status");
 	network_status_sinks.push(Duration::from_millis(5000), network_status_sink);
 
 	let display_notifications = network_status_stream

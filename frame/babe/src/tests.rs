@@ -103,7 +103,7 @@ fn first_block_epoch_zero_start() {
 		assert_eq!(header.digest.logs[0], pre_digest.logs[0]);
 
 		let consensus_log = tp_consensus_babe::ConsensusLog::NextEpochData(
-			sp_consensus_babe::digests::NextEpochDescriptor {
+			tp_consensus_babe::digests::NextEpochDescriptor {
 				authorities: Babe::authorities(),
 				randomness: Babe::randomness(),
 			}
@@ -241,7 +241,7 @@ fn can_enact_next_config() {
 		let header = System::finalize();
 
 		let consensus_log = tp_consensus_babe::ConsensusLog::NextConfigData(
-			sp_consensus_babe::digests::NextConfigDescriptor::V1 {
+			tp_consensus_babe::digests::NextConfigDescriptor::V1 {
 				c: (1, 4),
 				allowed_slots: AllowedSlots::PrimarySlots,
 			}
@@ -328,7 +328,7 @@ fn report_equivocation_current_session_works() {
 
 		// create the key ownership proof
 		let key = (
-			sp_consensus_babe::KEY_TYPE,
+			tp_consensus_babe::KEY_TYPE,
 			&offending_authority_pair.public(),
 		);
 		let key_owner_proof = Historical::prove(key).unwrap();
@@ -402,7 +402,7 @@ fn report_equivocation_old_session_works() {
 
 		// create the key ownership proof
 		let key = (
-			sp_consensus_babe::KEY_TYPE,
+			tp_consensus_babe::KEY_TYPE,
 			&offending_authority_pair.public(),
 		);
 		let key_owner_proof = Historical::prove(key).unwrap();
@@ -468,7 +468,7 @@ fn report_equivocation_invalid_key_owner_proof() {
 
 		// create the key ownership proof
 		let key = (
-			sp_consensus_babe::KEY_TYPE,
+			tp_consensus_babe::KEY_TYPE,
 			&offending_authority_pair.public(),
 		);
 		let mut key_owner_proof = Historical::prove(key).unwrap();
@@ -487,7 +487,7 @@ fn report_equivocation_invalid_key_owner_proof() {
 
 		// it should fail as well if we create a key owner proof
 		// for a different authority than the offender
-		let key = (sp_consensus_babe::KEY_TYPE, &authorities[1].0);
+		let key = (tp_consensus_babe::KEY_TYPE, &authorities[1].0);
 		let key_owner_proof = Historical::prove(key).unwrap();
 
 		// we need to progress to a new era to make sure that the key
@@ -523,7 +523,7 @@ fn report_equivocation_invalid_equivocation_proof() {
 
 		// create the key ownership proof
 		let key = (
-			sp_consensus_babe::KEY_TYPE,
+			tp_consensus_babe::KEY_TYPE,
 			&offending_authority_pair.public(),
 		);
 		let key_owner_proof = Historical::prove(key).unwrap();
@@ -636,7 +636,7 @@ fn report_equivocation_validate_unsigned_prevents_duplicates() {
 		);
 
 		let key = (
-			sp_consensus_babe::KEY_TYPE,
+			tp_consensus_babe::KEY_TYPE,
 			&offending_authority_pair.public(),
 		);
 		let key_owner_proof = Historical::prove(key).unwrap();
@@ -722,7 +722,7 @@ fn valid_equivocation_reports_dont_pay_fees() {
 
 		// create the key ownership proof.
 		let key_owner_proof = Historical::prove((
-			sp_consensus_babe::KEY_TYPE,
+			tp_consensus_babe::KEY_TYPE,
 			&offending_authority_pair.public(),
 		))
 		.unwrap();

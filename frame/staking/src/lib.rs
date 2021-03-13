@@ -788,7 +788,7 @@ pub trait Config: frame_system::Config + SendTransactionTypes<Call<Self>> {
 
 	/// Convert a balance into a number used for election calculation. This must fit into a `u64`
 	/// but is allowed to be sensibly lossy. The `u64` is used to communicate with the
-	/// [`sp_npos_elections`] crate which accepts u64 numbers and does operations in 128.
+	/// [`tp_npos_elections`] crate which accepts u64 numbers and does operations in 128.
 	/// Consequently, the backward convert is used convert the u128s from tp-elections back to a
 	/// [`BalanceOf`].
 	type CurrencyToVote: CurrencyToVote<BalanceOf<Self>>;
@@ -3041,7 +3041,7 @@ impl<T: Config> Module<T> {
 		}
 	}
 
-	/// Consume a set of [`Supports`] from [`sp_npos_elections`] and collect them into a [`Exposure`]
+	/// Consume a set of [`Supports`] from [`tp_npos_elections`] and collect them into a [`Exposure`]
 	fn collect_exposure(
 		supports: SupportMap<T::AccountId>,
 	) -> Vec<(T::AccountId, Exposure<T::AccountId, BalanceOf<T>>)> {

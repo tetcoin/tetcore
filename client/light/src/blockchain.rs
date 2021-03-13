@@ -27,7 +27,7 @@ use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor, Zero};
 use tp_blockchain::{
 	HeaderMetadata, CachedHeaderMetadata, Error as ClientError, Result as ClientResult,
 };
-pub use sc_client_api::{
+pub use tc_client_api::{
 	backend::{
 		AuxStore, NewBlockState, ProvideChtRoots,
 	},

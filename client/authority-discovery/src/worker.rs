@@ -35,8 +35,8 @@ use log::{debug, error, log_enabled};
 use prometheus_endpoint::{Counter, CounterVec, Gauge, Opts, U64, register};
 use prost::Message;
 use rand::{seq::SliceRandom, thread_rng};
-use sc_client_api::blockchain::HeaderBackend;
-use sc_network::{
+use tc_client_api::blockchain::HeaderBackend;
+use tc_network::{
 	DhtEvent,
 	ExHashT,
 	Multiaddr,
@@ -562,7 +562,7 @@ where
 
 /// NetworkProvider provides [`Worker`] with all necessary hooks into the
 /// underlying Tetcore networking. Using this trait abstraction instead of
-/// [`sc_network::NetworkService`] directly is necessary to unit test [`Worker`].
+/// [`tc_network::NetworkService`] directly is necessary to unit test [`Worker`].
 #[async_trait]
 pub trait NetworkProvider: NetworkStateInfo {
 	/// Start putting a value in the Dht.
@@ -573,7 +573,7 @@ pub trait NetworkProvider: NetworkStateInfo {
 }
 
 #[async_trait::async_trait]
-impl<B, H> NetworkProvider for sc_network::NetworkService<B, H>
+impl<B, H> NetworkProvider for tc_network::NetworkService<B, H>
 where
 	B: BlockT + 'static,
 	H: ExHashT,

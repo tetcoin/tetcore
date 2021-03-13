@@ -20,6 +20,6 @@
 
 #![warn(missing_docs)]
 
-fn main() -> sc_cli::Result<()> {
+fn main() -> tc_cli::Result<()> {
 	node_cli::run()
 }

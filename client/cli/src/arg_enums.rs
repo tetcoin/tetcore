@@ -43,14 +43,14 @@ impl WasmExecutionMethod {
 	}
 }
 
-impl Into<sc_service::config::WasmExecutionMethod> for WasmExecutionMethod {
-	fn into(self) -> sc_service::config::WasmExecutionMethod {
+impl Into<tc_service::config::WasmExecutionMethod> for WasmExecutionMethod {
+	fn into(self) -> tc_service::config::WasmExecutionMethod {
 		match self {
 			WasmExecutionMethod::Interpreted => {
-				sc_service::config::WasmExecutionMethod::Interpreted
+				tc_service::config::WasmExecutionMethod::Interpreted
 			}
 			#[cfg(feature = "wasmtime")]
-			WasmExecutionMethod::Compiled => sc_service::config::WasmExecutionMethod::Compiled,
+			WasmExecutionMethod::Compiled => tc_service::config::WasmExecutionMethod::Compiled,
 			#[cfg(not(feature = "wasmtime"))]
 			WasmExecutionMethod::Compiled => panic!(
 				"Tetcore must be compiled with \"wasmtime\" feature for compiled Wasm execution"
@@ -68,11 +68,11 @@ arg_enum! {
 	}
 }
 
-impl Into<sc_tracing::TracingReceiver> for TracingReceiver {
-	fn into(self) -> sc_tracing::TracingReceiver {
+impl Into<tc_tracing::TracingReceiver> for TracingReceiver {
+	fn into(self) -> tc_tracing::TracingReceiver {
 		match self {
-			TracingReceiver::Log => sc_tracing::TracingReceiver::Log,
-			TracingReceiver::Telemetry => sc_tracing::TracingReceiver::Telemetry,
+			TracingReceiver::Log => tc_tracing::TracingReceiver::Log,
+			TracingReceiver::Telemetry => tc_tracing::TracingReceiver::Telemetry,
 		}
 	}
 }
@@ -117,13 +117,13 @@ arg_enum! {
 	}
 }
 
-impl Into<sc_client_api::ExecutionStrategy> for ExecutionStrategy {
-	fn into(self) -> sc_client_api::ExecutionStrategy {
+impl Into<tc_client_api::ExecutionStrategy> for ExecutionStrategy {
+	fn into(self) -> tc_client_api::ExecutionStrategy {
 		match self {
-			ExecutionStrategy::Native => sc_client_api::ExecutionStrategy::NativeWhenPossible,
-			ExecutionStrategy::Wasm => sc_client_api::ExecutionStrategy::AlwaysWasm,
-			ExecutionStrategy::Both => sc_client_api::ExecutionStrategy::Both,
-			ExecutionStrategy::NativeElseWasm => sc_client_api::ExecutionStrategy::NativeElseWasm,
+			ExecutionStrategy::Native => tc_client_api::ExecutionStrategy::NativeWhenPossible,
+			ExecutionStrategy::Wasm => tc_client_api::ExecutionStrategy::AlwaysWasm,
+			ExecutionStrategy::Both => tc_client_api::ExecutionStrategy::Both,
+			ExecutionStrategy::NativeElseWasm => tc_client_api::ExecutionStrategy::NativeElseWasm,
 		}
 	}
 }
@@ -155,12 +155,12 @@ arg_enum! {
 	}
 }
 
-impl Into<sc_service::config::RpcMethods> for RpcMethods {
-	fn into(self) -> sc_service::config::RpcMethods {
+impl Into<tc_service::config::RpcMethods> for RpcMethods {
+	fn into(self) -> tc_service::config::RpcMethods {
 		match self {
-			RpcMethods::Auto => sc_service::config::RpcMethods::Auto,
-			RpcMethods::Safe => sc_service::config::RpcMethods::Safe,
-			RpcMethods::Unsafe => sc_service::config::RpcMethods::Unsafe,
+			RpcMethods::Auto => tc_service::config::RpcMethods::Auto,
+			RpcMethods::Safe => tc_service::config::RpcMethods::Safe,
+			RpcMethods::Unsafe => tc_service::config::RpcMethods::Unsafe,
 		}
 	}
 }

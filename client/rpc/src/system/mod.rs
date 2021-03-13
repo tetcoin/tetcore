@@ -23,14 +23,14 @@ mod tests;
 
 use futures::{future::BoxFuture, FutureExt, TryFutureExt};
 use futures::{channel::oneshot, compat::Compat};
-use sc_rpc_api::{DenyUnsafe, Receiver};
-use sc_tracing::logging;
+use tc_rpc_api::{DenyUnsafe, Receiver};
+use tc_tracing::logging;
 use tetcore_utils::mpsc::TracingUnboundedSender;
 use tp_runtime::traits::{self, Header as HeaderT};
 
 use self::error::Result;
 
-pub use sc_rpc_api::system::*;
+pub use tc_rpc_api::system::*;
 pub use self::helpers::{SystemInfo, Health, PeerInfo, NodeRole, SyncState};
 pub use self::gen_client::Client as SystemClient;
 

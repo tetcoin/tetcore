@@ -20,11 +20,11 @@ use super::*;
 use assert_matches::assert_matches;
 use tetcore_test_runtime_client::{
 	prelude::*,
-	sp_consensus::BlockOrigin,
+	tp_consensus::BlockOrigin,
 	runtime::{H256, Block, Header},
 };
 use tp_rpc::list::ListOrValue;
-use sc_block_builder::BlockBuilderProvider;
+use tc_block_builder::BlockBuilderProvider;
 use futures::{executor, compat::{Future01CompatExt, Stream01CompatExt}};
 use crate::testing::TaskExecutor;
 

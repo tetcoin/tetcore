@@ -37,7 +37,7 @@ pub enum Error {
 	Client(Box<dyn std::error::Error + Send>),
 	/// Transaction pool error,
 	#[display(fmt="Transaction pool error: {}", _0)]
-	Pool(sp_transaction_pool::error::Error),
+	Pool(tp_transaction_pool::error::Error),
 	/// Verification error
 	#[display(fmt="Extrinsic verification error: {}", _0)]
 	#[from(ignore)]

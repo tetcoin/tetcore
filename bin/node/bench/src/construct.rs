@@ -146,7 +146,7 @@ impl core::Benchmark for ConstructionBenchmark {
 			std::thread::park_timeout(std::time::Duration::from_secs(3));
 		}
 
-		let mut proposer_factory = sc_basic_authorship::ProposerFactory::new(
+		let mut proposer_factory = tc_basic_authorship::ProposerFactory::new(
 			context.spawn_handle.clone(),
 			context.client.clone(),
 			self.transactions.clone().into(),
@@ -154,7 +154,7 @@ impl core::Benchmark for ConstructionBenchmark {
 		);
 		let inherent_data_providers = tp_inherents::InherentDataProviders::new();
 		inherent_data_providers
-			.register_provider(sp_timestamp::InherentDataProvider)
+			.register_provider(tp_timestamp::InherentDataProvider)
 			.expect("Failed to register timestamp data provider");
 
 		let start = std::time::Instant::now();

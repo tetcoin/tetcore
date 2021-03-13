@@ -28,8 +28,8 @@ use tp_consensus::{
 use tp_blockchain::HeaderBackend;
 use tp_inherents::InherentDataProviders;
 use tp_runtime::{traits::Block as BlockT, Justification};
-use sc_client_api::backend::{Backend as ClientBackend, Finalizer};
-use sc_transaction_pool::txpool;
+use tc_client_api::backend::{Backend as ClientBackend, Finalizer};
+use tc_transaction_pool::txpool;
 use std::{sync::Arc, marker::PhantomData};
 use prometheus_endpoint::Registry;
 
@@ -270,14 +270,14 @@ mod tests {
 		AccountKeyring::*,
 		TestClientBuilder,
 	};
-	use sc_transaction_pool::{BasicPool, RevalidationType, txpool::Options};
+	use tc_transaction_pool::{BasicPool, RevalidationType, txpool::Options};
 	use tetcore_test_runtime_transaction_pool::{TestApi, uxt};
 	use tp_transaction_pool::{TransactionPool, MaintainedTransactionPool, TransactionSource};
 	use tp_runtime::generic::BlockId;
 	use tp_consensus::ImportedAux;
 	use tp_inherents::InherentDataProviders;
-	use sc_basic_authorship::ProposerFactory;
-	use sc_client_api::BlockBackend;
+	use tc_basic_authorship::ProposerFactory;
+	use tc_client_api::BlockBackend;
 
 	fn api() -> Arc<TestApi> {
 		Arc::new(TestApi::empty())
@@ -500,7 +500,7 @@ mod tests {
 		assert!(pool.submit_one(&BlockId::Number(1), SOURCE, uxt(Alice, 1)).await.is_ok());
 
 		let header = client.header(&BlockId::Number(1)).expect("db error").expect("imported above");
-		pool.maintain(sp_transaction_pool::ChainEvent::NewBestBlock {
+		pool.maintain(tp_transaction_pool::ChainEvent::NewBestBlock {
 			hash: header.hash(),
 			tree_route: None,
 		}).await;

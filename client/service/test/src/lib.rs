@@ -29,7 +29,7 @@ use futures::{FutureExt as _, TryFutureExt as _};
 use tempfile::TempDir;
 use tokio::{runtime::Runtime, prelude::FutureExt};
 use tokio::timer::Interval;
-use sc_service::{
+use tc_service::{
 	TaskManager,
 	SpawnTaskHandle,
 	GenericChainSpec,
@@ -44,11 +44,11 @@ use sc_service::{
 	client::Client,
 };
 use tp_blockchain::HeaderBackend;
-use sc_network::{multiaddr, Multiaddr};
-use sc_network::config::{NetworkConfiguration, TransportConfig};
+use tc_network::{multiaddr, Multiaddr};
+use tc_network::config::{NetworkConfiguration, TransportConfig};
 use tp_runtime::{generic::BlockId, traits::Block as BlockT};
 use tp_transaction_pool::TransactionPool;
-use sc_client_api::{Backend, CallExecutor};
+use tc_client_api::{Backend, CallExecutor};
 use parking_lot::Mutex;
 
 #[cfg(test)]
@@ -67,7 +67,7 @@ struct TestNet<G, E, F, L, U> {
 	nodes: usize,
 }
 
-pub trait TestNetNode: Clone + Future<Item = (), Error = sc_service::Error> + Send + 'static {
+pub trait TestNetNode: Clone + Future<Item = (), Error = tc_service::Error> + Send + 'static {
 	type Block: BlockT;
 	type Backend: Backend<Self::Block>;
 	type Executor: CallExecutor<Self::Block> + Send + Sync;
@@ -76,7 +76,7 @@ pub trait TestNetNode: Clone + Future<Item = (), Error = sc_service::Error> + Se
 
 	fn client(&self) -> Arc<Client<Self::Backend, Self::Executor, Self::Block, Self::RuntimeApi>>;
 	fn transaction_pool(&self) -> Arc<Self::TransactionPool>;
-	fn network(&self) -> Arc<sc_network::NetworkService<Self::Block, <Self::Block as BlockT>::Hash>>;
+	fn network(&self) -> Arc<tc_network::NetworkService<Self::Block, <Self::Block as BlockT>::Hash>>;
 	fn spawn_handle(&self) -> SpawnTaskHandle;
 }
 
@@ -84,7 +84,7 @@ pub struct TestNetComponents<TBl: BlockT, TBackend, TExec, TRtApi, TExPool> {
 	task_manager: Arc<Mutex<TaskManager>>,
 	client: Arc<Client<TBackend, TExec, TBl, TRtApi>>,
 	transaction_pool: Arc<TExPool>,
-	network: Arc<sc_network::NetworkService<TBl, <TBl as BlockT>::Hash>>,
+	network: Arc<tc_network::NetworkService<TBl, <TBl as BlockT>::Hash>>,
 }
 
 impl<TBl: BlockT, TBackend, TExec, TRtApi, TExPool>
@@ -92,7 +92,7 @@ TestNetComponents<TBl, TBackend, TExec, TRtApi, TExPool> {
 	pub fn new(
 		task_manager: TaskManager,
 		client: Arc<Client<TBackend, TExec, TBl, TRtApi>>,
-		network: Arc<sc_network::NetworkService<TBl, <TBl as BlockT>::Hash>>,
+		network: Arc<tc_network::NetworkService<TBl, <TBl as BlockT>::Hash>>,
 		transaction_pool: Arc<TExPool>,
 	) -> Self {
 		Self {
@@ -119,7 +119,7 @@ impl<TBl: BlockT, TBackend, TExec, TRtApi, TExPool> Future for
 	TestNetComponents<TBl, TBackend, TExec, TRtApi, TExPool>
 {
 	type Item = ();
-	type Error = sc_service::Error;
+	type Error = tc_service::Error;
 
 	fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
 		futures::compat::Compat::new(&mut self.task_manager.lock().future()).poll()
@@ -130,7 +130,7 @@ impl<TBl, TBackend, TExec, TRtApi, TExPool> TestNetNode for
 TestNetComponents<TBl, TBackend, TExec, TRtApi, TExPool>
 	where
 		TBl: BlockT,
-		TBackend: sc_client_api::Backend<TBl> + Send + Sync + 'static,
+		TBackend: tc_client_api::Backend<TBl> + Send + Sync + 'static,
 		TExec: CallExecutor<TBl> + Send + Sync + 'static,
 		TRtApi: Send + Sync + 'static,
 		TExPool: TransactionPool<Block = TBl> + Send + Sync + 'static,
@@ -147,7 +147,7 @@ TestNetComponents<TBl, TBackend, TExec, TRtApi, TExPool>
 	fn transaction_pool(&self) -> Arc<Self::TransactionPool> {
 		self.transaction_pool.clone()
 	}
-	fn network(&self) -> Arc<sc_network::NetworkService<Self::Block, <Self::Block as BlockT>::Hash>> {
+	fn network(&self) -> Arc<tc_network::NetworkService<Self::Block, <Self::Block as BlockT>::Hash>> {
 		self.network.clone()
 	}
 	fn spawn_handle(&self) -> SpawnTaskHandle {
@@ -255,7 +255,7 @@ fn node_config<G: RuntimeGenesis + 'static, E: ChainSpecExtension + Clone + 'sta
 		keep_blocks: KeepBlocks::All,
 		transaction_storage: TransactionStorageMode::BlockBody,
 		chain_spec: Box::new((*spec).clone()),
-		wasm_method: sc_service::config::WasmExecutionMethod::Interpreted,
+		wasm_method: tc_service::config::WasmExecutionMethod::Interpreted,
 		wasm_runtime_overrides: Default::default(),
 		execution_strategies: Default::default(),
 		rpc_http: None,

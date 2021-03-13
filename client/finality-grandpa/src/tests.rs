@@ -21,16 +21,16 @@
 use super::*;
 use assert_matches::assert_matches;
 use environment::HasVoted;
-use sc_network_test::{
+use tc_network_test::{
 	Block, BlockImportAdapter, Hash, PassThroughVerifier, Peer, PeersClient, PeersFullClient,
 	TestClient, TestNetFactory, FullPeerConfig,
 };
-use sc_network::config::ProtocolConfig;
+use tc_network::config::ProtocolConfig;
 use parking_lot::{RwLock, Mutex};
 use futures_timer::Delay;
 use tokio::runtime::{Runtime, Handle};
 use tp_keyring::Ed25519Keyring;
-use sc_client_api::backend::TransactionFor;
+use tc_client_api::backend::TransactionFor;
 use tp_blockchain::Result;
 use tp_api::{ApiRef, ProvideRuntimeApi};
 use tetcore_test_runtime_client::runtime::BlockNumber;
@@ -46,9 +46,9 @@ use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use tp_finality_grandpa::{GRANDPA_ENGINE_ID, AuthorityList, EquivocationProof, GrandpaApi, OpaqueKeyOwnershipProof};
 
 use authorities::AuthoritySet;
-use sc_block_builder::BlockBuilderProvider;
-use sc_consensus::LongestChain;
-use sc_keystore::LocalKeystore;
+use tc_block_builder::BlockBuilderProvider;
+use tc_consensus::LongestChain;
+use tc_keystore::LocalKeystore;
 use tet_application_crypto::key_types::GRANDPA;
 
 type TestLinkHalf =
@@ -172,7 +172,7 @@ impl ProvideRuntimeApi<Block> for TestApi {
 	}
 }
 
-sp_api::mock_impl_runtime_apis! {
+tp_api::mock_impl_runtime_apis! {
 	impl GrandpaApi<Block> for RuntimeApi {
 		type Error = tp_blockchain::Error;
 
@@ -332,7 +332,7 @@ fn run_to_completion(
 fn add_scheduled_change(block: &mut Block, change: ScheduledChange<BlockNumber>) {
 	block.header.digest_mut().push(DigestItem::Consensus(
 		GRANDPA_ENGINE_ID,
-		sp_finality_grandpa::ConsensusLog::ScheduledChange(change).encode(),
+		tp_finality_grandpa::ConsensusLog::ScheduledChange(change).encode(),
 	));
 }
 
@@ -343,7 +343,7 @@ fn add_forced_change(
 ) {
 	block.header.digest_mut().push(DigestItem::Consensus(
 		GRANDPA_ENGINE_ID,
-		sp_finality_grandpa::ConsensusLog::ForcedChange(median_last_finalized, change).encode(),
+		tp_finality_grandpa::ConsensusLog::ForcedChange(median_last_finalized, change).encode(),
 	));
 }
 

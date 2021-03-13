@@ -19,12 +19,12 @@ use std::sync::Arc;
 use crate::BenchmarkCmd;
 use codec::{Decode, Encode};
 use frame_benchmarking::{Analysis, BenchmarkBatch, BenchmarkSelector};
-use sc_cli::{SharedParams, CliConfiguration, ExecutionStrategy, Result};
-use sc_client_db::BenchmarkingState;
-use sc_executor::NativeExecutor;
+use tc_cli::{SharedParams, CliConfiguration, ExecutionStrategy, Result};
+use tc_client_db::BenchmarkingState;
+use tc_executor::NativeExecutor;
 use tp_state_machine::StateMachine;
 use externalities::Extensions;
-use sc_service::{Configuration, NativeExecutionDispatch};
+use tc_service::{Configuration, NativeExecutionDispatch};
 use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 use tet_core::offchain::{OffchainExt, testing::TestOffchainExt};
 use tp_keystore::{
@@ -92,7 +92,7 @@ impl BenchmarkCmd {
 				self.extra,
 			).encode(),
 			extensions,
-			&sp_state_machine::backend::BackendRuntimeCode::new(&state).runtime_code()?,
+			&tp_state_machine::backend::BackendRuntimeCode::new(&state).runtime_code()?,
 			tet_core::testing::TaskExecutor::new(),
 		)
 		.execute(strategy.into())

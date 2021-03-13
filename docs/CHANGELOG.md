@@ -347,7 +347,7 @@ Client
 * Make transactions and block announces use notifications substre… (#5360)
 * Adds state_queryStorageAt (#5362)
 * Offchain Phragmén BREAKING. (#4517)
-* `sc_rpc::system::SystemInfo.impl_version` now returns the full version (2.0.0-alpha.2-b950f731c-x86_64-linux-gnu) instead of the short version (1.0.0) (#5271)
+* `tc_rpc::system::SystemInfo.impl_version` now returns the full version (2.0.0-alpha.2-b950f731c-x86_64-linux-gnu) instead of the short version (1.0.0) (#5271)
 
 API
 ---
@@ -383,12 +383,12 @@ Client
 ------
 
 * client/finality-grandpa: Add Prometheus metrics to GossipValidator (#5237)
-* removes use of sc_client::Client from node-transaction-factory (#5158)
-* removes use of sc_client::Client from sc_network (#5147)
+* removes use of tc_client::Client from node-transaction-factory (#5158)
+* removes use of tc_client::Client from tc_network (#5147)
 * Use CLI to configure max instances cache (#5177)
 * client/service/src/builder.rs: Add build_info metric (#5192)
 * Remove tetcore-ui.tetcoin.org from CORS whitelist (#5142)
-* removes use of sc_client::Client from tc-rpc (#5063)
+* removes use of tc_client::Client from tc-rpc (#5063)
 * Use 128mb for db cache default (#5134)
 * Drop db-cache default from 1gig to 32mb (#5128)
 * Add more metrics to prometheus (#5034)

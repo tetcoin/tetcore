@@ -18,8 +18,8 @@
 
 use super::*;
 
-use sc_network::{self, PeerId};
-use sc_network::config::Role;
+use tc_network::{self, PeerId};
+use tc_network::config::Role;
 use tetcore_test_runtime_client::runtime::Block;
 use assert_matches::assert_matches;
 use futures::prelude::*;
@@ -83,7 +83,7 @@ fn api<T: Into<Option<Status>>>(sync: T) -> System<Block> {
 					let _ = sender.send(peers);
 				}
 				Request::NetworkState(sender) => {
-					let _ = sender.send(serde_json::to_value(&sc_network::network_state::NetworkState {
+					let _ = sender.send(serde_json::to_value(&tc_network::network_state::NetworkState {
 						peer_id: String::new(),
 						listened_addresses: Default::default(),
 						external_addresses: Default::default(),
@@ -93,7 +93,7 @@ fn api<T: Into<Option<Status>>>(sync: T) -> System<Block> {
 					}).unwrap());
 				},
 				Request::NetworkAddReservedPeer(peer, sender) => {
-					let _ = match sc_network::config::parse_str_addr(&peer) {
+					let _ = match tc_network::config::parse_str_addr(&peer) {
 						Ok(_) => sender.send(Ok(())),
 						Err(s) => sender.send(Err(error::Error::MalformattedPeerArg(s.to_string()))),
 					};
@@ -128,7 +128,7 @@ fn api<T: Into<Option<Status>>>(sync: T) -> System<Block> {
 			chain_type: Default::default(),
 		},
 		tx,
-		sc_rpc_api::DenyUnsafe::No
+		tc_rpc_api::DenyUnsafe::No
 	)
 }
 
@@ -281,8 +281,8 @@ fn system_network_state() {
 	let res = runtime.block_on(req).unwrap();
 
 	assert_eq!(
-		serde_json::from_value::<sc_network::network_state::NetworkState>(res).unwrap(),
-		sc_network::network_state::NetworkState {
+		serde_json::from_value::<tc_network::network_state::NetworkState>(res).unwrap(),
+		tc_network::network_state::NetworkState {
 			peer_id: String::new(),
 			listened_addresses: Default::default(),
 			external_addresses: Default::default(),
@@ -344,7 +344,7 @@ fn test_add_reset_log_filter() {
 
 	// Enter log generation / filter reload
 	if std::env::var("TEST_LOG_FILTER").is_ok() {
-		sc_tracing::logging::LoggerBuilder::new("test_before_add=debug").init().unwrap();
+		tc_tracing::logging::LoggerBuilder::new("test_before_add=debug").init().unwrap();
 		for line in std::io::stdin().lock().lines() {
 			let line = line.expect("Failed to read bytes");
 			if line.contains("add_reload") {

@@ -24,7 +24,7 @@ use log::debug;
 use std::{pin::Pin, task::{Context, Poll}, time::Duration};
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 
-use sc_network::PeerId;
+use tc_network::PeerId;
 use tp_runtime::traits::{NumberFor, Block as BlockT};
 use super::gossip::{NeighborPacket, GossipMessage};
 
@@ -41,7 +41,7 @@ impl<B: BlockT> NeighborPacketSender<B> {
 	/// Send a neighbor packet for the background worker to gossip to peers.
 	pub fn send(
 		&self,
-		who: Vec<sc_network::PeerId>,
+		who: Vec<tc_network::PeerId>,
 		neighbor_packet: NeighborPacket<NumberFor<B>>,
 	) {
 		if let Err(err) = self.0.unbounded_send((who, neighbor_packet)) {
@@ -65,7 +65,7 @@ impl<B: BlockT> Unpin for NeighborPacketWorker<B> {}
 impl<B: BlockT> NeighborPacketWorker<B> {
 	pub(super) fn new() -> (Self, NeighborPacketSender<B>){
 		let (tx, rx) = tracing_unbounded::<(Vec<PeerId>, NeighborPacket<NumberFor<B>>)>
-			("mpsc_grandpa_neighbor_packet_worker");
+			("mptc_grandpa_neighbor_packet_worker");
 		let delay = Delay::new(REBROADCAST_AFTER);
 
 		(NeighborPacketWorker {

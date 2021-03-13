@@ -49,7 +49,7 @@ use tp_consensus::{
 		Verifier, BasicQueue, DefaultImportQueue, BoxJustificationImport,
 	},
 };
-use sc_client_api::{backend::AuxStore, BlockOf};
+use tc_client_api::{backend::AuxStore, BlockOf};
 use tp_blockchain::{
 	self, Result as CResult, well_known_cache_keys::{self, Id as CacheKeyId},
 	ProvideCache, HeaderBackend,
@@ -66,9 +66,9 @@ use tp_inherents::{InherentDataProviders, InherentData};
 use tp_timestamp::{
 	TimestampInherentData, InherentType as TimestampInherent, InherentError as TIError
 };
-use sc_telemetry::{telemetry, CONSENSUS_TRACE, CONSENSUS_DEBUG, CONSENSUS_INFO};
+use tc_telemetry::{telemetry, CONSENSUS_TRACE, CONSENSUS_DEBUG, CONSENSUS_INFO};
 
-use sc_consensus_slots::{
+use tc_consensus_slots::{
 	CheckedHeader, SlotInfo, SlotCompatible, StorageChanges, check_equivocation,
 	BackoffAuthoringBlocksStrategy,
 };
@@ -91,7 +91,7 @@ mod digests;
 type AuthorityId<P> = <P as Pair>::Public;
 
 /// Slot duration type for Aura.
-pub type SlotDuration = sc_consensus_slots::SlotDuration<u64>;
+pub type SlotDuration = tc_consensus_slots::SlotDuration<u64>;
 
 /// Get type of `SlotDuration` for Aura.
 pub fn slot_duration<A, B, C>(client: &C) -> CResult<SlotDuration> where
@@ -131,7 +131,7 @@ impl SlotCompatible for AuraSlotCompatible {
 		data.timestamp_inherent_data()
 			.and_then(|t| data.aura_inherent_data().map(|a| (t, a)))
 			.map_err(Into::into)
-			.map_err(sp_consensus::Error::InherentData)
+			.map_err(tp_consensus::Error::InherentData)
 			.map(|(x, y)| (x, y, Default::default()))
 	}
 }
@@ -160,7 +160,7 @@ pub fn start_aura<B, C, SC, E, I, P, SO, CAW, BS, Error>(
 	P::Public: AppPublic + Hash + Member + Encode + Decode,
 	P::Signature: TryFrom<Vec<u8>> + Hash + Member + Encode + Decode,
 	I: BlockImport<B, Transaction = tp_api::TransactionFor<C, B>> + Send + Sync + 'static,
-	Error: std::error::Error + Send + From<sp_consensus::Error> + 'static,
+	Error: std::error::Error + Send + From<tp_consensus::Error> + 'static,
 	SO: SyncOracle + Send + Sync + Clone,
 	CAW: CanAuthorWith<B> + Send,
 	BS: BackoffAuthoringBlocksStrategy<NumberFor<B>> + Send + 'static,
@@ -179,7 +179,7 @@ pub fn start_aura<B, C, SC, E, I, P, SO, CAW, BS, Error>(
 		&inherent_data_providers,
 		slot_duration.slot_duration()
 	)?;
-	Ok(sc_consensus_slots::start_slot_worker::<_, _, _, _, _, AuraSlotCompatible, _>(
+	Ok(tc_consensus_slots::start_slot_worker::<_, _, _, _, _, AuraSlotCompatible, _>(
 		slot_duration,
 		select_chain,
 		worker,
@@ -201,7 +201,7 @@ struct AuraWorker<C, E, I, P, SO, BS> {
 	_key_type: PhantomData<P>,
 }
 
-impl<B, C, E, I, P, Error, SO, BS> sc_consensus_slots::SimpleSlotWorker<B>
+impl<B, C, E, I, P, Error, SO, BS> tc_consensus_slots::SimpleSlotWorker<B>
 	for AuraWorker<C, E, I, P, SO, BS>
 where
 	B: BlockT,
@@ -215,7 +215,7 @@ where
 	P::Signature: TryFrom<Vec<u8>> + Member + Encode + Decode + Hash + Debug,
 	SO: SyncOracle + Send + Clone,
 	BS: BackoffAuthoringBlocksStrategy<NumberFor<B>> + Send + 'static,
-	Error: std::error::Error + Send + From<sp_consensus::Error> + 'static,
+	Error: std::error::Error + Send + From<tp_consensus::Error> + 'static,
 {
 	type BlockImport = I;
 	type SyncOracle = SO;
@@ -279,12 +279,12 @@ where
 		B::Header,
 		&B::Hash,
 		Vec<B::Extrinsic>,
-		StorageChanges<sp_api::TransactionFor<C, B>, B>,
+		StorageChanges<tp_api::TransactionFor<C, B>, B>,
 		Self::Claim,
 		Self::EpochData,
 	) -> Result<
-		sp_consensus::BlockImportParams<B, tp_api::TransactionFor<C, B>>,
-		sp_consensus::Error> + Send + 'static>
+		tp_consensus::BlockImportParams<B, tp_api::TransactionFor<C, B>>,
+		tp_consensus::Error> + Send + 'static>
 	{
 		let keystore = self.keystore.clone();
 		Box::new(move |header, header_hash, body, storage_changes, public, _epoch| {
@@ -342,7 +342,7 @@ where
 
 	fn proposer(&mut self, block: &B::Header) -> Self::CreateProposer {
 		Box::pin(self.env.init(block).map_err(|e| {
-			sp_consensus::Error::ClientImport(format!("{:?}", e)).into()
+			tp_consensus::Error::ClientImport(format!("{:?}", e)).into()
 		}))
 	}
 
@@ -359,7 +359,7 @@ where
 		};
 
 		if let Some(slot_lenience) =
-			sc_consensus_slots::slot_lenience_exponential(parent_slot, slot_info)
+			tc_consensus_slots::slot_lenience_exponential(parent_slot, slot_info)
 		{
 			debug!(
 				target: "aura",
@@ -396,7 +396,7 @@ enum Error<B: BlockT> {
 	BadSignature(B::Hash),
 	#[display(fmt = "Rejecting block too far in future")]
 	TooFarInFuture,
-	Client(sp_blockchain::Error),
+	Client(tp_blockchain::Error),
 	DataProvider(String),
 	Runtime(String),
 	#[display(fmt = "Slot number must increase: parent slot: {}, this slot: {}", _0, _1)]
@@ -446,7 +446,7 @@ fn check_header<C, B: BlockT, P: Pair>(
 ) -> Result<CheckedHeader<B::Header, (Slot, DigestItemFor<B>)>, Error<B>> where
 	DigestItemFor<B>: CompatibleDigestItem<P>,
 	P::Signature: Decode,
-	C: sc_client_api::backend::AuxStore,
+	C: tc_client_api::backend::AuxStore,
 	P::Public: Encode + Decode + PartialEq + Clone,
 {
 	let seal = match header.digest_mut().pop() {
@@ -575,7 +575,7 @@ impl<B: BlockT, C, P, CAW> Verifier<B> for AuraVerifier<C, P, CAW> where
 	C: ProvideRuntimeApi<B> +
 		Send +
 		Sync +
-		sc_client_api::backend::AuxStore +
+		tc_client_api::backend::AuxStore +
 		ProvideCache<B> +
 		BlockOf,
 	C::Api: BlockBuilderApi<B> + AuraApi<B, AuthorityId<P>> + ApiExt<B, Error = tp_blockchain::Error>,
@@ -692,7 +692,7 @@ fn initialize_authorities_cache<A, B, C>(client: &C) -> Result<(), ConsensusErro
 	};
 
 	// check if we already have initialized the cache
-	let map_err = |error| tp_consensus::Error::from(sp_consensus::Error::ClientImport(
+	let map_err = |error| tp_consensus::Error::from(tp_consensus::Error::ClientImport(
 		format!(
 			"Error initializing authorities cache: {}",
 			error,
@@ -741,7 +741,7 @@ fn register_aura_inherent_data_provider(
 		inherent_data_providers
 			.register_provider(InherentDataProvider::new(slot_duration))
 			.map_err(Into::into)
-			.map_err(sp_consensus::Error::InherentData)
+			.map_err(tp_consensus::Error::InherentData)
 	} else {
 		Ok(())
 	}
@@ -875,19 +875,19 @@ pub fn import_queue<B, I, C, P, S, CAW>(
 mod tests {
 	use super::*;
 	use tp_consensus::{NoNetwork as DummyOracle, Proposal, RecordProof, AlwaysCanAuthor};
-	use sc_network_test::{Block as TestBlock, *};
+	use tc_network_test::{Block as TestBlock, *};
 	use tp_runtime::traits::{Block as BlockT, DigestFor};
-	use sc_network::config::ProtocolConfig;
+	use tc_network::config::ProtocolConfig;
 	use parking_lot::Mutex;
 	use tp_keyring::sr25519::Keyring;
-	use sc_client_api::BlockchainEvents;
+	use tc_client_api::BlockchainEvents;
 	use tp_consensus_aura::sr25519::AuthorityPair;
-	use sc_consensus_slots::{SimpleSlotWorker, BackoffAuthoringOnFinalizedHeadLagging};
+	use tc_consensus_slots::{SimpleSlotWorker, BackoffAuthoringOnFinalizedHeadLagging};
 	use std::task::Poll;
-	use sc_block_builder::BlockBuilderProvider;
+	use tc_block_builder::BlockBuilderProvider;
 	use tp_runtime::traits::Header as _;
 	use tetcore_test_runtime_client::{TestClient, runtime::{Header, H256}};
-	use sc_keystore::LocalKeystore;
+	use tc_keystore::LocalKeystore;
 	use tet_application_crypto::key_types::AURA;
 
 	type Error = tp_blockchain::Error;
@@ -909,7 +909,7 @@ mod tests {
 
 	impl Proposer<TestBlock> for DummyProposer {
 		type Error = Error;
-		type Transaction = sc_client_api::TransactionFor<
+		type Transaction = tc_client_api::TransactionFor<
 			tetcore_test_runtime_client::Backend,
 			TestBlock
 		>;
@@ -1042,7 +1042,7 @@ mod tests {
 				false,
 				Some(BackoffAuthoringOnFinalizedHeadLagging::default()),
 				keystore,
-				sp_consensus::AlwaysCanAuthor,
+				tp_consensus::AlwaysCanAuthor,
 			).expect("Starts aura"));
 		}
 

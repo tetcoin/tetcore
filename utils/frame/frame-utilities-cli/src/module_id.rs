@@ -17,7 +17,7 @@
 
 //! Implementation of the `moduleid` subcommand
 
-use sc_cli::{
+use tc_cli::{
 	Error, utils::print_from_uri, CryptoSchemeFlag,
 	OutputTypeFlag, KeystoreParams, with_crypto_scheme,
 };

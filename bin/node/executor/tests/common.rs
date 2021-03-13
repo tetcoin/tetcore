@@ -31,8 +31,8 @@ use tp_runtime::{
 	MultiSignature,
 	traits::{Header as HeaderT, BlakeTwo256},
 };
-use sc_executor::{NativeExecutor, WasmExecutionMethod};
-use sc_executor::error::Result;
+use tc_executor::{NativeExecutor, WasmExecutionMethod};
+use tc_executor::error::Result;
 
 use node_executor::Executor;
 use node_runtime::{

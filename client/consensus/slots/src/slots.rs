@@ -111,7 +111,7 @@ impl<SC: SlotCompatible> Stream for Slots<SC> {
 
 			let inherent_data = match self.inherent_data_providers.create_inherent_data() {
 				Ok(id) => id,
-				Err(err) => return Poll::Ready(Some(Err(sp_consensus::Error::InherentData(err)))),
+				Err(err) => return Poll::Ready(Some(Err(tp_consensus::Error::InherentData(err)))),
 			};
 			let result = self.timestamp_extractor.extract_timestamp_and_slot(&inherent_data);
 			let (timestamp, slot, offset) = match result {

@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use sc_service::config::BasePath;
+use tc_service::config::BasePath;
 use std::path::PathBuf;
 use structopt::StructOpt;
 use crate::arg_enums::TracingReceiver;
@@ -114,7 +114,7 @@ impl SharedParams {
 	}
 
 	/// Receiver to process tracing messages.
-	pub fn tracing_receiver(&self) -> sc_service::TracingReceiver {
+	pub fn tracing_receiver(&self) -> tc_service::TracingReceiver {
 		self.tracing_receiver.clone().into()
 	}
 

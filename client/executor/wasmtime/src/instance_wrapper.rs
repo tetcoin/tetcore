@@ -23,7 +23,7 @@ use crate::util;
 use crate::imports::Imports;
 
 use std::{slice, marker};
-use sc_executor_common::{
+use tc_executor_common::{
 	error::{Error, Result},
 	util::{WasmModuleInfo, DataSegmentsSnapshot},
 	wasm_runtime::InvokeMethod,

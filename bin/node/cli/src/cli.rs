@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use sc_cli::{RunCmd, KeySubcommand, SignCmd, VanityCmd, VerifyCmd};
+use tc_cli::{RunCmd, KeySubcommand, SignCmd, VanityCmd, VerifyCmd};
 use structopt::StructOpt;
 
 /// An overarching CLI command definition.
@@ -57,23 +57,23 @@ pub enum Subcommand {
 	Sign(SignCmd),
 
 	/// Build a chain specification.
-	BuildSpec(sc_cli::BuildSpecCmd),
+	BuildSpec(tc_cli::BuildSpecCmd),
 
 	/// Validate blocks.
-	CheckBlock(sc_cli::CheckBlockCmd),
+	CheckBlock(tc_cli::CheckBlockCmd),
 
 	/// Export blocks.
-	ExportBlocks(sc_cli::ExportBlocksCmd),
+	ExportBlocks(tc_cli::ExportBlocksCmd),
 
 	/// Export the state of a given block into a chain spec.
-	ExportState(sc_cli::ExportStateCmd),
+	ExportState(tc_cli::ExportStateCmd),
 
 	/// Import blocks.
-	ImportBlocks(sc_cli::ImportBlocksCmd),
+	ImportBlocks(tc_cli::ImportBlocksCmd),
 
 	/// Remove the whole chain.
-	PurgeChain(sc_cli::PurgeChainCmd),
+	PurgeChain(tc_cli::PurgeChainCmd),
 
 	/// Revert the chain to a previous state.
-	Revert(sc_cli::RevertCmd),
+	Revert(tc_cli::RevertCmd),
 }

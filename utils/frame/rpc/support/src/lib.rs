@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Combines [sc_rpc_api::state::StateClient] with [frame_support::storage::generator] traits
+//! Combines [tc_rpc_api::state::StateClient] with [frame_support::storage::generator] traits
 //! to provide strongly typed chain state queries over rpc.
 
 #![warn(missing_docs)]
@@ -29,7 +29,7 @@ use frame_support::storage::generator::{
 	StorageDoubleMap, StorageMap, StorageValue
 };
 use tetcore_storage::{StorageData, StorageKey};
-use sc_rpc_api::state::StateClient;
+use tc_rpc_api::state::StateClient;
 
 /// A typed query on chain state usable from an RPC client.
 ///
@@ -41,7 +41,7 @@ use sc_rpc_api::state::StateClient;
 /// # use frame_support::{decl_storage, decl_module};
 /// # use tetcore_frame_rpc_support::StorageQuery;
 /// # use frame_system::Config;
-/// # use sc_rpc_api::state::StateClient;
+/// # use tc_rpc_api::state::StateClient;
 /// #
 /// # // Hash would normally be <TestRuntime as frame_system::Config>::Hash, but we don't have
 /// # // frame_system::Config implemented for TestRuntime. Here we just pretend.

@@ -255,7 +255,7 @@ pub enum ChainEvent<B: BlockT> {
 		/// Tree route from old best to new best parent that was calculated on import.
 		///
 		/// If `None`, no re-org happened on import.
-		tree_route: Option<Arc<sp_blockchain::TreeRoute<B>>>,
+		tree_route: Option<Arc<tp_blockchain::TreeRoute<B>>>,
 	},
 	/// An existing block has been finalized.
 	Finalized {

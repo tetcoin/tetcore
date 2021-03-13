@@ -340,7 +340,7 @@ pub struct AccountData<Balance> {
 	pub reserved: Balance,
 	/// The amount that `free` may not drop below when withdrawing for *anything except transaction
 	/// fee payment*.
-	pub misc_frozen: Balance,
+	pub mitc_frozen: Balance,
 	/// The amount that `free` may not drop below when withdrawing specifically for transaction
 	/// fee payment.
 	pub fee_frozen: Balance,
@@ -355,8 +355,8 @@ impl<Balance: Saturating + Copy + Ord> AccountData<Balance> {
 	/// `reasons`.
 	fn frozen(&self, reasons: Reasons) -> Balance {
 		match reasons {
-			Reasons::All => self.misc_frozen.max(self.fee_frozen),
-			Reasons::Misc => self.misc_frozen,
+			Reasons::All => self.mitc_frozen.max(self.fee_frozen),
+			Reasons::Misc => self.mitc_frozen,
 			Reasons::Fee => self.fee_frozen,
 		}
 	}
@@ -677,11 +677,11 @@ impl<T: Config<I>, I: Instance> Module<T, I> {
 		}
 		// No way this can fail since we do not alter the existential balances.
 		let _ = Self::mutate_account(who, |b| {
-			b.misc_frozen = Zero::zero();
+			b.mitc_frozen = Zero::zero();
 			b.fee_frozen = Zero::zero();
 			for l in locks.iter() {
 				if l.reasons == Reasons::All || l.reasons == Reasons::Misc {
-					b.misc_frozen = b.misc_frozen.max(l.amount);
+					b.mitc_frozen = b.mitc_frozen.max(l.amount);
 				}
 				if l.reasons == Reasons::All || l.reasons == Reasons::Fee {
 					b.fee_frozen = b.fee_frozen.max(l.amount);

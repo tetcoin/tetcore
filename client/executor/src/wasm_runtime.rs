@@ -28,7 +28,7 @@ use codec::Decode;
 use tet_core::traits::{Externalities, RuntimeCode, FetchRuntimeCode};
 use tp_version::RuntimeVersion;
 use std::panic::AssertUnwindSafe;
-use sc_executor_common::wasm_runtime::{WasmModule, WasmInstance};
+use tc_executor_common::wasm_runtime::{WasmModule, WasmInstance};
 
 use tetcore_wasm_interface::Function;
 
@@ -274,7 +274,7 @@ pub fn create_wasm_runtime_with_code(
 ) -> Result<Arc<dyn WasmModule>, WasmError> {
 	match wasm_method {
 		WasmExecutionMethod::Interpreted =>
-			sc_executor_twasmi::create_runtime(
+			tc_executor_twasmi::create_runtime(
 				code,
 				heap_pages,
 				host_functions,
@@ -282,7 +282,7 @@ pub fn create_wasm_runtime_with_code(
 			).map(|runtime| -> Arc<dyn WasmModule> { Arc::new(runtime) }),
 		#[cfg(feature = "wasmtime")]
 		WasmExecutionMethod::Compiled =>
-			sc_executor_wasmtime::create_runtime(
+			tc_executor_wasmtime::create_runtime(
 				code,
 				heap_pages,
 				host_functions,
@@ -301,7 +301,7 @@ fn decode_version(version: &[u8]) -> Result<RuntimeVersion, WasmError> {
 
 	let core_api_id = tet_core::hashing::blake2_64(b"Core");
 	if v.has_api_with(&core_api_id, |v| v >= 3) {
-		sp_api::RuntimeVersion::decode(&mut &version[..])
+		tp_api::RuntimeVersion::decode(&mut &version[..])
 			.map_err(|_|
 				WasmError::Instantiation("failed to decode \"Core_version\" result".into())
 			)

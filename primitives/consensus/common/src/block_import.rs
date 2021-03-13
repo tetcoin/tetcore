@@ -138,7 +138,7 @@ pub struct BlockImportParams<Block: BlockT, Transaction> {
 	/// The changes to the storage to create the state for the block. If this is `Some(_)`,
 	/// the block import will not need to re-execute the block for importing it.
 	pub storage_changes: Option<
-		sp_state_machine::StorageChanges<Transaction, HashFor<Block>, NumberFor<Block>>
+		tp_state_machine::StorageChanges<Transaction, HashFor<Block>, NumberFor<Block>>
 	>,
 	/// Is this block finalized already?
 	/// `true` implies instant finality.

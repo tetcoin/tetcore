@@ -23,7 +23,7 @@ use tp_runtime::{traits::Block as BlockT, ApplyExtrinsicResult};
 
 use tp_inherents::{InherentData, CheckInherentsResult};
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// The `BlockBuilder` api trait that provides the required functionality for building a block.
 	#[api_version(4)]
 	pub trait BlockBuilder {

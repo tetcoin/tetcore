@@ -24,8 +24,8 @@
 //! a reasonable abstraction.
 
 use structopt::StructOpt;
-use sc_service::config::OffchainWorkerConfig;
-use sc_network::config::Role;
+use tc_service::config::OffchainWorkerConfig;
+use tc_network::config::Role;
 
 use crate::error;
 use crate::OffchainWorkerEnabled;

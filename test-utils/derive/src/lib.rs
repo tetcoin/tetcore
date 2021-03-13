@@ -43,14 +43,14 @@ fn parse_knobs(
 	let vis = input.vis;
 
 	if sig.inputs.len() != 1 {
-		let msg = "the test function accepts only one argument of type sc_service::TaskExecutor";
+		let msg = "the test function accepts only one argument of type tc_service::TaskExecutor";
 		return Err(syn::Error::new_spanned(&sig, msg));
 	}
 	let (task_executor_name, task_executor_type) = match sig.inputs.pop().map(|x| x.into_value()) {
 		Some(syn::FnArg::Typed(x)) => (x.pat, x.ty),
 		_ => {
 			let msg =
-				"the test function accepts only one argument of type sc_service::TaskExecutor";
+				"the test function accepts only one argument of type tc_service::TaskExecutor";
 			return Err(syn::Error::new_spanned(&sig, msg));
 		}
 	};

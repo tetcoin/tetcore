@@ -246,8 +246,8 @@ pub use tp_api_proc_macro::impl_runtime_apis;
 /// and the error type can be specified as associated type. If no error type is specified [`String`]
 /// is used as error type.
 ///
-/// Besides implementing the given traits, the [`Core`](sp_api::Core), [`ApiExt`](sp_api::ApiExt)
-/// and [`ApiErrorExt`](sp_api::ApiErrorExt) are implemented automatically.
+/// Besides implementing the given traits, the [`Core`](tp_api::Core), [`ApiExt`](tp_api::ApiExt)
+/// and [`ApiErrorExt`](tp_api::ApiErrorExt) are implemented automatically.
 ///
 /// # Example
 ///
@@ -302,11 +302,11 @@ pub use tp_api_proc_macro::impl_runtime_apis;
 ///
 /// This attribute can be placed above individual function in the mock implementation to request
 /// more control over the function declaration. From the client side each runtime api function is
-/// called with the `at` parameter that is a [`BlockId`](sp_api::BlockId). When using the `advanced`
+/// called with the `at` parameter that is a [`BlockId`](tp_api::BlockId). When using the `advanced`
 /// attribute, the macro expects that the first parameter of the function is this `at` parameter.
 /// Besides that the macro also doesn't do the automatic return value rewrite, which means that full
 /// return value must be specified. The full return value is constructed like
-/// [`Result`]`<`[`NativeOrEncoded`](sp_api::NativeOrEncoded)`<ReturnValue>, Error>` while
+/// [`Result`]`<`[`NativeOrEncoded`](tp_api::NativeOrEncoded)`<ReturnValue>, Error>` while
 /// `ReturnValue` being the return value that is specified in the trait declaration.
 ///
 /// ## Example
@@ -360,13 +360,13 @@ pub type ProofRecorder<B> = tp_state_machine::ProofRecorder<HashFor<B>>;
 /// A type that is used as cache for the storage transactions.
 #[cfg(feature = "std")]
 pub type StorageTransactionCache<Block, Backend> =
-	sp_state_machine::StorageTransactionCache<
+	tp_state_machine::StorageTransactionCache<
 		<Backend as StateBackend<HashFor<Block>>>::Transaction, HashFor<Block>, NumberFor<Block>
 	>;
 
 #[cfg(feature = "std")]
 pub type StorageChanges<SBackend, Block> =
-	sp_state_machine::StorageChanges<
+	tp_state_machine::StorageChanges<
 		<SBackend as StateBackend<HashFor<Block>>>::Transaction,
 		HashFor<Block>,
 		NumberFor<Block>

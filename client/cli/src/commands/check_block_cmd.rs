@@ -19,7 +19,7 @@
 use crate::{
 	CliConfiguration, error, params::{ImportParams, SharedParams, BlockNumberOrHash},
 };
-use sc_client_api::{BlockBackend, UsageProvider};
+use tc_client_api::{BlockBackend, UsageProvider};
 use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use std::{fmt::Debug, str::FromStr, sync::Arc};
 use structopt::StructOpt;
@@ -56,13 +56,13 @@ impl CheckBlockCmd {
 	where
 		B: BlockT + for<'de> serde::Deserialize<'de>,
 		C: BlockBackend<B> + UsageProvider<B> + Send + Sync + 'static,
-		IQ: sc_service::ImportQueue<B> + 'static,
+		IQ: tc_service::ImportQueue<B> + 'static,
 		B::Hash: FromStr,
 		<B::Hash as FromStr>::Err: Debug,
 		<<B::Header as HeaderT>::Number as FromStr>::Err: Debug,
 	{
 		let start = std::time::Instant::now();
-		sc_service::chain_ops::check_block(client, import_queue, self.input.parse()?).await?;
+		tc_service::chain_ops::check_block(client, import_queue, self.input.parse()?).await?;
 		println!("Completed in {} ms.", start.elapsed().as_millis());
 
 		Ok(())

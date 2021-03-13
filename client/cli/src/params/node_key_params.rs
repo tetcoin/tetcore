@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use sc_network::{config::identity::ed25519, config::NodeKeyConfig};
+use tc_network::{config::identity::ed25519, config::NodeKeyConfig};
 use tet_core::H256;
 use std::{path::PathBuf, str::FromStr};
 use structopt::StructOpt;
@@ -100,7 +100,7 @@ impl NodeKeyParams {
 				let secret = if let Some(node_key) = self.node_key.as_ref() {
 					parse_ed25519_secret(node_key)?
 				} else {
-					sc_network::config::Secret::File(
+					tc_network::config::Secret::File(
 						self.node_key_file
 							.clone()
 							.unwrap_or_else(|| net_config_dir.join(NODE_KEY_ED25519_FILE))
@@ -118,13 +118,13 @@ fn invalid_node_key(e: impl std::fmt::Display) -> error::Error {
 	error::Error::Input(format!("Invalid node key: {}", e))
 }
 
-/// Parse a Ed25519 secret key from a hex string into a `sc_network::Secret`.
-fn parse_ed25519_secret(hex: &str) -> error::Result<sc_network::config::Ed25519Secret> {
+/// Parse a Ed25519 secret key from a hex string into a `tc_network::Secret`.
+fn parse_ed25519_secret(hex: &str) -> error::Result<tc_network::config::Ed25519Secret> {
 	H256::from_str(&hex)
 		.map_err(invalid_node_key)
 		.and_then(|bytes| {
 			ed25519::SecretKey::from_bytes(bytes)
-				.map(sc_network::config::Secret::Input)
+				.map(tc_network::config::Secret::Input)
 				.map_err(invalid_node_key)
 		})
 }
@@ -132,7 +132,7 @@ fn parse_ed25519_secret(hex: &str) -> error::Result<sc_network::config::Ed25519S
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sc_network::config::identity::{ed25519, Keypair};
+	use tc_network::config::identity::{ed25519, Keypair};
 	use std::fs;
 
 	#[test]
@@ -149,7 +149,7 @@ mod tests {
 					node_key_file: None,
 				};
 				params.node_key(net_config_dir).and_then(|c| match c {
-					NodeKeyConfig::Ed25519(sc_network::config::Secret::Input(ref ski))
+					NodeKeyConfig::Ed25519(tc_network::config::Secret::Input(ref ski))
 						if node_key_type == NodeKeyType::Ed25519 && &sk[..] == ski.as_ref() =>
 					{
 						Ok(())
@@ -217,7 +217,7 @@ mod tests {
 				params
 					.node_key(net_config_dir)
 					.and_then(move |c| match c {
-						NodeKeyConfig::Ed25519(sc_network::config::Secret::File(ref f))
+						NodeKeyConfig::Ed25519(tc_network::config::Secret::File(ref f))
 						if typ == NodeKeyType::Ed25519
 								&& f == &dir.join(NODE_KEY_ED25519_FILE) =>
 						{

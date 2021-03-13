@@ -79,7 +79,7 @@ pub enum Error {
 	///
 	/// Eventually this will be replaced.
 	#[error("{0}")]
-	StorageChanges(sp_state_machine::DefaultError),
+	StorageChanges(tp_state_machine::DefaultError),
 
 	#[error("Invalid child storage key")]
 	InvalidChildStorageKey,

@@ -31,7 +31,7 @@ use tet_core::crypto::KeyTypeId;
 use tp_staking::SessionIndex;
 use tetcore_std::vec::Vec;
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// Session keys runtime api.
 	pub trait SessionKeys {
 		/// Generate a set of session keys with optionally using the given seed.

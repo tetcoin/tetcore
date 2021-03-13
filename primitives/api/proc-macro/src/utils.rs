@@ -29,7 +29,7 @@ use std::env;
 use proc_macro_crate::crate_name;
 
 fn generate_hidden_includes_mod_name(unique_id: &'static str) -> Ident {
-	Ident::new(&format!("sp_api_hidden_includes_{}", unique_id), Span::call_site())
+	Ident::new(&format!("tp_api_hidden_includes_{}", unique_id), Span::call_site())
 }
 
 /// Generates the hidden includes that are required to make the macro independent from its scope.
@@ -57,13 +57,13 @@ pub fn generate_hidden_includes(unique_id: &'static str) -> TokenStream {
 	}.into()
 }
 
-/// Generates the access to the `sc_client` crate.
+/// Generates the access to the `tc_client` crate.
 pub fn generate_crate_access(unique_id: &'static str) -> TokenStream {
 	if env::var("CARGO_PKG_NAME").unwrap() == "tp-api" {
 		quote!( tp_api )
 	} else {
 		let mod_name = generate_hidden_includes_mod_name(unique_id);
-		quote!( self::#mod_name::sp_api )
+		quote!( self::#mod_name::tp_api )
 	}.into()
 }
 

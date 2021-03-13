@@ -19,13 +19,13 @@
 use crate::error;
 use crate::params::{GenericNumber, PruningParams, SharedParams};
 use crate::CliConfiguration;
-use sc_service::chain_ops::revert_chain;
+use tc_service::chain_ops::revert_chain;
 use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use std::fmt::Debug;
 use std::str::FromStr;
 use std::sync::Arc;
 use structopt::StructOpt;
-use sc_client_api::{Backend, UsageProvider};
+use tc_client_api::{Backend, UsageProvider};
 
 /// The `revert` command used revert the chain to a previous state.
 #[derive(Debug, StructOpt)]

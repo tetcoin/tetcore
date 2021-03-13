@@ -19,7 +19,7 @@
 use crate::error::Error;
 use log::info;
 use tp_runtime::traits::{Block as BlockT, NumberFor, Zero};
-use sc_client_api::{Backend, UsageProvider};
+use tc_client_api::{Backend, UsageProvider};
 use std::sync::Arc;
 
 /// Performs a revert of `blocks` blocks.

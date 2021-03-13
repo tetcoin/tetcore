@@ -486,7 +486,7 @@ impl OpaqueKeyOwnershipProof {
 	}
 }
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// APIs for integrating the GRANDPA finality gadget into runtimes.
 	/// This should be implemented on the runtime side.
 	///

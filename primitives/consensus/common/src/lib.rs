@@ -93,7 +93,7 @@ pub struct Proposal<Block: BlockT, Transaction> {
 	/// The block that was build.
 	pub block: Block,
 	/// Optional proof that was recorded while building the block.
-	pub proof: Option<sp_state_machine::StorageProof>,
+	pub proof: Option<tp_state_machine::StorageProof>,
 	/// The storage changes while building this block.
 	pub storage_changes: tp_state_machine::StorageChanges<Transaction, HashFor<Block>, NumberFor<Block>>,
 }
@@ -216,7 +216,7 @@ pub trait CanAuthorWith<Block: BlockT> {
 }
 
 /// Checks if the node can author blocks by using
-/// [`NativeVersion::can_author_with`](sp_version::NativeVersion::can_author_with).
+/// [`NativeVersion::can_author_with`](tp_version::NativeVersion::can_author_with).
 #[derive(Clone)]
 pub struct CanAuthorWithNativeVersion<T>(T);
 

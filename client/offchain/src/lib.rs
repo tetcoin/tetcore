@@ -45,7 +45,7 @@ use threadpool::ThreadPool;
 use tp_api::{ApiExt, ProvideRuntimeApi};
 use futures::future::Future;
 use log::{debug, warn};
-use sc_network::{ExHashT, NetworkService, NetworkStateInfo, PeerId};
+use tc_network::{ExHashT, NetworkService, NetworkStateInfo, PeerId};
 use tet_core::{offchain::{self, OffchainStorage}, ExecutionContext, traits::SpawnNamed};
 use tp_runtime::{generic::BlockId, traits::{self, Header}};
 use futures::{prelude::*, future::ready};
@@ -206,7 +206,7 @@ pub async fn notification_future<Client, Storage, Block, Spawner>(
 )
 	where
 		Block: traits::Block,
-		Client: ProvideRuntimeApi<Block> + sc_client_api::BlockchainEvents<Block> + Send + Sync + 'static,
+		Client: ProvideRuntimeApi<Block> + tc_client_api::BlockchainEvents<Block> + Send + Sync + 'static,
 		Client::Api: OffchainWorkerApi<Block>,
 		Storage: OffchainStorage + 'static,
 		Spawner: SpawnNamed
@@ -223,7 +223,7 @@ pub async fn notification_future<Client, Storage, Block, Spawner>(
 			);
 		} else {
 			log::debug!(
-				target: "sc_offchain",
+				target: "tc_offchain",
 				"Skipping offchain workers for non-canon block: {:?}",
 				n.header,
 			)
@@ -237,16 +237,16 @@ pub async fn notification_future<Client, Storage, Block, Spawner>(
 mod tests {
 	use super::*;
 	use std::sync::Arc;
-	use sc_network::{Multiaddr, PeerId};
+	use tc_network::{Multiaddr, PeerId};
 	use tetcore_test_runtime_client::{
 		TestClient, runtime::Block, TestClientBuilderExt,
 		DefaultTestClientBuilderExt, ClientBlockImportExt,
 	};
-	use sc_transaction_pool::{BasicPool, FullChainApi};
+	use tc_transaction_pool::{BasicPool, FullChainApi};
 	use tp_transaction_pool::{TransactionPool, InPoolTransaction};
 	use tp_consensus::BlockOrigin;
-	use sc_client_api::Backend as _;
-	use sc_block_builder::BlockBuilderProvider as _;
+	use tc_client_api::Backend as _;
+	use tc_block_builder::BlockBuilderProvider as _;
 
 	struct TestNetwork();
 
@@ -299,7 +299,7 @@ mod tests {
 			spawner,
 			client.clone(),
 		));
-		let db = sc_client_db::offchain::LocalStorage::new_test();
+		let db = tc_client_db::offchain::LocalStorage::new_test();
 		let network = Arc::new(TestNetwork());
 		let header = client.header(&BlockId::number(0)).unwrap().unwrap();
 
@@ -338,7 +338,7 @@ mod tests {
 		let block = block_builder.build().unwrap().block;
 		client.import(BlockOrigin::Own, block).unwrap();
 
-		assert_eq!(value, &offchain_db.get(sp_offchain::STORAGE_PREFIX, &key).unwrap());
+		assert_eq!(value, &offchain_db.get(tp_offchain::STORAGE_PREFIX, &key).unwrap());
 
 		let mut block_builder = client.new_block(Default::default()).unwrap();
 		block_builder.push(
@@ -348,6 +348,6 @@ mod tests {
 		let block = block_builder.build().unwrap().block;
 		client.import(BlockOrigin::Own, block).unwrap();
 
-		assert!(offchain_db.get(sp_offchain::STORAGE_PREFIX, &key).is_none());
+		assert!(offchain_db.get(tp_offchain::STORAGE_PREFIX, &key).is_none());
 	}
 }

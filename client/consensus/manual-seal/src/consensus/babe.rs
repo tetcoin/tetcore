@@ -27,12 +27,12 @@ use std::{
 	sync::{Arc, atomic},
 	time::SystemTime,
 };
-use sc_client_api::AuxStore;
-use sc_consensus_babe::{
+use tc_client_api::AuxStore;
+use tc_consensus_babe::{
 	Config, Epoch, authorship, CompatibleDigestItem, BabeIntermediate,
 	register_babe_inherent_data_provider, INTERMEDIATE_KEY, find_pre_digest,
 };
-use sc_consensus_epochs::{SharedEpochChanges, descendent_query, ViableEpochDescriptor, EpochHeader};
+use tc_consensus_epochs::{SharedEpochChanges, descendent_query, ViableEpochDescriptor, EpochHeader};
 use tp_keystore::SyncCryptoStorePtr;
 
 use tp_api::{ProvideRuntimeApi, TransactionFor};
@@ -120,7 +120,7 @@ impl<B, C> BabeConsensusDataProvider<B, C>
 			)
 			.ok_or_else(|| {
 				log::info!(target: "babe", "create_digest: no viable_epoch :(");
-				sp_consensus::Error::InvalidAuthoritiesSet
+				tp_consensus::Error::InvalidAuthoritiesSet
 			})?;
 
 		Ok(epoch.as_ref().clone())

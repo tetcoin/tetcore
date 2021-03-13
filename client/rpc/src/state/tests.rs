@@ -25,14 +25,14 @@ use assert_matches::assert_matches;
 use futures01::stream::Stream;
 use tet_core::{storage::ChildInfo, ChangesTrieConfiguration};
 use tet_core::hash::H256;
-use sc_block_builder::BlockBuilderProvider;
+use tc_block_builder::BlockBuilderProvider;
 use tet_io::hashing::blake2_256;
 use tetcore_test_runtime_client::{
 	prelude::*,
-	sp_consensus::BlockOrigin,
+	tp_consensus::BlockOrigin,
 	runtime,
 };
-use sc_rpc_api::DenyUnsafe;
+use tc_rpc_api::DenyUnsafe;
 use tp_runtime::generic::BlockId;
 use crate::testing::TaskExecutor;
 use futures::{executor, compat::Future01CompatExt};

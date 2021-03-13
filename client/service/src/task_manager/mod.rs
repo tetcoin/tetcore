@@ -34,7 +34,7 @@ use prometheus_endpoint::{
 use tetcore_utils::mpsc::{TracingUnboundedSender, TracingUnboundedReceiver, tracing_unbounded};
 use tracing_futures::Instrument;
 use crate::{config::{TaskExecutor, TaskType, JoinFuture}, Error};
-use sc_telemetry::TelemetrySpan;
+use tc_telemetry::TelemetrySpan;
 
 mod prometheus_future;
 #[cfg(test)]
@@ -249,11 +249,11 @@ impl TaskManager {
 		let (signal, on_exit) = exit_future::signal();
 
 		// A side-channel for essential tasks to communicate shutdown.
-		let (essential_failed_tx, essential_failed_rx) = tracing_unbounded("mpsc_essential_tasks");
+		let (essential_failed_tx, essential_failed_rx) = tracing_unbounded("mptc_essential_tasks");
 
 		let metrics = prometheus_registry.map(Metrics::register).transpose()?;
 
-		let (task_notifier, background_tasks) = tracing_unbounded("mpsc_background_tasks");
+		let (task_notifier, background_tasks) = tracing_unbounded("mptc_background_tasks");
 		// NOTE: for_each_concurrent will await on all the JoinHandle futures at the same time. It
 		// is possible to limit this but it's actually better for the memory foot print to await
 		// them all to not accumulate anything on that stream.

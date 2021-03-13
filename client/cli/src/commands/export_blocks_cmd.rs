@@ -20,10 +20,10 @@ use crate::error;
 use crate::params::{GenericNumber, DatabaseParams, PruningParams, SharedParams};
 use crate::CliConfiguration;
 use log::info;
-use sc_service::{
+use tc_service::{
 	config::DatabaseConfig, chain_ops::export_blocks,
 };
-use sc_client_api::{BlockBackend, UsageProvider};
+use tc_client_api::{BlockBackend, UsageProvider};
 use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use std::fmt::Debug;
 use std::fs;

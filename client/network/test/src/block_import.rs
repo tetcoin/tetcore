@@ -25,7 +25,7 @@ use tp_consensus::import_queue::{
 use tetcore_test_runtime_client::{self, prelude::*};
 use tetcore_test_runtime_client::runtime::{Block, Hash};
 use tp_runtime::generic::BlockId;
-use sc_block_builder::BlockBuilderProvider;
+use tc_block_builder::BlockBuilderProvider;
 use super::*;
 
 fn prepare_good_block() -> (TestClient, Hash, u64, PeerId, IncomingBlock<Block>) {

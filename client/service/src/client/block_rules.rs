@@ -24,7 +24,7 @@ use tp_runtime::{
 	traits::{Block as BlockT, NumberFor},
 };
 
-use sc_client_api::{ForkBlocks, BadBlocks};
+use tc_client_api::{ForkBlocks, BadBlocks};
 
 /// Chain specification rules lookup result.
 pub enum LookupResult<B: BlockT> {

@@ -281,9 +281,9 @@ pub fn get_extension<T: 'static>(e: &dyn GetExtension) -> Option<&T> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sc_chain_spec_derive::{ChainSpecGroup, ChainSpecExtension};
+	use tc_chain_spec_derive::{ChainSpecGroup, ChainSpecExtension};
 	// Make the proc macro work for tests and doc tests.
-	use crate as sc_chain_spec;
+	use crate as tc_chain_spec;
 
 	#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ChainSpecGroup)]
 	#[serde(deny_unknown_fields)]

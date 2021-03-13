@@ -29,7 +29,7 @@ use tp_state_machine::{
 
 use tp_consensus::SelectChain;
 use codec::Encode;
-use sc_block_builder::BlockBuilderProvider;
+use tc_block_builder::BlockBuilderProvider;
 
 fn calling_function_with_strat(strat: ExecutionStrategy) {
 	let client = TestClientBuilder::new().set_execution_strategy(strat).build();

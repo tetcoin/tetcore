@@ -28,7 +28,7 @@ use tetsy_finality_grandpa::{
 use log::{debug, info, warn};
 use tp_keystore::SyncCryptoStorePtr;
 use tp_consensus::SelectChain;
-use sc_client_api::backend::Backend;
+use tc_client_api::backend::Backend;
 use tetcore_utils::mpsc::TracingUnboundedReceiver;
 use tp_runtime::traits::{NumberFor, Block as BlockT};
 use tp_blockchain::HeaderMetadata;
@@ -389,7 +389,7 @@ mod tests {
 	use tetcore_utils::mpsc::tracing_unbounded;
 	use crate::{aux_schema,	communication::tests::{Event, make_test_network}};
 	use tetcore_test_runtime_client::{TestClientBuilder, TestClientBuilderExt};
-	use sc_network::PeerId;
+	use tc_network::PeerId;
 	use tp_blockchain::HeaderBackend as _;
 
 	use futures::executor;
@@ -416,7 +416,7 @@ mod tests {
 			(Arc::new(client), backend)
 		};
 
-		let voters = vec![(sp_keyring::Ed25519Keyring::Alice.public().into(), 1)];
+		let voters = vec![(tp_keyring::Ed25519Keyring::Alice.public().into(), 1)];
 
 		let persistent_data = aux_schema::load_persistent(
 			&*backend,

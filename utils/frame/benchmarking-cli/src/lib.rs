@@ -18,7 +18,7 @@
 mod command;
 mod writer;
 
-use sc_cli::{ExecutionStrategy, WasmExecutionMethod};
+use tc_cli::{ExecutionStrategy, WasmExecutionMethod};
 use std::fmt::Debug;
 
 /// The `benchmark` command used to benchmark FRAME Pallets.
@@ -86,7 +86,7 @@ pub struct BenchmarkCmd {
 
 	#[allow(missing_docs)]
 	#[structopt(flatten)]
-	pub shared_params: sc_cli::SharedParams,
+	pub shared_params: tc_cli::SharedParams,
 
 	/// The execution strategy that should be used for benchmarks
 	#[structopt(

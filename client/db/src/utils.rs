@@ -95,7 +95,7 @@ pub enum DatabaseType {
 /// lookups into an index, NOT for storing header data or others.
 pub fn number_index_key<N: TryInto<u32>>(n: N) -> tp_blockchain::Result<NumberIndexKey> {
 	let n = n.try_into().map_err(|_|
-		sp_blockchain::Error::Backend("Block number cannot be converted to u32".into())
+		tp_blockchain::Error::Backend("Block number cannot be converted to u32".into())
 	)?;
 
 	Ok([
@@ -126,7 +126,7 @@ pub fn lookup_key_to_number<N>(key: &[u8]) -> tp_blockchain::Result<N> where
 	N: From<u32>
 {
 	if key.len() < 4 {
-		return Err(sp_blockchain::Error::Backend("Invalid block key".into()));
+		return Err(tp_blockchain::Error::Backend("Invalid block key".into()));
 	}
 	Ok((key[0] as u32) << 24
 		| (key[1] as u32) << 16
@@ -214,7 +214,7 @@ pub fn open_database<Block: BlockT>(
 ) -> tp_blockchain::Result<Arc<dyn Database<DbHash>>> {
 	#[allow(unused)]
 	fn db_open_error(feat: &'static str) -> tp_blockchain::Error {
-		sp_blockchain::Error::Backend(
+		tp_blockchain::Error::Backend(
 			format!("`{}` feature not enabled, database can not be opened", feat),
 		)
 	}
@@ -297,7 +297,7 @@ pub fn check_database_type(db: &dyn Database<DbHash>, db_type: DatabaseType) -> 
 	match db.get(COLUMN_META, meta_keys::TYPE) {
 		Some(stored_type) => {
 			if db_type.as_str().as_bytes() != &*stored_type {
-				return Err(sp_blockchain::Error::Backend(
+				return Err(tp_blockchain::Error::Backend(
 					format!("Unexpected database type. Expected: {}", db_type.as_str())).into());
 			}
 		},
@@ -355,7 +355,7 @@ pub fn read_header<Block: BlockT>(
 		Some(header) => match Block::Header::decode(&mut &header[..]) {
 			Ok(header) => Ok(Some(header)),
 			Err(_) => return Err(
-				sp_blockchain::Error::Backend("Error decoding header".into())
+				tp_blockchain::Error::Backend("Error decoding header".into())
 			),
 		}
 		None => Ok(None),
@@ -371,14 +371,14 @@ pub fn require_header<Block: BlockT>(
 ) -> tp_blockchain::Result<Block::Header> {
 	read_header(db, col_index, col, id)
 		.and_then(|header| header.ok_or_else(||
-			sp_blockchain::Error::UnknownBlock(format!("Require header: {}", id))
+			tp_blockchain::Error::UnknownBlock(format!("Require header: {}", id))
 		))
 }
 
 /// Read meta from the database.
 pub fn read_meta<Block>(db: &dyn Database<DbHash>, col_header: u32) -> Result<
 	Meta<<<Block as BlockT>::Header as HeaderT>::Number, Block::Hash>,
-	sp_blockchain::Error,
+	tp_blockchain::Error,
 >
 	where
 		Block: BlockT,
@@ -425,7 +425,7 @@ pub fn read_genesis_hash<Hash: Decode>(db: &dyn Database<DbHash>) -> tp_blockcha
 	match db.get(COLUMN_META, meta_keys::GENESIS_HASH) {
 		Some(h) => match Decode::decode(&mut &h[..]) {
 			Ok(h) => Ok(Some(h)),
-			Err(err) => Err(sp_blockchain::Error::Backend(
+			Err(err) => Err(tp_blockchain::Error::Backend(
 				format!("Error decoding genesis hash: {}", err)
 			)),
 		},

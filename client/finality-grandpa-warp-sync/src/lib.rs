@@ -18,8 +18,8 @@
 //! [`crate::request_responses::RequestResponsesBehaviour`].
 
 use codec::Decode;
-use sc_network::config::{IncomingRequest, OutgoingResponse, ProtocolId, RequestResponseConfig};
-use sc_client_api::Backend;
+use tc_network::config::{IncomingRequest, OutgoingResponse, ProtocolId, RequestResponseConfig};
+use tc_client_api::Backend;
 use tp_runtime::traits::NumberFor;
 use futures::channel::{mpsc, oneshot};
 use futures::stream::StreamExt;
@@ -27,8 +27,8 @@ use log::debug;
 use tp_runtime::traits::Block as BlockT;
 use std::time::Duration;
 use std::sync::Arc;
-use sc_service::{SpawnTaskHandle, config::{Configuration, Role}};
-use sc_finality_grandpa::WarpSyncFragmentCache;
+use tc_service::{SpawnTaskHandle, config::{Configuration, Role}};
+use tc_finality_grandpa::WarpSyncFragmentCache;
 
 /// Generates the appropriate [`RequestResponseConfig`] for a given chain configuration.
 pub fn request_response_config_for_chain<TBlock: BlockT, TBackend: Backend<TBlock> + 'static>(
@@ -36,7 +36,7 @@ pub fn request_response_config_for_chain<TBlock: BlockT, TBackend: Backend<TBloc
 	spawn_handle: SpawnTaskHandle,
 	backend: Arc<TBackend>,
 ) -> RequestResponseConfig
-	where NumberFor<TBlock>: sc_finality_grandpa::BlockNumberOps,
+	where NumberFor<TBlock>: tc_finality_grandpa::BlockNumberOps,
 {
 	let protocol_id = config.protocol_id();
 
@@ -115,12 +115,12 @@ impl<TBlock: BlockT, TBackend: Backend<TBlock>> GrandpaWarpSyncRequestHandler<TB
 		payload: Vec<u8>,
 		pending_response: oneshot::Sender<OutgoingResponse>
 	) -> Result<(), HandleRequestError>
-		where NumberFor<TBlock>: sc_finality_grandpa::BlockNumberOps,
+		where NumberFor<TBlock>: tc_finality_grandpa::BlockNumberOps,
 	{
 		let request = Request::<TBlock>::decode(&mut &payload[..])?;
 
 		let mut cache = self.cache.write();
-		let response = sc_finality_grandpa::prove_warp_sync(
+		let response = tc_finality_grandpa::prove_warp_sync(
 			self.backend.blockchain(), request.begin, Some(WARP_SYNC_FRAGMENTS_LIMIT), Some(&mut cache)
 		)?;
 
@@ -132,7 +132,7 @@ impl<TBlock: BlockT, TBackend: Backend<TBlock>> GrandpaWarpSyncRequestHandler<TB
 
 	/// Run [`GrandpaWarpSyncRequestHandler`].
 	pub async fn run(mut self)
-		where NumberFor<TBlock>: sc_finality_grandpa::BlockNumberOps,
+		where NumberFor<TBlock>: tc_finality_grandpa::BlockNumberOps,
 	{
 		while let Some(request) = self.request_receiver.next().await {
 			let IncomingRequest { peer, payload, pending_response } = request;
@@ -157,7 +157,7 @@ enum HandleRequestError {
 	EncodeProto(prost::EncodeError),
 	#[display(fmt = "Failed to decode block hash: {}.", _0)]
 	DecodeScale(codec::Error),
-	Client(sp_blockchain::Error),
+	Client(tp_blockchain::Error),
 	#[display(fmt = "Failed to send response.")]
 	SendResponse,
 }

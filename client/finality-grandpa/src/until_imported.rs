@@ -40,7 +40,7 @@ use parking_lot::Mutex;
 use prometheus_endpoint::{
 	Gauge, U64, PrometheusError, register, Registry,
 };
-use sc_client_api::{BlockImportNotification, ImportNotifications};
+use tc_client_api::{BlockImportNotification, ImportNotifications};
 use tp_finality_grandpa::AuthorityId;
 use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 
@@ -548,7 +548,7 @@ mod tests {
 	use crate::{CatchUp, CompactCommit};
 	use tetcore_test_runtime_client::runtime::{Block, Hash, Header};
 	use tp_consensus::BlockOrigin;
-	use sc_client_api::BlockImportNotification;
+	use tc_client_api::BlockImportNotification;
 	use futures::future::Either;
 	use futures_timer::Delay;
 	use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedSender};
@@ -614,7 +614,7 @@ mod tests {
 	}
 
 	impl BlockSyncRequesterT<Block> for TestBlockSyncRequester {
-		fn set_sync_fork_request(&self, _peers: Vec<sc_network::PeerId>, hash: Hash, number: NumberFor<Block>) {
+		fn set_sync_fork_request(&self, _peers: Vec<tc_network::PeerId>, hash: Hash, number: NumberFor<Block>) {
 			self.requests.lock().push((hash, number));
 		}
 	}

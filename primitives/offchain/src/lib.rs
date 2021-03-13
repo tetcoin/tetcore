@@ -23,7 +23,7 @@
 /// Re-export of parent module scope storage prefix.
 pub use tet_core::offchain::STORAGE_PREFIX;
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// The offchain worker api.
 	#[api_version(2)]
 	pub trait OffchainWorkerApi {

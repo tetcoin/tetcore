@@ -21,13 +21,13 @@
 
 pub mod client_ext;
 
-pub use sc_client_api::{
+pub use tc_client_api::{
 	execution_extensions::{ExecutionStrategies, ExecutionExtensions},
 	ForkBlocks, BadBlocks,
 };
-pub use sc_client_db::{Backend, self};
+pub use tc_client_db::{Backend, self};
 pub use tp_consensus;
-pub use sc_executor::{NativeExecutor, WasmExecutionMethod, self};
+pub use tc_executor::{NativeExecutor, WasmExecutionMethod, self};
 pub use tp_keyring::{
 	AccountKeyring,
 	ed25519::Keyring as Ed25519Keyring,
@@ -36,7 +36,7 @@ pub use tp_keyring::{
 pub use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 pub use tp_runtime::{Storage, StorageChild};
 pub use tp_state_machine::ExecutionStrategy;
-pub use sc_service::{RpcHandlers, RpcSession, client};
+pub use tc_service::{RpcHandlers, RpcSession, client};
 pub use self::client_ext::{ClientExt, ClientBlockImportExt};
 
 use std::pin::Pin;
@@ -46,12 +46,12 @@ use futures::{future::{Future, FutureExt}, stream::StreamExt};
 use serde::Deserialize;
 use tet_core::storage::ChildInfo;
 use tp_runtime::{OpaqueExtrinsic, codec::Encode, traits::{Block as BlockT, BlakeTwo256}};
-use sc_service::client::{LocalCallExecutor, ClientConfig};
-use sc_client_api::BlockchainEvents;
+use tc_service::client::{LocalCallExecutor, ClientConfig};
+use tc_client_api::BlockchainEvents;
 
 /// Test client light database backend.
-pub type LightBackend<Block> = sc_light::Backend<
-	sc_client_db::light::LightStorage<Block>,
+pub type LightBackend<Block> = tc_light::Backend<
+	tc_client_db::light::LightStorage<Block>,
 	BlakeTwo256,
 >;
 
@@ -194,10 +194,10 @@ impl<Block: BlockT, Executor, Backend, G: GenesisInit> TestClientBuilder<Block, 
 			Block,
 			RuntimeApi,
 		>,
-		sc_consensus::LongestChain<Backend, Block>,
+		tc_consensus::LongestChain<Backend, Block>,
 	) where
-		Executor: sc_client_api::CallExecutor<Block> + 'static,
-		Backend: sc_client_api::backend::Backend<Block>,
+		Executor: tc_client_api::CallExecutor<Block> + 'static,
+		Backend: tc_client_api::backend::Backend<Block>,
 	{
 		let storage = {
 			let mut storage = self.genesis_init.genesis_storage();
@@ -233,7 +233,7 @@ impl<Block: BlockT, Executor, Backend, G: GenesisInit> TestClientBuilder<Block, 
 			},
 		).expect("Creates new client");
 
-		let longest_chain = sc_consensus::LongestChain::new(self.backend);
+		let longest_chain = tc_consensus::LongestChain::new(self.backend);
 
 		(client, longest_chain)
 	}
@@ -256,11 +256,11 @@ impl<Block: BlockT, E, Backend, G: GenesisInit> TestClientBuilder<
 			Block,
 			RuntimeApi
 		>,
-		sc_consensus::LongestChain<Backend, Block>,
+		tc_consensus::LongestChain<Backend, Block>,
 	) where
 		I: Into<Option<NativeExecutor<E>>>,
-		E: sc_executor::NativeExecutionDispatch + 'static,
-		Backend: sc_client_api::backend::Backend<Block> + 'static,
+		E: tc_executor::NativeExecutionDispatch + 'static,
+		Backend: tc_client_api::backend::Backend<Block> + 'static,
 	{
 		let executor = executor.into().unwrap_or_else(||
 			NativeExecutor::new(WasmExecutionMethod::Interpreted, None, 8)
@@ -408,7 +408,7 @@ where
 
 #[cfg(test)]
 mod tests {
-	use sc_service::RpcSession;
+	use tc_service::RpcSession;
 
 	fn create_session_and_receiver() -> (RpcSession, futures01::sync::mpsc::Receiver<String>) {
 		let (tx, rx) = futures01::sync::mpsc::channel(0);

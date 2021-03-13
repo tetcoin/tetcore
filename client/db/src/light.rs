@@ -22,7 +22,7 @@ use std::{sync::Arc, collections::HashMap};
 use std::convert::TryInto;
 use parking_lot::RwLock;
 
-use sc_client_api::{
+use tc_client_api::{
 	cht, backend::{AuxStore, NewBlockState, ProvideChtRoots}, UsageInfo,
 	blockchain::{
 		BlockStatus, Cache as BlockchainCache, Info as BlockchainInfo,
@@ -287,7 +287,7 @@ impl<Block: BlockT> LightStorage<Block> {
 	) -> ClientResult<()> {
 		let meta = self.meta.read();
 		if &meta.finalized_hash != header.parent_hash() {
-			return Err(::sp_blockchain::Error::NonSequentialFinalization(
+			return Err(::tp_blockchain::Error::NonSequentialFinalization(
 				format!("Last finalized {:?} not parent of {:?}",
 					meta.finalized_hash, hash),
 			).into())
@@ -561,7 +561,7 @@ impl<Block> Storage<Block> for LightStorage<Block>
 
 	#[cfg(not(target_os = "unknown"))]
 	fn usage_info(&self) -> Option<UsageInfo> {
-		use sc_client_api::{MemoryInfo, IoInfo, MemorySize};
+		use tc_client_api::{MemoryInfo, IoInfo, MemorySize};
 
 		// TODO: reimplement IO stats
 		let database_cache = MemorySize::from_bytes(0);
@@ -625,7 +625,7 @@ fn cht_key<N: TryInto<u32>>(cht_type: u8, block: N) -> ClientResult<[u8; 5]> {
 
 #[cfg(test)]
 pub(crate) mod tests {
-	use sc_client_api::cht;
+	use tc_client_api::cht;
 	use tet_core::ChangesTrieConfiguration;
 	use tp_runtime::generic::{DigestItem, ChangesTrieSignal};
 	use tp_runtime::testing::{H256 as Hash, Header, Block as RawBlock, ExtrinsicWrapper};

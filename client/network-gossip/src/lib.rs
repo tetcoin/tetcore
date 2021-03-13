@@ -33,7 +33,7 @@
 //! # Usage
 //!
 //! - Implement the `Network` trait, representing the low-level networking primitives. It is
-//!   already implemented on `sc_network::NetworkService`.
+//!   already implemented on `tc_network::NetworkService`.
 //! - Implement the `Validator` trait. See the section below.
 //! - Decide on a protocol name. Each gossiping protocol should have a different one.
 //! - Build a `GossipEngine` using these three elements.
@@ -66,7 +66,7 @@ pub use self::state_machine::TopicNotification;
 pub use self::validator::{DiscardAll, MessageIntent, Validator, ValidatorContext, ValidationResult};
 
 use futures::prelude::*;
-use sc_network::{multiaddr, Event, ExHashT, NetworkService, PeerId, ReputationChange};
+use tc_network::{multiaddr, Event, ExHashT, NetworkService, PeerId, ReputationChange};
 use tp_runtime::{traits::Block as BlockT};
 use std::{borrow::Cow, iter, pin::Pin, sync::Arc};
 

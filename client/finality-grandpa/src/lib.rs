@@ -61,7 +61,7 @@ use futures::{
 	StreamExt,
 };
 use log::{debug, error, info};
-use sc_client_api::{
+use tc_client_api::{
 	backend::{AuxStore, Backend},
 	LockImportRun, BlockchainEvents, CallExecutor,
 	ExecutionStrategy, Finalizer, TransactionFor, ExecutorProvider,
@@ -79,7 +79,7 @@ use tet_core::{
 use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
 use tet_application_crypto::AppKey;
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver};
-use sc_telemetry::{telemetry, CONSENSUS_INFO, CONSENSUS_DEBUG};
+use tc_telemetry::{telemetry, CONSENSUS_INFO, CONSENSUS_DEBUG};
 use parking_lot::RwLock;
 
 use tetsy_finality_grandpa::Error as GrandpaError;
@@ -358,14 +358,14 @@ pub(crate) trait BlockSyncRequester<Block: BlockT> {
 	/// If the given vector of peers is empty then the underlying implementation
 	/// should make a best effort to fetch the block from any peers it is
 	/// connected to (NOTE: this assumption will change in the future #3629).
-	fn set_sync_fork_request(&self, peers: Vec<sc_network::PeerId>, hash: Block::Hash, number: NumberFor<Block>);
+	fn set_sync_fork_request(&self, peers: Vec<tc_network::PeerId>, hash: Block::Hash, number: NumberFor<Block>);
 }
 
 impl<Block, Network> BlockSyncRequester<Block> for NetworkBridge<Block, Network> where
 	Block: BlockT,
 	Network: NetworkT<Block>,
 {
-	fn set_sync_fork_request(&self, peers: Vec<sc_network::PeerId>, hash: Block::Hash, number: NumberFor<Block>) {
+	fn set_sync_fork_request(&self, peers: Vec<tc_network::PeerId>, hash: Block::Hash, number: NumberFor<Block>) {
 		NetworkBridge::set_sync_fork_request(self, peers, hash, number)
 	}
 }
@@ -557,7 +557,7 @@ where
 		}
 	)?;
 
-	let (voter_commands_tx, voter_commands_rx) = tracing_unbounded("mpsc_grandpa_voter_command");
+	let (voter_commands_tx, voter_commands_rx) = tracing_unbounded("mptc_grandpa_voter_command");
 
 	let (justification_sender, justification_stream) =
 		GrandpaJustificationStream::channel();
@@ -655,7 +655,7 @@ pub struct GrandpaParams<Block: BlockT, C, N, SC, VR> {
 	/// The Network instance.
 	///
 	/// It is assumed that this network will feed us Grandpa notifications. When using the
-	/// `sc_network` crate, it is assumed that the Grandpa notifications protocol has been passed
+	/// `tc_network` crate, it is assumed that the Grandpa notifications protocol has been passed
 	/// to the configuration of the networking. See [`grandpa_peers_set_config`].
 	pub network: N,
 	/// If supplied, can be used to hook on telemetry connection established events.
@@ -669,17 +669,17 @@ pub struct GrandpaParams<Block: BlockT, C, N, SC, VR> {
 }
 
 /// Returns the configuration value to put in
-/// [`sc_network::config::NetworkConfiguration::extra_sets`].
-pub fn grandpa_peers_set_config() -> sc_network::config::NonDefaultSetConfig {
-	sc_network::config::NonDefaultSetConfig {
+/// [`tc_network::config::NetworkConfiguration::extra_sets`].
+pub fn grandpa_peers_set_config() -> tc_network::config::NonDefaultSetConfig {
+	tc_network::config::NonDefaultSetConfig {
 		notifications_protocol: communication::GRANDPA_PROTOCOL_NAME.into(),
 		// Notifications reach ~256kiB in size at the time of writing on Kusama and Polkadot.
 		max_notification_size: 1024 * 1024,
-		set_config: sc_network::config::SetConfig {
+		set_config: tc_network::config::SetConfig {
 			in_peers: 25,
 			out_peers: 25,
 			reserved_nodes: Vec::new(),
-			non_reserved_mode: sc_network::config::NonReservedPeerMode::Accept,
+			non_reserved_mode: tc_network::config::NonReservedPeerMode::Accept,
 		},
 	}
 }

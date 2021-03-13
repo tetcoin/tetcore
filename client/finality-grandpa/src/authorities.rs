@@ -23,7 +23,7 @@ use parking_lot::RwLock;
 use tetsy_finality_grandpa::voter_set::VoterSet;
 use tetsy_scale_codec::{Encode, Decode};
 use log::debug;
-use sc_telemetry::{telemetry, CONSENSUS_INFO};
+use tc_telemetry::{telemetry, CONSENSUS_INFO};
 use tp_finality_grandpa::{AuthorityId, AuthorityList};
 
 use std::cmp::Ord;

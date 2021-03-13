@@ -23,7 +23,7 @@ use crate::arg_enums::{
 };
 use crate::params::DatabaseParams;
 use crate::params::PruningParams;
-use sc_client_api::execution_extensions::ExecutionStrategies;
+use tc_client_api::execution_extensions::ExecutionStrategies;
 use structopt::StructOpt;
 use std::path::PathBuf;
 
@@ -83,7 +83,7 @@ impl ImportParams {
 	}
 
 	/// Get the WASM execution method from the parameters
-	pub fn wasm_method(&self) -> sc_service::config::WasmExecutionMethod {
+	pub fn wasm_method(&self) -> tc_service::config::WasmExecutionMethod {
 		self.wasm_method.into()
 	}
 

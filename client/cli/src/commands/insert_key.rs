@@ -25,8 +25,8 @@ use std::{sync::Arc, convert::TryFrom};
 use structopt::StructOpt;
 use tet_core::{crypto::KeyTypeId, crypto::SecretString};
 use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-use sc_keystore::LocalKeystore;
-use sc_service::config::{KeystoreConfig, BasePath};
+use tc_keystore::LocalKeystore;
+use tc_service::config::{KeystoreConfig, BasePath};
 
 /// The `insert` command
 #[derive(Debug, StructOpt)]
@@ -101,7 +101,7 @@ mod tests {
 	use structopt::StructOpt;
 	use tempfile::TempDir;
 	use tet_core::{sr25519::Pair, Pair as _, Public};
-	use sc_service::{ChainSpec, GenericChainSpec, ChainType, NoExtension};
+	use tc_service::{ChainSpec, GenericChainSpec, ChainType, NoExtension};
 
 	struct Cli;
 

@@ -11,7 +11,7 @@ use node_template_runtime::{opaque::Block, AccountId, Balance, Index};
 use tp_api::ProvideRuntimeApi;
 use tp_blockchain::{Error as BlockChainError, HeaderMetadata, HeaderBackend};
 use tp_block_builder::BlockBuilder;
-pub use sc_rpc_api::DenyUnsafe;
+pub use tc_rpc_api::DenyUnsafe;
 use tp_transaction_pool::TransactionPool;
 
 
@@ -28,7 +28,7 @@ pub struct FullDeps<C, P> {
 /// Instantiate all full RPC extensions.
 pub fn create_full<C, P>(
 	deps: FullDeps<C, P>,
-) -> tetsy_jsonrpc_core::IoHandler<sc_rpc::Metadata> where
+) -> tetsy_jsonrpc_core::IoHandler<tc_rpc::Metadata> where
 	C: ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error=BlockChainError> + 'static,
 	C: Send + Sync + 'static,

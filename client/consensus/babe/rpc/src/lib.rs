@@ -18,14 +18,14 @@
 
 //! RPC api for babe.
 
-use sc_consensus_babe::{Epoch, authorship, Config};
+use tc_consensus_babe::{Epoch, authorship, Config};
 use futures::{FutureExt as _, TryFutureExt as _};
 use tetsy_jsonrpc_core::{
 	Error as RpcError,
 	futures::future as rpc_future,
 };
 use tetsy_jsonrpc_derive::rpc;
-use sc_consensus_epochs::{descendent_query, Epoch as EpochT, SharedEpochChanges};
+use tc_consensus_epochs::{descendent_query, Epoch as EpochT, SharedEpochChanges};
 use tp_consensus_babe::{
 	AuthorityId,
 	BabeApi as BabeRuntimeApi,
@@ -37,7 +37,7 @@ use tet_core::{
 };
 use tet_application_crypto::AppKey;
 use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-use sc_rpc_api::DenyUnsafe;
+use tc_rpc_api::DenyUnsafe;
 use tp_api::{ProvideRuntimeApi, BlockId};
 use tp_runtime::traits::{Block as BlockT, Header as _};
 use tp_consensus::{SelectChain, Error as ConsensusError};
@@ -243,10 +243,10 @@ mod tests {
 	use tp_keyring::Sr25519Keyring;
 	use tet_core::{crypto::key_types::BABE};
 	use tp_keystore::{SyncCryptoStorePtr, SyncCryptoStore};
-	use sc_keystore::LocalKeystore;
+	use tc_keystore::LocalKeystore;
 
 	use std::sync::Arc;
-	use sc_consensus_babe::{Config, block_import, AuthorityPair};
+	use tc_consensus_babe::{Config, block_import, AuthorityPair};
 	use tetsy_jsonrpc_core::IoHandler;
 
 	/// creates keystore backed by a temp file
@@ -264,7 +264,7 @@ mod tests {
 
 	fn test_babe_rpc_handler(
 		deny_unsafe: DenyUnsafe
-	) -> BabeRpcHandler<Block, TestClient, sc_consensus::LongestChain<Backend, Block>> {
+	) -> BabeRpcHandler<Block, TestClient, tc_consensus::LongestChain<Backend, Block>> {
 		let builder = TestClientBuilder::new();
 		let (client, longest_chain) = builder.build_with_longest_chain();
 		let client = Arc::new(client);

@@ -24,7 +24,7 @@ use tp_runtime::traits::MaybeDisplay;
 
 pub use pallet_transaction_payment::{FeeDetails, InclusionFee, RuntimeDispatchInfo};
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	pub trait TransactionPaymentApi<Balance> where
 		Balance: Codec + MaybeDisplay,
 	{

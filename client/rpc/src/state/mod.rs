@@ -28,8 +28,8 @@ use std::sync::Arc;
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use rpc::{Result as RpcResult, futures::{Future, future::result}};
 
-use sc_rpc_api::{DenyUnsafe, state::ReadProof};
-use sc_client_api::light::{RemoteBlockchain, Fetcher};
+use tc_rpc_api::{DenyUnsafe, state::ReadProof};
+use tc_client_api::light::{RemoteBlockchain, Fetcher};
 use tet_core::{Bytes, storage::{StorageKey, PrefixedStorageKey, StorageData, StorageChangeSet}};
 use tp_version::RuntimeVersion;
 use tp_runtime::traits::Block as BlockT;
@@ -38,9 +38,9 @@ use tp_api::{Metadata, ProvideRuntimeApi, CallApiAt};
 
 use self::error::{Error, FutureResult};
 
-pub use sc_rpc_api::state::*;
-pub use sc_rpc_api::child_state::*;
-use sc_client_api::{ExecutorProvider, StorageProvider, BlockchainEvents, Backend, ProofProvider};
+pub use tc_rpc_api::state::*;
+pub use tc_rpc_api::child_state::*;
+use tc_client_api::{ExecutorProvider, StorageProvider, BlockchainEvents, Backend, ProofProvider};
 use tp_blockchain::{HeaderMetadata, HeaderBackend};
 
 const STORAGE_KEYS_PAGED_MAX_COUNT: u32 = 1000;

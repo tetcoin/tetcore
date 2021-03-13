@@ -44,7 +44,7 @@ use noncanonical::NonCanonicalOverlay;
 use pruning::RefWindow;
 use log::trace;
 use tetsy_util_mem::{MallocSizeOf, malloc_size};
-use sc_client_api::{StateDbMemoryInfo, MemorySize};
+use tc_client_api::{StateDbMemoryInfo, MemorySize};
 
 const PRUNING_MODE: &[u8] = b"mode";
 const PRUNING_MODE_ARCHIVE: &[u8] = b"archive";

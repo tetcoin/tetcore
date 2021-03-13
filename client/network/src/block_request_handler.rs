@@ -216,7 +216,7 @@ enum HandleRequestError {
 	MissingFromField,
 	#[display(fmt = "Failed to parse BlockRequest::direction.")]
 	ParseDirection,
-	Client(sp_blockchain::Error),
+	Client(tp_blockchain::Error),
 	#[display(fmt = "Failed to send response.")]
 	SendResponse,
 }

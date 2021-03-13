@@ -40,10 +40,10 @@ use syn::{Error, Expr, Ident, ItemFn};
 ///
 /// ```ignore
 /// Builds a new service for a light client.
-/// #[sc_cli::prefix_logs_with("light")]
+/// #[tc_cli::prefix_logs_with("light")]
 /// pub fn new_light(config: Configuration) -> Result<TaskManager, ServiceError> {
 ///     let (client, backend, keystore, mut task_manager, on_demand) =
-///         sc_service::new_light_parts::<Block, RuntimeApi, Executor>(&config)?;
+///         tc_service::new_light_parts::<Block, RuntimeApi, Executor>(&config)?;
 ///
 ///        ...
 /// }
@@ -74,10 +74,10 @@ use syn::{Error, Expr, Ident, ItemFn};
 ///
 /// ```ignore
 /// Builds a new service for a light client.
-/// #[sc_cli::prefix_logs_with(config.network.node_name.as_str())]
+/// #[tc_cli::prefix_logs_with(config.network.node_name.as_str())]
 /// pub fn new_light(config: Configuration) -> Result<TaskManager, ServiceError> {
 ///     let (client, backend, keystore, mut task_manager, on_demand) =
-///         sc_service::new_light_parts::<Block, RuntimeApi, Executor>(&config)?;
+///         tc_service::new_light_parts::<Block, RuntimeApi, Executor>(&config)?;
 ///
 ///        ...
 /// }
@@ -110,7 +110,7 @@ pub fn prefix_logs_with(arg: TokenStream, item: TokenStream) -> TokenStream {
 	if arg.is_empty() {
 		return Error::new(
 			Span::call_site(),
-			"missing argument: name of the node. Example: sc_cli::prefix_logs_with(<expr>)",
+			"missing argument: name of the node. Example: tc_cli::prefix_logs_with(<expr>)",
 		)
 		.to_compile_error()
 		.into();
@@ -122,7 +122,7 @@ pub fn prefix_logs_with(arg: TokenStream, item: TokenStream) -> TokenStream {
 		.expect("cargo env var always there when compiling; qed")
 		== "tc-tracing"
 	{
-		Ident::from(Ident::new("sc_tracing", Span::call_site()))
+		Ident::from(Ident::new("tc_tracing", Span::call_site()))
 	} else {
 		let crate_name = match crate_name("tc-tracing") {
 			Ok(x) => x,

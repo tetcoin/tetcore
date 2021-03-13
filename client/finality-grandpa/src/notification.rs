@@ -108,7 +108,7 @@ impl<Block: BlockT> GrandpaJustificationStream<Block> {
 	/// Subscribe to a channel through which justifications are sent
 	/// at the end of each Grandpa voting round.
 	pub fn subscribe(&self) -> JustificationStream<Block> {
-		let (sender, receiver) = tracing_unbounded("mpsc_justification_notification_stream");
+		let (sender, receiver) = tracing_unbounded("mptc_justification_notification_stream");
 		self.subscribers.lock().push(sender);
 		receiver
 	}

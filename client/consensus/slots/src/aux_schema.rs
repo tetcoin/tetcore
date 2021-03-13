@@ -19,7 +19,7 @@
 //! Schema for slots in the aux-db.
 
 use codec::{Encode, Decode};
-use sc_client_api::backend::AuxStore;
+use tc_client_api::backend::AuxStore;
 use tp_blockchain::{Result as ClientResult, Error as ClientError};
 use tp_consensus_slots::{EquivocationProof, Slot};
 use tp_runtime::traits::Header;

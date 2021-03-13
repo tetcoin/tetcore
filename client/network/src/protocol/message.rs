@@ -27,7 +27,7 @@ pub use self::generic::{
 	RemoteChangesRequest, RemoteChangesResponse,
 	FromBlock, RemoteReadChildRequest, Roles,
 };
-use sc_client_api::StorageProof;
+use tc_client_api::StorageProof;
 
 /// A unique ID of a request.
 pub type RequestId = u64;

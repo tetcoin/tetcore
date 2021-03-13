@@ -35,7 +35,7 @@ use tp_state_machine::{
 use tp_runtime::{generic::BlockId, Justification, Storage};
 use tp_runtime::traits::{Block as BlockT, NumberFor, Zero, Header, HashFor};
 use tp_blockchain::{Error as ClientError, Result as ClientResult};
-use sc_client_api::{
+use tc_client_api::{
 	backend::{
 		AuxStore, Backend as ClientBackend, BlockImportOperation, RemoteBackend, NewBlockState,
 		PrunableStateChangesTrieStorage,
@@ -506,10 +506,10 @@ impl<H: Hasher> StateBackend<H> for GenesisOrUnavailableState<H>
 		}
 	}
 
-	fn register_overlay_stats(&mut self, _stats: &sp_state_machine::StateMachineStats) { }
+	fn register_overlay_stats(&mut self, _stats: &tp_state_machine::StateMachineStats) { }
 
 	fn usage_info(&self) -> tp_state_machine::UsageInfo {
-		sp_state_machine::UsageInfo::empty()
+		tp_state_machine::UsageInfo::empty()
 	}
 
 	fn as_trie_backend(&mut self) -> Option<&TrieBackend<Self::TrieBackendStorage, H>> {

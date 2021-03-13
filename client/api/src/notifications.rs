@@ -344,7 +344,7 @@ impl<Block: BlockT> StorageNotifications<Block> {
 
 
 		// insert sink
-		let (tx, rx) = tracing_unbounded("mpsc_storage_notification_items");
+		let (tx, rx) = tracing_unbounded("mptc_storage_notification_items");
 		self.sinks.insert(current_id, (tx, keys, child_keys));
 
 		if let Some(m) = self.metrics.as_ref() {

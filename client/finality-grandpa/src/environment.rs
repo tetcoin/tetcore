@@ -29,7 +29,7 @@ use log::{debug, warn};
 use tetsy_scale_codec::{Decode, Encode};
 use parking_lot::RwLock;
 
-use sc_client_api::{backend::{Backend, apply_aux}, utils::is_descendent_of};
+use tc_client_api::{backend::{Backend, apply_aux}, utils::is_descendent_of};
 use tetsy_finality_grandpa::{
 	BlockNumberOps, Error as GrandpaError, round::State as RoundState,
 	voter, voter_set::VoterSet,
@@ -39,7 +39,7 @@ use tp_runtime::generic::BlockId;
 use tp_runtime::traits::{
 	Block as BlockT, Header as HeaderT, NumberFor, Zero,
 };
-use sc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_INFO};
+use tc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_INFO};
 
 use crate::{
 	local_authority_id, CommandOrError, Commit, Config, Error, NewAuthoritySet, Precommit, Prevote,

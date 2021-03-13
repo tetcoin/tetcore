@@ -201,7 +201,7 @@ impl<T: Config> frame_support::unsigned::ValidateUnsigned for Module<T> {
 		if let Call::report_equivocation_unsigned(equivocation_proof, key_owner_proof) = call {
 			// check the membership proof to extract the offender's id
 			let key = (
-				sp_consensus_babe::KEY_TYPE,
+				tp_consensus_babe::KEY_TYPE,
 				equivocation_proof.offender.clone(),
 			);
 

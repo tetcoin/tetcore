@@ -32,7 +32,7 @@ use rpc::futures::{
 };
 use futures::{StreamExt as _, compat::Compat};
 use futures::future::{ready, FutureExt, TryFutureExt};
-use sc_rpc_api::DenyUnsafe;
+use tc_rpc_api::DenyUnsafe;
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use codec::{Encode, Decode};
 use tet_core::Bytes;
@@ -46,7 +46,7 @@ use tp_transaction_pool::{
 use tp_session::SessionKeys;
 
 /// Re-export the API for backward compatibility.
-pub use sc_rpc_api::author::*;
+pub use tc_rpc_api::author::*;
 use self::error::{Error, FutureResult, Result};
 
 /// Authoring API

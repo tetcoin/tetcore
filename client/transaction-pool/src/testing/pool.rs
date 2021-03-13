@@ -32,8 +32,8 @@ use tetcore_test_runtime_transaction_pool::{TestApi, uxt};
 use futures::{prelude::*, task::Poll};
 use codec::Encode;
 use std::collections::BTreeSet;
-use sc_client_api::client::BlockchainEvents;
-use sc_block_builder::BlockBuilderProvider;
+use tc_client_api::client::BlockchainEvents;
+use tc_block_builder::BlockBuilderProvider;
 use tp_consensus::BlockOrigin;
 
 fn pool() -> Pool<TestApi> {
@@ -960,7 +960,7 @@ fn should_not_accept_old_signatures() {
 	assert_matches::assert_matches!(
 		block_on(pool.submit_one(&BlockId::number(0), SOURCE, xt.clone())),
 		Err(error::Error::Pool(
-			sp_transaction_pool::error::Error::InvalidTransaction(InvalidTransaction::BadProof)
+			tp_transaction_pool::error::Error::InvalidTransaction(InvalidTransaction::BadProof)
 		)),
 		"Should be invalid transaction with bad proof",
 	);

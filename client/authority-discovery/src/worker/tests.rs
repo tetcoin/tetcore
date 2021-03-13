@@ -61,8 +61,8 @@ impl<Block: BlockT> HeaderBackend<Block> for TestApi {
 		Ok(None)
 	}
 
-	fn info(&self) -> sc_client_api::blockchain::Info<Block> {
-		sc_client_api::blockchain::Info {
+	fn info(&self) -> tc_client_api::blockchain::Info<Block> {
+		tc_client_api::blockchain::Info {
 			best_hash: Default::default(),
 			best_number: Zero::zero(),
 			finalized_hash: Default::default(),
@@ -75,8 +75,8 @@ impl<Block: BlockT> HeaderBackend<Block> for TestApi {
 	fn status(
 		&self,
 		_id: BlockId<Block>,
-	) -> std::result::Result<sc_client_api::blockchain::BlockStatus, tp_blockchain::Error> {
-		Ok(sc_client_api::blockchain::BlockStatus::Unknown)
+	) -> std::result::Result<tc_client_api::blockchain::BlockStatus, tp_blockchain::Error> {
+		Ok(tc_client_api::blockchain::BlockStatus::Unknown)
 	}
 
 	fn number(
@@ -98,7 +98,7 @@ pub(crate) struct RuntimeApi {
 	authorities: Vec<AuthorityId>,
 }
 
-sp_api::mock_impl_runtime_apis! {
+tp_api::mock_impl_runtime_apis! {
 	impl AuthorityDiscoveryApi<Block> for RuntimeApi {
 		type Error = tp_blockchain::Error;
 
@@ -305,7 +305,7 @@ fn publish_discover_cycle() {
 
 		let dht_event = {
 			let (key, value) = network.put_value_call.lock().unwrap().pop().unwrap();
-			sc_network::DhtEvent::ValueFound(vec![(key, value)])
+			tc_network::DhtEvent::ValueFound(vec![(key, value)])
 		};
 
 		// Node B discovering node A's address.
@@ -454,7 +454,7 @@ fn dont_stop_polling_dht_event_stream_after_bogus_event() {
 				vec![remote_multiaddr.clone()],
 				remote_public_key.clone(), &remote_key_store,
 			).await;
-			sc_network::DhtEvent::ValueFound(vec![(key, value)])
+			tc_network::DhtEvent::ValueFound(vec![(key, value)])
 		};
 		dht_event_tx.send(dht_event).await.expect("Channel has capacity of 1.");
 
@@ -698,7 +698,7 @@ fn lookup_throttling() {
 				remote_key,
 				&remote_key_store
 			).await;
-			sc_network::DhtEvent::ValueFound(vec![(key, value)])
+			tc_network::DhtEvent::ValueFound(vec![(key, value)])
 		};
 		dht_event_tx.send(dht_event).await.expect("Channel has capacity of 1.");
 
@@ -712,7 +712,7 @@ fn lookup_throttling() {
 
 		// Make second one fail.
 		let remote_hash = network.get_value_call.lock().unwrap().pop().unwrap();
-		let dht_event = sc_network::DhtEvent::ValueNotFound(remote_hash);
+		let dht_event = tc_network::DhtEvent::ValueNotFound(remote_hash);
 		dht_event_tx.send(dht_event).await.expect("Channel has capacity of 1.");
 
 		// Assert worker to trigger another lookup.

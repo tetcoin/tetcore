@@ -34,7 +34,7 @@ pub enum Error {
 	Cli(#[from] structopt::clap::Error),
 
 	#[error(transparent)]
-	Service(#[from] sc_service::Error),
+	Service(#[from] tc_service::Error),
 
 	#[error(transparent)]
 	Client(#[from] tp_blockchain::Error),
@@ -69,7 +69,7 @@ pub enum Error {
 	KeyStoreOperation,
 
 	#[error("Key storage issue encountered")]
-	KeyStorage(#[from] sc_keystore::Error),
+	KeyStorage(#[from] tc_keystore::Error),
 
 	#[error("Invalid hexadecimal string data")]
 	HexDataConversion(#[from] hex::FromHexError),
@@ -79,7 +79,7 @@ pub enum Error {
 	Application(#[from] Box<dyn std::error::Error + Send + Sync + 'static>),
 
 	#[error(transparent)]
-	GlobalLoggerError(#[from] sc_tracing::logging::Error),
+	GlobalLoggerError(#[from] tc_tracing::logging::Error),
 }
 
 impl std::convert::From<&str> for Error {

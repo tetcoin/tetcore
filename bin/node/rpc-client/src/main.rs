@@ -25,7 +25,7 @@
 use futures::Future;
 use hyper::rt;
 use node_primitives::Hash;
-use sc_rpc::author::{
+use tc_rpc::author::{
 	AuthorClient,
 	hash::ExtrinsicOrHash,
 };

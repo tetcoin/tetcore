@@ -272,7 +272,7 @@ pub use service::{
 	NotificationSenderReady,
 };
 
-pub use sc_peerset::ReputationChange;
+pub use tc_peerset::ReputationChange;
 use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 /// The maximum allowed number of established connections per peer.

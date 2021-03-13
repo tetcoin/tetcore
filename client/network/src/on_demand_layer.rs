@@ -22,7 +22,7 @@ use crate::light_client_handler;
 
 use futures::{channel::oneshot, prelude::*};
 use parking_lot::Mutex;
-use sc_client_api::{
+use tc_client_api::{
 	FetchChecker, Fetcher, RemoteBodyRequest, RemoteCallRequest, RemoteChangesRequest,
 	RemoteHeaderRequest, RemoteReadChildRequest, RemoteReadRequest, StorageProof, ChangesProof,
 };
@@ -126,7 +126,7 @@ where
 {
 	/// Creates new on-demand service.
 	pub fn new(checker: Arc<dyn FetchChecker<B>>) -> Self {
-		let (requests_send, requests_queue) = tracing_unbounded("mpsc_ondemand");
+		let (requests_send, requests_queue) = tracing_unbounded("mptc_ondemand");
 		let requests_queue = Mutex::new(Some(requests_queue));
 
 		OnDemand {

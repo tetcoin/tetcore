@@ -647,14 +647,14 @@ mod tests {
 	impl custom::Config for Runtime {}
 
 	pub struct RuntimeVersion;
-	impl frame_support::traits::Get<sp_version::RuntimeVersion> for RuntimeVersion {
+	impl frame_support::traits::Get<tp_version::RuntimeVersion> for RuntimeVersion {
 		fn get() -> tp_version::RuntimeVersion {
 			RUNTIME_VERSION.with(|v| v.borrow().clone())
 		}
 	}
 
 	thread_local! {
-		pub static RUNTIME_VERSION: std::cell::RefCell<sp_version::RuntimeVersion> =
+		pub static RUNTIME_VERSION: std::cell::RefCell<tp_version::RuntimeVersion> =
 			Default::default();
 	}
 

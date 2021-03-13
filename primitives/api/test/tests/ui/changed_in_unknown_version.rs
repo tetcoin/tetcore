@@ -8,7 +8,7 @@ impl GetNodeBlockType for Runtime {
 	type NodeBlock = Block;
 }
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	pub trait Api {
 		#[changed_in(2)]
 		fn test(data: u64);

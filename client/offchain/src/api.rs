@@ -27,7 +27,7 @@ use std::{
 use crate::NetworkProvider;
 use futures::Future;
 use log::error;
-use sc_network::{PeerId, Multiaddr};
+use tc_network::{PeerId, Multiaddr};
 use codec::{Encode, Decode};
 use tet_core::OpaquePeerId;
 use tet_core::offchain::{
@@ -304,8 +304,8 @@ impl AsyncApi {
 mod tests {
 	use super::*;
 	use std::{convert::{TryFrom, TryInto}, time::SystemTime};
-	use sc_client_db::offchain::LocalStorage;
-	use sc_network::{NetworkStateInfo, PeerId};
+	use tc_client_db::offchain::LocalStorage;
+	use tc_network::{NetworkStateInfo, PeerId};
 
 	struct TestNetwork();
 

@@ -18,7 +18,7 @@
 
 use crate::error;
 use crate::error::Error;
-use sc_chain_spec::ChainSpec;
+use tc_chain_spec::ChainSpec;
 use log::{warn, info};
 use futures::{future, prelude::*};
 use tp_runtime::traits::{
@@ -38,7 +38,7 @@ use std::task::Poll;
 use serde_json::{de::IoRead as JsonIoRead, Deserializer, StreamDeserializer};
 use std::convert::{TryFrom, TryInto};
 use tp_runtime::traits::{CheckedDiv, Saturating};
-use sc_client_api::UsageProvider;
+use tc_client_api::UsageProvider;
 
 /// Number of blocks we will add to the queue before waiting for the queue to catch up.
 const MAX_PENDING_BLOCKS: u64 = 1_024;

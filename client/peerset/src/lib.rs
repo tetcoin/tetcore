@@ -257,7 +257,7 @@ pub struct Peerset {
 impl Peerset {
 	/// Builds a new peerset from the given configuration.
 	pub fn from_config(config: PeersetConfig) -> (Peerset, PeersetHandle) {
-		let (tx, rx) = tracing_unbounded("mpsc_peerset_messages");
+		let (tx, rx) = tracing_unbounded("mptc_peerset_messages");
 
 		let handle = PeersetHandle {
 			tx: tx.clone(),

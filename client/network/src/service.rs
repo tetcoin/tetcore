@@ -76,7 +76,7 @@ use tetsy_libp2p::swarm::{
 use log::{error, info, trace, warn};
 use metrics::{Metrics, MetricSources, Histogram, HistogramVec};
 use parking_lot::Mutex;
-use sc_peerset::PeersetHandle;
+use tc_peerset::PeersetHandle;
 use tp_consensus::import_queue::{BlockImportError, BlockImportResult, ImportQueue, Link};
 use tp_runtime::traits::{Block as BlockT, NumberFor};
 use tetcore_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
@@ -164,7 +164,7 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkWorker<B, H> {
 			&params.network_config.transport,
 		)?;
 
-		let (to_worker, from_service) = tracing_unbounded("mpsc_network_worker");
+		let (to_worker, from_service) = tracing_unbounded("mptc_network_worker");
 
 		if let Some(path) = &params.network_config.net_config_path {
 			fs::create_dir_all(path)?;

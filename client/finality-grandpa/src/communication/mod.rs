@@ -38,11 +38,11 @@ use std::{pin::Pin, sync::Arc, task::{Context, Poll}};
 use tp_keystore::SyncCryptoStorePtr;
 use tetsy_finality_grandpa::Message::{Prevote, Precommit, PrimaryPropose};
 use tetsy_finality_grandpa::{voter, voter_set::VoterSet};
-use sc_network::{NetworkService, ReputationChange};
-use sc_network_gossip::{GossipEngine, Network as GossipNetwork};
+use tc_network::{NetworkService, ReputationChange};
+use tc_network_gossip::{GossipEngine, Network as GossipNetwork};
 use tetsy_scale_codec::{Encode, Decode};
 use tp_runtime::traits::{Block as BlockT, Hash as HashT, Header as HeaderT, NumberFor};
-use sc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_INFO};
+use tc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_INFO};
 
 use crate::{
 	CatchUp, Commit, CommunicationIn, CommunicationOutH,
@@ -74,7 +74,7 @@ pub const GRANDPA_PROTOCOL_NAME: &'static str = "/tetcoin/grandpa/1";
 
 // cost scalars for reporting peers.
 mod cost {
-	use sc_network::ReputationChange as Rep;
+	use tc_network::ReputationChange as Rep;
 	pub(super) const PAST_REJECTION: Rep = Rep::new(-50, "Grandpa: Past message");
 	pub(super) const BAD_SIGNATURE: Rep = Rep::new(-100, "Grandpa: Bad signature");
 	pub(super) const MALFORMED_CATCH_UP: Rep = Rep::new(-1000, "Grandpa: Malformed cath-up");
@@ -98,7 +98,7 @@ mod cost {
 
 // benefit scalars for reporting peers.
 mod benefit {
-	use sc_network::ReputationChange as Rep;
+	use tc_network::ReputationChange as Rep;
 	pub(super) const NEIGHBOR_MESSAGE: Rep = Rep::new(100, "Grandpa: Neighbor message");
 	pub(super) const ROUND_MESSAGE: Rep = Rep::new(100, "Grandpa: Round message");
 	pub(super) const BASIC_VALIDATED_CATCH_UP: Rep = Rep::new(200, "Grandpa: Catch-up message");
@@ -144,14 +144,14 @@ pub trait Network<Block: BlockT>: GossipNetwork<Block> + Clone + Send + 'static 
 	/// If the given vector of peers is empty then the underlying implementation
 	/// should make a best effort to fetch the block from any peers it is
 	/// connected to (NOTE: this assumption will change in the future #3629).
-	fn set_sync_fork_request(&self, peers: Vec<sc_network::PeerId>, hash: Block::Hash, number: NumberFor<Block>);
+	fn set_sync_fork_request(&self, peers: Vec<tc_network::PeerId>, hash: Block::Hash, number: NumberFor<Block>);
 }
 
 impl<B, H> Network<B> for Arc<NetworkService<B, H>> where
 	B: BlockT,
-	H: sc_network::ExHashT,
+	H: tc_network::ExHashT,
 {
-	fn set_sync_fork_request(&self, peers: Vec<sc_network::PeerId>, hash: B::Hash, number: NumberFor<B>) {
+	fn set_sync_fork_request(&self, peers: Vec<tc_network::PeerId>, hash: B::Hash, number: NumberFor<B>) {
 		NetworkService::set_sync_fork_request(self, peers, hash, number)
 	}
 }
@@ -438,7 +438,7 @@ impl<B: BlockT, N: Network<B>> NetworkBridge<B, N> {
 	/// connected to (NOTE: this assumption will change in the future #3629).
 	pub(crate) fn set_sync_fork_request(
 		&self,
-		peers: Vec<sc_network::PeerId>,
+		peers: Vec<tc_network::PeerId>,
 		hash: B::Hash,
 		number: NumberFor<B>
 	) {
@@ -494,7 +494,7 @@ fn incoming_global<B: BlockT>(
 ) -> impl Stream<Item = CommunicationIn<B>> {
 	let process_commit = move |
 		msg: FullCommitMessage<B>,
-		mut notification: sc_network_gossip::TopicNotification,
+		mut notification: tc_network_gossip::TopicNotification,
 		gossip_engine: &Arc<Mutex<GossipEngine<B>>>,
 		gossip_validator: &Arc<GossipValidator<B>>,
 		voters: &VoterSet<AuthorityId>,
@@ -561,7 +561,7 @@ fn incoming_global<B: BlockT>(
 
 	let process_catch_up = move |
 		msg: FullCatchUpMessage<B>,
-		mut notification: sc_network_gossip::TopicNotification,
+		mut notification: tc_network_gossip::TopicNotification,
 		gossip_engine: &Arc<Mutex<GossipEngine<B>>>,
 		gossip_validator: &Arc<GossipValidator<B>>,
 		voters: &VoterSet<AuthorityId>,
@@ -788,7 +788,7 @@ fn check_compact_commit<Block: BlockT>(
 		use crate::communication::gossip::Misbehavior;
 		use tetsy_finality_grandpa::Message as GrandpaMessage;
 
-		if !sp_finality_grandpa::check_message_signature_with_buffer(
+		if !tp_finality_grandpa::check_message_signature_with_buffer(
 			&GrandpaMessage::Precommit(precommit.clone()),
 			id,
 			sig,
@@ -876,7 +876,7 @@ fn check_catch_up<Block: BlockT>(
 		for (msg, id, sig) in messages {
 			signatures_checked += 1;
 
-			if !sp_finality_grandpa::check_message_signature_with_buffer(
+			if !tp_finality_grandpa::check_message_signature_with_buffer(
 				&msg,
 				id,
 				sig,

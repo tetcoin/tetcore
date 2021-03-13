@@ -36,7 +36,7 @@ mod finality;
 mod notification;
 mod report;
 
-use sc_finality_grandpa::GrandpaJustificationStream;
+use tc_finality_grandpa::GrandpaJustificationStream;
 use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 use finality::{EncodedFinalityProof, RpcFinalityProofProvider};
@@ -134,7 +134,7 @@ where
 	Block: BlockT,
 	ProofProvider: RpcFinalityProofProvider<Block> + Send + Sync + 'static,
 {
-	type Metadata = sc_rpc::Metadata;
+	type Metadata = tc_rpc::Metadata;
 
 	fn round_state(&self) -> FutureResult<ReportedRoundStates> {
 		let round_states = ReportedRoundStates::from(&self.authority_set, &self.voter_state);
@@ -193,8 +193,8 @@ mod tests {
 	use tetsy_jsonrpc_core::{Notification, Output, types::Params};
 
 	use tetsy_scale_codec::{Encode, Decode};
-	use sc_block_builder::BlockBuilder;
-	use sc_finality_grandpa::{
+	use tc_block_builder::BlockBuilder;
+	use tc_finality_grandpa::{
 		report, AuthorityId, GrandpaJustificationSender, GrandpaJustification,
 		FinalityProof,
 	};
@@ -255,7 +255,7 @@ mod tests {
 		fn rpc_prove_finality(
 			&self,
 			_block: NumberFor<Block>
-		) -> Result<Option<EncodedFinalityProof>, sc_finality_grandpa::FinalityProofError> {
+		) -> Result<Option<EncodedFinalityProof>, tc_finality_grandpa::FinalityProofError> {
 			Ok(Some(EncodedFinalityProof(
 				self.finality_proof
 					.as_ref()
@@ -271,7 +271,7 @@ mod tests {
 			let voter_id_1 = AuthorityId::from_slice(&[1; 32]);
 			let voters_best: HashSet<_> = vec![voter_id_1].into_iter().collect();
 
-			let best_round_state = sc_finality_grandpa::report::RoundState {
+			let best_round_state = tc_finality_grandpa::report::RoundState {
 				total_weight: 100_u64.try_into().unwrap(),
 				threshold_weight: 67_u64.try_into().unwrap(),
 				prevote_current_weight: 50.into(),
@@ -280,7 +280,7 @@ mod tests {
 				precommit_ids: HashSet::new(),
 			};
 
-			let past_round_state = sc_finality_grandpa::report::RoundState {
+			let past_round_state = tc_finality_grandpa::report::RoundState {
 				total_weight: 100_u64.try_into().unwrap(),
 				threshold_weight: 67_u64.try_into().unwrap(),
 				prevote_current_weight: 100.into(),
@@ -299,7 +299,7 @@ mod tests {
 	}
 
 	fn setup_io_handler<VoterState>(voter_state: VoterState) -> (
-		tetsy_jsonrpc_core::MetaIoHandler<sc_rpc::Metadata>,
+		tetsy_jsonrpc_core::MetaIoHandler<tc_rpc::Metadata>,
 		GrandpaJustificationSender<Block>,
 	) where
 		VoterState: ReportVoterState + Send + Sync + 'static,
@@ -311,7 +311,7 @@ mod tests {
 		voter_state: VoterState,
 		finality_proof: Option<FinalityProof<Header>>,
 	) -> (
-		tetsy_jsonrpc_core::MetaIoHandler<sc_rpc::Metadata>,
+		tetsy_jsonrpc_core::MetaIoHandler<tc_rpc::Metadata>,
 		GrandpaJustificationSender<Block>,
 	) where
 		VoterState: ReportVoterState + Send + Sync + 'static,
@@ -323,7 +323,7 @@ mod tests {
 			TestAuthoritySet,
 			voter_state,
 			justification_stream,
-			sc_rpc::testing::TaskExecutor,
+			tc_rpc::testing::TaskExecutor,
 			finality_proof_provider,
 		);
 
@@ -340,7 +340,7 @@ mod tests {
 		let request = r#"{"jsonrpc":"2.0","method":"grandpa_roundState","params":[],"id":1}"#;
 		let response = r#"{"jsonrpc":"2.0","error":{"code":1,"message":"GRANDPA RPC endpoint not ready"},"id":1}"#;
 
-		let meta = sc_rpc::Metadata::default();
+		let meta = tc_rpc::Metadata::default();
 		assert_eq!(Some(response.into()), io.handle_request_sync(request, meta));
 	}
 
@@ -363,13 +363,13 @@ mod tests {
 			\"setId\":1\
 		},\"id\":1}";
 
-		let meta = sc_rpc::Metadata::default();
+		let meta = tc_rpc::Metadata::default();
 		assert_eq!(io.handle_request_sync(request, meta), Some(response.into()));
 	}
 
-	fn setup_session() -> (sc_rpc::Metadata, tetsy_jsonrpc_core::futures::sync::mpsc::Receiver<String>) {
+	fn setup_session() -> (tc_rpc::Metadata, tetsy_jsonrpc_core::futures::sync::mpsc::Receiver<String>) {
 		let (tx, rx) = tetsy_jsonrpc_core::futures::sync::mpsc::channel(1);
-		let meta = sc_rpc::Metadata::new(tx);
+		let meta = tc_rpc::Metadata::new(tx);
 		(meta, rx)
 	}
 
@@ -529,7 +529,7 @@ mod tests {
 		let request =
 			"{\"jsonrpc\":\"2.0\",\"method\":\"grandpa_proveFinality\",\"params\":[42],\"id\":1}";
 
-		let meta = sc_rpc::Metadata::default();
+		let meta = tc_rpc::Metadata::default();
 		let resp = io.handle_request_sync(request, meta);
 		let mut resp: serde_json::Value = serde_json::from_str(&resp.unwrap()).unwrap();
 		let result: tet_core::Bytes = serde_json::from_value(resp["result"].take()).unwrap();

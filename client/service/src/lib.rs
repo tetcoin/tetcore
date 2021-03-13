@@ -41,7 +41,7 @@ use std::time::Duration;
 use std::task::Poll;
 
 use futures::{Future, FutureExt, Stream, StreamExt, stream, compat::*};
-use sc_network::{NetworkStatus, network_state::NetworkState, PeerId};
+use tc_network::{NetworkStatus, network_state::NetworkState, PeerId};
 use log::{warn, debug, error};
 use codec::{Encode, Decode};
 use tp_runtime::generic::BlockId;
@@ -61,27 +61,27 @@ pub use config::{
 	BasePath, Configuration, DatabaseConfig, PruningMode, Role, RpcMethods, TaskExecutor, TaskType,
 	KeepBlocks, TransactionStorageMode,
 };
-pub use sc_chain_spec::{
+pub use tc_chain_spec::{
 	ChainSpec, GenericChainSpec, Properties, RuntimeGenesis, Extension as ChainSpecExtension,
 	NoExtension, ChainType,
 };
 pub use tp_transaction_pool::{TransactionPool, InPoolTransaction, error::IntoPoolError};
-pub use sc_transaction_pool::txpool::Options as TransactionPoolOptions;
-pub use sc_rpc::Metadata as RpcMetadata;
-pub use sc_executor::NativeExecutionDispatch;
+pub use tc_transaction_pool::txpool::Options as TransactionPoolOptions;
+pub use tc_rpc::Metadata as RpcMetadata;
+pub use tc_executor::NativeExecutionDispatch;
 #[doc(hidden)]
 pub use std::{ops::Deref, result::Result, sync::Arc};
 #[doc(hidden)]
-pub use sc_network::config::{
+pub use tc_network::config::{
 	OnDemand, TransactionImport,
 	TransactionImportFuture,
 };
-pub use sc_tracing::TracingReceiver;
+pub use tc_tracing::TracingReceiver;
 pub use task_manager::SpawnTaskHandle;
 pub use task_manager::TaskManager;
 pub use tp_consensus::import_queue::ImportQueue;
 pub use self::client::{LocalCallExecutor, ClientConfig};
-use sc_client_api::{blockchain::HeaderBackend, BlockchainEvents};
+use tc_client_api::{blockchain::HeaderBackend, BlockchainEvents};
 
 const DEFAULT_PROTOCOL_ID: &str = "sup";
 
@@ -97,7 +97,7 @@ impl<T> MallocSizeOfWasm for T {}
 
 /// RPC handlers that can perform RPC queries.
 #[derive(Clone)]
-pub struct RpcHandlers(Arc<tetsy_jsonrpc_core::MetaIoHandler<sc_rpc::Metadata, sc_rpc_server::RpcMiddleware>>);
+pub struct RpcHandlers(Arc<tetsy_jsonrpc_core::MetaIoHandler<tc_rpc::Metadata, tc_rpc_server::RpcMiddleware>>);
 
 impl RpcHandlers {
 	/// Starts an RPC query.
@@ -119,7 +119,7 @@ impl RpcHandlers {
 
 	/// Provides access to the underlying `MetaIoHandler`
 	pub fn io_handler(&self)
-		-> Arc<tetsy_jsonrpc_core::MetaIoHandler<sc_rpc::Metadata, sc_rpc_server::RpcMiddleware>> {
+		-> Arc<tetsy_jsonrpc_core::MetaIoHandler<tc_rpc::Metadata, tc_rpc_server::RpcMiddleware>> {
 		self.0.clone()
 	}
 }
@@ -144,7 +144,7 @@ impl<Block: BlockT> NetworkStatusSinks<Block> {
 	pub fn status_stream(&self, interval: Duration)
 		-> TracingUnboundedReceiver<NetworkStatus<Block>>
 	{
-		let (sink, stream) = tracing_unbounded("mpsc_network_status");
+		let (sink, stream) = tracing_unbounded("mptc_network_status");
 		self.status.push(interval, sink);
 		stream
 	}
@@ -153,7 +153,7 @@ impl<Block: BlockT> NetworkStatusSinks<Block> {
 	pub fn state_stream(&self, interval: Duration)
 		-> TracingUnboundedReceiver<NetworkState>
 	{
-		let (sink, stream) = tracing_unbounded("mpsc_network_state");
+		let (sink, stream) = tracing_unbounded("mptc_network_state");
 		self.state.push(interval, sink);
 		stream
 	}
@@ -188,13 +188,13 @@ pub struct PartialComponents<Client, Backend, SelectChain, ImportQueue, Transact
 async fn build_network_future<
 	B: BlockT,
 	C: BlockchainEvents<B> + HeaderBackend<B>,
-	H: sc_network::ExHashT
+	H: tc_network::ExHashT
 > (
 	role: Role,
-	mut network: sc_network::NetworkWorker<B, H>,
+	mut network: tc_network::NetworkWorker<B, H>,
 	client: Arc<C>,
 	status_sinks: NetworkStatusSinks<B>,
-	mut rpc_rx: TracingUnboundedReceiver<sc_rpc::system::Request<B>>,
+	mut rpc_rx: TracingUnboundedReceiver<tc_rpc::system::Request<B>>,
 	should_have_peers: bool,
 	announce_imported_blocks: bool,
 ) {
@@ -253,27 +253,27 @@ async fn build_network_future<
 			// Answer incoming RPC requests.
 			request = rpc_rx.select_next_some() => {
 				match request {
-					sc_rpc::system::Request::Health(sender) => {
-						let _ = sender.send(sc_rpc::system::Health {
+					tc_rpc::system::Request::Health(sender) => {
+						let _ = sender.send(tc_rpc::system::Health {
 							peers: network.peers_debug_info().len(),
 							is_syncing: network.service().is_major_syncing(),
 							should_have_peers,
 						});
 					},
-					sc_rpc::system::Request::LocalPeerId(sender) => {
+					tc_rpc::system::Request::LocalPeerId(sender) => {
 						let _ = sender.send(network.local_peer_id().to_base58());
 					},
-					sc_rpc::system::Request::LocalListenAddresses(sender) => {
+					tc_rpc::system::Request::LocalListenAddresses(sender) => {
 						let peer_id = network.local_peer_id().clone().into();
-						let p2p_proto_suffix = sc_network::multiaddr::Protocol::P2p(peer_id);
+						let p2p_proto_suffix = tc_network::multiaddr::Protocol::P2p(peer_id);
 						let addresses = network.listen_addresses()
 							.map(|addr| addr.clone().with(p2p_proto_suffix.clone()).to_string())
 							.collect();
 						let _ = sender.send(addresses);
 					},
-					sc_rpc::system::Request::Peers(sender) => {
+					tc_rpc::system::Request::Peers(sender) => {
 						let _ = sender.send(network.peers_debug_info().into_iter().map(|(peer_id, p)|
-							sc_rpc::system::PeerInfo {
+							tc_rpc::system::PeerInfo {
 								peer_id: peer_id.to_base58(),
 								roles: format!("{:?}", p.roles),
 								best_hash: p.best_hash,
@@ -281,29 +281,29 @@ async fn build_network_future<
 							}
 						).collect());
 					}
-					sc_rpc::system::Request::NetworkState(sender) => {
+					tc_rpc::system::Request::NetworkState(sender) => {
 						if let Some(network_state) = serde_json::to_value(&network.network_state()).ok() {
 							let _ = sender.send(network_state);
 						}
 					}
-					sc_rpc::system::Request::NetworkAddReservedPeer(peer_addr, sender) => {
+					tc_rpc::system::Request::NetworkAddReservedPeer(peer_addr, sender) => {
 						let x = network.add_reserved_peer(peer_addr)
-							.map_err(sc_rpc::system::error::Error::MalformattedPeerArg);
+							.map_err(tc_rpc::system::error::Error::MalformattedPeerArg);
 						let _ = sender.send(x);
 					}
-					sc_rpc::system::Request::NetworkRemoveReservedPeer(peer_id, sender) => {
+					tc_rpc::system::Request::NetworkRemoveReservedPeer(peer_id, sender) => {
 						let _ = match peer_id.parse::<PeerId>() {
 							Ok(peer_id) => {
 								network.remove_reserved_peer(peer_id);
 								sender.send(Ok(()))
 							}
-							Err(e) => sender.send(Err(sc_rpc::system::error::Error::MalformattedPeerArg(
+							Err(e) => sender.send(Err(tc_rpc::system::error::Error::MalformattedPeerArg(
 								e.to_string(),
 							))),
 						};
 					}
-					sc_rpc::system::Request::NodeRoles(sender) => {
-						use sc_rpc::system::NodeRole;
+					tc_rpc::system::Request::NodeRoles(sender) => {
+						use tc_rpc::system::NodeRole;
 
 						let node_role = match role {
 							Role::Authority { .. } => NodeRole::Authority,
@@ -314,8 +314,8 @@ async fn build_network_future<
 
 						let _ = sender.send(vec![node_role]);
 					}
-					sc_rpc::system::Request::SyncState(sender) => {
-						use sc_rpc::system::SyncState;
+					tc_rpc::system::Request::SyncState(sender) => {
+						use tc_rpc::system::SyncState;
 
 						let _ = sender.send(SyncState {
 							starting_block: starting_block,
@@ -349,7 +349,7 @@ async fn build_network_future<
 #[cfg(not(target_os = "unknown"))]
 // Wrapper for HTTP and WS servers that makes sure they are properly shut down.
 mod waiting {
-	pub struct HttpServer(pub Option<sc_rpc_server::HttpServer>);
+	pub struct HttpServer(pub Option<tc_rpc_server::HttpServer>);
 	impl Drop for HttpServer {
 		fn drop(&mut self) {
 			if let Some(server) = self.0.take() {
@@ -359,7 +359,7 @@ mod waiting {
 		}
 	}
 
-	pub struct IpcServer(pub Option<sc_rpc_server::IpcServer>);
+	pub struct IpcServer(pub Option<tc_rpc_server::IpcServer>);
 	impl Drop for IpcServer {
 		fn drop(&mut self) {
 			if let Some(server) = self.0.take() {
@@ -369,7 +369,7 @@ mod waiting {
 		}
 	}
 
-	pub struct WsServer(pub Option<sc_rpc_server::WsServer>);
+	pub struct WsServer(pub Option<tc_rpc_server::WsServer>);
 	impl Drop for WsServer {
 		fn drop(&mut self) {
 			if let Some(server) = self.0.take() {
@@ -383,12 +383,12 @@ mod waiting {
 /// Starts RPC servers that run in their own thread, and returns an opaque object that keeps them alive.
 #[cfg(not(target_os = "unknown"))]
 fn start_rpc_servers<
-	H: FnMut(sc_rpc::DenyUnsafe, sc_rpc_server::RpcMiddleware)
-	-> sc_rpc_server::RpcHandler<sc_rpc::Metadata>
+	H: FnMut(tc_rpc::DenyUnsafe, tc_rpc_server::RpcMiddleware)
+	-> tc_rpc_server::RpcHandler<tc_rpc::Metadata>
 >(
 	config: &Configuration,
 	mut gen_handler: H,
-	rpc_metrics: sc_rpc_server::RpcMetrics,
+	rpc_metrics: tc_rpc_server::RpcMetrics,
 ) -> Result<Box<dyn std::any::Any + Send + Sync>, error::Error> {
 	fn maybe_start_server<T, F>(address: Option<SocketAddr>, mut start: F) -> Result<Option<T>, io::Error>
 		where F: FnMut(&SocketAddr) -> Result<T, io::Error>,
@@ -408,42 +408,42 @@ fn start_rpc_servers<
 		})
 	}
 
-	fn deny_unsafe(addr: &SocketAddr, methods: &RpcMethods) -> sc_rpc::DenyUnsafe {
+	fn deny_unsafe(addr: &SocketAddr, methods: &RpcMethods) -> tc_rpc::DenyUnsafe {
 		let is_exposed_addr = !addr.ip().is_loopback();
 		match (is_exposed_addr, methods) {
 			| (_, RpcMethods::Unsafe)
-			| (false, RpcMethods::Auto) => sc_rpc::DenyUnsafe::No,
-			_ => sc_rpc::DenyUnsafe::Yes
+			| (false, RpcMethods::Auto) => tc_rpc::DenyUnsafe::No,
+			_ => tc_rpc::DenyUnsafe::Yes
 		}
 	}
 
 	Ok(Box::new((
-		config.rpc_ipc.as_ref().map(|path| sc_rpc_server::start_ipc(
+		config.rpc_ipc.as_ref().map(|path| tc_rpc_server::start_ipc(
 			&*path, gen_handler(
-				sc_rpc::DenyUnsafe::No,
-				sc_rpc_server::RpcMiddleware::new(rpc_metrics.clone(), "ipc")
+				tc_rpc::DenyUnsafe::No,
+				tc_rpc_server::RpcMiddleware::new(rpc_metrics.clone(), "ipc")
 			)
 		)),
 		maybe_start_server(
 			config.rpc_http,
-			|address| sc_rpc_server::start_http(
+			|address| tc_rpc_server::start_http(
 				address,
 				config.rpc_cors.as_ref(),
 				gen_handler(
 					deny_unsafe(&address, &config.rpc_methods),
-					sc_rpc_server::RpcMiddleware::new(rpc_metrics.clone(), "http")
+					tc_rpc_server::RpcMiddleware::new(rpc_metrics.clone(), "http")
 				),
 			),
 		)?.map(|s| waiting::HttpServer(Some(s))),
 		maybe_start_server(
 			config.rpc_ws,
-			|address| sc_rpc_server::start_ws(
+			|address| tc_rpc_server::start_ws(
 				address,
 				config.rpc_ws_max_connections,
 				config.rpc_cors.as_ref(),
 				gen_handler(
 					deny_unsafe(&address, &config.rpc_methods),
-					sc_rpc_server::RpcMiddleware::new(rpc_metrics.clone(), "ws")
+					tc_rpc_server::RpcMiddleware::new(rpc_metrics.clone(), "ws")
 				),
 			),
 		)?.map(|s| waiting::WsServer(Some(s))),
@@ -453,12 +453,12 @@ fn start_rpc_servers<
 /// Starts RPC servers that run in their own thread, and returns an opaque object that keeps them alive.
 #[cfg(target_os = "unknown")]
 fn start_rpc_servers<
-	H: FnMut(sc_rpc::DenyUnsafe, sc_rpc_server::RpcMiddleware)
-	-> sc_rpc_server::RpcHandler<sc_rpc::Metadata>
+	H: FnMut(tc_rpc::DenyUnsafe, tc_rpc_server::RpcMiddleware)
+	-> tc_rpc_server::RpcHandler<tc_rpc::Metadata>
 >(
 	_: &Configuration,
 	_: H,
-	_: sc_rpc_server::RpcMetrics,
+	_: tc_rpc_server::RpcMetrics,
 ) -> Result<Box<dyn std::any::Any + Send + Sync>, error::Error> {
 	Ok(Box::new(()))
 }
@@ -467,7 +467,7 @@ fn start_rpc_servers<
 /// the HTTP or WebSockets server).
 #[derive(Clone)]
 pub struct RpcSession {
-	metadata: sc_rpc::Metadata,
+	metadata: tc_rpc::Metadata,
 }
 
 impl RpcSession {
@@ -500,7 +500,7 @@ where
 	Pool: TransactionPool<Block=B, Hash=H, Error=E>,
 	B: BlockT,
 	H: std::hash::Hash + Eq + tp_runtime::traits::Member + tp_runtime::traits::MaybeSerialize,
-	E: IntoPoolError + From<sp_transaction_pool::error::Error>,
+	E: IntoPoolError + From<tp_transaction_pool::error::Error>,
 {
 	pool.ready()
 		.filter(|t| t.is_propagable())
@@ -512,14 +512,14 @@ where
 		.collect()
 }
 
-impl<B, H, C, Pool, E> sc_network::config::TransactionPool<H, B> for
+impl<B, H, C, Pool, E> tc_network::config::TransactionPool<H, B> for
 	TransactionPoolAdapter<C, Pool>
 where
-	C: sc_network::config::Client<B> + Send + Sync,
+	C: tc_network::config::Client<B> + Send + Sync,
 	Pool: 'static + TransactionPool<Block=B, Hash=H, Error=E>,
 	B: BlockT,
 	H: std::hash::Hash + Eq + tp_runtime::traits::Member + tp_runtime::traits::MaybeSerialize,
-	E: 'static + IntoPoolError + From<sp_transaction_pool::error::Error>,
+	E: 'static + IntoPoolError + From<tp_transaction_pool::error::Error>,
 {
 	fn transactions(&self) -> Vec<(H, B::Extrinsic)> {
 		transactions_to_propagate(&*self.pool)
@@ -554,7 +554,7 @@ where
 			match import_future.await {
 				Ok(_) => TransactionImport::NewGood,
 				Err(e) => match e.into_pool_error() {
-					Ok(sp_transaction_pool::error::Error::AlreadyImported(_)) => TransactionImport::KnownGood,
+					Ok(tp_transaction_pool::error::Error::AlreadyImported(_)) => TransactionImport::KnownGood,
 					Ok(e) => {
 						debug!("Error adding transaction to the pool: {:?}", e);
 						TransactionImport::Bad
@@ -589,7 +589,7 @@ mod tests {
 	use tp_consensus::SelectChain;
 	use tp_runtime::traits::BlindCheckable;
 	use tetcore_test_runtime_client::{prelude::*, runtime::{Extrinsic, Transfer}};
-	use sc_transaction_pool::BasicPool;
+	use tc_transaction_pool::BasicPool;
 
 	#[test]
 	fn should_not_propagate_transactions_that_are_marked_as_such() {

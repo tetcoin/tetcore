@@ -106,10 +106,10 @@ pub struct GenericProto {
 	notif_protocols: Vec<(Cow<'static, str>, Arc<RwLock<Vec<u8>>>, u64)>,
 
 	/// Receiver for instructions about who to connect to or disconnect from.
-	peerset: sc_peerset::Peerset,
+	peerset: tc_peerset::Peerset,
 
 	/// List of peers in our state.
-	peers: FnvHashMap<(PeerId, sc_peerset::SetId), PeerState>,
+	peers: FnvHashMap<(PeerId, tc_peerset::SetId), PeerState>,
 
 	/// The elements in `peers` occasionally contain `Delay` objects that we would normally have
 	/// to be polled one by one. In order to avoid doing so, as an optimization, every `Delay` is
@@ -118,7 +118,7 @@ pub struct GenericProto {
 	///
 	/// By design, we never remove elements from this list. Elements are removed only when the
 	/// `Delay` triggers. As such, this stream may produce obsolete elements.
-	delays: stream::FuturesUnordered<Pin<Box<dyn Future<Output = (DelayId, PeerId, sc_peerset::SetId)> + Send>>>,
+	delays: stream::FuturesUnordered<Pin<Box<dyn Future<Output = (DelayId, PeerId, tc_peerset::SetId)> + Send>>>,
 
 	/// [`DelayId`] to assign to the next delay.
 	next_delay_id: DelayId,
@@ -129,7 +129,7 @@ pub struct GenericProto {
 
 	/// We generate indices to identify incoming connections. This is the next value for the index
 	/// to use when a connection is incoming.
-	next_incoming_index: sc_peerset::IncomingIndex,
+	next_incoming_index: tc_peerset::IncomingIndex,
 
 	/// Events to produce from `poll()`.
 	events: VecDeque<NetworkBehaviourAction<NotifsHandlerIn, GenericProtoOut>>,
@@ -299,12 +299,12 @@ struct IncomingPeer {
 	/// Id of the remote peer of the incoming substream.
 	peer_id: PeerId,
 	/// Id of the set the incoming substream would belong to.
-	set_id: sc_peerset::SetId,
+	set_id: tc_peerset::SetId,
 	/// If true, this "incoming" still corresponds to an actual connection. If false, then the
 	/// connection corresponding to it has been closed or replaced already.
 	alive: bool,
 	/// Id that the we sent to the peerset.
-	incoming_id: sc_peerset::IncomingIndex,
+	incoming_id: tc_peerset::IncomingIndex,
 }
 
 /// Event that can be emitted by the `GenericProto`.
@@ -315,7 +315,7 @@ pub enum GenericProtoOut {
 		/// Id of the peer we are connected to.
 		peer_id: PeerId,
 		/// Peerset set ID the substream is tied to.
-		set_id: sc_peerset::SetId,
+		set_id: tc_peerset::SetId,
 		/// Handshake that was sent to us.
 		/// This is normally a "Status" message, but this is out of the concern of this code.
 		received_handshake: Vec<u8>,
@@ -332,7 +332,7 @@ pub enum GenericProtoOut {
 		/// Id of the peer we are connected to.
 		peer_id: PeerId,
 		/// Peerset set ID the substream is tied to.
-		set_id: sc_peerset::SetId,
+		set_id: tc_peerset::SetId,
 		/// Replacement for the previous [`NotificationsSink`].
 		notifications_sink: NotificationsSink,
 	},
@@ -343,7 +343,7 @@ pub enum GenericProtoOut {
 		/// Id of the peer we were connected to.
 		peer_id: PeerId,
 		/// Peerset set ID the substream was tied to.
-		set_id: sc_peerset::SetId,
+		set_id: tc_peerset::SetId,
 	},
 
 	/// Receives a message on the legacy substream.
@@ -361,7 +361,7 @@ pub enum GenericProtoOut {
 		/// Id of the peer the message came from.
 		peer_id: PeerId,
 		/// Peerset set ID the substream is tied to.
-		set_id: sc_peerset::SetId,
+		set_id: tc_peerset::SetId,
 		/// Message that has been received.
 		message: BytesMut,
 	},
@@ -373,7 +373,7 @@ impl GenericProto {
 		protocol: impl Into<ProtocolId>,
 		versions: &[u8],
 		handshake_message: Vec<u8>,
-		peerset: sc_peerset::Peerset,
+		peerset: tc_peerset::Peerset,
 		notif_protocols: impl Iterator<Item = (Cow<'static, str>, Vec<u8>, u64)>,
 	) -> Self {
 		let notif_protocols = notif_protocols
@@ -393,7 +393,7 @@ impl GenericProto {
 			delays: Default::default(),
 			next_delay_id: DelayId(0),
 			incoming: SmallVec::new(),
-			next_incoming_index: sc_peerset::IncomingIndex(0),
+			next_incoming_index: tc_peerset::IncomingIndex(0),
 			events: VecDeque::new(),
 		}
 	}
@@ -401,7 +401,7 @@ impl GenericProto {
 	/// Modifies the handshake of the given notifications protocol.
 	pub fn set_notif_protocol_handshake(
 		&mut self,
-		set_id: sc_peerset::SetId,
+		set_id: tc_peerset::SetId,
 		handshake_message: impl Into<Vec<u8>>
 	) {
 		if let Some(p) = self.notif_protocols.get_mut(usize::from(set_id)) {
@@ -431,12 +431,12 @@ impl GenericProto {
 	}
 
 	/// Returns true if we have an open substream to the given peer.
-	pub fn is_open(&self, peer_id: &PeerId, set_id: sc_peerset::SetId) -> bool {
+	pub fn is_open(&self, peer_id: &PeerId, set_id: tc_peerset::SetId) -> bool {
 		self.peers.get(&(peer_id.clone(), set_id)).map(|p| p.is_open()).unwrap_or(false)
 	}
 
 	/// Disconnects the given peer if we are connected to it.
-	pub fn disconnect_peer(&mut self, peer_id: &PeerId, set_id: sc_peerset::SetId) {
+	pub fn disconnect_peer(&mut self, peer_id: &PeerId, set_id: tc_peerset::SetId) {
 		debug!(target: "sub-libp2p", "External API => Disconnect({}, {:?})", peer_id, set_id);
 		self.disconnect_peer_inner(peer_id, set_id, None);
 	}
@@ -446,7 +446,7 @@ impl GenericProto {
 	fn disconnect_peer_inner(
 		&mut self,
 		peer_id: &PeerId,
-		set_id: sc_peerset::SetId,
+		set_id: tc_peerset::SetId,
 		ban: Option<Duration>
 	) {
 		let mut entry = if let Entry::Occupied(entry) = self.peers.entry((peer_id.clone(), set_id)) {
@@ -469,7 +469,7 @@ impl GenericProto {
 				timer: _
 			} => {
 				debug!(target: "sub-libp2p", "PSM <= Dropped({}, {:?})", peer_id, set_id);
-				self.peerset.dropped(set_id, peer_id.clone(), sc_peerset::DropReason::Unknown);
+				self.peerset.dropped(set_id, peer_id.clone(), tc_peerset::DropReason::Unknown);
 				let backoff_until = Some(if let Some(ban) = ban {
 					cmp::max(timer_deadline, Instant::now() + ban)
 				} else {
@@ -486,7 +486,7 @@ impl GenericProto {
 			// If relevant, the external API is instantly notified.
 			PeerState::Enabled { mut connections } => {
 				debug!(target: "sub-libp2p", "PSM <= Dropped({}, {:?})", peer_id, set_id);
-				self.peerset.dropped(set_id, peer_id.clone(), sc_peerset::DropReason::Unknown);
+				self.peerset.dropped(set_id, peer_id.clone(), tc_peerset::DropReason::Unknown);
 
 				if connections.iter().any(|(_, s)| matches!(s, ConnectionState::Open(_))) {
 					debug!(target: "sub-libp2p", "External API <= Closed({}, {:?})", peer_id, set_id);
@@ -577,7 +577,7 @@ impl GenericProto {
 	}
 
 	/// Returns the list of all the peers that the peerset currently requests us to be connected to.
-	pub fn requested_peers<'a>(&'a self, set_id: sc_peerset::SetId) -> impl Iterator<Item = &'a PeerId> + 'a {
+	pub fn requested_peers<'a>(&'a self, set_id: tc_peerset::SetId) -> impl Iterator<Item = &'a PeerId> + 'a {
 		self.peers.iter()
 			.filter(move |((_, set), state)| *set == set_id && state.is_requested())
 			.map(|((id, _), _)| id)
@@ -596,7 +596,7 @@ impl GenericProto {
 	pub fn write_notification(
 		&mut self,
 		target: &PeerId,
-		set_id: sc_peerset::SetId,
+		set_id: tc_peerset::SetId,
 		message: impl Into<Vec<u8>>,
 	) {
 		let notifs_sink = match self.peers.get(&(target.clone(), set_id)).and_then(|p| p.get_open()) {
@@ -629,7 +629,7 @@ impl GenericProto {
 	}
 
 	/// Function that is called when the peerset wants us to connect to a peer.
-	fn peerset_report_connect(&mut self, peer_id: PeerId, set_id: sc_peerset::SetId) {
+	fn peerset_report_connect(&mut self, peer_id: PeerId, set_id: tc_peerset::SetId) {
 		// If `PeerId` is unknown to us, insert an entry, start dialing, and return early.
 		let mut occ_entry = match self.peers.entry((peer_id.clone(), set_id)) {
 			Entry::Occupied(entry) => entry,
@@ -817,7 +817,7 @@ impl GenericProto {
 	}
 
 	/// Function that is called when the peerset wants us to disconnect from a peer.
-	fn peerset_report_disconnect(&mut self, peer_id: PeerId, set_id: sc_peerset::SetId) {
+	fn peerset_report_disconnect(&mut self, peer_id: PeerId, set_id: tc_peerset::SetId) {
 		let mut entry = match self.peers.entry((peer_id, set_id)) {
 			Entry::Occupied(entry) => entry,
 			Entry::Vacant(entry) => {
@@ -925,7 +925,7 @@ impl GenericProto {
 
 	/// Function that is called when the peerset wants us to accept a connection
 	/// request from a peer.
-	fn peerset_report_accept(&mut self, index: sc_peerset::IncomingIndex) {
+	fn peerset_report_accept(&mut self, index: tc_peerset::IncomingIndex) {
 		let incoming = if let Some(pos) = self.incoming.iter().position(|i| i.incoming_id == index) {
 			self.incoming.remove(pos)
 		} else {
@@ -942,7 +942,7 @@ impl GenericProto {
 				_ => {
 					debug!(target: "sub-libp2p", "PSM <= Dropped({}, {:?})",
 						incoming.peer_id, incoming.set_id);
-					self.peerset.dropped(incoming.set_id, incoming.peer_id, sc_peerset::DropReason::Unknown);
+					self.peerset.dropped(incoming.set_id, incoming.peer_id, tc_peerset::DropReason::Unknown);
 				},
 			}
 			return
@@ -990,7 +990,7 @@ impl GenericProto {
 	}
 
 	/// Function that is called when the peerset wants us to reject an incoming peer.
-	fn peerset_report_reject(&mut self, index: sc_peerset::IncomingIndex) {
+	fn peerset_report_reject(&mut self, index: tc_peerset::IncomingIndex) {
 		let incoming = if let Some(pos) = self.incoming.iter().position(|i| i.incoming_id == index) {
 			self.incoming.remove(pos)
 		} else {
@@ -1060,7 +1060,7 @@ impl NetworkBehaviour for GenericProto {
 	}
 
 	fn inject_connection_established(&mut self, peer_id: &PeerId, conn: &ConnectionId, endpoint: &ConnectedPoint) {
-		for set_id in (0..self.notif_protocols.len()).map(sc_peerset::SetId::from) {
+		for set_id in (0..self.notif_protocols.len()).map(tc_peerset::SetId::from) {
 			match self.peers.entry((peer_id.clone(), set_id)).or_insert(PeerState::Poisoned) {
 				// Requested | PendingRequest => Enabled
 				st @ &mut PeerState::Requested |
@@ -1115,7 +1115,7 @@ impl NetworkBehaviour for GenericProto {
 	}
 
 	fn inject_connection_closed(&mut self, peer_id: &PeerId, conn: &ConnectionId, _endpoint: &ConnectedPoint) {
-		for set_id in (0..self.notif_protocols.len()).map(sc_peerset::SetId::from) {
+		for set_id in (0..self.notif_protocols.len()).map(tc_peerset::SetId::from) {
 			let mut entry = if let Entry::Occupied(entry) = self.peers.entry((peer_id.clone(), set_id)) {
 				entry
 			} else {
@@ -1184,7 +1184,7 @@ impl NetworkBehaviour for GenericProto {
 
 					if connections.is_empty() {
 						debug!(target: "sub-libp2p", "PSM <= Dropped({}, {:?})", peer_id, set_id);
-						self.peerset.dropped(set_id, peer_id.clone(), sc_peerset::DropReason::Unknown);
+						self.peerset.dropped(set_id, peer_id.clone(), tc_peerset::DropReason::Unknown);
 						*entry.get_mut() = PeerState::Backoff { timer, timer_deadline };
 
 					} else {
@@ -1324,7 +1324,7 @@ impl NetworkBehaviour for GenericProto {
 
 					if connections.is_empty() {
 						debug!(target: "sub-libp2p", "PSM <= Dropped({}, {:?})", peer_id, set_id);
-						self.peerset.dropped(set_id, peer_id.clone(), sc_peerset::DropReason::Unknown);
+						self.peerset.dropped(set_id, peer_id.clone(), tc_peerset::DropReason::Unknown);
 						let ban_dur = Uniform::new(5, 10).sample(&mut rand::thread_rng());
 
 						let delay_id = self.next_delay_id;
@@ -1345,7 +1345,7 @@ impl NetworkBehaviour for GenericProto {
 						matches!(s, ConnectionState::Opening | ConnectionState::Open(_)))
 					{
 						debug!(target: "sub-libp2p", "PSM <= Dropped({}, {:?})", peer_id, set_id);
-						self.peerset.dropped(set_id, peer_id.clone(), sc_peerset::DropReason::Unknown);
+						self.peerset.dropped(set_id, peer_id.clone(), tc_peerset::DropReason::Unknown);
 
 						*entry.get_mut() = PeerState::Disabled {
 							connections,
@@ -1384,7 +1384,7 @@ impl NetworkBehaviour for GenericProto {
 	fn inject_dial_failure(&mut self, peer_id: &PeerId) {
 		debug!(target: "sub-libp2p", "Libp2p => Dial failure for {:?}", peer_id);
 
-		for set_id in (0..self.notif_protocols.len()).map(sc_peerset::SetId::from) {
+		for set_id in (0..self.notif_protocols.len()).map(tc_peerset::SetId::from) {
 			if let Entry::Occupied(mut entry) = self.peers.entry((peer_id.clone(), set_id)) {
 				match mem::replace(entry.get_mut(), PeerState::Poisoned) {
 					// The peer is not in our list.
@@ -1396,7 +1396,7 @@ impl NetworkBehaviour for GenericProto {
 					st @ PeerState::Requested |
 					st @ PeerState::PendingRequest { .. } => {
 						debug!(target: "sub-libp2p", "PSM <= Dropped({}, {:?})", peer_id, set_id);
-						self.peerset.dropped(set_id, peer_id.clone(), sc_peerset::DropReason::Unknown);
+						self.peerset.dropped(set_id, peer_id.clone(), tc_peerset::DropReason::Unknown);
 
 						let now = Instant::now();
 						let ban_duration = match st {
@@ -1444,7 +1444,7 @@ impl NetworkBehaviour for GenericProto {
 	) {
 		match event {
 			NotifsHandlerOut::OpenDesiredByRemote { protocol_index } => {
-				let set_id = sc_peerset::SetId::from(protocol_index);
+				let set_id = tc_peerset::SetId::from(protocol_index);
 
 				debug!(target: "sub-libp2p",
 					"Handler({:?}, {:?}]) => OpenDesiredByRemote({:?})",
@@ -1611,7 +1611,7 @@ impl NetworkBehaviour for GenericProto {
 			}
 
 			NotifsHandlerOut::CloseDesired { protocol_index } => {
-				let set_id = sc_peerset::SetId::from(protocol_index);
+				let set_id = tc_peerset::SetId::from(protocol_index);
 
 				debug!(target: "sub-libp2p",
 					"Handler({}, {:?}) => CloseDesired({:?})",
@@ -1682,7 +1682,7 @@ impl NetworkBehaviour for GenericProto {
 							// List of open connections wasn't empty before but now it is.
 							if !connections.iter().any(|(_, s)| matches!(s, ConnectionState::Opening)) {
 								debug!(target: "sub-libp2p", "PSM <= Dropped({}, {:?})", source, set_id);
-								self.peerset.dropped(set_id, source.clone(), sc_peerset::DropReason::Refused);
+								self.peerset.dropped(set_id, source.clone(), tc_peerset::DropReason::Refused);
 								*entry.into_mut() = PeerState::Disabled {
 									connections, backoff_until: None
 								};
@@ -1716,7 +1716,7 @@ impl NetworkBehaviour for GenericProto {
 			}
 
 			NotifsHandlerOut::CloseResult { protocol_index } => {
-				let set_id = sc_peerset::SetId::from(protocol_index);
+				let set_id = tc_peerset::SetId::from(protocol_index);
 
 				debug!(target: "sub-libp2p",
 					"Handler({}, {:?}) => CloseResult({:?})",
@@ -1749,7 +1749,7 @@ impl NetworkBehaviour for GenericProto {
 			}
 
 			NotifsHandlerOut::OpenResultOk { protocol_index, received_handshake, notifications_sink, .. } => {
-				let set_id = sc_peerset::SetId::from(protocol_index);
+				let set_id = tc_peerset::SetId::from(protocol_index);
 				debug!(target: "sub-libp2p",
 					"Handler({}, {:?}) => OpenResultOk({:?})",
 					source, connection, set_id);
@@ -1809,7 +1809,7 @@ impl NetworkBehaviour for GenericProto {
 			}
 
 			NotifsHandlerOut::OpenResultErr { protocol_index } => {
-				let set_id = sc_peerset::SetId::from(protocol_index);
+				let set_id = tc_peerset::SetId::from(protocol_index);
 				debug!(target: "sub-libp2p",
 					"Handler({:?}, {:?}) => OpenResultErr({:?})",
 					source, connection, set_id);
@@ -1846,7 +1846,7 @@ impl NetworkBehaviour for GenericProto {
 							matches!(s, ConnectionState::Opening | ConnectionState::Open(_)))
 						{
 							debug!(target: "sub-libp2p", "PSM <= Dropped({:?})", source);
-							self.peerset.dropped(set_id, source.clone(), sc_peerset::DropReason::Refused);
+							self.peerset.dropped(set_id, source.clone(), tc_peerset::DropReason::Refused);
 
 							*entry.into_mut() = PeerState::Disabled {
 								connections,
@@ -1896,7 +1896,7 @@ impl NetworkBehaviour for GenericProto {
 			}
 
 			NotifsHandlerOut::CustomMessage { message } => {
-				if self.is_open(&source, sc_peerset::SetId::from(0)) {  // TODO: using set 0 here is hacky
+				if self.is_open(&source, tc_peerset::SetId::from(0)) {  // TODO: using set 0 here is hacky
 					trace!(target: "sub-libp2p", "Handler({:?}) => Message", source);
 					trace!(target: "sub-libp2p", "External API <= Message({:?})", source);
 					let event = GenericProtoOut::LegacyMessage {
@@ -1915,7 +1915,7 @@ impl NetworkBehaviour for GenericProto {
 			}
 
 			NotifsHandlerOut::Notification { protocol_index, message } => {
-				let set_id = sc_peerset::SetId::from(protocol_index);
+				let set_id = tc_peerset::SetId::from(protocol_index);
 				if self.is_open(&source, set_id) {
 					trace!(
 						target: "sub-libp2p",
@@ -1966,16 +1966,16 @@ impl NetworkBehaviour for GenericProto {
 		// Note that the peerset is a *best effort* crate, and we have to use defensive programming.
 		loop {
 			match futures::Stream::poll_next(Pin::new(&mut self.peerset), cx) {
-				Poll::Ready(Some(sc_peerset::Message::Accept(index))) => {
+				Poll::Ready(Some(tc_peerset::Message::Accept(index))) => {
 					self.peerset_report_accept(index);
 				}
-				Poll::Ready(Some(sc_peerset::Message::Reject(index))) => {
+				Poll::Ready(Some(tc_peerset::Message::Reject(index))) => {
 					self.peerset_report_reject(index);
 				}
-				Poll::Ready(Some(sc_peerset::Message::Connect { peer_id, set_id, .. })) => {
+				Poll::Ready(Some(tc_peerset::Message::Connect { peer_id, set_id, .. })) => {
 					self.peerset_report_connect(peer_id, set_id);
 				}
-				Poll::Ready(Some(sc_peerset::Message::Drop { peer_id, set_id, .. })) => {
+				Poll::Ready(Some(tc_peerset::Message::Drop { peer_id, set_id, .. })) => {
 					self.peerset_report_disconnect(peer_id, set_id);
 				}
 				Poll::Ready(None) => {

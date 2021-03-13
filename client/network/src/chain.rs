@@ -19,7 +19,7 @@
 //! Blockchain access trait
 
 use tp_blockchain::{Error, HeaderBackend, HeaderMetadata};
-use sc_client_api::{BlockBackend, ProofProvider};
+use tc_client_api::{BlockBackend, ProofProvider};
 use tp_runtime::traits::{Block as BlockT, BlockIdTo};
 
 /// Local client abstraction for the network.

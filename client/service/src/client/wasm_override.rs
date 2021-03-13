@@ -44,7 +44,7 @@ use std::{
 use tet_core::traits::FetchRuntimeCode;
 use tp_state_machine::BasicExternalities;
 use tp_blockchain::Result;
-use sc_executor::RuntimeInfo;
+use tc_executor::RuntimeInfo;
 use tp_version::RuntimeVersion;
 use tet_core::traits::RuntimeCode;
 
@@ -206,7 +206,7 @@ where
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sc_executor::{NativeExecutor, WasmExecutionMethod};
+	use tc_executor::{NativeExecutor, WasmExecutionMethod};
 	use tetcore_test_runtime_client::LocalExecutor;
 	use std::fs::{self, File};
 
@@ -255,7 +255,7 @@ mod tests {
 			let scraped = WasmOverride::scrape_overrides(dir, exec);
 
 			match scraped {
-				Err(sp_blockchain::Error::Application(e)) => {
+				Err(tp_blockchain::Error::Application(e)) => {
 					match e.downcast_ref::<WasmOverrideError>() {
 						Some(WasmOverrideError::DuplicateRuntime(duplicates)) => {
 							assert_eq!(duplicates.len(), 1);

@@ -20,7 +20,7 @@ use crate::error::Error;
 use tp_runtime::traits::Block as BlockT;
 use tp_runtime::generic::BlockId;
 use tet_core::storage::{StorageKey, well_known_keys, ChildInfo, Storage, StorageChild, StorageMap};
-use sc_client_api::{StorageProvider, UsageProvider};
+use tc_client_api::{StorageProvider, UsageProvider};
 
 use std::{collections::HashMap, sync::Arc};
 
@@ -33,7 +33,7 @@ pub fn export_raw_state<B, BA, C>(
 where
 	C: UsageProvider<B> + StorageProvider<B, BA>,
 	B: BlockT,
-	BA: sc_client_api::backend::Backend<B>,
+	BA: tc_client_api::backend::Backend<B>,
 {
 	let block = block.unwrap_or_else(
 		|| BlockId::Hash(client.usage_info().chain.best_hash)

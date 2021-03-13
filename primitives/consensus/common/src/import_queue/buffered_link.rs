@@ -48,7 +48,7 @@ use crate::import_queue::{Origin, Link, BlockImportResult, BlockImportError};
 /// can be used to buffer commands, and the receiver can be used to poll said commands and transfer
 /// them to another link.
 pub fn buffered_link<B: BlockT>() -> (BufferedLinkSender<B>, BufferedLinkReceiver<B>) {
-	let (tx, rx) = tracing_unbounded("mpsc_buffered_link");
+	let (tx, rx) = tracing_unbounded("mptc_buffered_link");
 	let tx = BufferedLinkSender { tx };
 	let rx = BufferedLinkReceiver { rx: rx.fuse() };
 	(tx, rx)

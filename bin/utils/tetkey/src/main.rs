@@ -18,6 +18,6 @@
 
 //! Tetkey utility, based on node_runtime.
 
-fn main() -> Result<(), sc_cli::Error> {
+fn main() -> Result<(), tc_cli::Error> {
 	tetkey::run()
 }

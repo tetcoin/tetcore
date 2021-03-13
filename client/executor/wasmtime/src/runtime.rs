@@ -25,7 +25,7 @@ use crate::state_holder;
 
 use std::rc::Rc;
 use std::sync::Arc;
-use sc_executor_common::{
+use tc_executor_common::{
 	error::{Result, WasmError},
 	wasm_runtime::{WasmModule, WasmInstance, InvokeMethod},
 };

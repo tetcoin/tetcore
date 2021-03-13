@@ -21,7 +21,7 @@ use crate::ServicetoWorkerMsg;
 use futures::channel::{mpsc, oneshot};
 use futures::SinkExt;
 
-use sc_network::{Multiaddr, PeerId};
+use tc_network::{Multiaddr, PeerId};
 use tp_authority_discovery::AuthorityId;
 
 /// Service to interact with the [`crate::Worker`].

@@ -22,7 +22,7 @@ use std::sync::Arc;
 use rpc::futures::future::result;
 use tetsy_jsonrpc_pubsub::manager::SubscriptionManager;
 
-use sc_client_api::{BlockchainEvents, BlockBackend};
+use tc_client_api::{BlockchainEvents, BlockBackend};
 use tp_runtime::{generic::{BlockId, SignedBlock}, traits::{Block as BlockT}};
 
 use super::{ChainBackend, client_err, error::FutureResult};

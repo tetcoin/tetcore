@@ -135,7 +135,7 @@ fn generate_impl_calls(
 
 /// Generate the dispatch function that is used in native to call into the runtime.
 fn generate_dispatch_function(impls: &[ItemImpl]) -> Result<TokenStream> {
-	let data = Ident::new("__sp_api__input_data", Span::call_site());
+	let data = Ident::new("__tp_api__input_data", Span::call_site());
 	let c = generate_crate_access(HIDDEN_INCLUDES_ID);
 	let impl_calls = generate_impl_calls(impls, &data)?
 		.into_iter()

@@ -844,7 +844,7 @@ pub(crate) fn horrible_npos_solution(
 		let support = to_support_map::<AccountId>(&winners, &staked_assignment).unwrap();
 		let score = support.evaluate();
 
-		assert!(sp_npos_elections::is_score_better::<Perbill>(
+		assert!(tp_npos_elections::is_score_better::<Perbill>(
 			better_score,
 			score,
 			MinSolutionScoreBump::get(),
@@ -868,7 +868,7 @@ pub(crate) fn horrible_npos_solution(
 
 	// convert back to ratio assignment. This takes less space.
 	let assignments_reduced =
-		sp_npos_elections::assignment_staked_to_ratio::<AccountId, OffchainAccuracy>(staked_assignment);
+		tp_npos_elections::assignment_staked_to_ratio::<AccountId, OffchainAccuracy>(staked_assignment);
 
 	let compact =
 		CompactAssignments::from_assignment(assignments_reduced, nominator_index, validator_index)

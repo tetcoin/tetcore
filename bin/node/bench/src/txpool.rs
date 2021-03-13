@@ -25,7 +25,7 @@ use std::borrow::Cow;
 
 use node_testing::bench::{BenchDb, Profile, BlockType, KeyTypes, DatabaseType};
 
-use sc_transaction_pool::BasicPool;
+use tc_transaction_pool::BasicPool;
 use tp_runtime::generic::BlockId;
 use tp_transaction_pool::{TransactionPool, TransactionSource};
 

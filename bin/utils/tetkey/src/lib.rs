@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use structopt::StructOpt;
-use sc_cli::{
+use tc_cli::{
 	Error, VanityCmd, SignCmd, VerifyCmd, GenerateNodeKeyCmd, GenerateCmd, InspectKeyCmd,
 	InspectNodeKeyCmd
 };

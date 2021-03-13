@@ -23,11 +23,11 @@ use parking_lot::Mutex;
 use log::info;
 use codec::{Decode, Encode};
 
-use sc_client_api::backend::AuxStore;
+use tc_client_api::backend::AuxStore;
 use tp_blockchain::{Result as ClientResult, Error as ClientError};
 use tp_runtime::traits::Block as BlockT;
 use tp_consensus_babe::{BabeBlockWeight, BabeGenesisConfiguration};
-use sc_consensus_epochs::{EpochChangesFor, SharedEpochChanges, migration::EpochChangesForV0};
+use tc_consensus_epochs::{EpochChangesFor, SharedEpochChanges, migration::EpochChangesForV0};
 use crate::{Epoch, migration::EpochV0};
 
 const BABE_EPOCH_CHANGES_VERSION: &[u8] = b"babe_epoch_changes_version";
@@ -144,9 +144,9 @@ mod test {
 	use tet_core::H256;
 	use tp_runtime::traits::NumberFor;
 	use tp_consensus_babe::{AllowedSlots, BabeGenesisConfiguration};
-	use sc_consensus_epochs::{PersistedEpoch, PersistedEpochHeader, EpochHeader};
+	use tc_consensus_epochs::{PersistedEpoch, PersistedEpochHeader, EpochHeader};
 	use tp_consensus::Error as ConsensusError;
-	use sc_network_test::Block as TestBlock;
+	use tc_network_test::Block as TestBlock;
 
 	#[test]
 	fn load_decode_from_v0_epoch_changes() {

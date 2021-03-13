@@ -41,7 +41,7 @@ pub fn read_children<
 
 	let children: Vec<V> = match Decode::decode(&mut &raw_val[..]) {
 		Ok(children) => children,
-		Err(_) => return Err(sp_blockchain::Error::Backend("Error decoding children".into())),
+		Err(_) => return Err(tp_blockchain::Error::Backend("Error decoding children".into())),
 	};
 
 	Ok(children)

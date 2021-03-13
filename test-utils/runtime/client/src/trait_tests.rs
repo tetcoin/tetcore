@@ -25,20 +25,20 @@ use std::sync::Arc;
 use crate::{
 	AccountKeyring, ClientBlockImportExt, BlockBuilderExt, TestClientBuilder, TestClientBuilderExt,
 };
-use sc_client_api::backend;
-use sc_client_api::blockchain::{Backend as BlockChainBackendT, HeaderBackend};
+use tc_client_api::backend;
+use tc_client_api::blockchain::{Backend as BlockChainBackendT, HeaderBackend};
 use tp_consensus::BlockOrigin;
 use tetcore_test_runtime::{self, Transfer};
 use tp_runtime::generic::BlockId;
 use tp_runtime::traits::{Block as BlockT, HashFor};
-use sc_block_builder::BlockBuilderProvider;
+use tc_block_builder::BlockBuilderProvider;
 
 /// helper to test the `leaves` implementation for various backends
 pub fn test_leaves_for_backend<B: 'static>(backend: Arc<B>) where
 	B: backend::Backend<tetcore_test_runtime::Block>,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
 	backend::StateBackendFor<B, tetcore_test_runtime::Block>:
-		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
+		tp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
 	// block tree:
 	// G -> A1 -> A2 -> A3 -> A4 -> A5
@@ -207,7 +207,7 @@ pub fn test_children_for_backend<B: 'static>(backend: Arc<B>) where
 	B: backend::LocalBackend<tetcore_test_runtime::Block>,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
 	<B as backend::Backend<tetcore_test_runtime::Block>>::State:
-		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
+		tp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
 	// block tree:
 	// G -> A1 -> A2 -> A3 -> A4 -> A5
@@ -337,7 +337,7 @@ pub fn test_blockchain_query_by_number_gets_canonical<B: 'static>(backend: Arc<B
 	B: backend::LocalBackend<tetcore_test_runtime::Block>,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
 	<B as backend::Backend<tetcore_test_runtime::Block>>::State:
-		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
+		tp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
 	// block tree:
 	// G -> A1 -> A2 -> A3 -> A4 -> A5

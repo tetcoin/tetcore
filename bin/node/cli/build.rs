@@ -26,7 +26,7 @@ mod cli {
 	include!("src/cli.rs");
 
 	use std::{fs, env, path::Path};
-	use sc_cli::structopt::clap::Shell;
+	use tc_cli::structopt::clap::Shell;
 	use tetcore_build_script_utils::{generate_cargo_keys, rerun_if_git_head_changed};
 
 	pub fn main() {

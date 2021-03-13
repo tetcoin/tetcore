@@ -31,12 +31,12 @@ use tetcore_wasm_interface::{
 	FunctionContext, Pointer, WordSize, Sandbox, MemoryId, Result as WResult, Function,
 };
 use tp_runtime_interface::unpack_ptr_and_len;
-use sc_executor_common::wasm_runtime::{WasmModule, WasmInstance, InvokeMethod};
-use sc_executor_common::{
+use tc_executor_common::wasm_runtime::{WasmModule, WasmInstance, InvokeMethod};
+use tc_executor_common::{
 	error::{Error, WasmError},
 	sandbox,
 };
-use sc_executor_common::util::{DataSegmentsSnapshot, WasmModuleInfo};
+use tc_executor_common::util::{DataSegmentsSnapshot, WasmModuleInfo};
 
 struct FunctionExecutor<'a> {
 	sandbox_store: sandbox::Store<twasmi::FuncRef>,

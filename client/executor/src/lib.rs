@@ -47,14 +47,14 @@ pub use tet_core::traits::{Externalities, CallInWasm};
 pub use tetcore_wasm_interface;
 pub use wasm_runtime::WasmExecutionMethod;
 
-pub use sc_executor_common::{error, sandbox};
+pub use tc_executor_common::{error, sandbox};
 
 /// Provides runtime information.
 pub trait RuntimeInfo {
 	/// Native runtime information.
 	fn native_version(&self) -> &NativeVersion;
 
-	/// Extract [`RuntimeVersion`](sp_version::RuntimeVersion) of the given `runtime_code`.
+	/// Extract [`RuntimeVersion`](tp_version::RuntimeVersion) of the given `runtime_code`.
 	fn runtime_version(
 		&self,
 		ext: &mut dyn Externalities,
@@ -65,7 +65,7 @@ pub trait RuntimeInfo {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sc_runtime_test::wasm_binary_unwrap;
+	use tc_runtime_test::wasm_binary_unwrap;
 	use tet_io::TestExternalities;
 	use tetcore_wasm_interface::HostFunctions;
 	use tet_core::traits::CallInWasm;

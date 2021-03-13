@@ -97,9 +97,9 @@ pub(crate) const CURRENT_VERSION: u32 = 6;
 pub(crate) const MIN_VERSION: u32 = 3;
 
 /// Identifier of the peerset for the block announces protocol.
-const HARDCODED_PEERSETS_SYNC: sc_peerset::SetId = sc_peerset::SetId::from(0);
+const HARDCODED_PEERSETS_SYNC: tc_peerset::SetId = tc_peerset::SetId::from(0);
 /// Identifier of the peerset for the transactions protocol.
-const HARDCODED_PEERSETS_TX: sc_peerset::SetId = sc_peerset::SetId::from(1);
+const HARDCODED_PEERSETS_TX: tc_peerset::SetId = tc_peerset::SetId::from(1);
 /// Number of hardcoded peersets (the constants right above). Any set whose identifier is equal or
 /// superior to this value corresponds to a user-defined protocol.
 const NUM_HARDCODED_PEERSETS: usize = 2;
@@ -110,7 +110,7 @@ const NUM_HARDCODED_PEERSETS: usize = 2;
 const LIGHT_MAXIMAL_BLOCKS_DIFFERENCE: u64 = 8192;
 
 mod rep {
-	use sc_peerset::ReputationChange as Rep;
+	use tc_peerset::ReputationChange as Rep;
 	/// Reputation change when a peer doesn't respond in time to our messages.
 	pub const TIMEOUT: Rep = Rep::new(-(1 << 10), "Request timeout");
 	/// Reputation change when a peer refuses a request.
@@ -229,7 +229,7 @@ pub struct Protocol<B: BlockT, H: ExHashT> {
 	/// user.
 	important_peers: HashSet<PeerId>,
 	/// Used to report reputation changes.
-	peerset_handle: sc_peerset::PeersetHandle,
+	peerset_handle: tc_peerset::PeersetHandle,
 	transaction_pool: Arc<dyn TransactionPool<H, B>>,
 	/// Handles opening the unique substream and sending and receiving raw messages.
 	behaviour: GenericProto,
@@ -347,7 +347,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 		network_config: &config::NetworkConfiguration,
 		block_announce_validator: Box<dyn BlockAnnounceValidator<B> + Send>,
 		metrics_registry: Option<&Registry>,
-	) -> error::Result<(Protocol<B, H>, sc_peerset::PeersetHandle, Vec<(PeerId, Multiaddr)>)> {
+	) -> error::Result<(Protocol<B, H>, tc_peerset::PeersetHandle, Vec<(PeerId, Multiaddr)>)> {
 		let info = chain.info();
 		let sync = ChainSync::new(
 			config.roles,
@@ -411,7 +411,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 			}
 
 			// Set number 0 is used for block announces.
-			sets.push(sc_peerset::SetConfig {
+			sets.push(tc_peerset::SetConfig {
 				in_peers: network_config.default_peers_set.in_peers,
 				out_peers: network_config.default_peers_set.out_peers,
 				bootnodes,
@@ -423,7 +423,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 			// Set number 1 is used for transactions.
 			// The `reserved_nodes` of this set are later kept in sync with the peers we connect
 			// to through set 0.
-			sets.push(sc_peerset::SetConfig {
+			sets.push(tc_peerset::SetConfig {
 				in_peers: network_config.default_peers_set.in_peers,
 				out_peers: network_config.default_peers_set.out_peers,
 				bootnodes: Vec::new(),
@@ -442,7 +442,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 				let reserved_only =
 					set_cfg.set_config.non_reserved_mode == config::NonReservedPeerMode::Deny;
 
-				sets.push(sc_peerset::SetConfig {
+				sets.push(tc_peerset::SetConfig {
 					in_peers: set_cfg.set_config.in_peers,
 					out_peers: set_cfg.set_config.out_peers,
 					bootnodes: Vec::new(),
@@ -451,7 +451,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 				});
 			}
 
-			sc_peerset::Peerset::from_config(sc_peerset::PeersetConfig {
+			tc_peerset::Peerset::from_config(tc_peerset::PeersetConfig {
 				sets,
 			})
 		};
@@ -555,7 +555,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 	/// Disconnects the given peer if we are connected to it.
 	pub fn disconnect_peer(&mut self, peer_id: &PeerId, protocol_name: &str) {
 		if let Some(position) = self.notification_protocols.iter().position(|p| *p == protocol_name) {
-			self.behaviour.disconnect_peer(peer_id, sc_peerset::SetId::from(position + NUM_HARDCODED_PEERSETS));
+			self.behaviour.disconnect_peer(peer_id, tc_peerset::SetId::from(position + NUM_HARDCODED_PEERSETS));
 		} else {
 			log::warn!(target: "sub-libp2p", "disconnect_peer() with invalid protocol name")
 		}
@@ -728,7 +728,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 	}
 
 	/// Adjusts the reputation of a node.
-	pub fn report_peer(&self, who: PeerId, reputation: sc_peerset::ReputationChange) {
+	pub fn report_peer(&self, who: PeerId, reputation: tc_peerset::ReputationChange) {
 		self.peerset_handle.report_peer(who, reputation)
 	}
 
@@ -1325,7 +1325,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 			self.behaviour.disconnect_peer(&who, HARDCODED_PEERSETS_SYNC);
 			self.peerset_handle.report_peer(
 				who,
-				sc_peerset::ReputationChange::new_fatal("Invalid justification")
+				tc_peerset::ReputationChange::new_fatal("Invalid justification")
 			);
 		}
 	}
@@ -1357,7 +1357,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 	/// Removes a `PeerId` from the list of reserved peers.
 	pub fn remove_set_reserved_peer(&self, protocol: Cow<'static, str>, peer: PeerId) {
 		if let Some(index) = self.notification_protocols.iter().position(|p| *p == protocol) {
-			self.peerset_handle.remove_reserved_peer(sc_peerset::SetId::from(index + NUM_HARDCODED_PEERSETS), peer);
+			self.peerset_handle.remove_reserved_peer(tc_peerset::SetId::from(index + NUM_HARDCODED_PEERSETS), peer);
 		} else {
 			log::error!(
 				target: "sub-libp2p",
@@ -1370,7 +1370,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 	/// Adds a `PeerId` to the list of reserved peers.
 	pub fn add_set_reserved_peer(&self, protocol: Cow<'static, str>, peer: PeerId) {
 		if let Some(index) = self.notification_protocols.iter().position(|p| *p == protocol) {
-			self.peerset_handle.add_reserved_peer(sc_peerset::SetId::from(index + NUM_HARDCODED_PEERSETS), peer);
+			self.peerset_handle.add_reserved_peer(tc_peerset::SetId::from(index + NUM_HARDCODED_PEERSETS), peer);
 		} else {
 			log::error!(
 				target: "sub-libp2p",
@@ -1392,7 +1392,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 	/// Add a peer to a peers set.
 	pub fn add_to_peers_set(&self, protocol: Cow<'static, str>, peer: PeerId) {
 		if let Some(index) = self.notification_protocols.iter().position(|p| *p == protocol) {
-			self.peerset_handle.add_to_peers_set(sc_peerset::SetId::from(index + NUM_HARDCODED_PEERSETS), peer);
+			self.peerset_handle.add_to_peers_set(tc_peerset::SetId::from(index + NUM_HARDCODED_PEERSETS), peer);
 		} else {
 			log::error!(
 				target: "sub-libp2p",
@@ -1405,7 +1405,7 @@ impl<B: BlockT, H: ExHashT> Protocol<B, H> {
 	/// Remove a peer from a peers set.
 	pub fn remove_from_peers_set(&self, protocol: Cow<'static, str>, peer: PeerId) {
 		if let Some(index) = self.notification_protocols.iter().position(|p| *p == protocol) {
-			self.peerset_handle.remove_from_peers_set(sc_peerset::SetId::from(index + NUM_HARDCODED_PEERSETS), peer);
+			self.peerset_handle.remove_from_peers_set(tc_peerset::SetId::from(index + NUM_HARDCODED_PEERSETS), peer);
 		} else {
 			log::error!(
 				target: "sub-libp2p",

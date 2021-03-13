@@ -24,7 +24,7 @@ use futures::{
 	channel::oneshot, executor::{ThreadPool, ThreadPoolBuilder}, future::{Future, FutureExt, ready, Ready},
 };
 
-use sc_client_api::{
+use tc_client_api::{
 	blockchain::HeaderBackend, light::{Fetcher, RemoteCallRequest, RemoteBodyRequest}, BlockBackend,
 };
 use tp_runtime::{
@@ -78,13 +78,13 @@ impl<Client, Block> FullChainApi<Client, Block> {
 	}
 }
 
-impl<Client, Block> sc_transaction_graph::ChainApi for FullChainApi<Client, Block>
+impl<Client, Block> tc_transaction_graph::ChainApi for FullChainApi<Client, Block>
 where
 	Block: BlockT,
 	Client: ProvideRuntimeApi<Block> + BlockBackend<Block> + BlockIdTo<Block>,
 	Client: Send + Sync + 'static,
 	Client::Api: TaggedTransactionQueue<Block>,
-	sp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
+	tp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
 {
 	type Block = Block;
 	type Error = error::Error;
@@ -101,7 +101,7 @@ where
 		&self,
 		at: &BlockId<Self::Block>,
 		source: TransactionSource,
-		uxt: sc_transaction_graph::ExtrinsicFor<Self>,
+		uxt: tc_transaction_graph::ExtrinsicFor<Self>,
 	) -> Self::ValidationFuture {
 		let (tx, rx) = oneshot::channel();
 		let client = self.client.clone();
@@ -132,21 +132,21 @@ where
 	fn block_id_to_number(
 		&self,
 		at: &BlockId<Self::Block>,
-	) -> error::Result<Option<sc_transaction_graph::NumberFor<Self>>> {
+	) -> error::Result<Option<tc_transaction_graph::NumberFor<Self>>> {
 		self.client.to_number(at).map_err(|e| Error::BlockIdConversion(format!("{:?}", e)))
 	}
 
 	fn block_id_to_hash(
 		&self,
 		at: &BlockId<Self::Block>,
-	) -> error::Result<Option<sc_transaction_graph::BlockHash<Self>>> {
+	) -> error::Result<Option<tc_transaction_graph::BlockHash<Self>>> {
 		self.client.to_hash(at).map_err(|e| Error::BlockIdConversion(format!("{:?}", e)))
 	}
 
 	fn hash_and_length(
 		&self,
-		ex: &sc_transaction_graph::ExtrinsicFor<Self>,
-	) -> (sc_transaction_graph::ExtrinsicHash<Self>, usize) {
+		ex: &tc_transaction_graph::ExtrinsicFor<Self>,
+	) -> (tc_transaction_graph::ExtrinsicHash<Self>, usize) {
 		ex.using_encoded(|x| {
 			(<traits::HashFor::<Block> as traits::Hash>::hash(x), x.len())
 		})
@@ -159,14 +159,14 @@ fn validate_transaction_blocking<Client, Block>(
 	client: &Client,
 	at: &BlockId<Block>,
 	source: TransactionSource,
-	uxt: sc_transaction_graph::ExtrinsicFor<FullChainApi<Client, Block>>,
+	uxt: tc_transaction_graph::ExtrinsicFor<FullChainApi<Client, Block>>,
 ) -> error::Result<TransactionValidity>
 where
 	Block: BlockT,
 	Client: ProvideRuntimeApi<Block> + BlockBackend<Block> + BlockIdTo<Block>,
 	Client: Send + Sync + 'static,
 	Client::Api: TaggedTransactionQueue<Block>,
-	sp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
+	tp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
 {
 	tetcore_tracing::within_span!(tetcore_tracing::Level::TRACE, "validate_transaction";
 	{
@@ -198,7 +198,7 @@ where
 	Client: ProvideRuntimeApi<Block> + BlockBackend<Block> + BlockIdTo<Block>,
 	Client: Send + Sync + 'static,
 	Client::Api: TaggedTransactionQueue<Block>,
-	sp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
+	tp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
 {
 	/// Validates a transaction by calling into the runtime, same as
 	/// `validate_transaction` but blocks the current thread when performing
@@ -208,7 +208,7 @@ where
 		&self,
 		at: &BlockId<Block>,
 		source: TransactionSource,
-		uxt: sc_transaction_graph::ExtrinsicFor<Self>,
+		uxt: tc_transaction_graph::ExtrinsicFor<Self>,
 	) -> error::Result<TransactionValidity> {
 		validate_transaction_blocking(&*self.client, at, source, uxt)
 	}
@@ -232,7 +232,7 @@ impl<Client, F, Block> LightChainApi<Client, F, Block> {
 	}
 }
 
-impl<Client, F, Block> sc_transaction_graph::ChainApi for
+impl<Client, F, Block> tc_transaction_graph::ChainApi for
 	LightChainApi<Client, F, Block> where
 		Block: BlockT,
 		Client: HeaderBackend<Block> + 'static,
@@ -254,7 +254,7 @@ impl<Client, F, Block> sc_transaction_graph::ChainApi for
 		&self,
 		at: &BlockId<Self::Block>,
 		source: TransactionSource,
-		uxt: sc_transaction_graph::ExtrinsicFor<Self>,
+		uxt: tc_transaction_graph::ExtrinsicFor<Self>,
 	) -> Self::ValidationFuture {
 		let header_hash = self.client.expect_block_hash_from_id(at);
 		let header_and_hash = header_hash
@@ -288,21 +288,21 @@ impl<Client, F, Block> sc_transaction_graph::ChainApi for
 	fn block_id_to_number(
 		&self,
 		at: &BlockId<Self::Block>,
-	) -> error::Result<Option<sc_transaction_graph::NumberFor<Self>>> {
+	) -> error::Result<Option<tc_transaction_graph::NumberFor<Self>>> {
 		Ok(self.client.block_number_from_id(at)?)
 	}
 
 	fn block_id_to_hash(
 		&self,
 		at: &BlockId<Self::Block>,
-	) -> error::Result<Option<sc_transaction_graph::BlockHash<Self>>> {
+	) -> error::Result<Option<tc_transaction_graph::BlockHash<Self>>> {
 		Ok(self.client.block_hash_from_id(at)?)
 	}
 
 	fn hash_and_length(
 		&self,
-		ex: &sc_transaction_graph::ExtrinsicFor<Self>,
-	) -> (sc_transaction_graph::ExtrinsicHash<Self>, usize) {
+		ex: &tc_transaction_graph::ExtrinsicFor<Self>,
+	) -> (tc_transaction_graph::ExtrinsicHash<Self>, usize) {
 		ex.using_encoded(|x| {
 			(<<Block::Header as HeaderT>::Hashing as HashT>::hash(x), x.len())
 		})

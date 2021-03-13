@@ -25,7 +25,7 @@ use tp_runtime::{
 	generic::BlockId,
 };
 use std::sync::Arc;
-use sc_client_api::backend::{Backend as ClientBackend, Finalizer};
+use tc_client_api::backend::{Backend as ClientBackend, Finalizer};
 use std::marker::PhantomData;
 
 /// params for block finalization.

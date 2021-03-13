@@ -27,7 +27,7 @@ use std::sync::Arc;
 use std::collections::HashMap;
 pub use tetcore_test_client::*;
 pub use tetcore_test_runtime as runtime;
-pub use sc_consensus::LongestChain;
+pub use tc_consensus::LongestChain;
 
 pub use self::block_builder_ext::BlockBuilderExt;
 
@@ -35,7 +35,7 @@ use tet_core::{sr25519, ChangesTrieConfiguration};
 use tet_core::storage::{ChildInfo, Storage, StorageChild};
 use tetcore_test_runtime::genesismap::{GenesisConfig, additional_storage_with_genesis};
 use tp_runtime::traits::{Block as BlockT, Header as HeaderT, Hash as HashT, NumberFor, HashFor};
-use sc_client_api::light::{
+use tc_client_api::light::{
 	RemoteCallRequest, RemoteChangesRequest, RemoteBodyRequest,
 	Fetcher, RemoteHeaderRequest, RemoteReadRequest, RemoteReadChildRequest,
 };
@@ -56,7 +56,7 @@ pub mod prelude {
 	pub use super::{AccountKeyring, Sr25519Keyring};
 }
 
-sc_executor::native_executor_instance! {
+tc_executor::native_executor_instance! {
 	pub LocalExecutor,
 	tetcore_test_runtime::api::dispatch,
 	tetcore_test_runtime::native_version,
@@ -75,11 +75,11 @@ pub type Executor = client::LocalCallExecutor<
 pub type LightBackend = tetcore_test_client::LightBackend<tetcore_test_runtime::Block>;
 
 /// Test client light executor.
-pub type LightExecutor = sc_light::GenesisCallExecutor<
+pub type LightExecutor = tc_light::GenesisCallExecutor<
 	LightBackend,
 	client::LocalCallExecutor<
-		sc_light::Backend<
-			sc_client_db::light::LightStorage<tetcore_test_runtime::Block>,
+		tc_light::Backend<
+			tc_client_db::light::LightStorage<tetcore_test_runtime::Block>,
 			HashFor<tetcore_test_runtime::Block>
 		>,
 		NativeExecutor<LocalExecutor>
@@ -149,7 +149,7 @@ pub type TestClientBuilder<E, B> = tetcore_test_client::TestClientBuilder<
 /// Test client type with `LocalExecutor` and generic Backend.
 pub type Client<B> = client::Client<
 	B,
-	client::LocalCallExecutor<B, sc_executor::NativeExecutor<LocalExecutor>>,
+	client::LocalCallExecutor<B, tc_executor::NativeExecutor<LocalExecutor>>,
 	tetcore_test_runtime::Block,
 	tetcore_test_runtime::RuntimeApi,
 >;
@@ -228,26 +228,26 @@ pub trait TestClientBuilderExt<B>: Sized {
 	}
 
 	/// Build the test client and longest chain selector.
-	fn build_with_longest_chain(self) -> (Client<B>, sc_consensus::LongestChain<B, tetcore_test_runtime::Block>);
+	fn build_with_longest_chain(self) -> (Client<B>, tc_consensus::LongestChain<B, tetcore_test_runtime::Block>);
 
 	/// Build the test client and the backend.
 	fn build_with_backend(self) -> (Client<B>, Arc<B>);
 }
 
 impl<B> TestClientBuilderExt<B> for TestClientBuilder<
-	client::LocalCallExecutor<B, sc_executor::NativeExecutor<LocalExecutor>>,
+	client::LocalCallExecutor<B, tc_executor::NativeExecutor<LocalExecutor>>,
 	B
 > where
-	B: sc_client_api::backend::Backend<tetcore_test_runtime::Block> + 'static,
+	B: tc_client_api::backend::Backend<tetcore_test_runtime::Block> + 'static,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
-	<B as sc_client_api::backend::Backend<tetcore_test_runtime::Block>>::State:
-		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
+	<B as tc_client_api::backend::Backend<tetcore_test_runtime::Block>>::State:
+		tp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
 	fn genesis_init_mut(&mut self) -> &mut GenesisParameters {
 		Self::genesis_init_mut(self)
 	}
 
-	fn build_with_longest_chain(self) -> (Client<B>, sc_consensus::LongestChain<B, tetcore_test_runtime::Block>) {
+	fn build_with_longest_chain(self) -> (Client<B>, tc_consensus::LongestChain<B, tetcore_test_runtime::Block>) {
 		self.build_with_native_executor(None)
 	}
 
@@ -346,8 +346,8 @@ pub fn new_light() -> (
 	Arc<LightBackend>,
 ) {
 
-	let storage = sc_client_db::light::LightStorage::new_test();
-	let blockchain = Arc::new(sc_light::Blockchain::new(storage));
+	let storage = tc_client_db::light::LightStorage::new_test();
+	let blockchain = Arc::new(tc_light::Blockchain::new(storage));
 	let backend = Arc::new(LightBackend::new(blockchain));
 	let executor = new_native_executor();
 	let local_call_executor = client::LocalCallExecutor::new(
@@ -375,6 +375,6 @@ pub fn new_light_fetcher() -> LightFetcher {
 }
 
 /// Create a new native executor.
-pub fn new_native_executor() -> sc_executor::NativeExecutor<LocalExecutor> {
-	sc_executor::NativeExecutor::new(sc_executor::WasmExecutionMethod::Interpreted, None, 8)
+pub fn new_native_executor() -> tc_executor::NativeExecutor<LocalExecutor> {
+	tc_executor::NativeExecutor::new(tc_executor::WasmExecutionMethod::Interpreted, None, 8)
 }

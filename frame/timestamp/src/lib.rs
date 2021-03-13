@@ -275,7 +275,7 @@ impl<T: Config> Time for Module<T> {
 impl<T: Config> UnixTime for Module<T> {
 	fn now() -> core::time::Duration {
 		// now is duration since unix epoch in millisecond as documented in
-		// `sp_timestamp::InherentDataProvider`.
+		// `tp_timestamp::InherentDataProvider`.
 		let now = Self::now();
 		tetcore_std::if_std! {
 			if now == T::Moment::zero() {

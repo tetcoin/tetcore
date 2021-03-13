@@ -28,7 +28,7 @@ use lru::LruCache;
 use tetsy_libp2p::PeerId;
 use prometheus_endpoint::{register, Counter, PrometheusError, Registry, U64};
 use tp_runtime::traits::{Block as BlockT, Hash, HashFor};
-use sc_network::ObservedRole;
+use tc_network::ObservedRole;
 use wasm_timer::Instant;
 
 // FIXME: Add additional spam/DoS attack protection: https://github.com/tetcoin/tetcore/issues/1115
@@ -47,7 +47,7 @@ const REBROADCAST_INTERVAL: time::Duration = time::Duration::from_secs(30);
 pub(crate) const PERIODIC_MAINTENANCE_INTERVAL: time::Duration = time::Duration::from_millis(1100);
 
 mod rep {
-	use sc_network::ReputationChange as Rep;
+	use tc_network::ReputationChange as Rep;
 	/// Reputation change when a peer sends us a gossip message that we didn't know about.
 	pub const GOSSIP_SUCCESS: Rep = Rep::new(1 << 4, "Successfull gossip");
 	/// Reputation change when a peer sends us a gossip message that we already knew about.
@@ -493,7 +493,7 @@ impl Metrics {
 #[cfg(test)]
 mod tests {
 	use futures::prelude::*;
-	use sc_network::{Event, ReputationChange};
+	use tc_network::{Event, ReputationChange};
 	use tp_runtime::testing::{H256, Block as RawBlock, ExtrinsicWrapper};
 	use std::{borrow::Cow, pin::Pin, sync::{Arc, Mutex}};
 	use super::*;

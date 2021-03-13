@@ -20,7 +20,7 @@ use tetsy_libp2p::core::multiaddr::{Multiaddr, Protocol};
 use std::collections::HashMap;
 
 use tp_authority_discovery::AuthorityId;
-use sc_network::PeerId;
+use tc_network::PeerId;
 
 /// Cache for [`AuthorityId`] -> [`Vec<Multiaddr>`] and [`PeerId`] -> [`AuthorityId`] mappings.
 pub(super) struct AddrCache {

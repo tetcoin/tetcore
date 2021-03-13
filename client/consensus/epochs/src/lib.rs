@@ -24,7 +24,7 @@ use std::{sync::Arc, ops::Add, collections::BTreeMap, borrow::{Borrow, BorrowMut
 use parking_lot::Mutex;
 use codec::{Encode, Decode};
 use forktree::ForkTree;
-use sc_client_api::utils::is_descendent_of;
+use tc_client_api::utils::is_descendent_of;
 use tp_blockchain::{HeaderMetadata, HeaderBackend, Error as ClientError};
 use tp_runtime::traits::{Block as BlockT, NumberFor, One, Zero};
 

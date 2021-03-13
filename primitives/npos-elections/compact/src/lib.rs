@@ -34,7 +34,7 @@ pub(crate) fn syn_err(message: &'static str) -> syn::Error {
 }
 
 /// Generates a struct to store the election result in a small way. This can encode a structure
-/// which is the equivalent of a `sp_npos_elections::Assignment<_>`.
+/// which is the equivalent of a `tp_npos_elections::Assignment<_>`.
 ///
 /// The following data types can be configured by the macro.
 ///
@@ -354,8 +354,8 @@ fn imports() -> Result<TokenStream2> {
 		})
 	} else {
 		match crate_name("tp-npos-elections") {
-			Ok(sp_npos_elections) => {
-				let ident = syn::Ident::new(&sp_npos_elections, Span::call_site());
+			Ok(tp_npos_elections) => {
+				let ident = syn::Ident::new(&tp_npos_elections, Span::call_site());
 				Ok(quote!( extern crate #ident as _npos; ))
 			},
 			Err(e) => Err(syn::Error::new(Span::call_site(), &e)),

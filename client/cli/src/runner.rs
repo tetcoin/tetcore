@@ -24,11 +24,11 @@ use futures::pin_mut;
 use futures::select;
 use futures::{future, future::FutureExt, Future};
 use log::info;
-use sc_service::{Configuration, TaskType, TaskManager};
-use sc_telemetry::{TelemetryHandle, TelemetryWorker};
+use tc_service::{Configuration, TaskType, TaskManager};
+use tc_telemetry::{TelemetryHandle, TelemetryWorker};
 use tetcore_utils::metrics::{TOKIO_THREADS_ALIVE, TOKIO_THREADS_TOTAL};
 use std::marker::PhantomData;
-use sc_service::Error as ServiceError;
+use tc_service::Error as ServiceError;
 use crate::error::Error as CliError;
 
 #[cfg(target_family = "unix")]

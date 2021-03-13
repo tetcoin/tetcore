@@ -19,15 +19,15 @@
 //! Utilities to build a `TestClient` for `node-runtime`.
 
 use tp_runtime::BuildStorage;
-use sc_service::client;
+use tc_service::client;
 /// Re-export test-client utilities.
 pub use tetcore_test_client::*;
 
 /// Call executor for `node-runtime` `TestClient`.
-pub type Executor = sc_executor::NativeExecutor<node_executor::Executor>;
+pub type Executor = tc_executor::NativeExecutor<node_executor::Executor>;
 
 /// Default backend type.
-pub type Backend = sc_client_db::Backend<node_primitives::Block>;
+pub type Backend = tc_client_db::Backend<node_primitives::Block>;
 
 /// Test client type.
 pub type Client = client::Client<
@@ -38,7 +38,7 @@ pub type Client = client::Client<
 >;
 
 /// Transaction for node-runtime.
-pub type Transaction = sc_client_api::backend::TransactionFor<Backend, node_primitives::Block>;
+pub type Transaction = tc_client_api::backend::TransactionFor<Backend, node_primitives::Block>;
 
 /// Genesis configuration parameters for `TestClient`.
 #[derive(Default)]

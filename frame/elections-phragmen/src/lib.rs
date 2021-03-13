@@ -92,7 +92,7 @@
 //!
 //! ### Module Information
 //!
-//! - [`election_sp_phragmen::Config`](./trait.Config.html)
+//! - [`election_tp_phragmen::Config`](./trait.Config.html)
 //! - [`Call`](./enum.Call.html)
 //! - [`Module`](./struct.Module.html)
 

@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::state_holder;
-use sc_executor_common::error::WasmError;
+use tc_executor_common::error::WasmError;
 use tetcore_wasm_interface::{Function, Value, ValueType};
 use std::any::Any;
 use wasmtime::{

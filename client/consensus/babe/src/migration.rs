@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use codec::{Encode, Decode};
-use sc_consensus_epochs::Epoch as EpochT;
+use tc_consensus_epochs::Epoch as EpochT;
 use crate::{
 	Epoch, AuthorityId, BabeAuthorityWeight, BabeGenesisConfiguration,
 	BabeEpochConfiguration, VRF_OUTPUT_LENGTH, NextEpochDescriptor,

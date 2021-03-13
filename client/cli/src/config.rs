@@ -26,15 +26,15 @@ use crate::{
 };
 use log::warn;
 use names::{Generator, Name};
-use sc_client_api::execution_extensions::ExecutionStrategies;
-use sc_service::config::{
+use tc_client_api::execution_extensions::ExecutionStrategies;
+use tc_service::config::{
 	BasePath, Configuration, DatabaseConfig, ExtTransport, KeystoreConfig, NetworkConfiguration,
 	NodeKeyConfig, OffchainWorkerConfig, PrometheusConfig, PruningMode, Role, RpcMethods,
 	TaskExecutor, TelemetryEndpoints, TransactionPoolOptions, WasmExecutionMethod,
 };
-use sc_service::{ChainSpec, TracingReceiver, KeepBlocks, TransactionStorageMode};
-use sc_telemetry::{TelemetryHandle, TelemetrySpan};
-use sc_tracing::logging::LoggerBuilder;
+use tc_service::{ChainSpec, TracingReceiver, KeepBlocks, TransactionStorageMode};
+use tc_telemetry::{TelemetryHandle, TelemetrySpan};
+use tc_tracing::logging::LoggerBuilder;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 
@@ -581,7 +581,7 @@ pub trait CliConfiguration<DCV: DefaultConfigurationValues = ()>: Sized {
 	/// 1. Sets the panic handler
 	/// 2. Initializes the logger
 	/// 3. Raises the FD limit
-	fn init<C: TetcoreCli>(&self) -> Result<sc_telemetry::TelemetryWorker> {
+	fn init<C: TetcoreCli>(&self) -> Result<tc_telemetry::TelemetryWorker> {
 		panic_handler::set(&C::support_url(), &C::impl_version());
 
 		let mut logger = LoggerBuilder::new(self.log_filters()?);

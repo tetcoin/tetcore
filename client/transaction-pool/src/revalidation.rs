@@ -20,7 +20,7 @@
 
 use std::{sync::Arc, pin::Pin, collections::{HashMap, HashSet, BTreeMap}};
 
-use sc_transaction_graph::{ChainApi, Pool, ExtrinsicHash, NumberFor, ValidatedTransaction};
+use tc_transaction_graph::{ChainApi, Pool, ExtrinsicHash, NumberFor, ValidatedTransaction};
 use tp_runtime::traits::{Zero, SaturatedConversion};
 use tp_runtime::generic::BlockId;
 use tp_runtime::transaction_validity::TransactionValidityError;
@@ -298,7 +298,7 @@ where
 		pool: Arc<Pool<Api>>,
 		interval: R,
 	) -> (Self, Pin<Box<dyn Future<Output=()> + Send>>) where R: Send + 'static, R::Guard: Send {
-		let (to_worker, from_queue) = tracing_unbounded("mpsc_revalidation_queue");
+		let (to_worker, from_queue) = tracing_unbounded("mptc_revalidation_queue");
 
 		let worker = RevalidationWorker::new(api.clone(), pool.clone());
 
@@ -362,7 +362,7 @@ where
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sc_transaction_graph::Pool;
+	use tc_transaction_graph::Pool;
 	use tp_transaction_pool::TransactionSource;
 	use tetcore_test_runtime_transaction_pool::{TestApi, uxt};
 	use futures::executor::block_on;

@@ -19,8 +19,8 @@
 use crate::{chain_spec, service, Cli, Subcommand};
 use node_executor::Executor;
 use node_runtime::{Block, RuntimeApi};
-use sc_cli::{Result, TetcoreCli, RuntimeVersion, Role, ChainSpec};
-use sc_service::PartialComponents;
+use tc_cli::{Result, TetcoreCli, RuntimeVersion, Role, ChainSpec};
+use tc_service::PartialComponents;
 use crate::service::new_partial;
 
 impl TetcoreCli for Cli {
@@ -48,7 +48,7 @@ impl TetcoreCli for Cli {
 		2017
 	}
 
-	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
+	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn tc_service::ChainSpec>, String> {
 		let spec =
 			match id {
 				"" => return Err("Please specify which chain you want to run, e.g. --dev or --chain=local".into()),
@@ -79,7 +79,7 @@ pub fn run() -> Result<()> {
 				match config.role {
 					Role::Light => service::new_light(config),
 					_ => service::new_full(config),
-				}.map_err(sc_cli::Error::Service)
+				}.map_err(tc_cli::Error::Service)
 			})
 		}
 		Some(Subcommand::Inspect(cmd)) => {

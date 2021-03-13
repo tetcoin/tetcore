@@ -46,7 +46,7 @@ use tp_runtime::{
 	Justification, generic::BlockId,
 	traits::{NumberFor, Block as BlockT, Header as HeaderT, Zero, One},
 };
-use sc_client_api::backend::Backend;
+use tc_client_api::backend::Backend;
 use tp_finality_grandpa::{AuthorityId, AuthorityList};
 
 use crate::authorities::AuthoritySetChanges;
@@ -148,7 +148,7 @@ pub enum FinalityProofError {
 	#[display(fmt = "Block not covered by authority set changes")]
 	BlockNotInAuthoritySetChanges,
 	/// Errors originating from the client.
-	Client(sp_blockchain::Error),
+	Client(tp_blockchain::Error),
 }
 
 /// Single fragment of authority set proof.
@@ -253,7 +253,7 @@ pub fn prove_warp_sync<Block: BlockT, B: BlockchainBackend<Block>>(
 	begin: Block::Hash,
 	max_fragment_limit: Option<usize>,
 	mut cache: Option<&mut WarpSyncFragmentCache<Block::Header>>,
-) -> ::sp_blockchain::Result<Vec<u8>> {
+) -> ::tp_blockchain::Result<Vec<u8>> {
 
 	let begin = BlockId::Hash(begin);
 	let begin_number = blockchain.block_number_from_id(&begin)?
@@ -350,7 +350,7 @@ fn get_warp_sync_proof_fragment<Block: BlockT, B: BlockchainBackend<Block>>(
 		}
 	}
 
-	if let Some(sp_finality_grandpa::ScheduledChange {
+	if let Some(tp_finality_grandpa::ScheduledChange {
 		next_authorities: _,
 		delay,
 	}) = crate::import::find_scheduled_change::<Block>(&header) {
@@ -436,7 +436,7 @@ where
 		}
 		let current_block = authorities_proof.header.number();
 		let mut at_block = None;
-		if let Some(sp_finality_grandpa::ScheduledChange {
+		if let Some(tp_finality_grandpa::ScheduledChange {
 			next_authorities,
 			delay,
 		}) = crate::import::find_scheduled_change::<Block>(&authorities_proof.header) {
@@ -493,7 +493,7 @@ where
 		.map_err(|_| ClientError::JustificationDecode)?;
 	justification.verify(current_set_id, &current_authorities)?;
 
-	use sc_telemetry::{telemetry, CONSENSUS_INFO};
+	use tc_telemetry::{telemetry, CONSENSUS_INFO};
 	telemetry!(CONSENSUS_INFO; "afg.finality_proof_ok";
 		"finalized_header_hash" => ?proof.block);
 	Ok(proof)
@@ -523,7 +523,7 @@ where
 {
 	fn verify(&self, set_id: u64, authorities: &[(AuthorityId, u64)]) -> ClientResult<()> {
 		let authorities = VoterSet::new(authorities.iter().cloned()).ok_or(
-			ClientError::Consensus(sp_consensus::Error::InvalidAuthoritiesSet),
+			ClientError::Consensus(tp_consensus::Error::InvalidAuthoritiesSet),
 		)?;
 
 		GrandpaJustification::verify(self, set_id, &authorities)
@@ -598,8 +598,8 @@ pub(crate) mod tests {
 	use crate::authorities::AuthoritySetChanges;
 	use tet_core::crypto::Public;
 	use tp_finality_grandpa::AuthorityList;
-	use sc_client_api::NewBlockState;
-	use sc_client_api::in_mem::Blockchain as InMemoryBlockchain;
+	use tc_client_api::NewBlockState;
+	use tc_client_api::in_mem::Blockchain as InMemoryBlockchain;
 	use tetcore_test_runtime_client::runtime::{Block, Header, H256};
 
 	pub(crate) type FinalityProof = super::FinalityProof<Header>;
@@ -843,9 +843,9 @@ pub(crate) mod tests {
 						set_id_next += 1;
 						header.digest_mut().logs.push(
 							tp_runtime::generic::DigestItem::Consensus(
-								sp_finality_grandpa::GRANDPA_ENGINE_ID,
-								sp_finality_grandpa::ConsensusLog::ScheduledChange(
-									sp_finality_grandpa::ScheduledChange { delay: 0u64, next_authorities }
+								tp_finality_grandpa::GRANDPA_ENGINE_ID,
+								tp_finality_grandpa::ConsensusLog::ScheduledChange(
+									tp_finality_grandpa::ScheduledChange { delay: 0u64, next_authorities }
 								).encode(),
 							));
 					});

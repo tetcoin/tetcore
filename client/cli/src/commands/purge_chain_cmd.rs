@@ -19,7 +19,7 @@
 use crate::error;
 use crate::params::{DatabaseParams, SharedParams};
 use crate::CliConfiguration;
-use sc_service::DatabaseConfig;
+use tc_service::DatabaseConfig;
 use std::fmt::Debug;
 use std::fs;
 use std::io::{self, Write};

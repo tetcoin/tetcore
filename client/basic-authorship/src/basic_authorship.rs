@@ -21,7 +21,7 @@
 // FIXME #1021 move this into tp-consensus
 
 use std::{pin::Pin, time, sync::Arc};
-use sc_client_api::backend;
+use tc_client_api::backend;
 use codec::Decode;
 use tp_consensus::{evaluation, Proposal, RecordProof};
 use tet_core::traits::SpawnNamed;
@@ -32,15 +32,15 @@ use tp_runtime::{
 	traits::{Block as BlockT, Hash as HashT, Header as HeaderT, DigestFor, BlakeTwo256},
 };
 use tp_transaction_pool::{TransactionPool, InPoolTransaction};
-use sc_telemetry::{telemetry, CONSENSUS_INFO};
-use sc_block_builder::{BlockBuilderApi, BlockBuilderProvider};
+use tc_telemetry::{telemetry, CONSENSUS_INFO};
+use tc_block_builder::{BlockBuilderApi, BlockBuilderProvider};
 use tp_api::{ProvideRuntimeApi, ApiExt};
 use futures::{future, future::{Future, FutureExt}, channel::oneshot, select};
 use tp_blockchain::{HeaderBackend, ApplyExtrinsicFailed::Validity, Error::ApplyExtrinsicFailed};
 use std::marker::PhantomData;
 
 use prometheus_endpoint::Registry as PrometheusRegistry;
-use sc_proposer_metrics::MetricsLink as PrometheusMetrics;
+use tc_proposer_metrics::MetricsLink as PrometheusMetrics;
 
 /// Default maximum block size in bytes used by [`Proposer`].
 ///
@@ -290,7 +290,7 @@ impl<A, B, Block, C> Proposer<B, Block, C, A>
 			let pending_tx_data = pending_tx.data().clone();
 			let pending_tx_hash = pending_tx.hash().clone();
 			trace!("[{:?}] Pushing to the block.", pending_tx_hash);
-			match sc_block_builder::BlockBuilder::push(&mut block_builder, pending_tx_data) {
+			match tc_block_builder::BlockBuilder::push(&mut block_builder, pending_tx_data) {
 				Ok(()) => {
 					debug!("[{:?}] Pushed to the block.", pending_tx_hash);
 				}
@@ -375,11 +375,11 @@ mod tests {
 		prelude::*, TestClientBuilder, runtime::{Extrinsic, Transfer}, TestClientBuilderExt,
 	};
 	use tp_transaction_pool::{ChainEvent, MaintainedTransactionPool, TransactionSource};
-	use sc_transaction_pool::BasicPool;
+	use tc_transaction_pool::BasicPool;
 	use tp_api::Core;
 	use tp_blockchain::HeaderBackend;
 	use tp_runtime::traits::NumberFor;
-	use sc_client_api::Backend;
+	use tc_client_api::Backend;
 
 	const SOURCE: TransactionSource = TransactionSource::External;
 

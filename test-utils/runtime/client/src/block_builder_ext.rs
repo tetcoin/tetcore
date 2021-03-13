@@ -19,10 +19,10 @@
 
 use tp_api::{ApiExt, ProvideRuntimeApi};
 use tet_core::ChangesTrieConfiguration;
-use sc_client_api::backend;
+use tc_client_api::backend;
 use tp_runtime::traits::HashFor;
 
-use sc_block_builder::BlockBuilderApi;
+use tc_block_builder::BlockBuilderApi;
 
 /// Extension trait for test block builder.
 pub trait BlockBuilderExt {
@@ -41,7 +41,7 @@ pub trait BlockBuilderExt {
 	) -> Result<(), tp_blockchain::Error>;
 }
 
-impl<'a, A, B> BlockBuilderExt for sc_block_builder::BlockBuilder<'a, tetcore_test_runtime::Block, A, B> where
+impl<'a, A, B> BlockBuilderExt for tc_block_builder::BlockBuilder<'a, tetcore_test_runtime::Block, A, B> where
 	A: ProvideRuntimeApi<tetcore_test_runtime::Block> + 'a,
 	A::Api: BlockBuilderApi<tetcore_test_runtime::Block, Error = tp_blockchain::Error> +
 		ApiExt<
@@ -51,7 +51,7 @@ impl<'a, A, B> BlockBuilderExt for sc_block_builder::BlockBuilder<'a, tetcore_te
 	B: backend::Backend<tetcore_test_runtime::Block>,
 	// Rust bug: https://github.com/rust-lang/rust/issues/24159
 	backend::StateBackendFor<B, tetcore_test_runtime::Block>:
-		sp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
+		tp_api::StateBackend<HashFor<tetcore_test_runtime::Block>>,
 {
 	fn push_transfer(&mut self, transfer: tetcore_test_runtime::Transfer) -> Result<(), tp_blockchain::Error> {
 		self.push(transfer.into_signed_tx())

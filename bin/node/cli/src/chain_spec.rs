@@ -18,7 +18,7 @@
 
 //! Tetcore chain configurations.
 
-use sc_chain_spec::ChainSpecExtension;
+use tc_chain_spec::ChainSpecExtension;
 use tet_core::{Pair, Public, crypto::UncheckedInto, sr25519};
 use serde::{Serialize, Deserialize};
 use node_runtime::{
@@ -29,9 +29,9 @@ use node_runtime::{
 };
 use node_runtime::Block;
 use node_runtime::constants::currency::*;
-use sc_service::ChainType;
+use tc_service::ChainType;
 use hex_literal::hex;
-use sc_telemetry::TelemetryEndpoints;
+use tc_telemetry::TelemetryEndpoints;
 use grandpa_primitives::{AuthorityId as GrandpaId};
 use tp_consensus_babe::{AuthorityId as BabeId};
 use pallet_im_online::sr25519::{AuthorityId as ImOnlineId};
@@ -53,13 +53,13 @@ const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 #[serde(rename_all = "camelCase")]
 pub struct Extensions {
 	/// Block numbers with known hashes.
-	pub fork_blocks: sc_client_api::ForkBlocks<Block>,
+	pub fork_blocks: tc_client_api::ForkBlocks<Block>,
 	/// Known bad block hashes.
-	pub bad_blocks: sc_client_api::BadBlocks<Block>,
+	pub bad_blocks: tc_client_api::BadBlocks<Block>,
 }
 
 /// Specialized `ChainSpec`.
-pub type ChainSpec = sc_service::GenericChainSpec<
+pub type ChainSpec = tc_service::GenericChainSpec<
 	GenesisConfig,
 	Extensions,
 >;
@@ -386,7 +386,7 @@ pub fn local_testnet_config() -> ChainSpec {
 pub(crate) mod tests {
 	use super::*;
 	use crate::service::{new_full_base, new_light_base, NewFullBase};
-	use sc_service_test;
+	use tc_service_test;
 	use tp_runtime::BuildStorage;
 
 	fn local_testnet_genesis_instant_single() -> GenesisConfig {
@@ -433,16 +433,16 @@ pub(crate) mod tests {
 	#[test]
 	#[ignore]
 	fn test_connectivity() {
-		sc_service_test::connectivity(
+		tc_service_test::connectivity(
 			integration_test_config_with_two_authorities(),
 			|config| {
 				let NewFullBase { task_manager, client, network, transaction_pool, .. }
 					= new_full_base(config,|_, _| ())?;
-				Ok(sc_service_test::TestNetComponents::new(task_manager, client, network, transaction_pool))
+				Ok(tc_service_test::TestNetComponents::new(task_manager, client, network, transaction_pool))
 			},
 			|config| {
 				let (keep_alive, _, _, client, network, transaction_pool) = new_light_base(config)?;
-				Ok(sc_service_test::TestNetComponents::new(keep_alive, client, network, transaction_pool))
+				Ok(tc_service_test::TestNetComponents::new(keep_alive, client, network, transaction_pool))
 			}
 		);
 	}

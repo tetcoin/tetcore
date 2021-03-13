@@ -24,7 +24,7 @@ use tp_runtime_interface_test_wasm::{wasm_binary_unwrap, test_api::HostFunctions
 use tp_runtime_interface_test_wasm_deprecated::wasm_binary_unwrap as wasm_binary_deprecated_unwrap;
 
 use tetcore_wasm_interface::HostFunctions as HostFunctionsT;
-use sc_executor::CallInWasm;
+use tc_executor::CallInWasm;
 
 use std::{collections::HashSet, sync::{Arc, Mutex}};
 
@@ -39,8 +39,8 @@ fn call_wasm_method_with_result<HF: HostFunctionsT>(
 	let mut host_functions = HF::host_functions();
 	host_functions.extend(tet_io::TetcoreHostFunctions::host_functions());
 
-	let executor = sc_executor::WasmExecutor::new(
-		sc_executor::WasmExecutionMethod::Interpreted,
+	let executor = tc_executor::WasmExecutor::new(
+		tc_executor::WasmExecutionMethod::Interpreted,
 		Some(8),
 		host_functions,
 		8,

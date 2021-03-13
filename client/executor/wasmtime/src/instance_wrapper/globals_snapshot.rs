@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use super::InstanceWrapper;
-use sc_executor_common::error::{Result, Error};
+use tc_executor_common::error::{Result, Error};
 use tetcore_wasm_interface::Value;
 use crate::imports::{into_value, into_wasmtime_val};
 

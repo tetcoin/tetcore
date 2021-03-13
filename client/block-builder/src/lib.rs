@@ -19,7 +19,7 @@
 //! Tetcore block builder
 //!
 //! This crate provides the [`BlockBuilder`] utility and the corresponding runtime api
-//! [`BlockBuilder`](sp_block_builder::BlockBuilder).
+//! [`BlockBuilder`](tp_block_builder::BlockBuilder).
 //!
 //! The block builder utility is used in the node as an abstraction over the runtime api to
 //! initialize a block, to push extrinsics and to finalize a block.
@@ -42,7 +42,7 @@ use tp_consensus::RecordProof;
 
 pub use tp_block_builder::BlockBuilder as BlockBuilderApi;
 
-use sc_client_api::backend;
+use tc_client_api::backend;
 
 /// A block that was build by [`BlockBuilder`] plus some additional data.
 ///

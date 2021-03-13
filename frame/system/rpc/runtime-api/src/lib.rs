@@ -23,7 +23,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// The API to query account nonce (aka transaction index).
 	pub trait AccountNonceApi<AccountId, Index> where
 		AccountId: codec::Codec,

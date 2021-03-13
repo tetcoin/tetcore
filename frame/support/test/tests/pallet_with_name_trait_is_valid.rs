@@ -71,14 +71,14 @@ pub const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = *b"12345678";
 
 impl<T: Trait> tp_inherents::ProvideInherent for Module<T> {
 	type Call = Call<T>;
-	type Error = tp_inherents::MakeFatalError<sp_inherents::Error>;
+	type Error = tp_inherents::MakeFatalError<tp_inherents::Error>;
 	const INHERENT_IDENTIFIER: tp_inherents::InherentIdentifier = INHERENT_IDENTIFIER;
 
-	fn create_inherent(_data: &sp_inherents::InherentData) -> Option<Self::Call> {
+	fn create_inherent(_data: &tp_inherents::InherentData) -> Option<Self::Call> {
 		unimplemented!();
 	}
 
-	fn check_inherent(_: &Self::Call, _: &sp_inherents::InherentData) -> std::result::Result<(), Self::Error> {
+	fn check_inherent(_: &Self::Call, _: &tp_inherents::InherentData) -> std::result::Result<(), Self::Error> {
 		unimplemented!();
 	}
 }

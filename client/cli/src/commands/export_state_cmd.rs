@@ -23,7 +23,7 @@ use log::info;
 use tp_runtime::traits::{Block as BlockT, Header as HeaderT};
 use std::{fmt::Debug, str::FromStr, io::Write, sync::Arc};
 use structopt::StructOpt;
-use sc_client_api::{StorageProvider, UsageProvider};
+use tc_client_api::{StorageProvider, UsageProvider};
 
 /// The `export-state` command used to export the state of a given block into
 /// a chain spec.
@@ -47,23 +47,23 @@ impl ExportStateCmd {
 	pub async fn run<B, BA, C>(
 		&self,
 		client: Arc<C>,
-		mut input_spec: Box<dyn sc_service::ChainSpec>,
+		mut input_spec: Box<dyn tc_service::ChainSpec>,
 	) -> error::Result<()>
 	where
 		B: BlockT,
 		C: UsageProvider<B> + StorageProvider<B, BA>,
-		BA: sc_client_api::backend::Backend<B>,
+		BA: tc_client_api::backend::Backend<B>,
 		B::Hash: FromStr,
 		<B::Hash as FromStr>::Err: Debug,
 		<<B::Header as HeaderT>::Number as FromStr>::Err: Debug,
 	{
 		info!("Exporting raw state...");
 		let block_id = self.input.as_ref().map(|b| b.parse()).transpose()?;
-		let raw_state = sc_service::chain_ops::export_raw_state(client, block_id)?;
+		let raw_state = tc_service::chain_ops::export_raw_state(client, block_id)?;
 		input_spec.set_storage(raw_state);
 
 		info!("Generating new chain spec...");
-		let json = sc_service::chain_ops::build_spec(&*input_spec, true)?;
+		let json = tc_service::chain_ops::build_spec(&*input_spec, true)?;
 		if std::io::stdout().write_all(json.as_bytes()).is_err() {
 			let _ = std::io::stderr().write_all(b"Error writing to stdout\n");
 		}

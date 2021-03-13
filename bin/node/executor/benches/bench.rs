@@ -29,7 +29,7 @@ use tet_core::storage::well_known_keys;
 use tet_core::traits::{CodeExecutor, RuntimeCode};
 use frame_support::Hashable;
 use tp_state_machine::TestExternalities as CoreTestExternalities;
-use sc_executor::{NativeExecutor, RuntimeInfo, WasmExecutionMethod, Externalities};
+use tc_executor::{NativeExecutor, RuntimeInfo, WasmExecutionMethod, Externalities};
 use tp_runtime::traits::BlakeTwo256;
 
 criterion_group!(benches, bench_execute_block);

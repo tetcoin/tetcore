@@ -22,8 +22,8 @@
 mod tests;
 
 /// Re-export the API for backward compatibility.
-pub use sc_rpc_api::offchain::*;
-use sc_rpc_api::DenyUnsafe;
+pub use tc_rpc_api::offchain::*;
+use tc_rpc_api::DenyUnsafe;
 use self::error::{Error, Result};
 use tet_core::{
 	Bytes,

@@ -29,17 +29,17 @@ use tp_keystore::{
 	vrf::make_transcript as transcript_from_data,
 };
 use tp_consensus_babe::{AuthorityPair, Slot, AllowedSlots, make_transcript, make_transcript_data};
-use sc_consensus_slots::BackoffAuthoringOnFinalizedHeadLagging;
-use sc_block_builder::{BlockBuilder, BlockBuilderProvider};
+use tc_consensus_slots::BackoffAuthoringOnFinalizedHeadLagging;
+use tc_block_builder::{BlockBuilder, BlockBuilderProvider};
 use tp_consensus::{
 	NoNetwork as DummyOracle, Proposal, RecordProof, AlwaysCanAuthor,
 	import_queue::{BoxBlockImport, BoxJustificationImport},
 };
-use sc_network_test::*;
-use sc_network_test::{Block as TestBlock, PeersClient};
-use sc_network::config::ProtocolConfig;
+use tc_network_test::*;
+use tc_network_test::{Block as TestBlock, PeersClient};
+use tc_network::config::ProtocolConfig;
 use tp_runtime::{generic::DigestItem, traits::{Block as BlockT, DigestFor}};
-use sc_client_api::{BlockchainEvents, backend::TransactionFor};
+use tc_client_api::{BlockchainEvents, backend::TransactionFor};
 use log::debug;
 use std::{time::Duration, cell::RefCell, task::Poll};
 use rand::RngCore;
@@ -47,7 +47,7 @@ use rand_chacha::{
 	rand_core::SeedableRng,
 	ChaChaRng,
 };
-use sc_keystore::LocalKeystore;
+use tc_keystore::LocalKeystore;
 use tet_application_crypto::key_types::BABE;
 
 type Item = DigestItem<Hash>;
@@ -112,7 +112,7 @@ impl DummyProposer {
 			Result<
 				Proposal<
 					TestBlock,
-					sc_client_api::TransactionFor<tetcore_test_runtime_client::Backend, TestBlock>
+					tc_client_api::TransactionFor<tetcore_test_runtime_client::Backend, TestBlock>
 				>,
 				Error
 			>
@@ -169,7 +169,7 @@ impl DummyProposer {
 
 impl Proposer<TestBlock> for DummyProposer {
 	type Error = Error;
-	type Transaction = sc_client_api::TransactionFor<tetcore_test_runtime_client::Backend, TestBlock>;
+	type Transaction = tc_client_api::TransactionFor<tetcore_test_runtime_client::Backend, TestBlock>;
 	type Proposal = future::Ready<Result<Proposal<TestBlock, Self::Transaction>, Error>>;
 
 	fn propose(
@@ -675,7 +675,7 @@ fn importing_block_one_sets_genesis_epoch() {
 
 #[test]
 fn importing_epoch_change_block_prunes_tree() {
-	use sc_client_api::Finalizer;
+	use tc_client_api::Finalizer;
 
 	let mut net = BabeTestNet::new(1);
 

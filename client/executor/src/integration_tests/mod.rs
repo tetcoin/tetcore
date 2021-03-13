@@ -24,7 +24,7 @@ use tet_core::{
 	offchain::{OffchainExt, testing},
 	traits::{Externalities, CallInWasm},
 };
-use sc_runtime_test::wasm_binary_unwrap;
+use tc_runtime_test::wasm_binary_unwrap;
 use tp_state_machine::TestExternalities as CoreTestExternalities;
 use tp_trie::{TrieConfiguration, trie_types::Layout};
 use tetcore_wasm_interface::HostFunctions as _;
@@ -667,11 +667,11 @@ fn wasm_tracing_should_work(wasm_method: WasmExecutionMethod) {
 
 	use std::sync::{Arc, Mutex};
 
-	use sc_tracing::{SpanDatum, TraceEvent};
+	use tc_tracing::{SpanDatum, TraceEvent};
 
 	struct TestTraceHandler(Arc<Mutex<Vec<SpanDatum>>>);
 
-	impl sc_tracing::TraceHandler for TestTraceHandler {
+	impl tc_tracing::TraceHandler for TestTraceHandler {
 		fn handle_span(&self, sd: SpanDatum) {
 			self.0.lock().unwrap().push(sd);
 		}
@@ -684,7 +684,7 @@ fn wasm_tracing_should_work(wasm_method: WasmExecutionMethod) {
 
 	// Create subscriber with wasm_tracing disabled
 	let test_subscriber = tracing_subscriber::fmt().finish().with(
-		sc_tracing::ProfilingLayer::new_with_handler(
+		tc_tracing::ProfilingLayer::new_with_handler(
 			Box::new(handler), "default"
 		)
 	);

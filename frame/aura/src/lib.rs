@@ -39,8 +39,8 @@
 //!
 //! If you're interested in hacking on this module, it is useful to understand the interaction with
 //! `tetcore/primitives/inherents/src/lib.rs` and, specifically, the required implementation of
-//! [`ProvideInherent`](../sp_inherents/trait.ProvideInherent.html) and
-//! [`ProvideInherentData`](../sp_inherents/trait.ProvideInherentData.html) to create and check inherents.
+//! [`ProvideInherent`](../tp_inherents/trait.ProvideInherent.html) and
+//! [`ProvideInherentData`](../tp_inherents/trait.ProvideInherentData.html) to create and check inherents.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -226,7 +226,7 @@ impl<T: Config> OnTimestampSet<T::Moment> for Module<T> {
 
 impl<T: Config> ProvideInherent for Module<T> {
 	type Call = pallet_timestamp::Call<T>;
-	type Error = MakeFatalError<sp_inherents::Error>;
+	type Error = MakeFatalError<tp_inherents::Error>;
 	const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
 
 	fn create_inherent(_: &InherentData) -> Option<Self::Call> {
@@ -247,7 +247,7 @@ impl<T: Config> ProvideInherent for Module<T> {
 		if timestamp_based_slot == seal_slot {
 			Ok(())
 		} else {
-			Err(sp_inherents::Error::from("timestamp set in block doesn't match slot in seal").into())
+			Err(tp_inherents::Error::from("timestamp set in block doesn't match slot in seal").into())
 		}
 	}
 }

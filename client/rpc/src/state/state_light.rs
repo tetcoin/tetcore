@@ -40,9 +40,9 @@ use rpc::{
 	futures::stream::Stream,
 };
 
-use sc_rpc_api::state::ReadProof;
+use tc_rpc_api::state::ReadProof;
 use tp_blockchain::{Error as ClientError, HeaderBackend};
-use sc_client_api::{
+use tc_client_api::{
 	BlockchainEvents,
 	light::{
 		RemoteCallRequest, RemoteReadRequest, RemoteReadChildRequest,

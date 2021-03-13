@@ -19,7 +19,7 @@
 //! Structs to easily compose inspect sub-command for CLI.
 
 use std::fmt::Debug;
-use sc_cli::{ImportParams, SharedParams};
+use tc_cli::{ImportParams, SharedParams};
 use structopt::StructOpt;
 
 /// The `inspect` command used to print decoded chain data.

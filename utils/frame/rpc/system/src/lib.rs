@@ -20,7 +20,7 @@
 use std::sync::Arc;
 
 use codec::{self, Codec, Decode, Encode};
-use sc_client_api::light::{future_header, RemoteBlockchain, Fetcher, RemoteCallRequest};
+use tc_client_api::light::{future_header, RemoteBlockchain, Fetcher, RemoteCallRequest};
 use tetsy_jsonrpc_core::{
 	Error as RpcError, ErrorCode,
 	futures::future::{self as rpc_future,result, Future},
@@ -38,7 +38,7 @@ use tp_runtime::{
 use tet_core::{hexdisplay::HexDisplay, Bytes};
 use tp_transaction_pool::{TransactionPool, InPoolTransaction};
 use tp_block_builder::BlockBuilder;
-use sc_rpc_api::DenyUnsafe;
+use tc_rpc_api::DenyUnsafe;
 
 pub use frame_system_rpc_runtime_api::AccountNonceApi;
 pub use self::gen_client::Client as SystemClient;
@@ -289,7 +289,7 @@ mod tests {
 
 	use futures::executor::block_on;
 	use tetcore_test_runtime_client::{runtime::Transfer, AccountKeyring};
-	use sc_transaction_pool::BasicPool;
+	use tc_transaction_pool::BasicPool;
 	use tp_runtime::{ApplyExtrinsicResult, transaction_validity::{TransactionValidityError, InvalidTransaction}};
 
 	#[test]

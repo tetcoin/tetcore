@@ -40,12 +40,12 @@ use tp_api::{ProofRecorder, InitializeBlock, StorageTransactionCache};
 
 use tp_blockchain::{Error as ClientError, Result as ClientResult};
 
-use sc_client_api::{
+use tc_client_api::{
 	backend::RemoteBackend,
 	light::RemoteCallRequest,
 	call_executor::CallExecutor,
 };
-use sc_executor::{RuntimeVersion, NativeVersion};
+use tc_executor::{RuntimeVersion, NativeVersion};
 
 /// Call executor that is able to execute calls only on genesis state.
 ///
@@ -158,7 +158,7 @@ impl<Block, B, Local> CallExecutor<Block> for
 
 	fn prove_at_trie_state<S: tp_state_machine::TrieBackendStorage<HashFor<Block>>>(
 		&self,
-		_state: &sp_state_machine::TrieBackend<S, HashFor<Block>>,
+		_state: &tp_state_machine::TrieBackend<S, HashFor<Block>>,
 		_changes: &mut OverlayedChanges,
 		_method: &str,
 		_call_data: &[u8],
@@ -189,7 +189,7 @@ pub fn prove_execution<Block, S, E>(
 {
 	let trie_state = state.as_trie_backend()
 		.ok_or_else(||
-			Box::new(sp_state_machine::ExecutionError::UnableToGenerateProof) as
+			Box::new(tp_state_machine::ExecutionError::UnableToGenerateProof) as
 				Box<dyn tp_state_machine::Error>
 		)?;
 

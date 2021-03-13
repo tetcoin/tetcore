@@ -249,8 +249,8 @@ tet_core::wasm_export_functions! {
 	}
 
 	// Just some test to make sure that `tp-allocator` compiles on `no_std`.
-	fn test_sp_allocator_compiles() {
-		sp_allocator::FreeingBumpHeapAllocator::new(0);
+	fn test_tp_allocator_compiles() {
+		tp_allocator::FreeingBumpHeapAllocator::new(0);
 	}
 
 	fn test_enter_span() -> u64 {
@@ -336,7 +336,7 @@ tet_core::wasm_export_functions! {
 	}
 
 	fn test_panic_in_spawned() {
-		sp_tasks::spawn(tasks::panicker, vec![]).join();
+		tp_tasks::spawn(tasks::panicker, vec![]).join();
 	}
  }
 

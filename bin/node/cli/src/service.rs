@@ -21,52 +21,52 @@
 //! Service implementation. Specialized wrapper over tetcore service.
 
 use std::sync::Arc;
-use sc_consensus_babe;
+use tc_consensus_babe;
 use node_primitives::Block;
 use node_runtime::RuntimeApi;
-use sc_service::{
+use tc_service::{
 	config::{Configuration}, error::{Error as ServiceError},
 	RpcHandlers, TaskManager,
 };
 use tp_inherents::InherentDataProviders;
-use sc_network::{Event, NetworkService};
+use tc_network::{Event, NetworkService};
 use tp_runtime::traits::Block as BlockT;
 use futures::prelude::*;
-use sc_client_api::{ExecutorProvider, RemoteBackend};
+use tc_client_api::{ExecutorProvider, RemoteBackend};
 use node_executor::Executor;
-use sc_telemetry::TelemetryConnectionNotifier;
+use tc_telemetry::TelemetryConnectionNotifier;
 
-type FullClient = sc_service::TFullClient<Block, RuntimeApi, Executor>;
-type FullBackend = sc_service::TFullBackend<Block>;
-type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
+type FullClient = tc_service::TFullClient<Block, RuntimeApi, Executor>;
+type FullBackend = tc_service::TFullBackend<Block>;
+type FullSelectChain = tc_consensus::LongestChain<FullBackend, Block>;
 type FullGrandpaBlockImport =
 	grandpa::GrandpaBlockImport<FullBackend, Block, FullClient, FullSelectChain>;
-type LightClient = sc_service::TLightClient<Block, RuntimeApi, Executor>;
+type LightClient = tc_service::TLightClient<Block, RuntimeApi, Executor>;
 
-pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponents<
+pub fn new_partial(config: &Configuration) -> Result<tc_service::PartialComponents<
 	FullClient, FullBackend, FullSelectChain,
-	sp_consensus::DefaultImportQueue<Block, FullClient>,
-	sc_transaction_pool::FullPool<Block, FullClient>,
+	tp_consensus::DefaultImportQueue<Block, FullClient>,
+	tc_transaction_pool::FullPool<Block, FullClient>,
 	(
 		impl Fn(
 			node_rpc::DenyUnsafe,
-			sc_rpc::SubscriptionTaskExecutor,
+			tc_rpc::SubscriptionTaskExecutor,
 		) -> node_rpc::IoHandler,
 		(
-			sc_consensus_babe::BabeBlockImport<Block, FullClient, FullGrandpaBlockImport>,
+			tc_consensus_babe::BabeBlockImport<Block, FullClient, FullGrandpaBlockImport>,
 			grandpa::LinkHalf<Block, FullClient, FullSelectChain>,
-			sc_consensus_babe::BabeLink<Block>,
+			tc_consensus_babe::BabeLink<Block>,
 		),
 		grandpa::SharedVoterState,
 	)
 >, ServiceError> {
 	let (client, backend, keystore_container, task_manager) =
-		sc_service::new_full_parts::<Block, RuntimeApi, Executor>(&config)?;
+		tc_service::new_full_parts::<Block, RuntimeApi, Executor>(&config)?;
 	let client = Arc::new(client);
 
-	let select_chain = sc_consensus::LongestChain::new(backend.clone());
+	let select_chain = tc_consensus::LongestChain::new(backend.clone());
 
-	let transaction_pool = sc_transaction_pool::BasicPool::new_full(
+	let transaction_pool = tc_transaction_pool::BasicPool::new_full(
 		config.transaction_pool.clone(),
 		config.prometheus_registry(),
 		task_manager.spawn_handle(),
@@ -78,15 +78,15 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 	)?;
 	let justification_import = grandpa_block_import.clone();
 
-	let (block_import, babe_link) = sc_consensus_babe::block_import(
-		sc_consensus_babe::Config::get_or_compute(&*client)?,
+	let (block_import, babe_link) = tc_consensus_babe::block_import(
+		tc_consensus_babe::Config::get_or_compute(&*client)?,
 		grandpa_block_import,
 		client.clone(),
 	)?;
 
 	let inherent_data_providers = tp_inherents::InherentDataProviders::new();
 
-	let import_queue = sc_consensus_babe::import_queue(
+	let import_queue = tc_consensus_babe::import_queue(
 		babe_link.clone(),
 		block_import.clone(),
 		Some(Box::new(justification_import)),
@@ -95,7 +95,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		inherent_data_providers.clone(),
 		&task_manager.spawn_handle(),
 		config.prometheus_registry(),
-		sp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone()),
+		tp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone()),
 	)?;
 
 	let import_setup = (block_import, grandpa_link, babe_link);
@@ -149,7 +149,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		(rpc_extensions_builder, rpc_setup)
 	};
 
-	Ok(sc_service::PartialComponents {
+	Ok(tc_service::PartialComponents {
 		client,
 		backend,
 		task_manager,
@@ -167,19 +167,19 @@ pub struct NewFullBase {
 	pub inherent_data_providers: InherentDataProviders,
 	pub client: Arc<FullClient>,
 	pub network: Arc<NetworkService<Block, <Block as BlockT>::Hash>>,
-	pub network_status_sinks: sc_service::NetworkStatusSinks<Block>,
-	pub transaction_pool: Arc<sc_transaction_pool::FullPool<Block, FullClient>>,
+	pub network_status_sinks: tc_service::NetworkStatusSinks<Block>,
+	pub transaction_pool: Arc<tc_transaction_pool::FullPool<Block, FullClient>>,
 }
 
 /// Creates a full service from the configuration.
 pub fn new_full_base(
 	mut config: Configuration,
 	with_startup_data: impl FnOnce(
-		&sc_consensus_babe::BabeBlockImport<Block, FullClient, FullGrandpaBlockImport>,
-		&sc_consensus_babe::BabeLink<Block>,
+		&tc_consensus_babe::BabeBlockImport<Block, FullClient, FullGrandpaBlockImport>,
+		&tc_consensus_babe::BabeLink<Block>,
 	)
 ) -> Result<NewFullBase, ServiceError> {
-	let sc_service::PartialComponents {
+	let tc_service::PartialComponents {
 		client,
 		backend,
 		mut task_manager,
@@ -196,12 +196,12 @@ pub fn new_full_base(
 	config.network.extra_sets.push(grandpa::grandpa_peers_set_config());
 
 	#[cfg(feature = "cli")]
-	config.network.request_response_protocols.push(sc_finality_grandpa_warp_sync::request_response_config_for_chain(
+	config.network.request_response_protocols.push(tc_finality_grandpa_warp_sync::request_response_config_for_chain(
 		&config, task_manager.spawn_handle(), backend.clone(),
 	));
 
 	let (network, network_status_sinks, system_rpc_tx, network_starter) =
-		sc_service::build_network(sc_service::BuildNetworkParams {
+		tc_service::build_network(tc_service::BuildNetworkParams {
 			config: &config,
 			client: client.clone(),
 			transaction_pool: transaction_pool.clone(),
@@ -212,7 +212,7 @@ pub fn new_full_base(
 		})?;
 
 	if config.offchain_worker.enabled {
-		sc_service::build_offchain_workers(
+		tc_service::build_offchain_workers(
 			&config, backend.clone(), task_manager.spawn_handle(), client.clone(), network.clone(),
 		);
 	}
@@ -220,13 +220,13 @@ pub fn new_full_base(
 	let role = config.role.clone();
 	let force_authoring = config.force_authoring;
 	let backoff_authoring_blocks =
-		Some(sc_consensus_slots::BackoffAuthoringOnFinalizedHeadLagging::default());
+		Some(tc_consensus_slots::BackoffAuthoringOnFinalizedHeadLagging::default());
 	let name = config.network.node_name.clone();
 	let enable_grandpa = !config.disable_grandpa;
 	let prometheus_registry = config.prometheus_registry().cloned();
 
-	let (_rpc_handlers, telemetry_connection_notifier) = sc_service::spawn_tasks(
-		sc_service::SpawnTasksParams {
+	let (_rpc_handlers, telemetry_connection_notifier) = tc_service::spawn_tasks(
+		tc_service::SpawnTasksParams {
 			config,
 			backend: backend.clone(),
 			client: client.clone(),
@@ -246,8 +246,8 @@ pub fn new_full_base(
 
 	(with_startup_data)(&block_import, &babe_link);
 
-	if let sc_service::config::Role::Authority { .. } = &role {
-		let proposer = sc_basic_authorship::ProposerFactory::new(
+	if let tc_service::config::Role::Authority { .. } = &role {
+		let proposer = tc_basic_authorship::ProposerFactory::new(
 			task_manager.spawn_handle(),
 			client.clone(),
 			transaction_pool.clone(),
@@ -255,9 +255,9 @@ pub fn new_full_base(
 		);
 
 		let can_author_with =
-			sp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone());
+			tp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone());
 
-		let babe_config = sc_consensus_babe::BabeParams {
+		let babe_config = tc_consensus_babe::BabeParams {
 			keystore: keystore_container.sync_keystore(),
 			client: client.clone(),
 			select_chain,
@@ -271,13 +271,13 @@ pub fn new_full_base(
 			can_author_with,
 		};
 
-		let babe = sc_consensus_babe::start_babe(babe_config)?;
+		let babe = tc_consensus_babe::start_babe(babe_config)?;
 		task_manager.spawn_essential_handle().spawn_blocking("babe-proposer", babe);
 	}
 
 	// Spawn authority discovery module.
 	if role.is_authority() {
-		let authority_discovery_role = sc_authority_discovery::Role::PublishAndDiscover(
+		let authority_discovery_role = tc_authority_discovery::Role::PublishAndDiscover(
 			keystore_container.keystore(),
 		);
 		let dht_event_stream = network.event_stream("authority-discovery")
@@ -285,7 +285,7 @@ pub fn new_full_base(
 				Event::Dht(e) => Some(e),
 				_ => None,
 			}});
-		let (authority_discovery_worker, _service) = sc_authority_discovery::new_worker_and_service(
+		let (authority_discovery_worker, _service) = tc_authority_discovery::new_worker_and_service(
 			client.clone(),
 			network.clone(),
 			Box::pin(dht_event_stream),
@@ -361,16 +361,16 @@ pub fn new_full(config: Configuration)
 pub fn new_light_base(mut config: Configuration) -> Result<(
 	TaskManager, RpcHandlers, Option<TelemetryConnectionNotifier>, Arc<LightClient>,
 	Arc<NetworkService<Block, <Block as BlockT>::Hash>>,
-	Arc<sc_transaction_pool::LightPool<Block, LightClient, sc_network::config::OnDemand<Block>>>
+	Arc<tc_transaction_pool::LightPool<Block, LightClient, tc_network::config::OnDemand<Block>>>
 ), ServiceError> {
 	let (client, backend, keystore_container, mut task_manager, on_demand) =
-		sc_service::new_light_parts::<Block, RuntimeApi, Executor>(&config)?;
+		tc_service::new_light_parts::<Block, RuntimeApi, Executor>(&config)?;
 
 	config.network.extra_sets.push(grandpa::grandpa_peers_set_config());
 
-	let select_chain = sc_consensus::LongestChain::new(backend.clone());
+	let select_chain = tc_consensus::LongestChain::new(backend.clone());
 
-	let transaction_pool = Arc::new(sc_transaction_pool::BasicPool::new_light(
+	let transaction_pool = Arc::new(tc_transaction_pool::BasicPool::new_light(
 		config.transaction_pool.clone(),
 		config.prometheus_registry(),
 		task_manager.spawn_handle(),
@@ -385,15 +385,15 @@ pub fn new_light_base(mut config: Configuration) -> Result<(
 	)?;
 	let justification_import = grandpa_block_import.clone();
 
-	let (babe_block_import, babe_link) = sc_consensus_babe::block_import(
-		sc_consensus_babe::Config::get_or_compute(&*client)?,
+	let (babe_block_import, babe_link) = tc_consensus_babe::block_import(
+		tc_consensus_babe::Config::get_or_compute(&*client)?,
 		grandpa_block_import,
 		client.clone(),
 	)?;
 
 	let inherent_data_providers = tp_inherents::InherentDataProviders::new();
 
-	let import_queue = sc_consensus_babe::import_queue(
+	let import_queue = tc_consensus_babe::import_queue(
 		babe_link,
 		babe_block_import,
 		Some(Box::new(justification_import)),
@@ -402,11 +402,11 @@ pub fn new_light_base(mut config: Configuration) -> Result<(
 		inherent_data_providers.clone(),
 		&task_manager.spawn_handle(),
 		config.prometheus_registry(),
-		sp_consensus::NeverCanAuthor,
+		tp_consensus::NeverCanAuthor,
 	)?;
 
 	let (network, network_status_sinks, system_rpc_tx, network_starter) =
-		sc_service::build_network(sc_service::BuildNetworkParams {
+		tc_service::build_network(tc_service::BuildNetworkParams {
 			config: &config,
 			client: client.clone(),
 			transaction_pool: transaction_pool.clone(),
@@ -418,7 +418,7 @@ pub fn new_light_base(mut config: Configuration) -> Result<(
 	network_starter.start_network();
 
 	if config.offchain_worker.enabled {
-		sc_service::build_offchain_workers(
+		tc_service::build_offchain_workers(
 			&config, backend.clone(), task_manager.spawn_handle(), client.clone(), network.clone(),
 		);
 	}
@@ -433,10 +433,10 @@ pub fn new_light_base(mut config: Configuration) -> Result<(
 	let rpc_extensions = node_rpc::create_light(light_deps);
 
 	let (rpc_handlers, telemetry_connection_notifier) =
-		sc_service::spawn_tasks(sc_service::SpawnTasksParams {
+		tc_service::spawn_tasks(tc_service::SpawnTasksParams {
 			on_demand: Some(on_demand),
 			remote_blockchain: Some(backend.remote_blockchain()),
-			rpc_extensions_builder: Box::new(sc_service::NoopRpcExtensionBuilder(rpc_extensions)),
+			rpc_extensions_builder: Box::new(tc_service::NoopRpcExtensionBuilder(rpc_extensions)),
 			client: client.clone(),
 			transaction_pool: transaction_pool.clone(),
 			keystore: keystore_container.sync_keystore(),
@@ -465,8 +465,8 @@ pub fn new_light(config: Configuration) -> Result<TaskManager, ServiceError> {
 #[cfg(test)]
 mod tests {
 	use std::{sync::Arc, borrow::Cow, any::Any, convert::TryInto};
-	use sc_consensus_babe::{CompatibleDigestItem, BabeIntermediate, INTERMEDIATE_KEY};
-	use sc_consensus_epochs::descendent_query;
+	use tc_consensus_babe::{CompatibleDigestItem, BabeIntermediate, INTERMEDIATE_KEY};
+	use tc_consensus_epochs::descendent_query;
 	use tp_consensus::{
 		Environment, Proposer, BlockImportParams, BlockOrigin, ForkChoiceStrategy, BlockImport,
 		RecordProof,
@@ -488,12 +488,12 @@ mod tests {
 	};
 	use tp_timestamp;
 	use tp_keyring::AccountKeyring;
-	use sc_service_test::TestNetNode;
+	use tc_service_test::TestNetNode;
 	use crate::service::{new_full_base, new_light_base, NewFullBase};
 	use tp_runtime::{key_types::BABE, traits::IdentifyAccount, RuntimeAppPublic};
 	use tp_transaction_pool::{MaintainedTransactionPool, ChainEvent};
-	use sc_client_api::BlockBackend;
-	use sc_keystore::LocalKeystore;
+	use tc_client_api::BlockBackend;
+	use tc_keystore::LocalKeystore;
 
 	type AccountPublic = <Signature as Verify>::Signer;
 
@@ -518,7 +518,7 @@ mod tests {
 		let charlie = Arc::new(AccountKeyring::Charlie.pair());
 		let mut index = 0;
 
-		sc_service_test::sync(
+		tc_service_test::sync(
 			chain_spec,
 			|config| {
 				let mut setup_handles = None;
@@ -526,21 +526,21 @@ mod tests {
 					task_manager, inherent_data_providers, client, network, transaction_pool, ..
 				} = new_full_base(config,
 					|
-						block_import: &sc_consensus_babe::BabeBlockImport<Block, _, _>,
-						babe_link: &sc_consensus_babe::BabeLink<Block>,
+						block_import: &tc_consensus_babe::BabeBlockImport<Block, _, _>,
+						babe_link: &tc_consensus_babe::BabeLink<Block>,
 					| {
 						setup_handles = Some((block_import.clone(), babe_link.clone()));
 					}
 				)?;
 
-				let node = sc_service_test::TestNetComponents::new(
+				let node = tc_service_test::TestNetComponents::new(
 					task_manager, client, network, transaction_pool
 				);
 				Ok((node, (inherent_data_providers, setup_handles.unwrap())))
 			},
 			|config| {
 				let (keep_alive, _, _, client, network, transaction_pool) = new_light_base(config)?;
-				Ok(sc_service_test::TestNetComponents::new(keep_alive, client, network, transaction_pool))
+				Ok(tc_service_test::TestNetComponents::new(keep_alive, client, network, transaction_pool))
 			},
 			|service, &mut (ref inherent_data_providers, (ref mut block_import, ref babe_link))| {
 				let mut inherent_data = inherent_data_providers
@@ -561,7 +561,7 @@ mod tests {
 					)
 				);
 
-				let mut proposer_factory = sc_basic_authorship::ProposerFactory::new(
+				let mut proposer_factory = tc_basic_authorship::ProposerFactory::new(
 					service.spawn_handle(),
 					service.client(),
 					service.transaction_pool(),
@@ -580,8 +580,8 @@ mod tests {
 				// even though there's only one authority some slots might be empty,
 				// so we must keep trying the next slots until we can claim one.
 				let babe_pre_digest = loop {
-					inherent_data.replace_data(sp_timestamp::INHERENT_IDENTIFIER, &(slot * SLOT_DURATION));
-					if let Some(babe_pre_digest) = sc_consensus_babe::test_helpers::claim_slot(
+					inherent_data.replace_data(tp_timestamp::INHERENT_IDENTIFIER, &(slot * SLOT_DURATION));
+					if let Some(babe_pre_digest) = tc_consensus_babe::test_helpers::claim_slot(
 						slot.into(),
 						&parent_header,
 						&*service.client(),
@@ -613,7 +613,7 @@ mod tests {
 				let to_sign = pre_hash.encode();
 				let signature = SyncCryptoStore::sign_with(
 					&*keystore,
-					sp_consensus_babe::AuthorityId::ID,
+					tp_consensus_babe::AuthorityId::ID,
 					&alice.to_public_crypto_pair(),
 					&to_sign,
 				).unwrap()
@@ -689,16 +689,16 @@ mod tests {
 	#[test]
 	#[ignore]
 	fn test_consensus() {
-		sc_service_test::consensus(
+		tc_service_test::consensus(
 			crate::chain_spec::tests::integration_test_config_with_two_authorities(),
 			|config| {
 				let NewFullBase { task_manager, client, network, transaction_pool, .. }
 					= new_full_base(config,|_, _| ())?;
-				Ok(sc_service_test::TestNetComponents::new(task_manager, client, network, transaction_pool))
+				Ok(tc_service_test::TestNetComponents::new(task_manager, client, network, transaction_pool))
 			},
 			|config| {
 				let (keep_alive, _, _, client, network, transaction_pool) = new_light_base(config)?;
-				Ok(sc_service_test::TestNetComponents::new(keep_alive, client, network, transaction_pool))
+				Ok(tc_service_test::TestNetComponents::new(keep_alive, client, network, transaction_pool))
 			},
 			vec![
 				"//Alice".into(),

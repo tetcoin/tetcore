@@ -26,11 +26,11 @@ use crate::params::SharedParams;
 use crate::params::TransactionPoolParams;
 use crate::CliConfiguration;
 use regex::Regex;
-use sc_service::{
+use tc_service::{
 	config::{BasePath, MultiaddrWithPeerId, PrometheusConfig, TransactionPoolOptions},
 	ChainSpec, Role,
 };
-use sc_telemetry::TelemetryEndpoints;
+use tc_telemetry::TelemetryEndpoints;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use structopt::StructOpt;
 
@@ -269,7 +269,7 @@ pub struct RunCmd {
 
 impl RunCmd {
 	/// Get the `Sr25519Keyring` matching one of the flag.
-	pub fn get_keyring(&self) -> Option<sp_keyring::Sr25519Keyring> {
+	pub fn get_keyring(&self) -> Option<tp_keyring::Sr25519Keyring> {
 		use tp_keyring::Sr25519Keyring::*;
 
 		if self.alice {
@@ -364,17 +364,17 @@ impl CliConfiguration for RunCmd {
 		let is_authority = (self.validator || is_dev || keyring.is_some()) && !is_light;
 
 		Ok(if is_light {
-			sc_service::Role::Light
+			tc_service::Role::Light
 		} else if is_authority {
-			sc_service::Role::Authority {
+			tc_service::Role::Authority {
 				sentry_nodes: self.sentry_nodes.clone(),
 			}
 		} else if !self.sentry.is_empty() {
-			sc_service::Role::Sentry {
+			tc_service::Role::Sentry {
 				validators: self.sentry.clone(),
 			}
 		} else {
-			sc_service::Role::Full
+			tc_service::Role::Full
 		})
 	}
 
@@ -457,7 +457,7 @@ impl CliConfiguration for RunCmd {
 		Ok(Some(SocketAddr::new(interface, self.ws_port.unwrap_or(default_listen_port))))
 	}
 
-	fn rpc_methods(&self) -> Result<sc_service::config::RpcMethods> {
+	fn rpc_methods(&self) -> Result<tc_service::config::RpcMethods> {
 		Ok(self.rpc_methods.into())
 	}
 

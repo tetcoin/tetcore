@@ -121,7 +121,7 @@ impl StateUsageStats {
 			}
 		}
 
-		sp_state_machine::UsageInfo {
+		tp_state_machine::UsageInfo {
 			reads: unit(&self.reads, &self.bytes_read),
 			writes: unit(&self.writes, &self.bytes_written),
 			nodes_writes: unit(&self.writes_nodes, &self.bytes_written_nodes),

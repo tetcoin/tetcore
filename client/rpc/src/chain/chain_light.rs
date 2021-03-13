@@ -23,7 +23,7 @@ use futures::{future::ready, FutureExt, TryFutureExt};
 use rpc::futures::future::{result, Future, Either};
 use tetsy_jsonrpc_pubsub::manager::SubscriptionManager;
 
-use sc_client_api::light::{Fetcher, RemoteBodyRequest, RemoteBlockchain};
+use tc_client_api::light::{Fetcher, RemoteBodyRequest, RemoteBlockchain};
 use tp_runtime::{
 	generic::{BlockId, SignedBlock},
 	traits::{Block as BlockT},
@@ -31,7 +31,7 @@ use tp_runtime::{
 
 use super::{ChainBackend, client_err, error::FutureResult};
 use tp_blockchain::HeaderBackend;
-use sc_client_api::BlockchainEvents;
+use tc_client_api::BlockchainEvents;
 
 /// Blockchain API backend for light nodes. Reads all the data from local
 /// database, if available, or fetches it from remote node otherwise.
@@ -80,7 +80,7 @@ impl<Block, Client, F> ChainBackend<Client, Block> for LightChain<Block, Client,
 		let hash = self.unwrap_or_best(hash);
 
 		let fetcher = self.fetcher.clone();
-		let maybe_header = sc_client_api::light::future_header(
+		let maybe_header = tc_client_api::light::future_header(
 			&*self.remote_blockchain,
 			&*fetcher,
 			BlockId::Hash(hash),

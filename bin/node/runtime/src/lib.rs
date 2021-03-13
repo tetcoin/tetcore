@@ -1190,7 +1190,7 @@ impl_runtime_apis! {
 			// slot duration and expected target block time, for safely
 			// resisting network delays of maximum two seconds.
 			// <https://research.web3.foundation/en/latest/polkadot/BABE/Babe/#6-practical-results>
-			sp_consensus_babe::BabeGenesisConfiguration {
+			tp_consensus_babe::BabeGenesisConfiguration {
 				slot_duration: Babe::slot_duration(),
 				epoch_length: EpochDuration::get(),
 				c: PRIMARY_PROBABILITY,
@@ -1215,12 +1215,12 @@ impl_runtime_apis! {
 		fn generate_key_ownership_proof(
 			_slot: tp_consensus_babe::Slot,
 			authority_id: tp_consensus_babe::AuthorityId,
-		) -> Option<sp_consensus_babe::OpaqueKeyOwnershipProof> {
+		) -> Option<tp_consensus_babe::OpaqueKeyOwnershipProof> {
 			use codec::Encode;
 
-			Historical::prove((sp_consensus_babe::KEY_TYPE, authority_id))
+			Historical::prove((tp_consensus_babe::KEY_TYPE, authority_id))
 				.map(|p| p.encode())
-				.map(sp_consensus_babe::OpaqueKeyOwnershipProof::new)
+				.map(tp_consensus_babe::OpaqueKeyOwnershipProof::new)
 		}
 
 		fn submit_report_equivocation_unsigned_extrinsic(

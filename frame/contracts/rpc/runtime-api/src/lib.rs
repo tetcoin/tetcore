@@ -27,7 +27,7 @@ use codec::Codec;
 use tetcore_std::vec::Vec;
 use pallet_contracts_primitives::{ContractExecResult, GetStorageResult, RentProjectionResult};
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// The API to interact with contracts without using executive.
 	pub trait ContractsApi<AccountId, Balance, BlockNumber> where
 		AccountId: Codec,

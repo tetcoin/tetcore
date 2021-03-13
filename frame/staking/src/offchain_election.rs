@@ -44,14 +44,14 @@ pub enum OffchainElectionError {
 	/// The snapshot data is not available.
 	SnapshotUnavailable,
 	/// Error from npos-election crate. This usually relates to compact operation.
-	InternalElectionError(sp_npos_elections::Error),
+	InternalElectionError(tp_npos_elections::Error),
 	/// One of the computed winners is invalid.
 	InvalidWinner,
 	/// A nominator is not available in the snapshot.
 	NominatorSnapshotCorrupt,
 }
 
-impl From<sp_npos_elections::Error> for OffchainElectionError {
+impl From<tp_npos_elections::Error> for OffchainElectionError {
 	fn from(e: tp_npos_elections::Error) -> Self {
 		Self::InternalElectionError(e)
 	}

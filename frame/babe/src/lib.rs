@@ -633,7 +633,7 @@ impl<T: Config> Module<T> {
 							).ok()
 						})
 						.map(|inout| {
-							inout.make_bytes(&sp_consensus_babe::BABE_VRF_INOUT_CONTEXT)
+							inout.make_bytes(&tp_consensus_babe::BABE_VRF_INOUT_CONTEXT)
 						})
 				})
 		});
@@ -687,7 +687,7 @@ impl<T: Config> Module<T> {
 		let slot = equivocation_proof.slot;
 
 		// validate the equivocation proof
-		if !sp_consensus_babe::check_equivocation_proof(equivocation_proof) {
+		if !tp_consensus_babe::check_equivocation_proof(equivocation_proof) {
 			return Err(Error::<T>::InvalidEquivocationProof.into());
 		}
 
@@ -704,7 +704,7 @@ impl<T: Config> Module<T> {
 		}
 
 		// check the membership proof and extract the offender's id
-		let key = (sp_consensus_babe::KEY_TYPE, offender);
+		let key = (tp_consensus_babe::KEY_TYPE, offender);
 		let offender = T::KeyOwnerProofSystem::check_proof(key, key_owner_proof)
 			.ok_or(Error::<T>::InvalidKeyOwnershipProof)?;
 
@@ -821,7 +821,7 @@ fn compute_randomness(
 
 impl<T: Config> ProvideInherent for Module<T> {
 	type Call = pallet_timestamp::Call<T>;
-	type Error = MakeFatalError<sp_inherents::Error>;
+	type Error = MakeFatalError<tp_inherents::Error>;
 	const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
 
 	fn create_inherent(_: &InherentData) -> Option<Self::Call> {
@@ -840,7 +840,7 @@ impl<T: Config> ProvideInherent for Module<T> {
 		if timestamp_based_slot == *seal_slot {
 			Ok(())
 		} else {
-			Err(sp_inherents::Error::from("timestamp set in block doesn't match slot in seal").into())
+			Err(tp_inherents::Error::from("timestamp set in block doesn't match slot in seal").into())
 		}
 	}
 }

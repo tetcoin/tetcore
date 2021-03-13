@@ -29,8 +29,8 @@ use tp_runtime::generic::BlockId;
 use tetsy_jsonrpc_derive::rpc;
 
 type SharedAuthoritySet<TBl> =
-	sc_finality_grandpa::SharedAuthoritySet<<TBl as BlockT>::Hash, NumberFor<TBl>>;
-type SharedEpochChanges<TBl> = sc_consensus_epochs::SharedEpochChanges<TBl, sc_consensus_babe::Epoch>;
+	tc_finality_grandpa::SharedAuthoritySet<<TBl as BlockT>::Hash, NumberFor<TBl>>;
+type SharedEpochChanges<TBl> = tc_consensus_epochs::SharedEpochChanges<TBl, tc_consensus_babe::Epoch>;
 
 #[derive(Debug, thiserror::Error)]
 #[allow(missing_docs)]
@@ -70,43 +70,43 @@ pub trait SyncStateRpcApi {
 
 /// The handler for sync state RPC calls.
 pub struct SyncStateRpcHandler<TBl: BlockT, TCl> {
-	chain_spec: Box<dyn sc_chain_spec::ChainSpec>,
+	chain_spec: Box<dyn tc_chain_spec::ChainSpec>,
 	client: Arc<TCl>,
 	shared_authority_set: SharedAuthoritySet<TBl>,
 	shared_epoch_changes: SharedEpochChanges<TBl>,
-	deny_unsafe: sc_rpc_api::DenyUnsafe,
+	deny_unsafe: tc_rpc_api::DenyUnsafe,
 }
 
 impl<TBl, TCl> SyncStateRpcHandler<TBl, TCl>
 	where
 		TBl: BlockT,
-		TCl: HeaderBackend<TBl> + sc_client_api::AuxStore + 'static,
+		TCl: HeaderBackend<TBl> + tc_client_api::AuxStore + 'static,
 {
 	/// Create a new handler.
 	pub fn new(
-		chain_spec: Box<dyn sc_chain_spec::ChainSpec>,
+		chain_spec: Box<dyn tc_chain_spec::ChainSpec>,
 		client: Arc<TCl>,
 		shared_authority_set: SharedAuthoritySet<TBl>,
 		shared_epoch_changes: SharedEpochChanges<TBl>,
-		deny_unsafe: sc_rpc_api::DenyUnsafe,
+		deny_unsafe: tc_rpc_api::DenyUnsafe,
 	) -> Self {
 		Self {
 			chain_spec, client, shared_authority_set, shared_epoch_changes, deny_unsafe,
 		}
 	}
 
-	fn build_sync_state(&self) -> Result<sc_chain_spec::LightSyncState<TBl>, Error<TBl>> {
+	fn build_sync_state(&self) -> Result<tc_chain_spec::LightSyncState<TBl>, Error<TBl>> {
 		let finalized_hash = self.client.info().finalized_hash;
 		let finalized_header = self.client.header(BlockId::Hash(finalized_hash))?
 			.ok_or_else(|| tp_blockchain::Error::MissingHeader(finalized_hash.to_string()))?;
 
-		let finalized_block_weight = sc_consensus_babe::aux_schema::load_block_weight(
+		let finalized_block_weight = tc_consensus_babe::aux_schema::load_block_weight(
 				&*self.client,
 				finalized_hash,
 			)?
 			.ok_or_else(|| Error::LoadingBlockWeightFailed(finalized_hash))?;
 
-		Ok(sc_chain_spec::LightSyncState {
+		Ok(tc_chain_spec::LightSyncState {
 			finalized_block_header: finalized_header,
 			babe_epoch_changes: self.shared_epoch_changes.lock().clone(),
 			babe_finalized_block_weight: finalized_block_weight,
@@ -118,7 +118,7 @@ impl<TBl, TCl> SyncStateRpcHandler<TBl, TCl>
 impl<TBl, TCl> SyncStateRpcApi for SyncStateRpcHandler<TBl, TCl>
 	where
 		TBl: BlockT,
-		TCl: HeaderBackend<TBl> + sc_client_api::AuxStore + 'static,
+		TCl: HeaderBackend<TBl> + tc_client_api::AuxStore + 'static,
 {
 	fn system_gen_sync_spec(&self, raw: bool)
 		-> tetsy_jsonrpc_core::Result<tetsy_jsonrpc_core::Value>

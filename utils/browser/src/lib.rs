@@ -17,21 +17,21 @@
 
 use futures01::sync::mpsc as mpsc01;
 use log::{debug, info};
-use sc_network::config::TransportConfig;
-use sc_service::{
+use tc_network::config::TransportConfig;
+use tc_service::{
 	RpcSession, Role, Configuration, TaskManager, RpcHandlers,
 	config::{DatabaseConfig, KeystoreConfig, NetworkConfiguration},
 	GenericChainSpec, RuntimeGenesis,
 	KeepBlocks, TransactionStorageMode,
 };
-use sc_telemetry::{TelemetryHandle, TelemetrySpan};
-use sc_tracing::logging::LoggerBuilder;
+use tc_telemetry::{TelemetryHandle, TelemetrySpan};
+use tc_tracing::logging::LoggerBuilder;
 use wasm_bindgen::prelude::*;
 use futures::{
 	prelude::*, channel::{oneshot, mpsc}, compat::*, future::{ready, ok, select}
 };
 use std::pin::Pin;
-use sc_chain_spec::Extension;
+use tc_chain_spec::Extension;
 use wasm_ext::{ExtTransport, ffi};
 
 pub use console_error_panic_hook::set_once as set_console_error_panic_hook;
@@ -39,7 +39,7 @@ pub use console_error_panic_hook::set_once as set_console_error_panic_hook;
 /// Initialize the logger and return a `TelemetryWorker` and a wasm `ExtTransport`.
 pub fn init_logging_and_telemetry(
 	pattern: &str,
-) -> Result<sc_telemetry::TelemetryWorker, sc_tracing::logging::Error> {
+) -> Result<tc_telemetry::TelemetryWorker, tc_tracing::logging::Error> {
 	let transport = ExtTransport::new(ffi::websocket_transport());
 	let mut logger = LoggerBuilder::new(pattern);
 	logger.with_transport(transport);
@@ -122,7 +122,7 @@ where
 		max_runtime_instances: 8,
 		announce_block: true,
 		base_path: None,
-		informant_output_format: sc_informant::OutputFormat {
+		informant_output_format: tc_informant::OutputFormat {
 			enable_color: false,
 		},
 		disable_log_reloading: false,

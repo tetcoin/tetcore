@@ -23,7 +23,7 @@ use tetsy_scale_codec::Encode;
 use parking_lot::RwLockWriteGuard;
 
 use tp_blockchain::{BlockStatus, well_known_cache_keys};
-use sc_client_api::{backend::Backend, utils::is_descendent_of};
+use tc_client_api::{backend::Backend, utils::is_descendent_of};
 use tetcore_utils::mpsc::TracingUnboundedSender;
 use tp_api::TransactionFor;
 

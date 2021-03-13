@@ -25,7 +25,7 @@ use tp_runtime::{
 	generic::BlockId,
 };
 use futures::prelude::*;
-use sc_transaction_pool::txpool;
+use tc_transaction_pool::txpool;
 use tp_consensus::{
 	self, BlockImport, Environment, Proposer, ForkChoiceStrategy,
 	BlockImportParams, BlockOrigin, ImportResult, SelectChain,

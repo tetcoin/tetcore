@@ -34,7 +34,7 @@ use std::{
 	str::FromStr,
 };
 use codec::{Encode, Decode};
-use sc_client_api::BlockBackend;
+use tc_client_api::BlockBackend;
 use tp_blockchain::HeaderBackend;
 use tet_core::hexdisplay::HexDisplay;
 use tp_runtime::{
@@ -85,7 +85,7 @@ pub enum Error {
 	/// Could not decode Block or Extrinsic.
 	Codec(codec::Error),
 	/// Error accessing blockchain DB.
-	Blockchain(sp_blockchain::Error),
+	Blockchain(tp_blockchain::Error),
 	/// Given block has not been found.
 	NotFound(String),
 }
@@ -108,7 +108,7 @@ pub trait ChainAccess<TBlock: Block>:
 
 impl<T, TBlock> ChainAccess<TBlock> for T where
 	TBlock: Block,
-	T: tp_blockchain::HeaderBackend<TBlock> + sc_client_api::BlockBackend<TBlock>,
+	T: tp_blockchain::HeaderBackend<TBlock> + tc_client_api::BlockBackend<TBlock>,
 {}
 
 /// Blockchain inspector.

@@ -18,20 +18,20 @@
 
 //! Service configuration.
 
-pub use sc_client_db::{
+pub use tc_client_db::{
 	Database, PruningMode, DatabaseSettingsSrc as DatabaseConfig,
 	KeepBlocks, TransactionStorageMode
 };
-pub use sc_network::Multiaddr;
-pub use sc_network::config::{ExtTransport, MultiaddrWithPeerId, NetworkConfiguration, Role, NodeKeyConfig};
-pub use sc_executor::WasmExecutionMethod;
-use sc_client_api::execution_extensions::ExecutionStrategies;
+pub use tc_network::Multiaddr;
+pub use tc_network::config::{ExtTransport, MultiaddrWithPeerId, NetworkConfiguration, Role, NodeKeyConfig};
+pub use tc_executor::WasmExecutionMethod;
+use tc_client_api::execution_extensions::ExecutionStrategies;
 
 use std::{io, future::Future, path::{PathBuf, Path}, pin::Pin, net::SocketAddr, sync::Arc};
-pub use sc_transaction_pool::txpool::Options as TransactionPoolOptions;
-use sc_chain_spec::ChainSpec;
+pub use tc_transaction_pool::txpool::Options as TransactionPoolOptions;
+use tc_chain_spec::ChainSpec;
 use tet_core::crypto::SecretString;
-pub use sc_telemetry::TelemetryEndpoints;
+pub use tc_telemetry::TelemetryEndpoints;
 use prometheus_endpoint::Registry;
 #[cfg(not(target_os = "unknown"))]
 use tempfile::TempDir;
@@ -100,11 +100,11 @@ pub struct Configuration {
 	///
 	/// This is a handle to a `TelemetryWorker` instance. It is used to initialize the telemetry for
 	/// a tetcore node.
-	pub telemetry_handle: Option<sc_telemetry::TelemetryHandle>,
+	pub telemetry_handle: Option<tc_telemetry::TelemetryHandle>,
 	/// Telemetry span.
 	///
 	/// This span is entered for every background task spawned using the TaskManager.
-	pub telemetry_span: Option<sc_telemetry::TelemetrySpan>,
+	pub telemetry_span: Option<tc_telemetry::TelemetrySpan>,
 	/// The default number of 64KB pages to allocate for Wasm execution
 	pub default_heap_pages: Option<u64>,
 	/// Should offchain workers be executed.
@@ -124,7 +124,7 @@ pub struct Configuration {
 	/// Is log filter reloading disabled
 	pub disable_log_reloading: bool,
 	/// Tracing receiver
-	pub tracing_receiver: sc_tracing::TracingReceiver,
+	pub tracing_receiver: tc_tracing::TracingReceiver,
 	/// The size of the instances cache.
 	///
 	/// The default value is 8.
@@ -134,7 +134,7 @@ pub struct Configuration {
 	/// Base path of the configuration
 	pub base_path: Option<BasePath>,
 	/// Configuration of the output format that the informant uses.
-	pub informant_output_format: sc_informant::OutputFormat,
+	pub informant_output_format: tc_informant::OutputFormat,
 }
 
 /// Type for tasks spawned by the executor.
@@ -212,7 +212,7 @@ impl Configuration {
 	}
 
 	/// Returns the network protocol id from the chain spec, or the default.
-	pub fn protocol_id(&self) -> sc_network::config::ProtocolId {
+	pub fn protocol_id(&self) -> tc_network::config::ProtocolId {
 		let protocol_id_full = match self.chain_spec.protocol_id() {
 			Some(pid) => pid,
 			None => {
@@ -222,7 +222,7 @@ impl Configuration {
 				crate::DEFAULT_PROTOCOL_ID
 			}
 		};
-		sc_network::config::ProtocolId::from(protocol_id_full)
+		tc_network::config::ProtocolId::from(protocol_id_full)
 	}
 }
 
@@ -321,7 +321,7 @@ pub(crate) type JoinFuture = Pin<Box<dyn Future<Output = ()> + Send>>;
 /// ## Using tokio
 ///
 /// ```
-/// # use sc_service::TaskExecutor;
+/// # use tc_service::TaskExecutor;
 /// use futures::future::FutureExt;
 /// use tokio::runtime::Runtime;
 ///
@@ -335,7 +335,7 @@ pub(crate) type JoinFuture = Pin<Box<dyn Future<Output = ()> + Send>>;
 /// ## Using async-std
 ///
 /// ```
-/// # use sc_service::TaskExecutor;
+/// # use tc_service::TaskExecutor;
 /// let task_executor: TaskExecutor = (|future, _task_type| {
 ///     // NOTE: async-std's JoinHandle is not a Result so we don't need to map the result
 ///     async_std::task::spawn(future)

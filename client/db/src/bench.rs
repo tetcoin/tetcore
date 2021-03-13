@@ -112,7 +112,7 @@ impl<B: BlockT> BenchmarkingState<B> {
 	pub fn new(genesis: Storage, _cache_size_mb: Option<usize>) -> Result<Self, String> {
 		let mut root = B::Hash::default();
 		let mut mdb = MemoryDB::<HashFor<B>>::default();
-		sp_state_machine::TrieDBMut::<HashFor<B>>::new(&mut mdb, &mut root);
+		tp_state_machine::TrieDBMut::<HashFor<B>>::new(&mut mdb, &mut root);
 
 		let mut state = BenchmarkingState {
 			state: RefCell::new(None),
@@ -403,7 +403,7 @@ impl<B: BlockT> StateBackend<HashFor<B>> for BenchmarkingState<B> {
 	}
 
 	fn as_trie_backend(&mut self)
-		-> Option<&sp_state_machine::TrieBackend<Self::TrieBackendStorage, HashFor<B>>>
+		-> Option<&tp_state_machine::TrieBackend<Self::TrieBackendStorage, HashFor<B>>>
 	{
 		None
 	}
@@ -488,12 +488,12 @@ impl<B: BlockT> StateBackend<HashFor<B>> for BenchmarkingState<B> {
 		*self.whitelist.borrow_mut() = new;
 	}
 
-	fn register_overlay_stats(&mut self, stats: &sp_state_machine::StateMachineStats) {
+	fn register_overlay_stats(&mut self, stats: &tp_state_machine::StateMachineStats) {
 		self.state.borrow_mut().as_mut().map(|s| s.register_overlay_stats(stats));
 	}
 
 	fn usage_info(&self) -> tp_state_machine::UsageInfo {
-		self.state.borrow().as_ref().map_or(sp_state_machine::UsageInfo::empty(), |s| s.usage_info())
+		self.state.borrow().as_ref().map_or(tp_state_machine::UsageInfo::empty(), |s| s.usage_info())
 	}
 }
 

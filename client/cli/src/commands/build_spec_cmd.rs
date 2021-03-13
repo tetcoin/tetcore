@@ -21,8 +21,8 @@ use crate::params::NodeKeyParams;
 use crate::params::SharedParams;
 use crate::CliConfiguration;
 use log::info;
-use sc_network::config::build_multiaddr;
-use sc_service::{config::{MultiaddrWithPeerId, NetworkConfiguration}, ChainSpec};
+use tc_network::config::build_multiaddr;
+use tc_service::{config::{MultiaddrWithPeerId, NetworkConfiguration}, ChainSpec};
 use structopt::StructOpt;
 use std::io::Write;
 
@@ -69,7 +69,7 @@ impl BuildSpecCmd {
 			spec.add_boot_node(addr)
 		}
 
-		let json = sc_service::chain_ops::build_spec(&*spec, raw_output)?;
+		let json = tc_service::chain_ops::build_spec(&*spec, raw_output)?;
 		if std::io::stdout().write_all(json.as_bytes()).is_err() {
 			let _ = std::io::stderr().write_all(b"Error writing to stdout\n");
 		}

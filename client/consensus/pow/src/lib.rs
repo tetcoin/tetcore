@@ -41,7 +41,7 @@ use std::{
 };
 use futures::{prelude::*, future::Either};
 use parking_lot::Mutex;
-use sc_client_api::{BlockOf, backend::AuxStore, BlockchainEvents};
+use tc_client_api::{BlockOf, backend::AuxStore, BlockchainEvents};
 use tp_blockchain::{HeaderBackend, ProvideCache, well_known_cache_keys::Id as CacheKeyId};
 use tp_block_builder::BlockBuilder as BlockBuilderApi;
 use tp_runtime::{Justification, RuntimeString};
@@ -60,7 +60,7 @@ use tp_consensus::import_queue::{
 };
 use codec::{Encode, Decode};
 use prometheus_endpoint::Registry;
-use sc_client_api;
+use tc_client_api;
 use log::*;
 use tp_timestamp::{InherentError as TIError, TimestampInherentData};
 
@@ -81,7 +81,7 @@ pub enum Error<B: BlockT> {
 	#[display(fmt = "Fetching best header failed using select chain: {:?}", _0)]
 	BestHeaderSelectChain(ConsensusError),
 	#[display(fmt = "Fetching best header failed: {:?}", _0)]
-	BestHeader(sp_blockchain::Error),
+	BestHeader(tp_blockchain::Error),
 	#[display(fmt = "Best header does not exist")]
 	NoBestHeader,
 	#[display(fmt = "Block proposing error: {:?}", _0)]
@@ -91,12 +91,12 @@ pub enum Error<B: BlockT> {
 	#[display(fmt = "Error with block built on {:?}: {:?}", _0, _1)]
 	BlockBuiltError(B::Hash, ConsensusError),
 	#[display(fmt = "Creating inherents failed: {}", _0)]
-	CreateInherents(sp_inherents::Error),
+	CreateInherents(tp_inherents::Error),
 	#[display(fmt = "Checking inherents failed: {}", _0)]
 	CheckInherents(String),
 	#[display(fmt = "Multiple pre-runtime digests")]
 	MultiplePreRuntimeDigests,
-	Client(sp_blockchain::Error),
+	Client(tp_blockchain::Error),
 	Codec(codec::Error),
 	Environment(String),
 	Runtime(RuntimeString),
@@ -486,11 +486,11 @@ impl<B: BlockT, Algorithm> Verifier<B> for PowVerifier<B, Algorithm> where
 pub fn register_pow_inherent_data_provider(
 	inherent_data_providers: &InherentDataProviders,
 ) -> Result<(), tp_consensus::Error> {
-	if !inherent_data_providers.has_provider(&sp_timestamp::INHERENT_IDENTIFIER) {
+	if !inherent_data_providers.has_provider(&tp_timestamp::INHERENT_IDENTIFIER) {
 		inherent_data_providers
-			.register_provider(sp_timestamp::InherentDataProvider)
+			.register_provider(tp_timestamp::InherentDataProvider)
 			.map_err(Into::into)
-			.map_err(sp_consensus::Error::InherentData)
+			.map_err(tp_consensus::Error::InherentData)
 	} else {
 		Ok(())
 	}
@@ -509,7 +509,7 @@ pub fn import_queue<B, Transaction, Algorithm>(
 	registry: Option<&Registry>,
 ) -> Result<
 	PowImportQueue<B, Transaction>,
-	sp_consensus::Error
+	tp_consensus::Error
 > where
 	B: BlockT,
 	Transaction: Send + Sync + 'static,

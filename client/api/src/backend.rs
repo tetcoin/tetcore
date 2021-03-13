@@ -70,7 +70,7 @@ pub struct ImportSummary<Block: BlockT> {
 	/// Tree route from old best to new best.
 	///
 	/// If `None`, there was no re-org while importing.
-	pub tree_route: Option<sp_blockchain::TreeRoute<Block>>,
+	pub tree_route: Option<tp_blockchain::TreeRoute<Block>>,
 }
 
 /// Import operation wrapper
@@ -208,7 +208,7 @@ pub trait LockImportRun<Block: BlockT, B: Backend<Block>> {
 	fn lock_import_and_run<R, Err, F>(&self, f: F) -> Result<R, Err>
 		where
 			F: FnOnce(&mut ClientImportOperation<Block, B>) -> Result<R, Err>,
-			Err: From<sp_blockchain::Error>;
+			Err: From<tp_blockchain::Error>;
 }
 
 /// Finalize Facilities

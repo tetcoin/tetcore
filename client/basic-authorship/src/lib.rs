@@ -21,7 +21,7 @@
 //! # Example
 //!
 //! ```
-//! # use sc_basic_authorship::ProposerFactory;
+//! # use tc_basic_authorship::ProposerFactory;
 //! # use tp_consensus::{Environment, Proposer, RecordProof};
 //! # use tp_runtime::generic::BlockId;
 //! # use std::{sync::Arc, time::Duration};
@@ -29,7 +29,7 @@
 //! #     runtime::{Extrinsic, Transfer}, AccountKeyring,
 //! #     DefaultTestClientBuilderExt, TestClientBuilderExt,
 //! # };
-//! # use sc_transaction_pool::{BasicPool, FullChainApi};
+//! # use tc_transaction_pool::{BasicPool, FullChainApi};
 //! # let client = Arc::new(tetcore_test_runtime_client::new());
 //! # let spawner = tet_core::testing::TaskExecutor::new();
 //! # let txpool = BasicPool::new_full(

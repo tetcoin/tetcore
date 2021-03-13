@@ -78,7 +78,7 @@ pub enum ConsensusLog<AuthorityId: Codec> {
 	OnDisabled(AuthorityIndex),
 }
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// API necessary for block authorship with aura.
 	pub trait AuraApi<AuthorityId: Codec> {
 		/// Return the slot duration in seconds for Aura.

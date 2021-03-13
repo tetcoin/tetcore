@@ -35,7 +35,7 @@ use tet_core::{
 };
 #[cfg(feature="test-helpers")]
 use tp_keystore::SyncCryptoStorePtr;
-use sc_telemetry::{telemetry, TETCORE_INFO};
+use tc_telemetry::{telemetry, TETCORE_INFO};
 use tp_runtime::{
 	Justification, BuildStorage,
 	generic::{BlockId, SignedBlock, DigestItem},
@@ -49,7 +49,7 @@ use tp_state_machine::{
 	prove_read, prove_child_read, ChangesTrieRootsStorage, ChangesTrieStorage,
 	ChangesTrieConfigurationRange, key_changes, key_changes_proof,
 };
-use sc_executor::RuntimeVersion;
+use tc_executor::RuntimeVersion;
 use tp_consensus::{
 	Error as ConsensusError, BlockStatus, BlockImportParams, BlockCheckParams,
 	ImportResult, BlockOrigin, ForkChoiceStrategy, RecordProof,
@@ -66,8 +66,8 @@ use tp_api::{
 	CallApiAt, ConstructRuntimeApi, Core as CoreApi, ApiExt, ApiRef, ProvideRuntimeApi,
 	CallApiAtParams,
 };
-use sc_block_builder::{BlockBuilderApi, BlockBuilderProvider};
-use sc_client_api::{
+use tc_block_builder::{BlockBuilderApi, BlockBuilderProvider};
+use tc_client_api::{
 	backend::{
 		self, BlockImportOperation, PrunableStateChangesTrieStorage,
 		ClientImportOperation, Finalizer, ImportSummary, NewBlockState,
@@ -90,14 +90,14 @@ use prometheus_endpoint::Registry;
 use super::{
 	genesis, block_rules::{BlockRules, LookupResult as BlockLookupResult},
 };
-use sc_light::{call_executor::prove_execution, fetcher::ChangesProof};
+use tc_light::{call_executor::prove_execution, fetcher::ChangesProof};
 use rand::Rng;
 
 #[cfg(feature="test-helpers")]
 use {
 	tet_core::traits::{CodeExecutor, SpawnNamed},
-	sc_client_api::in_mem,
-	sc_executor::RuntimeInfo,
+	tc_client_api::in_mem,
+	tc_executor::RuntimeInfo,
 	super::call_executor::LocalCallExecutor,
 };
 
@@ -235,7 +235,7 @@ impl<B, E, Block, RA> LockImportRun<Block, B> for Client<B, E, Block, RA>
 	fn lock_import_and_run<R, Err, F>(&self, f: F) -> Result<R, Err>
 		where
 			F: FnOnce(&mut ClientImportOperation<Block, B>) -> Result<R, Err>,
-			Err: From<sp_blockchain::Error>,
+			Err: From<tp_blockchain::Error>,
 	{
 		let inner = || {
 			let _import_lock = self.backend.get_import_lock().write();
@@ -273,7 +273,7 @@ impl<B, E, Block, RA> LockImportRun<Block, B> for &Client<B, E, Block, RA>
 	fn lock_import_and_run<R, Err, F>(&self, f: F) -> Result<R, Err>
 		where
 			F: FnOnce(&mut ClientImportOperation<Block, B>) -> Result<R, Err>,
-			Err: From<sp_blockchain::Error>,
+			Err: From<tp_blockchain::Error>,
 	{
 		(**self).lock_import_and_run(f)
 	}
@@ -298,7 +298,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 	) -> tp_blockchain::Result<Self> {
 		if backend.blockchain().header(BlockId::Number(Zero::zero()))?.is_none() {
 			let genesis_storage = build_genesis_storage.build_storage()
-				.map_err(sp_blockchain::Error::Storage)?;
+				.map_err(tp_blockchain::Error::Storage)?;
 			let mut op = backend.begin_operation()?;
 			backend.begin_state_operation(&mut op, BlockId::Hash(Default::default()))?;
 			let state_root = op.reset_storage(genesis_storage)?;
@@ -572,7 +572,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 	)> {
 		let storage = match self.backend.changes_trie_storage() {
 			Some(storage) => storage,
-			None => return Err(sp_blockchain::Error::ChangesTriesNotSupported),
+			None => return Err(tp_blockchain::Error::ChangesTriesNotSupported),
 		};
 
 		let mut configs = Vec::with_capacity(1);
@@ -582,7 +582,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 			match config_range.config {
 				Some(config) => configs.push((config_range.zero.0, config_range.end, config)),
 				None if !fail_if_disabled => return Ok((storage, configs)),
-				None => return Err(sp_blockchain::Error::ChangesTriesNotSupported),
+				None => return Err(tp_blockchain::Error::ChangesTriesNotSupported),
 			}
 
 			if config_range.zero.0 < first {
@@ -688,7 +688,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 		import_headers: PrePostHeader<Block::Header>,
 		justification: Option<Justification>,
 		body: Option<Vec<Block::Extrinsic>>,
-		storage_changes: Option<sp_api::StorageChanges<backend::StateBackendFor<B, Block>, Block>>,
+		storage_changes: Option<tp_api::StorageChanges<backend::StateBackendFor<B, Block>, Block>>,
 		new_cache: HashMap<CacheKeyId, Vec<u8>>,
 		finalized: bool,
 		aux: Vec<(Vec<u8>, Option<Vec<u8>>)>,
@@ -714,7 +714,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 		// the block is lower than our last finalized block so it must revert
 		// finality, refusing import.
 		if *import_headers.post().number() <= info.finalized_number {
-			return Err(sp_blockchain::Error::NotInFinalizedChain);
+			return Err(tp_blockchain::Error::NotInFinalizedChain);
 		}
 
 		// this is a fairly arbitrary choice of where to draw the line on making notifications,
@@ -881,7 +881,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 					&state,
 					changes_trie_state.as_ref(),
 					*parent_hash,
-				).map_err(sp_blockchain::Error::Storage)?;
+				).map_err(tp_blockchain::Error::Storage)?;
 
 				if import_block.header.state_root()
 					!= &gen_storage_changes.transaction_storage_root
@@ -924,7 +924,7 @@ impl<B, E, Block, RA> Client<B, E, Block, RA> where
 			warn!("Safety violation: attempted to revert finalized block {:?} which is not in the \
 				same chain as last finalized {:?}", retracted, last_finalized);
 
-			return Err(sp_blockchain::Error::NotInFinalizedChain);
+			return Err(tp_blockchain::Error::NotInFinalizedChain);
 		}
 
 		let route_from_best = tp_blockchain::tree_route(self.backend.blockchain(), best_block, block)?;
@@ -1279,8 +1279,8 @@ impl<B, E, Block, RA> BlockBuilderProvider<B, Block, Self> for Client<B, E, Bloc
 		parent: &BlockId<Block>,
 		inherent_digests: DigestFor<Block>,
 		record_proof: R,
-	) -> tp_blockchain::Result<sc_block_builder::BlockBuilder<Block, Self, B>> {
-		sc_block_builder::BlockBuilder::new(
+	) -> tp_blockchain::Result<tc_block_builder::BlockBuilder<Block, Self, B>> {
+		tc_block_builder::BlockBuilder::new(
 			self,
 			self.expect_block_hash_from_id(parent)?,
 			self.expect_block_number_from_id(parent)?,
@@ -1293,9 +1293,9 @@ impl<B, E, Block, RA> BlockBuilderProvider<B, Block, Self> for Client<B, E, Bloc
 	fn new_block(
 		&self,
 		inherent_digests: DigestFor<Block>,
-	) -> tp_blockchain::Result<sc_block_builder::BlockBuilder<Block, Self, B>> {
+	) -> tp_blockchain::Result<tc_block_builder::BlockBuilder<Block, Self, B>> {
 		let info = self.chain_info();
-		sc_block_builder::BlockBuilder::new(
+		tc_block_builder::BlockBuilder::new(
 			self,
 			info.best_hash,
 			info.best_number,
@@ -1431,7 +1431,7 @@ impl<B, E, Block, RA> StorageProvider<Block, B> for Client<B, E, Block, RA> wher
 		let last_number = self.backend.blockchain().expect_block_number_from_id(&last)?;
 		let last_hash = self.backend.blockchain().expect_block_hash_from_id(&last)?;
 		if first > last_number {
-			return Err(sp_blockchain::Error::ChangesTrieAccessFailed("Invalid changes trie range".into()));
+			return Err(tp_blockchain::Error::ChangesTrieAccessFailed("Invalid changes trie range".into()));
 		}
 
 		let (storage, configs) = match self.require_changes_trie(first, last_hash, false).ok() {
@@ -1866,13 +1866,13 @@ where
 {
 	/// Get block import event stream.
 	fn import_notification_stream(&self) -> ImportNotifications<Block> {
-		let (sink, stream) = tracing_unbounded("mpsc_import_notification_stream");
+		let (sink, stream) = tracing_unbounded("mptc_import_notification_stream");
 		self.import_notification_sinks.lock().push(sink);
 		stream
 	}
 
 	fn finality_notification_stream(&self) -> FinalityNotifications<Block> {
-		let (sink, stream) = tracing_unbounded("mpsc_finality_notification_stream");
+		let (sink, stream) = tracing_unbounded("mptc_finality_notification_stream");
 		self.finality_notification_sinks.lock().push(sink);
 		stream
 	}

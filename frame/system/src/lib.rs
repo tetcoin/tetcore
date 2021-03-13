@@ -768,12 +768,12 @@ impl LastRuntimeUpgradeInfo {
 	/// Returns if the runtime was upgraded in comparison of `self` and `current`.
 	///
 	/// Checks if either the `spec_version` increased or the `spec_name` changed.
-	pub fn was_upgraded(&self, current: &sp_version::RuntimeVersion) -> bool {
+	pub fn was_upgraded(&self, current: &tp_version::RuntimeVersion) -> bool {
 		current.spec_version > self.spec_version.0 || current.spec_name != self.spec_name
 	}
 }
 
-impl From<sp_version::RuntimeVersion> for LastRuntimeUpgradeInfo {
+impl From<tp_version::RuntimeVersion> for LastRuntimeUpgradeInfo {
 	fn from(version: tp_version::RuntimeVersion) -> Self {
 		Self {
 			spec_version: version.spec_version.into(),

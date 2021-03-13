@@ -34,22 +34,22 @@ use std::sync::Arc;
 
 use tp_keystore::SyncCryptoStorePtr;
 use node_primitives::{Block, BlockNumber, AccountId, Index, Balance, Hash};
-use sc_consensus_babe::{Config, Epoch};
-use sc_consensus_babe_rpc::BabeRpcHandler;
-use sc_consensus_epochs::SharedEpochChanges;
-use sc_finality_grandpa::{
+use tc_consensus_babe::{Config, Epoch};
+use tc_consensus_babe_rpc::BabeRpcHandler;
+use tc_consensus_epochs::SharedEpochChanges;
+use tc_finality_grandpa::{
 	SharedVoterState, SharedAuthoritySet, FinalityProofProvider, GrandpaJustificationStream
 };
-use sc_finality_grandpa_rpc::GrandpaRpcHandler;
-pub use sc_rpc_api::DenyUnsafe;
+use tc_finality_grandpa_rpc::GrandpaRpcHandler;
+pub use tc_rpc_api::DenyUnsafe;
 use tp_api::ProvideRuntimeApi;
 use tp_block_builder::BlockBuilder;
 use tp_blockchain::{Error as BlockChainError, HeaderMetadata, HeaderBackend};
 use tp_consensus::SelectChain;
 use tp_consensus_babe::BabeApi;
-use sc_rpc::SubscriptionTaskExecutor;
+use tc_rpc::SubscriptionTaskExecutor;
 use tp_transaction_pool::TransactionPool;
-use sc_client_api::AuxStore;
+use tc_client_api::AuxStore;
 
 /// Light client extra dependencies.
 pub struct LightDeps<C, F, P> {
@@ -58,7 +58,7 @@ pub struct LightDeps<C, F, P> {
 	/// Transaction pool instance.
 	pub pool: Arc<P>,
 	/// Remote access to the blockchain (async).
-	pub remote_blockchain: Arc<dyn sc_client_api::light::RemoteBlockchain<Block>>,
+	pub remote_blockchain: Arc<dyn tc_client_api::light::RemoteBlockchain<Block>>,
 	/// Fetcher instance.
 	pub fetcher: Arc<F>,
 }
@@ -96,7 +96,7 @@ pub struct FullDeps<C, P, SC, B> {
 	/// The SelectChain Strategy
 	pub select_chain: SC,
 	/// A copy of the chain spec.
-	pub chain_spec: Box<dyn sc_chain_spec::ChainSpec>,
+	pub chain_spec: Box<dyn tc_chain_spec::ChainSpec>,
 	/// Whether to deny unsafe calls
 	pub deny_unsafe: DenyUnsafe,
 	/// BABE specific dependencies.
@@ -106,12 +106,12 @@ pub struct FullDeps<C, P, SC, B> {
 }
 
 /// A IO handler that uses all Full RPC extensions.
-pub type IoHandler = tetsy_jsonrpc_core::IoHandler<sc_rpc::Metadata>;
+pub type IoHandler = tetsy_jsonrpc_core::IoHandler<tc_rpc::Metadata>;
 
 /// Instantiate all Full RPC extensions.
 pub fn create_full<C, P, SC, B>(
 	deps: FullDeps<C, P, SC, B>,
-) -> tetsy_jsonrpc_core::IoHandler<sc_rpc_api::Metadata> where
+) -> tetsy_jsonrpc_core::IoHandler<tc_rpc_api::Metadata> where
 	C: ProvideRuntimeApi<Block> + HeaderBackend<Block> + AuxStore +
 		HeaderMetadata<Block, Error=BlockChainError> + Sync + Send + 'static,
 	C::Api: tetcore_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
@@ -121,8 +121,8 @@ pub fn create_full<C, P, SC, B>(
 	C::Api: BlockBuilder<Block>,
 	P: TransactionPool + 'static,
 	SC: SelectChain<Block> +'static,
-	B: sc_client_api::Backend<Block> + Send + Sync + 'static,
-	B::State: sc_client_api::backend::StateBackend<tp_runtime::traits::HashFor<Block>>,
+	B: tc_client_api::Backend<Block> + Send + Sync + 'static,
+	B::State: tc_client_api::backend::StateBackend<tp_runtime::traits::HashFor<Block>>,
 {
 	use tetcore_frame_rpc_system::{FullSystem, SystemApi};
 	use pallet_contracts_rpc::{Contracts, ContractsApi};
@@ -165,7 +165,7 @@ pub fn create_full<C, P, SC, B>(
 		TransactionPaymentApi::to_delegate(TransactionPayment::new(client.clone()))
 	);
 	io.extend_with(
-		sc_consensus_babe_rpc::BabeApi::to_delegate(
+		tc_consensus_babe_rpc::BabeApi::to_delegate(
 			BabeRpcHandler::new(
 				client.clone(),
 				shared_epoch_changes.clone(),
@@ -177,7 +177,7 @@ pub fn create_full<C, P, SC, B>(
 		)
 	);
 	io.extend_with(
-		sc_finality_grandpa_rpc::GrandpaApi::to_delegate(
+		tc_finality_grandpa_rpc::GrandpaApi::to_delegate(
 			GrandpaRpcHandler::new(
 				shared_authority_set.clone(),
 				shared_voter_state,
@@ -189,8 +189,8 @@ pub fn create_full<C, P, SC, B>(
 	);
 
 	io.extend_with(
-		sc_sync_state_rpc::SyncStateRpcApi::to_delegate(
-			sc_sync_state_rpc::SyncStateRpcHandler::new(
+		tc_sync_state_rpc::SyncStateRpcApi::to_delegate(
+			tc_sync_state_rpc::SyncStateRpcHandler::new(
 				chain_spec,
 				client,
 				shared_authority_set,
@@ -209,7 +209,7 @@ pub fn create_light<C, P, M, F>(
 ) -> tetsy_jsonrpc_core::IoHandler<M> where
 	C: tp_blockchain::HeaderBackend<Block>,
 	C: Send + Sync + 'static,
-	F: sc_client_api::light::Fetcher<Block> + 'static,
+	F: tc_client_api::light::Fetcher<Block> + 'static,
 	P: TransactionPool + 'static,
 	M: tetsy_jsonrpc_core::Metadata + Default,
 {

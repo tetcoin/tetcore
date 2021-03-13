@@ -24,7 +24,7 @@ use tp_consensus_babe::digests::{
 	PreDigest, PrimaryPreDigest, SecondaryPlainPreDigest, SecondaryVRFPreDigest,
 	CompatibleDigestItem
 };
-use sc_consensus_slots::CheckedHeader;
+use tc_consensus_slots::CheckedHeader;
 use tp_consensus_slots::Slot;
 use log::{debug, trace};
 use super::{find_pre_digest, babe_err, Epoch, BlockT, Error};

@@ -26,7 +26,7 @@ use tp_runtime::{
 use tp_state_machine::{
 	OverlayedChanges, ExecutionManager, ExecutionStrategy, StorageProof,
 };
-use sc_executor::{RuntimeVersion, NativeVersion};
+use tc_executor::{RuntimeVersion, NativeVersion};
 use externalities::Extensions;
 use tet_core::NativeOrEncoded;
 
@@ -113,7 +113,7 @@ pub trait CallExecutor<B: BlockT> {
 	) -> Result<(Vec<u8>, StorageProof), tp_blockchain::Error> {
 		let trie_state = state.as_trie_backend()
 			.ok_or_else(||
-				sp_blockchain::Error::from_state(Box::new(sp_state_machine::ExecutionError::UnableToGenerateProof) as Box<_>)
+				tp_blockchain::Error::from_state(Box::new(tp_state_machine::ExecutionError::UnableToGenerateProof) as Box<_>)
 			)?;
 		self.prove_at_trie_state(trie_state, overlay, method, call_data)
 	}
@@ -123,7 +123,7 @@ pub trait CallExecutor<B: BlockT> {
 	/// No changes are made.
 	fn prove_at_trie_state<S: tp_state_machine::TrieBackendStorage<HashFor<B>>>(
 		&self,
-		trie_state: &sp_state_machine::TrieBackend<S, HashFor<B>>,
+		trie_state: &tp_state_machine::TrieBackend<S, HashFor<B>>,
 		overlay: &mut OverlayedChanges,
 		method: &str,
 		call_data: &[u8]

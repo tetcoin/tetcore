@@ -89,7 +89,7 @@ use tp_runtime::{
 use tp_api::{ProvideRuntimeApi, NumberFor};
 use parking_lot::Mutex;
 use tp_inherents::{InherentDataProviders, InherentData};
-use sc_telemetry::{telemetry, CONSENSUS_TRACE, CONSENSUS_DEBUG};
+use tc_telemetry::{telemetry, CONSENSUS_TRACE, CONSENSUS_DEBUG};
 use tp_consensus::{
 	BlockImport, Environment, Proposer, BlockCheckParams,
 	ForkChoiceStrategy, BlockImportParams, BlockOrigin, Error as ConsensusError,
@@ -97,7 +97,7 @@ use tp_consensus::{
 };
 use tp_consensus_babe::inherents::BabeInherentData;
 use tp_timestamp::{TimestampInherentData, InherentType as TimestampInherent};
-use sc_client_api::{
+use tc_client_api::{
 	backend::AuxStore, BlockchainEvents, ProvideUncles,
 };
 use tp_block_builder::BlockBuilder as BlockBuilderApi;
@@ -107,11 +107,11 @@ use retain_mut::RetainMut;
 use futures::prelude::*;
 use log::{debug, info, log, trace, warn};
 use prometheus_endpoint::Registry;
-use sc_consensus_slots::{
+use tc_consensus_slots::{
 	SlotInfo, SlotCompatible, StorageChanges, CheckedHeader, check_equivocation,
 	BackoffAuthoringBlocksStrategy
 };
-use sc_consensus_epochs::{
+use tc_consensus_epochs::{
 	descendent_query, SharedEpochChanges, EpochChangesFor, Epoch as EpochT, ViableEpochDescriptor,
 };
 use tp_blockchain::{
@@ -213,7 +213,7 @@ pub enum Error<B: BlockT> {
 	MultipleConfigChangeDigests,
 	/// Could not extract timestamp and slot
 	#[display(fmt = "Could not extract timestamp and slot: {:?}", _0)]
-	Extraction(sp_consensus::Error),
+	Extraction(tp_consensus::Error),
 	/// Could not fetch epoch
 	#[display(fmt = "Could not fetch epoch at {:?}", _0)]
 	FetchEpoch(B::Hash),
@@ -255,7 +255,7 @@ pub enum Error<B: BlockT> {
 	VRFVerificationFailed(SignatureError),
 	/// Could not fetch parent header
 	#[display(fmt = "Could not fetch parent header: {:?}", _0)]
-	FetchParentHeader(sp_blockchain::Error),
+	FetchParentHeader(tp_blockchain::Error),
 	/// Expected epoch change to happen.
 	#[display(fmt = "Expected epoch change to happen at {:?}, s{}", _0, _1)]
 	ExpectedEpochChange(B::Hash, Slot),
@@ -272,11 +272,11 @@ pub enum Error<B: BlockT> {
 	/// Check Inherents error
 	CheckInherents(String),
 	/// Client error
-	Client(sp_blockchain::Error),
+	Client(tp_blockchain::Error),
 	/// Runtime error
-	Runtime(sp_inherents::Error),
+	Runtime(tp_inherents::Error),
 	/// Fork tree error
-	ForkTree(Box<forktree::Error<sp_blockchain::Error>>),
+	ForkTree(Box<forktree::Error<tp_blockchain::Error>>),
 }
 
 impl<B: BlockT> std::convert::From<Error<B>> for String {
@@ -304,7 +304,7 @@ pub static INTERMEDIATE_KEY: &[u8] = b"babe1";
 // and `super::babe::Config` can be eliminated.
 // https://github.com/tetcoin/tetcore/issues/2434
 #[derive(Clone)]
-pub struct Config(sc_consensus_slots::SlotDuration<BabeGenesisConfiguration>);
+pub struct Config(tc_consensus_slots::SlotDuration<BabeGenesisConfiguration>);
 
 impl Config {
 	/// Either fetch the slot duration from disk or compute it from the genesis
@@ -313,7 +313,7 @@ impl Config {
 		C: AuxStore + ProvideRuntimeApi<B>, C::Api: BabeApi<B, Error = tp_blockchain::Error>,
 	{
 		trace!(target: "babe", "Getting slot duration");
-		match sc_consensus_slots::SlotDuration::get_or_compute(client, |a, b| {
+		match tc_consensus_slots::SlotDuration::get_or_compute(client, |a, b| {
 			let has_api_v1 = a.has_api_with::<dyn BabeApi<B, Error = tp_blockchain::Error>, _>(
 				&b, |v| v == 1,
 			)?;
@@ -328,7 +328,7 @@ impl Config {
 			} else if has_api_v2 {
 				a.configuration(b)
 			} else {
-				Err(sp_blockchain::Error::VersionInvalid(
+				Err(tp_blockchain::Error::VersionInvalid(
 					"Unsupported or invalid BabeApi version".to_string()
 				))
 			}
@@ -408,7 +408,7 @@ pub fn start_babe<B, C, SC, E, I, SO, CAW, BS, Error>(BabeParams {
 	can_author_with,
 }: BabeParams<B, C, E, I, SO, SC, CAW, BS>) -> Result<
 	BabeWorker<B>,
-	sp_consensus::Error,
+	tp_consensus::Error,
 > where
 	B: BlockT,
 	C: ProvideRuntimeApi<B> + ProvideCache<B> + ProvideUncles<B> + BlockchainEvents<B>
@@ -441,14 +441,14 @@ pub fn start_babe<B, C, SC, E, I, SO, CAW, BS, Error>(BabeParams {
 	};
 
 	register_babe_inherent_data_provider(&inherent_data_providers, config.slot_duration())?;
-	sc_consensus_uncles::register_uncles_inherent_data_provider(
+	tc_consensus_uncles::register_uncles_inherent_data_provider(
 		client,
 		select_chain.clone(),
 		&inherent_data_providers,
 	)?;
 
 	info!(target: "babe", "👶 Starting BABE Authorship worker");
-	let inner = sc_consensus_slots::start_slot_worker(
+	let inner = tc_consensus_slots::start_slot_worker(
 		config.0,
 		select_chain,
 		worker,
@@ -513,7 +513,7 @@ struct BabeSlotWorker<B: BlockT, C, E, I, SO, BS> {
 	config: Config,
 }
 
-impl<B, C, E, I, Error, SO, BS> sc_consensus_slots::SimpleSlotWorker<B>
+impl<B, C, E, I, Error, SO, BS> tc_consensus_slots::SimpleSlotWorker<B>
 	for BabeSlotWorker<B, C, E, I, SO, BS>
 where
 	B: BlockT,
@@ -558,7 +558,7 @@ where
 			slot,
 		)
 			.map_err(|e| ConsensusError::ChainLookup(format!("{:?}", e)))?
-			.ok_or(sp_consensus::Error::InvalidAuthoritiesSet)
+			.ok_or(tp_consensus::Error::InvalidAuthoritiesSet)
 	}
 
 	fn authorities_len(&self, epoch_descriptor: &Self::EpochData) -> Option<usize> {
@@ -630,8 +630,8 @@ where
 		Self::Claim,
 		Self::EpochData,
 	) -> Result<
-		sp_consensus::BlockImportParams<B, I::Transaction>,
-		sp_consensus::Error> + Send + 'static>
+		tp_consensus::BlockImportParams<B, I::Transaction>,
+		tp_consensus::Error> + Send + 'static>
 	{
 		let keystore = self.keystore.clone();
 		Box::new(move |header, header_hash, body, storage_changes, (_, public), epoch_descriptor| {
@@ -694,7 +694,7 @@ where
 
 	fn proposer(&mut self, block: &B::Header) -> Self::CreateProposer {
 		Box::pin(self.env.init(block).map_err(|e| {
-			sp_consensus::Error::ClientImport(format!("{:?}", e))
+			tp_consensus::Error::ClientImport(format!("{:?}", e))
 		}))
 	}
 
@@ -716,7 +716,7 @@ where
 		};
 
 		if let Some(slot_lenience) =
-			sc_consensus_slots::slot_lenience_exponential(parent_slot, slot_info)
+			tc_consensus_slots::slot_lenience_exponential(parent_slot, slot_info)
 		{
 			debug!(
 				target: "babe",
@@ -806,7 +806,7 @@ impl SlotCompatible for TimeSource {
 		data.timestamp_inherent_data()
 			.and_then(|t| data.babe_inherent_data().map(|a| (t, a)))
 			.map_err(Into::into)
-			.map_err(sp_consensus::Error::InherentData)
+			.map_err(tp_consensus::Error::InherentData)
 			.map(|(x, y)| (x, y, self.0.lock().0.take().unwrap_or_default()))
 	}
 }
@@ -1101,11 +1101,11 @@ pub fn register_babe_inherent_data_provider(
 	slot_duration: u64,
 ) -> Result<(), tp_consensus::Error> {
 	debug!(target: "babe", "Registering");
-	if !inherent_data_providers.has_provider(&sp_consensus_babe::inherents::INHERENT_IDENTIFIER) {
+	if !inherent_data_providers.has_provider(&tp_consensus_babe::inherents::INHERENT_IDENTIFIER) {
 		inherent_data_providers
-			.register_provider(sp_consensus_babe::inherents::InherentDataProvider::new(slot_duration))
+			.register_provider(tp_consensus_babe::inherents::InherentDataProvider::new(slot_duration))
 			.map_err(Into::into)
-			.map_err(sp_consensus::Error::InherentData)
+			.map_err(tp_consensus::Error::InherentData)
 	} else {
 		Ok(())
 	}
@@ -1175,8 +1175,8 @@ impl<Block, Client, Inner> BlockImport<Block> for BabeBlockImport<Block, Client,
 		// early exit if block already in chain, otherwise the check for
 		// epoch changes will error when trying to re-import an epoch change
 		match self.client.status(BlockId::Hash(hash)) {
-			Ok(sp_blockchain::BlockStatus::InChain) => return Ok(ImportResult::AlreadyInChain),
-			Ok(sp_blockchain::BlockStatus::Unknown) => {},
+			Ok(tp_blockchain::BlockStatus::InChain) => return Ok(ImportResult::AlreadyInChain),
+			Ok(tp_blockchain::BlockStatus::Unknown) => {},
 			Err(e) => return Err(ConsensusError::ClientImport(e.to_string())),
 		}
 

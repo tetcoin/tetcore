@@ -15,7 +15,7 @@ send all messages under a single topic to a specific peer.
 # Usage
 
 - Implement the `Network` trait, representing the low-level networking primitives. It is
-  already implemented on `sc_network::NetworkService`.
+  already implemented on `tc_network::NetworkService`.
 - Implement the `Validator` trait. See the section below.
 - Decide on a `ConsensusEngineId`. Each gossiping protocol should have a different one.
 - Build a `GossipEngine` using these three elements.

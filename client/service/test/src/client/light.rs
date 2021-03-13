@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use sc_light::{
+use tc_light::{
 	call_executor::{
 		GenesisCallExecutor,
 		check_execution_proof,
@@ -38,9 +38,9 @@ use tetcore_test_runtime_client::{
 };
 use tp_api::{InitializeBlock, StorageTransactionCache, ProofRecorder};
 use tp_consensus::BlockOrigin;
-use sc_executor::{NativeExecutor, WasmExecutionMethod, RuntimeVersion, NativeVersion};
+use tc_executor::{NativeExecutor, WasmExecutionMethod, RuntimeVersion, NativeVersion};
 use tet_core::{H256, NativeOrEncoded, testing::TaskExecutor};
-use sc_client_api::{
+use tc_client_api::{
 	blockchain::Info, backend::NewBlockState, Backend as ClientBackend, ProofProvider,
 	in_mem::{Backend as InMemBackend, Blockchain as InMemoryBlockchain}, ProvideChtRoots,
 	AuxStore, Storage, CallExecutor, cht, ExecutionStrategy, StorageProof, BlockImportOperation,
@@ -48,7 +48,7 @@ use sc_client_api::{
 	RemoteChangesRequest, FetchChecker, RemoteReadChildRequest, RemoteHeaderRequest, BlockBackend,
 };
 use externalities::Extensions;
-use sc_block_builder::BlockBuilderProvider;
+use tc_block_builder::BlockBuilderProvider;
 use tp_blockchain::{
 	BlockStatus, Result as ClientResult, Error as ClientError, CachedHeaderMetadata,
 	HeaderBackend, well_known_cache_keys
@@ -168,7 +168,7 @@ impl Storage<Block> for DummyStorage {
 		None
 	}
 
-	fn usage_info(&self) -> Option<sc_client_api::UsageInfo> {
+	fn usage_info(&self) -> Option<tc_client_api::UsageInfo> {
 		None
 	}
 }
@@ -226,7 +226,7 @@ impl CallExecutor<Block> for DummyCallExecutor {
 		_storage_transaction_cache: Option<&RefCell<
 			StorageTransactionCache<
 				Block,
-				<Self::Backend as sc_client_api::backend::Backend<Block>>::State,
+				<Self::Backend as tc_client_api::backend::Backend<Block>>::State,
 			>
 		>>,
 		_initialize_block: InitializeBlock<'a, Block>,
@@ -244,7 +244,7 @@ impl CallExecutor<Block> for DummyCallExecutor {
 
 	fn prove_at_trie_state<S: tp_state_machine::TrieBackendStorage<HashFor<Block>>>(
 		&self,
-		_trie_state: &sp_state_machine::TrieBackend<S, HashFor<Block>>,
+		_trie_state: &tp_state_machine::TrieBackend<S, HashFor<Block>>,
 		_overlay: &mut OverlayedChanges,
 		_method: &str,
 		_call_data: &[u8]
@@ -364,7 +364,7 @@ fn execution_proof_is_generated_and_checked() {
 			),
 		);
 		match execution_result {
-			Err(sp_blockchain::Error::Execution(_)) => (),
+			Err(tp_blockchain::Error::Execution(_)) => (),
 			_ => panic!("Unexpected execution result: {:?}", execution_result),
 		}
 	}

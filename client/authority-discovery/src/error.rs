@@ -35,7 +35,7 @@ pub enum Error {
 	/// Failed to hash the authority id to be used as a dht key.
 	HashingAuthorityId(tetsy_libp2p::core::multiaddr::multihash::Error),
 	/// Failed calling into the Tetcore runtime.
-	CallingRuntime(sp_blockchain::Error),
+	CallingRuntime(tp_blockchain::Error),
 	/// Received a dht record with a key that does not match any in-flight awaited keys.
 	ReceivingUnexpectedRecord,
 	/// Failed to encode a protobuf payload.

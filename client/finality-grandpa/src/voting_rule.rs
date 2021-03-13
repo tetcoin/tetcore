@@ -24,7 +24,7 @@
 
 use std::sync::Arc;
 
-use sc_client_api::blockchain::HeaderBackend;
+use tc_client_api::blockchain::HeaderBackend;
 use tp_runtime::generic::BlockId;
 use tp_runtime::traits::{Block as BlockT, Header, NumberFor, One, Zero};
 

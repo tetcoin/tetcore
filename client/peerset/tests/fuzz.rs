@@ -20,7 +20,7 @@ use futures::prelude::*;
 use tetsy_libp2p::PeerId;
 use rand::distributions::{Distribution, Uniform, WeightedIndex};
 use rand::seq::IteratorRandom;
-use sc_peerset::{DropReason, IncomingIndex, Message, Peerset, PeersetConfig, ReputationChange, SetConfig, SetId};
+use tc_peerset::{DropReason, IncomingIndex, Message, Peerset, PeersetConfig, ReputationChange, SetConfig, SetId};
 use std::{collections::HashMap, collections::HashSet, pin::Pin, task::Poll};
 
 #[test]

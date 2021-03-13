@@ -47,13 +47,13 @@ use tp_runtime::{
 	generic::BlockId,
 	traits::{Block as BlockT, Header, HashFor, NumberFor}
 };
-use sc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_WARN, CONSENSUS_INFO};
+use tc_telemetry::{telemetry, CONSENSUS_DEBUG, CONSENSUS_WARN, CONSENSUS_INFO};
 
 /// The changes that need to applied to the storage to create the state for a block.
 ///
-/// See [`sp_state_machine::StorageChanges`] for more information.
+/// See [`tp_state_machine::StorageChanges`] for more information.
 pub type StorageChanges<Transaction, Block> =
-	sp_state_machine::StorageChanges<Transaction, HashFor<Block>, NumberFor<Block>>;
+	tp_state_machine::StorageChanges<Transaction, HashFor<Block>, NumberFor<Block>>;
 
 /// The result of [`SlotWorker::on_slot`].
 #[derive(Debug, Clone)]
@@ -63,7 +63,7 @@ pub struct SlotResult<Block: BlockT> {
 	/// The optional storage proof that was calculated while building the block.
 	///
 	/// This needs to be enabled for the proposer to get this storage proof.
-	pub storage_proof: Option<sp_trie::StorageProof>,
+	pub storage_proof: Option<tp_trie::StorageProof>,
 }
 
 /// A worker that should be invoked at every new slot.
@@ -157,8 +157,8 @@ pub trait SimpleSlotWorker<B: BlockT> {
 			Self::Claim,
 			Self::EpochData,
 		) -> Result<
-				sp_consensus::BlockImportParams<B, <Self::BlockImport as BlockImport<B>>::Transaction>,
-				sp_consensus::Error
+				tp_consensus::BlockImportParams<B, <Self::BlockImport as BlockImport<B>>::Transaction>,
+				tp_consensus::Error
 			> + Send + 'static
 	>;
 
@@ -323,7 +323,7 @@ pub trait SimpleSlotWorker<B: BlockT> {
 						"slot" => *slot,
 					);
 
-					Err(sp_consensus::Error::ClientImport("Timeout in the Slots proposer".into()))
+					Err(tp_consensus::Error::ClientImport("Timeout in the Slots proposer".into()))
 				},
 			});
 
@@ -519,7 +519,7 @@ impl<T: Clone + Send + Sync + 'static> SlotDuration<T> {
 	/// `slot_key` is marked as `'static`, as it should really be a
 	/// compile-time constant.
 	pub fn get_or_compute<B: BlockT, C, CB>(client: &C, cb: CB) -> tp_blockchain::Result<Self> where
-		C: sc_client_api::backend::AuxStore,
+		C: tc_client_api::backend::AuxStore,
 		C: ProvideRuntimeApi<B>,
 		CB: FnOnce(ApiRef<C::Api>, &BlockId<B>) -> tp_blockchain::Result<T>,
 		T: SlotData + Encode + Decode + Debug,
@@ -528,7 +528,7 @@ impl<T: Clone + Send + Sync + 'static> SlotDuration<T> {
 			Some(v) => <T as codec::Decode>::decode(&mut &v[..])
 				.map(SlotDuration)
 				.map_err(|_| {
-					sp_blockchain::Error::Backend({
+					tp_blockchain::Error::Backend({
 						error!(target: "slots", "slot duration kept in invalid format");
 						"slot duration kept in invalid format".to_string()
 					})
@@ -551,7 +551,7 @@ impl<T: Clone + Send + Sync + 'static> SlotDuration<T> {
 		}?;
 
 		if slot_duration.slot_duration() == 0u64 {
-			return Err(sp_blockchain::Error::Application(Box::new(Error::SlotDurationInvalid(slot_duration))))
+			return Err(tp_blockchain::Error::Application(Box::new(Error::SlotDurationInvalid(slot_duration))))
 		}
 
 		Ok(slot_duration)

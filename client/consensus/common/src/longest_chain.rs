@@ -20,7 +20,7 @@
 
 use std::sync::Arc;
 use std::marker::PhantomData;
-use sc_client_api::backend;
+use tc_client_api::backend;
 use tp_consensus::{SelectChain, Error as ConsensusError};
 use tp_blockchain::{Backend, HeaderBackend};
 use tp_runtime::{

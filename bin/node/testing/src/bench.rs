@@ -27,8 +27,8 @@ use std::{sync::Arc, path::{Path, PathBuf}, collections::BTreeMap};
 use node_primitives::Block;
 use crate::client::{Client, Backend};
 use crate::keyring::*;
-use sc_client_db::PruningMode;
-use sc_executor::{NativeExecutor, WasmExecutionMethod};
+use tc_client_db::PruningMode;
+use tc_executor::{NativeExecutor, WasmExecutionMethod};
 use tp_consensus::{
 	BlockOrigin, BlockImport, BlockImportParams,
 	ForkChoiceStrategy, ImportResult, ImportedAux
@@ -54,11 +54,11 @@ use tet_core::{ExecutionContext, blake2_256, traits::SpawnNamed, Pair, Public, s
 use tp_api::ProvideRuntimeApi;
 use tp_block_builder::BlockBuilder;
 use tp_inherents::InherentData;
-use sc_client_api::{
+use tc_client_api::{
 	ExecutionStrategy, BlockBackend,
 	execution_extensions::{ExecutionExtensions, ExecutionStrategies},
 };
-use sc_block_builder::BlockBuilderProvider;
+use tc_block_builder::BlockBuilderProvider;
 use futures::executor;
 
 /// Keyring full of accounts for benching.
@@ -228,13 +228,13 @@ pub enum DatabaseType {
 }
 
 impl DatabaseType {
-	fn into_settings(self, path: PathBuf) -> sc_client_db::DatabaseSettingsSrc {
+	fn into_settings(self, path: PathBuf) -> tc_client_db::DatabaseSettingsSrc {
 		match self {
-			Self::RocksDb => sc_client_db::DatabaseSettingsSrc::RocksDb {
+			Self::RocksDb => tc_client_db::DatabaseSettingsSrc::RocksDb {
 				path,
 				cache_size: 512,
 			},
-			Self::TetsyDb => sc_client_db::DatabaseSettingsSrc::TetsyDb {
+			Self::TetsyDb => tc_client_db::DatabaseSettingsSrc::TetsyDb {
 				path,
 			}
 		}
@@ -272,7 +272,7 @@ impl SpawnNamed for TaskExecutor {
 pub struct BlockContentIterator<'a> {
 	iteration: usize,
 	content: BlockContent,
-	runtime_version: sc_executor::RuntimeVersion,
+	runtime_version: tc_executor::RuntimeVersion,
 	genesis_hash: node_primitives::Hash,
 	keyring: &'a BenchKeyring,
 }
@@ -407,17 +407,17 @@ impl BenchDb {
 		profile: Profile,
 		keyring: &BenchKeyring,
 	) -> (Client, std::sync::Arc<Backend>, TaskExecutor) {
-		let db_config = sc_client_db::DatabaseSettings {
+		let db_config = tc_client_db::DatabaseSettings {
 			state_cache_size: 16*1024*1024,
 			state_cache_child_ratio: Some((0, 100)),
 			state_pruning: PruningMode::ArchiveAll,
 			source: database_type.into_settings(dir.into()),
-			keep_blocks: sc_client_db::KeepBlocks::All,
-			transaction_storage: sc_client_db::TransactionStorageMode::BlockBody,
+			keep_blocks: tc_client_db::KeepBlocks::All,
+			transaction_storage: tc_client_db::TransactionStorageMode::BlockBody,
 		};
 		let task_executor = TaskExecutor::new();
 
-		let (client, backend) = sc_service::new_client(
+		let (client, backend) = tc_service::new_client(
 			db_config,
 			NativeExecutor::new(WasmExecutionMethod::Compiled, None, 8),
 			&keyring.generate_genesis(),
@@ -440,7 +440,7 @@ impl BenchDb {
 		let timestamp = 1 * MinimumPeriod::get();
 
 		inherent_data
-			.put_data(sp_timestamp::INHERENT_IDENTIFIER, &timestamp)
+			.put_data(tp_timestamp::INHERENT_IDENTIFIER, &timestamp)
 			.expect("Put timestamp failed");
 
 		client.runtime_api()
@@ -483,8 +483,8 @@ impl BenchDb {
 		let start = std::time::Instant::now();
 		for opaque in self.block_content(content, &client) {
 			match block.push(opaque) {
-				Err(sp_blockchain::Error::ApplyExtrinsicFailed(
-						sp_blockchain::ApplyExtrinsicFailed::Validity(e)
+				Err(tp_blockchain::Error::ApplyExtrinsicFailed(
+						tp_blockchain::ApplyExtrinsicFailed::Validity(e)
 				)) if e.exhausted_resources() => {
 					break;
 				},

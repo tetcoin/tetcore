@@ -85,7 +85,7 @@ pub struct BenchmarkConfig {
 	pub extra: bool,
 }
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// Runtime api for benchmarking a FRAME runtime.
 	pub trait Benchmark {
 		/// Dispatch the given benchmark.

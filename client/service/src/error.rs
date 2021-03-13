@@ -18,8 +18,8 @@
 
 //! Errors that can occur during the service operation.
 
-use sc_network;
-use sc_keystore;
+use tc_network;
+use tc_keystore;
 use tp_consensus;
 use tp_blockchain;
 
@@ -41,10 +41,10 @@ pub enum Error {
 	Consensus(#[from] tp_consensus::Error),
 	
 	#[error(transparent)]
-	Network(#[from] sc_network::error::Error),
+	Network(#[from] tc_network::error::Error),
 
 	#[error(transparent)]
-	Keystore(#[from] sc_keystore::Error),
+	Keystore(#[from] tc_keystore::Error),
 
 	#[error("Best chain selection strategy (SelectChain) is not provided.")]
 	SelectChainRequired,

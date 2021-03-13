@@ -19,7 +19,7 @@
 use criterion::{criterion_group, criterion_main, Criterion};
 
 use futures::{future::{ready, Ready}, executor::block_on};
-use sc_transaction_graph::*;
+use tc_transaction_graph::*;
 use codec::Encode;
 use tetcore_test_runtime::{Block, Extrinsic, Transfer, H256, AccountId};
 use tp_runtime::{
@@ -52,8 +52,8 @@ fn to_tag(nonce: u64, from: AccountId) -> Tag {
 impl ChainApi for TestApi {
 	type Block = Block;
 	type Error = tp_transaction_pool::error::Error;
-	type ValidationFuture = Ready<sp_transaction_pool::error::Result<TransactionValidity>>;
-	type BodyFuture = Ready<sp_transaction_pool::error::Result<Option<Vec<Extrinsic>>>>;
+	type ValidationFuture = Ready<tp_transaction_pool::error::Result<TransactionValidity>>;
+	type BodyFuture = Ready<tp_transaction_pool::error::Result<Option<Vec<Extrinsic>>>>;
 
 	fn validate_transaction(
 		&self,

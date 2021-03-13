@@ -201,10 +201,10 @@ impl<B: BlockT> BlockImportWorker<B> {
 		use worker_messages::*;
 
 		let (justification_sender, mut justification_port) =
-			tracing_unbounded("mpsc_import_queue_worker_justification");
+			tracing_unbounded("mptc_import_queue_worker_justification");
 
 		let (block_import_sender, block_import_port) =
-			tracing_unbounded("mpsc_import_queue_worker_blocks");
+			tracing_unbounded("mptc_import_queue_worker_blocks");
 
 		let mut worker = BlockImportWorker {
 			result_sender,

@@ -22,7 +22,7 @@ use ansi_term::Style;
 use rand::{Rng, distributions::Alphanumeric, rngs::OsRng};
 use structopt::StructOpt;
 
-use sc_keystore::LocalKeystore;
+use tc_keystore::LocalKeystore;
 use node_cli::chain_spec::{self, AccountId};
 use tet_core::{
 	sr25519,
@@ -126,7 +126,7 @@ fn generate_chain_spec(
 	let chain_spec = chain_spec::ChainSpec::from_genesis(
 		"Custom",
 		"custom",
-		sc_chain_spec::ChainType::Live,
+		tc_chain_spec::ChainType::Live,
 		move || genesis_constructor(&authority_seeds, &endowed_accounts, &sudo_account),
 		vec![],
 		None,

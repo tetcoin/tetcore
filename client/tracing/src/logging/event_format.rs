@@ -62,7 +62,7 @@ where
 		S: Subscriber + for<'a> LookupSpan<'a>,
 		N: for<'a> FormatFields<'a> + 'static,
 	{
-		if event.metadata().target() == sc_telemetry::TELEMETRY_LOG_SPAN {
+		if event.metadata().target() == tc_telemetry::TELEMETRY_LOG_SPAN {
 			return Ok(());
 		}
 

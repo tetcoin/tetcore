@@ -25,8 +25,8 @@ use tet_core::storage::{StorageKey, StorageData, ChildInfo, Storage, StorageChil
 use tp_runtime::BuildStorage;
 use serde_json as json;
 use crate::{RuntimeGenesis, ChainType, extension::GetExtension, Properties};
-use sc_network::config::MultiaddrWithPeerId;
-use sc_telemetry::TelemetryEndpoints;
+use tc_network::config::MultiaddrWithPeerId;
+use tc_telemetry::TelemetryEndpoints;
 use tp_runtime::traits::{Block as BlockT, NumberFor};
 
 enum GenesisSource<G> {
@@ -402,11 +402,11 @@ pub struct LightSyncState<Block: BlockT> {
 	/// The header of the best finalized block.
 	pub finalized_block_header: <Block as BlockT>::Header,
 	/// The epoch changes tree for babe.
-	pub babe_epoch_changes: sc_consensus_epochs::EpochChangesFor<Block, sc_consensus_babe::Epoch>,
+	pub babe_epoch_changes: tc_consensus_epochs::EpochChangesFor<Block, tc_consensus_babe::Epoch>,
 	/// The babe weight of the finalized block.
 	pub babe_finalized_block_weight: tp_consensus_babe::BabeBlockWeight,
 	/// The authority set for grandpa.
-	pub grandpa_authority_set: sc_finality_grandpa::AuthoritySet<<Block as BlockT>::Hash, NumberFor<Block>>,
+	pub grandpa_authority_set: tc_finality_grandpa::AuthoritySet<<Block as BlockT>::Hash, NumberFor<Block>>,
 }
 
 impl<Block: BlockT> LightSyncState<Block> {

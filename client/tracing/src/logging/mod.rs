@@ -27,9 +27,9 @@ mod event_format;
 mod layers;
 
 pub use directives::*;
-pub use sc_tracing_proc_macro::*;
+pub use tc_tracing_proc_macro::*;
 
-use sc_telemetry::{ExtTransport, TelemetryWorker};
+use tc_telemetry::{ExtTransport, TelemetryWorker};
 use std::io;
 use tracing::Subscriber;
 use tracing_subscriber::{
@@ -159,7 +159,7 @@ where
 	});
 
 	let (telemetry_layer, telemetry_worker) =
-		sc_telemetry::TelemetryLayer::new(telemetry_buffer_size, telemetry_external_transport)?;
+		tc_telemetry::TelemetryLayer::new(telemetry_buffer_size, telemetry_external_transport)?;
 	let event_format = EventFormat {
 		timer,
 		display_target: !simple,
@@ -256,7 +256,7 @@ impl LoggerBuilder {
 
 			if self.log_reloading {
 				let (subscriber, telemetry_worker) = prepare_subscriber(
-					&format!("{},{},sc_tracing=trace", self.directives, profiling_targets),
+					&format!("{},{},tc_tracing=trace", self.directives, profiling_targets),
 					max_level,
 					self.force_colors,
 					self.telemetry_buffer_size,
@@ -270,7 +270,7 @@ impl LoggerBuilder {
 				Ok(telemetry_worker)
 			} else {
 				let (subscriber, telemetry_worker) = prepare_subscriber(
-					&format!("{},{},sc_tracing=trace", self.directives, profiling_targets),
+					&format!("{},{},tc_tracing=trace", self.directives, profiling_targets),
 					max_level,
 					self.force_colors,
 					self.telemetry_buffer_size,
@@ -318,7 +318,7 @@ impl LoggerBuilder {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate as sc_tracing;
+	use crate as tc_tracing;
 	use std::{env, process::Command};
 	use tracing::{metadata::Kind, subscriber::Interest, Callsite, Level, Metadata};
 

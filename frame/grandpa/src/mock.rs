@@ -408,9 +408,9 @@ pub fn generate_equivocation_proof(
 	let (prevote1, signed1) = signed_prevote(vote1.0, vote1.1, vote1.2, vote1.3);
 	let (prevote2, signed2) = signed_prevote(vote2.0, vote2.1, vote2.2, vote2.3);
 
-	sp_finality_grandpa::EquivocationProof::new(
+	tp_finality_grandpa::EquivocationProof::new(
 		set_id,
-		sp_finality_grandpa::Equivocation::Prevote(finality_grandpa::Equivocation {
+		tp_finality_grandpa::Equivocation::Prevote(finality_grandpa::Equivocation {
 			round_number: vote1.0,
 			identity: vote1.3.public().into(),
 			first: (prevote1, signed1),

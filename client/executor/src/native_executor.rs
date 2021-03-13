@@ -39,7 +39,7 @@ use tet_core::{
 };
 use log::trace;
 use tetcore_wasm_interface::{HostFunctions, Function};
-use sc_executor_common::wasm_runtime::{WasmInstance, WasmModule, InvokeMethod};
+use tc_executor_common::wasm_runtime::{WasmInstance, WasmModule, InvokeMethod};
 use externalities::ExternalitiesExt as _;
 use tp_tasks::new_async_externalities;
 
@@ -549,7 +549,7 @@ impl<D: NativeExecutionDispatch> tet_core::traits::CallInWasm for NativeExecutor
 /// # Example
 ///
 /// ```
-/// sc_executor::native_executor_instance!(
+/// tc_executor::native_executor_instance!(
 ///     pub MyExecutor,
 ///     tetcore_test_runtime::api::dispatch,
 ///     tetcore_test_runtime::native_version,
@@ -571,7 +571,7 @@ impl<D: NativeExecutionDispatch> tet_core::traits::CallInWasm for NativeExecutor
 ///     }
 /// }
 ///
-/// sc_executor::native_executor_instance!(
+/// tc_executor::native_executor_instance!(
 ///     pub MyExecutor,
 ///     tetcore_test_runtime::api::dispatch,
 ///     tetcore_test_runtime::native_version,

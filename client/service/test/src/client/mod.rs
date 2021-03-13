@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use tetsy_scale_codec::{Encode, Decode, Joiner};
-use sc_executor::native_executor_instance;
+use tc_executor::native_executor_instance;
 use tp_state_machine::{StateMachine, OverlayedChanges, ExecutionStrategy, InMemoryBackend};
 use tetcore_test_runtime_client::{
 	prelude::*,
@@ -28,14 +28,14 @@ use tetcore_test_runtime_client::{
 	AccountKeyring, Sr25519Keyring, TestClientBuilder, ClientBlockImportExt,
 	BlockBuilderExt, DefaultTestClientBuilderExt, TestClientBuilderExt, ClientExt,
 };
-use sc_client_api::{
+use tc_client_api::{
 	StorageProvider, BlockBackend, in_mem, BlockchainEvents,
 };
-use sc_client_db::{
+use tc_client_db::{
 	Backend, DatabaseSettings, DatabaseSettingsSrc, PruningMode, KeepBlocks, TransactionStorageMode
 };
-use sc_block_builder::BlockBuilderProvider;
-use sc_service::client::{self, Client, LocalCallExecutor, new_in_mem};
+use tc_block_builder::BlockBuilderProvider;
+use tc_service::client::{self, Client, LocalCallExecutor, new_in_mem};
 use tp_runtime::traits::{
 	BlakeTwo256, Block as BlockT, Header as HeaderT,
 };
@@ -63,9 +63,9 @@ native_executor_instance!(
 	tetcore_test_runtime_client::runtime::native_version,
 );
 
-fn executor() -> sc_executor::NativeExecutor<Executor> {
-	sc_executor::NativeExecutor::new(
-		sc_executor::WasmExecutionMethod::Interpreted,
+fn executor() -> tc_executor::NativeExecutor<Executor> {
+	tc_executor::NativeExecutor::new(
+		tc_executor::WasmExecutionMethod::Interpreted,
 		None,
 		8,
 	)
@@ -169,7 +169,7 @@ fn construct_block(
 
 	StateMachine::new(
 		backend,
-		sp_state_machine::disabled_changes_trie_state::<_, u64>(),
+		tp_state_machine::disabled_changes_trie_state::<_, u64>(),
 		&mut overlay,
 		&executor(),
 		"Core_initialize_block",
@@ -184,7 +184,7 @@ fn construct_block(
 	for tx in transactions.iter() {
 		StateMachine::new(
 			backend,
-			sp_state_machine::disabled_changes_trie_state::<_, u64>(),
+			tp_state_machine::disabled_changes_trie_state::<_, u64>(),
 			&mut overlay,
 			&executor(),
 			"BlockBuilder_apply_extrinsic",
@@ -199,7 +199,7 @@ fn construct_block(
 
 	let ret_data = StateMachine::new(
 		backend,
-		sp_state_machine::disabled_changes_trie_state::<_, u64>(),
+		tp_state_machine::disabled_changes_trie_state::<_, u64>(),
 		&mut overlay,
 		&executor(),
 		"BlockBuilder_finalize_block",
@@ -251,7 +251,7 @@ fn construct_genesis_should_work_with_native() {
 
 	let _ = StateMachine::new(
 		&backend,
-		sp_state_machine::disabled_changes_trie_state::<_, u64>(),
+		tp_state_machine::disabled_changes_trie_state::<_, u64>(),
 		&mut overlay,
 		&executor(),
 		"Core_execute_block",
@@ -285,7 +285,7 @@ fn construct_genesis_should_work_with_wasm() {
 
 	let _ = StateMachine::new(
 		&backend,
-		sp_state_machine::disabled_changes_trie_state::<_, u64>(),
+		tp_state_machine::disabled_changes_trie_state::<_, u64>(),
 		&mut overlay,
 		&executor(),
 		"Core_execute_block",
@@ -319,7 +319,7 @@ fn construct_genesis_with_bad_transaction_should_panic() {
 
 	let r = StateMachine::new(
 		&backend,
-		sp_state_machine::disabled_changes_trie_state::<_, u64>(),
+		tp_state_machine::disabled_changes_trie_state::<_, u64>(),
 		&mut overlay,
 		&executor(),
 		"Core_execute_block",
@@ -1327,7 +1327,7 @@ fn doesnt_import_blocks_that_revert_finality() {
 
 	let import_err = client.import(BlockOrigin::Own, b3).err().unwrap();
 	let expected_err = ConsensusError::ClientImport(
-		sp_blockchain::Error::NotInFinalizedChain.to_string()
+		tp_blockchain::Error::NotInFinalizedChain.to_string()
 	);
 
 	assert_eq!(
@@ -1350,7 +1350,7 @@ fn doesnt_import_blocks_that_revert_finality() {
 
 	let import_err = client.import(BlockOrigin::Own, c1).err().unwrap();
 	let expected_err = ConsensusError::ClientImport(
-		sp_blockchain::Error::NotInFinalizedChain.to_string()
+		tp_blockchain::Error::NotInFinalizedChain.to_string()
 	);
 
 	assert_eq!(
@@ -1746,7 +1746,7 @@ fn cleans_up_closed_notification_sinks_on_block_import() {
 
 	type TestClient = Client<
 		in_mem::Backend<Block>,
-		LocalCallExecutor<in_mem::Backend<Block>, sc_executor::NativeExecutor<LocalExecutor>>,
+		LocalCallExecutor<in_mem::Backend<Block>, tc_executor::NativeExecutor<LocalExecutor>>,
 		tetcore_test_runtime_client::runtime::Block,
 		tetcore_test_runtime_client::runtime::RuntimeApi,
 	>;

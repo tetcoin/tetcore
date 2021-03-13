@@ -32,7 +32,7 @@ use rpc::{
 	futures::{stream, Future, Sink, Stream},
 };
 
-use sc_client_api::{BlockchainEvents, light::{Fetcher, RemoteBlockchain}};
+use tc_client_api::{BlockchainEvents, light::{Fetcher, RemoteBlockchain}};
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use tp_rpc::{number::NumberOrHex, list::ListOrValue};
 use tp_runtime::{
@@ -42,9 +42,9 @@ use tp_runtime::{
 
 use self::error::{Result, Error, FutureResult};
 
-pub use sc_rpc_api::chain::*;
+pub use tc_rpc_api::chain::*;
 use tp_blockchain::HeaderBackend;
-use sc_client_api::BlockBackend;
+use tc_client_api::BlockBackend;
 
 /// Blockchain backend API
 trait ChainBackend<Client, Block: BlockT>: Send + Sync + 'static

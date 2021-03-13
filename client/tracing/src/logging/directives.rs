@@ -82,7 +82,7 @@ pub fn reload_filter() -> Result<(), String> {
 		}
 	}
 	env_filter = env_filter.add_directive(
-		"sc_tracing=trace"
+		"tc_tracing=trace"
 			.parse()
 			.expect("provided directive is valid"),
 	);

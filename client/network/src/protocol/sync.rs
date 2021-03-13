@@ -92,7 +92,7 @@ const MAX_CONCURRENT_BLOCK_ANNOUNCE_VALIDATIONS_PER_PEER: usize = 4;
 const MAJOR_SYNC_BLOCKS: u8 = 5;
 
 mod rep {
-	use sc_peerset::ReputationChange as Rep;
+	use tc_peerset::ReputationChange as Rep;
 	/// Reputation change when a peer sent us a message that led to a
 	/// database read error.
 	pub const BLOCKCHAIN_READ_ERROR: Rep = Rep::new(-(1 << 16), "DB Error");
@@ -313,7 +313,7 @@ pub struct Status<B: BlockT> {
 
 /// A peer did not behave as expected and should be reported.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct BadPeer(pub PeerId, pub sc_peerset::ReputationChange);
+pub struct BadPeer(pub PeerId, pub tc_peerset::ReputationChange);
 
 impl fmt::Display for BadPeer {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1896,7 +1896,7 @@ fn validate_blocks<Block: BlockT>(
 mod test {
 	use super::message::{FromBlock, BlockState, BlockData};
 	use super::*;
-	use sc_block_builder::BlockBuilderProvider;
+	use tc_block_builder::BlockBuilderProvider;
 	use tp_blockchain::HeaderBackend;
 	use tp_consensus::block_validation::DefaultBlockAnnounceValidator;
 	use tetcore_test_runtime_client::{
@@ -2295,10 +2295,10 @@ mod test {
 
 			let from = unwrap_from_block_number(request.from.clone());
 
-			let mut resp_blocks = blocks[best_block_num as usize..from as usize].to_vec();
-			resp_blocks.reverse();
+			let mut retp_blocks = blocks[best_block_num as usize..from as usize].to_vec();
+			retp_blocks.reverse();
 
-			let response = create_block_response(resp_blocks.clone());
+			let response = create_block_response(retp_blocks.clone());
 
 			let res = sync.on_block_data(&peer_id1, Some(request), response).unwrap();
 			assert!(
@@ -2310,7 +2310,7 @@ mod test {
 
 			best_block_num += MAX_BLOCKS_TO_REQUEST as u32;
 
-			resp_blocks.into_iter()
+			retp_blocks.into_iter()
 					.rev()
 					.for_each(|b| client.import_as_final(BlockOrigin::Own, b).unwrap());
 		}
@@ -2441,10 +2441,10 @@ mod test {
 
 			let from = unwrap_from_block_number(request.from.clone());
 
-			let mut resp_blocks = fork_blocks[best_block_num as usize..from as usize].to_vec();
-			resp_blocks.reverse();
+			let mut retp_blocks = fork_blocks[best_block_num as usize..from as usize].to_vec();
+			retp_blocks.reverse();
 
-			let response = create_block_response(resp_blocks.clone());
+			let response = create_block_response(retp_blocks.clone());
 
 			let res = sync.on_block_data(&peer_id1, Some(request), response).unwrap();
 			assert!(
@@ -2459,7 +2459,7 @@ mod test {
 			let _ = sync.on_blocks_processed(
 				MAX_BLOCKS_TO_REQUEST as usize,
 				MAX_BLOCKS_TO_REQUEST as usize,
-				resp_blocks.iter()
+				retp_blocks.iter()
 					.rev()
 					.map(|b|
 						(
@@ -2476,7 +2476,7 @@ mod test {
 					.collect()
 			);
 
-			resp_blocks.into_iter()
+			retp_blocks.into_iter()
 				.rev()
 				.for_each(|b| client.import(BlockOrigin::Own, b).unwrap());
 		}

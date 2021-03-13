@@ -27,7 +27,7 @@ use rpc::futures::future::{Executor, ExecuteError, Future};
 use tet_core::traits::SpawnNamed;
 use std::sync::Arc;
 
-pub use sc_rpc_api::{DenyUnsafe, Metadata};
+pub use tc_rpc_api::{DenyUnsafe, Metadata};
 pub use rpc::IoHandlerExtension as RpcExtension;
 
 pub mod author;

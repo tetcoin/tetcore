@@ -293,7 +293,7 @@ mod tests {
 	use std::sync::Arc;
 	use tet_core::{sr25519::Pair, crypto::Pair as _};
 	use tp_consensus_babe::{AuthorityId, BabeEpochConfiguration, AllowedSlots};
-	use sc_keystore::LocalKeystore;
+	use tc_keystore::LocalKeystore;
 
 	#[test]
 	fn claim_secondary_plain_slot_works() {

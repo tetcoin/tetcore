@@ -1268,12 +1268,12 @@ pub trait Sandbox {
 
 /// Wasm host functions for managing tasks.
 ///
-/// This should not be used directly. Use `sp_tasks` for running parallel tasks instead.
+/// This should not be used directly. Use `tp_tasks` for running parallel tasks instead.
 #[runtime_interface(wasm_only)]
 pub trait RuntimeTasks {
 	/// Wasm host function for spawning task.
 	///
-	/// This should not be used directly. Use `sp_tasks::spawn` instead.
+	/// This should not be used directly. Use `tp_tasks::spawn` instead.
 	fn spawn(dispatcher_ref: u32, entry: u32, payload: Vec<u8>) -> u64 {
 		externalities::with_externalities(|mut ext|{
 			let runtime_spawn = ext.extension::<RuntimeSpawnExt>()
@@ -1284,7 +1284,7 @@ pub trait RuntimeTasks {
 
 	/// Wasm host function for joining a task.
 	///
-	/// This should not be used directly. Use `join` of `sp_tasks::spawn` result instead.
+	/// This should not be used directly. Use `join` of `tp_tasks::spawn` result instead.
 	fn join(handle: u64) -> Vec<u8> {
 		externalities::with_externalities(|mut ext| {
 			let runtime_spawn = ext.extension::<RuntimeSpawnExt>()

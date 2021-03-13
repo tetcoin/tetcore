@@ -19,7 +19,7 @@
 use crate::{Network, Validator};
 use crate::state_machine::{ConsensusGossip, TopicNotification, PERIODIC_MAINTENANCE_INTERVAL};
 
-use sc_network::{Event, ReputationChange};
+use tc_network::{Event, ReputationChange};
 
 use futures::prelude::*;
 use futures::channel::mpsc::{channel, Sender, Receiver};
@@ -156,7 +156,7 @@ impl<B: BlockT> GossipEngine<B> {
 
 	/// Send addressed message to the given peers. The message is not kept or multicast
 	/// later on.
-	pub fn send_message(&mut self, who: Vec<sc_network::PeerId>, data: Vec<u8>) {
+	pub fn send_message(&mut self, who: Vec<tc_network::PeerId>, data: Vec<u8>) {
 		for who in &who {
 			self.state_machine.send_message(&mut *self.network, who, data.clone());
 		}
@@ -304,7 +304,7 @@ mod tests {
 	use futures::{channel::mpsc::{unbounded, UnboundedSender}, executor::{block_on, block_on_stream}, future::poll_fn};
 	use quickcheck::{Arbitrary, Gen, QuickCheck};
 	use rand::Rng;
-	use sc_network::ObservedRole;
+	use tc_network::ObservedRole;
 	use tp_runtime::{testing::H256, traits::{Block as BlockT}};
 	use std::borrow::Cow;
 	use std::convert::TryInto;

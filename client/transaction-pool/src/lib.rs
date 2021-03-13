@@ -31,7 +31,7 @@ pub mod error;
 #[cfg(test)]
 pub mod testing;
 
-pub use sc_transaction_graph as txpool;
+pub use tc_transaction_graph as txpool;
 pub use crate::api::{FullChainApi, LightChainApi};
 
 use std::{collections::{HashMap, HashSet}, sync::Arc, pin::Pin, convert::TryInto};
@@ -48,18 +48,18 @@ use tp_transaction_pool::{
 	TransactionStatusStreamFor, MaintainedTransactionPool, PoolFuture, ChainEvent,
 	TransactionSource,
 };
-use sc_transaction_graph::{ChainApi, ExtrinsicHash};
+use tc_transaction_graph::{ChainApi, ExtrinsicHash};
 use wasm_timer::Instant;
 
 use prometheus_endpoint::Registry as PrometheusRegistry;
 use crate::metrics::MetricsLink as PrometheusMetrics;
 
 type BoxedReadyIterator<Hash, Data> = Box<
-	dyn Iterator<Item=Arc<sc_transaction_graph::base_pool::Transaction<Hash, Data>>> + Send
+	dyn Iterator<Item=Arc<tc_transaction_graph::base_pool::Transaction<Hash, Data>>> + Send
 >;
 
 type ReadyIteratorFor<PoolApi> = BoxedReadyIterator<
-	sc_transaction_graph::ExtrinsicHash<PoolApi>, sc_transaction_graph::ExtrinsicFor<PoolApi>
+	tc_transaction_graph::ExtrinsicHash<PoolApi>, tc_transaction_graph::ExtrinsicFor<PoolApi>
 >;
 
 type PolledIterator<PoolApi> = Pin<Box<dyn Future<Output=ReadyIteratorFor<PoolApi>> + Send>>;
@@ -75,7 +75,7 @@ pub struct BasicPool<PoolApi, Block>
 		Block: BlockT,
 		PoolApi: ChainApi<Block=Block>,
 {
-	pool: Arc<sc_transaction_graph::Pool<PoolApi>>,
+	pool: Arc<tc_transaction_graph::Pool<PoolApi>>,
 	api: Arc<PoolApi>,
 	revalidation_strategy: Arc<Mutex<RevalidationStrategy<NumberFor<Block>>>>,
 	revalidation_queue: Arc<revalidation::RevalidationQueue<PoolApi>>,
@@ -163,7 +163,7 @@ impl<PoolApi, Block> BasicPool<PoolApi, Block>
 	pub fn new_test(
 		pool_api: Arc<PoolApi>,
 	) -> (Self, Pin<Box<dyn Future<Output=()> + Send>>, intervalier::BackSignalControl) {
-		let pool = Arc::new(sc_transaction_graph::Pool::new(Default::default(), pool_api.clone()));
+		let pool = Arc::new(tc_transaction_graph::Pool::new(Default::default(), pool_api.clone()));
 		let (revalidation_queue, background_task, notifier) =
 			revalidation::RevalidationQueue::new_test(pool_api.clone(), pool.clone());
 		(
@@ -183,13 +183,13 @@ impl<PoolApi, Block> BasicPool<PoolApi, Block>
 	/// Create new basic transaction pool with provided api and custom
 	/// revalidation type.
 	pub fn with_revalidation_type(
-		options: sc_transaction_graph::Options,
+		options: tc_transaction_graph::Options,
 		pool_api: Arc<PoolApi>,
 		prometheus: Option<&PrometheusRegistry>,
 		revalidation_type: RevalidationType,
 		spawner: impl SpawnNamed,
 	) -> Self {
-		let pool = Arc::new(sc_transaction_graph::Pool::new(options, pool_api.clone()));
+		let pool = Arc::new(tc_transaction_graph::Pool::new(options, pool_api.clone()));
 		let (revalidation_queue, background_task) = match revalidation_type {
 			RevalidationType::Light => (revalidation::RevalidationQueue::new(pool_api.clone(), pool.clone()), None),
 			RevalidationType::Full => {
@@ -218,7 +218,7 @@ impl<PoolApi, Block> BasicPool<PoolApi, Block>
 	}
 
 	/// Gets shared reference to the underlying pool.
-	pub fn pool(&self) -> &Arc<sc_transaction_graph::Pool<PoolApi>> {
+	pub fn pool(&self) -> &Arc<tc_transaction_graph::Pool<PoolApi>> {
 		&self.pool
 	}
 }
@@ -229,8 +229,8 @@ impl<PoolApi, Block> TransactionPool for BasicPool<PoolApi, Block>
 		PoolApi: 'static + ChainApi<Block=Block>,
 {
 	type Block = PoolApi::Block;
-	type Hash = sc_transaction_graph::ExtrinsicHash<PoolApi>;
-	type InPoolTransaction = sc_transaction_graph::base_pool::Transaction<
+	type Hash = tc_transaction_graph::ExtrinsicHash<PoolApi>;
+	type InPoolTransaction = tc_transaction_graph::base_pool::Transaction<
 		TxHash<Self>, TransactionFor<Self>
 	>;
 	type Error = PoolApi::Error;
@@ -334,11 +334,11 @@ impl<Block, Client, Fetcher> LightPool<Block, Client, Fetcher>
 where
 	Block: BlockT,
 	Client: tp_blockchain::HeaderBackend<Block> + 'static,
-	Fetcher: sc_client_api::Fetcher<Block> + 'static,
+	Fetcher: tc_client_api::Fetcher<Block> + 'static,
 {
 	/// Create new basic transaction pool for a light node with the provided api.
 	pub fn new_light(
-		options: sc_transaction_graph::Options,
+		options: tc_transaction_graph::Options,
 		prometheus: Option<&PrometheusRegistry>,
 		spawner: impl SpawnNamed,
 		client: Arc<Client>,
@@ -355,15 +355,15 @@ impl<Block, Client> FullPool<Block, Client>
 where
 	Block: BlockT,
 	Client: tp_api::ProvideRuntimeApi<Block>
-		+ sc_client_api::BlockBackend<Block>
+		+ tc_client_api::BlockBackend<Block>
 		+ tp_runtime::traits::BlockIdTo<Block>,
-	Client: sc_client_api::ExecutorProvider<Block> + Send + Sync + 'static,
+	Client: tc_client_api::ExecutorProvider<Block> + Send + Sync + 'static,
 	Client::Api: tp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
-	sp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
+	tp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
 {
 	/// Create new basic transaction pool for a full node with the provided api.
 	pub fn new_full(
-		options: sc_transaction_graph::Options,
+		options: tc_transaction_graph::Options,
 		prometheus: Option<&PrometheusRegistry>,
 		spawner: impl SpawnNamed,
 		client: Arc<Client>,
@@ -385,14 +385,14 @@ impl<Block, Client> tp_transaction_pool::LocalTransactionPool
 where
 	Block: BlockT,
 	Client: tp_api::ProvideRuntimeApi<Block>
-		+ sc_client_api::BlockBackend<Block>
+		+ tc_client_api::BlockBackend<Block>
 		+ tp_runtime::traits::BlockIdTo<Block>,
 	Client: Send + Sync + 'static,
 	Client::Api: tp_transaction_pool::runtime_api::TaggedTransactionQueue<Block>,
-	sp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
+	tp_api::ApiErrorFor<Client, Block>: Send + std::fmt::Display,
 {
 	type Block = Block;
-	type Hash = sc_transaction_graph::ExtrinsicHash<FullChainApi<Client, Block>>;
+	type Hash = tc_transaction_graph::ExtrinsicHash<FullChainApi<Client, Block>>;
 	type Error = <FullChainApi<Client, Block> as ChainApi>::Error;
 
 	fn submit_local(
@@ -400,7 +400,7 @@ where
 		at: &BlockId<Self::Block>,
 		xt: tp_transaction_pool::LocalTransactionFor<Self>,
 	) -> Result<Self::Hash, Self::Error> {
-		use sc_transaction_graph::ValidatedTransaction;
+		use tc_transaction_graph::ValidatedTransaction;
 		use tp_runtime::traits::SaturatedConversion;
 		use tp_runtime::transaction_validity::TransactionValidityError;
 
@@ -521,7 +521,7 @@ impl<N: Clone + Copy + AtLeast32Bit> RevalidationStatus<N> {
 async fn prune_known_txs_for_block<Block: BlockT, Api: ChainApi<Block = Block>>(
 	block_id: BlockId<Block>,
 	api: &Api,
-	pool: &sc_transaction_graph::Pool<Api>,
+	pool: &tc_transaction_graph::Pool<Api>,
 ) -> Vec<ExtrinsicHash<Api>> {
 	let hashes = api.block_body(&block_id).await
 		.unwrap_or_else(|e| {
@@ -715,7 +715,7 @@ pub async fn notification_future<Client, Pool, Block>(
 )
 	where
 		Block: BlockT,
-		Client: sc_client_api::BlockchainEvents<Block>,
+		Client: tc_client_api::BlockchainEvents<Block>,
 		Pool: MaintainedTransactionPool<Block=Block>,
 {
 	let import_stream = client.import_notification_stream()

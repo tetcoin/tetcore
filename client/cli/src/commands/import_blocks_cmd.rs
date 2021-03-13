@@ -20,7 +20,7 @@ use crate::error;
 use crate::params::ImportParams;
 use crate::params::SharedParams;
 use crate::CliConfiguration;
-use sc_service::chain_ops::import_blocks;
+use tc_service::chain_ops::import_blocks;
 use tp_runtime::traits::Block as BlockT;
 use std::fmt::Debug;
 use std::fs;
@@ -28,7 +28,7 @@ use std::io::{self, Read, Seek};
 use std::path::PathBuf;
 use std::sync::Arc;
 use structopt::StructOpt;
-use sc_client_api::UsageProvider;
+use tc_client_api::UsageProvider;
 
 /// The `import-blocks` command used to import blocks.
 #[derive(Debug, StructOpt)]
@@ -71,7 +71,7 @@ impl ImportBlocksCmd {
 	where
 		C: UsageProvider<B> + Send + Sync + 'static,
 		B: BlockT + for<'de> serde::Deserialize<'de>,
-		IQ: sc_service::ImportQueue<B> + 'static,
+		IQ: tc_service::ImportQueue<B> + 'static,
 	{
 		let file: Box<dyn ReadPlusSeek + Send> = match &self.input {
 			Some(filename) => Box::new(fs::File::open(filename)?),

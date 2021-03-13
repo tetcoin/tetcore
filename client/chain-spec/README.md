@@ -4,7 +4,7 @@ This crate contains structs and utilities to declare
 a runtime-specific configuration file (a.k.a chain spec).
 
 Basic chain spec type containing all required parameters is
-[`ChainSpec`](https://docs.rs/tc-chain-spec/latest/sc_chain_spec/struct.GenericChainSpec.html). It can be extended with
+[`ChainSpec`](https://docs.rs/tc-chain-spec/latest/tc_chain_spec/struct.GenericChainSpec.html). It can be extended with
 additional options that contain configuration specific to your chain.
 Usually the extension is going to be an amalgamate of types exposed
 by Tetcore core modules. To allow the core modules to retrieve
@@ -13,7 +13,7 @@ macro exposed by this crate.
 
 ```rust
 use std::collections::HashMap;
-use sc_chain_spec::{GenericChainSpec, ChainSpecExtension};
+use tc_chain_spec::{GenericChainSpec, ChainSpecExtension};
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize, ChainSpecExtension)]
 pub struct MyExtension {
@@ -25,13 +25,13 @@ pub type MyChainSpec<G> = GenericChainSpec<G, MyExtension>;
 
 Some parameters may require different values depending on the
 current blockchain height (a.k.a. forks). You can use `ChainSpecGroup`
-macro and provided [`Forks`](https://docs.rs/tc-chain-spec/latest/sc_chain_spec/struct.Forks.html) structure to put
+macro and provided [`Forks`](https://docs.rs/tc-chain-spec/latest/tc_chain_spec/struct.Forks.html) structure to put
 such parameters to your chain spec.
 This will allow to override a single parameter starting at specific
 block number.
 
 ```rust
-use sc_chain_spec::{Forks, ChainSpecGroup, ChainSpecExtension, GenericChainSpec};
+use tc_chain_spec::{Forks, ChainSpecGroup, ChainSpecExtension, GenericChainSpec};
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize, ChainSpecGroup)]
 pub struct ClientParams {
@@ -66,7 +66,7 @@ This is also possible by declaring an extension that contains `Forks` within it.
 
 ```rust
 use serde::{Serialize, Deserialize};
-use sc_chain_spec::{Forks, GenericChainSpec, ChainSpecGroup, ChainSpecExtension};
+use tc_chain_spec::{Forks, GenericChainSpec, ChainSpecGroup, ChainSpecExtension};
 
 #[derive(Clone, Debug, Serialize, Deserialize, ChainSpecGroup)]
 pub struct ClientParams {

@@ -112,7 +112,7 @@ mod module1 {
 		T::BlockNumber: From<u32>
 	{
 		type Call = Call<T, I>;
-		type Error = MakeFatalError<sp_inherents::Error>;
+		type Error = MakeFatalError<tp_inherents::Error>;
 		const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
 
 		fn create_inherent(_data: &InherentData) -> Option<Self::Call> {
@@ -172,7 +172,7 @@ mod module2 {
 
 	impl<T: Config<I>, I: Instance> ProvideInherent for Module<T, I> {
 		type Call = Call<T, I>;
-		type Error = MakeFatalError<sp_inherents::Error>;
+		type Error = MakeFatalError<tp_inherents::Error>;
 		const INHERENT_IDENTIFIER: InherentIdentifier = INHERENT_IDENTIFIER;
 
 		fn create_inherent(_data: &InherentData) -> Option<Self::Call> {
@@ -320,7 +320,7 @@ fn storage_instance_independence() {
 		top: std::collections::BTreeMap::new(),
 		children_default: std::collections::HashMap::new()
 	};
-	sp_state_machine::BasicExternalities::execute_with_storage(&mut storage, || {
+	tp_state_machine::BasicExternalities::execute_with_storage(&mut storage, || {
 		module2::Value::<Runtime>::put(0);
 		module2::Value::<Runtime, module2::Instance1>::put(0);
 		module2::Value::<Runtime, module2::Instance2>::put(0);

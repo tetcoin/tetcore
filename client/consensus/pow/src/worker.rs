@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use std::{pin::Pin, time::Duration, collections::HashMap, any::Any, borrow::Cow};
-use sc_client_api::ImportNotifications;
+use tc_client_api::ImportNotifications;
 use tp_runtime::{DigestItem, traits::Block as BlockT, generic::BlockId};
 use tp_consensus::{Proposal, BlockOrigin, BlockImportParams, import_queue::BoxBlockImport};
 use futures::{prelude::*, task::{Context, Poll}};

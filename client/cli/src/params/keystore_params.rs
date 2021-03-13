@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::error::Result;
-use sc_service::config::KeystoreConfig;
+use tc_service::config::KeystoreConfig;
 use std::{fs, path::{PathBuf, Path}};
 use structopt::StructOpt;
 use crate::error;

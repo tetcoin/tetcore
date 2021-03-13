@@ -728,7 +728,7 @@ cfg_if! {
 
 			impl tp_consensus_babe::BabeApi<Block> for Runtime {
 				fn configuration() -> tp_consensus_babe::BabeGenesisConfiguration {
-					sp_consensus_babe::BabeGenesisConfiguration {
+					tp_consensus_babe::BabeGenesisConfiguration {
 						slot_duration: 1000,
 						epoch_length: EpochDuration::get(),
 						c: (3, 10),
@@ -763,7 +763,7 @@ cfg_if! {
 				fn generate_key_ownership_proof(
 					_slot: tp_consensus_babe::Slot,
 					_authority_id: tp_consensus_babe::AuthorityId,
-				) -> Option<sp_consensus_babe::OpaqueKeyOwnershipProof> {
+				) -> Option<tp_consensus_babe::OpaqueKeyOwnershipProof> {
 					None
 				}
 			}
@@ -805,7 +805,7 @@ cfg_if! {
 				fn generate_key_ownership_proof(
 					_set_id: tp_finality_grandpa::SetId,
 					_authority_id: tp_finality_grandpa::AuthorityId,
-				) -> Option<sp_finality_grandpa::OpaqueKeyOwnershipProof> {
+				) -> Option<tp_finality_grandpa::OpaqueKeyOwnershipProof> {
 					None
 				}
 			}
@@ -987,7 +987,7 @@ cfg_if! {
 
 			impl tp_consensus_babe::BabeApi<Block> for Runtime {
 				fn configuration() -> tp_consensus_babe::BabeGenesisConfiguration {
-					sp_consensus_babe::BabeGenesisConfiguration {
+					tp_consensus_babe::BabeGenesisConfiguration {
 						slot_duration: 1000,
 						epoch_length: EpochDuration::get(),
 						c: (3, 10),
@@ -1022,7 +1022,7 @@ cfg_if! {
 				fn generate_key_ownership_proof(
 					_slot: tp_consensus_babe::Slot,
 					_authority_id: tp_consensus_babe::AuthorityId,
-				) -> Option<sp_consensus_babe::OpaqueKeyOwnershipProof> {
+				) -> Option<tp_consensus_babe::OpaqueKeyOwnershipProof> {
 					None
 				}
 			}
@@ -1174,7 +1174,7 @@ fn test_witness(proof: StorageProof, root: crate::Hash) {
 mod tests {
 	use tetcore_test_runtime_client::{
 		prelude::*,
-		sp_consensus::BlockOrigin,
+		tp_consensus::BlockOrigin,
 		DefaultTestClientBuilderExt, TestClientBuilder,
 		runtime::TestAPI,
 	};
@@ -1183,7 +1183,7 @@ mod tests {
 	use tet_core::storage::well_known_keys::HEAP_PAGES;
 	use tp_state_machine::ExecutionStrategy;
 	use codec::Encode;
-	use sc_block_builder::BlockBuilderProvider;
+	use tc_block_builder::BlockBuilderProvider;
 
 	#[test]
 	fn heap_pages_is_respected() {
@@ -1229,7 +1229,7 @@ mod tests {
 		runtime_api.test_storage(&block_id).unwrap();
 	}
 
-	fn witness_backend() -> (sp_trie::MemoryDB<crate::Hashing>, crate::Hash) {
+	fn witness_backend() -> (tp_trie::MemoryDB<crate::Hashing>, crate::Hash) {
 		use tp_trie::TrieMut;
 		let mut root = crate::Hash::default();
 		let mut mdb = tp_trie::MemoryDB::<crate::Hashing>::default();

@@ -55,8 +55,8 @@ fn build_test_full_node(network_config: config::NetworkConfiguration)
 			body: Option<Vec<B::Extrinsic>>,
 		) -> Result<
 			(
-				sp_consensus::BlockImportParams<B, ()>,
-				Option<Vec<(sp_blockchain::well_known_cache_keys::Id, Vec<u8>)>>,
+				tp_consensus::BlockImportParams<B, ()>,
+				Option<Vec<(tp_blockchain::well_known_cache_keys::Id, Vec<u8>)>>,
 			),
 			String,
 		> {
@@ -70,7 +70,7 @@ fn build_test_full_node(network_config: config::NetworkConfiguration)
 				})
 				.map(|blob| {
 					vec![(
-						sp_blockchain::well_known_cache_keys::AUTHORITIES,
+						tp_blockchain::well_known_cache_keys::AUTHORITIES,
 						blob.to_vec(),
 					)]
 				});
@@ -79,12 +79,12 @@ fn build_test_full_node(network_config: config::NetworkConfiguration)
 			import.body = body;
 			import.finalized = self.0;
 			import.justification = justification;
-			import.fork_choice = Some(sp_consensus::ForkChoiceStrategy::LongestChain);
+			import.fork_choice = Some(tp_consensus::ForkChoiceStrategy::LongestChain);
 			Ok((import, maybe_keys))
 		}
 	}
 
-	let import_queue = Box::new(sp_consensus::import_queue::BasicQueue::new(
+	let import_queue = Box::new(tp_consensus::import_queue::BasicQueue::new(
 		PassThroughVerifier(false),
 		Box::new(client.clone()),
 		None,
@@ -113,7 +113,7 @@ fn build_test_full_node(network_config: config::NetworkConfiguration)
 		protocol_id,
 		import_queue,
 		block_announce_validator: Box::new(
-			sp_consensus::block_validation::DefaultBlockAnnounceValidator,
+			tp_consensus::block_validation::DefaultBlockAnnounceValidator,
 		),
 		metrics_registry: None,
 		block_request_protocol_config,

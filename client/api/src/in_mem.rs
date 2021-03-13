@@ -228,7 +228,7 @@ impl<Block: BlockT> Blockchain<Block> {
 	pub fn set_head(&self, id: BlockId<Block>) -> tp_blockchain::Result<()> {
 		let header = match self.header(id)? {
 			Some(h) => h,
-			None => return Err(sp_blockchain::Error::UnknownBlock(format!("{}", id))),
+			None => return Err(tp_blockchain::Error::UnknownBlock(format!("{}", id))),
 		};
 
 		self.apply_head(&header)
@@ -275,7 +275,7 @@ impl<Block: BlockT> Blockchain<Block> {
 	fn finalize_header(&self, id: BlockId<Block>, justification: Option<Justification>) -> tp_blockchain::Result<()> {
 		let hash = match self.header(id)? {
 			Some(h) => h.hash(),
-			None => return Err(sp_blockchain::Error::UnknownBlock(format!("{}", id))),
+			None => return Err(tp_blockchain::Error::UnknownBlock(format!("{}", id))),
 		};
 
 		let mut storage = self.storage.write();
@@ -719,7 +719,7 @@ impl<Block: BlockT> backend::Backend<Block> for Backend<Block> where Block::Hash
 
 		match self.blockchain.id(block).and_then(|id| self.states.read().get(&id).cloned()) {
 			Some(state) => Ok(state),
-			None => Err(sp_blockchain::Error::UnknownBlock(format!("{}", block))),
+			None => Err(tp_blockchain::Error::UnknownBlock(format!("{}", block))),
 		}
 	}
 
@@ -753,12 +753,12 @@ impl<Block: BlockT> backend::RemoteBackend<Block> for Backend<Block> where Block
 /// Check that genesis storage is valid.
 pub fn check_genesis_storage(storage: &Storage) -> tp_blockchain::Result<()> {
 	if storage.top.iter().any(|(k, _)| well_known_keys::is_child_storage_key(k)) {
-		return Err(sp_blockchain::Error::GenesisInvalid.into());
+		return Err(tp_blockchain::Error::GenesisInvalid.into());
 	}
 
 	if storage.children_default.keys()
 		.any(|child_key| !well_known_keys::is_child_storage_key(&child_key)) {
-			return Err(sp_blockchain::Error::GenesisInvalid.into());
+			return Err(tp_blockchain::Error::GenesisInvalid.into());
 	}
 
 	Ok(())

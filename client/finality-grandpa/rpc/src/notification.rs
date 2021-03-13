@@ -19,7 +19,7 @@
 use serde::{Serialize, Deserialize};
 use tetsy_scale_codec::Encode;
 use tp_runtime::traits::Block as BlockT;
-use sc_finality_grandpa::GrandpaJustification;
+use tc_finality_grandpa::GrandpaJustification;
 
 /// An encoded justification proving that the given header has been finalized
 #[derive(Clone, Serialize, Deserialize)]

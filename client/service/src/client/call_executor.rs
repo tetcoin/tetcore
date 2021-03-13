@@ -25,13 +25,13 @@ use tp_state_machine::{
 	self, OverlayedChanges, Ext, ExecutionManager, StateMachine, ExecutionStrategy,
 	backend::Backend as _, StorageProof,
 };
-use sc_executor::{RuntimeVersion, RuntimeInfo, NativeVersion};
+use tc_executor::{RuntimeVersion, RuntimeInfo, NativeVersion};
 use externalities::Extensions;
 use tet_core::{
 	NativeOrEncoded, NeverNativeValue, traits::{CodeExecutor, SpawnNamed, RuntimeCode},
 };
 use tp_api::{ProofRecorder, InitializeBlock, StorageTransactionCache};
-use sc_client_api::{backend, call_executor::CallExecutor};
+use tc_client_api::{backend, call_executor::CallExecutor};
 use super::{client::ClientConfig, wasm_override::WasmOverride};
 
 /// Call executor that executes methods locally, querying all required
@@ -83,7 +83,7 @@ where
 	{
 		let code = self.wasm_override
 			.as_ref()
-			.map::<sp_blockchain::Result<Option<RuntimeCode>>, _>(|o| {
+			.map::<tp_blockchain::Result<Option<RuntimeCode>>, _>(|o| {
 				let spec = self.runtime_version(id)?.spec_version;
 				Ok(o.get(&spec, onchain_code.heap_pages))
 			})
@@ -132,7 +132,7 @@ where
 		let state = self.backend.state_at(*id)?;
 		let state_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&state);
 		let runtime_code = state_runtime_code.runtime_code()
-			.map_err(sp_blockchain::Error::RuntimeCode)?;
+			.map_err(tp_blockchain::Error::RuntimeCode)?;
 		let runtime_code = self.check_override(runtime_code, id)?;
 
 		let return_data = StateMachine::new(
@@ -198,14 +198,14 @@ where
 			Some(recorder) => {
 				let trie_state = state.as_trie_backend()
 					.ok_or_else(||
-						Box::new(sp_state_machine::ExecutionError::UnableToGenerateProof) as Box<dyn tp_state_machine::Error>
+						Box::new(tp_state_machine::ExecutionError::UnableToGenerateProof) as Box<dyn tp_state_machine::Error>
 					)?;
 
 				let state_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&trie_state);
 				// It is important to extract the runtime code here before we create the proof
 				// recorder.
 				let runtime_code = state_runtime_code.runtime_code()
-					.map_err(sp_blockchain::Error::RuntimeCode)?;
+					.map_err(tp_blockchain::Error::RuntimeCode)?;
 				let runtime_code = self.check_override(runtime_code, at)?;
 
 				let backend = tp_state_machine::ProvingBackend::new_with_recorder(
@@ -231,7 +231,7 @@ where
 			None => {
 				let state_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&state);
 				let runtime_code = state_runtime_code.runtime_code()
-					.map_err(sp_blockchain::Error::RuntimeCode)?;
+					.map_err(tp_blockchain::Error::RuntimeCode)?;
 				let runtime_code = self.check_override(runtime_code, at)?;
 
 				let mut state_machine = StateMachine::new(
@@ -267,22 +267,22 @@ where
 		);
 		let state_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(&state);
 		let runtime_code = state_runtime_code.runtime_code()
-			.map_err(sp_blockchain::Error::RuntimeCode)?;
+			.map_err(tp_blockchain::Error::RuntimeCode)?;
 		self.executor.runtime_version(&mut ext, &runtime_code)
 			.map_err(|e| tp_blockchain::Error::VersionInvalid(format!("{:?}", e)).into())
 	}
 
 	fn prove_at_trie_state<S: tp_state_machine::TrieBackendStorage<HashFor<Block>>>(
 		&self,
-		trie_state: &sp_state_machine::TrieBackend<S, HashFor<Block>>,
+		trie_state: &tp_state_machine::TrieBackend<S, HashFor<Block>>,
 		overlay: &mut OverlayedChanges,
 		method: &str,
 		call_data: &[u8]
 	) -> Result<(Vec<u8>, StorageProof), tp_blockchain::Error> {
 		let state_runtime_code = tp_state_machine::backend::BackendRuntimeCode::new(trie_state);
 		let runtime_code = state_runtime_code.runtime_code()
-			.map_err(sp_blockchain::Error::RuntimeCode)?;
-		sp_state_machine::prove_execution_on_trie_backend::<_, _, NumberFor<Block>, _, _>(
+			.map_err(tp_blockchain::Error::RuntimeCode)?;
+		tp_state_machine::prove_execution_on_trie_backend::<_, _, NumberFor<Block>, _, _>(
 			trie_state,
 			overlay,
 			&self.executor,
@@ -305,14 +305,14 @@ impl<B, E, Block> tp_version::GetRuntimeVersion<Block> for LocalCallExecutor<B, 
 		E: CodeExecutor + RuntimeInfo + Clone + 'static,
 		Block: BlockT,
 {
-	fn native_version(&self) -> &sp_version::NativeVersion {
+	fn native_version(&self) -> &tp_version::NativeVersion {
 		self.executor.native_version()
 	}
 
 	fn runtime_version(
 		&self,
 		at: &BlockId<Block>,
-	) -> Result<sp_version::RuntimeVersion, String> {
+	) -> Result<tp_version::RuntimeVersion, String> {
 		CallExecutor::runtime_version(self, at).map_err(|e| format!("{:?}", e))
 	}
 }
@@ -321,9 +321,9 @@ impl<B, E, Block> tp_version::GetRuntimeVersion<Block> for LocalCallExecutor<B, 
 mod tests {
 	use super::*;
 	use tetcore_test_runtime_client::{LocalExecutor, GenesisInit, runtime};
-	use sc_executor::{NativeExecutor, WasmExecutionMethod};
+	use tc_executor::{NativeExecutor, WasmExecutionMethod};
 	use tet_core::{traits::{WrappedRuntimeCode, FetchRuntimeCode}, testing::TaskExecutor};
-	use sc_client_api::in_mem;
+	use tc_client_api::in_mem;
 
 	#[test]
 	fn should_get_override_if_exists() {

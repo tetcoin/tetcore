@@ -18,7 +18,7 @@
 
 use crate::arg_enums::Database;
 use structopt::StructOpt;
-use sc_service::TransactionStorageMode;
+use tc_service::TransactionStorageMode;
 
 /// Parameters for block import.
 #[derive(Debug, StructOpt)]

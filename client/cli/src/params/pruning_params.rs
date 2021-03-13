@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::error;
-use sc_service::{PruningMode, Role, KeepBlocks};
+use tc_service::{PruningMode, Role, KeepBlocks};
 use structopt::StructOpt;
 
 /// Parameters to define the pruning mode

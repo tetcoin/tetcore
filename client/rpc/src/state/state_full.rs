@@ -26,10 +26,10 @@ use log::warn;
 use tetsy_jsonrpc_pubsub::{typed::Subscriber, SubscriptionId, manager::SubscriptionManager};
 use rpc::{Result as RpcResult, futures::{stream, Future, Sink, Stream, future::result}};
 
-use sc_rpc_api::state::ReadProof;
-use sc_client_api::backend::Backend;
+use tc_rpc_api::state::ReadProof;
+use tc_client_api::backend::Backend;
 use tp_blockchain::{Result as ClientResult, Error as ClientError, HeaderMetadata, CachedHeaderMetadata, HeaderBackend};
-use sc_client_api::BlockchainEvents;
+use tc_client_api::BlockchainEvents;
 use tet_core::{
 	Bytes, storage::{well_known_keys, StorageKey, StorageData, StorageChangeSet,
 	ChildInfo, ChildType, PrefixedStorageKey},
@@ -43,7 +43,7 @@ use tp_api::{Metadata, ProvideRuntimeApi, CallApiAt};
 
 use super::{StateBackend, ChildStateBackend, error::{FutureResult, Error, Result}, client_err};
 use std::marker::PhantomData;
-use sc_client_api::{CallExecutor, StorageProvider, ExecutorProvider, ProofProvider};
+use tc_client_api::{CallExecutor, StorageProvider, ExecutorProvider, ProofProvider};
 
 /// Ranges to query in state_queryStorage.
 struct QueryStorageRange<Block: BlockT> {
@@ -543,7 +543,7 @@ impl<BE, Block, Client> ChildStateBackend<Block, Client> for FullState<BE, Block
 				.and_then(|block| {
 					let child_info = match ChildType::from_prefixed_key(&storage_key) {
 						Some((ChildType::ParentKeyId, storage_key)) => ChildInfo::new_default(storage_key),
-						None => return Err(sp_blockchain::Error::InvalidChildStorageKey),
+						None => return Err(tp_blockchain::Error::InvalidChildStorageKey),
 					};
 					self.client.child_storage_keys(
 						&BlockId::Hash(block),
@@ -565,7 +565,7 @@ impl<BE, Block, Client> ChildStateBackend<Block, Client> for FullState<BE, Block
 				.and_then(|block| {
 					let child_info = match ChildType::from_prefixed_key(&storage_key) {
 						Some((ChildType::ParentKeyId, storage_key)) => ChildInfo::new_default(storage_key),
-						None => return Err(sp_blockchain::Error::InvalidChildStorageKey),
+						None => return Err(tp_blockchain::Error::InvalidChildStorageKey),
 					};
 					self.client.child_storage(
 						&BlockId::Hash(block),
@@ -587,7 +587,7 @@ impl<BE, Block, Client> ChildStateBackend<Block, Client> for FullState<BE, Block
 				.and_then(|block| {
 					let child_info = match ChildType::from_prefixed_key(&storage_key) {
 						Some((ChildType::ParentKeyId, storage_key)) => ChildInfo::new_default(storage_key),
-						None => return Err(sp_blockchain::Error::InvalidChildStorageKey),
+						None => return Err(tp_blockchain::Error::InvalidChildStorageKey),
 					};
 					self.client.child_storage_hash(
 						&BlockId::Hash(block),

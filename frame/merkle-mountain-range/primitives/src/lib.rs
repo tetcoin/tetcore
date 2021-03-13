@@ -358,7 +358,7 @@ impl FullLeaf for OpaqueLeaf {
 	}
 }
 
-sp_api::decl_runtime_apis! {
+tp_api::decl_runtime_apis! {
 	/// API to interact with MMR pallet.
 	pub trait MmrApi<Leaf: codec::Codec, Hash: codec::Codec> {
 		/// Generate MMR proof for a leaf under given index.

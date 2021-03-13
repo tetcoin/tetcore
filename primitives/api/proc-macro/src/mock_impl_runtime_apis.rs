@@ -284,7 +284,7 @@ impl<'a> Fold for FoldRuntimeApiImpl<'a> {
 				&self,
 				#at_param_name: #block_id_type,
 				_: #crate_::ExecutionContext,
-				___params___sp___api___: Option<( #( #param_types ),* )>,
+				___params___tp___api___: Option<( #( #param_types ),* )>,
 				_: Vec<u8>,
 			};
 
@@ -322,7 +322,7 @@ impl<'a> Fold for FoldRuntimeApiImpl<'a> {
 					// Get the error to the user (if we have one).
 					#( #errors )*
 
-					let (#( #param_names ),*) = ___params___sp___api___
+					let (#( #param_names ),*) = ___params___tp___api___
 						.expect("Mocked runtime apis don't support calling deprecated api versions");
 
 					#construct_return_value

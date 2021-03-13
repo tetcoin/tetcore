@@ -25,10 +25,10 @@ use tetcore_std::{collections::btree_map::BTreeMap, marker::PhantomData, prelude
 #[derive(Eq, PartialEq, Debug)]
 pub enum Error {
 	/// An internal error in the NPoS elections crate.
-	NposElections(sp_npos_elections::Error),
+	NposElections(tp_npos_elections::Error),
 }
 
-impl From<sp_npos_elections::Error> for Error {
+impl From<tp_npos_elections::Error> for Error {
 	fn from(e: tp_npos_elections::Error) -> Self {
 		Error::NposElections(e)
 	}

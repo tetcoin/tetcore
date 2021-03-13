@@ -25,7 +25,7 @@ use codec::{Decode, Encode};
 use parking_lot::RwLock;
 use tp_blockchain::{Error as ClientError, Result as ClientResult};
 use tp_trie::MemoryDB;
-use sc_client_api::backend::PrunableStateChangesTrieStorage;
+use tc_client_api::backend::PrunableStateChangesTrieStorage;
 use tp_blockchain::{well_known_cache_keys, Cache as BlockchainCache, HeaderMetadataCache};
 use tet_core::{ChangesTrieConfiguration, ChangesTrieConfigurationRange, convert_hash};
 use tet_core::storage::PrefixedStorageKey;
@@ -311,11 +311,11 @@ impl<Block: BlockT> DbChangesTrieStorage<Block> {
 				}
 
 				tries_meta.oldest_pruned_digest_range_end = end;
-				sp_state_machine::prune_changes_tries(
+				tp_state_machine::prune_changes_tries(
 					&*self,
 					begin,
 					end,
-					&sp_state_machine::ChangesTrieAnchorBlockId {
+					&tp_state_machine::ChangesTrieAnchorBlockId {
 						hash: convert_hash(&block_hash),
 						number: block_num,
 					},
@@ -408,11 +408,11 @@ impl<Block: BlockT> tp_state_machine::ChangesTrieRootsStorage<HashFor<Block>, Nu
 	fn build_anchor(
 		&self,
 		hash: Block::Hash,
-	) -> Result<sp_state_machine::ChangesTrieAnchorBlockId<Block::Hash, NumberFor<Block>>, String> {
+	) -> Result<tp_state_machine::ChangesTrieAnchorBlockId<Block::Hash, NumberFor<Block>>, String> {
 		utils::read_header::<Block>(&*self.db, self.key_lookup_column, self.header_column, BlockId::Hash(hash))
 			.map_err(|e| e.to_string())
 			.and_then(|maybe_header| maybe_header.map(|header|
-				sp_state_machine::ChangesTrieAnchorBlockId {
+				tp_state_machine::ChangesTrieAnchorBlockId {
 					hash,
 					number: *header.number(),
 				}
@@ -421,7 +421,7 @@ impl<Block: BlockT> tp_state_machine::ChangesTrieRootsStorage<HashFor<Block>, Nu
 
 	fn root(
 		&self,
-		anchor: &sp_state_machine::ChangesTrieAnchorBlockId<Block::Hash, NumberFor<Block>>,
+		anchor: &tp_state_machine::ChangesTrieAnchorBlockId<Block::Hash, NumberFor<Block>>,
 		block: NumberFor<Block>,
 	) -> Result<Option<Block::Hash>, String> {
 		// check API requirement: we can't get NEXT block(s) based on anchor
@@ -526,7 +526,7 @@ fn write_tries_meta<Block: BlockT>(
 #[cfg(test)]
 mod tests {
 	use tetsy_hash_db::EMPTY_PREFIX;
-	use sc_client_api::backend::{
+	use tc_client_api::backend::{
 		Backend as ClientBackend, NewBlockState, BlockImportOperation, PrunableStateChangesTrieStorage,
 	};
 	use tp_blockchain::HeaderBackend as BlockchainHeaderBackend;

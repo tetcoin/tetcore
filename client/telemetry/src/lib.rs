@@ -381,7 +381,7 @@ impl TelemetryConnectionNotifier {
 	/// This function will return an error if the telemetry has already been started by
 	/// [`TelemetryHandle::start_telemetry`].
 	pub fn on_connect_stream(&self) -> TracingUnboundedReceiver<()> {
-		let (message_sender, message_receiver) = tracing_unbounded("mpsc_telemetry_on_connect");
+		let (message_sender, message_receiver) = tracing_unbounded("mptc_telemetry_on_connect");
 		if let Err(err) = self.message_sender.unbounded_send(Register::Notifier {
 			addresses: self.addresses.clone(),
 			connection_notifier: message_sender,
@@ -419,7 +419,7 @@ enum Register {
 /// # Example
 ///
 /// ```no_run
-/// # use sc_telemetry::*;
+/// # use tc_telemetry::*;
 /// # let authority_id = 42_u64;
 /// # let set_id = (43_u64, 44_u64);
 /// # let authorities = vec![45_u64];

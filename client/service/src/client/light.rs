@@ -20,7 +20,7 @@
 
 use std::sync::Arc;
 
-use sc_executor::RuntimeInfo;
+use tc_executor::RuntimeInfo;
 use tet_core::traits::{CodeExecutor, SpawnNamed};
 use tp_runtime::BuildStorage;
 use tp_runtime::traits::{Block as BlockT, HashFor};
@@ -28,8 +28,8 @@ use tp_blockchain::Result as ClientResult;
 use prometheus_endpoint::Registry;
 
 use super::{call_executor::LocalCallExecutor, client::{Client, ClientConfig}};
-use sc_client_api::light::Storage as BlockchainStorage;
-use sc_light::{Backend, GenesisCallExecutor};
+use tc_client_api::light::Storage as BlockchainStorage;
+use tc_light::{Backend, GenesisCallExecutor};
 
 
 /// Create an instance of light client.

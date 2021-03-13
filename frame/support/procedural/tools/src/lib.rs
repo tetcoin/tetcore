@@ -33,7 +33,7 @@ use proc_macro2::{TokenStream, Span};
 use syn::Ident;
 
 fn generate_hidden_includes_mod_name(unique_id: &str) -> Ident {
-	Ident::new(&format!("sp_api_hidden_includes_{}", unique_id), Span::call_site())
+	Ident::new(&format!("tp_api_hidden_includes_{}", unique_id), Span::call_site())
 }
 
 /// Generates the access to the `frame-support` crate.

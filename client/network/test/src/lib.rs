@@ -29,19 +29,19 @@ use std::{
 
 use tetsy_libp2p::build_multiaddr;
 use log::trace;
-use sc_network::block_request_handler::{self, BlockRequestHandler};
+use tc_network::block_request_handler::{self, BlockRequestHandler};
 use tp_blockchain::{
 	HeaderBackend, Result as ClientResult,
 	well_known_cache_keys::{self, Id as CacheKeyId},
 	Info as BlockchainInfo,
 };
-use sc_client_api::{
+use tc_client_api::{
 	BlockchainEvents, BlockImportNotification, FinalityNotifications, ImportNotifications, FinalityNotification,
 	backend::{TransactionFor, AuxStore, Backend, Finalizer}, BlockBackend,
 };
-use sc_consensus::LongestChain;
-use sc_block_builder::{BlockBuilder, BlockBuilderProvider};
-use sc_network::config::Role;
+use tc_consensus::LongestChain;
+use tc_block_builder::{BlockBuilder, BlockBuilderProvider};
+use tc_network::config::Role;
 use tp_consensus::block_validation::{DefaultBlockAnnounceValidator, BlockAnnounceValidator};
 use tp_consensus::import_queue::{
 	BasicQueue, BoxJustificationImport, Verifier,
@@ -51,21 +51,21 @@ use tp_consensus::Error as ConsensusError;
 use tp_consensus::{BlockOrigin, ForkChoiceStrategy, BlockImportParams, BlockCheckParams, JustificationImport};
 use futures::prelude::*;
 use futures::future::BoxFuture;
-use sc_network::{
+use tc_network::{
 	NetworkWorker, NetworkService, config::{ProtocolId, MultiaddrWithPeerId, NonReservedPeerMode},
 	Multiaddr,
 };
-use sc_network::config::{NetworkConfiguration, NonDefaultSetConfig, TransportConfig};
+use tc_network::config::{NetworkConfiguration, NonDefaultSetConfig, TransportConfig};
 use tetsy_libp2p::PeerId;
 use parking_lot::Mutex;
 use tet_core::H256;
-use sc_network::config::ProtocolConfig;
+use tc_network::config::ProtocolConfig;
 use tp_runtime::generic::{BlockId, OpaqueDigestItemId};
 use tp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 use tp_runtime::Justification;
 use tetcore_test_runtime_client::{self, AccountKeyring};
-use sc_service::client::Client;
-pub use sc_network::config::EmptyTransactionPool;
+use tc_service::client::Client;
+pub use tc_network::config::EmptyTransactionPool;
 pub use tetcore_test_runtime_client::runtime::{Block, Extrinsic, Hash, Transfer};
 pub use tetcore_test_runtime_client::{TestClient, TestClientBuilder, TestClientBuilderExt};
 
@@ -731,7 +731,7 @@ pub trait TestNetFactory: Sized {
 			protocol_config
 		};
 
-		let network = NetworkWorker::new(sc_network::config::Params {
+		let network = NetworkWorker::new(tc_network::config::Params {
 			role: Role::Full,
 			executor: None,
 			network_config,
@@ -818,7 +818,7 @@ pub trait TestNetFactory: Sized {
 			protocol_id.clone(),
 		);
 
-		let network = NetworkWorker::new(sc_network::config::Params {
+		let network = NetworkWorker::new(tc_network::config::Params {
 			role: Role::Light,
 			executor: None,
 			network_config,

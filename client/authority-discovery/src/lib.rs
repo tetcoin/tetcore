@@ -33,8 +33,8 @@ use std::{sync::Arc, time::Duration};
 use futures::channel::{mpsc, oneshot};
 use futures::Stream;
 
-use sc_client_api::blockchain::HeaderBackend;
-use sc_network::{DhtEvent, Multiaddr, PeerId};
+use tc_client_api::blockchain::HeaderBackend;
+use tc_network::{DhtEvent, Multiaddr, PeerId};
 use tp_authority_discovery::{AuthorityDiscoveryApi, AuthorityId};
 use tp_runtime::traits::Block as BlockT;
 use tp_api::ProvideRuntimeApi;
