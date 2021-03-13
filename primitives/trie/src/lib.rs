@@ -226,12 +226,12 @@ pub fn read_trie_value_with<
 
 /// Determine the empty trie root.
 pub fn empty_trie_root<L: TrieConfiguration>() -> <L::Hash as Hasher>::Out {
-	L::trie_root::<_, Vec<u8>, Vec<u8>>(core::iter::empty())
+	L::tetsy_trie_root::<_, Vec<u8>, Vec<u8>>(core::iter::empty())
 }
 
 /// Determine the empty child trie root.
 pub fn empty_child_trie_root<L: TrieConfiguration>() -> <L::Hash as Hasher>::Out {
-	L::trie_root::<_, Vec<u8>, Vec<u8>>(core::iter::empty())
+	L::tetsy_trie_root::<_, Vec<u8>, Vec<u8>>(core::iter::empty())
 }
 
 /// Determine a child trie root given its ordered contents, closed form. H is the default hasher,
