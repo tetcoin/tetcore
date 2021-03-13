@@ -18,7 +18,7 @@
 //! Generic implementation of an unchecked (pre-verification) extrinsic.
 
 use tetcore_std::{fmt, prelude::*};
-use sp_io::hashing::blake2_256;
+use tet_io::hashing::blake2_256;
 use codec::{Decode, Encode, EncodeLike, Input, Error};
 use crate::{
 	traits::{
@@ -338,7 +338,7 @@ where
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_io::hashing::blake2_256;
+	use tet_io::hashing::blake2_256;
 	use crate::codec::{Encode, Decode};
 	use crate::traits::{SignedExtension, IdentityLookup};
 	use crate::testing::TestSignature as TestSig;

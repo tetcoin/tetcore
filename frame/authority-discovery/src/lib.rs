@@ -120,7 +120,7 @@ mod tests {
 	use sp_authority_discovery::AuthorityPair;
 	use sp_application_crypto::Pair;
 	use tet_core::{crypto::key_types, H256};
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use sp_runtime::{
 		testing::{Header, UintAuthorityId}, traits::{ConvertInto, IdentityLookup, OpaqueKeys},
 		Perbill, KeyTypeId,

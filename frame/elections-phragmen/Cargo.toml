@@ -26,7 +26,7 @@ tetcore-std = { version = "2.0.0", default-features = false, path = "../../primi
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 
 [dev-dependencies]
-tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../primitives/io" }
 hex-literal = "0.3.1"
 pallet-balances = { version = "2.0.0", path = "../balances" }
 tet-core = { version = "2.0.0", path = "../../primitives/core" }

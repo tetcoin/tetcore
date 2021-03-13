@@ -21,7 +21,7 @@ use super::*;
 use frame_support::{parameter_types, weights::Weight};
 use tet_core::H256;
 use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
-use sp_io;
+use tet_io;
 use crate as sudo;
 use frame_support::traits::Filter;
 use frame_system::limits;
@@ -141,7 +141,7 @@ pub type SudoCall = sudo::Call<Test>;
 pub type LoggerCall = logger::Call<Test>;
 
 // Build test environment by setting the root `key` for the Genesis.
-pub fn new_test_ext(root_key: u64) -> sp_io::TestExternalities {
+pub fn new_test_ext(root_key: u64) -> tet_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 	sudo::GenesisConfig::<Test>{
 		key: root_key,

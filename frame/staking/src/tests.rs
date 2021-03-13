@@ -2919,7 +2919,7 @@ mod offchain_election {
 		testing::{PoolState, TestOffchainExt, TestTransactionPoolExt},
 		OffchainExt, TransactionPoolExt,
 	};
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use sp_npos_elections::StakedAssignment;
 	use frame_support::traits::OffchainWorker;
 	use std::sync::Arc;

@@ -35,7 +35,7 @@ pub use value::StorageValue;
 #[cfg(test)]
 #[allow(dead_code)]
 mod tests {
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use codec::Encode;
 	use crate::storage::{unhashed, generator::StorageValue, IterableStorageMap};
 	use crate::{assert_noop, assert_ok};

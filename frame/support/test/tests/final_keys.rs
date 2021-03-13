@@ -18,7 +18,7 @@
 use frame_support::storage::unhashed;
 use codec::Encode;
 use frame_support::{StorageDoubleMap, StorageMap, StorageValue, StoragePrefixedMap};
-use sp_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
+use tet_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
 
 mod no_instance {
 	pub trait Config: frame_support_test::Config {}

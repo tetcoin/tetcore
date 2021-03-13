@@ -26,7 +26,7 @@ use futures01::stream::Stream;
 use tet_core::{storage::ChildInfo, ChangesTrieConfiguration};
 use tet_core::hash::H256;
 use sc_block_builder::BlockBuilderProvider;
-use sp_io::hashing::blake2_256;
+use tet_io::hashing::blake2_256;
 use tetcore_test_runtime_client::{
 	prelude::*,
 	sp_consensus::BlockOrigin,

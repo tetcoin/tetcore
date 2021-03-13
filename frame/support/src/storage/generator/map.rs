@@ -107,7 +107,7 @@ impl<
 
 	fn next(&mut self) -> Option<(K, V)> {
 		loop {
-			let maybe_next = sp_io::storage::next_key(&self.previous_key)
+			let maybe_next = tet_io::storage::next_key(&self.previous_key)
 				.filter(|n| n.starts_with(&self.prefix));
 			break match maybe_next {
 				Some(next) => {
@@ -165,7 +165,7 @@ impl<
 	fn translate<O: Decode, F: Fn(K, O) -> Option<V>>(f: F) {
 		let prefix = G::prefix_hash();
 		let mut previous_key = prefix.clone();
-		while let Some(next) = sp_io::storage::next_key(&previous_key)
+		while let Some(next) = tet_io::storage::next_key(&previous_key)
 			.filter(|n| n.starts_with(&prefix))
 		{
 			previous_key = next;
@@ -294,7 +294,7 @@ impl<K: FullEncode, V: FullCodec, G: StorageMap<K, V>> storage::StorageMap<K, V>
 		V: StorageAppend<Item>,
 	{
 		let key = Self::storage_map_final_key(key);
-		sp_io::storage::append(&key, item.encode());
+		tet_io::storage::append(&key, item.encode());
 	}
 
 	fn migrate_key<OldHasher: StorageHasher, KeyArg: EncodeLike<K>>(key: KeyArg) -> Option<V> {
@@ -365,7 +365,7 @@ mod test_iterators {
 
 	#[test]
 	fn map_reversible_reversible_iteration() {
-		sp_io::TestExternalities::default().execute_with(|| {
+		tet_io::TestExternalities::default().execute_with(|| {
 			// All map iterator
 			let prefix = Map::prefix_hash();
 

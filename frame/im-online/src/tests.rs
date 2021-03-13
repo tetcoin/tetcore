@@ -236,7 +236,7 @@ fn should_generate_heartbeats() {
 
 		assert_eq!(heartbeat, Heartbeat {
 			block_number: block,
-			network_state: sp_io::offchain::network_state().unwrap(),
+			network_state: tet_io::offchain::network_state().unwrap(),
 			session_index: 2,
 			authority_index: 2,
 			validators_len: 3,
@@ -347,7 +347,7 @@ fn should_not_send_a_report_if_already_online() {
 
 		assert_eq!(heartbeat, Heartbeat {
 			block_number: 4,
-			network_state: sp_io::offchain::network_state().unwrap(),
+			network_state: tet_io::offchain::network_state().unwrap(),
 			session_index: 2,
 			authority_index: 0,
 			validators_len: 3,

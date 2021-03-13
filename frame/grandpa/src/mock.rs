@@ -30,7 +30,7 @@ use frame_support::{
 use pallet_staking::EraIndex;
 use tet_core::{crypto::KeyTypeId, H256};
 use sp_finality_grandpa::{RoundNumber, SetId, GRANDPA_ENGINE_ID};
-use sp_io;
+use tet_io;
 use sp_keyring::Ed25519Keyring;
 use sp_runtime::{
 	curve::PiecewiseLinear,
@@ -278,11 +278,11 @@ pub fn extract_keyring(id: &AuthorityId) -> Ed25519Keyring {
 	Ed25519Keyring::from_raw_public(raw_public).unwrap()
 }
 
-pub fn new_test_ext(vec: Vec<(u64, u64)>) -> sp_io::TestExternalities {
+pub fn new_test_ext(vec: Vec<(u64, u64)>) -> tet_io::TestExternalities {
 	new_test_ext_raw_authorities(to_authorities(vec))
 }
 
-pub fn new_test_ext_raw_authorities(authorities: AuthorityList) -> sp_io::TestExternalities {
+pub fn new_test_ext_raw_authorities(authorities: AuthorityList) -> tet_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default()
 		.build_storage::<Test>()
 		.unwrap();

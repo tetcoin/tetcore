@@ -57,7 +57,7 @@ mod module2 {
 				assert_eq!(crate_to_pallet_version!(), Self::current_version());
 
 				let version_key = PalletVersion::storage_key::<T::PalletInfo, Self>().unwrap();
-				let version_value = sp_io::storage::get(&version_key);
+				let version_value = tet_io::storage::get(&version_key);
 
 				if version_value.is_some() {
 					assert_eq!(SOME_TEST_VERSION, Self::storage_version().unwrap());
@@ -192,8 +192,8 @@ pub type UncheckedExtrinsic = generic::UncheckedExtrinsic<u32, Call, Signature, 
 
 /// Returns the storage key for `PalletVersion` for the given `pallet`.
 fn get_pallet_version_storage_key_for_pallet(pallet: &str) -> [u8; 32] {
-	let pallet_name = sp_io::hashing::twox_128(pallet.as_bytes());
-	let postfix = sp_io::hashing::twox_128(PALLET_VERSION_STORAGE_KEY_POSTFIX);
+	let pallet_name = tet_io::hashing::twox_128(pallet.as_bytes());
+	let postfix = tet_io::hashing::twox_128(PALLET_VERSION_STORAGE_KEY_POSTFIX);
 
 	let mut final_key = [0u8; 32];
 	final_key[..16].copy_from_slice(&pallet_name);
@@ -208,7 +208,7 @@ fn get_pallet_version_storage_key_for_pallet(pallet: &str) -> [u8; 32] {
 /// current crate version.
 fn check_pallet_version(pallet: &str) {
 	let key = get_pallet_version_storage_key_for_pallet(pallet);
-	let value = sp_io::storage::get(&key).expect("Pallet version exists");
+	let value = tet_io::storage::get(&key).expect("Pallet version exists");
 	let version = PalletVersion::decode(&mut &value[..])
 		.expect("Pallet version is encoded correctly");
 
@@ -217,7 +217,7 @@ fn check_pallet_version(pallet: &str) {
 
 #[test]
 fn on_runtime_upgrade_sets_the_pallet_versions_in_storage() {
-	sp_io::TestExternalities::new_empty().execute_with(|| {
+	tet_io::TestExternalities::new_empty().execute_with(|| {
 		AllModules::on_runtime_upgrade();
 
 		check_pallet_version("Module1");
@@ -233,9 +233,9 @@ fn on_runtime_upgrade_sets_the_pallet_versions_in_storage() {
 
 #[test]
 fn on_runtime_upgrade_overwrites_old_version() {
-	sp_io::TestExternalities::new_empty().execute_with(|| {
+	tet_io::TestExternalities::new_empty().execute_with(|| {
 		let key = get_pallet_version_storage_key_for_pallet("Module2");
-		sp_io::storage::set(&key, &SOME_TEST_VERSION.encode());
+		tet_io::storage::set(&key, &SOME_TEST_VERSION.encode());
 
 		AllModules::on_runtime_upgrade();
 
@@ -254,7 +254,7 @@ fn on_runtime_upgrade_overwrites_old_version() {
 fn genesis_init_puts_pallet_version_into_storage() {
 	let storage = GenesisConfig::default().build_storage().expect("Builds genesis storage");
 
-	sp_io::TestExternalities::new(storage).execute_with(|| {
+	tet_io::TestExternalities::new(storage).execute_with(|| {
 		check_pallet_version("Module1");
 		check_pallet_version("Module2");
 		check_pallet_version("Module2_1");

@@ -31,7 +31,7 @@ use frame_support::{
 	traits::{KeyOwnerProofSystem, OnInitialize},
 	weights::Weight,
 };
-use sp_io;
+use tet_io;
 use tet_core::{H256, U256, crypto::{IsWrappedBy, KeyTypeId, Pair}};
 use sp_consensus_babe::{AuthorityId, AuthorityPair, Slot};
 use sp_consensus_vrf::schnorrkel::{VRFOutput, VRFProof};
@@ -357,11 +357,11 @@ pub fn make_vrf_output(
 	(vrf_output, vrf_proof, vrf_randomness)
 }
 
-pub fn new_test_ext(authorities_len: usize) -> sp_io::TestExternalities {
+pub fn new_test_ext(authorities_len: usize) -> tet_io::TestExternalities {
 	new_test_ext_with_pairs(authorities_len).1
 }
 
-pub fn new_test_ext_with_pairs(authorities_len: usize) -> (Vec<AuthorityPair>, sp_io::TestExternalities) {
+pub fn new_test_ext_with_pairs(authorities_len: usize) -> (Vec<AuthorityPair>, tet_io::TestExternalities) {
 	let pairs = (0..authorities_len).map(|i| {
 		AuthorityPair::from_seed(&U256::from(i).into())
 	}).collect::<Vec<_>>();
@@ -371,7 +371,7 @@ pub fn new_test_ext_with_pairs(authorities_len: usize) -> (Vec<AuthorityPair>, s
 	(pairs, new_test_ext_raw_authorities(public))
 }
 
-pub fn new_test_ext_raw_authorities(authorities: Vec<AuthorityId>) -> sp_io::TestExternalities {
+pub fn new_test_ext_raw_authorities(authorities: Vec<AuthorityId>) -> tet_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default()
 		.build_storage::<Test>()
 		.unwrap();

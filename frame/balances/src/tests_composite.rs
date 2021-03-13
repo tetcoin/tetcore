@@ -24,7 +24,7 @@ use sp_runtime::{
 	testing::Header,
 };
 use tet_core::H256;
-use sp_io;
+use tet_io;
 use frame_support::parameter_types;
 use frame_support::weights::{Weight, DispatchInfo, IdentityFee};
 use pallet_transaction_payment::CurrencyAdapter;
@@ -120,7 +120,7 @@ impl ExtBuilder {
 	pub fn set_associated_consts(&self) {
 		EXISTENTIAL_DEPOSIT.with(|v| *v.borrow_mut() = self.existential_deposit);
 	}
-	pub fn build(self) -> sp_io::TestExternalities {
+	pub fn build(self) -> tet_io::TestExternalities {
 		self.set_associated_consts();
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 		pallet_balances::GenesisConfig::<Test> {
@@ -137,7 +137,7 @@ impl ExtBuilder {
 			},
 		}.assimilate_storage(&mut t).unwrap();
 
-		let mut ext = sp_io::TestExternalities::new(t);
+		let mut ext = tet_io::TestExternalities::new(t);
 		ext.execute_with(|| System::set_block_number(1));
 		ext
 	}

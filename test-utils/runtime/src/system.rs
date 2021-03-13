@@ -19,7 +19,7 @@
 //! and depositing logs.
 
 use tetcore_std::prelude::*;
-use sp_io::{
+use tet_io::{
 	storage::root as storage_root, storage::changes_root as storage_changes_root,
 	hashing::blake2_256, trie,
 };
@@ -262,11 +262,11 @@ fn execute_transaction_backend(utx: &Extrinsic, extrinsic_index: u32) -> ApplyEx
 		Extrinsic::ChangesTrieConfigUpdate(ref new_config) =>
 			execute_changes_trie_config_update(new_config.clone()),
 		Extrinsic::OffchainIndexSet(key, value) => {
-			sp_io::offchain_index::set(&key, &value);
+			tet_io::offchain_index::set(&key, &value);
 			Ok(Ok(()))
 		},
 		Extrinsic::OffchainIndexClear(key) => {
-			sp_io::offchain_index::clear(&key);
+			tet_io::offchain_index::clear(&key);
 			Ok(Ok(()))
 		}
 	}
@@ -348,12 +348,12 @@ fn info_expect_equal_hash(given: &Hash, expected: &Hash) {
 mod tests {
 	use super::*;
 
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use tetcore_test_runtime_client::{AccountKeyring, Sr25519Keyring};
 	use crate::{Header, Transfer, wasm_binary_unwrap};
 	use tet_core::{NeverNativeValue, map, traits::{CodeExecutor, RuntimeCode}};
 	use sc_executor::{NativeExecutor, WasmExecutionMethod, native_executor_instance};
-	use sp_io::hashing::twox_128;
+	use tet_io::hashing::twox_128;
 
 	// Declare an instance of the native executor dispatch for the test runtime.
 	native_executor_instance!(

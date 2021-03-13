@@ -28,7 +28,7 @@ tp-application-crypto = { version = "2.0.0", default-features = false, path = ".
 tp-consensus-babe = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/babe" }
 tp-consensus-vrf = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/vrf" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
 tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
@@ -58,7 +58,7 @@ std = [
 	"tp-consensus-babe/std",
 	"tp-consensus-vrf/std",
 	"tp-inherents/std",
-	"tp-io/std",
+	"tet-io/std",
 	"tp-runtime/std",
 	"tp-session/std",
 	"tp-staking/std",

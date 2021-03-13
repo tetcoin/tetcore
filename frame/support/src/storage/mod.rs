@@ -89,7 +89,7 @@ pub fn require_transaction() {
 ///
 /// Transactions can be nested to any depth. Commits happen to the parent transaction.
 pub fn with_transaction<R>(f: impl FnOnce() -> TransactionOutcome<R>) -> R {
-	use sp_io::storage::{
+	use tet_io::storage::{
 		start_transaction, commit_transaction, rollback_transaction,
 	};
 	use TransactionOutcome::*;
@@ -524,7 +524,7 @@ impl<T> Iterator for PrefixIterator<T> {
 
 	fn next(&mut self) -> Option<Self::Item> {
 		loop {
-			let maybe_next = sp_io::storage::next_key(&self.previous_key)
+			let maybe_next = tet_io::storage::next_key(&self.previous_key)
 				.filter(|n| n.starts_with(&self.prefix));
 			break match maybe_next {
 				Some(next) => {
@@ -585,7 +585,7 @@ pub trait StoragePrefixedMap<Value: FullCodec> {
 
 	/// Remove all value of the storage.
 	fn remove_all() {
-		sp_io::storage::clear_prefix(&Self::final_prefix())
+		tet_io::storage::clear_prefix(&Self::final_prefix())
 	}
 
 	/// Iter over all value of the storage.
@@ -617,7 +617,7 @@ pub trait StoragePrefixedMap<Value: FullCodec> {
 	fn translate_values<OldValue: Decode, F: Fn(OldValue) -> Option<Value>>(f: F) {
 		let prefix = Self::final_prefix();
 		let mut previous_key = prefix.clone().to_vec();
-		while let Some(next) = sp_io::storage::next_key(&previous_key)
+		while let Some(next) = tet_io::storage::next_key(&previous_key)
 			.filter(|n| n.starts_with(&prefix))
 		{
 			previous_key = next;
@@ -659,7 +659,7 @@ pub trait StorageDecodeLength: private::Sealed + codec::DecodeLength {
 	fn decode_len(key: &[u8]) -> Option<usize> {
 		// `Compact<u32>` is 5 bytes in maximum.
 		let mut data = [0u8; 5];
-		let len = sp_io::storage::read(key, &mut data, 0)?;
+		let len = tet_io::storage::read(key, &mut data, 0)?;
 		let len = data.len().min(len as usize);
 		<Self as codec::DecodeLength>::len(&data[..len]).ok()
 	}
@@ -688,7 +688,7 @@ impl<Hash: Encode> StorageAppend<DigestItem<Hash>> for Digest<Hash> {}
 mod test {
 	use super::*;
 	use tet_core::hashing::twox_128;
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use generator::StorageValue as _;
 
 	#[test]

@@ -26,7 +26,7 @@ use frame_support::{
 	IterableStorageMap, StorageDoubleMap, StorageMap, StorageValue,
 };
 use tet_core::H256;
-use sp_io;
+use tet_io;
 use sp_npos_elections::{
 	to_support_map, EvaluateSupport, reduce, ExtendedBalance, StakedAssignment, ElectionScore,
 };
@@ -370,7 +370,7 @@ impl ExtBuilder {
 		OFFSET.with(|v| *v.borrow_mut() = offset);
 		self
 	}
-	pub fn build(self) -> sp_io::TestExternalities {
+	pub fn build(self) -> tet_io::TestExternalities {
 		tetcore_tracing::try_init_simple();
 		let mut storage = frame_system::GenesisConfig::default()
 			.build_storage::<Test>()
@@ -455,7 +455,7 @@ impl ExtBuilder {
 			)).collect(),
 		}.assimilate_storage(&mut storage);
 
-		let mut ext = sp_io::TestExternalities::from(storage);
+		let mut ext = tet_io::TestExternalities::from(storage);
 		ext.execute_with(|| {
 			let validators = Session::validators();
 			SESSION.with(|x| *x.borrow_mut() = (validators.clone(), HashSet::new()));

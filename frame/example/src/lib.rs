@@ -538,7 +538,7 @@ decl_module! {
 		fn offchain_worker(_n: T::BlockNumber) {
 			// We don't do anything here.
 			// but we could dispatch extrinsic (transaction/unsigned/inherent) using
-			// sp_io::submit_extrinsic
+			// tet_io::submit_extrinsic
 		}
 	}
 }
@@ -781,7 +781,7 @@ mod tests {
 
 	// This function basically just builds a genesis storage key/value store according to
 	// our desired mockup.
-	pub fn new_test_ext() -> sp_io::TestExternalities {
+	pub fn new_test_ext() -> tet_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 		// We use default for brevity, but you can configure as desired if needed.
 		pallet_balances::GenesisConfig::<Test>::default().assimilate_storage(&mut t).unwrap();

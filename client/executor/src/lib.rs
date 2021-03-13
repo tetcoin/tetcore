@@ -66,7 +66,7 @@ pub trait RuntimeInfo {
 mod tests {
 	use super::*;
 	use sc_runtime_test::wasm_binary_unwrap;
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use tetcore_wasm_interface::HostFunctions;
 	use tet_core::traits::CallInWasm;
 
@@ -78,7 +78,7 @@ mod tests {
 		let executor = WasmExecutor::new(
 			WasmExecutionMethod::Interpreted,
 			Some(8),
-			sp_io::TetcoreHostFunctions::host_functions(),
+			tet_io::TetcoreHostFunctions::host_functions(),
 			8,
 		);
 		let res = executor.call_in_wasm(

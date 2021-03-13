@@ -261,7 +261,7 @@ impl<D: NativeExecutionDispatch> NativeExecutor<D> {
 		let mut host_functions = D::ExtendHostFunctions::host_functions();
 
 		// Add the custom host functions provided by the user.
-		host_functions.extend(sp_io::TetcoreHostFunctions::host_functions());
+		host_functions.extend(tet_io::TetcoreHostFunctions::host_functions());
 		let wasm_executor = WasmExecutor::new(
 			fallback_method,
 			default_heap_pages,

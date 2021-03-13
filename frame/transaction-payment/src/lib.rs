@@ -302,7 +302,7 @@ decl_module! {
 			}
 			target += addition;
 
-			sp_io::TestExternalities::new_empty().execute_with(|| {
+			tet_io::TestExternalities::new_empty().execute_with(|| {
 				<frame_system::Module<T>>::set_block_consumed_resources(target, 0);
 				let next = T::FeeMultiplierUpdate::convert(min_value);
 				assert!(next > min_value, "The minimum bound of the multiplier is too low. When \
@@ -763,7 +763,7 @@ mod tests {
 			TRANSACTION_BYTE_FEE.with(|v| *v.borrow_mut() = self.byte_fee);
 			WEIGHT_TO_FEE.with(|v| *v.borrow_mut() = self.weight_to_fee);
 		}
-		pub fn build(self) -> sp_io::TestExternalities {
+		pub fn build(self) -> tet_io::TestExternalities {
 			self.set_constants();
 			let mut t = frame_system::GenesisConfig::default().build_storage::<Runtime>().unwrap();
 			pallet_balances::GenesisConfig::<Runtime> {

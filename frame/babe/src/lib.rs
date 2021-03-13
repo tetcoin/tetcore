@@ -816,7 +816,7 @@ fn compute_randomness(
 		s.extend_from_slice(&vrf_output[..]);
 	}
 
-	sp_io::hashing::blake2_256(&s)
+	tet_io::hashing::blake2_256(&s)
 }
 
 impl<T: Config> ProvideInherent for Module<T> {

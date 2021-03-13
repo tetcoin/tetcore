@@ -22,7 +22,7 @@ frame-system = { version = "2.0.0", default-features = false, path = "../system"
 serde = { version = "1.0.101", optional = true }
 tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tp-keystore = { version = "0.8.0", path = "../../primitives/keystore", optional = true }
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 lite-json = { version = "0.1", default-features = false }
@@ -36,7 +36,7 @@ std = [
 	"serde",
 	"lite-json/std",
 	"tet-core/std",
-	"tp-io/std",
+	"tet-io/std",
 	"tp-keystore",
 	"tp-runtime/std",
 	"tetcore-std/std",

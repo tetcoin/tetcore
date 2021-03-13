@@ -26,7 +26,7 @@ rand_chacha = { version = "0.2", default-features = false }
 
 [dev-dependencies]
 tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-io ={ version = "2.0.0", path = "../../primitives/io" }
+tet-io ={ version = "2.0.0", path = "../../primitives/io" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 
 [features]

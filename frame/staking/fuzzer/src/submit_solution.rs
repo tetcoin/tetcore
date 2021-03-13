@@ -43,8 +43,8 @@ enum Mode {
 	WeakerSubmission,
 }
 
-pub fn new_test_ext(iterations: u32) -> sp_io::TestExternalities {
-	let mut ext: sp_io::TestExternalities = frame_system::GenesisConfig::default()
+pub fn new_test_ext(iterations: u32) -> tet_io::TestExternalities {
+	let mut ext: tet_io::TestExternalities = frame_system::GenesisConfig::default()
 		.build_storage::<mock::Test>()
 		.map(Into::into)
 		.expect("Failed to create test externalities.");

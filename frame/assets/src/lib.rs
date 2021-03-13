@@ -1170,7 +1170,7 @@ mod tests {
 		type WeightInfo = ();
 	}
 
-	pub(crate) fn new_test_ext() -> sp_io::TestExternalities {
+	pub(crate) fn new_test_ext() -> tet_io::TestExternalities {
 		frame_system::GenesisConfig::default().build_storage::<Test>().unwrap().into()
 	}
 

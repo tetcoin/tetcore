@@ -63,7 +63,7 @@ impl<T, I, L> mmr_lib::MMRStore<NodeOf<T, I, L>> for Storage<OffchainStorage, T,
 		let key = Module::<T, I>::offchain_key(pos);
 		// Retrieve the element from Off-chain DB.
 		Ok(
-			sp_io::offchain ::local_storage_get(tet_core::offchain::StorageKind::PERSISTENT, &key)
+			tet_io::offchain ::local_storage_get(tet_core::offchain::StorageKind::PERSISTENT, &key)
 				.and_then(|v| codec::Decode::decode(&mut &*v).ok())
 		)
 	}
@@ -96,7 +96,7 @@ impl<T, I, L> mmr_lib::MMRStore<NodeOf<T, I, L>> for Storage<RuntimeStorage, T, 
 			<Nodes<T, I>>::insert(size, elem.hash());
 			// Indexing API is used to store the full leaf content.
 			elem.using_encoded(|elem| {
-				sp_io::offchain_index::set(&Module::<T, I>::offchain_key(size), elem)
+				tet_io::offchain_index::set(&Module::<T, I>::offchain_key(size), elem)
 			});
 			size += 1;
 

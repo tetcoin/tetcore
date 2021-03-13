@@ -22,7 +22,7 @@ frame-support = { version = "2.0.0", default-features = false, path = "../suppor
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 
 [dev-dependencies]
@@ -37,6 +37,6 @@ std = [
 	"frame-system/std",
 	"tp-runtime/std",
 	"tetcore-std/std",
-	"tp-io/std",
+	"tet-io/std",
 	"tet-core/std",
 ]

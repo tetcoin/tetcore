@@ -23,7 +23,7 @@ tet-core = { version = "2.0.0", default-features = false, path = "../../primitiv
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
 pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
@@ -41,7 +41,7 @@ std = [
 	"tetcore-std/std",
 	"serde",
 	"pallet-session/std",
-	"tp-io/std",
+	"tet-io/std",
 	"tp-runtime/std",
 	"tp-staking/std",
 	"frame-support/std",

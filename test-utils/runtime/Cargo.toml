@@ -26,7 +26,7 @@ tp-offchain = { path = "../../primitives/offchain", default-features = false, ve
 tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-runtime-interface = { path = "../../primitives/runtime-interface", default-features = false, version = "2.0.0"}
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 frame-support = { version = "2.0.0", default-features = false, path = "../../frame/support" }
 tp-version = { version = "2.0.0", default-features = false, path = "../../primitives/version" }
 tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
@@ -78,7 +78,7 @@ std = [
 	"tet-core/std",
 	"tetcore-std/std",
 	"tp-runtime-interface/std",
-	"tp-io/std",
+	"tet-io/std",
 	"frame-support/std",
 	"tp-version/std",
 	"serde",

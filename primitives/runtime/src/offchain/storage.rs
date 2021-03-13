@@ -46,13 +46,13 @@ impl<'a> StorageValueRef<'a> {
 	/// be using `mutate` instead.
 	pub fn set(&self, value: &impl codec::Encode) {
 		value.using_encoded(|val| {
-			sp_io::offchain::local_storage_set(self.kind, self.key, val)
+			tet_io::offchain::local_storage_set(self.kind, self.key, val)
 		})
 	}
 
 	/// Remove the associated value from the storage.
 	pub fn clear(&mut self) {
-		sp_io::offchain::local_storage_clear(self.kind, self.key)
+		tet_io::offchain::local_storage_clear(self.kind, self.key)
 	}
 
 	/// Retrieve & decode the value from storage.
@@ -63,7 +63,7 @@ impl<'a> StorageValueRef<'a> {
 	/// The function returns `None` if the value was not found in storage,
 	/// otherwise a decoding of the value to requested type.
 	pub fn get<T: codec::Decode>(&self) -> Option<Option<T>> {
-		sp_io::offchain::local_storage_get(self.kind, self.key)
+		tet_io::offchain::local_storage_get(self.kind, self.key)
 			.map(|val| T::decode(&mut &*val).ok())
 	}
 
@@ -79,11 +79,11 @@ impl<'a> StorageValueRef<'a> {
 		T: codec::Codec,
 		F: FnOnce(Option<Option<T>>) -> Result<T, E>
 	{
-		let value = sp_io::offchain::local_storage_get(self.kind, self.key);
+		let value = tet_io::offchain::local_storage_get(self.kind, self.key);
 		let decoded = value.as_deref().map(|mut v| T::decode(&mut v).ok());
 		let val = f(decoded)?;
 		let set = val.using_encoded(|new_val| {
-			sp_io::offchain::local_storage_compare_and_set(
+			tet_io::offchain::local_storage_compare_and_set(
 				self.kind,
 				self.key,
 				value,
@@ -102,7 +102,7 @@ impl<'a> StorageValueRef<'a> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use tet_core::offchain::{
 		OffchainExt,
 		testing,

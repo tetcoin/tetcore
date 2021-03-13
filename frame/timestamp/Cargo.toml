@@ -20,7 +20,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io", optional = true }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io", optional = true }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
@@ -30,7 +30,7 @@ tp-timestamp = { version = "2.0.0", default-features = false, path = "../../prim
 impl-trait-for-tuples = "0.2.0"
 
 [dev-dependencies]
-tp-io ={ version = "2.0.0", path = "../../primitives/io" }
+tet-io ={ version = "2.0.0", path = "../../primitives/io" }
 tet-core = { version = "2.0.0", path = "../../primitives/core" }
 
 [features]
@@ -46,4 +46,4 @@ std = [
 	"frame-system/std",
 	"tp-timestamp/std"
 ]
-runtime-benchmarks = ["frame-benchmarking", "tp-io"]
+runtime-benchmarks = ["frame-benchmarking", "tet-io"]

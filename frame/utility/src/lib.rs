@@ -62,7 +62,7 @@ pub mod weights;
 use tetcore_std::prelude::*;
 use codec::{Encode, Decode};
 use tet_core::TypeId;
-use sp_io::hashing::blake2_256;
+use tet_io::hashing::blake2_256;
 use frame_support::{decl_module, decl_event, decl_storage, Parameter, transactional};
 use frame_support::{
 	traits::{OriginTrait, UnfilteredDispatchable, Get},

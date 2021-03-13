@@ -27,7 +27,7 @@ frame-benchmarking = { version = "2.0.0", default-features = false, path = "../b
 [dev-dependencies]
 pallet-balances = { version = "2.0.0", path = "../balances" }
 tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../primitives/io" }
 
 [features]
 default = ["std"]

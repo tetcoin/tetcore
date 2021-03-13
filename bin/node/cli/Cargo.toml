@@ -55,7 +55,7 @@ tp-timestamp = { version = "2.0.0", default-features = false, path = "../../../p
 tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
 tp-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
 tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
-tp-io = { version = "2.0.0", path = "../../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../../primitives/io" }
 tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
 tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
 

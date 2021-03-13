@@ -19,6 +19,6 @@ tp-runtime-interface-test-wasm-deprecated = { version = "2.0.0", path = "../test
 tp-state-machine = { version = "0.8.0", path = "../../state-machine" }
 tp-runtime = { version = "2.0.0", path = "../../runtime" }
 tet-core = { version = "2.0.0", path = "../../core" }
-tp-io = { version = "2.0.0", path = "../../io" }
+tet-io = { version = "2.0.0", path = "../../io" }
 tracing = "0.1.22"
 tracing-core = "0.1.17"

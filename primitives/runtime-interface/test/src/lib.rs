@@ -37,7 +37,7 @@ fn call_wasm_method_with_result<HF: HostFunctionsT>(
 	let mut ext = TestExternalities::default();
 	let mut ext_ext = ext.ext();
 	let mut host_functions = HF::host_functions();
-	host_functions.extend(sp_io::TetcoreHostFunctions::host_functions());
+	host_functions.extend(tet_io::TetcoreHostFunctions::host_functions());
 
 	let executor = sc_executor::WasmExecutor::new(
 		sc_executor::WasmExecutionMethod::Interpreted,

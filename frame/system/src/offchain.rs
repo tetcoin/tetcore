@@ -90,7 +90,7 @@ where
 		signature: Option<<T::Extrinsic as ExtrinsicT>::SignaturePayload>,
 	) -> Result<(), ()> {
 		let xt = T::Extrinsic::new(call.into(), signature).ok_or(())?;
-		sp_io::offchain::submit_transaction(xt.encode())
+		tet_io::offchain::submit_transaction(xt.encode())
 	}
 
 	/// A convenience method to submit an unsigned transaction onchain.
@@ -692,7 +692,7 @@ mod tests {
 	fn should_send_unsigned_with_signed_payload_with_all_accounts() {
 		let (pool, pool_state) = testing::TestTransactionPoolExt::new();
 
-		let mut t = sp_io::TestExternalities::default();
+		let mut t = tet_io::TestExternalities::default();
 		t.register_extension(TransactionPoolExt::new(pool));
 
 		// given
@@ -733,7 +733,7 @@ mod tests {
 	fn should_send_unsigned_with_signed_payload_with_any_account() {
 		let (pool, pool_state) = testing::TestTransactionPoolExt::new();
 
-		let mut t = sp_io::TestExternalities::default();
+		let mut t = tet_io::TestExternalities::default();
 		t.register_extension(TransactionPoolExt::new(pool));
 
 		// given
@@ -770,7 +770,7 @@ mod tests {
 	fn should_send_unsigned_with_signed_payload_with_all_account_and_filter() {
 		let (pool, pool_state) = testing::TestTransactionPoolExt::new();
 
-		let mut t = sp_io::TestExternalities::default();
+		let mut t = tet_io::TestExternalities::default();
 		t.register_extension(TransactionPoolExt::new(pool));
 
 		// given
@@ -810,7 +810,7 @@ mod tests {
 	fn should_send_unsigned_with_signed_payload_with_any_account_and_filter() {
 		let (pool, pool_state) = testing::TestTransactionPoolExt::new();
 
-		let mut t = sp_io::TestExternalities::default();
+		let mut t = tet_io::TestExternalities::default();
 		t.register_extension(TransactionPoolExt::new(pool));
 
 		// given

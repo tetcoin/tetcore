@@ -41,7 +41,7 @@ pub use paste;
 #[doc(hidden)]
 pub use sp_state_machine::BasicExternalities;
 #[doc(hidden)]
-pub use sp_io::{storage::root as storage_root, self};
+pub use tet_io::{storage::root as storage_root, self};
 #[doc(hidden)]
 pub use sp_runtime::RuntimeDebug;
 
@@ -218,7 +218,7 @@ macro_rules! parameter_types {
 		impl $name {
 			/// Returns the key for this parameter type.
 			pub fn key() -> [u8; 16] {
-				$crate::sp_io::hashing::twox_128(
+				$crate::tet_io::hashing::twox_128(
 					concat!(":", stringify!($name), ":").as_bytes()
 				)
 			}
@@ -579,7 +579,7 @@ mod tests {
 		StorageEntryModifier, DefaultByteGetter, StorageHasher,
 	};
 	use tetcore_std::{marker::PhantomData, result};
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 
 	pub trait Config: 'static {
 		type BlockNumber: Codec + EncodeLike + Default;
@@ -1019,7 +1019,7 @@ mod tests {
 	#[test]
 	fn check_storage_parameter_type_works() {
 		TestExternalities::default().execute_with(|| {
-			assert_eq!(sp_io::hashing::twox_128(b":StorageParameter:"), StorageParameter::key());
+			assert_eq!(tet_io::hashing::twox_128(b":StorageParameter:"), StorageParameter::key());
 
 			assert_eq!(10, StorageParameter::get());
 

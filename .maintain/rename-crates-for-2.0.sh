@@ -76,7 +76,7 @@ TO_RENAME=(
     "sr-api-test tp-api-test"
     "sr-arithmetic arithmetic"
     "sr-arithmetic-fuzzer arithmetic-fuzzer"
-    "sr-io tp-io"
+    "sr-io tet-io"
     "sr-primitives tp-runtime"
     "sr-sandbox tp-sandbox"
     "sr-staking-primitives tp-staking"

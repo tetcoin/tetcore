@@ -274,7 +274,7 @@ pub trait TypeId {
 
 /// A log level matching the one from `log` crate.
 ///
-/// Used internally by `sp_io::log` method.
+/// Used internally by `tet_io::log` method.
 #[derive(Encode, Decode, PassByEnum, Copy, Clone)]
 pub enum LogLevel {
 	/// `Error` log level.

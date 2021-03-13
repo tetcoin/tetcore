@@ -417,7 +417,7 @@ impl<Prefix, Hasher1, Hasher2, Key1, Key2, Value, QueryKind, OnEmpty> StorageDou
 #[cfg(test)]
 mod test {
 	use super::*;
-	use sp_io::{TestExternalities, hashing::twox_128};
+	use tet_io::{TestExternalities, hashing::twox_128};
 	use crate::hash::*;
 	use crate::storage::types::ValueQuery;
 	use frame_metadata::StorageEntryModifier;

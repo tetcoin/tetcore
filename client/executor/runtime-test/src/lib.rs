@@ -15,7 +15,7 @@ pub fn wasm_binary_unwrap() -> &'static [u8] {
 use tetcore_std::{vec::Vec, vec};
 
 #[cfg(not(feature = "std"))]
-use sp_io::{
+use tet_io::{
 	storage, hashing::{blake2_128, blake2_256, sha2_256, twox_128, twox_256},
 	crypto::{ed25519_verify, sr25519_verify}, wasm_tracing,
 };
@@ -191,55 +191,55 @@ tet_core::wasm_export_functions! {
 
 
 	fn test_offchain_index_set() {
-		sp_io::offchain_index::set(b"k", b"v");
+		tet_io::offchain_index::set(b"k", b"v");
 	}
 
 
 	fn test_offchain_local_storage() -> bool {
 		let kind = tet_core::offchain::StorageKind::PERSISTENT;
-		assert_eq!(sp_io::offchain::local_storage_get(kind, b"test"), None);
-		sp_io::offchain::local_storage_set(kind, b"test", b"asd");
-		assert_eq!(sp_io::offchain::local_storage_get(kind, b"test"), Some(b"asd".to_vec()));
+		assert_eq!(tet_io::offchain::local_storage_get(kind, b"test"), None);
+		tet_io::offchain::local_storage_set(kind, b"test", b"asd");
+		assert_eq!(tet_io::offchain::local_storage_get(kind, b"test"), Some(b"asd".to_vec()));
 
-		let res = sp_io::offchain::local_storage_compare_and_set(
+		let res = tet_io::offchain::local_storage_compare_and_set(
 			kind,
 			b"test",
 			Some(b"asd".to_vec()),
 			b"",
 		);
-		assert_eq!(sp_io::offchain::local_storage_get(kind, b"test"), Some(b"".to_vec()));
+		assert_eq!(tet_io::offchain::local_storage_get(kind, b"test"), Some(b"".to_vec()));
 		res
 	}
 
 	fn test_offchain_local_storage_with_none() {
 		let kind = tet_core::offchain::StorageKind::PERSISTENT;
-		assert_eq!(sp_io::offchain::local_storage_get(kind, b"test"), None);
+		assert_eq!(tet_io::offchain::local_storage_get(kind, b"test"), None);
 
-		let res = sp_io::offchain::local_storage_compare_and_set(kind, b"test", None, b"value");
+		let res = tet_io::offchain::local_storage_compare_and_set(kind, b"test", None, b"value");
 		assert_eq!(res, true);
-		assert_eq!(sp_io::offchain::local_storage_get(kind, b"test"), Some(b"value".to_vec()));
+		assert_eq!(tet_io::offchain::local_storage_get(kind, b"test"), Some(b"value".to_vec()));
 	}
 
 	fn test_offchain_http() -> bool {
 		use tet_core::offchain::HttpRequestStatus;
 		let run = || -> Option<()> {
-			let id = sp_io::offchain::http_request_start(
+			let id = tet_io::offchain::http_request_start(
 				"POST",
 				"http://localhost:12345",
 				&[],
 			).ok()?;
-			sp_io::offchain::http_request_add_header(id, "X-Auth", "test").ok()?;
-			sp_io::offchain::http_request_write_body(id, &[1, 2, 3, 4], None).ok()?;
-			sp_io::offchain::http_request_write_body(id, &[], None).ok()?;
-			let status = sp_io::offchain::http_response_wait(&[id], None);
+			tet_io::offchain::http_request_add_header(id, "X-Auth", "test").ok()?;
+			tet_io::offchain::http_request_write_body(id, &[1, 2, 3, 4], None).ok()?;
+			tet_io::offchain::http_request_write_body(id, &[], None).ok()?;
+			let status = tet_io::offchain::http_response_wait(&[id], None);
 			assert!(status == vec![HttpRequestStatus::Finished(200)], "Expected Finished(200) status.");
-			let headers = sp_io::offchain::http_response_headers(id);
+			let headers = tet_io::offchain::http_response_headers(id);
 			assert_eq!(headers, vec![(b"X-Auth".to_vec(), b"hello".to_vec())]);
 			let mut buffer = vec![0; 64];
-			let read = sp_io::offchain::http_response_read_body(id, &mut buffer, None).ok()?;
+			let read = tet_io::offchain::http_response_read_body(id, &mut buffer, None).ok()?;
 			assert_eq!(read, 3);
 			assert_eq!(&buffer[0..read as usize], &[1, 2, 3]);
-			let read = sp_io::offchain::http_response_read_body(id, &mut buffer, None).ok()?;
+			let read = tet_io::offchain::http_response_read_body(id, &mut buffer, None).ok()?;
 			assert_eq!(read, 0);
 
 			Some(())
@@ -262,10 +262,10 @@ tet_core::wasm_export_functions! {
 	}
 
 	fn test_nested_spans() {
-		sp_io::init_tracing();
+		tet_io::init_tracing();
 		let span_id = wasm_tracing::enter_span(Default::default());
 		{
-			sp_io::init_tracing();
+			tet_io::init_tracing();
 			let span_id = wasm_tracing::enter_span(Default::default());
 			wasm_tracing::exit(span_id);
 		}

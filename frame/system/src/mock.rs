@@ -126,8 +126,8 @@ pub type SysEvent = <Test as Config>::Event;
 pub const CALL: &<Test as Config>::Call = &Call;
 
 /// Create new externalities for `System` module tests.
-pub fn new_test_ext() -> sp_io::TestExternalities {
-	let mut ext: sp_io::TestExternalities = GenesisConfig::default().build_storage::<Test>().unwrap().into();
+pub fn new_test_ext() -> tet_io::TestExternalities {
+	let mut ext: tet_io::TestExternalities = GenesisConfig::default().build_storage::<Test>().unwrap().into();
 	// Add to each test the initial weight of a block
 	ext.execute_with(|| System::register_extra_weight_unchecked(
 		<Test as crate::Config>::BlockWeights::get().base_block,

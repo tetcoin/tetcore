@@ -139,6 +139,6 @@ impl<T: FullCodec, G: StorageValue<T>> storage::StorageValue<T> for G {
 		T: StorageAppend<Item>,
 	{
 		let key = Self::storage_value_final_key();
-		sp_io::storage::append(&key, item.encode());
+		tet_io::storage::append(&key, item.encode());
 	}
 }

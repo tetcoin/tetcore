@@ -518,10 +518,10 @@ impl<T: Config> Module<T> {
 		// deadline to 2s to complete the external call.
 		// You can also wait idefinitely for the response, however you may still get a timeout
 		// coming from the host machine.
-		let deadline = sp_io::offchain::timestamp().add(Duration::from_millis(2_000));
+		let deadline = tet_io::offchain::timestamp().add(Duration::from_millis(2_000));
 		// Initiate an external HTTP GET request.
 		// This is using high-level wrappers from `sp_runtime`, for the low-level calls that
-		// you can find in `sp_io`. The API is trying to be similar to `reqwest`, but
+		// you can find in `tet_io`. The API is trying to be similar to `reqwest`, but
 		// since we are running in a custom WASM execution environment we can't simply
 		// import the library here.
 		let request = http::Request::get(

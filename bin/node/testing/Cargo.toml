@@ -28,7 +28,7 @@ node-executor = { version = "2.0.0", path = "../executor" }
 node-primitives = { version = "2.0.0", path = "../primitives" }
 node-runtime = { version = "2.0.0", path = "../runtime" }
 tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-io = { version = "2.0.0", path = "../../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../../primitives/io" }
 frame-support = { version = "2.0.0", path = "../../../frame/support" }
 pallet-session = { version = "2.0.0", path = "../../../frame/session" }
 pallet-society = { version = "2.0.0", path = "../../../frame/society" }

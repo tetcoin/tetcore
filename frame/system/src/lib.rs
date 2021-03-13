@@ -101,7 +101,7 @@ use codec::{Encode, Decode, FullCodec, EncodeLike};
 #[cfg(feature = "std")]
 use frame_support::traits::GenesisBuild;
 #[cfg(any(feature = "std", test))]
-use sp_io::TestExternalities;
+use tet_io::TestExternalities;
 
 pub mod offchain;
 pub mod limits;
@@ -321,7 +321,7 @@ pub mod pallet {
 		/// # <weight>
 		/// - `O(C + S)` where `C` length of `code` and `S` complexity of `can_set_code`
 		/// - 1 storage write (codec `O(C)`).
-		/// - 1 call to `can_set_code`: `O(S)` (calls `sp_io::misc::runtime_version` which is expensive).
+		/// - 1 call to `can_set_code`: `O(S)` (calls `tet_io::misc::runtime_version` which is expensive).
 		/// - 1 event.
 		/// The weight of this function is dependent on the runtime, but generally this is very expensive.
 		/// We will treat this as a full block.
@@ -615,10 +615,10 @@ pub mod pallet {
 			<UpgradedToU32RefCount<T>>::put(true);
 			<UpgradedToDualRefCount<T>>::put(true);
 
-			sp_io::storage::set(well_known_keys::CODE, &self.code);
-			sp_io::storage::set(well_known_keys::EXTRINSIC_INDEX, &0u32.encode());
+			tet_io::storage::set(well_known_keys::CODE, &self.code);
+			tet_io::storage::set(well_known_keys::EXTRINSIC_INDEX, &0u32.encode());
 			if let Some(ref changes_trie_config) = self.changes_trie_config {
-				sp_io::storage::set(well_known_keys::CHANGES_TRIE_CONFIG, &changes_trie_config.encode());
+				tet_io::storage::set(well_known_keys::CHANGES_TRIE_CONFIG, &changes_trie_config.encode());
 			}
 		}
 	}
@@ -1244,9 +1244,9 @@ impl<T: Config> Module<T> {
 			<BlockHash<T>>::remove(to_remove);
 		}
 
-		let storage_root = T::Hash::decode(&mut &sp_io::storage::root()[..])
+		let storage_root = T::Hash::decode(&mut &tet_io::storage::root()[..])
 			.expect("Node is configured to use the same hash; qed");
-		let storage_changes_root = sp_io::storage::changes_root(&parent_hash.encode());
+		let storage_changes_root = tet_io::storage::changes_root(&parent_hash.encode());
 
 		// we can't compute changes trie root earlier && put it to the Digest
 		// because it will include all currently existing temporaries.
@@ -1396,7 +1396,7 @@ impl<T: Config> Module<T> {
 	/// of the old and new runtime has the same spec name and that the spec version is increasing.
 	pub fn can_set_code(code: &[u8]) -> Result<(), sp_runtime::DispatchError> {
 		let current_version = T::Version::get();
-		let new_version = sp_io::misc::runtime_version(&code)
+		let new_version = tet_io::misc::runtime_version(&code)
 			.and_then(|v| RuntimeVersion::decode(&mut &v[..]).ok())
 			.ok_or_else(|| Error::<T>::FailedToExtractRuntimeVersion)?;
 

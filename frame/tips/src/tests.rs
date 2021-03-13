@@ -154,7 +154,7 @@ impl Config for Test {
 	type WeightInfo = ();
 }
 
-pub fn new_test_ext() -> sp_io::TestExternalities {
+pub fn new_test_ext() -> tet_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 	pallet_balances::GenesisConfig::<Test>{
 		// Total issuance will be 200 with treasury account initialized at ED.
@@ -434,7 +434,7 @@ fn test_last_reward_migration() {
 
 	s.top = data.into_iter().collect();
 
-	sp_io::TestExternalities::new(s).execute_with(|| {
+	tet_io::TestExternalities::new(s).execute_with(|| {
 
 		TipsModTestInst::migrate_retract_tip_for_tip_new();
 
@@ -477,7 +477,7 @@ fn genesis_funding_works() {
 		balances: vec![(0, 100), (Treasury::account_id(), initial_funding)],
 	}.assimilate_storage(&mut t).unwrap();
 	pallet_treasury::GenesisConfig::default().assimilate_storage::<Test, _>(&mut t).unwrap();
-	let mut t: sp_io::TestExternalities = t.into();
+	let mut t: tet_io::TestExternalities = t.into();
 
 	t.execute_with(|| {
 		assert_eq!(Balances::free_balance(Treasury::account_id()), initial_funding);

@@ -31,7 +31,7 @@ twasm-utils = { version = "0.17", default-features = false }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
 tp-sandbox = { version = "0.8.0", default-features = false, path = "../../primitives/sandbox" }
 twasmi-validation = { version = "0.3.0", default-features = false }
@@ -57,7 +57,7 @@ std = [
 	"codec/std",
 	"tet-core/std",
 	"tp-runtime/std",
-	"tp-io/std",
+	"tet-io/std",
 	"tetcore-std/std",
 	"tp-sandbox/std",
 	"frame-support/std",

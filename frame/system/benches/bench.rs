@@ -94,7 +94,7 @@ impl module::Config for Runtime {
 	type Event = Event;
 }
 
-fn new_test_ext() -> sp_io::TestExternalities {
+fn new_test_ext() -> tet_io::TestExternalities {
 	system::GenesisConfig::default().build_storage::<Runtime>().unwrap().into()
 }
 

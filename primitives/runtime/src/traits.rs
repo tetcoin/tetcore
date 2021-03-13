@@ -19,7 +19,7 @@
 
 use tetcore_std::prelude::*;
 use tetcore_std::{self, marker::PhantomData, convert::{TryFrom, TryInto}, fmt::Debug};
-use sp_io;
+use tet_io;
 #[cfg(feature = "std")]
 use std::fmt::Display;
 #[cfg(feature = "std")]
@@ -92,7 +92,7 @@ impl Verify for tet_core::ed25519::Signature {
 	type Signer = tet_core::ed25519::Public;
 
 	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &tet_core::ed25519::Public) -> bool {
-		sp_io::crypto::ed25519_verify(self, msg.get(), signer)
+		tet_io::crypto::ed25519_verify(self, msg.get(), signer)
 	}
 }
 
@@ -100,16 +100,16 @@ impl Verify for tet_core::sr25519::Signature {
 	type Signer = tet_core::sr25519::Public;
 
 	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &tet_core::sr25519::Public) -> bool {
-		sp_io::crypto::sr25519_verify(self, msg.get(), signer)
+		tet_io::crypto::sr25519_verify(self, msg.get(), signer)
 	}
 }
 
 impl Verify for tet_core::ecdsa::Signature {
 	type Signer = tet_core::ecdsa::Public;
 	fn verify<L: Lazy<[u8]>>(&self, mut msg: L, signer: &tet_core::ecdsa::Public) -> bool {
-		match sp_io::crypto::secp256k1_ecdsa_recover_compressed(
+		match tet_io::crypto::secp256k1_ecdsa_recover_compressed(
 			self.as_ref(),
-			&sp_io::hashing::blake2_256(msg.get()),
+			&tet_io::hashing::blake2_256(msg.get()),
 		) {
 			Ok(pubkey) => &signer.as_ref()[..] == &pubkey[..],
 			_ => false,
@@ -417,7 +417,7 @@ impl Hasher for BlakeTwo256 {
 	const LENGTH: usize = 32;
 
 	fn hash(s: &[u8]) -> Self::Out {
-		sp_io::hashing::blake2_256(s).into()
+		tet_io::hashing::blake2_256(s).into()
 	}
 }
 
@@ -425,11 +425,11 @@ impl Hash for BlakeTwo256 {
 	type Output = tet_core::H256;
 
 	fn trie_root(input: Vec<(Vec<u8>, Vec<u8>)>) -> Self::Output {
-		sp_io::trie::blake2_256_root(input)
+		tet_io::trie::blake2_256_root(input)
 	}
 
 	fn ordered_trie_root(input: Vec<Vec<u8>>) -> Self::Output {
-		sp_io::trie::blake2_256_ordered_root(input)
+		tet_io::trie::blake2_256_ordered_root(input)
 	}
 }
 
@@ -444,7 +444,7 @@ impl Hasher for Keccak256 {
 	const LENGTH: usize = 32;
 
 	fn hash(s: &[u8]) -> Self::Out {
-		sp_io::hashing::keccak_256(s).into()
+		tet_io::hashing::keccak_256(s).into()
 	}
 }
 
@@ -452,11 +452,11 @@ impl Hash for Keccak256 {
 	type Output = tet_core::H256;
 
 	fn trie_root(input: Vec<(Vec<u8>, Vec<u8>)>) -> Self::Output {
-		sp_io::trie::keccak_256_root(input)
+		tet_io::trie::keccak_256_root(input)
 	}
 
 	fn ordered_trie_root(input: Vec<Vec<u8>>) -> Self::Output {
-		sp_io::trie::keccak_256_ordered_root(input)
+		tet_io::trie::keccak_256_ordered_root(input)
 	}
 }
 
@@ -1348,19 +1348,19 @@ impl Printable for usize {
 
 impl Printable for u64 {
 	fn print(&self) {
-		sp_io::misc::print_num(*self);
+		tet_io::misc::print_num(*self);
 	}
 }
 
 impl Printable for &[u8] {
 	fn print(&self) {
-		sp_io::misc::print_hex(self);
+		tet_io::misc::print_hex(self);
 	}
 }
 
 impl Printable for &str {
 	fn print(&self) {
-		sp_io::misc::print_utf8(self.as_bytes());
+		tet_io::misc::print_utf8(self.as_bytes());
 	}
 }
 

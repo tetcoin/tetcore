@@ -19,7 +19,7 @@
 
 use codec::{Encode, Decode};
 use tetcore_std::{vec::Vec, prelude::Box};
-use sp_io::hashing::blake2_256;
+use tet_io::hashing::blake2_256;
 use tetcore_storage::TrackedStorageKey;
 
 /// An alphabet of possible parameters to use for benchmarking.

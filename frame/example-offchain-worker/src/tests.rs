@@ -126,7 +126,7 @@ type Example = Module<Test>;
 
 #[test]
 fn it_aggregates_the_price() {
-	sp_io::TestExternalities::default().execute_with(|| {
+	tet_io::TestExternalities::default().execute_with(|| {
 		assert_eq!(Example::average_price(), None);
 
 		assert_ok!(Example::submit_price(Origin::signed(Default::default()), 27));
@@ -140,7 +140,7 @@ fn it_aggregates_the_price() {
 #[test]
 fn should_make_http_call_and_parse_result() {
 	let (offchain, state) = testing::TestOffchainExt::new();
-	let mut t = sp_io::TestExternalities::default();
+	let mut t = tet_io::TestExternalities::default();
 	t.register_extension(OffchainExt::new(offchain));
 
 	price_oracle_response(&mut state.write());
@@ -156,7 +156,7 @@ fn should_make_http_call_and_parse_result() {
 #[test]
 fn knows_how_to_mock_several_http_calls() {
 	let (offchain, state) = testing::TestOffchainExt::new();
-	let mut t = sp_io::TestExternalities::default();
+	let mut t = tet_io::TestExternalities::default();
 	t.register_extension(OffchainExt::new(offchain));
 
 	{
@@ -213,7 +213,7 @@ fn should_submit_signed_transaction_on_chain() {
 	).unwrap();
 
 
-	let mut t = sp_io::TestExternalities::default();
+	let mut t = tet_io::TestExternalities::default();
 	t.register_extension(OffchainExt::new(offchain));
 	t.register_extension(TransactionPoolExt::new(pool));
 	t.register_extension(KeystoreExt(Arc::new(keystore)));
@@ -251,7 +251,7 @@ fn should_submit_unsigned_transaction_on_chain_for_any_account() {
 		.unwrap()
 		.clone();
 
-	let mut t = sp_io::TestExternalities::default();
+	let mut t = tet_io::TestExternalities::default();
 	t.register_extension(OffchainExt::new(offchain));
 	t.register_extension(TransactionPoolExt::new(pool));
 	t.register_extension(KeystoreExt(Arc::new(keystore)));
@@ -304,7 +304,7 @@ fn should_submit_unsigned_transaction_on_chain_for_all_accounts() {
 		.unwrap()
 		.clone();
 
-	let mut t = sp_io::TestExternalities::default();
+	let mut t = tet_io::TestExternalities::default();
 	t.register_extension(OffchainExt::new(offchain));
 	t.register_extension(TransactionPoolExt::new(pool));
 	t.register_extension(KeystoreExt(Arc::new(keystore)));
@@ -345,7 +345,7 @@ fn should_submit_raw_unsigned_transaction_on_chain() {
 
 	let keystore = KeyStore::new();
 
-	let mut t = sp_io::TestExternalities::default();
+	let mut t = tet_io::TestExternalities::default();
 	t.register_extension(OffchainExt::new(offchain));
 	t.register_extension(TransactionPoolExt::new(pool));
 	t.register_extension(KeystoreExt(Arc::new(keystore)));

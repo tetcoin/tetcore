@@ -23,7 +23,7 @@ use crate::{
 	storage::Storage,
 };
 use tetcore_std::prelude::*;
-use sp_io::hashing::blake2_256;
+use tet_io::hashing::blake2_256;
 use tet_core::crypto::UncheckedFrom;
 use frame_support::{
 	debug, StorageMap,

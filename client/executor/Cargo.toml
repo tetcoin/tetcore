@@ -18,7 +18,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 derive_more = "0.99.2"
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
-tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../primitives/io" }
 tet-core = { version = "2.0.0", path = "../../primitives/core" }
 tp-tasks = { version = "2.0.0", path = "../../primitives/tasks" }
 tp-trie = { version = "2.0.0", path = "../../primitives/trie" }

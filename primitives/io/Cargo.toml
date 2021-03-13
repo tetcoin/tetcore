@@ -1,5 +1,5 @@
 [package]
-name = "tp-io"
+name = "tet-io"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
@@ -9,7 +9,7 @@ categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
 description = "I/O for Tetcore runtimes"
-documentation = "https://docs.rs/tp-io"
+documentation = "https://docs.rs/tet-io"
 readme = "README.md"
 
 [package.metadata.docs.rs]

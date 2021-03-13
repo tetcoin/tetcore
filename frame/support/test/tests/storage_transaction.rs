@@ -19,7 +19,7 @@ use frame_support::{
 	assert_ok, assert_noop, transactional, StorageMap, StorageValue,
 	dispatch::{DispatchError, DispatchResult}, storage::{with_transaction, TransactionOutcome::*},
 };
-use sp_io::TestExternalities;
+use tet_io::TestExternalities;
 use tetcore_std::result;
 
 pub trait Config: frame_support_test::Config {}

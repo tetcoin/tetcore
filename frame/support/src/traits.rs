@@ -1515,7 +1515,7 @@ impl OnRuntimeUpgrade for Tuple {
 pub trait OffchainWorker<BlockNumber> {
 	/// This function is being called after every block import (when fully synced).
 	///
-	/// Implement this and use any of the `Offchain` `sp_io` set of APIs
+	/// Implement this and use any of the `Offchain` `tet_io` set of APIs
 	/// to perform off-chain computations, calls and submit transactions
 	/// with results to trigger any on-chain changes.
 	/// Any state alterations are lost and are not persisted.
@@ -1913,7 +1913,7 @@ pub trait Hooks<BlockNumber> {
 	///
 	/// This function is being called after every block import (when fully synced).
 	///
-	/// Implement this and use any of the `Offchain` `sp_io` set of APIs
+	/// Implement this and use any of the `Offchain` `tet_io` set of APIs
 	/// to perform off-chain computations, calls and submit transactions
 	/// with results to trigger any on-chain changes.
 	/// Any state alterations are lost and are not persisted.
@@ -1988,8 +1988,8 @@ impl PalletVersion {
 	pub fn storage_key<PI: PalletInfo, Pallet: 'static>() -> Option<[u8; 32]> {
 		let pallet_name = PI::name::<Pallet>()?;
 
-		let pallet_name = sp_io::hashing::twox_128(pallet_name.as_bytes());
-		let postfix = sp_io::hashing::twox_128(PALLET_VERSION_STORAGE_KEY_POSTFIX);
+		let pallet_name = tet_io::hashing::twox_128(pallet_name.as_bytes());
+		let postfix = tet_io::hashing::twox_128(PALLET_VERSION_STORAGE_KEY_POSTFIX);
 
 		let mut final_key = [0u8; 32];
 		final_key[..16].copy_from_slice(&pallet_name);

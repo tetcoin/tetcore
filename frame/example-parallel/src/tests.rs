@@ -79,7 +79,7 @@ type Example = Module<Test>;
 fn it_can_enlist() {
 	use tet_core::Pair;
 
-	sp_io::TestExternalities::default().execute_with(|| {
+	tet_io::TestExternalities::default().execute_with(|| {
 		let (pair1, _) = tet_core::sr25519::Pair::generate();
 		let (pair2, _) = tet_core::sr25519::Pair::generate();
 
@@ -111,7 +111,7 @@ fn it_can_enlist() {
 fn one_wrong_will_not_enlist_anyone() {
 	use tet_core::Pair;
 
-	sp_io::TestExternalities::default().execute_with(|| {
+	tet_io::TestExternalities::default().execute_with(|| {
 		let (pair1, _) = tet_core::sr25519::Pair::generate();
 		let (pair2, _) = tet_core::sr25519::Pair::generate();
 		let (pair3, _) = tet_core::sr25519::Pair::generate();

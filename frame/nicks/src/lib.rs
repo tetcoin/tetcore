@@ -318,7 +318,7 @@ mod tests {
 	type Balances = pallet_balances::Module<Test>;
 	type Nicks = Module<Test>;
 
-	fn new_test_ext() -> sp_io::TestExternalities {
+	fn new_test_ext() -> tet_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 		pallet_balances::GenesisConfig::<Test> {
 			balances: vec![

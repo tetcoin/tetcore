@@ -41,7 +41,7 @@ pub fn get<T: Decode + Sized>(
 	match child_info.child_type() {
 		ChildType::ParentKeyId => {
 			let storage_key = child_info.storage_key();
-			sp_io::default_child_storage::get(
+			tet_io::default_child_storage::get(
 				storage_key,
 				key,
 			).and_then(|v| {
@@ -92,7 +92,7 @@ pub fn put<T: Encode>(
 ) {
 	match child_info.child_type() {
 		ChildType::ParentKeyId => value.using_encoded(|slice|
-			sp_io::default_child_storage::set(
+			tet_io::default_child_storage::set(
 				child_info.storage_key(),
 				key,
 				slice,
@@ -148,7 +148,7 @@ pub fn exists(
 	key: &[u8],
 ) -> bool {
 	match child_info.child_type() {
-		ChildType::ParentKeyId => sp_io::default_child_storage::read(
+		ChildType::ParentKeyId => tet_io::default_child_storage::read(
 			child_info.storage_key(),
 			key, &mut [0;0][..], 0,
 		).is_some(),
@@ -179,7 +179,7 @@ pub fn kill_storage(
 	limit: Option<u32>,
 ) -> KillOutcome {
 	let all_removed = match child_info.child_type() {
-		ChildType::ParentKeyId => sp_io::default_child_storage::storage_kill(
+		ChildType::ParentKeyId => tet_io::default_child_storage::storage_kill(
 			child_info.storage_key(),
 			limit
 		),
@@ -197,7 +197,7 @@ pub fn kill(
 ) {
 	match child_info.child_type() {
 		ChildType::ParentKeyId => {
-			sp_io::default_child_storage::clear(
+			tet_io::default_child_storage::clear(
 				child_info.storage_key(),
 				key,
 			);
@@ -211,7 +211,7 @@ pub fn get_raw(
 	key: &[u8],
 ) -> Option<Vec<u8>> {
 	match child_info.child_type() {
-		ChildType::ParentKeyId => sp_io::default_child_storage::get(
+		ChildType::ParentKeyId => tet_io::default_child_storage::get(
 			child_info.storage_key(),
 			key,
 		),
@@ -225,7 +225,7 @@ pub fn put_raw(
 	value: &[u8],
 ) {
 	match child_info.child_type() {
-		ChildType::ParentKeyId => sp_io::default_child_storage::set(
+		ChildType::ParentKeyId => tet_io::default_child_storage::set(
 			child_info.storage_key(),
 			key,
 			value,
@@ -238,7 +238,7 @@ pub fn root(
 	child_info: &ChildInfo,
 ) -> Vec<u8> {
 	match child_info.child_type() {
-		ChildType::ParentKeyId => sp_io::default_child_storage::root(
+		ChildType::ParentKeyId => tet_io::default_child_storage::root(
 			child_info.storage_key(),
 		),
 	}
@@ -252,7 +252,7 @@ pub fn len(
 	match child_info.child_type() {
 		ChildType::ParentKeyId => {
 			let mut buffer = [0; 0];
-			sp_io::default_child_storage::read(
+			tet_io::default_child_storage::read(
 				child_info.storage_key(),
 				key,
 				&mut buffer,

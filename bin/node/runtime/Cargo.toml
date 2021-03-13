@@ -89,7 +89,7 @@ pallet-vesting = { version = "2.0.0", default-features = false, path = "../../..
 wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
 
 [dev-dependencies]
-tp-io = { version = "2.0.0", path = "../../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../../primitives/io" }
 
 [features]
 default = ["std"]

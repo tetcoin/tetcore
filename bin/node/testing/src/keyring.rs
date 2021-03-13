@@ -88,7 +88,7 @@ pub fn sign(xt: CheckedExtrinsic, spec_version: u32, tx_version: u32, genesis_ha
 			let key = AccountKeyring::from_account_id(&signed).unwrap();
 			let signature = payload.using_encoded(|b| {
 				if b.len() > 256 {
-					key.sign(&sp_io::hashing::blake2_256(b))
+					key.sign(&tet_io::hashing::blake2_256(b))
 				} else {
 					key.sign(b)
 				}

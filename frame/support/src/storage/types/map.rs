@@ -317,7 +317,7 @@ impl<Prefix, Hasher, Key, Value, QueryKind, OnEmpty> StorageMapMetadata
 #[cfg(test)]
 mod test {
 	use super::*;
-	use sp_io::{TestExternalities, hashing::twox_128};
+	use tet_io::{TestExternalities, hashing::twox_128};
 	use crate::hash::*;
 	use crate::storage::types::ValueQuery;
 	use frame_metadata::StorageEntryModifier;

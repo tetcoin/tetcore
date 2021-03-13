@@ -58,7 +58,7 @@ impl<T: Decode + Sized> Iterator for StorageIterator<T> {
 
 	fn next(&mut self) -> Option<(Vec<u8>, T)> {
 		loop {
-			let maybe_next = sp_io::storage::next_key(&self.previous_key)
+			let maybe_next = tet_io::storage::next_key(&self.previous_key)
 				.filter(|n| n.starts_with(&self.prefix));
 			break match maybe_next {
 				Some(next) => {
@@ -118,7 +118,7 @@ impl<K: Decode + Sized, T: Decode + Sized, H: ReversibleStorageHasher> Iterator
 
 	fn next(&mut self) -> Option<(K, T)> {
 		loop {
-			let maybe_next = sp_io::storage::next_key(&self.previous_key)
+			let maybe_next = tet_io::storage::next_key(&self.previous_key)
 				.filter(|n| n.starts_with(&self.prefix));
 			break match maybe_next {
 				Some(next) => {

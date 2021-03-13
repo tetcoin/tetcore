@@ -34,7 +34,7 @@ pallet-session = { version = "2.0.0", default-features = false, path = "../sessi
 [dev-dependencies]
 frame-benchmarking = { version = "2.0.0", path = "../benchmarking" }
 grandpa = { package = "tetsy-finality-grandpa", version = "0.13.0", features = ["derive-codec"] }
-tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../primitives/io" }
 tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-offences = { version = "2.0.0", path = "../offences" }

@@ -23,13 +23,13 @@ serde = { version = "1.0.101", optional = true }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tetcore-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
 
 [dev-dependencies]
 hex-literal = "0.3.1"
 tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-io ={ version = "2.0.0", path = "../../primitives/io" }
+tet-io ={ version = "2.0.0", path = "../../primitives/io" }
 pallet-indices = { version = "2.0.0", path = "../indices" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-transaction-payment = { version = "2.0.0", path = "../transaction-payment" }

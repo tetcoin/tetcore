@@ -32,7 +32,7 @@ use sp_runtime::{
 	testing::{Header, H256},
 	AccountId32, Perbill,
 };
-use sp_io::hashing::blake2_256;
+use tet_io::hashing::blake2_256;
 use frame_support::{
 	assert_ok, assert_err, assert_err_ignore_postinfo, impl_outer_dispatch, impl_outer_event,
 	impl_outer_origin, parameter_types, StorageMap, assert_storage_noop,
@@ -315,7 +315,7 @@ impl ExtBuilder {
 	pub fn set_associated_consts(&self) {
 		EXISTENTIAL_DEPOSIT.with(|v| *v.borrow_mut() = self.existential_deposit);
 	}
-	pub fn build(self) -> sp_io::TestExternalities {
+	pub fn build(self) -> tet_io::TestExternalities {
 		self.set_associated_consts();
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 		pallet_balances::GenesisConfig::<Test> {
@@ -327,7 +327,7 @@ impl ExtBuilder {
 				..Default::default()
 			},
 		}.assimilate_storage(&mut t).unwrap();
-		let mut ext = sp_io::TestExternalities::new(t);
+		let mut ext = tet_io::TestExternalities::new(t);
 		ext.execute_with(|| System::set_block_number(1));
 		ext
 	}
@@ -1771,7 +1771,7 @@ fn crypto_hashes() {
 			let addr = Contracts::contract_address(&ALICE, &code_hash, &[]);
 			// Perform the call.
 			let input = b"_DEAD_BEEF";
-			use sp_io::hashing::*;
+			use tet_io::hashing::*;
 			// Wraps a hash function into a more dynamic form usable for testing.
 			macro_rules! dyn_hash_fn {
 				($name:ident) => {

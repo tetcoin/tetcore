@@ -155,7 +155,7 @@ pub fn get_balancing_iters<T: Config>() -> usize {
 	match T::MaxIterations::get() {
 		0 => 0,
 		max @ _ => {
-			let seed = sp_io::offchain::random_seed();
+			let seed = tet_io::offchain::random_seed();
 			let random = <u32>::decode(&mut TrailingZeroInput::new(seed.as_ref()))
 				.expect("input is padded with zeroes; qed") % max.saturating_add(1);
 			random as usize

@@ -158,7 +158,7 @@ impl EnvBuilder {
 			pot: self.pot,
 			max_members: self.max_members,
 		}.assimilate_storage(&mut t).unwrap();
-		let mut ext: sp_io::TestExternalities = t.into();
+		let mut ext: tet_io::TestExternalities = t.into();
 		ext.execute_with(f)
 	}
 	#[allow(dead_code)]

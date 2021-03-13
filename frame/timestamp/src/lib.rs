@@ -294,7 +294,7 @@ mod tests {
 	use super::*;
 
 	use frame_support::{assert_ok, parameter_types};
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use tet_core::H256;
 	use sp_runtime::{traits::{BlakeTwo256, IdentityLookup}, testing::Header};
 

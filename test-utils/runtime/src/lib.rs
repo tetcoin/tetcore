@@ -771,7 +771,7 @@ cfg_if! {
 			impl sp_offchain::OffchainWorkerApi<Block> for Runtime {
 				fn offchain_worker(header: &<Block as BlockT>::Header) {
 					let ex = Extrinsic::IncludeData(header.number.encode());
-					sp_io::offchain::submit_transaction(ex.encode()).unwrap();
+					tet_io::offchain::submit_transaction(ex.encode()).unwrap();
 				}
 			}
 
@@ -1030,7 +1030,7 @@ cfg_if! {
 			impl sp_offchain::OffchainWorkerApi<Block> for Runtime {
 				fn offchain_worker(header: &<Block as BlockT>::Header) {
 					let ex = Extrinsic::IncludeData(header.number.encode());
-					sp_io::offchain::submit_transaction(ex.encode()).unwrap()
+					tet_io::offchain::submit_transaction(ex.encode()).unwrap()
 				}
 			}
 
@@ -1103,15 +1103,15 @@ fn test_ecdsa_crypto() -> (ecdsa::AppSignature, ecdsa::AppPublic) {
 
 fn test_read_storage() {
 	const KEY: &[u8] = b":read_storage";
-	sp_io::storage::set(KEY, b"test");
+	tet_io::storage::set(KEY, b"test");
 
 	let mut v = [0u8; 4];
-	let r = sp_io::storage::read(KEY, &mut v, 0);
+	let r = tet_io::storage::read(KEY, &mut v, 0);
 	assert_eq!(r, Some(4));
 	assert_eq!(&v, b"test");
 
 	let mut v = [0u8; 4];
-	let r = sp_io::storage::read(KEY, &mut v, 4);
+	let r = tet_io::storage::read(KEY, &mut v, 4);
 	assert_eq!(r, Some(0));
 	assert_eq!(&v, &[0, 0, 0, 0]);
 }
@@ -1119,14 +1119,14 @@ fn test_read_storage() {
 fn test_read_child_storage() {
 	const STORAGE_KEY: &[u8] = b"unique_id_1";
 	const KEY: &[u8] = b":read_child_storage";
-	sp_io::default_child_storage::set(
+	tet_io::default_child_storage::set(
 		STORAGE_KEY,
 		KEY,
 		b"test",
 	);
 
 	let mut v = [0u8; 4];
-	let r = sp_io::default_child_storage::read(
+	let r = tet_io::default_child_storage::read(
 		STORAGE_KEY,
 		KEY,
 		&mut v,
@@ -1136,7 +1136,7 @@ fn test_read_child_storage() {
 	assert_eq!(&v, b"test");
 
 	let mut v = [0u8; 4];
-	let r = sp_io::default_child_storage::read(
+	let r = tet_io::default_child_storage::read(
 		STORAGE_KEY,
 		KEY,
 		&mut v,

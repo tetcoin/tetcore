@@ -371,7 +371,7 @@ decl_module! {
 		// Runs after every block.
 		fn offchain_worker(now: T::BlockNumber) {
 			// Only send messages if we are a potential validator.
-			if sp_io::offchain::is_validator() {
+			if tet_io::offchain::is_validator() {
 				for res in Self::send_heartbeats(now).into_iter().flatten() {
 					if let Err(e) = res {
 						debug::debug!(
@@ -485,7 +485,7 @@ impl<T: Config> Module<T> {
 	) -> OffchainResult<T, ()> {
 		// A helper function to prepare heartbeat call.
 		let prepare_heartbeat = || -> OffchainResult<T, Call<T>> {
-			let network_state = sp_io::offchain::network_state()
+			let network_state = tet_io::offchain::network_state()
 				.map_err(|_| OffchainErr::NetworkState)?;
 			let heartbeat_data = Heartbeat {
 				block_number,

@@ -26,7 +26,7 @@ use sp_runtime::{
 	testing::{Header, UintAuthorityId},
 };
 use frame_support::parameter_types;
-use sp_io;
+use tet_io;
 use tet_core::H256;
 
 type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
@@ -87,7 +87,7 @@ impl pallet_aura::Config for Test {
 	type AuthorityId = AuthorityId;
 }
 
-pub fn new_test_ext(authorities: Vec<u64>) -> sp_io::TestExternalities {
+pub fn new_test_ext(authorities: Vec<u64>) -> tet_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 	pallet_aura::GenesisConfig::<Test>{
 		authorities: authorities.into_iter().map(|a| UintAuthorityId(a).to_public_key()).collect(),

@@ -79,7 +79,7 @@ impl Config for Test {
 const A: u64 = 1;
 const B: u64 = 2;
 
-pub fn new_test_ext() -> sp_io::TestExternalities {
+pub fn new_test_ext() -> tet_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 	let genesis = pallet_balances::GenesisConfig::<Test> {
 		balances: vec![

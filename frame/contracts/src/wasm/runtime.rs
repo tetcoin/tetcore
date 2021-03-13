@@ -29,7 +29,7 @@ use tetcore_std::prelude::*;
 use codec::{Decode, DecodeAll, Encode};
 use sp_runtime::traits::SaturatedConversion;
 use tet_core::crypto::UncheckedFrom;
-use sp_io::hashing::{
+use tet_io::hashing::{
 	keccak_256,
 	blake2_256,
 	blake2_128,

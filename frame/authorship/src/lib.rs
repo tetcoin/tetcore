@@ -528,7 +528,7 @@ mod tests {
 		)
 	}
 
-	fn new_test_ext() -> sp_io::TestExternalities {
+	fn new_test_ext() -> tet_io::TestExternalities {
 		let t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 		t.into()
 	}

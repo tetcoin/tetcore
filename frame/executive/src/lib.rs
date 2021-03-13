@@ -207,7 +207,7 @@ where
 {
 	/// Start the execution of a particular block.
 	pub fn initialize_block(header: &System::Header) {
-		sp_io::init_tracing();
+		tet_io::init_tracing();
 		tetcore_tracing::enter_span!(tetcore_tracing::Level::TRACE, "init_block");
 		let digests = Self::extract_pre_digest(&header);
 		Self::initialize_block_impl(
@@ -289,7 +289,7 @@ where
 
 	/// Actually execute all transitions for `block`.
 	pub fn execute_block(block: Block) {
-		sp_io::init_tracing();
+		tet_io::init_tracing();
 		tetcore_tracing::within_span! {
 			tetcore_tracing::info_span!( "execute_block", ?block);
 		{
@@ -332,7 +332,7 @@ where
 	/// Finalize the block - it is up the caller to ensure that all header fields are valid
 	/// except state-root.
 	pub fn finalize_block() -> System::Header {
-		sp_io::init_tracing();
+		tet_io::init_tracing();
 		tetcore_tracing::enter_span!( tetcore_tracing::Level::TRACE, "finalize_block" );
 		<frame_system::Module<System>>::note_finished_extrinsics();
 		let block_number = <frame_system::Module<System>>::block_number();
@@ -347,7 +347,7 @@ where
 	/// This doesn't attempt to validate anything regarding the block, but it builds a list of uxt
 	/// hashes.
 	pub fn apply_extrinsic(uxt: Block::Extrinsic) -> ApplyExtrinsicResult {
-		sp_io::init_tracing();
+		tet_io::init_tracing();
 		let encoded = uxt.encode();
 		let encoded_len = encoded.len();
 		Self::apply_extrinsic_with_len(uxt, encoded_len, encoded)
@@ -418,7 +418,7 @@ where
 		source: TransactionSource,
 		uxt: Block::Extrinsic,
 	) -> TransactionValidity {
-		sp_io::init_tracing();
+		tet_io::init_tracing();
 		use tetcore_tracing::{enter_span, within_span};
 
 		enter_span!{ tetcore_tracing::Level::TRACE, "validate_transaction" };
@@ -443,7 +443,7 @@ where
 
 	/// Start an offchain worker and generate extrinsics.
 	pub fn offchain_worker(header: &System::Header) {
-		sp_io::init_tracing();
+		tet_io::init_tracing();
 		// We need to keep events available for offchain workers,
 		// hence we initialize the block manually.
 		// OffchainWorker RuntimeApi should skip initialization.
@@ -540,7 +540,7 @@ mod tests {
 				}
 
 				fn on_runtime_upgrade() -> Weight {
-					sp_io::storage::set(super::TEST_KEY, "module".as_bytes());
+					tet_io::storage::set(super::TEST_KEY, "module".as_bytes());
 					200
 				}
 
@@ -550,8 +550,8 @@ mod tests {
 
 				#[weight = 0]
 				fn calculate_storage_root(origin) {
-					let root = sp_io::storage::root();
-					sp_io::storage::set("storage_root".as_bytes(), &root);
+					let root = tet_io::storage::root();
+					tet_io::storage::set("storage_root".as_bytes(), &root);
 				}
 			}
 		}
@@ -679,8 +679,8 @@ mod tests {
 	struct CustomOnRuntimeUpgrade;
 	impl OnRuntimeUpgrade for CustomOnRuntimeUpgrade {
 		fn on_runtime_upgrade() -> Weight {
-			sp_io::storage::set(TEST_KEY, "custom_upgrade".as_bytes());
-			sp_io::storage::set(CUSTOM_ON_RUNTIME_KEY, &true.encode());
+			tet_io::storage::set(TEST_KEY, "custom_upgrade".as_bytes());
+			tet_io::storage::set(CUSTOM_ON_RUNTIME_KEY, &true.encode());
 			100
 		}
 	}
@@ -718,7 +718,7 @@ mod tests {
 			<Runtime as frame_system::Config>::BlockWeights::get().get(DispatchClass::Normal).base_extrinsic;
 		let fee: Balance
 			= <Runtime as pallet_transaction_payment::Config>::WeightToFee::calc(&weight);
-		let mut t = sp_io::TestExternalities::new(t);
+		let mut t = tet_io::TestExternalities::new(t);
 		t.execute_with(|| {
 			Executive::initialize_block(&Header::new(
 				1,
@@ -734,7 +734,7 @@ mod tests {
 		});
 	}
 
-	fn new_test_ext(balance_factor: Balance) -> sp_io::TestExternalities {
+	fn new_test_ext(balance_factor: Balance) -> tet_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Runtime>().unwrap();
 		pallet_balances::GenesisConfig::<Runtime> {
 			balances: vec![(1, 111 * balance_factor)],
@@ -1082,8 +1082,8 @@ mod tests {
 				Digest::default(),
 			));
 
-			assert_eq!(&sp_io::storage::get(TEST_KEY).unwrap()[..], *b"module");
-			assert_eq!(sp_io::storage::get(CUSTOM_ON_RUNTIME_KEY).unwrap(), true.encode());
+			assert_eq!(&tet_io::storage::get(TEST_KEY).unwrap()[..], *b"module");
+			assert_eq!(tet_io::storage::get(CUSTOM_ON_RUNTIME_KEY).unwrap(), true.encode());
 		});
 	}
 

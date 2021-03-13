@@ -23,7 +23,7 @@ tet-core = { version = "2.0.0", default-features = false, path = "../core" }
 tp-application-crypto = { version = "2.0.0", default-features = false, path = "../application-crypto" }
 arithmetic = { version = "2.0.0", default-features = false, path = "../arithmetic" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../std" }
-tp-io = { version = "2.0.0", default-features = false, path = "../io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../io" }
 log = { version = "0.4.8", optional = true }
 paste = "0.1.6"
 rand = { version = "0.7.2", optional = true }
@@ -49,7 +49,7 @@ std = [
 	"tet-core/std",
 	"rand",
 	"tetcore-std/std",
-	"tp-io/std",
+	"tet-io/std",
 	"serde",
 	"tetsy-util-mem/std",
 	"tetsy-hash256-std-hasher/std",

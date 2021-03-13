@@ -134,7 +134,7 @@ macro_rules! runtime_print {
 			use core::fmt::Write;
 			let mut w = $crate::tetcore_std::Writer::default();
 			let _ = core::write!(&mut w, $($arg)+);
-			$crate::sp_io::misc::print_utf8(&w.inner())
+			$crate::tet_io::misc::print_utf8(&w.inner())
 		}
 	}
 }
@@ -197,7 +197,7 @@ impl log::Log for RuntimeLogger {
 		let mut w = tetcore_std::Writer::default();
 		let _ = core::write!(&mut w, "{}", record.args());
 
-		sp_io::logging::log(
+		tet_io::logging::log(
 			record.level().into(),
 			record.target(),
 			w.inner(),

@@ -44,7 +44,7 @@ tetsy-hash-db = "0.15.2"
 serde = "1.0.101"
 serde_json = "1.0.41"
 tc-keystore = { version = "2.0.0", path = "../keystore" }
-tp-io = { version = "2.0.0", path = "../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../primitives/io" }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
 externalities = { version = "0.8.0", path = "../../primitives/externalities" }

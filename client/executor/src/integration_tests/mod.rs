@@ -34,7 +34,7 @@ use tracing_subscriber::layer::SubscriberExt;
 use crate::WasmExecutionMethod;
 
 pub type TestExternalities = CoreTestExternalities<BlakeTwo256, u64>;
-type HostFunctions = sp_io::TetcoreHostFunctions;
+type HostFunctions = tet_io::TetcoreHostFunctions;
 
 /// Simple macro that runs a given method as test with the available wasm execution methods.
 #[macro_export]

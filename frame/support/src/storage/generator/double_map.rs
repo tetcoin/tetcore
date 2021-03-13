@@ -294,7 +294,7 @@ impl<K1, K2, V, G> storage::StorageDoubleMap<K1, K2, V> for G where
 		V: StorageAppend<Item>,
 	{
 		let final_key = Self::storage_double_map_final_key(k1, k2);
-		sp_io::storage::append(&final_key, item.encode());
+		tet_io::storage::append(&final_key, item.encode());
 	}
 
 	fn migrate_keys<
@@ -386,7 +386,7 @@ impl<
 	fn translate<O: Decode, F: Fn(K1, K2, O) -> Option<V>>(f: F) {
 		let prefix = G::prefix_hash();
 		let mut previous_key = prefix.clone();
-		while let Some(next) = sp_io::storage::next_key(&previous_key)
+		while let Some(next) = tet_io::storage::next_key(&previous_key)
 			.filter(|n| n.starts_with(&prefix))
 		{
 			previous_key = next;
@@ -468,7 +468,7 @@ mod test_iterators {
 
 	#[test]
 	fn double_map_reversible_reversible_iteration() {
-		sp_io::TestExternalities::default().execute_with(|| {
+		tet_io::TestExternalities::default().execute_with(|| {
 			// All map iterator
 			let prefix = DoubleMap::prefix_hash();
 

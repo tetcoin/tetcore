@@ -20,7 +20,7 @@
 #[allow(dead_code)]
 mod tests {
 	use frame_support::metadata::*;
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use std::marker::PhantomData;
 
 	frame_support::decl_module! {
@@ -479,7 +479,7 @@ mod test3 {
 #[cfg(test)]
 #[allow(dead_code)]
 mod test_append_and_len {
-	use sp_io::TestExternalities;
+	use tet_io::TestExternalities;
 	use codec::{Encode, Decode};
 
 	pub trait Config: frame_support_test::Config {}

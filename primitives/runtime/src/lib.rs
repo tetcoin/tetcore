@@ -271,7 +271,7 @@ impl traits::IdentifyAccount for MultiSigner {
 		match self {
 			MultiSigner::Ed25519(who) => <[u8; 32]>::from(who).into(),
 			MultiSigner::Sr25519(who) => <[u8; 32]>::from(who).into(),
-			MultiSigner::Ecdsa(who) => sp_io::hashing::blake2_256(&who.as_ref()[..]).into(),
+			MultiSigner::Ecdsa(who) => tet_io::hashing::blake2_256(&who.as_ref()[..]).into(),
 		}
 	}
 }
@@ -333,10 +333,10 @@ impl Verify for MultiSignature {
 			(MultiSignature::Ed25519(ref sig), who) => sig.verify(msg, &ed25519::Public::from_slice(who.as_ref())),
 			(MultiSignature::Sr25519(ref sig), who) => sig.verify(msg, &sr25519::Public::from_slice(who.as_ref())),
 			(MultiSignature::Ecdsa(ref sig), who) => {
-				let m = sp_io::hashing::blake2_256(msg.get());
-				match sp_io::crypto::secp256k1_ecdsa_recover_compressed(sig.as_ref(), &m) {
+				let m = tet_io::hashing::blake2_256(msg.get());
+				match tet_io::crypto::secp256k1_ecdsa_recover_compressed(sig.as_ref(), &m) {
 					Ok(pubkey) =>
-						&sp_io::hashing::blake2_256(pubkey.as_ref())
+						&tet_io::hashing::blake2_256(pubkey.as_ref())
 							== <dyn AsRef<[u8; 32]>>::as_ref(who),
 					_ => false,
 				}
@@ -693,7 +693,7 @@ pub struct SignatureBatching(bool);
 impl SignatureBatching {
 	/// Start new batching session.
 	pub fn start() -> Self {
-		sp_io::crypto::start_batch_verify();
+		tet_io::crypto::start_batch_verify();
 		SignatureBatching(false)
 	}
 
@@ -701,7 +701,7 @@ impl SignatureBatching {
 	#[must_use]
 	pub fn verify(mut self) -> bool {
 		self.0 = true;
-		sp_io::crypto::finish_batch_verify()
+		tet_io::crypto::finish_batch_verify()
 	}
 }
 
@@ -794,7 +794,7 @@ mod tests {
 
 		ext.execute_with(|| {
 			let _batching = SignatureBatching::start();
-			sp_io::crypto::sr25519_verify(
+			tet_io::crypto::sr25519_verify(
 				&Default::default(),
 				&Vec::new(),
 				&Default::default(),

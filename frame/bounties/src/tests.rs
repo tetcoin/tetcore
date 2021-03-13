@@ -147,7 +147,7 @@ type Balances = pallet_balances::Module<Test>;
 type Treasury = pallet_treasury::Module<Test>;
 type Bounties = Module<Test>;
 
-pub fn new_test_ext() -> sp_io::TestExternalities {
+pub fn new_test_ext() -> tet_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 	pallet_balances::GenesisConfig::<Test>{
 		// Total issuance will be 200 with treasury account initialized at ED.
@@ -355,7 +355,7 @@ fn inexistent_account_works() {
 		balances: vec![(0, 100), (1, 99), (2, 1)],
 	}.assimilate_storage(&mut t).unwrap();
 	// Treasury genesis config is not build thus treasury account does not exist
-	let mut t: sp_io::TestExternalities = t.into();
+	let mut t: tet_io::TestExternalities = t.into();
 
 	t.execute_with(|| {
 		assert_eq!(Balances::free_balance(Treasury::account_id()), 0); // Account does not exist
@@ -895,7 +895,7 @@ fn genesis_funding_works() {
 		balances: vec![(0, 100), (Treasury::account_id(), initial_funding)],
 	}.assimilate_storage(&mut t).unwrap();
 	pallet_treasury::GenesisConfig::default().assimilate_storage::<Test, _>(&mut t).unwrap();
-	let mut t: sp_io::TestExternalities = t.into();
+	let mut t: tet_io::TestExternalities = t.into();
 
 	t.execute_with(|| {
 		assert_eq!(Balances::free_balance(Treasury::account_id()), initial_funding);

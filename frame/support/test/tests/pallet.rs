@@ -24,7 +24,7 @@ use frame_support::{
 	storage::unhashed,
 };
 use sp_runtime::DispatchError;
-use sp_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
+use tet_io::{TestExternalities, hashing::{twox_64, twox_128, blake2_128}};
 
 pub struct SomeType1;
 impl From<SomeType1> for u64 { fn from(_t: SomeType1) -> Self { 0u64 } }

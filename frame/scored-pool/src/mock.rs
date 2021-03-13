@@ -130,7 +130,7 @@ impl Config for Test {
 	type ScoreOrigin = EnsureSignedBy<ScoreOrigin, u64>;
 }
 
-pub fn new_test_ext() -> sp_io::TestExternalities {
+pub fn new_test_ext() -> tet_io::TestExternalities {
 	let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 	pallet_balances::GenesisConfig::<Test> {
 		balances: vec![

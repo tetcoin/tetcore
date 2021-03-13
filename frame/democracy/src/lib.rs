@@ -1651,7 +1651,7 @@ impl<T: Config> Module<T> {
 		// To decode the enum variant we only need the first byte.
 		let mut buf = [0u8; 1];
 		let key = <Preimages<T>>::hashed_key_for(proposal_hash);
-		let bytes = match sp_io::storage::read(&key, &mut buf, 0) {
+		let bytes = match tet_io::storage::read(&key, &mut buf, 0) {
 			Some(bytes) => bytes,
 			None => return Err(Error::<T>::NotImminent.into()),
 		};
@@ -1682,7 +1682,7 @@ impl<T: Config> Module<T> {
 		// * at most 5 bytes to decode a `Compact<u32>`
 		let mut buf = [0u8; 6];
 		let key = <Preimages<T>>::hashed_key_for(proposal_hash);
-		let bytes = match sp_io::storage::read(&key, &mut buf, 0) {
+		let bytes = match tet_io::storage::read(&key, &mut buf, 0) {
 			Some(bytes) => bytes,
 			None => return Err(Error::<T>::PreimageMissing.into()),
 		};
@@ -1759,7 +1759,7 @@ impl<T: Config> Module<T> {
 fn decode_compact_u32_at(key: &[u8]) -> Option<u32> {
 	// `Compact<u32>` takes at most 5 bytes.
 	let mut buf = [0u8; 5];
-	let bytes = match sp_io::storage::read(&key, &mut buf, 0) {
+	let bytes = match tet_io::storage::read(&key, &mut buf, 0) {
 		Some(bytes) => bytes,
 		None => return None,
 	};

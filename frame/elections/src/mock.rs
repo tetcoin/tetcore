@@ -188,12 +188,12 @@ impl ExtBuilder {
 		self.desired_seats = seats;
 		self
 	}
-	pub fn build(self) -> sp_io::TestExternalities {
+	pub fn build(self) -> tet_io::TestExternalities {
 		VOTING_BOND.with(|v| *v.borrow_mut() = self.voting_bond);
 		VOTING_FEE.with(|v| *v.borrow_mut() = self.voting_fee);
 		PRESENT_SLASH_PER_VOTER.with(|v| *v.borrow_mut() = self.bad_presentation_punishment);
 		DECAY_RATIO.with(|v| *v.borrow_mut() = self.decay_ratio);
-		let mut ext: sp_io::TestExternalities = GenesisConfig {
+		let mut ext: tet_io::TestExternalities = GenesisConfig {
 			pallet_balances: Some(pallet_balances::GenesisConfig::<Test>{
 				balances: vec![
 					(1, 10 * self.balance_factor),
@@ -259,7 +259,7 @@ pub(crate) fn locks(who: &u64) -> Vec<u64> {
 	Balances::locks(who).iter().map(|l| l.amount).collect::<Vec<u64>>()
 }
 
-pub(crate) fn new_test_ext_with_candidate_holes() -> sp_io::TestExternalities {
+pub(crate) fn new_test_ext_with_candidate_holes() -> tet_io::TestExternalities {
 	let mut t = ExtBuilder::default().build();
 	t.execute_with(|| {
 		<elections::Candidates<Test>>::put(vec![0, 0, 1]);

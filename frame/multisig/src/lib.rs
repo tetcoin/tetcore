@@ -52,7 +52,7 @@ pub mod weights;
 
 use tetcore_std::prelude::*;
 use codec::{Encode, Decode};
-use sp_io::hashing::blake2_256;
+use tet_io::hashing::blake2_256;
 use frame_support::{decl_module, decl_event, decl_error, decl_storage, Parameter, ensure, RuntimeDebug};
 use frame_support::{traits::{Get, ReservableCurrency, Currency},
 	weights::{Weight, GetDispatchInfo},

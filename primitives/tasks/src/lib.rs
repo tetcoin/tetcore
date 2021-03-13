@@ -160,7 +160,7 @@ mod inner {
 	pub fn spawn(entry_point: fn(Vec<u8>) -> Vec<u8>, payload: Vec<u8>) -> DataJoinHandle {
 		let func_ptr: usize = unsafe { mem::transmute(entry_point) };
 
-		let handle = sp_io::runtime_tasks::spawn(
+		let handle = tet_io::runtime_tasks::spawn(
 			dispatch_wrapper as usize as _,
 			func_ptr as u32,
 			payload,
@@ -180,7 +180,7 @@ mod inner {
 	impl DataJoinHandle {
 		/// Join handle returned by `spawn` function
 		pub fn join(self) -> Vec<u8> {
-			sp_io::runtime_tasks::join(self.handle)
+			tet_io::runtime_tasks::join(self.handle)
 		}
 	}
 }
@@ -203,7 +203,7 @@ mod tests {
 
 	#[test]
 	fn basic() {
-		sp_io::TestExternalities::default().execute_with(|| {
+		tet_io::TestExternalities::default().execute_with(|| {
 			let a1 = spawn(async_runner, vec![5, 2, 1]).join();
 			assert_eq!(a1, vec![1, 2, 5]);
 		})
@@ -211,7 +211,7 @@ mod tests {
 
 	#[test]
 	fn panicking() {
-		let res = sp_io::TestExternalities::default().execute_with_safe(||{
+		let res = tet_io::TestExternalities::default().execute_with_safe(||{
 			spawn(async_panicker, vec![5, 2, 1]).join();
 		});
 
@@ -220,7 +220,7 @@ mod tests {
 
 	#[test]
 	fn many_joins() {
-		sp_io::TestExternalities::default().execute_with_safe(|| {
+		tet_io::TestExternalities::default().execute_with_safe(|| {
 			// converges to 1 only after 1000+ steps
 			let mut running_val = 9780657630u64;
 			let mut data = vec![];

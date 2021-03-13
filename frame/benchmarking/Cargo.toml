@@ -23,7 +23,7 @@ tp-api = { version = "2.0.0", path = "../../primitives/api", default-features = 
 tp-runtime-interface = { version = "2.0.0", path = "../../primitives/runtime-interface", default-features = false }
 tp-runtime = { version = "2.0.0", path = "../../primitives/runtime", default-features = false }
 tetcore-std = { version = "2.0.0", path = "../../primitives/std", default-features = false }
-tp-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
+tet-io = { version = "2.0.0", path = "../../primitives/io", default-features = false }
 tetcore-storage = { version = "2.0.0", path = "../../primitives/storage", default-features = false }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }

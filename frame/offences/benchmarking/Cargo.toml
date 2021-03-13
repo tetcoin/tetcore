@@ -33,7 +33,7 @@ pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 serde = { version = "1.0.101" }
 tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-io = { version = "2.0.0", path = "../../../primitives/io" }
+tet-io = { version = "2.0.0", path = "../../../primitives/io" }
 
 [features]
 default = ["std"]

@@ -23,7 +23,7 @@ frame-system = { version = "2.0.0", default-features = false, path = "../system"
 pallet-balances = { version = "2.0.0", default-features = false, path = "../balances" }
 tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
 tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tp-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
+tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
 
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
 
@@ -40,7 +40,7 @@ std = [
 	"frame-support/std",
 	"frame-system/std",
 	"pallet-balances/std",
-	"tp-io/std",
+	"tet-io/std",
 	"tetcore-std/std"
 ]
 runtime-benchmarks = ["frame-benchmarking"]

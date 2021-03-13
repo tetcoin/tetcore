@@ -44,7 +44,7 @@
 
 use tetcore_std::{prelude::*, result};
 use tet_core::u32_trait::Value as U32;
-use sp_io::storage;
+use tet_io::storage;
 use sp_runtime::{RuntimeDebug, traits::Hash};
 
 use frame_support::{
@@ -1049,8 +1049,8 @@ mod tests {
 		}
 	);
 
-	pub fn new_test_ext() -> sp_io::TestExternalities {
-		let mut ext: sp_io::TestExternalities = GenesisConfig {
+	pub fn new_test_ext() -> tet_io::TestExternalities {
+		let mut ext: tet_io::TestExternalities = GenesisConfig {
 			collective_Instance1: Some(collective::GenesisConfig {
 				members: vec![1, 2, 3],
 				phantom: Default::default(),

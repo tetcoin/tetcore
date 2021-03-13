@@ -28,7 +28,7 @@ serde = { version = "1.0.101" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 tet-core = { version = "2.0.0", path = "../../../primitives/core" }
 pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
-tp-io ={ version = "2.0.0", path = "../../../primitives/io" }
+tet-io ={ version = "2.0.0", path = "../../../primitives/io" }
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 pallet-balances = { version = "2.0.0", path = "../../balances" }
 

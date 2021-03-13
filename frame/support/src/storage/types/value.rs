@@ -194,7 +194,7 @@ impl<Prefix, Value, QueryKind, OnEmpty> StorageValueMetadata
 #[cfg(test)]
 mod test {
 	use super::*;
-	use sp_io::{TestExternalities, hashing::twox_128};
+	use tet_io::{TestExternalities, hashing::twox_128};
 	use crate::storage::types::ValueQuery;
 	use frame_metadata::StorageEntryModifier;
 

@@ -368,7 +368,7 @@ mod tests {
 
 	type Membership = Module<Test>;
 
-	fn new_test_ext() -> sp_io::TestExternalities {
+	fn new_test_ext() -> tet_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default().build_storage::<Test>().unwrap();
 		// We use default for brevity, but you can configure as desired if needed.
 		GenesisConfig::<Test>{
