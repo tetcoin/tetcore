@@ -25,7 +25,7 @@ use crate::{
 	wasm::{PrefabWasmModule, env_def::ImportSatisfyCheck},
 };
 use tetsy_wasm::elements::{self, Internal, External, MemoryType, Type, ValueType};
-use pwasm_utils;
+use twasm_utils;
 use tetcore_std::prelude::*;
 
 /// Currently, all imported functions must be located inside this module. We might support
@@ -191,7 +191,7 @@ impl<'a, T: Config> ContractModule<'a, T> {
 
 	fn inject_gas_metering(self) -> Result<Self, &'static str> {
 		let gas_rules = self.schedule.rules(&self.module);
-		let contract_module = pwasm_utils::inject_gas_counter(
+		let contract_module = twasm_utils::inject_gas_counter(
 			self.module,
 			&gas_rules,
 			IMPORT_MODULE_FN
@@ -204,7 +204,7 @@ impl<'a, T: Config> ContractModule<'a, T> {
 
 	fn inject_stack_height_metering(self) -> Result<Self, &'static str> {
 		let contract_module =
-			pwasm_utils::stack_height
+			twasm_utils::stack_height
 				::inject_limiter(self.module, self.schedule.limits.stack_height)
 				.map_err(|_| "stack height instrumentation failed")?;
 		Ok(ContractModule {

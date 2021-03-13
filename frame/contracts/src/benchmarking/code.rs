@@ -28,7 +28,7 @@ use crate::Config;
 use crate::Module as Contracts;
 
 use tetsy_wasm::elements::{Instruction, Instructions, FuncBody, ValueType, BlockType};
-use pwasm_utils::stack_height::inject_limiter;
+use twasm_utils::stack_height::inject_limiter;
 use tet_core::crypto::UncheckedFrom;
 use tp_runtime::traits::Hash;
 use tp_sandbox::{EnvironmentDefinitionBuilder, Memory};

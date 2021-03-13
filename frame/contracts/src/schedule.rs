@@ -27,7 +27,7 @@ use frame_support::weights::Weight;
 use tetcore_std::{marker::PhantomData, vec::Vec};
 use codec::{Encode, Decode};
 use tetsy_wasm::elements;
-use pwasm_utils::rules;
+use twasm_utils::rules;
 use tp_runtime::RuntimeDebug;
 
 /// How many API calls are executed in a single batch. The reason for increasing the amount

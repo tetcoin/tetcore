@@ -45,7 +45,7 @@ impl ModuleWrapper {
 	pub fn new(engine: &Engine, code: &[u8]) -> Result<Self> {
 		let mut raw_module: elements::Module = elements::deserialize_buffer(code)
 			.map_err(|e| Error::from(format!("cannot decode module: {}", e)))?;
-		pwasm_utils::export_mutable_globals(&mut raw_module, "exported_internal_global");
+		twasm_utils::export_mutable_globals(&mut raw_module, "exported_internal_global");
 		let instrumented_code = elements::serialize(raw_module)
 			.map_err(|e| Error::from(format!("cannot encode module: {}", e)))?;
 
