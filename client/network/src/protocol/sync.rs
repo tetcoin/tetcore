@@ -1874,7 +1874,7 @@ fn validate_blocks<Block: BlockT>(
 		}
 		if let (Some(header), Some(body)) = (&b.header, &b.body) {
 			let expected = *header.extrinsics_root();
-			let got = HashFor::<Block>::ordered_trie_root(body.iter().map(Encode::encode).collect());
+			let got = HashFor::<Block>::tetsy_trie_root::ordered_trie_root(body.iter().map(Encode::encode).collect());
 			if expected != got {
 				debug!(
 					target:"sync",

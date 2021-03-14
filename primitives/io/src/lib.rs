@@ -371,7 +371,7 @@ pub trait Trie {
 
 	/// A trie root formed from the enumerated items.
 	fn blake2_256_ordered_root(input: Vec<Vec<u8>>) -> H256 {
-		Layout::<tet_core::Blake2Hasher>::ordered_trie_root(input)
+		Layout::<tet_core::Blake2Hasher>::tetsy_trie_root::ordered_trie_root(input)
 	}
 
 	/// A trie root formed from the iterated items.
@@ -381,7 +381,7 @@ pub trait Trie {
 
 	/// A trie root formed from the enumerated items.
 	fn keccak_256_ordered_root(input: Vec<Vec<u8>>) -> H256 {
-		Layout::<tet_core::KeccakHasher>::ordered_trie_root(input)
+		Layout::<tet_core::KeccakHasher>::tetsy_trie_root::ordered_trie_root(input)
 	}
 }
 
