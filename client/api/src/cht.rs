@@ -25,7 +25,7 @@
 //! root hash. A correct proof implies that the claimed block is identical to the one
 //! we discarded.
 
-use hash_db;
+use tetsy_hash_db;
 use codec::Encode;
 use tp_trie;
 
