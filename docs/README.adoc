@@ -6,7 +6,7 @@
 
 == Intro in one sentence
 
-Tetcore is a next-generation framework for blockchain innovation.
+Tetcore is a framework for blockchain innovation.
 
 == Description
 
