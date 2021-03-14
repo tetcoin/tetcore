@@ -487,8 +487,8 @@ mod tests {
 
 	fn check_equivalent<T: TrieConfiguration>(input: &Vec<(&[u8], &[u8])>) {
 		{
-			let closed_form = T::trie_root(input.clone());
-			let d = T::trie_root_unhashed(input.clone());
+			let closed_form = T::tetsy_trie_root(input.clone());
+			let d = T::tetsy_trie_root_unhashed(input.clone());
 			println!("Data: {:#x?}, {:#x?}", d, Blake2Hasher::hash(&d[..]));
 			let persistent = {
 				let mut memdb = MemoryDB::default();
@@ -530,7 +530,7 @@ mod tests {
 		let mut empty = TrieDBMut::<Layout>::new(&mut db, &mut root);
 		empty.commit();
 		let root1 = empty.root().as_ref().to_vec();
-		let root2: Vec<u8> = Layout::trie_root::<_, Vec<u8>, Vec<u8>>(
+		let root2: Vec<u8> = Layout::tetsy_trie_root::<_, Vec<u8>, Vec<u8>>(
 			std::iter::empty(),
 		).as_ref().iter().cloned().collect();
 
@@ -671,7 +671,7 @@ mod tests {
 				count: 100,
 			}.make_with(seed.as_fixed_bytes_mut());
 
-			let real = Layout::trie_root(x.clone());
+			let real = Layout::tetsy_trie_root(x.clone());
 			let mut memdb = MemoryDB::default();
 			let mut root = Default::default();
 			let mut memtrie = populate_trie::<Layout>(&mut memdb, &mut root, &x);
@@ -708,7 +708,7 @@ mod tests {
 	#[test]
 	fn codec_trie_empty() {
 		let input: Vec<(&[u8], &[u8])> = vec![];
-		let trie = Layout::trie_root_unhashed::<_, _, _>(input);
+		let trie = Layout::tetsy_trie_root_unhashed::<_, _, _>(input);
 		println!("trie: {:#x?}", trie);
 		assert_eq!(trie, vec![0x0]);
 	}
@@ -718,7 +718,7 @@ mod tests {
 		let input = vec![
 			(vec![0xaa], vec![0xbb])
 		];
-		let trie = Layout::trie_root_unhashed::<_, _, _>(input);
+		let trie = Layout::tetsy_trie_root_unhashed::<_, _, _>(input);
 		println!("trie: {:#x?}", trie);
 		assert_eq!(trie, vec![
 			0x42,					// leaf 0x40 (2^6) with (+) key of 2 nibbles (0x02)
@@ -731,7 +731,7 @@ mod tests {
 	#[test]
 	fn codec_trie_two_tuples_disjoint_keys() {
 		let input = vec![(&[0x48, 0x19], &[0xfe]), (&[0x13, 0x14], &[0xff])];
-		let trie = Layout::trie_root_unhashed::<_, _, _>(input);
+		let trie = Layout::tetsy_trie_root_unhashed::<_, _, _>(input);
 		println!("trie: {:#x?}", trie);
 		let mut ex = Vec::<u8>::new();
 		ex.push(0x80);									// branch, no value (0b_10..) no nibble

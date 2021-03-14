@@ -561,7 +561,7 @@ mod tests {
 		let header = Header {
 			number,
 			parent_hash,
-			state_root: BlakeTwo256::trie_root(Vec::new()),
+			state_root: BlakeTwo256::tetsy_trie_root(Vec::new()),
 			digest,
 			extrinsics_root: Default::default(),
 		};

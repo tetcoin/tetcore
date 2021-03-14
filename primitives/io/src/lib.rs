@@ -366,7 +366,7 @@ pub trait DefaultChildStorage {
 pub trait Trie {
 	/// A trie root formed from the iterated items.
 	fn blake2_256_root(input: Vec<(Vec<u8>, Vec<u8>)>) -> H256 {
-		Layout::<tet_core::Blake2Hasher>::trie_root(input)
+		Layout::<tet_core::Blake2Hasher>::tetsy_trie_root(input)
 	}
 
 	/// A trie root formed from the enumerated items.
@@ -376,7 +376,7 @@ pub trait Trie {
 
 	/// A trie root formed from the iterated items.
 	fn keccak_256_root(input: Vec<(Vec<u8>, Vec<u8>)>) -> H256 {
-		Layout::<tet_core::KeccakHasher>::trie_root(input)
+		Layout::<tet_core::KeccakHasher>::tetsy_trie_root(input)
 	}
 
 	/// A trie root formed from the enumerated items.

@@ -88,14 +88,14 @@ pub fn insert_genesis_block(
 	storage: &mut Storage,
 ) -> tet_core::hash::H256 {
 	let child_roots = storage.children_default.iter().map(|(sk, child_content)| {
-		let state_root = <<<crate::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::trie_root(
+		let state_root = <<<crate::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::tetsy_trie_root(
 			child_content.data.clone().into_iter().collect(),
 		);
 		(sk.clone(), state_root.encode())
 	});
 	// add child roots to storage
 	storage.top.extend(child_roots);
-	let state_root = <<<crate::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::trie_root(
+	let state_root = <<<crate::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::tetsy_trie_root(
 		storage.top.clone().into_iter().collect()
 	);
 	let block: crate::Block = genesis::construct_genesis_block(state_root);

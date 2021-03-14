@@ -93,7 +93,7 @@ pub fn compute_root<Header, Hasher, I>(
 		I: IntoIterator<Item=ClientResult<Option<Header::Hash>>>,
 {
 	use tp_trie::TrieConfiguration;
-	Ok(tp_trie::trie_types::Layout::<Hasher>::trie_root(
+	Ok(tp_trie::trie_types::Layout::<Hasher>::tetsy_trie_root(
 		build_pairs::<Header, I>(cht_size, cht_num, hashes)?
 	))
 }

@@ -26,7 +26,7 @@ pub fn construct_genesis_block<
 > (
 	state_root: Block::Hash
 ) -> Block {
-	let extrinsics_root = <<<Block as BlockT>::Header as HeaderT>::Hashing as HashT>::trie_root(
+	let extrinsics_root = <<<Block as BlockT>::Header as HeaderT>::Hashing as HashT>::tetsy_trie_root(
 		Vec::new(),
 	);
 

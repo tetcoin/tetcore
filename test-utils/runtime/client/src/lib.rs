@@ -122,13 +122,13 @@ impl tetcore_test_client::GenesisInit for GenesisParameters {
 		let mut storage = self.genesis_config().genesis_map();
 
 		let child_roots = storage.children_default.iter().map(|(_sk, child_content)| {
-			let state_root = <<<runtime::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::trie_root(
+			let state_root = <<<runtime::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::tetsy_trie_root(
 				child_content.data.clone().into_iter().collect()
 			);
 			let prefixed_storage_key = child_content.child_info.prefixed_storage_key();
 			(prefixed_storage_key.into_inner(), state_root.encode())
 		});
-		let state_root = <<<runtime::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::trie_root(
+		let state_root = <<<runtime::Block as BlockT>::Header as HeaderT>::Hashing as HashT>::tetsy_trie_root(
 			storage.top.clone().into_iter().chain(child_roots).collect()
 		);
 		let block: runtime::Block = client::genesis::construct_genesis_block(state_root);
