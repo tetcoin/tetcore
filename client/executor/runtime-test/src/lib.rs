@@ -124,7 +124,7 @@ tet_core::wasm_export_functions! {
 	}
 
 	fn test_ordered_trie_root() -> Vec<u8> {
-		BlakeTwo256::ordered_trie_root(
+		BlakeTwo256::ordered_tetsy_trie_root(
 			vec![
 				b"zero"[..].into(),
 				b"one"[..].into(),
