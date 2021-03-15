@@ -64,7 +64,7 @@ wasm-timer = "0.2"
 zeroize = "1.2.0"
 
 [dependencies.tet-libp2p]
-version = "0.36.0"
+version = "0.34.0"
 default-features = false
 features = ["identify", "kad", "mdns", "mplex", "noise", "ping", "request-response", "tcp-async-io", "websocket", "remux"]
 
