@@ -18,13 +18,13 @@
 
 use fnv::FnvHashMap;
 use futures::prelude::*;
-use tetsy_libp2p::Multiaddr;
-use tetsy_libp2p::core::connection::{ConnectionId, ListenerId};
-use tetsy_libp2p::core::{ConnectedPoint, either::EitherOutput, PeerId, PublicKey};
-use tetsy_libp2p::swarm::{IntoProtocolsHandler, IntoProtocolsHandlerSelect, ProtocolsHandler};
-use tetsy_libp2p::swarm::{NetworkBehaviour, NetworkBehaviourAction, PollParameters};
-use tetsy_libp2p::identify::{Identify, IdentifyEvent, IdentifyInfo};
-use tetsy_libp2p::ping::{Ping, PingConfig, PingEvent, PingSuccess};
+use tet_libp2p::Multiaddr;
+use tet_libp2p::core::connection::{ConnectionId, ListenerId};
+use tet_libp2p::core::{ConnectedPoint, either::EitherOutput, PeerId, PublicKey};
+use tet_libp2p::swarm::{IntoProtocolsHandler, IntoProtocolsHandlerSelect, ProtocolsHandler};
+use tet_libp2p::swarm::{NetworkBehaviour, NetworkBehaviourAction, PollParameters};
+use tet_libp2p::identify::{Identify, IdentifyEvent, IdentifyInfo};
+use tet_libp2p::ping::{Ping, PingConfig, PingEvent, PingSuccess};
 use log::{debug, trace, error};
 use smallvec::SmallVec;
 use std::{error, io};

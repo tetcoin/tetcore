@@ -21,15 +21,15 @@
 use crate::protocol::generic_proto::{GenericProto, GenericProtoOut};
 
 use futures::prelude::*;
-use tetsy_libp2p::{PeerId, Multiaddr, Transport};
-use tetsy_libp2p::core::{
+use tet_libp2p::{PeerId, Multiaddr, Transport};
+use tet_libp2p::core::{
 	connection::{ConnectionId, ListenerId},
 	ConnectedPoint,
 	transport::MemoryTransport,
 	upgrade
 };
-use tetsy_libp2p::{identity, noise, remux};
-use tetsy_libp2p::swarm::{
+use tet_libp2p::{identity, noise, remux};
+use tet_libp2p::swarm::{
 	Swarm, ProtocolsHandler, IntoProtocolsHandler, PollParameters,
 	NetworkBehaviour, NetworkBehaviourAction
 };

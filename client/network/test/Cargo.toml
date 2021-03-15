@@ -21,7 +21,7 @@ futures = "0.3.9"
 futures-timer = "3.0.1"
 rand = "0.7.2"
 # libp2p = { version = "0.34.0", default-features = false }
-tetsy-libp2p = { version = "0.36.0", default-features = false }
+tet-libp2p = { version = "0.36.0", default-features = false }
 tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
 tc-consensus = { version = "0.8.0", path = "../../consensus/common" }
 tc-client-api = { version = "2.0.0", path = "../../api" }

@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use tetsy_libp2p::core::multiaddr::{Multiaddr, Protocol};
+use tet_libp2p::core::multiaddr::{Multiaddr, Protocol};
 use std::collections::HashMap;
 
 use tp_authority_discovery::AuthorityId;
@@ -111,7 +111,7 @@ fn peer_id_from_multiaddr(addr: &Multiaddr) -> Option<PeerId> {
 mod tests {
 	use super::*;
 
-	use tetsy_libp2p::multihash::{self, Multihash};
+	use tet_libp2p::multihash::{self, Multihash};
 	use quickcheck::{Arbitrary, Gen, QuickCheck, TestResult};
 	use rand::Rng;
 

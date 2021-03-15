@@ -21,7 +21,7 @@ use futures::{
 	ready,
 	task::{Context, Poll},
 };
-use tetsy_libp2p::{
+use tet_libp2p::{
 	core::transport::{timeout::TransportTimeout, OptionalTransport},
 	wasm_ext, Transport,
 };
@@ -47,11 +47,11 @@ pub(crate) fn initialize_transport(
 	// an external transport on desktop and the fallback is used all the time.
 	#[cfg(not(target_os = "unknown"))]
 	let transport = transport.or_transport({
-		let inner = tetsy_libp2p::dns::DnsConfig::new(tetsy_libp2p::tcp::TcpConfig::new())?;
-		tetsy_libp2p::websocket::framed::WsConfig::new(inner).and_then(|connec, _| {
+		let inner = tet_libp2p::dns::DnsConfig::new(tet_libp2p::tcp::TcpConfig::new())?;
+		tet_libp2p::websocket::framed::WsConfig::new(inner).and_then(|connec, _| {
 			let connec = connec
 				.with(|item| {
-					let item = tetsy_libp2p::websocket::framed::OutgoingData::Binary(item);
+					let item = tet_libp2p::websocket::framed::OutgoingData::Binary(item);
 					future::ready(Ok::<_, io::Error>(item))
 				})
 				.try_filter(|item| future::ready(item.is_data()))
@@ -77,7 +77,7 @@ pub(crate) trait StreamAndSink<I>: Stream + Sink<I> {}
 impl<T: ?Sized + Stream + Sink<I>, I> StreamAndSink<I> for T {}
 
 /// A type alias for the WebSocket transport.
-pub(crate) type WsTrans = tetsy_libp2p::core::transport::Boxed<
+pub(crate) type WsTrans = tet_libp2p::core::transport::Boxed<
 	Pin<
 		Box<
 			dyn StreamAndSink<Vec<u8>, Item = Result<Vec<u8>, io::Error>, Error = io::Error> + Send,

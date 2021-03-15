@@ -20,7 +20,7 @@ use std::cmp;
 use std::ops::Range;
 use std::collections::{HashMap, BTreeMap};
 use log::trace;
-use tetsy_libp2p::PeerId;
+use tet_libp2p::PeerId;
 use tp_runtime::traits::{Block as BlockT, NumberFor, One};
 use crate::protocol::message;
 

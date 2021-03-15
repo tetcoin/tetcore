@@ -28,7 +28,7 @@
 //! >       for example connecting to some nodes in priority should be added outside of this
 //! >       module, rather than inside.
 
-use tetsy_libp2p::PeerId;
+use tet_libp2p::PeerId;
 use log::error;
 use std::{
 	borrow::Cow,
@@ -695,7 +695,7 @@ impl<'a> Drop for Reputation<'a> {
 #[cfg(test)]
 mod tests {
 	use super::{Peer, PeersState, SetConfig};
-	use tetsy_libp2p::PeerId;
+	use tet_libp2p::PeerId;
 	use std::iter;
 
 	#[test]

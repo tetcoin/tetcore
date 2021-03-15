@@ -20,7 +20,7 @@
 //!
 //! **Warning**: These APIs are not stable.
 
-use tetsy_libp2p::{core::ConnectedPoint, Multiaddr};
+use tet_libp2p::{core::ConnectedPoint, Multiaddr};
 use serde::{Deserialize, Serialize};
 use std::{collections::{HashMap, HashSet}, time::Duration};
 

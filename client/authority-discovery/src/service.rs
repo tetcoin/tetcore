@@ -46,7 +46,7 @@ impl Service {
 	/// [`crate::Worker`] failed.
 	///
 	/// Note: [`Multiaddr`]s returned always include a [`PeerId`] via a
-	/// [`tetsy_libp2p::core::multiaddr::Protocol::P2p`] component. Equality of
+	/// [`tet_libp2p::core::multiaddr::Protocol::P2p`] component. Equality of
 	/// [`PeerId`]s across [`Multiaddr`]s returned by a single call is not
 	/// enforced today, given that there are still authorities out there
 	/// publishing the addresses of their sentry nodes on the DHT. In the future

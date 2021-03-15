@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use tetsy_libp2p::{
+use tet_libp2p::{
 	PeerId, Transport,
 	core::{
 		self, either::EitherTransport, muxing::StreamMuxerBox,
@@ -25,7 +25,7 @@ use tetsy_libp2p::{
 	mplex, identity, bandwidth, wasm_ext, noise
 };
 #[cfg(not(target_os = "unknown"))]
-use tetsy_libp2p::{tcp, dns, websocket};
+use tet_libp2p::{tcp, dns, websocket};
 use std::{sync::Arc, time::Duration};
 
 pub use self::bandwidth::BandwidthSinks;
@@ -73,7 +73,7 @@ pub fn build_transport(
 	});
 
 	let transport = transport.or_transport(if memory_only {
-		OptionalTransport::some(tetsy_libp2p::core::transport::MemoryTransport::default())
+		OptionalTransport::some(tet_libp2p::core::transport::MemoryTransport::default())
 	} else {
 		OptionalTransport::none()
 	});
@@ -103,10 +103,10 @@ pub fn build_transport(
 		mplex_config.set_max_buffer_behaviour(mplex::MaxBufferBehaviour::Block);
 		mplex_config.set_max_buffer_size(usize::MAX);
 
-		let mut remux_config = tetsy_libp2p::remux::RemuxConfig::default();
+		let mut remux_config = tet_libp2p::remux::RemuxConfig::default();
 		// Enable proper flow-control: window updates are only sent when
 		// buffered data has been consumed.
-		remux_config.set_window_update_mode(tetsy_libp2p::remux::WindowUpdateMode::on_read());
+		remux_config.set_window_update_mode(tet_libp2p::remux::WindowUpdateMode::on_read());
 		remux_config.set_max_buffer_size(remux_maximum_buffer_size);
 
 		if let Some(remux_window_size) = remux_window_size {

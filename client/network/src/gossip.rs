@@ -52,7 +52,7 @@ use crate::{ExHashT, NetworkService};
 use async_std::sync::{Mutex, MutexGuard};
 use futures::prelude::*;
 use futures::channel::mpsc::{channel, Receiver, Sender};
-use tetsy_libp2p::PeerId;
+use tet_libp2p::PeerId;
 use tp_runtime::traits::Block as BlockT;
 use std::{
 	borrow::Cow,

@@ -35,7 +35,7 @@ use crate::{
 	schema,
 };
 use futures::{channel::oneshot, future::BoxFuture, prelude::*, stream::FuturesUnordered};
-use tetsy_libp2p::{
+use tet_libp2p::{
 	core::{
 		ConnectedPoint,
 		Multiaddr,
@@ -1313,7 +1313,7 @@ mod tests {
 		schema,
 	};
 	use futures::{channel::oneshot, prelude::*};
-	use tetsy_libp2p::{
+	use tet_libp2p::{
 		PeerId,
 		Multiaddr,
 		core::{
@@ -1345,7 +1345,7 @@ mod tests {
 
 	type Block = tp_runtime::generic::Block<Header<u64, BlakeTwo256>, tetcore_test_runtime::Extrinsic>;
 	type Handler = LightClientHandler<Block>;
-	type Swarm = tetsy_libp2p::swarm::Swarm<Handler>;
+	type Swarm = tet_libp2p::swarm::Swarm<Handler>;
 
 	fn empty_proof() -> Vec<u8> {
 		StorageProof::empty().encode()
@@ -1939,7 +1939,7 @@ mod tests {
 	fn send_receive(request: Request<Block>) {
 		// We start a swarm on the listening side which awaits incoming requests and answers them:
 		let local_pset = peerset();
-		let local_listen_addr: tetsy_libp2p::Multiaddr = tetsy_libp2p::multiaddr::Protocol::Memory(rand::random()).into();
+		let local_listen_addr: tet_libp2p::Multiaddr = tet_libp2p::multiaddr::Protocol::Memory(rand::random()).into();
 		let mut local_swarm = make_swarm(true, local_pset.1, make_config());
 		Swarm::listen_on(&mut local_swarm, local_listen_addr.clone()).unwrap();
 

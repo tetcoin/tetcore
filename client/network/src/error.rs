@@ -19,7 +19,7 @@
 //! Tetcore network possible errors.
 
 use crate::config::TransportConfig;
-use tetsy_libp2p::{PeerId, Multiaddr};
+use tet_libp2p::{PeerId, Multiaddr};
 
 use std::{borrow::Cow, fmt};
 

@@ -52,17 +52,17 @@ use crate::utils::LruHashSet;
 use futures::prelude::*;
 use futures_timer::Delay;
 use ip_network::IpNetwork;
-use tetsy_libp2p::core::{connection::{ConnectionId, ListenerId}, ConnectedPoint, Multiaddr, PeerId, PublicKey};
-use tetsy_libp2p::swarm::{NetworkBehaviour, NetworkBehaviourAction, PollParameters, ProtocolsHandler, IntoProtocolsHandler};
-use tetsy_libp2p::swarm::protocols_handler::multi::IntoMultiHandler;
-use tetsy_libp2p::kad::{Kademlia, KademliaBucketInserts, KademliaConfig, KademliaEvent, QueryResult, Quorum, Record};
-use tetsy_libp2p::kad::GetClosestPeersError;
-use tetsy_libp2p::kad::handler::KademliaHandlerProto;
-use tetsy_libp2p::kad::QueryId;
-use tetsy_libp2p::kad::record::{self, store::{MemoryStore, RecordStore}};
+use tet_libp2p::core::{connection::{ConnectionId, ListenerId}, ConnectedPoint, Multiaddr, PeerId, PublicKey};
+use tet_libp2p::swarm::{NetworkBehaviour, NetworkBehaviourAction, PollParameters, ProtocolsHandler, IntoProtocolsHandler};
+use tet_libp2p::swarm::protocols_handler::multi::IntoMultiHandler;
+use tet_libp2p::kad::{Kademlia, KademliaBucketInserts, KademliaConfig, KademliaEvent, QueryResult, Quorum, Record};
+use tet_libp2p::kad::GetClosestPeersError;
+use tet_libp2p::kad::handler::KademliaHandlerProto;
+use tet_libp2p::kad::QueryId;
+use tet_libp2p::kad::record::{self, store::{MemoryStore, RecordStore}};
 #[cfg(not(target_os = "unknown"))]
-use tetsy_libp2p::mdns::{Mdns, MdnsEvent};
-use tetsy_libp2p::multiaddr::Protocol;
+use tet_libp2p::mdns::{Mdns, MdnsEvent};
+use tet_libp2p::multiaddr::Protocol;
 use log::{debug, info, trace, warn};
 use std::{cmp, collections::{HashMap, HashSet, VecDeque}, io, num::NonZeroUsize, time::Duration};
 use std::task::{Context, Poll};
@@ -681,7 +681,7 @@ impl NetworkBehaviour for DiscoveryBehaviour {
 
 									DiscoveryOut::ValueFound(results, stats.duration().unwrap_or_else(Default::default))
 								}
-								Err(e @ tetsy_libp2p::kad::GetRecordError::NotFound { .. }) => {
+								Err(e @ tet_libp2p::kad::GetRecordError::NotFound { .. }) => {
 									trace!(target: "sub-libp2p",
 										"Libp2p => Failed to get record: {:?}", e);
 									DiscoveryOut::ValueNotFound(e.into_key(), stats.duration().unwrap_or_else(Default::default))
@@ -825,13 +825,13 @@ impl MdnsWrapper {
 mod tests {
 	use crate::config::ProtocolId;
 	use futures::prelude::*;
-	use tetsy_libp2p::identity::Keypair;
-	use tetsy_libp2p::{Multiaddr, PeerId};
-	use tetsy_libp2p::core::upgrade;
-	use tetsy_libp2p::core::transport::{Transport, MemoryTransport};
-	use tetsy_libp2p::noise;
-	use tetsy_libp2p::swarm::Swarm;
-	use tetsy_libp2p::remux;
+	use tet_libp2p::identity::Keypair;
+	use tet_libp2p::{Multiaddr, PeerId};
+	use tet_libp2p::core::upgrade;
+	use tet_libp2p::core::transport::{Transport, MemoryTransport};
+	use tet_libp2p::noise;
+	use tet_libp2p::swarm::Swarm;
+	use tet_libp2p::remux;
 	use std::{collections::HashSet, task::Poll};
 	use super::{DiscoveryConfig, DiscoveryOut, protocol_name_from_protocol_id};
 

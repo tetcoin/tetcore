@@ -66,9 +66,9 @@ use crate::protocol::generic_proto::{
 };
 
 use bytes::BytesMut;
-use tetsy_libp2p::core::{either::EitherOutput, ConnectedPoint, PeerId};
-use tetsy_libp2p::core::upgrade::{SelectUpgrade, InboundUpgrade, OutboundUpgrade};
-use tetsy_libp2p::swarm::{
+use tet_libp2p::core::{either::EitherOutput, ConnectedPoint, PeerId};
+use tet_libp2p::core::upgrade::{SelectUpgrade, InboundUpgrade, OutboundUpgrade};
+use tet_libp2p::swarm::{
 	ProtocolsHandler, ProtocolsHandlerEvent,
 	IntoProtocolsHandler,
 	KeepAlive,

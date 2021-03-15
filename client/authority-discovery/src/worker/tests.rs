@@ -26,7 +26,7 @@ use futures::executor::{block_on, LocalPool};
 use futures::future::FutureExt;
 use futures::sink::SinkExt;
 use futures::task::LocalSpawn;
-use tetsy_libp2p::{kad, core::multiaddr, PeerId};
+use tet_libp2p::{kad, core::multiaddr, PeerId};
 use prometheus_endpoint::prometheus::default_registry;
 
 use tp_api::{ProvideRuntimeApi, ApiRef};
@@ -174,7 +174,7 @@ async fn build_dht_event(
 	addresses: Vec<Multiaddr>,
 	public_key: AuthorityId,
 	key_store: &KeyStore,
-) -> (tetsy_libp2p::kad::record::Key, Vec<u8>) {
+) -> (tet_libp2p::kad::record::Key, Vec<u8>) {
 	let mut serialized_addresses = vec![];
 	schema::AuthorityAddresses {
 		addresses: addresses.into_iter().map(|a| a.to_vec()).collect()

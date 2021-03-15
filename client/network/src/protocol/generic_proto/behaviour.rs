@@ -25,8 +25,8 @@ use crate::protocol::generic_proto::{
 use bytes::BytesMut;
 use fnv::FnvHashMap;
 use futures::prelude::*;
-use tetsy_libp2p::core::{ConnectedPoint, Multiaddr, PeerId, connection::ConnectionId};
-use tetsy_libp2p::swarm::{
+use tet_libp2p::core::{ConnectedPoint, Multiaddr, PeerId, connection::ConnectionId};
+use tet_libp2p::swarm::{
 	DialPeerCondition,
 	NetworkBehaviour,
 	NetworkBehaviourAction,
