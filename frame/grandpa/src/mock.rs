@@ -410,7 +410,7 @@ pub fn generate_equivocation_proof(
 
 	tp_finality_grandpa::EquivocationProof::new(
 		set_id,
-		tp_finality_grandpa::Equivocation::Prevote(finality_grandpa::Equivocation {
+		tp_finality_grandpa::Equivocation::Prevote(tetsy_finality_grandpa::Equivocation {
 			round_number: vote1.0,
 			identity: vote1.3.public().into(),
 			first: (prevote1, signed1),
