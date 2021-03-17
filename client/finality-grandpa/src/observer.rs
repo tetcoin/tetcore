@@ -135,14 +135,14 @@ where
 			// and that implies that the next round has started.
 			note_round(round + 1);
 
-			finality_grandpa::process_commit_validation_result(validation_result, callback);
+			tetsy_finality_grandpa::process_commit_validation_result(validation_result, callback);
 
 			// proceed processing with new finalized block number
 			future::ok(finalized_number)
 		} else {
 			debug!(target: "afg", "Received invalid commit: ({:?}, {:?})", round, commit);
 
-			finality_grandpa::process_commit_validation_result(validation_result, callback);
+			tetsy_finality_grandpa::process_commit_validation_result(validation_result, callback);
 
 			// commit is invalid, continue processing commits with the current state
 			future::ok(last_finalized_number)

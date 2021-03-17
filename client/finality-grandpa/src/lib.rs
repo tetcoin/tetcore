@@ -418,7 +418,7 @@ impl<H, N> From<ClientError> for CommandOrError<H, N> {
 	}
 }
 
-impl<H, N> From<finality_grandpa::Error> for CommandOrError<H, N> {
+impl<H, N> From<tetsy_finality_grandpa::Error> for CommandOrError<H, N> {
 	fn from(e: tetsy_finality_grandpa::Error) -> Self {
 		CommandOrError::Error(Error::from(e))
 	}
