@@ -738,7 +738,7 @@ where
 
 	// regular round message streams
 	type In = Pin<Box<dyn Stream<
-		Item = Result<::tetsy_finality_grandpa::ChainedMessage<Block::Hash, NumberFor<Block>, Self::Signature, Self::Id>, Self::Error>
+		Item = Result<::tetsy_finality_grandpa::SignedMessage<Block::Hash, NumberFor<Block>, Self::Signature, Self::Id>, Self::Error>
 	> + Send + Sync>>;
 	type Out = Pin<Box<dyn Sink<
 		::tetsy_finality_grandpa::Message<Block::Hash, NumberFor<Block>>,

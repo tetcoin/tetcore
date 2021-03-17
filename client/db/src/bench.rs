@@ -150,7 +150,7 @@ impl<B: BlockT> BenchmarkingState<B> {
 		*self.state.borrow_mut() = None;
 		let db = match self.db.take() {
 			Some(db) => db,
-			None => Arc::new(::kvdb_memorydb::create(1)),
+			None => Arc::new(::tetsy_kvdb_memorydb::create(1)),
 		};
 		self.db.set(Some(db.clone()));
 		let storage_db = Arc::new(StorageDb::<B> { db, _block: Default::default() });
