@@ -19,7 +19,7 @@
 //! Tetcore service tasks management module.
 
 use std::{panic, result::Result, pin::Pin};
-use exit_future::Signal;
+use tetsy_exit_future::Signal;
 use log::{debug, error};
 use futures::{
 	Future, FutureExt, StreamExt,
@@ -43,7 +43,7 @@ mod tests;
 /// An handle for spawning tasks in the service.
 #[derive(Clone)]
 pub struct SpawnTaskHandle {
-	on_exit: exit_future::Exit,
+	on_exit: tetsy_exit_future::Exit,
 	executor: TaskExecutor,
 	metrics: Option<Metrics>,
 	task_notifier: TracingUnboundedSender<JoinFuture>,
@@ -212,7 +212,7 @@ impl SpawnEssentialTaskHandle {
 pub struct TaskManager {
 	/// A future that resolves when the service has exited, this is useful to
 	/// make sure any internally spawned futures stop when the service does.
-	on_exit: exit_future::Exit,
+	on_exit: tetsy_exit_future::Exit,
 	/// A signal that makes the exit future above resolve, fired on service drop.
 	signal: Option<Signal>,
 	/// How to spawn background tasks.
@@ -246,7 +246,7 @@ impl TaskManager {
 		prometheus_registry: Option<&Registry>,
 		telemetry_span: Option<TelemetrySpan>,
 	) -> Result<Self, PrometheusError> {
-		let (signal, on_exit) = exit_future::signal();
+		let (signal, on_exit) = tetsy_exit_future::signal();
 
 		// A side-channel for essential tasks to communicate shutdown.
 		let (essential_failed_tx, essential_failed_rx) = tracing_unbounded("mptc_essential_tasks");
