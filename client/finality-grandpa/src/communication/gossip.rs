@@ -1851,7 +1851,7 @@ mod tests {
 			round: Round(1),
 			set_id: SetId(set_id),
 			message: SignedMessage::<Block> {
-				message: tetsy_finality_grandpa::Message::Prevote(finality_grandpa::Prevote {
+				message: tetsy_finality_grandpa::Message::Prevote(tetsy_finality_grandpa::Prevote {
 					target_hash: Default::default(),
 					target_number: 10,
 				}),
@@ -1864,7 +1864,7 @@ mod tests {
 			round: Round(1),
 			set_id: SetId(set_id),
 			message: SignedMessage::<Block> {
-				message: tetsy_finality_grandpa::Message::Prevote(finality_grandpa::Prevote {
+				message: tetsy_finality_grandpa::Message::Prevote(tetsy_finality_grandpa::Prevote {
 					target_hash: Default::default(),
 					target_number: 10,
 				}),
