@@ -20,7 +20,7 @@ use crate::BenchmarkCmd;
 use codec::{Decode, Encode};
 use frame_benchmarking::{Analysis, BenchmarkBatch, BenchmarkSelector};
 use tc_cli::{SharedParams, CliConfiguration, ExecutionStrategy, Result};
-use tc_client_db::BenchmarkingState;
+use tc_client_db::bench::BenchmarkingState;
 use tc_executor::NativeExecutor;
 use tp_state_machine::StateMachine;
 use externalities::Extensions;
