@@ -245,7 +245,7 @@ fn good_commit_leads_to_relay() {
 			auth_data.push((signature, public[i].0.clone()))
 		}
 
-		finality_grandpa::CompactCommit {
+		tetsy_finality_grandpa::CompactCommit {
 			target_hash,
 			target_number,
 			precommits,
@@ -337,8 +337,8 @@ fn good_commit_leads_to_relay() {
 			let handle_commit = commits_in.into_future()
 				.map(|(item, _)| {
 					match item.unwrap() {
-						finality_grandpa::voter::CommunicationIn::Commit(_, _, mut callback) => {
-							callback.run(finality_grandpa::voter::CommitProcessingOutcome::good());
+						tetsy_finality_grandpa::voter::CommunicationIn::Commit(_, _, mut callback) => {
+							callback.run(tetsy_finality_grandpa::voter::CommitProcessingOutcome::good());
 						},
 						_ => panic!("commit expected"),
 					}
@@ -393,7 +393,7 @@ fn bad_commit_leads_to_report() {
 			auth_data.push((signature, public[i].0.clone()))
 		}
 
-		finality_grandpa::CompactCommit {
+		tetsy_finality_grandpa::CompactCommit {
 			target_hash,
 			target_number,
 			precommits,
@@ -456,8 +456,8 @@ fn bad_commit_leads_to_report() {
 			let handle_commit = commits_in.into_future()
 				.map(|(item, _)| {
 					match item.unwrap() {
-						finality_grandpa::voter::CommunicationIn::Commit(_, _, mut callback) => {
-							callback.run(finality_grandpa::voter::CommitProcessingOutcome::bad());
+						tetsy_finality_grandpa::voter::CommunicationIn::Commit(_, _, mut callback) => {
+							callback.run(tetsy_finality_grandpa::voter::CommitProcessingOutcome::bad());
 						},
 						_ => panic!("commit expected"),
 					}
