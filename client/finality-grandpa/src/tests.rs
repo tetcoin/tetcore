@@ -1071,7 +1071,7 @@ fn voter_persists_its_votes() {
 				if state.compare_exchange(0, 1, Ordering::SeqCst, Ordering::SeqCst).unwrap() == 0 {
 					// the first message we receive should be a prevote from alice.
 					let prevote = match signed.message {
-						finality_grandpa::Message::Prevote(prevote) => prevote,
+						tetsy_finality_grandpa::Message::Prevote(prevote) => prevote,
 						_ => panic!("voter should prevote."),
 					};
 
@@ -1113,11 +1113,11 @@ fn voter_persists_its_votes() {
 					// by `Sink::poll_complete` to make sure items are being flushed. Given that
 					// we send in a loop including a delay until items are received, this can be
 					// ignored for the sake of reduced complexity.
-					Pin::new(&mut *round_tx.lock()).start_send(finality_grandpa::Message::Prevote(prevote)).unwrap();
+					Pin::new(&mut *round_tx.lock()).start_send(tetsy_finality_grandpa::Message::Prevote(prevote)).unwrap();
 				} else if state.compare_exchange(1, 2, Ordering::SeqCst, Ordering::SeqCst).unwrap() == 1 {
 					// the next message we receive should be our own prevote
 					let prevote = match signed.message {
-						finality_grandpa::Message::Prevote(prevote) => prevote,
+						tetsy_finality_grandpa::Message::Prevote(prevote) => prevote,
 						_ => panic!("We should receive our own prevote."),
 					};
 
@@ -1132,7 +1132,7 @@ fn voter_persists_its_votes() {
 					// we then receive a precommit from alice for block 15
 					// even though we casted a prevote for block 30
 					let precommit = match signed.message {
-						finality_grandpa::Message::Precommit(precommit) => precommit,
+						tetsy_finality_grandpa::Message::Precommit(precommit) => precommit,
 						_ => panic!("voter should precommit."),
 					};
 

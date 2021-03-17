@@ -578,7 +578,7 @@ where
 }
 
 impl<BE, Block: BlockT, C, N, SC, VR>
-	finality_grandpa::Chain<Block::Hash, NumberFor<Block>>
+	tetsy_finality_grandpa::Chain<Block::Hash, NumberFor<Block>>
 for Environment<BE, Block, C, N, SC, VR>
 where
 	Block: 'static,
@@ -738,10 +738,10 @@ where
 
 	// regular round message streams
 	type In = Pin<Box<dyn Stream<
-		Item = Result<::finality_grandpa::SignedMessage<Block::Hash, NumberFor<Block>, Self::Signature, Self::Id>, Self::Error>
+		Item = Result<::tetsy_finality_grandpa::ChainedMessage<Block::Hash, NumberFor<Block>, Self::Signature, Self::Id>, Self::Error>
 	> + Send + Sync>>;
 	type Out = Pin<Box<dyn Sink<
-		::finality_grandpa::Message<Block::Hash, NumberFor<Block>>,
+		::tetsy_finality_grandpa::Message<Block::Hash, NumberFor<Block>>,
 		Error = Self::Error,
 	> + Send + Sync>>;
 

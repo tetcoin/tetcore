@@ -985,15 +985,15 @@ impl<Block: BlockT> Inner<Block> {
 		// too many equivocations (we exceed the fault-tolerance bound).
 		for vote in last_completed_round.votes {
 			match vote.message {
-				finality_grandpa::Message::Prevote(prevote) => {
-					prevotes.push(finality_grandpa::SignedPrevote {
+				tetsy_finality_grandpa::Message::Prevote(prevote) => {
+					prevotes.push(tetsy_finality_grandpa::SignedPrevote {
 						prevote,
 						signature: vote.signature,
 						id: vote.id,
 					});
 				},
-				finality_grandpa::Message::Precommit(precommit) => {
-					precommits.push(finality_grandpa::SignedPrecommit {
+				tetsy_finality_grandpa::Message::Precommit(precommit) => {
+					precommits.push(tetsy_finality_grandpa::SignedPrecommit {
 						precommit,
 						signature: vote.signature,
 						id: vote.id,

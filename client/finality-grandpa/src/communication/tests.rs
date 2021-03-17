@@ -232,7 +232,7 @@ fn good_commit_leads_to_relay() {
 
 		let precommit = tetsy_finality_grandpa::Precommit { target_hash: target_hash.clone(), target_number };
 		let payload = tp_finality_grandpa::localized_payload(
-			round, set_id, &finality_grandpa::Message::Precommit(precommit.clone())
+			round, set_id, &tetsy_finality_grandpa::Message::Precommit(precommit.clone())
 		);
 
 		let mut precommits = Vec::new();
@@ -380,7 +380,7 @@ fn bad_commit_leads_to_report() {
 
 		let precommit = tetsy_finality_grandpa::Precommit { target_hash: target_hash.clone(), target_number };
 		let payload = tp_finality_grandpa::localized_payload(
-			round, set_id, &finality_grandpa::Message::Precommit(precommit.clone())
+			round, set_id, &tetsy_finality_grandpa::Message::Precommit(precommit.clone())
 		);
 
 		let mut precommits = Vec::new();

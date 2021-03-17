@@ -134,7 +134,7 @@ impl<Block: BlockT> GrandpaJustification<Block> {
 		let mut visited_hashes = HashSet::new();
 		for signed in self.commit.precommits.iter() {
 			if !tp_finality_grandpa::check_message_signature_with_buffer(
-				&finality_grandpa::Message::Precommit(signed.precommit.clone()),
+				&tetsy_finality_grandpa::Message::Precommit(signed.precommit.clone()),
 				&signed.id,
 				&signed.signature,
 				self.round,
@@ -178,7 +178,7 @@ impl<Block: BlockT> GrandpaJustification<Block> {
 	}
 }
 
-/// A utility trait implementing `finality_grandpa::Chain` using a given set of headers.
+/// A utility trait implementing `tetsy_finality_grandpa::Message` using a given set of headers.
 /// This is useful when validating commits, using the given set of headers to
 /// verify a valid ancestry route to the target commit block.
 struct AncestryChain<Block: BlockT> {

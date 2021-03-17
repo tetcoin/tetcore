@@ -809,7 +809,7 @@ mod tests {
 		let h3 = make_header(7);
 
 		let signed_prevote = |header: &Header| {
-			finality_grandpa::SignedPrevote {
+			tetsy_finality_grandpa::SignedPrevote {
 				id: Default::default(),
 				signature: Default::default(),
 				prevote: tetsy_finality_grandpa::Prevote {
@@ -820,7 +820,7 @@ mod tests {
 		};
 
 		let signed_precommit = |header: &Header| {
-			finality_grandpa::SignedPrecommit {
+			tetsy_finality_grandpa::SignedPrecommit {
 				id: Default::default(),
 				signature: Default::default(),
 				precommit: tetsy_finality_grandpa::Precommit {
@@ -875,7 +875,7 @@ mod tests {
 		let h3 = make_header(7);
 
 		let signed_prevote = |header: &Header| {
-			finality_grandpa::SignedPrevote {
+			tetsy_finality_grandpa::SignedPrevote {
 				id: Default::default(),
 				signature: Default::default(),
 				prevote: tetsy_finality_grandpa::Prevote {
@@ -886,7 +886,7 @@ mod tests {
 		};
 
 		let signed_precommit = |header: &Header| {
-			finality_grandpa::SignedPrecommit {
+			tetsy_finality_grandpa::SignedPrecommit {
 				id: Default::default(),
 				signature: Default::default(),
 				precommit: tetsy_finality_grandpa::Precommit {

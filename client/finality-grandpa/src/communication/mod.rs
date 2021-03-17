@@ -673,15 +673,15 @@ impl<Block: BlockT> Sink<Message<Block>> for OutgoingMessages<Block>
 	fn start_send(mut self: Pin<&mut Self>, mut msg: Message<Block>) -> Result<(), Self::Error> {
 		// if we've voted on this round previously under the same key, send that vote instead
 		match &mut msg {
-			finality_grandpa::Message::PrimaryPropose(ref mut vote) =>
+			tetsy_finality_grandpa::Message::PrimaryPropose(ref mut vote) =>
 				if let Some(propose) = self.has_voted.propose() {
 					*vote = propose.clone();
 				},
-			finality_grandpa::Message::Prevote(ref mut vote) =>
+			tetsy_finality_grandpa::Message::Prevote(ref mut vote) =>
 				if let Some(prevote) = self.has_voted.prevote() {
 					*vote = prevote.clone();
 				},
-			finality_grandpa::Message::Precommit(ref mut vote) =>
+			tetsy_finality_grandpa::Message::Precommit(ref mut vote) =>
 				if let Some(precommit) = self.has_voted.precommit() {
 					*vote = precommit.clone();
 				},
@@ -903,7 +903,7 @@ fn check_catch_up<Block: BlockT>(
 	// check signatures on all contained prevotes.
 	let signatures_checked = check_signatures::<Block, _>(
 		msg.prevotes.iter().map(|vote| {
-			(finality_grandpa::Message::Prevote(vote.prevote.clone()), &vote.id, &vote.signature)
+			(tetsy_finality_grandpa::Message::Prevote(vote.prevote.clone()), &vote.id, &vote.signature)
 		}),
 		msg.round_number,
 		set_id.0,
@@ -914,7 +914,7 @@ fn check_catch_up<Block: BlockT>(
 	// check signatures on all contained precommits.
 	let _ = check_signatures::<Block, _>(
 		msg.precommits.iter().map(|vote| {
-			(finality_grandpa::Message::Precommit(vote.precommit.clone()), &vote.id, &vote.signature)
+			(tetsy_finality_grandpa::Message::Precommit(vote.precommit.clone()), &vote.id, &vote.signature)
 		}),
 		msg.round_number,
 		set_id.0,
