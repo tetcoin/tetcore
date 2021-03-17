@@ -20,7 +20,7 @@
 use crate::Error;
 use structopt::StructOpt;
 use std::{path::PathBuf, fs};
-use tet_libp2p::identity::{ed25519 as tet_libp2p_ed25519, PublicKey};
+use tetsy_libp2p::identity::{ed25519 as tetsy_libp2p_ed25519, PublicKey};
 
 /// The `generate-node-key` command
 #[derive(Debug, StructOpt)]
@@ -40,7 +40,7 @@ pub struct GenerateNodeKeyCmd {
 impl GenerateNodeKeyCmd {
 	/// Run the command
 	pub fn run(&self) -> Result<(), Error> {
-		let keypair = tet_libp2p_ed25519::Keypair::generate();
+		let keypair = tetsy_libp2p_ed25519::Keypair::generate();
 		let secret = keypair.secret();
 		let peer_id = PublicKey::Ed25519(keypair.public()).into_peer_id();
 		let secret_hex = hex::encode(secret.as_ref());

@@ -540,7 +540,7 @@ mod tests {
 			let hash = Hash::random();
 
 			block_on(finality_sender.send(worker_messages::ImportJustification(
-				tet_libp2p::PeerId::random(),
+				tetsy_libp2p::PeerId::random(),
 				hash,
 				1,
 				Vec::new(),

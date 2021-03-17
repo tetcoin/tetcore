@@ -68,7 +68,7 @@ where
 	);
 	network.boot_nodes = chain_spec.boot_nodes().to_vec();
 	network.transport = TransportConfig::Normal {
-		wasm_external_transport: Some(transport.clone() as tc_telemetry::ExtTransport),
+		wasm_external_transport: Some(transport.clone()),
 		allow_private_ipv4: true,
 		enable_mdns: false,
 	};

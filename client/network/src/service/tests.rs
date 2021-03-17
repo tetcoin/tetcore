@@ -19,7 +19,7 @@
 use crate::{config, Event, NetworkService, NetworkWorker};
 use crate::block_request_handler::BlockRequestHandler;
 
-use tet_libp2p::PeerId;
+use tetsy_libp2p::PeerId;
 use futures::prelude::*;
 use tp_runtime::traits::{Block as BlockT, Header as _};
 use std::{borrow::Cow, sync::Arc, time::Duration};

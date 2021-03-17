@@ -20,7 +20,7 @@ use crate::{new_worker_and_service, worker::{tests::{TestApi, TestNetwork}, Role
 
 use std::sync::Arc;
 use futures::{channel::mpsc::channel, executor::LocalPool, task::LocalSpawn};
-use tet_libp2p::core::{multiaddr::{Multiaddr, Protocol}, PeerId};
+use tetsy_libp2p::core::{multiaddr::{Multiaddr, Protocol}, PeerId};
 
 use tp_authority_discovery::AuthorityId;
 use tet_core::crypto::key_types;

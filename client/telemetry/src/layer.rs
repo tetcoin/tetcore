@@ -18,7 +18,7 @@
 
 use crate::{initialize_transport, TelemetryWorker};
 use futures::channel::mpsc;
-use tet_libp2p::wasm_ext::ExtTransport;
+use tetsy_libp2p::wasm_ext::ExtTransport;
 use parking_lot::Mutex;
 use std::convert::TryInto;
 use std::io;

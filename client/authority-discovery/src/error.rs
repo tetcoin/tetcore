@@ -33,7 +33,7 @@ pub enum Error {
 	/// Failed to verify a dht payload with the given signature.
 	VerifyingDhtPayload,
 	/// Failed to hash the authority id to be used as a dht key.
-	HashingAuthorityId(tet_libp2p::core::multiaddr::multihash::Error),
+	HashingAuthorityId(tetsy_libp2p::core::multiaddr::multihash::Error),
 	/// Failed calling into the Tetcore runtime.
 	CallingRuntime(tp_blockchain::Error),
 	/// Received a dht record with a key that does not match any in-flight awaited keys.
@@ -45,7 +45,7 @@ pub enum Error {
 	/// Failed to encode or decode scale payload.
 	EncodingDecodingScale(codec::Error),
 	/// Failed to parse a libp2p multi address.
-	ParsingMultiaddress(tet_libp2p::core::multiaddr::Error),
+	ParsingMultiaddress(tetsy_libp2p::core::multiaddr::Error),
 	/// Failed to sign using a specific public key.
 	MissingSignature(CryptoTypePublicPair),
 	/// Failed to sign using all public keys.

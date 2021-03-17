@@ -27,7 +27,7 @@ use std::{
 	task::{Poll, Context as FutureContext}
 };
 
-use tet_libp2p::build_multiaddr;
+use tetsy_libp2p::build_multiaddr;
 use log::trace;
 use tc_network::block_request_handler::{self, BlockRequestHandler};
 use tp_blockchain::{
@@ -56,7 +56,7 @@ use tc_network::{
 	Multiaddr,
 };
 use tc_network::config::{NetworkConfiguration, NonDefaultSetConfig, TransportConfig};
-use tet_libp2p::PeerId;
+use tetsy_libp2p::PeerId;
 use parking_lot::Mutex;
 use tet_core::H256;
 use tc_network::config::ProtocolConfig;

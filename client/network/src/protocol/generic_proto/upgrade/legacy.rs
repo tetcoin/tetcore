@@ -20,7 +20,7 @@ use crate::config::ProtocolId;
 use bytes::BytesMut;
 use futures::prelude::*;
 use asynchronous_codec::Framed;
-use tet_libp2p::core::{UpgradeInfo, InboundUpgrade, OutboundUpgrade, upgrade::ProtocolName};
+use tetsy_libp2p::core::{UpgradeInfo, InboundUpgrade, OutboundUpgrade, upgrade::ProtocolName};
 use parking_lot::RwLock;
 use std::{collections::VecDeque, io, pin::Pin, sync::Arc, vec::IntoIter as VecIntoIter};
 use std::task::{Context, Poll};

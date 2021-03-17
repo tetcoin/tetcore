@@ -28,7 +28,7 @@ pub use crate::request_responses::{
 	OutgoingResponse,
 	ProtocolConfig as RequestResponseConfig,
 };
-pub use tet_libp2p::{identity, core::PublicKey, wasm_ext::ExtTransport, build_multiaddr};
+pub use tetsy_libp2p::{identity, core::PublicKey, wasm_ext::ExtTransport, build_multiaddr};
 
 // Note: this re-export shouldn't be part of the public API of the crate and will be removed in
 // the future.
@@ -39,7 +39,7 @@ use crate::ExHashT;
 
 use core::{fmt, iter};
 use futures::future;
-use tet_libp2p::{
+use tetsy_libp2p::{
 	identity::{ed25519, Keypair},
 	multiaddr, wasm_ext, Multiaddr, PeerId,
 };

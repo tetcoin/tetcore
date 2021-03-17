@@ -52,8 +52,8 @@ use crate::{
 	transport, ReputationChange,
 };
 use futures::{channel::oneshot, prelude::*};
-use tet_libp2p::{PeerId, multiaddr, Multiaddr};
-use tet_libp2p::core::{
+use tetsy_libp2p::{PeerId, multiaddr, Multiaddr};
+use tetsy_libp2p::core::{
 	ConnectedPoint,
 	Executor,
 	connection::{
@@ -64,9 +64,9 @@ use tet_libp2p::core::{
 	either::EitherError,
 	upgrade
 };
-use tet_libp2p::kad::record;
-use tet_libp2p::ping::handler::PingFailure;
-use tet_libp2p::swarm::{
+use tetsy_libp2p::kad::record;
+use tetsy_libp2p::ping::handler::PingFailure;
+use tetsy_libp2p::swarm::{
 	AddressScore,
 	NetworkBehaviour,
 	SwarmBuilder,
@@ -1775,7 +1775,7 @@ impl<B: BlockT + 'static, H: ExHashT> Unpin for NetworkWorker<B, H> {
 }
 
 /// The libp2p swarm, customized for our needs.
-type Swarm<B, H> = tet_libp2p::swarm::Swarm<Behaviour<B, H>>;
+type Swarm<B, H> = tetsy_libp2p::swarm::Swarm<Behaviour<B, H>>;
 
 // Implementation of `import_queue::Link` trait using the available local variables.
 struct NetworkLink<'a, B: BlockT, H: ExHashT> {
@@ -1806,7 +1806,7 @@ fn ensure_addresses_consistent_with_transport<'a>(
 	if matches!(transport, TransportConfig::MemoryOnly) {
 		let addresses: Vec<_> = addresses
 			.filter(|x| x.iter()
-				.any(|y| !matches!(y, tet_libp2p::core::multiaddr::Protocol::Memory(_)))
+				.any(|y| !matches!(y, tetsy_libp2p::core::multiaddr::Protocol::Memory(_)))
 			)
 			.cloned()
 			.collect();
@@ -1820,7 +1820,7 @@ fn ensure_addresses_consistent_with_transport<'a>(
 	} else {
 		let addresses: Vec<_> = addresses
 			.filter(|x| x.iter()
-				.any(|y| matches!(y, tet_libp2p::core::multiaddr::Protocol::Memory(_)))
+				.any(|y| matches!(y, tetsy_libp2p::core::multiaddr::Protocol::Memory(_)))
 			)
 			.cloned()
 			.collect();

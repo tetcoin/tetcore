@@ -23,7 +23,7 @@ use tc_network::{Event, ReputationChange};
 
 use futures::prelude::*;
 use futures::channel::mpsc::{channel, Sender, Receiver};
-use tet_libp2p::PeerId;
+use tetsy_libp2p::PeerId;
 use log::trace;
 use prometheus_endpoint::Registry;
 use tp_runtime::traits::Block as BlockT;

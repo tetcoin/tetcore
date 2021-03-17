@@ -41,7 +41,7 @@ use crate::protocol::message::{
 };
 use either::Either;
 use extra_requests::ExtraRequests;
-use tet_libp2p::PeerId;
+use tetsy_libp2p::PeerId;
 use log::{debug, trace, warn, info, error};
 use tp_runtime::{
 	Justification,
