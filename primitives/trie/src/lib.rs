@@ -476,7 +476,7 @@ mod tests {
 	use tet_core::Blake2Hasher;
 	use tetsy_hash_db::{HashDB, Hasher};
 	use tetsy_trie_db::{DBValue, TrieMut, Trie, NodeCodec as NodeCodecT};
-	use trie_standardmap::{Alphabet, ValueMode, StandardMap};
+	use tetsy_trie_standardmap::{Alphabet, ValueMode, StandardMap};
 	use hex_literal::hex;
 
 	type Layout = super::Layout<Blake2Hasher>;
