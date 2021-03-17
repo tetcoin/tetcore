@@ -33,7 +33,7 @@ tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
 tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
 tp-rpc = { version = "2.0.0", path = "../../primitives/rpc" }
 tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
-tc-chain-spec = { version = "2.0.0", path = "../../primitives/chain-spec" }
+tp-chain-spec = { version = "2.0.0", path = "../../primitives/chain-spec" }
 tc-executor = { version = "0.8.0", path = "../executor" }
 tc-block-builder = { version = "0.8.0", path = "../block-builder" }
 tc-keystore = { version = "2.0.0", path = "../keystore" }
