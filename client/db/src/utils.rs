@@ -220,7 +220,7 @@ pub fn open_database<Block: BlockT>(
 	}
 
 	let db: Arc<dyn Database<DbHash>> = match &config.source {
-		#[cfg(any(feature = "with-kvdb-rocksdb", test))]
+		#[cfg(any(feature = "with-tetsy-kvdb-rocksdb", test))]
 		DatabaseSettingsSrc::RocksDb { path, cache_size } => {
 			// first upgrade database to required version
 			crate::upgrade::upgrade_db::<Block>(&path, db_type)?;
