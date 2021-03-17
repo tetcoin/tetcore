@@ -58,7 +58,7 @@ benchmarks! {
 			Decode::decode(&mut &EQUIVOCATION_PROOF_BLOB[..]).unwrap();
 
 		let equivocation_proof2 = equivocation_proof1.clone();
-		println!("{:?}", equivocation_proof1);
+		// println!("{:?}", equivocation_proof1);
 	}: {
 		tp_consensus_babe::check_equivocation_proof::<Header>(equivocation_proof1);
 	} verify {
