@@ -30,8 +30,8 @@ impl-trait-for-tuples = "0.2.0"
 [dev-dependencies]
 tp-runtime-interface-test-wasm = { version = "2.0.0", path = "test-wasm" }
 tp-state-machine = { version = "0.8.0", path = "../state-machine" }
-tet-core = { version = "2.0.0", path = "../core" }
-tet-io = { version = "2.0.0", path = "../io" }
+tet-core = { version = "2.0.1", path = "../core" }
+tet-io = { version = "2.0.1", path = "../io" }
 rustversion = "1.0.0"
 trybuild = "1.0.38"
 
