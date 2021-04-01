@@ -54,7 +54,7 @@ twox-hash = { version = "1.5.0", default-features = false, optional = true }
 libsecp256k1 = { version = "0.3.2", default-features = false, features = ["hmac"], optional = true }
 merlin = { version = "2.0", default-features = false, optional = true }
 
-tp-runtime-interface = { version = "2.0.0", default-features = false, path = "../runtime-interface" }
+tp-runtime-interface = { version = "2.0.1", default-features = false, path = "../runtime-interface" }
 
 [dev-dependencies]
 serializer = { version = "2.0.0", path = "../serializer" }
