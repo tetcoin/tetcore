@@ -40,7 +40,8 @@ wasm-timer = "0.2.5"
 
 [dev-dependencies]
 futures = "0.3.9"
-tp-test-primitives = { version = "2.0.0", path = "../../test-primitives" }
+# tp-test-primitives = { version = "2.0.0", path = "../../test-primitives" }
+tp-test-primitives = { path = "../../test-primitives" }
 
 [features]
 default = []
