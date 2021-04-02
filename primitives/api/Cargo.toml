@@ -27,7 +27,8 @@ tetsy-hash-db = { version = "0.15.2", optional = true }
 thiserror = { version = "1.0.21", optional = true }
 
 [dev-dependencies]
-tp-test-primitives = { version = "2.0.0", path = "../test-primitives" }
+# tp-test-primitives = { version = "2.0.0", path = "../test-primitives" }
+tp-test-primitives = { path = "../test-primitives" }
 
 [features]
 default = [ "std" ]
