@@ -26,8 +26,8 @@ derive_more = "0.99.2"
 either = "1.5.3"
 futures = "0.3.9"
 futures-timer = "3.0.1"
-# tet-libp2p = { version = "0.34.0", default-features = false, features = ["kad"] }
-tetsy-libp2p = { default-features = false, features =["kad"], git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
+tetsy-libp2p = { version = "0.34.0", default-features = false, features = ["kad"] }
+# tetsy-libp2p = { default-features = false, features =["kad"], git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
 log = "0.4.8"
 prometheus-endpoint = { package = "prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.0"}
 prost = "0.7"
