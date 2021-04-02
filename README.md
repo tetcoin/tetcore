@@ -5,7 +5,7 @@
 </p>
 
 
-Tetcore is a next-generation framework for blockchain innovation 🚀.
+Tetcore is the framework for blockchain innovation 🚀.
 
 ## Trying it out
 
