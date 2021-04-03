@@ -12,7 +12,7 @@ repository = "https://github.com/tetcoin/tetcore"
 
 [dependencies]
 futures-timer = "3.0.2"
-tetsy-libp2p = { version = "0.34.1", default-features = false }
+tetsy-libp2p = { version = "0.34.2", default-features = false }
 # tetsy-libp2p = { version = "0.34.0", default-features = false, git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
 tetsy-jsonrpc-core = "15.1.0"
 serde = "1.0.106"

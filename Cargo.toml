@@ -249,7 +249,7 @@ sha3 = { opt-level = 3 }
 smallvec = { opt-level = 3 }
 snow = { opt-level = 3 }
 twox-hash = { opt-level = 3 }
-uint = { opt-level = 3 }
+uint-crate = { opt-level = 3 }
 twasmi = { opt-level = 3 }
 x25519-dalek = { opt-level = 3 }
 remux = { opt-level = 3 }

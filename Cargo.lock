@@ -135,7 +135,7 @@ checksum = "698b65a961a9d730fb45b6b0327e20207810c9f61ee421b082b27ba003f49e2b"
 
 [[package]]
 name = "arithmetic"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "criterion",
  "debug-derive",
@@ -365,19 +365,6 @@ name = "asynchronous-codec"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fb4401f0a3622dad2e0763fa79e0eb328bc70fb7dccfdd645341f00d671247d6"
-dependencies = [
- "bytes 1.0.1",
- "futures-sink",
- "futures-util",
- "memchr",
- "pin-project-lite 0.2.6",
-]
-
-[[package]]
-name = "asynchronous-codec"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0de5164e5edbf51c45fb8c2d9664ae1c095cce1b265ecf7569093c0d66ef690"
 dependencies = [
  "bytes 1.0.1",
  "futures-sink",
@@ -1248,7 +1235,7 @@ checksum = "3ee2393c4a91429dffb4bedf19f4d6abf27d8a732c8ce4980305d782e5426d57"
 
 [[package]]
 name = "debug-derive"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1495,7 +1482,7 @@ checksum = "f7531096570974c3a9dcf9e4b8e1cede1ec26cf5046219fb3b9d897503b9be59"
 
 [[package]]
 name = "externalities"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "environ",
  "tetcore-std",
@@ -3057,19 +3044,6 @@ name = "multimap"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e5ce46fe64a9d73be07dcbe690a38ce1b293be448fd8ce1e6c1b8062c9f72c6a"
-
-[[package]]
-name = "multistream-select"
-version = "0.10.0"
-source = "git+https://github.com/tetcoin/tetsy-libp2p.git?rev=bc2e822ef4c5f69225112b461018212a18782e4a#bc2e822ef4c5f69225112b461018212a18782e4a"
-dependencies = [
- "bytes 1.0.1",
- "futures 0.3.13",
- "log",
- "pin-project 1.0.5",
- "smallvec 1.6.1",
- "unsigned-varint 0.6.0",
-]
 
 [[package]]
 name = "nalgebra"
@@ -4666,7 +4640,7 @@ dependencies = [
 
 [[package]]
 name = "panic-handler"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "backtrace",
 ]
@@ -5931,7 +5905,7 @@ dependencies = [
 
 [[package]]
 name = "serializer"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -6982,7 +6956,7 @@ dependencies = [
  "assert_matches",
  "async-std",
  "async-trait",
- "asynchronous-codec 0.5.0",
+ "asynchronous-codec",
  "bitflags",
  "bs58",
  "bytes 1.0.1",
@@ -7508,7 +7482,7 @@ dependencies = [
 
 [[package]]
 name = "tet-application-crypto"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "serde",
  "tet-core",
@@ -7531,7 +7505,7 @@ dependencies = [
 
 [[package]]
 name = "tet-core"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "base58",
  "blake2-rfc",
@@ -7580,7 +7554,7 @@ dependencies = [
 
 [[package]]
 name = "tet-io"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "externalities",
  "futures 0.3.13",
@@ -7635,14 +7609,14 @@ dependencies = [
  "tc-tracing",
  "tetcore-database",
  "tetsy-kvdb-web",
- "tetsy-libp2p-wasm-ext 0.27.0 (git+https://github.com/tetcoin/tetsy-libp2p.git?rev=bc2e822ef4c5f69225112b461018212a18782e4a)",
+ "tetsy-libp2p-wasm-ext",
  "wasm-bindgen",
  "wasm-bindgen-futures",
 ]
 
 [[package]]
 name = "tetcore-database"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "parking_lot 0.11.1",
  "tetsy-kvdb",
@@ -7702,11 +7676,11 @@ dependencies = [
 
 [[package]]
 name = "tetcore-std"
-version = "2.0.1"
+version = "2.0.2"
 
 [[package]]
 name = "tetcore-storage"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "debug-derive",
  "impl-serde",
@@ -7852,7 +7826,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-tracing"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "log",
  "tetcore-std",
@@ -7864,7 +7838,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-utils"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "futures 0.3.13",
  "futures-core",
@@ -7875,7 +7849,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-wasm-interface"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "impl-trait-for-tuples 0.2.1",
  "tetcore-std",
@@ -8168,9 +8142,9 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p"
-version = "0.34.0"
+version = "0.34.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba08b4bee708fdadbc0db398a2928d95e3fa1975c64337faaee1c6bd470098fe"
+checksum = "5754885ea529aabbbf252f92c1987593a9847f4fa4c0c43dd4a8f22c60323da8"
 dependencies = [
  "atomic",
  "bytes 1.0.1",
@@ -8179,7 +8153,7 @@ dependencies = [
  "parking_lot 0.11.1",
  "pin-project 1.0.5",
  "smallvec 1.6.1",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "tetsy-libp2p-core-derive",
  "tetsy-libp2p-deflate",
  "tetsy-libp2p-dns",
@@ -8198,43 +8172,10 @@ dependencies = [
  "tetsy-libp2p-swarm",
  "tetsy-libp2p-tcp",
  "tetsy-libp2p-uds",
- "tetsy-libp2p-wasm-ext 0.27.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tetsy-libp2p-wasm-ext",
  "tetsy-libp2p-websocket",
- "tetsy-multiaddr 0.11.1",
+ "tetsy-multiaddr",
  "wasm-timer",
-]
-
-[[package]]
-name = "tetsy-libp2p-core"
-version = "0.27.0"
-source = "git+https://github.com/tetcoin/tetsy-libp2p.git?rev=bc2e822ef4c5f69225112b461018212a18782e4a#bc2e822ef4c5f69225112b461018212a18782e4a"
-dependencies = [
- "asn1_der",
- "bs58",
- "ed25519-dalek",
- "either",
- "fnv",
- "futures 0.3.13",
- "futures-timer 3.0.2",
- "lazy_static",
- "libsecp256k1",
- "log",
- "multihash",
- "multistream-select",
- "parking_lot 0.11.1",
- "pin-project 1.0.5",
- "prost 0.7.0",
- "prost-build",
- "rand 0.7.3",
- "ring",
- "rw-stream-sink",
- "sha2 0.9.3",
- "smallvec 1.6.1",
- "tetsy-multiaddr 0.11.0",
- "thiserror",
- "unsigned-varint 0.6.0",
- "void",
- "zeroize",
 ]
 
 [[package]]
@@ -8263,7 +8204,7 @@ dependencies = [
  "rw-stream-sink",
  "sha2 0.9.3",
  "smallvec 1.6.1",
- "tetsy-multiaddr 0.11.1",
+ "tetsy-multiaddr",
  "tetsy-multistream-select",
  "thiserror",
  "unsigned-varint 0.7.0",
@@ -8273,9 +8214,9 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-core-derive"
-version = "0.21.0"
+version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd76f699bf5edf838914ca66fa09836e03aa7f3216bd6b046dd4dafdf4d4c730"
+checksum = "73f1e7933b09879fa32030cbdc0a3c0db1237c5402a130b16b05b2c5e92a3fdb"
 dependencies = [
  "quote",
  "syn",
@@ -8283,31 +8224,31 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-deflate"
-version = "0.27.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba0cee9fc2fff815c675cc0d51a372b1ecc07c724f3b307985899e75107707d7"
+checksum = "d5f49e29ba14bc331cfee21d85ac87ff8477b0b1625049a0ca535e0c338d2ccd"
 dependencies = [
  "flate2",
  "futures 0.3.13",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
 ]
 
 [[package]]
 name = "tetsy-libp2p-dns"
-version = "0.27.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e7ea0adb1ddbc20602bd409d98f7420ef880b62b4c279d88580a603062b3f58e"
+checksum = "a0b76c088b11829d007a9475e0698b6452bd5fd9fc21cb02b434a06146a8a699"
 dependencies = [
  "futures 0.3.13",
  "log",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
 ]
 
 [[package]]
 name = "tetsy-libp2p-floodsub"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53743fe71d827aa1028796661118f55da565ab14af00337ccfe97f47076e2ebb"
+checksum = "921b24cb1c9ea5bfefb6176fd83ca7f71768cfed1d886a0bc633fd3c5cd2f3d1"
 dependencies = [
  "cuckoofilter",
  "fnv",
@@ -8317,17 +8258,17 @@ dependencies = [
  "prost-build",
  "rand 0.7.3",
  "smallvec 1.6.1",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
 ]
 
 [[package]]
 name = "tetsy-libp2p-gossipsub"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "249f9f3ee271d45d874b492e1c7ce7f1d606ea8a7d01413e9f8530514900d16e"
+checksum = "42173a34584d7da7769cc8c72d4c3f018bbf6068d2383deb1849b3d259cb14db"
 dependencies = [
- "asynchronous-codec 0.5.0",
+ "asynchronous-codec",
  "base64 0.13.0",
  "byteorder",
  "bytes 1.0.1",
@@ -8341,7 +8282,7 @@ dependencies = [
  "regex",
  "sha2 0.9.3",
  "smallvec 1.6.1",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
  "unsigned-varint 0.6.0",
  "wasm-timer",
@@ -8349,28 +8290,28 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-identify"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "264cd41d7e8ef93c13f54c8804da70b86b5b16e664be2e0a6fb02de8f74801d7"
+checksum = "c06a5651cf0c33983e9d5ad923602f72a075d68c651f7cdae7bf2177ef08e20b"
 dependencies = [
  "futures 0.3.13",
  "log",
  "prost 0.7.0",
  "prost-build",
  "smallvec 1.6.1",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
  "wasm-timer",
 ]
 
 [[package]]
 name = "tetsy-libp2p-kad"
-version = "0.28.0"
+version = "0.28.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3dad3d9c7b3eba16966be632064eef19dbb855df53ae5e96089052ab4439bdc6"
+checksum = "77d469fabfea14f08e8f79b791798ecdb4f6f307a196b872c67c42494854b922"
 dependencies = [
  "arrayvec 0.5.2",
- "asynchronous-codec 0.5.0",
+ "asynchronous-codec",
  "bytes 1.0.1",
  "either",
  "fnv",
@@ -8381,7 +8322,7 @@ dependencies = [
  "rand 0.7.3",
  "sha2 0.9.3",
  "smallvec 1.6.1",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
  "uint",
  "unsigned-varint 0.6.0",
@@ -8391,9 +8332,9 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-mdns"
-version = "0.28.0"
+version = "0.28.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "342ebea4593d38a606a91a1cb9b1755f0c3b2171b44a33865a051009ee76bb69"
+checksum = "2c1395b2aa257cc5f8519af0e8338a67d0f72e5df249a1405fdc3c273eb9d001"
 dependencies = [
  "async-io",
  "data-encoding",
@@ -8405,34 +8346,34 @@ dependencies = [
  "rand 0.7.3",
  "smallvec 1.6.1",
  "socket2 0.3.19",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
  "void",
 ]
 
 [[package]]
 name = "tetsy-libp2p-mplex"
-version = "0.27.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45663e92a40734f2eff9a945c88f40af58db721c83bd9362f5b2adb87116d7b5"
+checksum = "2ae1b59104a2bc8b3a583c12dfae4812b48a33d83421a01550d3893d14985f33"
 dependencies = [
- "asynchronous-codec 0.6.0",
+ "asynchronous-codec",
  "bytes 1.0.1",
  "futures 0.3.13",
  "log",
- "nohash",
+ "nohash-hasher",
  "parking_lot 0.11.1",
  "rand 0.7.3",
  "smallvec 1.6.1",
- "tetsy-libp2p-core 0.27.2",
- "unsigned-varint 0.7.0",
+ "tetsy-libp2p-core",
+ "unsigned-varint 0.6.0",
 ]
 
 [[package]]
 name = "tetsy-libp2p-noise"
-version = "0.29.1"
+version = "0.29.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a50826d1e39d25e372335f9279b4e2996a9abf1eaa6f66e4deec3f7ed3ee52b1"
+checksum = "0e3a5708f2231b828ca67d17748084d4a61bbb93f42f811c8ecc1589989b4122"
 dependencies = [
  "bytes 1.0.1",
  "curve25519-dalek 3.0.2",
@@ -8445,21 +8386,21 @@ dependencies = [
  "sha2 0.9.3",
  "snow",
  "static_assertions",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "x25519-dalek",
  "zeroize",
 ]
 
 [[package]]
 name = "tetsy-libp2p-ping"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "84c40486b28843ee62cd396b7df44c6b00fd5664ab79c78ac567f5d92226ed8b"
+checksum = "e5fd52cd7170e070eaf25dff7b9a6aaac54303f71c2355a988abc7734c3987f9"
 dependencies = [
  "futures 0.3.13",
  "log",
  "rand 0.7.3",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
  "void",
  "wasm-timer",
@@ -8467,26 +8408,26 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-plaintext"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "607815587cf21840377922620ff655a2ededd6e9a1d42c0738d676d76b904d94"
+checksum = "093280ee4beee1b5ee240c9de651f02c678c1dfc9c5eea14177069ff2d109b70"
 dependencies = [
- "asynchronous-codec 0.5.0",
+ "asynchronous-codec",
  "bytes 1.0.1",
  "futures 0.3.13",
  "log",
  "prost 0.7.0",
  "prost-build",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "unsigned-varint 0.6.0",
  "void",
 ]
 
 [[package]]
 name = "tetsy-libp2p-pnet"
-version = "0.20.1"
+version = "0.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d6f9244b935fe642ebf8a031a53e81e631057cd9fece6cb8bddc3fafd1a2eb5"
+checksum = "335ce6acb5b3e1f3f288d9559dad9fcbb72f1e40997eb0a63fa285821e937d0d"
 dependencies = [
  "futures 0.3.13",
  "log",
@@ -8498,22 +8439,22 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-remux"
-version = "0.30.0"
+version = "0.30.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "949834747a4bdedc2b673366b9fc7295437785d72934fee2f3b86a76180b9fab"
+checksum = "748cd9ac8454e5af9aad13377d607ed84bd7c9a4169c9d15a4670ae61650fb89"
 dependencies = [
  "futures 0.3.13",
  "parking_lot 0.11.1",
  "remux",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "thiserror",
 ]
 
 [[package]]
 name = "tetsy-libp2p-request-response"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7a7e39b7eb7f50c06ad391c645c174899e17e389d84b17a880a9ce11cb20bf1"
+checksum = "b13cb40f79778ad9622b37a597c8e31bc147a0215baf614f485a9d01e5dcee73"
 dependencies = [
  "async-trait",
  "bytes 1.0.1",
@@ -8523,7 +8464,7 @@ dependencies = [
  "minicbor",
  "rand 0.7.3",
  "smallvec 1.6.1",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
  "unsigned-varint 0.6.0",
  "wasm-timer",
@@ -8531,16 +8472,16 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-swarm"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83a4407eb61448d20069c46cf920e479a6f6ba10a583a7a71f7e90398801f4e9"
+checksum = "5f9c96e4cf06359d813594f3c6cc3491d00bb25737558773efe7e2002b8d65d8"
 dependencies = [
  "either",
  "futures 0.3.13",
  "log",
  "rand 0.7.3",
  "smallvec 1.6.1",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "void",
  "wasm-timer",
 ]
@@ -8559,43 +8500,30 @@ dependencies = [
  "libc",
  "log",
  "socket2 0.3.19",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
 ]
 
 [[package]]
 name = "tetsy-libp2p-uds"
-version = "0.27.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a0d3587e51bfaecc6a9470c69fed557c1e48771c01ea69b3425d8eef21d4cb6b"
+checksum = "5c0a0e28f7c256081bba075772ade17ea8f954b0b6f0464ef8149d7383908bf6"
 dependencies = [
  "async-std",
  "futures 0.3.13",
  "log",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
 ]
 
 [[package]]
 name = "tetsy-libp2p-wasm-ext"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7817de62398b92e0d315d4c4bacd06cd901d35395fb5b6bee7dbac94b56ed85"
+checksum = "5a942d8a70d14471370fe95f5fad008a78481e7d2a69f486fef976b57bbffb68"
 dependencies = [
  "futures 0.3.13",
  "js-sys",
- "tetsy-libp2p-core 0.27.2",
- "tetsy-send-wrapper",
- "wasm-bindgen",
- "wasm-bindgen-futures",
-]
-
-[[package]]
-name = "tetsy-libp2p-wasm-ext"
-version = "0.27.0"
-source = "git+https://github.com/tetcoin/tetsy-libp2p.git?rev=bc2e822ef4c5f69225112b461018212a18782e4a#bc2e822ef4c5f69225112b461018212a18782e4a"
-dependencies = [
- "futures 0.3.13",
- "js-sys",
- "tetsy-libp2p-core 0.27.0",
+ "tetsy-libp2p-core",
  "tetsy-send-wrapper",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -8603,9 +8531,9 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-websocket"
-version = "0.28.1"
+version = "0.28.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d9b2e1e416f6adf4c5aa7566922190b62840b73d108fc2df2ae20cdac665025"
+checksum = "392e4a3773758b9bb0e5c117dc655ccbf245e0dd2b6d69c762218d6543d25ce7"
 dependencies = [
  "either",
  "futures 0.3.13",
@@ -8614,7 +8542,7 @@ dependencies = [
  "quicksink",
  "rw-stream-sink",
  "soketto",
- "tetsy-libp2p-core 0.27.2",
+ "tetsy-libp2p-core",
  "url 2.2.1",
  "webpki-roots",
 ]
@@ -8632,8 +8560,9 @@ dependencies = [
 
 [[package]]
 name = "tetsy-multiaddr"
-version = "0.11.0"
-source = "git+https://github.com/tetcoin/tetsy-libp2p.git?rev=bc2e822ef4c5f69225112b461018212a18782e4a#bc2e822ef4c5f69225112b461018212a18782e4a"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a5c98078350780bd0532d90836974875eb7c5fca2909d72128516c859cec76f6"
 dependencies = [
  "arrayref",
  "bs58",
@@ -8644,24 +8573,6 @@ dependencies = [
  "serde",
  "static_assertions",
  "unsigned-varint 0.6.0",
- "url 2.2.1",
-]
-
-[[package]]
-name = "tetsy-multiaddr"
-version = "0.11.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a07a0e59d04b6ae3b0266456dedabeb139c4b2323a8b6ca09be2730b22988434"
-dependencies = [
- "arrayref",
- "bs58",
- "byteorder",
- "data-encoding",
- "multihash",
- "percent-encoding 2.1.0",
- "serde",
- "static_assertions",
- "unsigned-varint 0.7.0",
  "url 2.2.1",
 ]
 
@@ -9263,7 +9174,7 @@ checksum = "360dfd1d6d30e05fda32ace2c8c70e9c0a9da713275777f5a4dbb8a1893930c6"
 
 [[package]]
 name = "tp-allocator"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "log",
  "tet-core",
@@ -9274,7 +9185,7 @@ dependencies = [
 
 [[package]]
 name = "tp-api"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "tet-core",
  "tetcore-std",
@@ -9290,7 +9201,7 @@ dependencies = [
 
 [[package]]
 name = "tp-api-proc-macro"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "blake2-rfc",
  "proc-macro-crate",
@@ -9320,7 +9231,7 @@ dependencies = [
 
 [[package]]
 name = "tp-authority-discovery"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "tet-application-crypto",
  "tetcore-std",
@@ -9331,7 +9242,7 @@ dependencies = [
 
 [[package]]
 name = "tp-authorship"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "tetcore-std",
  "tetsy-scale-codec",
@@ -9341,7 +9252,7 @@ dependencies = [
 
 [[package]]
 name = "tp-block-builder"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "tetcore-std",
  "tetsy-scale-codec",
@@ -9352,7 +9263,7 @@ dependencies = [
 
 [[package]]
 name = "tp-blockchain"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "futures 0.3.13",
  "log",
@@ -9369,7 +9280,7 @@ dependencies = [
 
 [[package]]
 name = "tp-chain-spec"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -9377,7 +9288,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "futures 0.3.13",
  "futures-timer 3.0.2",
@@ -9403,7 +9314,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-aura"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "tet-application-crypto",
  "tetcore-std",
@@ -9417,7 +9328,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-babe"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "merlin",
  "tet-application-crypto",
@@ -9436,7 +9347,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-pow"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "tet-core",
  "tetcore-std",
@@ -9447,7 +9358,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-slots"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "arithmetic",
  "tetsy-scale-codec",
@@ -9456,7 +9367,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-vrf"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "schnorrkel",
  "tet-core",
@@ -9467,7 +9378,7 @@ dependencies = [
 
 [[package]]
 name = "tp-election-providers"
-version = "2.0.0"
+version = "2.0.2"
 dependencies = [
  "arithmetic",
  "tetcore-std",
@@ -9478,7 +9389,7 @@ dependencies = [
 
 [[package]]
 name = "tp-finality-grandpa"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "log",
  "serde",
@@ -9494,7 +9405,7 @@ dependencies = [
 
 [[package]]
 name = "tp-inherents"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "parking_lot 0.11.1",
  "tet-core",
@@ -9505,7 +9416,7 @@ dependencies = [
 
 [[package]]
 name = "tp-keyring"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "lazy_static",
  "strum",
@@ -9515,7 +9426,7 @@ dependencies = [
 
 [[package]]
 name = "tp-keystore"
-version = "0.8.0"
+version = "0.8.1"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -9533,7 +9444,7 @@ dependencies = [
 
 [[package]]
 name = "tp-npos-elections"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "arithmetic",
  "rand 0.7.3",
@@ -9548,7 +9459,7 @@ dependencies = [
 
 [[package]]
 name = "tp-npos-elections-compact"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -9570,7 +9481,7 @@ dependencies = [
 
 [[package]]
 name = "tp-offchain"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "tet-core",
  "tp-api",
@@ -9580,7 +9491,7 @@ dependencies = [
 
 [[package]]
 name = "tp-rpc"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -9589,7 +9500,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "arithmetic",
  "either",
@@ -9611,7 +9522,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime-interface"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "externalities",
  "impl-trait-for-tuples 0.2.1",
@@ -9633,7 +9544,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime-interface-proc-macro"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "Inflector",
  "proc-macro-crate",
@@ -9682,7 +9593,7 @@ dependencies = [
 
 [[package]]
 name = "tp-sandbox"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "assert_matches",
  "tet-core",
@@ -9696,7 +9607,7 @@ dependencies = [
 
 [[package]]
 name = "tp-session"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "tet-core",
  "tetcore-std",
@@ -9708,7 +9619,7 @@ dependencies = [
 
 [[package]]
 name = "tp-staking"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "tetcore-std",
  "tetsy-scale-codec",
@@ -9717,7 +9628,7 @@ dependencies = [
 
 [[package]]
 name = "tp-state-machine"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "externalities",
  "hex-literal",
@@ -9741,7 +9652,7 @@ dependencies = [
 
 [[package]]
 name = "tp-tasks"
-version = "2.0.0"
+version = "2.0.1"
 dependencies = [
  "externalities",
  "log",
@@ -9766,7 +9677,7 @@ dependencies = [
 
 [[package]]
 name = "tp-timestamp"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "impl-trait-for-tuples 0.2.1",
  "tetcore-std",
@@ -9779,7 +9690,7 @@ dependencies = [
 
 [[package]]
 name = "tp-transaction-pool"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "derive_more",
  "futures 0.3.13",
@@ -9794,7 +9705,7 @@ dependencies = [
 
 [[package]]
 name = "tp-trie"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "criterion",
  "hex-literal",
@@ -9812,7 +9723,7 @@ dependencies = [
 
 [[package]]
 name = "tp-version"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "impl-serde",
  "serde",
@@ -10084,7 +9995,7 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35581ff83d4101e58b582e607120c7f5ffb17e632a980b1f38334d76b36908b2"
 dependencies = [
- "asynchronous-codec 0.5.0",
+ "asynchronous-codec",
  "bytes 1.0.1",
  "futures-io",
  "futures-util",
@@ -10095,10 +10006,6 @@ name = "unsigned-varint"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5f8d425fafb8cd76bc3f22aace4af471d3156301d7508f2107e98fbeae10bc7f"
-dependencies = [
- "asynchronous-codec 0.6.0",
- "bytes 1.0.1",
-]
 
 [[package]]
 name = "untrusted"
