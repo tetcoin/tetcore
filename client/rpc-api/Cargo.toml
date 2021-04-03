@@ -25,11 +25,11 @@ tetsy-jsonrpc-derive = "15.1.0"
 tetsy-jsonrpc-pubsub = "15.1.0"
 log = "0.4.8"
 parking_lot = "0.11.1"
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-version = { version = "2.0.0", path = "../../primitives/version" }
-tp-runtime = { path = "../../primitives/runtime" , version = "2.0.0"}
-tp-chain-spec = { path = "../../primitives/chain-spec" , version = "2.0.0"}
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
+tp-version = { version = "2.0.2", path = "../../primitives/version" }
+tp-runtime = { path = "../../primitives/runtime" , version = "2.0.2"}
+tp-chain-spec = { path = "../../primitives/chain-spec" , version = "2.0.2"}
 serde = { version = "1.0.101", features = ["derive"] }
 serde_json = "1.0.41"
-tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
-tp-rpc = { version = "2.0.0", path = "../../primitives/rpc" }
+tp-transaction-pool = { version = "2.0.2", path = "../../primitives/transaction-pool" }
+tp-rpc = { version = "2.0.2", path = "../../primitives/rpc" }

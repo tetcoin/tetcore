@@ -18,14 +18,14 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 safe-mix = { version = "1.0", default-features = false }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
 
 [dev-dependencies]
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tet-io = { version = "2.0.0", path = "../../primitives/io" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
+tet-io = { version = "2.0.2", path = "../../primitives/io" }
 serde = { version = "1.0.101" }
 
 [features]

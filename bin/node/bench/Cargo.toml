@@ -19,22 +19,22 @@ node-testing = { version = "2.0.0", path = "../testing" }
 node-runtime = { version = "2.0.0", path = "../runtime" }
 tc-cli = { version = "0.8.0", path = "../../../client/cli" }
 tc-client-api = { version = "2.0.0", path = "../../../client/api/" }
-tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tp-state-machine = { version = "0.8.0", path = "../../../primitives/state-machine" }
+tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+tp-state-machine = { version = "0.8.2", path = "../../../primitives/state-machine" }
 serde = "1.0.101"
 serde_json = "1.0.41"
 structopt = "0.3"
 derive_more = "0.99.2"
 tetsy-kvdb = "0.9.0"
 tetsy-kvdb-rocksdb = "0.11.0"
-tp-trie = { version = "2.0.0", path = "../../../primitives/trie" }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
-tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
+tp-trie = { version = "2.0.2", path = "../../../primitives/trie" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
+tp-transaction-pool = { version = "2.0.2", path = "../../../primitives/transaction-pool" }
 tc-basic-authorship = { version = "0.8.0", path = "../../../client/basic-authorship" }
-tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
-tp-timestamp = { version = "2.0.0", default-features = false, path = "../../../primitives/timestamp" }
-tetcore-tracing = { version = "2.0.0", path = "../../../primitives/tracing" }
+tp-inherents = { version = "2.0.2", path = "../../../primitives/inherents" }
+tp-timestamp = { version = "2.0.2", default-features = false, path = "../../../primitives/timestamp" }
+tetcore-tracing = { version = "2.0.2", path = "../../../primitives/tracing" }
 tetsy-hash-db = "0.15.2"
 tempfile = "3.1.0"
 fs_extra = "1"

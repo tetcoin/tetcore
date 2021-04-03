@@ -16,13 +16,13 @@ readme = "README.md"
 parking_lot = "0.11.1"
 lazy_static = "1.4.0"
 tetsy-hash-db = "0.15.2"
-tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-externalities = { version = "0.8.0", path = "../../primitives/externalities" }
-tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
+tp-runtime = { version = "2.0.2", path = "../../primitives/runtime" }
+externalities = { version = "0.8.2", path = "../../primitives/externalities" }
+tp-blockchain = { version = "2.0.2", path = "../../primitives/blockchain" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
+tp-state-machine = { version = "0.8.2", path = "../../primitives/state-machine" }
 tc-client-api = { version = "2.0.0", path = "../api" }
-tp-api = { version = "2.0.0", path = "../../primitives/api" }
+tp-api = { version = "2.0.2", path = "../../primitives/api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 tc-executor = { version = "0.8.0", path = "../executor" }
 

@@ -1,6 +1,6 @@
 [package]
 name = "tp-consensus"
-version = "0.8.1"
+version = "0.8.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -21,21 +21,21 @@ thiserror = "1.0.21"
 tetsy-libp2p = { version = "0.34.1", default-features = false }
 # tetsy-libp2p = { version = "0.34.0", default-features = false, git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
 log = "0.4.8"
-tet-core = { path= "../../core", version = "2.0.1"}
-tp-inherents = { version = "2.0.1", path = "../../inherents" }
-tp-state-machine = { version = "0.8.1", path = "../../state-machine" }
+tet-core = { path= "../../core", version = "2.0.2"}
+tp-inherents = { version = "2.0.2", path = "../../inherents" }
+tp-state-machine = { version = "0.8.2", path = "../../state-machine" }
 futures = { version = "0.3.1", features = ["thread-pool"] }
 futures-timer = "3.0.1"
-tetcore-std = { version = "2.0.1", path = "../../std" }
-tp-version = { version = "2.0.1", path = "../../version" }
-tp-runtime = { version = "2.0.1", path = "../../runtime" }
-tetcore-utils = { version = "2.0.1", path = "../../utils" }
-tp-trie = { version = "2.0.1", path = "../../trie" }
-tp-api = { version = "2.0.1", path = "../../api" }
+tetcore-std = { version = "2.0.2", path = "../../std" }
+tp-version = { version = "2.0.2", path = "../../version" }
+tp-runtime = { version = "2.0.2", path = "../../runtime" }
+tetcore-utils = { version = "2.0.2", path = "../../utils" }
+tp-trie = { version = "2.0.2", path = "../../trie" }
+tp-api = { version = "2.0.2", path = "../../api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 parking_lot = "0.11.1"
 serde = { version = "1.0", features = ["derive"] }
-prometheus-endpoint = { package = "prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.0"}
+prometheus-endpoint = { package = "prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.1"}
 wasm-timer = "0.2.5"
 
 [dev-dependencies]

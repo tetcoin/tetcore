@@ -23,11 +23,11 @@ pallet-balances = { version = "2.0.0", path = "../../balances" }
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 frame-system = { version = "2.0.0", path = "../../system" }
 frame-support = { version = "2.0.0", path = "../../support" }
-tetcore-std = { version = "2.0.0", path = "../../../primitives/std" }
-tet-io ={ version = "2.0.0", path = "../../../primitives/io" }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-npos-elections = { version = "2.0.0", path = "../../../primitives/npos-elections" }
-tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tetcore-std = { version = "2.0.2", path = "../../../primitives/std" }
+tet-io ={ version = "2.0.2", path = "../../../primitives/io" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tp-npos-elections = { version = "2.0.2", path = "../../../primitives/npos-elections" }
+tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
 
 [[bin]]
 name = "submit_solution"

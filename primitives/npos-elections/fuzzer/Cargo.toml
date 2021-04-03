@@ -14,9 +14,9 @@ publish = false
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-npos-elections = { version = "2.0.1", path = ".." }
-tetcore-std = { version = "2.0.1", path = "../../std" }
-tp-runtime = { version = "2.0.1", path = "../../runtime" }
+tp-npos-elections = { version = "2.0.2", path = ".." }
+tetcore-std = { version = "2.0.2", path = "../../std" }
+tp-runtime = { version = "2.0.2", path = "../../runtime" }
 honggfuzz = "0.5"
 rand = { version = "0.7.3", features = ["std", "small_rng"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }

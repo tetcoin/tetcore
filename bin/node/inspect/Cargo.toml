@@ -19,7 +19,7 @@ log = "0.4.8"
 tc-cli = { version = "0.8.0", path = "../../../client/cli" }
 tc-client-api = { version = "2.0.0", path = "../../../client/api" }
 tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
-tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-blockchain = { version = "2.0.2", path = "../../../primitives/blockchain" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
 structopt = "0.3.8"

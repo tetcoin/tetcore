@@ -21,9 +21,9 @@ async-trait = "0.1.30"
 derive_more = "0.99.2"
 futures = "0.3.9"
 futures-util = "0.3.4"
-tet-application-crypto = { version = "2.0.0", path = "../../primitives/application-crypto" }
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-keystore = { version = "0.8.0", path = "../../primitives/keystore" }
+tet-application-crypto = { version = "2.0.2", path = "../../primitives/application-crypto" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
+tp-keystore = { version = "0.8.1", path = "../../primitives/keystore" }
 hex = "0.4.0"
 merlin = { version = "2.0", default-features = false }
 parking_lot = "0.11.1"

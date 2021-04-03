@@ -1,6 +1,6 @@
 [package]
 name = "tp-consensus-aura"
-version = "0.8.1"
+version = "0.8.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Primitives for Aura consensus"
 edition = "2018"
@@ -16,14 +16,14 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tet-application-crypto = { version = "2.0.1", default-features = false, path = "../../application-crypto" }
+tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
-tetcore-std = { version = "2.0.1", default-features = false, path = "../../std" }
-tp-api = { version = "2.0.1", default-features = false, path = "../../api" }
-tp-runtime = { version = "2.0.1", default-features = false, path = "../../runtime" }
-tp-inherents = { version = "2.0.1", default-features = false, path = "../../inherents" }
-tp-timestamp = { version = "2.0.1", default-features = false, path = "../../timestamp" }
-tp-consensus-slots = { version = "0.8.1", default-features = false, path = "../slots" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../std" }
+tp-api = { version = "2.0.2", default-features = false, path = "../../api" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../runtime" }
+tp-inherents = { version = "2.0.2", default-features = false, path = "../../inherents" }
+tp-timestamp = { version = "2.0.2", default-features = false, path = "../../timestamp" }
+tp-consensus-slots = { version = "0.8.2", default-features = false, path = "../slots" }
 
 [features]
 default = ["std"]

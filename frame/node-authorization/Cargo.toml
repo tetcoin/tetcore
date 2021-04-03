@@ -19,10 +19,10 @@ serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
-tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
-tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
+tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
 
 [features]
 default = ["std"]

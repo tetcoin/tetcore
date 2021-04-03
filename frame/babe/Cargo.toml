@@ -24,16 +24,16 @@ pallet-authorship = { version = "2.0.0", default-features = false, path = "../au
 pallet-session = { version = "2.0.0", default-features = false, path = "../session" }
 pallet-timestamp = { version = "2.0.0", default-features = false, path = "../timestamp" }
 serde = { version = "1.0.101", optional = true }
-tet-application-crypto = { version = "2.0.0", default-features = false, path = "../../primitives/application-crypto" }
-tp-consensus-babe = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/babe" }
-tp-consensus-vrf = { version = "0.8.0", default-features = false, path = "../../primitives/consensus/vrf" }
-tp-inherents = { version = "2.0.0", default-features = false, path = "../../primitives/inherents" }
-tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tp-session = { version = "2.0.0", default-features = false, path = "../../primitives/session" }
-tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
-tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tp-timestamp = { version = "2.0.0", default-features = false, path = "../../primitives/timestamp" }
+tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../primitives/application-crypto" }
+tp-consensus-babe = { version = "0.8.2", default-features = false, path = "../../primitives/consensus/babe" }
+tp-consensus-vrf = { version = "0.8.2", default-features = false, path = "../../primitives/consensus/vrf" }
+tp-inherents = { version = "2.0.2", default-features = false, path = "../../primitives/inherents" }
+tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tp-session = { version = "2.0.2", default-features = false, path = "../../primitives/session" }
+tp-staking = { version = "2.0.2", default-features = false, path = "../../primitives/staking" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+tp-timestamp = { version = "2.0.2", default-features = false, path = "../../primitives/timestamp" }
 
 [dev-dependencies]
 frame-benchmarking = { version = "2.0.0", path = "../benchmarking" }
@@ -41,7 +41,7 @@ pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-offences = { version = "2.0.0", path = "../offences" }
 pallet-staking = { version = "2.0.0", path = "../staking" }
 pallet-staking-reward-curve = { version = "2.0.0", path = "../staking/reward-curve" }
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
 
 [features]
 default = ["std"]

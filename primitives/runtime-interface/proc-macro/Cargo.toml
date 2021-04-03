@@ -1,6 +1,6 @@
 [package]
 name = "tp-runtime-interface-proc-macro"
-version = "2.0.1"
+version = "2.0.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"

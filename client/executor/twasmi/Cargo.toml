@@ -20,7 +20,7 @@ log = "0.4.8"
 twasmi = "0.6.2"
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 tc-executor-common = { version = "0.8.0", path = "../common" }
-tetcore-wasm-interface = { version = "2.0.0", path = "../../../primitives/wasm-interface" }
-tp-runtime-interface = { version = "2.0.0", path = "../../../primitives/runtime-interface" }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-allocator = { version = "2.0.0", path = "../../../primitives/allocator" }
+tetcore-wasm-interface = { version = "2.0.2", path = "../../../primitives/wasm-interface" }
+tp-runtime-interface = { version = "2.0.2", path = "../../../primitives/runtime-interface" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tp-allocator = { version = "2.0.2", path = "../../../primitives/allocator" }

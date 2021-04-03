@@ -17,17 +17,17 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 
 [dependencies]
-tp-state-machine = { version = "0.8.0", path = "../../primitives/state-machine" }
-tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tp-api = { version = "2.0.0", path = "../../primitives/api" }
-tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-block-builder = { version = "2.0.0", path = "../../primitives/block-builder" }
-tp-inherents = { version = "2.0.0", path = "../../primitives/inherents" }
+tp-state-machine = { version = "0.8.2", path = "../../primitives/state-machine" }
+tp-runtime = { version = "2.0.2", path = "../../primitives/runtime" }
+tp-api = { version = "2.0.2", path = "../../primitives/api" }
+tp-consensus = { version = "0.8.2", path = "../../primitives/consensus/common" }
+tp-blockchain = { version = "2.0.2", path = "../../primitives/blockchain" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
+tp-block-builder = { version = "2.0.2", path = "../../primitives/block-builder" }
+tp-inherents = { version = "2.0.2", path = "../../primitives/inherents" }
 tc-client-api = { version = "2.0.0", path = "../api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 
 [dev-dependencies]
 tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
-tp-trie = { version = "2.0.0", path = "../../primitives/trie" }
+tp-trie = { version = "2.0.2", path = "../../primitives/trie" }

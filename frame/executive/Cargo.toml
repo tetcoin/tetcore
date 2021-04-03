@@ -20,20 +20,20 @@ codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = f
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 serde = { version = "1.0.101", optional = true }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tetcore-tracing = { version = "2.0.0", default-features = false, path = "../../primitives/tracing" }
-tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
-tet-io = { version = "2.0.0", default-features = false, path = "../../primitives/io" }
-tet-core = { version = "2.0.0", default-features = false, path = "../../primitives/core" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tetcore-tracing = { version = "2.0.2", default-features = false, path = "../../primitives/tracing" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
+tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
 
 [dev-dependencies]
 hex-literal = "0.3.1"
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tet-io ={ version = "2.0.0", path = "../../primitives/io" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
+tet-io ={ version = "2.0.2", path = "../../primitives/io" }
 pallet-indices = { version = "2.0.0", path = "../indices" }
 pallet-balances = { version = "2.0.0", path = "../balances" }
 pallet-transaction-payment = { version = "2.0.0", path = "../transaction-payment" }
-tp-version = { version = "2.0.0", path = "../../primitives/version" }
+tp-version = { version = "2.0.2", path = "../../primitives/version" }
 
 [features]
 default = ["std"]

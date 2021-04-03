@@ -1,6 +1,6 @@
 [package]
 name = "tp-allocator"
-version = "2.0.1"
+version = "2.0.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -16,9 +16,9 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tetcore-std = { version = "2.0.1", path = "../std", default-features = false }
-tet-core = { version = "2.0.1", path = "../core", default-features = false }
-tetcore-wasm-interface = { version = "2.0.1", path = "../wasm-interface", default-features = false }
+tetcore-std = { version = "2.0.2", path = "../std", default-features = false }
+tet-core = { version = "2.0.2", path = "../core", default-features = false }
+tetcore-wasm-interface = { version = "2.0.2", path = "../wasm-interface", default-features = false }
 log = { version = "0.4.11", optional = true }
 thiserror = { version = "1.0.21", optional = true }
 

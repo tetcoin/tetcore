@@ -18,20 +18,20 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 bytes = "0.5"
 tc-client-api = { version = "2.0.0", path = "../api" }
-tp-api = { version = "2.0.0", path = "../../primitives/api" }
+tp-api = { version = "2.0.2", path = "../../primitives/api" }
 fnv = "1.0.6"
 futures = "0.3.9"
 futures-timer = "3.0.1"
 log = "0.4.8"
 threadpool = "1.7"
 num_cpus = "1.10"
-tp-offchain = { version = "2.0.0", path = "../../primitives/offchain" }
+tp-offchain = { version = "2.0.2", path = "../../primitives/offchain" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 parking_lot = "0.11.1"
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
 rand = "0.7.2"
-tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
+tp-runtime = { version = "2.0.2", path = "../../primitives/runtime" }
+tetcore-utils = { version = "2.0.2", path = "../../primitives/utils" }
 tc-network = { version = "0.8.0", path = "../network" }
 tc-keystore = { version = "2.0.0", path = "../keystore" }
 
@@ -43,9 +43,9 @@ hyper-rustls = "0.21.0"
 tc-client-db = { version = "0.8.0", default-features = true, path = "../db" }
 tc-block-builder = { version = "0.8.0", path = "../block-builder" }
 tc-transaction-pool = { version = "2.0.0", path = "../transaction-pool" }
-tp-transaction-pool = { version = "2.0.0", path = "../../primitives/transaction-pool" }
-tetcore-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
-tp-consensus = { version = "0.8.1", path = "../../primitives/consensus/common" }
+tp-transaction-pool = { version = "2.0.2", path = "../../primitives/transaction-pool" }
+tetcore-tracing = { version = "2.0.2", path = "../../primitives/tracing" }
+tp-consensus = { version = "0.8.2", path = "../../primitives/consensus/common" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 tokio = "0.2"
 lazy_static = "1.4.0"

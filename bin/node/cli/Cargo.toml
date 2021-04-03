@@ -46,18 +46,18 @@ structopt = { version = "0.3.8", optional = true }
 parking_lot = "0.11.1"
 
 # primitives
-tp-authority-discovery = { version = "2.0.0",  path = "../../../primitives/authority-discovery" }
-tp-consensus-babe = { version = "0.8.0", path = "../../../primitives/consensus/babe" }
+tp-authority-discovery = { version = "2.0.2",  path = "../../../primitives/authority-discovery" }
+tp-consensus-babe = { version = "0.8.2", path = "../../../primitives/consensus/babe" }
 grandpa-primitives = { version = "2.0.0", package = "tp-finality-grandpa", path = "../../../primitives/finality-grandpa" }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tp-timestamp = { version = "2.0.0", default-features = false, path = "../../../primitives/timestamp" }
-tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
-tp-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
-tp-keystore = { version = "0.8.0", path = "../../../primitives/keystore" }
-tet-io = { version = "2.0.0", path = "../../../primitives/io" }
-tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
-tp-transaction-pool = { version = "2.0.0", path = "../../../primitives/transaction-pool" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+tp-timestamp = { version = "2.0.2", default-features = false, path = "../../../primitives/timestamp" }
+tp-inherents = { version = "2.0.2", path = "../../../primitives/inherents" }
+tp-keyring = { version = "2.0.2", path = "../../../primitives/keyring" }
+tp-keystore = { version = "0.8.1", path = "../../../primitives/keystore" }
+tet-io = { version = "2.0.2", path = "../../../primitives/io" }
+tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
+tp-transaction-pool = { version = "2.0.2", path = "../../../primitives/transaction-pool" }
 
 # client dependencies
 tc-client-api = { version = "2.0.0", path = "../../../client/api" }
@@ -111,7 +111,7 @@ browser-utils = { package = "tetcore-browser-utils", path = "../../../utils/brow
 node-executor = { version = "2.0.0", path = "../executor", features = [ "wasmtime" ] }
 tc-cli = { version = "0.8.0", optional = true, path = "../../../client/cli", features = [ "wasmtime" ] }
 tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service", features = [ "wasmtime" ] }
-tp-trie = { version = "2.0.0", default-features = false, path = "../../../primitives/trie", features = ["memory-tracker"] }
+tp-trie = { version = "2.0.2", default-features = false, path = "../../../primitives/trie", features = ["memory-tracker"] }
 
 [dev-dependencies]
 tc-keystore = { version = "2.0.0", path = "../../../client/keystore" }
@@ -131,7 +131,7 @@ platforms = "0.2.1"
 structopt = { version = "0.3.8", optional = true }
 node-inspect = { version = "0.8.0", optional = true, path = "../inspect" }
 frame-benchmarking-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/benchmarking-cli" }
-build-script-utils = { version = "2.0.0", optional = true, path = "../../../utils/build-script-utils" }
+build-script-utils = { version = "2.0.1", optional = true, path = "../../../utils/build-script-utils" }
 tetcore-frame-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/frame-utilities-cli" }
 
 [build-dependencies.tc-cli]

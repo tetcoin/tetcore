@@ -1,6 +1,6 @@
 [package]
 name = "tp-state-machine"
-version = "0.8.1"
+version = "0.8.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Tetcore State Machine"
 edition = "2018"
@@ -22,19 +22,19 @@ parking_lot = { version = "0.11.1", optional = true }
 tetsy-hash-db = { version = "0.15.2", default-features = false }
 tetsy-trie-db = { version = "0.22.2", default-features = false }
 tetsy-trie-root = { version = "0.16.0", default-features = false }
-tp-trie = { version = "2.0.1", path = "../trie", default-features = false }
-tet-core = { version = "2.0.1", path = "../core", default-features = false }
-panic-handler = { version = "2.0.1", path = "../panic-handler", optional = true }
+tp-trie = { version = "2.0.2", path = "../trie", default-features = false }
+tet-core = { version = "2.0.2", path = "../core", default-features = false }
+panic-handler = { version = "2.0.2", path = "../panic-handler", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 num-traits = { version = "0.2.8", default-features = false }
 rand = { version = "0.7.2", optional = true }
-externalities = { version = "0.8.0", path = "../externalities", default-features = false }
+externalities = { version = "0.8.2", path = "../externalities", default-features = false }
 smallvec = "1.4.1"
-tetcore-std = { version = "2.0.1", default-features = false, path = "../std" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../std" }
 
 [dev-dependencies]
 hex-literal = "0.3.1"
-# tp-runtime = { version = "2.0.1", path = "../runtime" }
+# tp-runtime = { version = "2.0.2", path = "../runtime" }
 tp-runtime = { path = "../runtime" }
 pretty_assertions = "0.6.1"
 

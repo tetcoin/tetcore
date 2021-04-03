@@ -13,14 +13,14 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 tc-light = { version = "2.0.0", path = "../../../client/light" }
-tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
 tc-block-builder = { version = "0.8.0", path = "../../../client/block-builder" }
 tetcore-test-client = { version = "2.0.0", path = "../../client" }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../runtime" }
-tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tp-api = { version = "2.0.0", path = "../../../primitives/api" }
-tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+tp-api = { version = "2.0.2", path = "../../../primitives/api" }
+tp-blockchain = { version = "2.0.2", path = "../../../primitives/blockchain" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 tc-client-api = { version = "2.0.0", path = "../../../client/api" }
 tc-consensus = { version = "0.8.0", path = "../../../client/consensus/common" }

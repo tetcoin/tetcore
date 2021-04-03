@@ -13,9 +13,9 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-api = { version = "2.0.0", default-features = false, path = "../../../../primitives/api" }
+tp-api = { version = "2.0.2", default-features = false, path = "../../../../primitives/api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../../../primitives/runtime" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../../../primitives/runtime" }
 pallet-transaction-payment = { version = "2.0.0", default-features = false, path = "../../../transaction-payment" }
 
 [features]

@@ -13,9 +13,9 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
-tp-session = { version = "2.0.0", default-features = false, path = "../../../primitives/session" }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../../primitives/std" }
+tp-session = { version = "2.0.2", default-features = false, path = "../../../primitives/session" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../../primitives/runtime" }
 frame-system = { version = "2.0.0", default-features = false, path = "../../system" }
 frame-benchmarking = { version = "2.0.0", default-features = false, path = "../../benchmarking" }
 frame-support = { version = "2.0.0", default-features = false, path = "../../support" }
@@ -26,9 +26,9 @@ rand = { version = "0.7.2", default-features = false }
 [dev-dependencies]
 serde = { version = "1.0.101" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
 pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
-tet-io ={ version = "2.0.0", path = "../../../primitives/io" }
+tet-io ={ version = "2.0.2", path = "../../../primitives/io" }
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 pallet-balances = { version = "2.0.0", path = "../../balances" }
 

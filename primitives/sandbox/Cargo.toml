@@ -1,6 +1,6 @@
 [package]
 name = "tp-sandbox"
-version = "0.8.1"
+version = "0.8.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -17,10 +17,10 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 twasmi = { version = "0.6.2", optional = true }
-tet-core = { version = "2.0.1", default-features = false, path = "../core" }
-tetcore-std = { version = "2.0.1", default-features = false, path = "../std" }
-tet-io = { version = "2.0.1", default-features = false, path = "../io" }
-tetcore-wasm-interface = { version = "2.0.1", default-features = false, path = "../wasm-interface" }
+tet-core = { version = "2.0.2", default-features = false, path = "../core" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../std" }
+tet-io = { version = "2.0.2", default-features = false, path = "../io" }
+tetcore-wasm-interface = { version = "2.0.2", default-features = false, path = "../wasm-interface" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 
 [dev-dependencies]

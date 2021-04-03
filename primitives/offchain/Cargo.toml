@@ -1,7 +1,7 @@
 [package]
 description = "Tetcore offchain workers primitives"
 name = "tp-offchain"
-version = "2.0.1"
+version = "2.0.2"
 license = "Apache-2.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
@@ -13,12 +13,12 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tet-core = { version = "2.0.1", default-features = false, path = "../core" }
-tp-api = { version = "2.0.1", default-features = false, path = "../api" }
-tp-runtime = { version = "2.0.1", default-features = false, path = "../runtime" }
+tet-core = { version = "2.0.2", default-features = false, path = "../core" }
+tp-api = { version = "2.0.2", default-features = false, path = "../api" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../runtime" }
 
 [dev-dependencies]
-tp-state-machine = { version = "0.8.1", default-features = false, path = "../state-machine" }
+tp-state-machine = { version = "0.8.2", default-features = false, path = "../state-machine" }
 
 [features]
 default = ["std"]

@@ -13,7 +13,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-api = { version = "2.0.0", default-features = false, path = "../../../../primitives/api" }
+tp-api = { version = "2.0.2", default-features = false, path = "../../../../primitives/api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 
 [features]

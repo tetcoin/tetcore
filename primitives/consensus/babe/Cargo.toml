@@ -1,6 +1,6 @@
 [package]
 name = "tp-consensus-babe"
-version = "0.8.1"
+version = "0.8.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Primitives for BABE consensus"
 edition = "2018"
@@ -16,19 +16,19 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tet-application-crypto = { version = "2.0.1", default-features = false, path = "../../application-crypto" }
+tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 merlin = { version = "2.0", default-features = false }
-tetcore-std = { version = "2.0.1", default-features = false, path = "../../std" }
-tp-api = { version = "2.0.1", default-features = false, path = "../../api" }
-tp-consensus = { version = "0.8.1", optional = true, path = "../common" }
-tp-consensus-slots = { version = "0.8.1", default-features = false, path = "../slots" }
-tp-consensus-vrf = { version = "0.8.1", path = "../vrf", default-features = false }
-tet-core = { version = "2.0.1", default-features = false, path = "../../core" }
-tp-inherents = { version = "2.0.1", default-features = false, path = "../../inherents" }
-tp-keystore = { version = "0.8.0", default-features = false, path = "../../keystore", optional = true }
-tp-runtime = { version = "2.0.1", default-features = false, path = "../../runtime" }
-tp-timestamp = { version = "2.0.1", default-features = false, path = "../../timestamp" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../std" }
+tp-api = { version = "2.0.2", default-features = false, path = "../../api" }
+tp-consensus = { version = "0.8.2", optional = true, path = "../common" }
+tp-consensus-slots = { version = "0.8.2", default-features = false, path = "../slots" }
+tp-consensus-vrf = { version = "0.8.2", path = "../vrf", default-features = false }
+tet-core = { version = "2.0.2", default-features = false, path = "../../core" }
+tp-inherents = { version = "2.0.2", default-features = false, path = "../../inherents" }
+tp-keystore = { version = "0.8.1", default-features = false, path = "../../keystore", optional = true }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../runtime" }
+tp-timestamp = { version = "2.0.2", default-features = false, path = "../../timestamp" }
 
 [features]
 default = ["std"]

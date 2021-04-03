@@ -23,30 +23,30 @@ codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 pallet-contracts = { version = "2.0.0", path = "../../../frame/contracts" }
 pallet-grandpa = { version = "2.0.0", path = "../../../frame/grandpa" }
 pallet-indices = { version = "2.0.0", path = "../../../frame/indices" }
-tp-keyring = { version = "2.0.0", path = "../../../primitives/keyring" }
+tp-keyring = { version = "2.0.2", path = "../../../primitives/keyring" }
 node-executor = { version = "2.0.0", path = "../executor" }
 node-primitives = { version = "2.0.0", path = "../primitives" }
 node-runtime = { version = "2.0.0", path = "../runtime" }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tet-io = { version = "2.0.0", path = "../../../primitives/io" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tet-io = { version = "2.0.2", path = "../../../primitives/io" }
 frame-support = { version = "2.0.0", path = "../../../frame/support" }
 pallet-session = { version = "2.0.0", path = "../../../frame/session" }
 pallet-society = { version = "2.0.0", path = "../../../frame/society" }
-tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
+tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
 pallet-staking = { version = "2.0.0", path = "../../../frame/staking" }
 tc-executor = { version = "0.8.0", path = "../../../client/executor", features = ["wasmtime"] }
-tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
 frame-system = { version = "2.0.0", path = "../../../frame/system" }
 tetcore-test-client = { version = "2.0.0", path = "../../../test-utils/client" }
 pallet-timestamp = { version = "2.0.0", path = "../../../frame/timestamp" }
 pallet-transaction-payment = { version = "2.0.0", path = "../../../frame/transaction-payment" }
 pallet-treasury = { version = "2.0.0", path = "../../../frame/treasury" }
-tp-api = { version = "2.0.0", path = "../../../primitives/api" }
-tp-timestamp = { version = "2.0.0", default-features = false, path = "../../../primitives/timestamp" }
-tp-block-builder = { version = "2.0.0", path = "../../../primitives/block-builder" }
+tp-api = { version = "2.0.2", path = "../../../primitives/api" }
+tp-timestamp = { version = "2.0.2", default-features = false, path = "../../../primitives/timestamp" }
+tp-block-builder = { version = "2.0.2", path = "../../../primitives/block-builder" }
 tc-block-builder = { version = "0.8.0", path = "../../../client/block-builder" }
-tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
-tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
+tp-inherents = { version = "2.0.2", path = "../../../primitives/inherents" }
+tp-blockchain = { version = "2.0.2", path = "../../../primitives/blockchain" }
 log = "0.4.8"
 tempfile = "3.1.0"
 fs_extra = "1"

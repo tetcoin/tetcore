@@ -16,13 +16,13 @@ documentation = "https://docs.rs/tc-authority-discovery"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-allocator = { version = "2.0.0", default-features = false, path = "../../../primitives/allocator" }
-tet-core = { version = "2.0.0", default-features = false, path = "../../../primitives/core" }
-tet-io = { version = "2.0.0", default-features = false, path = "../../../primitives/io" }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
-tp-sandbox = { version = "0.8.0", default-features = false, path = "../../../primitives/sandbox" }
-tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
-tp-tasks = { version = "2.0.0", default-features = false, path = "../../../primitives/tasks" }
+tp-allocator = { version = "2.0.2", default-features = false, path = "../../../primitives/allocator" }
+tet-core = { version = "2.0.2", default-features = false, path = "../../../primitives/core" }
+tet-io = { version = "2.0.2", default-features = false, path = "../../../primitives/io" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../../primitives/runtime" }
+tp-sandbox = { version = "0.8.2", default-features = false, path = "../../../primitives/sandbox" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../../primitives/std" }
+tp-tasks = { version = "2.0.1", default-features = false, path = "../../../primitives/tasks" }
 
 [build-dependencies]
 wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }

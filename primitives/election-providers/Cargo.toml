@@ -1,6 +1,6 @@
 [package]
 name = "tp-election-providers"
-version = "2.0.0"
+version = "2.0.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -17,13 +17,13 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tetcore-std = { version = "2.0.1", default-features = false, path = "../std" }
-arithmetic = { version = "2.0.1", default-features = false, path = "../arithmetic" }
-tp-npos-elections = { version = "2.0.1", default-features = false, path = "../npos-elections" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../std" }
+arithmetic = { version = "2.0.2", default-features = false, path = "../arithmetic" }
+tp-npos-elections = { version = "2.0.2", default-features = false, path = "../npos-elections" }
 
 [dev-dependencies]
-tp-npos-elections = { version = "2.0.1", path = "../npos-elections" }
-tp-runtime = { version = "2.0.1", path = "../runtime" }
+tp-npos-elections = { version = "2.0.2", path = "../npos-elections" }
+tp-runtime = { version = "2.0.2", path = "../runtime" }
 
 [features]
 default = ["std"]

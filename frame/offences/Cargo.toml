@@ -18,16 +18,16 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 pallet-balances = { version = "2.0.0", default-features = false, path = "../balances" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tetcore-std = { version = "2.0.0", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../primitives/runtime" }
-tp-staking = { version = "2.0.0", default-features = false, path = "../../primitives/staking" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tp-staking = { version = "2.0.2", default-features = false, path = "../../primitives/staking" }
 frame-support = { version = "2.0.0", default-features = false, path = "../support" }
 frame-system = { version = "2.0.0", default-features = false, path = "../system" }
 
 [dev-dependencies]
-tet-io = { version = "2.0.0", path = "../../primitives/io" }
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
+tet-io = { version = "2.0.2", path = "../../primitives/io" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
 
 [features]
 default = ["std"]

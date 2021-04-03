@@ -17,19 +17,19 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tp-blockchain = { version = "2.0.0", path = "../../../primitives/blockchain" }
-tp-runtime = { version = "2.0.0", path = "../../../primitives/runtime" }
-tp-api = { version = "2.0.0", path = "../../../primitives/api" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tp-blockchain = { version = "2.0.2", path = "../../../primitives/blockchain" }
+tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+tp-api = { version = "2.0.2", path = "../../../primitives/api" }
 tc-client-api = { version = "2.0.0", path = "../../api" }
-tp-block-builder = { version = "2.0.0", path = "../../../primitives/block-builder" }
-tp-inherents = { version = "2.0.0", path = "../../../primitives/inherents" }
-tp-consensus-pow = { version = "0.8.0", path = "../../../primitives/consensus/pow" }
-tp-consensus = { version = "0.8.0", path = "../../../primitives/consensus/common" }
+tp-block-builder = { version = "2.0.2", path = "../../../primitives/block-builder" }
+tp-inherents = { version = "2.0.2", path = "../../../primitives/inherents" }
+tp-consensus-pow = { version = "0.8.2", path = "../../../primitives/consensus/pow" }
+tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
 log = "0.4.8"
 futures = { version = "0.3.1", features = ["compat"] }
 futures-timer = "3.0.1"
 parking_lot = "0.11.1"
-tp-timestamp = { version = "2.0.0", path = "../../../primitives/timestamp" }
+tp-timestamp = { version = "2.0.2", path = "../../../primitives/timestamp" }
 derive_more = "0.99.2"
-prometheus-endpoint = { package = "prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.0"}
+prometheus-endpoint = { package = "prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.1"}

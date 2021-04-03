@@ -29,7 +29,7 @@ derive_more = "0.99.2"
 either = "1.5.3"
 erased-serde = "0.3.9"
 fnv = "1.0.6"
-forktree = { version = "2.0.0", path = "../../utils/forktree" }
+forktree = { version = "2.0.1", path = "../../utils/forktree" }
 futures = "0.3.9"
 futures-timer = "3.0.2"
 asynchronous-codec = "0.5"
@@ -42,7 +42,7 @@ log = "0.4.8"
 nohash-hasher = "0.2.0"
 parking_lot = "0.11.1"
 pin-project = "0.4.6"
-prometheus-endpoint = { package = "prometheus-endpoint", version = "0.8.0", path = "../../utils/prometheus" }
+prometheus-endpoint = { package = "prometheus-endpoint", version = "0.8.1", path = "../../utils/prometheus" }
 prost = "0.7"
 rand = "0.7.2"
 tc-block-builder = { version = "0.8.0", path = "../block-builder" }
@@ -51,12 +51,12 @@ tc-peerset = { version = "2.0.0", path = "../peerset" }
 serde = { version = "1.0.101", features = ["derive"] }
 serde_json = "1.0.41"
 smallvec = "1.5.0"
-arithmetic = { version = "2.0.0", path = "../../primitives/arithmetic" }
-tp-blockchain = { version = "2.0.0", path = "../../primitives/blockchain" }
-tp-consensus = { version = "0.8.0", path = "../../primitives/consensus/common" }
-tet-core = { version = "2.0.0", path = "../../primitives/core" }
-tp-runtime = { version = "2.0.0", path = "../../primitives/runtime" }
-tetcore-utils = { version = "2.0.0", path = "../../primitives/utils" }
+arithmetic = { version = "2.0.2", path = "../../primitives/arithmetic" }
+tp-blockchain = { version = "2.0.2", path = "../../primitives/blockchain" }
+tp-consensus = { version = "0.8.2", path = "../../primitives/consensus/common" }
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
+tp-runtime = { version = "2.0.2", path = "../../primitives/runtime" }
+tetcore-utils = { version = "2.0.2", path = "../../primitives/utils" }
 thiserror = "1"
 unsigned-varint = { version = "0.6.0", features = ["futures", "asynchronous_codec"] }
 void = "1.0.2"
@@ -76,9 +76,9 @@ tetsy-libp2p = { version = "0.34.1", default-features = false }
 # tetsy-libp2p = { version = "0.34.0", default-features = false, git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
 quickcheck = "0.9.0"
 rand = "0.7.2"
-tp-keyring = { version = "2.0.0", path = "../../primitives/keyring" }
+tp-keyring = { version = "2.0.2", path = "../../primitives/keyring" }
 tp-test-primitives = { version = "2.0.0", path = "../../primitives/test-primitives" }
-tetcore-tracing = { version = "2.0.0", path = "../../primitives/tracing" }
+tetcore-tracing = { version = "2.0.2", path = "../../primitives/tracing" }
 tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime" }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 tempfile = "3.1.0"

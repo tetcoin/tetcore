@@ -24,16 +24,16 @@ pallet-im-online = { version = "2.0.0", default-features = false, path = "../../
 pallet-offences = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../offences" }
 pallet-session = { version = "2.0.0", default-features = false, path = "../../session" }
 pallet-staking = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../staking" }
-tp-runtime = { version = "2.0.0", default-features = false, path = "../../../primitives/runtime" }
-tp-staking = { version = "2.0.0", default-features = false, path = "../../../primitives/staking" }
-tetcore-std = { version = "2.0.0", default-features = false, path = "../../../primitives/std" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../../primitives/runtime" }
+tp-staking = { version = "2.0.2", default-features = false, path = "../../../primitives/staking" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../../primitives/std" }
 
 [dev-dependencies]
 pallet-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
 pallet-timestamp = { version = "2.0.0", path = "../../timestamp" }
 serde = { version = "1.0.101" }
-tet-core = { version = "2.0.0", path = "../../../primitives/core" }
-tet-io = { version = "2.0.0", path = "../../../primitives/io" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tet-io = { version = "2.0.2", path = "../../../primitives/io" }
 
 [features]
 default = ["std"]
