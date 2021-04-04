@@ -130,9 +130,9 @@
 //! - `external_propose_default` - Schedules a proposal to become a negative-turnout-bias
 //!   referendum once it is legal for an externally proposed referendum.
 //!
-//! #### Fast Tnoble Origin
+//! #### Fast Track Origin
 //!
-//! This call can only be made by the `FastTnobleOrigin`.
+//! This call can only be made by the `FastTrackOrigin`.
 //!
 //! - `fast_track` - Schedules the current externally proposed proposal that
 //!   is "majority-carries" to become a referendum immediately.
@@ -240,9 +240,9 @@ pub trait Config: fabric_system::Config + Sized {
 	type ExternalDefaultOrigin: EnsureOrigin<Self::Origin>;
 
 	/// Origin from which the next majority-carries (or more permissive) referendum may be tabled to
-	/// vote according to the `FastTnobleVotingPeriod` asynchronously in a similar manner to the
+	/// vote according to the `FastTrackVotingPeriod` asynchronously in a similar manner to the
 	/// emergency origin. It retains its threshold method.
-	type FastTnobleOrigin: EnsureOrigin<Self::Origin>;
+	type FastTrackOrigin: EnsureOrigin<Self::Origin>;
 
 	/// Origin from which the next majority-carries (or more permissive) referendum may be tabled to
 	/// vote immediately and asynchronously in a similar manner to the emergency origin. It retains
@@ -255,7 +255,7 @@ pub trait Config: fabric_system::Config + Sized {
 	type InstantAllowed: Get<bool>;
 
 	/// Minimum voting period allowed for a fast-track referendum.
-	type FastTnobleVotingPeriod: Get<Self::BlockNumber>;
+	type FastTrackVotingPeriod: Get<Self::BlockNumber>;
 
 	/// Origin from which any referendum may be cancelled in an emergency.
 	type CancellationOrigin: EnsureOrigin<Self::Origin>;
@@ -557,7 +557,7 @@ decl_module! {
 		const MinimumDeposit: BalanceOf<T> = T::MinimumDeposit::get();
 
 		/// Minimum voting period allowed for an emergency referendum.
-		const FastTnobleVotingPeriod: T::BlockNumber = T::FastTnobleVotingPeriod::get();
+		const FastTrackVotingPeriod: T::BlockNumber = T::FastTrackVotingPeriod::get();
 
 		/// Period in blocks where an external proposal may not be re-submitted after being vetoed.
 		const CooloffPeriod: T::BlockNumber = T::CooloffPeriod::get();
@@ -733,11 +733,11 @@ decl_module! {
 		/// immediately. If there is no externally-proposed referendum currently, or if there is one
 		/// but it is not a majority-carries referendum then it fails.
 		///
-		/// The dispatch of this call must be `FastTnobleOrigin`.
+		/// The dispatch of this call must be `FastTrackOrigin`.
 		///
 		/// - `proposal_hash`: The hash of the current external proposal.
 		/// - `voting_period`: The period that is allowed for voting on this proposal. Increased to
-		///   `FastTnobleVotingPeriod` if too low.
+		///   `FastTrackVotingPeriod` if too low.
 		/// - `delay`: The number of block after voting has ended in approval and this should be
 		///   enacted. This doesn't have a minimum amount.
 		///
@@ -751,12 +751,12 @@ decl_module! {
 			delay: T::BlockNumber,
 		) {
 			// Rather complicated bit of code to ensure that either:
-			// - `voting_period` is at least `FastTnobleVotingPeriod` and `origin` is `FastTnobleOrigin`; or
+			// - `voting_period` is at least `FastTrackVotingPeriod` and `origin` is `FastTrackOrigin`; or
 			// - `InstantAllowed` is `true` and `origin` is `InstantOrigin`.
-			let maybe_ensure_instant = if voting_period < T::FastTnobleVotingPeriod::get() {
+			let maybe_ensure_instant = if voting_period < T::FastTrackVotingPeriod::get() {
 				Some(origin)
 			} else {
-				if let Err(origin) = T::FastTnobleOrigin::try_origin(origin) {
+				if let Err(origin) = T::FastTrackOrigin::try_origin(origin) {
 					Some(origin)
 				} else {
 					None

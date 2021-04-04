@@ -32,7 +32,7 @@ pub use tet_io::storage::root as storage_root;
 pub use tp_runtime::traits::Zero;
 pub use fabric_support;
 pub use paste;
-pub use tetcore_storage::TnobleedStorageKey;
+pub use tetcore_storage::TrackedStorageKey;
 
 /// Construct noble benchmarks for weighing dispatchables.
 ///
@@ -666,7 +666,7 @@ macro_rules! impl_benchmark {
 				highest_range_values: &[u32],
 				steps: &[u32],
 				repeat: u32,
-				whitelist: &[$crate::TnobleedStorageKey],
+				whitelist: &[$crate::TrackedStorageKey],
 				verify: bool,
 			) -> Result<Vec<$crate::BenchmarkResults>, &'static str> {
 				// Map the input to the selected benchmark.
@@ -946,14 +946,14 @@ pub fn show_benchmark_debug_info(
 /// ```
 ///
 /// The `whitelist` is a parameter you pass to control the DB read/write tracking.
-/// We use a vector of [TnobleedStorageKey](./struct.TnobleedStorageKey.html), which is a simple struct used to set
+/// We use a vector of [TrackedStorageKey](./struct.TrackedStorageKey.html), which is a simple struct used to set
 /// if a key has been read or written to.
 ///
 /// For values that should be skipped entirely, we can just pass `key.into()`. For example:
 ///
 /// ```
-/// use fabric_benchmarking::TnobleedStorageKey;
-/// let whitelist: Vec<TnobleedStorageKey> = vec![
+/// use fabric_benchmarking::TrackedStorageKey;
+/// let whitelist: Vec<TrackedStorageKey> = vec![
 /// 	// Block Number
 /// 	hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac").to_vec().into(),
 /// 	// Total Issuance

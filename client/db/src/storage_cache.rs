@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 //! Global state cache. Maintains recently queried/committed state values
-//! Tnobles changes over the span of a few recent blocks and handles forks
+//! Tracks changes over the span of a few recent blocks and handles forks
 //! by tracking/removing cache entries for conflicting changes.
 
 use std::collections::{VecDeque, HashSet, HashMap};

@@ -23,7 +23,7 @@ use super::*;
 use tetcore_std::prelude::*;
 use fabric_system::RawOrigin;
 use fabric_support::{ensure, traits::OnFinalize};
-use fabric_benchmarking::{benchmarks, TnobleedStorageKey};
+use fabric_benchmarking::{benchmarks, TrackedStorageKey};
 
 use crate::Module as Timestamp;
 
@@ -34,7 +34,7 @@ benchmarks! {
 		let t = MAX_TIME;
 		// Ignore write to `DidUpdate` since it transient.
 		let did_update_key = crate::DidUpdate::hashed_key().to_vec();
-		fabric_benchmarking::benchmarking::add_to_whitelist(TnobleedStorageKey {
+		fabric_benchmarking::benchmarking::add_to_whitelist(TrackedStorageKey {
 			key: did_update_key,
 			has_been_read: false,
 			has_been_written: true,

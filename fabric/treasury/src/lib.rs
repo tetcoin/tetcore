@@ -136,7 +136,7 @@ pub trait Config<I=DefaultInstance>: fabric_system::Config {
 ///    As funds are spent, you must correctly deduct from this value.
 /// * `imbalance`: Any imbalances that you create should be subsumed in here to
 ///    maximize efficiency of updating the total issuance. (i.e. `deposit_creating`)
-/// * `total_weight`: Tnoble any weight that your `spend_fund` implementation uses by
+/// * `total_weight`: Track any weight that your `spend_fund` implementation uses by
 ///    updating this value.
 /// * `missed_any`: If there were items that you want to spend on, but there were
 ///    not enough funds, mark this value as `true`. This will prevent the treasury

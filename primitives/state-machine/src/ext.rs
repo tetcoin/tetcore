@@ -23,7 +23,7 @@ use crate::{
 };
 use tetsy_hash_db::Hasher;
 use tet_core::{
-	storage::{well_known_keys::is_child_storage_key, ChildInfo, TnobleedStorageKey},
+	storage::{well_known_keys::is_child_storage_key, ChildInfo, TrackedStorageKey},
 	hexdisplay::HexDisplay,
 };
 use tp_trie::{trie_types::Layout, empty_child_trie_root};
@@ -660,11 +660,11 @@ where
 		self.backend.reset_read_write_count()
 	}
 
-	fn get_whitelist(&self) -> Vec<TnobleedStorageKey> {
+	fn get_whitelist(&self) -> Vec<TrackedStorageKey> {
 		self.backend.get_whitelist()
 	}
 
-	fn set_whitelist(&mut self, new: Vec<TnobleedStorageKey>) {
+	fn set_whitelist(&mut self, new: Vec<TrackedStorageKey>) {
 		self.backend.set_whitelist(new)
 	}
 }

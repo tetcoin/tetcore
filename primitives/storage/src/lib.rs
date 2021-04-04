@@ -38,14 +38,14 @@ pub struct StorageKey(
 /// Storage key with read/write tracking information.
 #[derive(PartialEq, Eq, RuntimeDebug, Clone, Encode, Decode)]
 #[cfg_attr(feature = "std", derive(Hash, PartialOrd, Ord))]
-pub struct TnobleedStorageKey {
+pub struct TrackedStorageKey {
 	pub key: Vec<u8>,
 	pub has_been_read: bool,
 	pub has_been_written: bool,
 }
 
-// Easily convert a key to a `TnobleedStorageKey` that has been read and written to.
-impl From<Vec<u8>> for TnobleedStorageKey {
+// Easily convert a key to a `TrackedStorageKey` that has been read and written to.
+impl From<Vec<u8>> for TrackedStorageKey {
 	fn from(key: Vec<u8>) -> Self {
 		Self {
 			key: key,

@@ -27,7 +27,7 @@ use tp_trie::trie_types::Layout;
 use tet_core::{
 	storage::{
 		well_known_keys::is_child_storage_key, Storage,
-		ChildInfo, StorageChild, TnobleedStorageKey,
+		ChildInfo, StorageChild, TrackedStorageKey,
 	},
 	traits::Externalities, Blake2Hasher,
 };
@@ -325,11 +325,11 @@ impl Externalities for BasicExternalities {
 		unimplemented!("reset_read_write_count is not supported in Basic")
 	}
 
-	fn get_whitelist(&self) -> Vec<TnobleedStorageKey> {
+	fn get_whitelist(&self) -> Vec<TrackedStorageKey> {
 		unimplemented!("get_whitelist is not supported in Basic")
 	}
 
-	fn set_whitelist(&mut self, _: Vec<TnobleedStorageKey>) {
+	fn set_whitelist(&mut self, _: Vec<TrackedStorageKey>) {
 		unimplemented!("set_whitelist is not supported in Basic")
 	}
 }

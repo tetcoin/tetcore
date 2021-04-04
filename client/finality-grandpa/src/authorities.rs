@@ -157,7 +157,7 @@ pub struct AuthoritySet<H, N> {
 	/// is lower than the last finalized block (as signaled in the forced
 	/// change) must be applied beforehand.
 	pending_forced_changes: Vec<PendingChange<H, N>>,
-	/// Tnoble at which blocks the set id changed. This is useful when we need to prove finality for a
+	/// Track at which blocks the set id changed. This is useful when we need to prove finality for a
 	/// given block since we can figure out what set the block belongs to and when the set
 	/// started/ended.
 	authority_set_changes: AuthoritySetChanges<N>,
@@ -650,7 +650,7 @@ impl<H, N: Add<Output=N> + Clone> PendingChange<H, N> {
 	}
 }
 
-// Tnobles historical authority set changes. We store the block numbers for the first block of each
+// Tracks historical authority set changes. We store the block numbers for the first block of each
 // authority set, once they have been finalized.
 #[derive(Debug, Encode, Decode, Clone, PartialEq)]
 pub struct AuthoritySetChanges<N>(pub Vec<(u64, N)>);

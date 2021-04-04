@@ -503,7 +503,7 @@ impl noble_staking::Config for Runtime {
 parameter_types! {
 	pub const LaunchPeriod: BlockNumber = 28 * 24 * 60 * MINUTES;
 	pub const VotingPeriod: BlockNumber = 28 * 24 * 60 * MINUTES;
-	pub const FastTnobleVotingPeriod: BlockNumber = 3 * 24 * 60 * MINUTES;
+	pub const FastTrackVotingPeriod: BlockNumber = 3 * 24 * 60 * MINUTES;
 	pub const InstantAllowed: bool = true;
 	pub const MinimumDeposit: Balance = 100 * DOLLARS;
 	pub const EnactmentPeriod: BlockNumber = 30 * 24 * 60 * MINUTES;
@@ -531,10 +531,10 @@ impl noble_democracy::Config for Runtime {
 	type ExternalDefaultOrigin = noble_collective::EnsureProportionAtLeast<_1, _1, AccountId, CouncilCollective>;
 	/// Two thirds of the technical committee can have an ExternalMajority/ExternalDefault vote
 	/// be tabled immediately and with a shorter voting/enactment period.
-	type FastTnobleOrigin = noble_collective::EnsureProportionAtLeast<_2, _3, AccountId, TechnicalCollective>;
+	type FastTrackOrigin = noble_collective::EnsureProportionAtLeast<_2, _3, AccountId, TechnicalCollective>;
 	type InstantOrigin = noble_collective::EnsureProportionAtLeast<_1, _1, AccountId, TechnicalCollective>;
 	type InstantAllowed = InstantAllowed;
-	type FastTnobleVotingPeriod = FastTnobleVotingPeriod;
+	type FastTrackVotingPeriod = FastTrackVotingPeriod;
 	// To cancel a proposal which has been passed, 2/3 of the council must agree to it.
 	type CancellationOrigin = noble_collective::EnsureProportionAtLeast<_2, _3, AccountId, CouncilCollective>;
 	// To cancel a proposal before it has been passed, the technical committee must be unanimous or
@@ -1327,7 +1327,7 @@ impl_runtime_apis! {
 		fn dispatch_benchmark(
 			config: fabric_benchmarking::BenchmarkConfig
 		) -> Result<Vec<fabric_benchmarking::BenchmarkBatch>, tp_runtime::RuntimeString> {
-			use fabric_benchmarking::{Benchmarking, BenchmarkBatch, add_benchmark, TnobleedStorageKey};
+			use fabric_benchmarking::{Benchmarking, BenchmarkBatch, add_benchmark, TrackedStorageKey};
 			// Trying to add benchmarks directly to the Session Noble caused cyclic dependency issues.
 			// To get around that, we separated the Session benchmarks into its own crate, which is why
 			// we need these two lines below.
@@ -1339,7 +1339,7 @@ impl_runtime_apis! {
 			impl noble_offences_benchmarking::Config for Runtime {}
 			impl fabric_system_benchmarking::Config for Runtime {}
 
-			let whitelist: Vec<TnobleedStorageKey> = vec![
+			let whitelist: Vec<TrackedStorageKey> = vec![
 				// Block Number
 				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac").to_vec().into(),
 				// Total Issuance

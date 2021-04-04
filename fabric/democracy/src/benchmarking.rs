@@ -283,8 +283,8 @@ benchmarks! {
 		Democracy::<T>::external_propose_default(origin_propose, proposal_hash.clone())?;
 
 		// NOTE: Instant origin may invoke a little bit more logic, but may not always succeed.
-		let origin_fast_track = T::FastTnobleOrigin::successful_origin();
-		let voting_period = T::FastTnobleVotingPeriod::get();
+		let origin_fast_track = T::FastTrackOrigin::successful_origin();
+		let voting_period = T::FastTrackVotingPeriod::get();
 		let delay = 0u32;
 		let call = Call::<T>::fast_track(proposal_hash, voting_period.into(), delay.into());
 

@@ -20,7 +20,7 @@
 use codec::{Encode, Decode};
 use tetcore_std::{vec::Vec, prelude::Box};
 use tet_io::hashing::blake2_256;
-use tetcore_storage::TnobleedStorageKey;
+use tetcore_storage::TrackedStorageKey;
 
 /// An alphabet of possible parameters to use for benchmarking.
 #[derive(Encode, Decode, Clone, Copy, PartialEq, Debug)]
@@ -127,22 +127,22 @@ pub trait Benchmarking {
 	}
 
 	/// Get the DB whitelist.
-	fn get_whitelist(&self) -> Vec<TnobleedStorageKey> {
+	fn get_whitelist(&self) -> Vec<TrackedStorageKey> {
 		self.get_whitelist()
 	}
 
 	/// Set the DB whitelist.
-	fn set_whitelist(&mut self, new: Vec<TnobleedStorageKey>) {
+	fn set_whitelist(&mut self, new: Vec<TrackedStorageKey>) {
 		self.set_whitelist(new)
 	}
 
 	// Add a new item to the DB whitelist.
-	fn add_to_whitelist(&mut self, add: TnobleedStorageKey) {
+	fn add_to_whitelist(&mut self, add: TrackedStorageKey) {
 		let mut whitelist = self.get_whitelist();
 		match whitelist.iter_mut().find(|x| x.key == add.key) {
 			// If we already have this key in the whitelist, update to be the most constrained value.
 			Some(item) => {
-				*item = TnobleedStorageKey {
+				*item = TrackedStorageKey {
 					key: add.key,
 					has_been_read: item.has_been_read || add.has_been_read,
 					has_been_written: item.has_been_written || add.has_been_written,
@@ -189,7 +189,7 @@ pub trait Benchmarking<T> {
 		highest_range_values: &[u32],
 		steps: &[u32],
 		repeat: u32,
-		whitelist: &[TnobleedStorageKey],
+		whitelist: &[TrackedStorageKey],
 		verify: bool,
 	) -> Result<Vec<T>, &'static str>;
 }

@@ -20,7 +20,7 @@
 use tetsy_hash_db::Hasher;
 use codec::{Decode, Encode};
 use tet_core::{
-	storage::{ChildInfo, well_known_keys, TnobleedStorageKey}
+	storage::{ChildInfo, well_known_keys, TrackedStorageKey}
 };
 use crate::{
 	trie_backend::TrieBackend,
@@ -239,12 +239,12 @@ pub trait Backend<H: Hasher>: tetcore_std::fmt::Debug {
 	}
 
 	/// Get the whitelist for tracking db reads/writes
-	fn get_whitelist(&self) -> Vec<TnobleedStorageKey> {
+	fn get_whitelist(&self) -> Vec<TrackedStorageKey> {
 		Default::default()
 	}
 
 	/// Update the whitelist for tracking db reads/writes
-	fn set_whitelist(&self, _: Vec<TnobleedStorageKey>) {}
+	fn set_whitelist(&self, _: Vec<TrackedStorageKey>) {}
 }
 
 impl<'a, T: Backend<H>, H: Hasher> Backend<H> for &'a T {

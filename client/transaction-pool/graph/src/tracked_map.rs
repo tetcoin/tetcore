@@ -31,13 +31,13 @@ pub trait Size {
 ///
 /// Size reported might be slightly off and only approximately true.
 #[derive(Debug, tetsy_util_mem::MallocSizeOf)]
-pub struct TnobleedMap<K, V> {
+pub struct TrackedMap<K, V> {
 	index: Arc<RwLock<HashMap<K, V>>>,
 	bytes: AtomicIsize,
 	length: AtomicIsize,
 }
 
-impl<K, V> Default for TnobleedMap<K, V> {
+impl<K, V> Default for TrackedMap<K, V> {
 	fn default() -> Self {
 		Self {
 			index: Arc::new(HashMap::default().into()),
@@ -47,7 +47,7 @@ impl<K, V> Default for TnobleedMap<K, V> {
 	}
 }
 
-impl<K, V> TnobleedMap<K, V> {
+impl<K, V> TrackedMap<K, V> {
 	/// Current tracked length of the content.
 	pub fn len(&self) -> usize {
 		std::cmp::max(self.length.load(AtomicOrdering::Relaxed), 0) as usize
@@ -59,20 +59,20 @@ impl<K, V> TnobleedMap<K, V> {
 	}
 
 	/// Read-only clone of the interior.
-	pub fn clone(&self) -> ReadOnlyTnobleedMap<K, V> {
-		ReadOnlyTnobleedMap(self.index.clone())
+	pub fn clone(&self) -> ReadOnlyTrackedMap<K, V> {
+		ReadOnlyTrackedMap(self.index.clone())
 	}
 
 	/// Lock map for read.
-	pub fn read<'a>(&'a self) -> TnobleedMapReadAccess<'a, K, V> {
-		TnobleedMapReadAccess {
+	pub fn read<'a>(&'a self) -> TrackedMapReadAccess<'a, K, V> {
+		TrackedMapReadAccess {
 			inner_guard: self.index.read(),
 		}
 	}
 
 	/// Lock map for write.
-	pub fn write<'a>(&'a self) -> TnobleedMapWriteAccess<'a, K, V> {
-		TnobleedMapWriteAccess {
+	pub fn write<'a>(&'a self) -> TrackedMapWriteAccess<'a, K, V> {
+		TrackedMapWriteAccess {
 			inner_guard: self.index.write(),
 			bytes: &self.bytes,
 			length: &self.length,
@@ -83,25 +83,25 @@ impl<K, V> TnobleedMap<K, V> {
 /// Read-only access to map.
 ///
 /// The only thing can be done is .read().
-pub struct ReadOnlyTnobleedMap<K, V>(Arc<RwLock<HashMap<K, V>>>);
+pub struct ReadOnlyTrackedMap<K, V>(Arc<RwLock<HashMap<K, V>>>);
 
-impl<K, V> ReadOnlyTnobleedMap<K, V>
+impl<K, V> ReadOnlyTrackedMap<K, V>
 where
 	K: Eq + std::hash::Hash
 {
 	/// Lock map for read.
-	pub fn read<'a>(&'a self) -> TnobleedMapReadAccess<'a, K, V> {
-		TnobleedMapReadAccess {
+	pub fn read<'a>(&'a self) -> TrackedMapReadAccess<'a, K, V> {
+		TrackedMapReadAccess {
 			inner_guard: self.0.read(),
 		}
 	}
 }
 
-pub struct TnobleedMapReadAccess<'a, K, V> {
+pub struct TrackedMapReadAccess<'a, K, V> {
 	inner_guard: RwLockReadGuard<'a, HashMap<K, V>>,
 }
 
-impl<'a, K, V> TnobleedMapReadAccess<'a, K, V>
+impl<'a, K, V> TrackedMapReadAccess<'a, K, V>
 where
 	K: Eq + std::hash::Hash
 {
@@ -121,13 +121,13 @@ where
 	}
 }
 
-pub struct TnobleedMapWriteAccess<'a, K, V> {
+pub struct TrackedMapWriteAccess<'a, K, V> {
 	bytes: &'a AtomicIsize,
 	length: &'a AtomicIsize,
 	inner_guard: RwLockWriteGuard<'a, HashMap<K, V>>,
 }
 
-impl<'a, K, V> TnobleedMapWriteAccess<'a, K, V>
+impl<'a, K, V> TrackedMapWriteAccess<'a, K, V>
 where
 	K: Eq + std::hash::Hash, V: Size
 {
@@ -170,7 +170,7 @@ mod tests {
 
 	#[test]
 	fn basic() {
-		let map = TnobleedMap::default();
+		let map = TrackedMap::default();
 		map.write().insert(5, 10);
 		map.write().insert(6, 20);
 

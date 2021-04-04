@@ -143,7 +143,7 @@ impl noble_balances::Config for Test {
 parameter_types! {
 	pub const LaunchPeriod: u64 = 2;
 	pub const VotingPeriod: u64 = 2;
-	pub const FastTnobleVotingPeriod: u64 = 2;
+	pub const FastTrackVotingPeriod: u64 = 2;
 	pub const MinimumDeposit: u64 = 1;
 	pub const EnactmentPeriod: u64 = 2;
 	pub const CooloffPeriod: u64 = 2;
@@ -176,12 +176,12 @@ impl super::Config for Test {
 	type EnactmentPeriod = EnactmentPeriod;
 	type LaunchPeriod = LaunchPeriod;
 	type VotingPeriod = VotingPeriod;
-	type FastTnobleVotingPeriod = FastTnobleVotingPeriod;
+	type FastTrackVotingPeriod = FastTrackVotingPeriod;
 	type MinimumDeposit = MinimumDeposit;
 	type ExternalOrigin = EnsureSignedBy<Two, u64>;
 	type ExternalMajorityOrigin = EnsureSignedBy<Three, u64>;
 	type ExternalDefaultOrigin = EnsureSignedBy<One, u64>;
-	type FastTnobleOrigin = EnsureSignedBy<Five, u64>;
+	type FastTrackOrigin = EnsureSignedBy<Five, u64>;
 	type CancellationOrigin = EnsureSignedBy<Four, u64>;
 	type BlacklistOrigin = EnsureRoot<u64>;
 	type CancelProposalOrigin = EnsureRoot<u64>;

@@ -451,12 +451,12 @@ impl_runtime_apis! {
 		fn dispatch_benchmark(
 			config: fabric_benchmarking::BenchmarkConfig
 		) -> Result<Vec<fabric_benchmarking::BenchmarkBatch>, tp_runtime::RuntimeString> {
-			use fabric_benchmarking::{Benchmarking, BenchmarkBatch, add_benchmark, TnobleedStorageKey};
+			use fabric_benchmarking::{Benchmarking, BenchmarkBatch, add_benchmark, TrackedStorageKey};
 
 			use fabric_system_benchmarking::Module as SystemBench;
 			impl fabric_system_benchmarking::Config for Runtime {}
 
-			let whitelist: Vec<TnobleedStorageKey> = vec![
+			let whitelist: Vec<TrackedStorageKey> = vec![
 				// Block Number
 				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac").to_vec().into(),
 				// Total Issuance

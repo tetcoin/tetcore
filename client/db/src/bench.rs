@@ -25,7 +25,7 @@ use std::collections::HashMap;
 use tetsy_hash_db::{Prefix, Hasher};
 use tp_trie::{MemoryDB, prefixed_key};
 use tet_core::{
-	storage::{ChildInfo, TnobleedStorageKey},
+	storage::{ChildInfo, TrackedStorageKey},
 	hexdisplay::HexDisplay
 };
 use tp_runtime::traits::{Block as BlockT, HashFor};
@@ -55,23 +55,23 @@ impl<Block: BlockT> tp_state_machine::Storage<HashFor<Block>> for StorageDb<Bloc
 	}
 }
 
-/// Tnoble whether a specific key has already been read or written to.
+/// Track whether a specific key has already been read or written to.
 #[derive(Default, Clone, Copy)]
-pub struct KeyTnobleer {
+pub struct KeyTracker {
 	has_been_read: bool,
 	has_been_written: bool,
 }
 
 /// A simple object that counts the reads and writes at the key level to the underlying state db.
 #[derive(Default, Clone, Copy, Debug)]
-pub struct ReadWriteTnobleer {
+pub struct ReadWriteTracker {
 	reads: u32,
 	repeat_reads: u32,
 	writes: u32,
 	repeat_writes: u32,
 }
 
-impl ReadWriteTnobleer {
+impl ReadWriteTracker {
 	fn add_read(&mut self) {
 		self.reads += 1;
 	}
@@ -99,12 +99,12 @@ pub struct BenchmarkingState<B: BlockT> {
 	record: Cell<Vec<Vec<u8>>>,
 	shared_cache: SharedCache<B>, // shared cache is always empty
 	/// Key tracker for keys in the main trie.
-	main_key_tracker: RefCell<HashMap<Vec<u8>, KeyTnobleer>>,
+	main_key_tracker: RefCell<HashMap<Vec<u8>, KeyTracker>>,
 	/// Key tracker for keys in a child trie.
 	/// Child trie are identified by their storage key (i.e. `ChildInfo::storage_key()`)
-	child_key_tracker: RefCell<HashMap<Vec<u8>, HashMap<Vec<u8>, KeyTnobleer>>>,
-	read_write_tracker: RefCell<ReadWriteTnobleer>,
-	whitelist: RefCell<Vec<TnobleedStorageKey>>,
+	child_key_tracker: RefCell<HashMap<Vec<u8>, HashMap<Vec<u8>, KeyTracker>>>,
+	read_write_tracker: RefCell<ReadWriteTracker>,
+	whitelist: RefCell<Vec<TrackedStorageKey>>,
 }
 
 impl<B: BlockT> BenchmarkingState<B> {
@@ -168,7 +168,7 @@ impl<B: BlockT> BenchmarkingState<B> {
 		let whitelist = self.whitelist.borrow();
 
 		whitelist.iter().for_each(|key| {
-			let whitelisted = KeyTnobleer {
+			let whitelisted = KeyTracker {
 				has_been_read: key.has_been_read,
 				has_been_written: key.has_been_written,
 			};
@@ -197,7 +197,7 @@ impl<B: BlockT> BenchmarkingState<B> {
 
 		let read = match key_tracker.get(key) {
 			None => {
-				let has_been_read = KeyTnobleer {
+				let has_been_read = KeyTracker {
 					has_been_read: true,
 					has_been_written: false,
 				};
@@ -207,7 +207,7 @@ impl<B: BlockT> BenchmarkingState<B> {
 			},
 			Some(tracker) => {
 				if !tracker.has_been_read {
-					let has_been_read = KeyTnobleer {
+					let has_been_read = KeyTracker {
 						has_been_read: true,
 						has_been_written: tracker.has_been_written,
 					};
@@ -246,7 +246,7 @@ impl<B: BlockT> BenchmarkingState<B> {
 		};
 
 		// If we have written to the key, we also consider that we have read from it.
-		let has_been_written = KeyTnobleer {
+		let has_been_written = KeyTracker {
 			has_been_read: true,
 			has_been_written: true,
 		};
@@ -433,7 +433,7 @@ impl<B: BlockT> StateBackend<HashFor<B>> for BenchmarkingState<B> {
 			self.root.set(storage_root);
 			self.db.set(Some(db));
 
-			// Tnoble DB Writes
+			// Track DB Writes
 			main_storage_changes.iter().for_each(|(key, _)| {
 				self.add_write_key(None, key);
 			});
@@ -480,11 +480,11 @@ impl<B: BlockT> StateBackend<HashFor<B>> for BenchmarkingState<B> {
 		self.wipe_tracker()
 	}
 
-	fn get_whitelist(&self) -> Vec<TnobleedStorageKey> {
+	fn get_whitelist(&self) -> Vec<TrackedStorageKey> {
 		self.whitelist.borrow().to_vec()
 	}
 
-	fn set_whitelist(&self, new: Vec<TnobleedStorageKey>) {
+	fn set_whitelist(&self, new: Vec<TrackedStorageKey>) {
 		*self.whitelist.borrow_mut() = new;
 	}
 

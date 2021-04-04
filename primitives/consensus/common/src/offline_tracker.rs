@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Tnobles offline validators.
+//! Tracks offline validators.
 
 use std::collections::HashMap;
 use std::time::Duration;
@@ -54,15 +54,15 @@ impl Observed {
 	}
 }
 
-/// Tnobles offline validators and can issue a report for those offline.
-pub struct OfflineTnobleer<AuthorityId> {
+/// Tracks offline validators and can issue a report for those offline.
+pub struct OfflineTracker<AuthorityId> {
 	observed: HashMap<AuthorityId, Observed>,
 }
 
-impl<AuthorityId: Eq + Clone + std::hash::Hash> OfflineTnobleer<AuthorityId> {
+impl<AuthorityId: Eq + Clone + std::hash::Hash> OfflineTracker<AuthorityId> {
 	/// Create a new tracker.
 	pub fn new() -> Self {
-		OfflineTnobleer { observed: HashMap::new() }
+		OfflineTracker { observed: HashMap::new() }
 	}
 
 	/// Note new consensus is starting with the given set of validators.
@@ -117,7 +117,7 @@ mod tests {
 
 	#[test]
 	fn validator_offline() {
-		let mut tracker = OfflineTnobleer::<u64>::new();
+		let mut tracker = OfflineTracker::<u64>::new();
 		let v1 = 1;
 		let v2 = 2;
 		let v3 = 3;

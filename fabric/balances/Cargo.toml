@@ -27,7 +27,8 @@ fabric-system = { version = "2.0.0", default-features = false, path = "../system
 [dev-dependencies]
 tet-io = { version = "2.0.2", path = "../../primitives/io" }
 tet-core = { version = "2.0.2", path = "../../primitives/core" }
-noble-transaction-payment = { version = "2.0.0", path = "../transaction-payment" }
+# noble-transaction-payment = { version = "2.0.0", path = "../transaction-payment" }
+noble-transaction-payment = { path = "../transaction-payment" }
 
 [features]
 default = ["std"]

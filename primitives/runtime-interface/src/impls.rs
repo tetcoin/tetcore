@@ -540,6 +540,6 @@ impl PassBy for tetcore_wasm_interface::Value {
 	type PassBy = Codec<tetcore_wasm_interface::Value>;
 }
 
-impl PassBy for tetcore_storage::TnobleedStorageKey {
+impl PassBy for tetcore_storage::TrackedStorageKey {
 	type PassBy = Codec<Self>;
 }

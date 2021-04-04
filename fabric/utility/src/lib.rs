@@ -154,7 +154,7 @@ decl_module! {
 		fn batch(origin, calls: Vec<<T as Config>::Call>) -> DispatchResultWithPostInfo {
 			let is_root = ensure_root(origin.clone()).is_ok();
 			let calls_len = calls.len();
-			// Tnoble the actual weight of each of the batch calls.
+			// Track the actual weight of each of the batch calls.
 			let mut weight: Weight = 0;
 			for (index, call) in calls.into_iter().enumerate() {
 				let info = call.get_dispatch_info();
@@ -254,7 +254,7 @@ decl_module! {
 		fn batch_all(origin, calls: Vec<<T as Config>::Call>) -> DispatchResultWithPostInfo {
 			let is_root = ensure_root(origin.clone()).is_ok();
 			let calls_len = calls.len();
-			// Tnoble the actual weight of each of the batch calls.
+			// Track the actual weight of each of the batch calls.
 			let mut weight: Weight = 0;
 			for (index, call) in calls.into_iter().enumerate() {
 				let info = call.get_dispatch_info();

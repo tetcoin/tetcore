@@ -113,9 +113,9 @@ This call can only be made by the `ExternalDefaultOrigin`.
 - `external_propose_default` - Schedules a proposal to become a negative-turnout-bias
   referendum once it is legal for an externally proposed referendum.
 
-#### Fast Tnoble Origin
+#### Fast Track Origin
 
-This call can only be made by the `FastTnobleOrigin`.
+This call can only be made by the `FastTrackOrigin`.
 
 - `fast_track` - Schedules the current externally proposed proposal that
   is "majority-carries" to become a referendum immediately.
