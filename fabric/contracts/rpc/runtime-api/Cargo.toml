@@ -8,7 +8,7 @@ homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore/"
 description = "Runtime API definition required by Contracts RPC extensions."
 readme = "README.md"
-publish = false
+# publish = false
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

@@ -13,7 +13,7 @@ description = "FABRIC noble for WASM contracts"
 readme = "README.md"
 
 # Prevent publish until we are ready to release 3.0.0
-publish = false
+# publish = false
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
