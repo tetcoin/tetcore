@@ -41,7 +41,8 @@ tetcore-tracing = { version = "2.0.2", path = "../../primitives/tracing" }
 noble-balances = { version = "2.0.1", path = "../balances" }
 noble-timestamp = { version = "2.0.0", path = "../timestamp" }
 noble-staking-reward-curve = { version = "2.0.0",  path = "../staking/reward-curve" }
-tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
+# tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
+tetcore-test-utils = { path = "../../test-utils" }
 fabric-benchmarking = { version = "2.0.0", path = "../benchmarking" }
 rand_chacha = { version = "0.2" }
 parking_lot = "0.11.1"
