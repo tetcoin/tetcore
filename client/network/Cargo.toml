@@ -64,7 +64,7 @@ wasm-timer = "0.2"
 zeroize = "1.2.0"
 
 [dependencies.tetsy-libp2p]
-version = "0.34.1"
+version = "0.34.2"
 default-features = false
 features = ["identify", "kad", "mdns", "mplex", "noise", "ping", "request-response", "tcp-async-io", "websocket", "remux"]
 # git = "https://github.com/tetcoin/tetsy-libp2p.git"
