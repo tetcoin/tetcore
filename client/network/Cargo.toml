@@ -66,7 +66,7 @@ zeroize = "1.2.0"
 [dependencies.tetsy-libp2p]
 version = "0.34.2"
 default-features = false
-features = ["dns", "identify", "kad", "mdns", "mplex", "noise", "ping", "request-response", "tcp-async-io", "websocket", "remux"]
+features = ["dns", "identify", "kad", "mdns", "mplex", "noise", "ping", "request-response", "tcp-async-io", "websocket", "remux", "wasm-ext"]
 # git = "https://github.com/tetcoin/tetsy-libp2p.git"
 # rev = "bc2e822ef4c5f69225112b461018212a18782e4a"
 
