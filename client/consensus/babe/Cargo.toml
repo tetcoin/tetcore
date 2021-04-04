@@ -61,9 +61,11 @@ tp-keyring = { version = "2.0.2", path = "../../../primitives/keyring" }
 tetcore-tracing = { version = "2.0.2", path = "../../../primitives/tracing" }
 tc-executor = { version = "0.8.0", path = "../../executor" }
 tc-network = { version = "0.8.0", path = "../../network" }
-tc-network-test = { version = "0.8.0", path = "../../network/test" }
+# tc-network-test = { version = "0.8.0", path = "../../network/test" }
+tc-network-test = { path = "../../network/test" }
 tc-service = { version = "0.8.0", default-features = false, path = "../../service" }
-tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }
+# tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }
+tetcore-test-runtime-client = { path = "../../../test-utils/runtime/client" }
 tc-block-builder = { version = "0.8.0", path = "../../block-builder" }
 rand_chacha = "0.2.2"
 tempfile = "3.1.0"
