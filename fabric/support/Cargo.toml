@@ -37,7 +37,8 @@ smallvec = "1.4.1"
 
 [dev-dependencies]
 pretty_assertions = "0.6.1"
-fabric-system = { version = "2.0.0", path = "../system" }
+# fabric-system = { version = "2.0.0", path = "../system" }
+fabric-system = { path = "../system" }
 tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
 tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 tp-api = { version = "2.0.2", default-features = false, path = "../../primitives/api" }
