@@ -79,8 +79,10 @@ rand = "0.7.2"
 tp-keyring = { version = "2.0.2", path = "../../primitives/keyring" }
 tp-test-primitives = { version = "2.0.0", path = "../../primitives/test-primitives" }
 tetcore-tracing = { version = "2.0.2", path = "../../primitives/tracing" }
-tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime" }
-tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+# tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime" }
+# tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+tetcore-test-runtime = { path = "../../test-utils/runtime" }
+tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
 tempfile = "3.1.0"
 
 [features]
