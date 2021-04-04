@@ -23,7 +23,7 @@ wasm-timer = "0.2.5"
 tetsy-libp2p = { version = "0.34.2", default-features = false, features = ["dns", "tcp-async-io", "wasm-ext", "websocket"] }
 # tetsy-libp2p = { version = "0.34.0", default-features = false, features = ["dns", "tcp-async-io", "wasm-ext", "websocket"], git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
 log = "0.4.8"
-pin-project = "0.4.6"
+pin-project = "1.0.6"
 rand = "0.7.2"
 serde = { version = "1.0.101", features = ["derive"] }
 take_mut = "0.2.2"
