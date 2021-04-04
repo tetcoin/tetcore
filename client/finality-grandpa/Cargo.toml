@@ -53,9 +53,11 @@ linked-hash-map = "0.5.2"
 assert_matches = "1.3.0"
 tetsy-finality-grandpa = { version = "0.13.0", features = ["derive-codec", "test-helpers"] }
 tc-network = { version = "0.8.0", path = "../network" }
-tc-network-test = { version = "0.8.0", path = "../network/test" }
+# tc-network-test = { version = "0.8.0", path = "../network/test" }
+tc-network-test = { path = "../network/test" }
 tp-keyring = { version = "2.0.2", path = "../../primitives/keyring" }
-tetcore-test-runtime-client = { version = "2.0.0",  path = "../../test-utils/runtime/client" }
+# tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
 tp-consensus-babe = { version = "0.8.2", path = "../../primitives/consensus/babe" }
 tp-state-machine = { version = "0.8.2", path = "../../primitives/state-machine" }
 tetcore-tracing = { version = "2.0.2", path = "../../primitives/tracing" }
