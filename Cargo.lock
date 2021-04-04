@@ -8142,9 +8142,9 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p"
-version = "0.34.2"
+version = "0.34.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a604b9ee30ea56e9bb416da72b7a38260b874fec458639265803e98da31fcf13"
+checksum = "3bc0b83e2f2a5e6efb37abdaffbd56612c91d69cc8ea19bda89e62c8091ca392"
 dependencies = [
  "atomic",
  "bytes 1.0.1",
