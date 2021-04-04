@@ -38,4 +38,5 @@ log = "0.4.11"
 thiserror = "1.0.21"
 
 [dev-dependencies]
-tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }
+# tetcore-test-runtime-client = { version = "2.0.0", path = "../../../test-utils/runtime/client" }
+tetcore-test-runtime-client = { path = "../../../test-utils/runtime/client" }
