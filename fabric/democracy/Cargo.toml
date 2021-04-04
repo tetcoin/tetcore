@@ -30,7 +30,8 @@ tet-core = { version = "2.0.2", path = "../../primitives/core" }
 noble-balances = { version = "2.0.1", path = "../balances" }
 noble-scheduler = { version = "2.0.0", path = "../scheduler" }
 tetcore-storage = { version = "2.0.2", path = "../../primitives/storage" }
-tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
+# tetcore-test-utils = { version = "2.0.0", path = "../../test-utils" }
+tetcore-test-utils = { path = "../../test-utils" }
 hex-literal = "0.3.1"
 
 [features]
