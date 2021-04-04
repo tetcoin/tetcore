@@ -34,7 +34,7 @@ use hex_literal::hex;
 use tc_telemetry::TelemetryEndpoints;
 use grandpa_primitives::{AuthorityId as GrandpaId};
 use tp_consensus_babe::{AuthorityId as BabeId};
-use pallet_im_online::sr25519::{AuthorityId as ImOnlineId};
+use noble_im_online::sr25519::{AuthorityId as ImOnlineId};
 use tp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
 use tp_runtime::{Perbill, traits::{Verify, IdentifyAccount}};
 
@@ -246,19 +246,19 @@ pub fn testnet_genesis(
 	const STASH: Balance = ENDOWMENT / 1000;
 
 	GenesisConfig {
-		frame_system: Some(SystemConfig {
+		fabric_system: Some(SystemConfig {
 			code: wasm_binary_unwrap().to_vec(),
 			changes_trie_config: Default::default(),
 		}),
-		pallet_balances: Some(BalancesConfig {
+		noble_balances: Some(BalancesConfig {
 			balances: endowed_accounts.iter().cloned()
 				.map(|x| (x, ENDOWMENT))
 				.collect()
 		}),
-		pallet_indices: Some(IndicesConfig {
+		noble_indices: Some(IndicesConfig {
 			indices: vec![],
 		}),
-		pallet_session: Some(SessionConfig {
+		noble_session: Some(SessionConfig {
 			keys: initial_authorities.iter().map(|x| {
 				(x.0.clone(), x.0.clone(), session_keys(
 					x.2.clone(),
@@ -268,7 +268,7 @@ pub fn testnet_genesis(
 				))
 			}).collect::<Vec<_>>(),
 		}),
-		pallet_staking: Some(StakingConfig {
+		noble_staking: Some(StakingConfig {
 			validator_count: initial_authorities.len() as u32 * 2,
 			minimum_validator_count: initial_authorities.len() as u32,
 			stakers: initial_authorities.iter().map(|x| {
@@ -278,46 +278,46 @@ pub fn testnet_genesis(
 			slash_reward_fraction: Perbill::from_percent(10),
 			.. Default::default()
 		}),
-		pallet_democracy: Some(DemocracyConfig::default()),
-		pallet_elections_phragmen: Some(ElectionsConfig {
+		noble_democracy: Some(DemocracyConfig::default()),
+		noble_elections_phragmen: Some(ElectionsConfig {
 			members: endowed_accounts.iter()
 						.take((num_endowed_accounts + 1) / 2)
 						.cloned()
 						.map(|member| (member, STASH))
 						.collect(),
 		}),
-		pallet_collective_Instance1: Some(CouncilConfig::default()),
-		pallet_collective_Instance2: Some(TechnicalCommitteeConfig {
+		noble_collective_Instance1: Some(CouncilConfig::default()),
+		noble_collective_Instance2: Some(TechnicalCommitteeConfig {
 			members: endowed_accounts.iter()
 						.take((num_endowed_accounts + 1) / 2)
 						.cloned()
 						.collect(),
 			phantom: Default::default(),
 		}),
-		pallet_contracts: Some(ContractsConfig {
-			current_schedule: pallet_contracts::Schedule {
+		noble_contracts: Some(ContractsConfig {
+			current_schedule: noble_contracts::Schedule {
 				enable_println, // this should only be enabled on development chains
 				..Default::default()
 			},
 		}),
-		pallet_sudo: Some(SudoConfig {
+		noble_sudo: Some(SudoConfig {
 			key: root_key,
 		}),
-		pallet_babe: Some(BabeConfig {
+		noble_babe: Some(BabeConfig {
 			authorities: vec![],
 		}),
-		pallet_im_online: Some(ImOnlineConfig {
+		noble_im_online: Some(ImOnlineConfig {
 			keys: vec![],
 		}),
-		pallet_authority_discovery: Some(AuthorityDiscoveryConfig {
+		noble_authority_discovery: Some(AuthorityDiscoveryConfig {
 			keys: vec![],
 		}),
-		pallet_grandpa: Some(GrandpaConfig {
+		noble_grandpa: Some(GrandpaConfig {
 			authorities: vec![],
 		}),
-		pallet_membership_Instance1: Some(Default::default()),
-		pallet_treasury: Some(Default::default()),
-		pallet_society: Some(SocietyConfig {
+		noble_membership_Instance1: Some(Default::default()),
+		noble_treasury: Some(Default::default()),
+		noble_society: Some(SocietyConfig {
 			members: endowed_accounts.iter()
 						.take((num_endowed_accounts + 1) / 2)
 						.cloned()
@@ -325,7 +325,7 @@ pub fn testnet_genesis(
 			pot: 0,
 			max_members: 999,
 		}),
-		pallet_vesting: Some(Default::default()),
+		noble_vesting: Some(Default::default()),
 	}
 }
 

@@ -1,6 +1,6 @@
 [package]
 name = "tc-telemetry"
-version = "2.0.1"
+version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Telemetry utils"
 edition = "2018"

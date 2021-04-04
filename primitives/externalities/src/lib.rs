@@ -27,7 +27,7 @@
 
 use tetcore_std::{any::{Any, TypeId}, vec::Vec, boxed::Box};
 
-use tetcore_storage::{ChildInfo, TrackedStorageKey};
+use tetcore_storage::{ChildInfo, TnobleedStorageKey};
 
 pub use scope_limited::{set_and_run_with_externalities, with_externalities};
 pub use extensions::{Extension, Extensions, ExtensionStore};
@@ -262,14 +262,14 @@ pub trait Externalities: ExtensionStore {
 	/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	///
 	/// Gets the current DB tracking whitelist.
-	fn get_whitelist(&self) -> Vec<TrackedStorageKey>;
+	fn get_whitelist(&self) -> Vec<TnobleedStorageKey>;
 
 	/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	/// Benchmarking related functionality and shouldn't be used anywhere else!
 	/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	///
 	/// Adds new storage keys to the DB tracking whitelist.
-	fn set_whitelist(&mut self, new: Vec<TrackedStorageKey>);
+	fn set_whitelist(&mut self, new: Vec<TnobleedStorageKey>);
 }
 
 /// Extension for the [`Externalities`] trait.

@@ -1,0 +1,5 @@
+error: Invalid noble macro call: expected no attributes, e.g. macro call must be just `#[fabric_support::noble]` or `#[noble]`
+ --> $DIR/attr_non_empty.rs:1:26
+  |
+1 | #[fabric_support::noble [foo]]
+  |                          ^^^

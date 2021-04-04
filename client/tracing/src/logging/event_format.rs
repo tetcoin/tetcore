@@ -190,7 +190,7 @@ impl<'a> fmt::Display for FmtThreadName<'a> {
 			Ordering::{AcqRel, Acquire, Relaxed},
 		};
 
-		// Track the longest thread name length we've seen so far in an atomic,
+		// Tnoble the longest thread name length we've seen so far in an atomic,
 		// so that it can be updated by any thread.
 		static MAX_LEN: AtomicUsize = AtomicUsize::new(0);
 		let len = self.name.len();

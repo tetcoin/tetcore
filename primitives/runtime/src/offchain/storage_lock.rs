@@ -437,13 +437,13 @@ pub trait BlockNumberProvider {
 	/// Provides an abstraction over an arbitrary way of providing the
 	/// current block number.
 	///
-	/// In case of using crate `tp_runtime` without the crate `frame`
+	/// In case of using crate `tp_runtime` without the crate `fabric`
 	/// system, it is already implemented for
-	/// `frame_system::Module<T: Config>` as:
+	/// `fabric_system::Module<T: Config>` as:
 	///
 	/// ```ignore
 	/// fn current_block_number() -> Self {
-	///     frame_system::Module<Config>::block_number()
+	///     fabric_system::Module<Config>::block_number()
 	/// }
 	/// ```
 	/// .

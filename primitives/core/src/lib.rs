@@ -350,7 +350,7 @@ pub fn to_tetcore_wasm_fn_return_value(value: &impl Encode) -> u64 {
 }
 
 /// The void type - it cannot exist.
-// Oh rust, you crack me up...
+// Oh rust, you cnoble me up...
 #[derive(Clone, Decode, Encode, Eq, PartialEq, RuntimeDebug)]
 pub enum Void {}
 

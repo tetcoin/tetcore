@@ -1,0 +1,43 @@
+[package]
+name = "fabric-support-test"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+publish = false
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+serde = { version = "1.0.101", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+tet-io = { version = "2.0.2", path = "../../../primitives/io", default-features = false }
+tp-state-machine = { version = "0.8.2", optional = true, path = "../../../primitives/state-machine" }
+fabric-support = { version = "2.0.0", default-features = false, path = "../" }
+tp-inherents = { version = "2.0.2", default-features = false, path = "../../../primitives/inherents" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../../primitives/runtime" }
+tet-core = { version = "2.0.2", default-features = false, path = "../../../primitives/core" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../../primitives/std" }
+trybuild = "1.0.38"
+pretty_assertions = "0.6.1"
+rustversion = "1.0.0"
+fabric-metadata = { version = "12.0.0", default-features = false, path = "../../metadata" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../../system" }
+
+[features]
+default = ["std"]
+std = [
+	"serde/std",
+	"codec/std",
+	"tet-io/std",
+	"fabric-support/std",
+	"fabric-system/std",
+	"tp-inherents/std",
+	"tet-core/std",
+	"tetcore-std/std",
+	"tp-runtime/std",
+	"tp-state-machine",
+]

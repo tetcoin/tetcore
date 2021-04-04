@@ -18,7 +18,7 @@
 //! Primitive traits for providing election functionality.
 //!
 //! This crate provides two traits that could interact to enable extensible election functionality
-//! within FRAME pallets.
+//! within FABRIC nobles.
 //!
 //! Something that will provide the functionality of election will implement [`ElectionProvider`],
 //! whilst needing an associated [`ElectionProvider::DataProvider`], which needs to be fulfilled by
@@ -32,7 +32,7 @@
 //!                          v                                          |
 //!                    +-----+----+                              +------+---+
 //!                    |          |                              |          |
-//! pallet-do-election |          |                              |          | pallet-needs-election
+//! noble-do-election |          |                              |          | noble-needs-election
 //!                    |          |                              |          |
 //!                    |          |                              |          |
 //!                    +-----+----+                              +------+---+
@@ -42,8 +42,8 @@
 //!                                         ElectionProvider
 //! ```
 //!
-//! > It could also be possible that a third party pallet (C), provides the data of election to an
-//! > election provider (B), which then passes the election result to another pallet (A).
+//! > It could also be possible that a third party noble (C), provides the data of election to an
+//! > election provider (B), which then passes the election result to another noble (A).
 //!
 //! ## Election Types
 //!

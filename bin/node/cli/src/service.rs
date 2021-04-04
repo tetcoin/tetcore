@@ -650,13 +650,13 @@ mod tests {
 
 				let function = Call::Balances(BalancesCall::transfer(to.into(), amount));
 
-				let check_spec_version = frame_system::CheckSpecVersion::new();
-				let check_tx_version = frame_system::CheckTxVersion::new();
-				let check_genesis = frame_system::CheckGenesis::new();
-				let check_era = frame_system::CheckEra::from(Era::Immortal);
-				let check_nonce = frame_system::CheckNonce::from(index);
-				let check_weight = frame_system::CheckWeight::new();
-				let payment = pallet_transaction_payment::ChargeTransactionPayment::from(0);
+				let check_spec_version = fabric_system::CheckSpecVersion::new();
+				let check_tx_version = fabric_system::CheckTxVersion::new();
+				let check_genesis = fabric_system::CheckGenesis::new();
+				let check_era = fabric_system::CheckEra::from(Era::Immortal);
+				let check_nonce = fabric_system::CheckNonce::from(index);
+				let check_weight = fabric_system::CheckWeight::new();
+				let payment = noble_transaction_payment::ChargeTransactionPayment::from(0);
 				let extra = (
 					check_spec_version,
 					check_tx_version,

@@ -1,6 +1,6 @@
 [package]
 name = "tc-consensus-aura"
-version = "0.8.1"
+version = "0.8.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Aura consensus algorithm for tetcore"
 edition = "2018"

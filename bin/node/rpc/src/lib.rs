@@ -24,9 +24,9 @@
 //! need some strong assumptions about the particular runtime.
 //!
 //! The RPCs available in this crate however can make some assumptions
-//! about how the runtime is constructed and what FRAME pallets
+//! about how the runtime is constructed and what FABRIC nobles
 //! are part of it. Therefore all node-runtime-specific RPCs can
-//! be placed here or imported from corresponding FRAME RPC definitions.
+//! be placed here or imported from corresponding FABRIC RPC definitions.
 
 #![warn(missing_docs)]
 
@@ -114,9 +114,9 @@ pub fn create_full<C, P, SC, B>(
 ) -> tetsy_jsonrpc_core::IoHandler<tc_rpc_api::Metadata> where
 	C: ProvideRuntimeApi<Block> + HeaderBackend<Block> + AuxStore +
 		HeaderMetadata<Block, Error=BlockChainError> + Sync + Send + 'static,
-	C::Api: tetcore_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
-	C::Api: pallet_contracts_rpc::ContractsRuntimeApi<Block, AccountId, Balance, BlockNumber>,
-	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
+	C::Api: tetcore_fabric_rpc_system::AccountNonceApi<Block, AccountId, Index>,
+	C::Api: noble_contracts_rpc::ContractsRuntimeApi<Block, AccountId, Balance, BlockNumber>,
+	C::Api: noble_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: BabeApi<Block>,
 	C::Api: BlockBuilder<Block>,
 	P: TransactionPool + 'static,
@@ -124,9 +124,9 @@ pub fn create_full<C, P, SC, B>(
 	B: tc_client_api::Backend<Block> + Send + Sync + 'static,
 	B::State: tc_client_api::backend::StateBackend<tp_runtime::traits::HashFor<Block>>,
 {
-	use tetcore_frame_rpc_system::{FullSystem, SystemApi};
-	use pallet_contracts_rpc::{Contracts, ContractsApi};
-	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
+	use tetcore_fabric_rpc_system::{FullSystem, SystemApi};
+	use noble_contracts_rpc::{Contracts, ContractsApi};
+	use noble_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
 
 	let mut io = tetsy_jsonrpc_core::IoHandler::default();
 	let FullDeps {
@@ -213,7 +213,7 @@ pub fn create_light<C, P, M, F>(
 	P: TransactionPool + 'static,
 	M: tetsy_jsonrpc_core::Metadata + Default,
 {
-	use tetcore_frame_rpc_system::{LightSystem, SystemApi};
+	use tetcore_fabric_rpc_system::{LightSystem, SystemApi};
 
 	let LightDeps {
 		client,

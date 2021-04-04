@@ -11,7 +11,7 @@ Tetcore is split into multiple levels with increasing opinion and decreasing fle
 
 * primitives
 * client
-* FRAME (formerly `srml`)
+* FABRIC (formerly `srml`)
 
 Putting all these components together we have:
 
@@ -35,23 +35,23 @@ In the lowest level, Tetcore defines primitives, interfaces and traits to implem
 * _found in_: `/client`
 * _crates prefix_: `tc-`
 * _constraints_:
-** crates may not (dev-)depend on any `frame-`-crates
+** crates may not (dev-)depend on any `fabric-`-crates
 
 In the client you can find a set of crates to construct the outer tetcore-node, implementing outer runtime interfaces, thus it depends on `runtime`. It provides the outer building blocks like transaction queue, networking layer, database backend, full* and light-client support.
 
-=== FRAME (formerly `srml`)
+=== FABRIC (formerly `srml`)
 
-* _found in_: `/frame`
-* _crates prefix_: `frame-` and `pallet-`
+* _found in_: `/fabric`
+* _crates prefix_: `fabric-` and `noble-`
 * _constraints_:
 ** all crates that go on chain must be `[no_std]`
 ** must not (dev-)depend on anything in `/client`
 
-FRAME is a set of modules that implement specific transition functions and features one might want to have in their runtime.
+FABRIC is a set of modules that implement specific transition functions and features one might want to have in their runtime.
 
-_Pallets_ are individual modules within _FRAME._ These are containers that host domain-specific logic. They have the `pallet-` prefix. For example, `pallet-staking` contains logic for staking tokens.
+_Nobles_ are individual modules within _FABRIC._ These are containers that host domain-specific logic. They have the `noble-` prefix. For example, `noble-staking` contains logic for staking tokens.
 
-There are a few crates with the `frame-` prefix. These do not contain domain-specific logic. Rather, they are the main FRAME support infrastructure. These are:
+There are a few crates with the `fabric-` prefix. These do not contain domain-specific logic. Rather, they are the main FABRIC support infrastructure. These are:
 
 - Executive
 - Metadata
@@ -79,7 +79,7 @@ We also provide some binaries pulling from the components creating full applicat
 
 * _found in_: `/bin/node`
 
-The default (testing) application pulling together our recommended setup of tetcore-client with a wasm-contracts-supporting frame-runtime.  The node pulls it all together, constructs the (upgradable) runtime, and wires up the client around it. You can find an example client, which includes a full wasm-contracts chain in  `node`. This is also what is being built and run if you do `cargo run`.
+The default (testing) application pulling together our recommended setup of tetcore-client with a wasm-contracts-supporting fabric-runtime.  The node pulls it all together, constructs the (upgradable) runtime, and wires up the client around it. You can find an example client, which includes a full wasm-contracts chain in  `node`. This is also what is being built and run if you do `cargo run`.
 
 ==== Node Template
 
@@ -102,7 +102,7 @@ We also provide a template to get you started building your own node.
 ....
 +---------------+       +----------------+
 |               |       |                |
-|    runtime    +<------+   frame        |
+|    runtime    +<------+   fabric        |
 |               |       |                |
 +------+-----+--+       +-------------+--+
        ^     ^                        ^

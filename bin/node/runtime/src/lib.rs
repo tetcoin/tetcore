@@ -24,7 +24,7 @@
 
 
 use tetcore_std::prelude::*;
-use frame_support::{
+use fabric_support::{
 	construct_runtime, parameter_types, debug, RuntimeDebug,
 	weights::{
 		Weight, IdentityFee,
@@ -35,11 +35,11 @@ use frame_support::{
 		U128CurrencyToVote,
 	},
 };
-use frame_system::{
+use fabric_system::{
 	EnsureRoot, EnsureOneOf,
 	limits::{BlockWeights, BlockLength}
 };
-use frame_support::traits::InstanceFilter;
+use fabric_support::traits::InstanceFilter;
 use codec::{Encode, Decode};
 use tet_core::{
 	crypto::KeyTypeId,
@@ -62,25 +62,25 @@ use tp_runtime::traits::{
 use tp_version::RuntimeVersion;
 #[cfg(any(feature = "std", test))]
 use tp_version::NativeVersion;
-use pallet_grandpa::{AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList};
-use pallet_grandpa::fg_primitives;
-use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
+use noble_grandpa::{AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList};
+use noble_grandpa::fg_primitives;
+use noble_im_online::sr25519::AuthorityId as ImOnlineId;
 use tp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
-use pallet_transaction_payment::{FeeDetails, RuntimeDispatchInfo};
-pub use pallet_transaction_payment::{Multiplier, TargetedFeeAdjustment, CurrencyAdapter};
-use pallet_session::{historical as pallet_session_historical};
+use noble_transaction_payment::{FeeDetails, RuntimeDispatchInfo};
+pub use noble_transaction_payment::{Multiplier, TargetedFeeAdjustment, CurrencyAdapter};
+use noble_session::{historical as noble_session_historical};
 use tp_inherents::{InherentData, CheckInherentsResult};
 use static_assertions::const_assert;
-use pallet_contracts::WeightInfo;
+use noble_contracts::WeightInfo;
 
 #[cfg(any(feature = "std", test))]
 pub use tp_runtime::BuildStorage;
 #[cfg(any(feature = "std", test))]
-pub use pallet_balances::Call as BalancesCall;
+pub use noble_balances::Call as BalancesCall;
 #[cfg(any(feature = "std", test))]
-pub use frame_system::Call as SystemCall;
+pub use fabric_system::Call as SystemCall;
 #[cfg(any(feature = "std", test))]
-pub use pallet_staking::StakerStatus;
+pub use noble_staking::StakerStatus;
 
 /// Implementations of some helper traits passed into runtime modules as associated types.
 pub mod impls;
@@ -182,7 +182,7 @@ parameter_types! {
 
 const_assert!(NORMAL_DISPATCH_RATIO.deconstruct() >= AVERAGE_ON_INITIALIZE_RATIO.deconstruct());
 
-impl frame_system::Config for Runtime {
+impl fabric_system::Config for Runtime {
 	type BaseCallFilter = ();
 	type BlockWeights = RuntimeBlockWeights;
 	type BlockLength = RuntimeBlockLength;
@@ -199,18 +199,18 @@ impl frame_system::Config for Runtime {
 	type Event = Event;
 	type BlockHashCount = BlockHashCount;
 	type Version = Version;
-	type PalletInfo = PalletInfo;
-	type AccountData = pallet_balances::AccountData<Balance>;
+	type NobleInfo = NobleInfo;
+	type AccountData = noble_balances::AccountData<Balance>;
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
-	type SystemWeightInfo = frame_system::weights::TetcoreWeight<Runtime>;
+	type SystemWeightInfo = fabric_system::weights::TetcoreWeight<Runtime>;
 	type SS58Prefix = SS58Prefix;
 }
 
-impl pallet_utility::Config for Runtime {
+impl noble_utility::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
-	type WeightInfo = pallet_utility::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_utility::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -221,14 +221,14 @@ parameter_types! {
 	pub const MaxSignatories: u16 = 100;
 }
 
-impl pallet_multisig::Config for Runtime {
+impl noble_multisig::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 	type Currency = Balances;
 	type DepositBase = DepositBase;
 	type DepositFactor = DepositFactor;
 	type MaxSignatories = MaxSignatories;
-	type WeightInfo = pallet_multisig::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_multisig::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -258,8 +258,8 @@ impl InstanceFilter<Call> for ProxyType {
 			ProxyType::NonTransfer => !matches!(
 				c,
 				Call::Balances(..) |
-				Call::Vesting(pallet_vesting::Call::vested_transfer(..)) |
-				Call::Indices(pallet_indices::Call::transfer(..))
+				Call::Vesting(noble_vesting::Call::vested_transfer(..)) |
+				Call::Indices(noble_indices::Call::transfer(..))
 			),
 			ProxyType::Governance => matches!(
 				c,
@@ -284,7 +284,7 @@ impl InstanceFilter<Call> for ProxyType {
 	}
 }
 
-impl pallet_proxy::Config for Runtime {
+impl noble_proxy::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 	type Currency = Balances;
@@ -292,7 +292,7 @@ impl pallet_proxy::Config for Runtime {
 	type ProxyDepositBase = ProxyDepositBase;
 	type ProxyDepositFactor = ProxyDepositFactor;
 	type MaxProxies = MaxProxies;
-	type WeightInfo = pallet_proxy::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_proxy::weights::TetcoreWeight<Runtime>;
 	type MaxPending = MaxPending;
 	type CallHasher = BlakeTwo256;
 	type AnnouncementDepositBase = AnnouncementDepositBase;
@@ -305,15 +305,15 @@ parameter_types! {
 	pub const MaxScheduledPerBlock: u32 = 50;
 }
 
-impl pallet_scheduler::Config for Runtime {
+impl noble_scheduler::Config for Runtime {
 	type Event = Event;
 	type Origin = Origin;
-	type PalletsOrigin = OriginCaller;
+	type NoblesOrigin = OriginCaller;
 	type Call = Call;
 	type MaximumWeight = MaximumSchedulerWeight;
 	type ScheduleOrigin = EnsureRoot<AccountId>;
 	type MaxScheduledPerBlock = MaxScheduledPerBlock;
-	type WeightInfo = pallet_scheduler::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_scheduler::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -321,25 +321,25 @@ parameter_types! {
 	pub const ExpectedBlockTime: Moment = MILLISECS_PER_BLOCK;
 }
 
-impl pallet_babe::Config for Runtime {
+impl noble_babe::Config for Runtime {
 	type EpochDuration = EpochDuration;
 	type ExpectedBlockTime = ExpectedBlockTime;
-	type EpochChangeTrigger = pallet_babe::ExternalTrigger;
+	type EpochChangeTrigger = noble_babe::ExternalTrigger;
 
 	type KeyOwnerProofSystem = Historical;
 
 	type KeyOwnerProof = <Self::KeyOwnerProofSystem as KeyOwnerProofSystem<(
 		KeyTypeId,
-		pallet_babe::AuthorityId,
+		noble_babe::AuthorityId,
 	)>>::Proof;
 
 	type KeyOwnerIdentification = <Self::KeyOwnerProofSystem as KeyOwnerProofSystem<(
 		KeyTypeId,
-		pallet_babe::AuthorityId,
+		noble_babe::AuthorityId,
 	)>>::IdentificationTuple;
 
 	type HandleEquivocation =
-		pallet_babe::EquivocationHandler<Self::KeyOwnerIdentification, Offences>;
+		noble_babe::EquivocationHandler<Self::KeyOwnerIdentification, Offences>;
 
 	type WeightInfo = ();
 }
@@ -348,12 +348,12 @@ parameter_types! {
 	pub const IndexDeposit: Balance = 1 * DOLLARS;
 }
 
-impl pallet_indices::Config for Runtime {
+impl noble_indices::Config for Runtime {
 	type AccountIndex = AccountIndex;
 	type Currency = Balances;
 	type Deposit = IndexDeposit;
 	type Event = Event;
-	type WeightInfo = pallet_indices::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_indices::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -363,14 +363,14 @@ parameter_types! {
 	pub const MaxLocks: u32 = 50;
 }
 
-impl pallet_balances::Config for Runtime {
+impl noble_balances::Config for Runtime {
 	type MaxLocks = MaxLocks;
 	type Balance = Balance;
 	type DustRemoval = ();
 	type Event = Event;
 	type ExistentialDeposit = ExistentialDeposit;
-	type AccountStore = frame_system::Module<Runtime>;
-	type WeightInfo = pallet_balances::weights::TetcoreWeight<Runtime>;
+	type AccountStore = fabric_system::Module<Runtime>;
+	type WeightInfo = noble_balances::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -380,7 +380,7 @@ parameter_types! {
 	pub MinimumMultiplier: Multiplier = Multiplier::saturating_from_rational(1, 1_000_000_000u128);
 }
 
-impl pallet_transaction_payment::Config for Runtime {
+impl noble_transaction_payment::Config for Runtime {
 	type OnChargeTransaction = CurrencyAdapter<Balances, DealWithFees>;
 	type TransactionByteFee = TransactionByteFee;
 	type WeightToFee = IdentityFee<Balance>;
@@ -392,19 +392,19 @@ parameter_types! {
 	pub const MinimumPeriod: Moment = SLOT_DURATION / 2;
 }
 
-impl pallet_timestamp::Config for Runtime {
+impl noble_timestamp::Config for Runtime {
 	type Moment = Moment;
 	type OnTimestampSet = Babe;
 	type MinimumPeriod = MinimumPeriod;
-	type WeightInfo = pallet_timestamp::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_timestamp::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
 	pub const UncleGenerations: BlockNumber = 5;
 }
 
-impl pallet_authorship::Config for Runtime {
-	type FindAuthor = pallet_session::FindAccountFromAuthorIndex<Self, Babe>;
+impl noble_authorship::Config for Runtime {
+	type FindAuthor = noble_session::FindAccountFromAuthorIndex<Self, Babe>;
 	type UncleGenerations = UncleGenerations;
 	type FilterUncle = ();
 	type EventHandler = (Staking, ImOnline);
@@ -423,25 +423,25 @@ parameter_types! {
 	pub const DisabledValidatorsThreshold: Perbill = Perbill::from_percent(17);
 }
 
-impl pallet_session::Config for Runtime {
+impl noble_session::Config for Runtime {
 	type Event = Event;
-	type ValidatorId = <Self as frame_system::Config>::AccountId;
-	type ValidatorIdOf = pallet_staking::StashOf<Self>;
+	type ValidatorId = <Self as fabric_system::Config>::AccountId;
+	type ValidatorIdOf = noble_staking::StashOf<Self>;
 	type ShouldEndSession = Babe;
 	type NextSessionRotation = Babe;
-	type SessionManager = pallet_session::historical::NoteHistoricalRoot<Self, Staking>;
+	type SessionManager = noble_session::historical::NoteHistoricalRoot<Self, Staking>;
 	type SessionHandler = <SessionKeys as OpaqueKeys>::KeyTypeIdProviders;
 	type Keys = SessionKeys;
 	type DisabledValidatorsThreshold = DisabledValidatorsThreshold;
-	type WeightInfo = pallet_session::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_session::weights::TetcoreWeight<Runtime>;
 }
 
-impl pallet_session::historical::Config for Runtime {
-	type FullIdentification = pallet_staking::Exposure<AccountId, Balance>;
-	type FullIdentificationOf = pallet_staking::ExposureOf<Runtime>;
+impl noble_session::historical::Config for Runtime {
+	type FullIdentification = noble_staking::Exposure<AccountId, Balance>;
+	type FullIdentificationOf = noble_staking::ExposureOf<Runtime>;
 }
 
-pallet_staking_reward_curve::build! {
+noble_staking_reward_curve::build! {
 	const REWARD_CURVE: PiecewiseLinear<'static> = curve!(
 		min_inflation: 0_025_000,
 		max_inflation: 0_100_000,
@@ -454,8 +454,8 @@ pallet_staking_reward_curve::build! {
 
 parameter_types! {
 	pub const SessionsPerEra: tp_staking::SessionIndex = 6;
-	pub const BondingDuration: pallet_staking::EraIndex = 24 * 28;
-	pub const SlashDeferDuration: pallet_staking::EraIndex = 24 * 7; // 1/4 the bonding duration.
+	pub const BondingDuration: noble_staking::EraIndex = 24 * 28;
+	pub const SlashDeferDuration: noble_staking::EraIndex = 24 * 7; // 1/4 the bonding duration.
 	pub const RewardCurve: &'static PiecewiseLinear<'static> = &REWARD_CURVE;
 	pub const MaxNominatorRewardedPerValidator: u32 = 256;
 	pub const ElectionLookahead: BlockNumber = EPOCH_DURATION_IN_BLOCKS / 4;
@@ -468,7 +468,7 @@ parameter_types! {
 		.saturating_sub(BlockExecutionWeight::get());
 }
 
-impl pallet_staking::Config for Runtime {
+impl noble_staking::Config for Runtime {
 	type Currency = Balances;
 	type UnixTime = Timestamp;
 	type CurrencyToVote = U128CurrencyToVote;
@@ -483,7 +483,7 @@ impl pallet_staking::Config for Runtime {
 	type SlashCancelOrigin = EnsureOneOf<
 		AccountId,
 		EnsureRoot<AccountId>,
-		pallet_collective::EnsureProportionAtLeast<_3, _4, AccountId, CouncilCollective>
+		noble_collective::EnsureProportionAtLeast<_3, _4, AccountId, CouncilCollective>
 	>;
 	type SessionInterface = Self;
 	type RewardCurve = RewardCurve;
@@ -497,13 +497,13 @@ impl pallet_staking::Config for Runtime {
 	// The unsigned solution weight targeted by the OCW. We set it to the maximum possible value of
 	// a single extrinsic.
 	type OffchainSolutionWeightLimit = OffchainSolutionWeightLimit;
-	type WeightInfo = pallet_staking::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_staking::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
 	pub const LaunchPeriod: BlockNumber = 28 * 24 * 60 * MINUTES;
 	pub const VotingPeriod: BlockNumber = 28 * 24 * 60 * MINUTES;
-	pub const FastTrackVotingPeriod: BlockNumber = 3 * 24 * 60 * MINUTES;
+	pub const FastTnobleVotingPeriod: BlockNumber = 3 * 24 * 60 * MINUTES;
 	pub const InstantAllowed: bool = true;
 	pub const MinimumDeposit: Balance = 100 * DOLLARS;
 	pub const EnactmentPeriod: BlockNumber = 30 * 24 * 60 * MINUTES;
@@ -514,7 +514,7 @@ parameter_types! {
 	pub const MaxProposals: u32 = 100;
 }
 
-impl pallet_democracy::Config for Runtime {
+impl noble_democracy::Config for Runtime {
 	type Proposal = Call;
 	type Event = Event;
 	type Currency = Balances;
@@ -523,39 +523,39 @@ impl pallet_democracy::Config for Runtime {
 	type VotingPeriod = VotingPeriod;
 	type MinimumDeposit = MinimumDeposit;
 	/// A straight majority of the council can decide what their next motion is.
-	type ExternalOrigin = pallet_collective::EnsureProportionAtLeast<_1, _2, AccountId, CouncilCollective>;
+	type ExternalOrigin = noble_collective::EnsureProportionAtLeast<_1, _2, AccountId, CouncilCollective>;
 	/// A super-majority can have the next scheduled referendum be a straight majority-carries vote.
-	type ExternalMajorityOrigin = pallet_collective::EnsureProportionAtLeast<_3, _4, AccountId, CouncilCollective>;
+	type ExternalMajorityOrigin = noble_collective::EnsureProportionAtLeast<_3, _4, AccountId, CouncilCollective>;
 	/// A unanimous council can have the next scheduled referendum be a straight default-carries
 	/// (NTB) vote.
-	type ExternalDefaultOrigin = pallet_collective::EnsureProportionAtLeast<_1, _1, AccountId, CouncilCollective>;
+	type ExternalDefaultOrigin = noble_collective::EnsureProportionAtLeast<_1, _1, AccountId, CouncilCollective>;
 	/// Two thirds of the technical committee can have an ExternalMajority/ExternalDefault vote
 	/// be tabled immediately and with a shorter voting/enactment period.
-	type FastTrackOrigin = pallet_collective::EnsureProportionAtLeast<_2, _3, AccountId, TechnicalCollective>;
-	type InstantOrigin = pallet_collective::EnsureProportionAtLeast<_1, _1, AccountId, TechnicalCollective>;
+	type FastTnobleOrigin = noble_collective::EnsureProportionAtLeast<_2, _3, AccountId, TechnicalCollective>;
+	type InstantOrigin = noble_collective::EnsureProportionAtLeast<_1, _1, AccountId, TechnicalCollective>;
 	type InstantAllowed = InstantAllowed;
-	type FastTrackVotingPeriod = FastTrackVotingPeriod;
+	type FastTnobleVotingPeriod = FastTnobleVotingPeriod;
 	// To cancel a proposal which has been passed, 2/3 of the council must agree to it.
-	type CancellationOrigin = pallet_collective::EnsureProportionAtLeast<_2, _3, AccountId, CouncilCollective>;
+	type CancellationOrigin = noble_collective::EnsureProportionAtLeast<_2, _3, AccountId, CouncilCollective>;
 	// To cancel a proposal before it has been passed, the technical committee must be unanimous or
 	// Root must agree.
 	type CancelProposalOrigin = EnsureOneOf<
 		AccountId,
 		EnsureRoot<AccountId>,
-		pallet_collective::EnsureProportionAtLeast<_1, _1, AccountId, TechnicalCollective>,
+		noble_collective::EnsureProportionAtLeast<_1, _1, AccountId, TechnicalCollective>,
 	>;
 	type BlacklistOrigin = EnsureRoot<AccountId>;
 	// Any single technical committee member may veto a coming council proposal, however they can
 	// only do it once and it lasts only for the cooloff period.
-	type VetoOrigin = pallet_collective::EnsureMember<AccountId, TechnicalCollective>;
+	type VetoOrigin = noble_collective::EnsureMember<AccountId, TechnicalCollective>;
 	type CooloffPeriod = CooloffPeriod;
 	type PreimageByteDeposit = PreimageByteDeposit;
-	type OperationalPreimageOrigin = pallet_collective::EnsureMember<AccountId, CouncilCollective>;
+	type OperationalPreimageOrigin = noble_collective::EnsureMember<AccountId, CouncilCollective>;
 	type Slash = Treasury;
 	type Scheduler = Scheduler;
-	type PalletsOrigin = OriginCaller;
+	type NoblesOrigin = OriginCaller;
 	type MaxVotes = MaxVotes;
-	type WeightInfo = pallet_democracy::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_democracy::weights::TetcoreWeight<Runtime>;
 	type MaxProposals = MaxProposals;
 }
 
@@ -565,16 +565,16 @@ parameter_types! {
 	pub const CouncilMaxMembers: u32 = 100;
 }
 
-type CouncilCollective = pallet_collective::Instance1;
-impl pallet_collective::Config<CouncilCollective> for Runtime {
+type CouncilCollective = noble_collective::Instance1;
+impl noble_collective::Config<CouncilCollective> for Runtime {
 	type Origin = Origin;
 	type Proposal = Call;
 	type Event = Event;
 	type MotionDuration = CouncilMotionDuration;
 	type MaxProposals = CouncilMaxProposals;
 	type MaxMembers = CouncilMaxMembers;
-	type DefaultVote = pallet_collective::PrimeDefaultVote;
-	type WeightInfo = pallet_collective::weights::TetcoreWeight<Runtime>;
+	type DefaultVote = noble_collective::PrimeDefaultVote;
+	type WeightInfo = noble_collective::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -592,7 +592,7 @@ parameter_types! {
 // Make sure that there are no more than `MaxMembers` members elected via elections-phragmen.
 const_assert!(DesiredMembers::get() <= CouncilMaxMembers::get());
 
-impl pallet_elections_phragmen::Config for Runtime {
+impl noble_elections_phragmen::Config for Runtime {
 	type Event = Event;
 	type ModuleId = ElectionsPhragmenModuleId;
 	type Currency = Balances;
@@ -609,7 +609,7 @@ impl pallet_elections_phragmen::Config for Runtime {
 	type DesiredMembers = DesiredMembers;
 	type DesiredRunnersUp = DesiredRunnersUp;
 	type TermDuration = TermDuration;
-	type WeightInfo = pallet_elections_phragmen::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_elections_phragmen::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -618,24 +618,24 @@ parameter_types! {
 	pub const TechnicalMaxMembers: u32 = 100;
 }
 
-type TechnicalCollective = pallet_collective::Instance2;
-impl pallet_collective::Config<TechnicalCollective> for Runtime {
+type TechnicalCollective = noble_collective::Instance2;
+impl noble_collective::Config<TechnicalCollective> for Runtime {
 	type Origin = Origin;
 	type Proposal = Call;
 	type Event = Event;
 	type MotionDuration = TechnicalMotionDuration;
 	type MaxProposals = TechnicalMaxProposals;
 	type MaxMembers = TechnicalMaxMembers;
-	type DefaultVote = pallet_collective::PrimeDefaultVote;
-	type WeightInfo = pallet_collective::weights::TetcoreWeight<Runtime>;
+	type DefaultVote = noble_collective::PrimeDefaultVote;
+	type WeightInfo = noble_collective::weights::TetcoreWeight<Runtime>;
 }
 
 type EnsureRootOrHalfCouncil = EnsureOneOf<
 	AccountId,
 	EnsureRoot<AccountId>,
-	pallet_collective::EnsureProportionMoreThan<_1, _2, AccountId, CouncilCollective>
+	noble_collective::EnsureProportionMoreThan<_1, _2, AccountId, CouncilCollective>
 >;
-impl pallet_membership::Config<pallet_membership::Instance1> for Runtime {
+impl noble_membership::Config<noble_membership::Instance1> for Runtime {
 	type Event = Event;
 	type AddOrigin = EnsureRootOrHalfCouncil;
 	type RemoveOrigin = EnsureRootOrHalfCouncil;
@@ -664,18 +664,18 @@ parameter_types! {
 	pub const BountyValueMinimum: Balance = 5 * DOLLARS;
 }
 
-impl pallet_treasury::Config for Runtime {
+impl noble_treasury::Config for Runtime {
 	type ModuleId = TreasuryModuleId;
 	type Currency = Balances;
 	type ApproveOrigin = EnsureOneOf<
 		AccountId,
 		EnsureRoot<AccountId>,
-		pallet_collective::EnsureProportionAtLeast<_3, _5, AccountId, CouncilCollective>
+		noble_collective::EnsureProportionAtLeast<_3, _5, AccountId, CouncilCollective>
 	>;
 	type RejectOrigin = EnsureOneOf<
 		AccountId,
 		EnsureRoot<AccountId>,
-		pallet_collective::EnsureProportionMoreThan<_1, _2, AccountId, CouncilCollective>
+		noble_collective::EnsureProportionMoreThan<_1, _2, AccountId, CouncilCollective>
 	>;
 	type Event = Event;
 	type OnSlash = ();
@@ -685,10 +685,10 @@ impl pallet_treasury::Config for Runtime {
 	type Burn = Burn;
 	type BurnDestination = ();
 	type SpendFunds = Bounties;
-	type WeightInfo = pallet_treasury::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_treasury::weights::TetcoreWeight<Runtime>;
 }
 
-impl pallet_bounties::Config for Runtime {
+impl noble_bounties::Config for Runtime {
 	type Event = Event;
 	type BountyDepositBase = BountyDepositBase;
 	type BountyDepositPayoutDelay = BountyDepositPayoutDelay;
@@ -697,10 +697,10 @@ impl pallet_bounties::Config for Runtime {
 	type BountyValueMinimum = BountyValueMinimum;
 	type DataDepositPerByte = DataDepositPerByte;
 	type MaximumReasonLength = MaximumReasonLength;
-	type WeightInfo = pallet_bounties::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_bounties::weights::TetcoreWeight<Runtime>;
 }
 
-impl pallet_tips::Config for Runtime {
+impl noble_tips::Config for Runtime {
 	type Event = Event;
 	type DataDepositPerByte = DataDepositPerByte;
 	type MaximumReasonLength = MaximumReasonLength;
@@ -708,13 +708,13 @@ impl pallet_tips::Config for Runtime {
 	type TipCountdown = TipCountdown;
 	type TipFindersFee = TipFindersFee;
 	type TipReportDepositBase = TipReportDepositBase;
-	type WeightInfo = pallet_tips::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_tips::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
 	pub const TombstoneDeposit: Balance = deposit(
 		1,
-		tetcore_std::mem::size_of::<pallet_contracts::ContractInfo<Runtime>>() as u32
+		tetcore_std::mem::size_of::<noble_contracts::ContractInfo<Runtime>>() as u32
 	);
 	pub const DepositPerContract: Balance = TombstoneDeposit::get();
 	pub const DepositPerStorageByte: Balance = deposit(0, 1);
@@ -730,12 +730,12 @@ parameter_types! {
 	// The weight needed for decoding the queue should be less or equal than a fifth
 	// of the overall weight dedicated to the lazy deletion.
 	pub DeletionQueueDepth: u32 = ((DeletionWeightLimit::get() / (
-			<Runtime as pallet_contracts::Config>::WeightInfo::on_initialize_per_queue_item(1) -
-			<Runtime as pallet_contracts::Config>::WeightInfo::on_initialize_per_queue_item(0)
+			<Runtime as noble_contracts::Config>::WeightInfo::on_initialize_per_queue_item(1) -
+			<Runtime as noble_contracts::Config>::WeightInfo::on_initialize_per_queue_item(0)
 		)) / 5) as u32;
 }
 
-impl pallet_contracts::Config for Runtime {
+impl noble_contracts::Config for Runtime {
 	type Time = Timestamp;
 	type Randomness = RandomnessCollectiveFlip;
 	type Currency = Balances;
@@ -750,14 +750,14 @@ impl pallet_contracts::Config for Runtime {
 	type SurchargeReward = SurchargeReward;
 	type MaxDepth = MaxDepth;
 	type MaxValueSize = MaxValueSize;
-	type WeightPrice = pallet_transaction_payment::Module<Self>;
-	type WeightInfo = pallet_contracts::weights::TetcoreWeight<Self>;
+	type WeightPrice = noble_transaction_payment::Module<Self>;
+	type WeightInfo = noble_contracts::weights::TetcoreWeight<Self>;
 	type ChainExtension = ();
 	type DeletionQueueDepth = DeletionQueueDepth;
 	type DeletionWeightLimit = DeletionWeightLimit;
 }
 
-impl pallet_sudo::Config for Runtime {
+impl noble_sudo::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 }
@@ -769,11 +769,11 @@ parameter_types! {
 	pub const StakingUnsignedPriority: TransactionPriority = TransactionPriority::max_value() / 2;
 }
 
-impl<LocalCall> frame_system::offchain::CreateSignedTransaction<LocalCall> for Runtime
+impl<LocalCall> fabric_system::offchain::CreateSignedTransaction<LocalCall> for Runtime
 	where
 		Call: From<LocalCall>,
 {
-	fn create_transaction<C: frame_system::offchain::AppCrypto<Self::Public, Self::Signature>>(
+	fn create_transaction<C: fabric_system::offchain::AppCrypto<Self::Public, Self::Signature>>(
 		call: Call,
 		public: <Signature as traits::Verify>::Signer,
 		account: AccountId,
@@ -792,13 +792,13 @@ impl<LocalCall> frame_system::offchain::CreateSignedTransaction<LocalCall> for R
 			.saturating_sub(1);
 		let era = Era::mortal(period, current_block);
 		let extra = (
-			frame_system::CheckSpecVersion::<Runtime>::new(),
-			frame_system::CheckTxVersion::<Runtime>::new(),
-			frame_system::CheckGenesis::<Runtime>::new(),
-			frame_system::CheckEra::<Runtime>::from(era),
-			frame_system::CheckNonce::<Runtime>::from(nonce),
-			frame_system::CheckWeight::<Runtime>::new(),
-			pallet_transaction_payment::ChargeTransactionPayment::<Runtime>::from(tip),
+			fabric_system::CheckSpecVersion::<Runtime>::new(),
+			fabric_system::CheckTxVersion::<Runtime>::new(),
+			fabric_system::CheckGenesis::<Runtime>::new(),
+			fabric_system::CheckEra::<Runtime>::from(era),
+			fabric_system::CheckNonce::<Runtime>::from(nonce),
+			fabric_system::CheckWeight::<Runtime>::new(),
+			noble_transaction_payment::ChargeTransactionPayment::<Runtime>::from(tip),
 		);
 		let raw_payload = SignedPayload::new(call, extra)
 			.map_err(|e| {
@@ -815,25 +815,25 @@ impl<LocalCall> frame_system::offchain::CreateSignedTransaction<LocalCall> for R
 	}
 }
 
-impl frame_system::offchain::SigningTypes for Runtime {
+impl fabric_system::offchain::SigningTypes for Runtime {
 	type Public = <Signature as traits::Verify>::Signer;
 	type Signature = Signature;
 }
 
-impl<C> frame_system::offchain::SendTransactionTypes<C> for Runtime where
+impl<C> fabric_system::offchain::SendTransactionTypes<C> for Runtime where
 	Call: From<C>,
 {
 	type Extrinsic = UncheckedExtrinsic;
 	type OverarchingCall = Call;
 }
 
-impl pallet_im_online::Config for Runtime {
+impl noble_im_online::Config for Runtime {
 	type AuthorityId = ImOnlineId;
 	type Event = Event;
 	type SessionDuration = SessionDuration;
 	type ReportUnresponsiveness = Offences;
 	type UnsignedPriority = ImOnlineUnsignedPriority;
-	type WeightInfo = pallet_im_online::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_im_online::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -841,16 +841,16 @@ parameter_types! {
 		RuntimeBlockWeights::get().max_block;
 }
 
-impl pallet_offences::Config for Runtime {
+impl noble_offences::Config for Runtime {
 	type Event = Event;
-	type IdentificationTuple = pallet_session::historical::IdentificationTuple<Self>;
+	type IdentificationTuple = noble_session::historical::IdentificationTuple<Self>;
 	type OnOffenceHandler = Staking;
 	type WeightSoftLimit = OffencesWeightSoftLimit;
 }
 
-impl pallet_authority_discovery::Config for Runtime {}
+impl noble_authority_discovery::Config for Runtime {}
 
-impl pallet_grandpa::Config for Runtime {
+impl noble_grandpa::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 
@@ -865,7 +865,7 @@ impl pallet_grandpa::Config for Runtime {
 	)>>::IdentificationTuple;
 
 	type HandleEquivocation =
-		pallet_grandpa::EquivocationHandler<Self::KeyOwnerIdentification, Offences>;
+		noble_grandpa::EquivocationHandler<Self::KeyOwnerIdentification, Offences>;
 
 	type WeightInfo = ();
 }
@@ -879,7 +879,7 @@ parameter_types! {
 	pub const MaxRegistrars: u32 = 20;
 }
 
-impl pallet_identity::Config for Runtime {
+impl noble_identity::Config for Runtime {
 	type Event = Event;
 	type Currency = Balances;
 	type BasicDeposit = BasicDeposit;
@@ -891,7 +891,7 @@ impl pallet_identity::Config for Runtime {
 	type Slashed = Treasury;
 	type ForceOrigin = EnsureRootOrHalfCouncil;
 	type RegistrarOrigin = EnsureRootOrHalfCouncil;
-	type WeightInfo = pallet_identity::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_identity::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -901,7 +901,7 @@ parameter_types! {
 	pub const RecoveryDeposit: Balance = 5 * DOLLARS;
 }
 
-impl pallet_recovery::Config for Runtime {
+impl noble_recovery::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 	type Currency = Balances;
@@ -922,7 +922,7 @@ parameter_types! {
 	pub const SocietyModuleId: ModuleId = ModuleId(*b"py/socie");
 }
 
-impl pallet_society::Config for Runtime {
+impl noble_society::Config for Runtime {
 	type Event = Event;
 	type ModuleId = SocietyModuleId;
 	type Currency = Balances;
@@ -934,8 +934,8 @@ impl pallet_society::Config for Runtime {
 	type MembershipChanged = ();
 	type RotationPeriod = RotationPeriod;
 	type MaxLockDuration = MaxLockDuration;
-	type FounderSetOrigin = pallet_collective::EnsureProportionMoreThan<_1, _2, AccountId, CouncilCollective>;
-	type SuspensionJudgementOrigin = pallet_society::EnsureFounder<Runtime>;
+	type FounderSetOrigin = noble_collective::EnsureProportionMoreThan<_1, _2, AccountId, CouncilCollective>;
+	type SuspensionJudgementOrigin = noble_society::EnsureFounder<Runtime>;
 	type ChallengePeriod = ChallengePeriod;
 }
 
@@ -943,19 +943,19 @@ parameter_types! {
 	pub const MinVestedTransfer: Balance = 100 * DOLLARS;
 }
 
-impl pallet_vesting::Config for Runtime {
+impl noble_vesting::Config for Runtime {
 	type Event = Event;
 	type Currency = Balances;
 	type BlockNumberToBalance = ConvertInto;
 	type MinVestedTransfer = MinVestedTransfer;
-	type WeightInfo = pallet_vesting::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_vesting::weights::TetcoreWeight<Runtime>;
 }
 
-impl pallet_mmr::Config for Runtime {
+impl noble_mmr::Config for Runtime {
 	const INDEXING_PREFIX: &'static [u8] = b"mmr";
-	type Hashing = <Runtime as frame_system::Config>::Hashing;
-	type Hash = <Runtime as frame_system::Config>::Hash;
-	type LeafData = frame_system::Module<Self>;
+	type Hashing = <Runtime as fabric_system::Config>::Hashing;
+	type Hash = <Runtime as fabric_system::Config>::Hash;
+	type LeafData = fabric_system::Module<Self>;
 	type OnNewRoot = ();
 	type WeightInfo = ();
 }
@@ -966,7 +966,7 @@ parameter_types! {
 	pub const MaxGenerateRandom: u32 = 10;
 }
 
-impl pallet_lottery::Config for Runtime {
+impl noble_lottery::Config for Runtime {
 	type ModuleId = LotteryModuleId;
 	type Call = Call;
 	type Event = Event;
@@ -976,7 +976,7 @@ impl pallet_lottery::Config for Runtime {
 	type MaxCalls = MaxCalls;
 	type ValidateCall = Lottery;
 	type MaxGenerateRandom = MaxGenerateRandom;
-	type WeightInfo = pallet_lottery::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_lottery::weights::TetcoreWeight<Runtime>;
 }
 
 parameter_types! {
@@ -987,7 +987,7 @@ parameter_types! {
 	pub const MetadataDepositPerByte: Balance = 1 * DOLLARS;
 }
 
-impl pallet_assets::Config for Runtime {
+impl noble_assets::Config for Runtime {
 	type Event = Event;
 	type Balance = u64;
 	type AssetId = u32;
@@ -998,7 +998,7 @@ impl pallet_assets::Config for Runtime {
 	type StringLimit = StringLimit;
 	type MetadataDepositBase = MetadataDepositBase;
 	type MetadataDepositPerByte = MetadataDepositPerByte;
-	type WeightInfo = pallet_assets::weights::TetcoreWeight<Runtime>;
+	type WeightInfo = noble_assets::weights::TetcoreWeight<Runtime>;
 }
 
 construct_runtime!(
@@ -1007,42 +1007,42 @@ construct_runtime!(
 		NodeBlock = node_primitives::Block,
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
-		System: frame_system::{Module, Call, Config, Storage, Event<T>},
-		Utility: pallet_utility::{Module, Call, Event},
-		Babe: pallet_babe::{Module, Call, Storage, Config, Inherent, ValidateUnsigned},
-		Timestamp: pallet_timestamp::{Module, Call, Storage, Inherent},
-		Authorship: pallet_authorship::{Module, Call, Storage, Inherent},
-		Indices: pallet_indices::{Module, Call, Storage, Config<T>, Event<T>},
-		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
-		TransactionPayment: pallet_transaction_payment::{Module, Storage},
-		Staking: pallet_staking::{Module, Call, Config<T>, Storage, Event<T>, ValidateUnsigned},
-		Session: pallet_session::{Module, Call, Storage, Event, Config<T>},
-		Democracy: pallet_democracy::{Module, Call, Storage, Config, Event<T>},
-		Council: pallet_collective::<Instance1>::{Module, Call, Storage, Origin<T>, Event<T>, Config<T>},
-		TechnicalCommittee: pallet_collective::<Instance2>::{Module, Call, Storage, Origin<T>, Event<T>, Config<T>},
-		Elections: pallet_elections_phragmen::{Module, Call, Storage, Event<T>, Config<T>},
-		TechnicalMembership: pallet_membership::<Instance1>::{Module, Call, Storage, Event<T>, Config<T>},
-		Grandpa: pallet_grandpa::{Module, Call, Storage, Config, Event, ValidateUnsigned},
-		Treasury: pallet_treasury::{Module, Call, Storage, Config, Event<T>},
-		Contracts: pallet_contracts::{Module, Call, Config<T>, Storage, Event<T>},
-		Sudo: pallet_sudo::{Module, Call, Config<T>, Storage, Event<T>},
-		ImOnline: pallet_im_online::{Module, Call, Storage, Event<T>, ValidateUnsigned, Config<T>},
-		AuthorityDiscovery: pallet_authority_discovery::{Module, Call, Config},
-		Offences: pallet_offences::{Module, Call, Storage, Event},
-		Historical: pallet_session_historical::{Module},
-		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Module, Call, Storage},
-		Identity: pallet_identity::{Module, Call, Storage, Event<T>},
-		Society: pallet_society::{Module, Call, Storage, Event<T>, Config<T>},
-		Recovery: pallet_recovery::{Module, Call, Storage, Event<T>},
-		Vesting: pallet_vesting::{Module, Call, Storage, Event<T>, Config<T>},
-		Scheduler: pallet_scheduler::{Module, Call, Storage, Event<T>},
-		Proxy: pallet_proxy::{Module, Call, Storage, Event<T>},
-		Multisig: pallet_multisig::{Module, Call, Storage, Event<T>},
-		Bounties: pallet_bounties::{Module, Call, Storage, Event<T>},
-		Tips: pallet_tips::{Module, Call, Storage, Event<T>},
-		Assets: pallet_assets::{Module, Call, Storage, Event<T>},
-		Mmr: pallet_mmr::{Module, Storage},
-		Lottery: pallet_lottery::{Module, Call, Storage, Event<T>},
+		System: fabric_system::{Module, Call, Config, Storage, Event<T>},
+		Utility: noble_utility::{Module, Call, Event},
+		Babe: noble_babe::{Module, Call, Storage, Config, Inherent, ValidateUnsigned},
+		Timestamp: noble_timestamp::{Module, Call, Storage, Inherent},
+		Authorship: noble_authorship::{Module, Call, Storage, Inherent},
+		Indices: noble_indices::{Module, Call, Storage, Config<T>, Event<T>},
+		Balances: noble_balances::{Module, Call, Storage, Config<T>, Event<T>},
+		TransactionPayment: noble_transaction_payment::{Module, Storage},
+		Staking: noble_staking::{Module, Call, Config<T>, Storage, Event<T>, ValidateUnsigned},
+		Session: noble_session::{Module, Call, Storage, Event, Config<T>},
+		Democracy: noble_democracy::{Module, Call, Storage, Config, Event<T>},
+		Council: noble_collective::<Instance1>::{Module, Call, Storage, Origin<T>, Event<T>, Config<T>},
+		TechnicalCommittee: noble_collective::<Instance2>::{Module, Call, Storage, Origin<T>, Event<T>, Config<T>},
+		Elections: noble_elections_phragmen::{Module, Call, Storage, Event<T>, Config<T>},
+		TechnicalMembership: noble_membership::<Instance1>::{Module, Call, Storage, Event<T>, Config<T>},
+		Grandpa: noble_grandpa::{Module, Call, Storage, Config, Event, ValidateUnsigned},
+		Treasury: noble_treasury::{Module, Call, Storage, Config, Event<T>},
+		Contracts: noble_contracts::{Module, Call, Config<T>, Storage, Event<T>},
+		Sudo: noble_sudo::{Module, Call, Config<T>, Storage, Event<T>},
+		ImOnline: noble_im_online::{Module, Call, Storage, Event<T>, ValidateUnsigned, Config<T>},
+		AuthorityDiscovery: noble_authority_discovery::{Module, Call, Config},
+		Offences: noble_offences::{Module, Call, Storage, Event},
+		Historical: noble_session_historical::{Module},
+		RandomnessCollectiveFlip: noble_randomness_collective_flip::{Module, Call, Storage},
+		Identity: noble_identity::{Module, Call, Storage, Event<T>},
+		Society: noble_society::{Module, Call, Storage, Event<T>, Config<T>},
+		Recovery: noble_recovery::{Module, Call, Storage, Event<T>},
+		Vesting: noble_vesting::{Module, Call, Storage, Event<T>, Config<T>},
+		Scheduler: noble_scheduler::{Module, Call, Storage, Event<T>},
+		Proxy: noble_proxy::{Module, Call, Storage, Event<T>},
+		Multisig: noble_multisig::{Module, Call, Storage, Event<T>},
+		Bounties: noble_bounties::{Module, Call, Storage, Event<T>},
+		Tips: noble_tips::{Module, Call, Storage, Event<T>},
+		Assets: noble_assets::{Module, Call, Storage, Event<T>},
+		Mmr: noble_mmr::{Module, Storage},
+		Lottery: noble_lottery::{Module, Call, Storage, Event<T>},
 	}
 );
 
@@ -1062,13 +1062,13 @@ pub type BlockId = generic::BlockId<Block>;
 ///
 /// [`sign`]: <../../testing/src/keyring.rs.html>
 pub type SignedExtra = (
-	frame_system::CheckSpecVersion<Runtime>,
-	frame_system::CheckTxVersion<Runtime>,
-	frame_system::CheckGenesis<Runtime>,
-	frame_system::CheckEra<Runtime>,
-	frame_system::CheckNonce<Runtime>,
-	frame_system::CheckWeight<Runtime>,
-	pallet_transaction_payment::ChargeTransactionPayment<Runtime>,
+	fabric_system::CheckSpecVersion<Runtime>,
+	fabric_system::CheckTxVersion<Runtime>,
+	fabric_system::CheckGenesis<Runtime>,
+	fabric_system::CheckEra<Runtime>,
+	fabric_system::CheckNonce<Runtime>,
+	fabric_system::CheckWeight<Runtime>,
+	noble_transaction_payment::ChargeTransactionPayment<Runtime>,
 );
 /// Unchecked extrinsic type as expected by this runtime.
 pub type UncheckedExtrinsic = generic::UncheckedExtrinsic<Address, Call, Signature, SignedExtra>;
@@ -1077,20 +1077,20 @@ pub type SignedPayload = generic::SignedPayload<Call, SignedExtra>;
 /// Extrinsic type that has already been checked.
 pub type CheckedExtrinsic = generic::CheckedExtrinsic<AccountId, Call, SignedExtra>;
 /// Executive: handles dispatch to the various modules.
-pub type Executive = frame_executive::Executive<Runtime, Block, frame_system::ChainContext<Runtime>, Runtime, AllModules>;
+pub type Executive = fabric_executive::Executive<Runtime, Block, fabric_system::ChainContext<Runtime>, Runtime, AllModules>;
 
 /// MMR helper types.
 mod mmr {
 	use super::Runtime;
-	pub use pallet_mmr::primitives::*;
+	pub use noble_mmr::primitives::*;
 
 	pub type Leaf = <
-		<Runtime as pallet_mmr::Config>::LeafData
+		<Runtime as noble_mmr::Config>::LeafData
 		as
 		LeafDataProvider
 	>::LeafData;
-	pub type Hash = <Runtime as pallet_mmr::Config>::Hash;
-	pub type Hashing = <Runtime as pallet_mmr::Config>::Hashing;
+	pub type Hash = <Runtime as noble_mmr::Config>::Hash;
+	pub type Hashing = <Runtime as noble_mmr::Config>::Hashing;
 }
 
 impl_runtime_apis! {
@@ -1242,13 +1242,13 @@ impl_runtime_apis! {
 		}
 	}
 
-	impl frame_system_rpc_runtime_api::AccountNonceApi<Block, AccountId, Index> for Runtime {
+	impl fabric_system_rpc_runtime_api::AccountNonceApi<Block, AccountId, Index> for Runtime {
 		fn account_nonce(account: AccountId) -> Index {
 			System::account_nonce(account)
 		}
 	}
 
-	impl pallet_contracts_rpc_runtime_api::ContractsApi<Block, AccountId, Balance, BlockNumber>
+	impl noble_contracts_rpc_runtime_api::ContractsApi<Block, AccountId, Balance, BlockNumber>
 		for Runtime
 	{
 		fn call(
@@ -1257,25 +1257,25 @@ impl_runtime_apis! {
 			value: Balance,
 			gas_limit: u64,
 			input_data: Vec<u8>,
-		) -> pallet_contracts_primitives::ContractExecResult {
+		) -> noble_contracts_primitives::ContractExecResult {
 			Contracts::bare_call(origin, dest, value, gas_limit, input_data)
 		}
 
 		fn get_storage(
 			address: AccountId,
 			key: [u8; 32],
-		) -> pallet_contracts_primitives::GetStorageResult {
+		) -> noble_contracts_primitives::GetStorageResult {
 			Contracts::get_storage(address, key)
 		}
 
 		fn rent_projection(
 			address: AccountId,
-		) -> pallet_contracts_primitives::RentProjectionResult<BlockNumber> {
+		) -> noble_contracts_primitives::RentProjectionResult<BlockNumber> {
 			Contracts::rent_projection(address)
 		}
 	}
 
-	impl pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi<
+	impl noble_transaction_payment_rpc_runtime_api::TransactionPaymentApi<
 		Block,
 		Balance,
 	> for Runtime {
@@ -1287,7 +1287,7 @@ impl_runtime_apis! {
 		}
 	}
 
-	impl pallet_mmr::primitives::MmrApi<
+	impl noble_mmr::primitives::MmrApi<
 		Block,
 		mmr::Leaf,
 		mmr::Hash,
@@ -1306,7 +1306,7 @@ impl_runtime_apis! {
 			proof: mmr::Proof<mmr::Hash>
 		) -> Result<(), mmr::Error> {
 			let node = mmr::DataOrHash::Data(mmr::OpaqueLeaf(leaf));
-			pallet_mmr::verify_leaf_proof::<mmr::Hashing, _>(root, node, proof)
+			noble_mmr::verify_leaf_proof::<mmr::Hashing, _>(root, node, proof)
 		}
 	}
 
@@ -1323,23 +1323,23 @@ impl_runtime_apis! {
 	}
 
 	#[cfg(feature = "runtime-benchmarks")]
-	impl frame_benchmarking::Benchmark<Block> for Runtime {
+	impl fabric_benchmarking::Benchmark<Block> for Runtime {
 		fn dispatch_benchmark(
-			config: frame_benchmarking::BenchmarkConfig
-		) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, tp_runtime::RuntimeString> {
-			use frame_benchmarking::{Benchmarking, BenchmarkBatch, add_benchmark, TrackedStorageKey};
-			// Trying to add benchmarks directly to the Session Pallet caused cyclic dependency issues.
+			config: fabric_benchmarking::BenchmarkConfig
+		) -> Result<Vec<fabric_benchmarking::BenchmarkBatch>, tp_runtime::RuntimeString> {
+			use fabric_benchmarking::{Benchmarking, BenchmarkBatch, add_benchmark, TnobleedStorageKey};
+			// Trying to add benchmarks directly to the Session Noble caused cyclic dependency issues.
 			// To get around that, we separated the Session benchmarks into its own crate, which is why
 			// we need these two lines below.
-			use pallet_session_benchmarking::Module as SessionBench;
-			use pallet_offences_benchmarking::Module as OffencesBench;
-			use frame_system_benchmarking::Module as SystemBench;
+			use noble_session_benchmarking::Module as SessionBench;
+			use noble_offences_benchmarking::Module as OffencesBench;
+			use fabric_system_benchmarking::Module as SystemBench;
 
-			impl pallet_session_benchmarking::Config for Runtime {}
-			impl pallet_offences_benchmarking::Config for Runtime {}
-			impl frame_system_benchmarking::Config for Runtime {}
+			impl noble_session_benchmarking::Config for Runtime {}
+			impl noble_offences_benchmarking::Config for Runtime {}
+			impl fabric_system_benchmarking::Config for Runtime {}
 
-			let whitelist: Vec<TrackedStorageKey> = vec![
+			let whitelist: Vec<TnobleedStorageKey> = vec![
 				// Block Number
 				hex_literal::hex!("26aa394eea5630e07c48ae0c9558cef702a5c1b19ab7a04f536c519aca4983ac").to_vec().into(),
 				// Total Issuance
@@ -1357,34 +1357,34 @@ impl_runtime_apis! {
 			let mut batches = Vec::<BenchmarkBatch>::new();
 			let params = (&config, &whitelist);
 
-			add_benchmark!(params, batches, pallet_assets, Assets);
-			add_benchmark!(params, batches, pallet_babe, Babe);
-			add_benchmark!(params, batches, pallet_balances, Balances);
-			add_benchmark!(params, batches, pallet_bounties, Bounties);
-			add_benchmark!(params, batches, pallet_collective, Council);
-			add_benchmark!(params, batches, pallet_contracts, Contracts);
-			add_benchmark!(params, batches, pallet_democracy, Democracy);
-			add_benchmark!(params, batches, pallet_elections_phragmen, Elections);
-			add_benchmark!(params, batches, pallet_grandpa, Grandpa);
-			add_benchmark!(params, batches, pallet_identity, Identity);
-			add_benchmark!(params, batches, pallet_im_online, ImOnline);
-			add_benchmark!(params, batches, pallet_indices, Indices);
-			add_benchmark!(params, batches, pallet_lottery, Lottery);
-			add_benchmark!(params, batches, pallet_mmr, Mmr);
-			add_benchmark!(params, batches, pallet_multisig, Multisig);
-			add_benchmark!(params, batches, pallet_offences, OffencesBench::<Runtime>);
-			add_benchmark!(params, batches, pallet_proxy, Proxy);
-			add_benchmark!(params, batches, pallet_scheduler, Scheduler);
-			add_benchmark!(params, batches, pallet_session, SessionBench::<Runtime>);
-			add_benchmark!(params, batches, pallet_staking, Staking);
-			add_benchmark!(params, batches, frame_system, SystemBench::<Runtime>);
-			add_benchmark!(params, batches, pallet_timestamp, Timestamp);
-			add_benchmark!(params, batches, pallet_tips, Tips);
-			add_benchmark!(params, batches, pallet_treasury, Treasury);
-			add_benchmark!(params, batches, pallet_utility, Utility);
-			add_benchmark!(params, batches, pallet_vesting, Vesting);
+			add_benchmark!(params, batches, noble_assets, Assets);
+			add_benchmark!(params, batches, noble_babe, Babe);
+			add_benchmark!(params, batches, noble_balances, Balances);
+			add_benchmark!(params, batches, noble_bounties, Bounties);
+			add_benchmark!(params, batches, noble_collective, Council);
+			add_benchmark!(params, batches, noble_contracts, Contracts);
+			add_benchmark!(params, batches, noble_democracy, Democracy);
+			add_benchmark!(params, batches, noble_elections_phragmen, Elections);
+			add_benchmark!(params, batches, noble_grandpa, Grandpa);
+			add_benchmark!(params, batches, noble_identity, Identity);
+			add_benchmark!(params, batches, noble_im_online, ImOnline);
+			add_benchmark!(params, batches, noble_indices, Indices);
+			add_benchmark!(params, batches, noble_lottery, Lottery);
+			add_benchmark!(params, batches, noble_mmr, Mmr);
+			add_benchmark!(params, batches, noble_multisig, Multisig);
+			add_benchmark!(params, batches, noble_offences, OffencesBench::<Runtime>);
+			add_benchmark!(params, batches, noble_proxy, Proxy);
+			add_benchmark!(params, batches, noble_scheduler, Scheduler);
+			add_benchmark!(params, batches, noble_session, SessionBench::<Runtime>);
+			add_benchmark!(params, batches, noble_staking, Staking);
+			add_benchmark!(params, batches, fabric_system, SystemBench::<Runtime>);
+			add_benchmark!(params, batches, noble_timestamp, Timestamp);
+			add_benchmark!(params, batches, noble_tips, Tips);
+			add_benchmark!(params, batches, noble_treasury, Treasury);
+			add_benchmark!(params, batches, noble_utility, Utility);
+			add_benchmark!(params, batches, noble_vesting, Vesting);
 
-			if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
+			if batches.is_empty() { return Err("Benchmark not found for this noble.".into()) }
 			Ok(batches)
 		}
 	}
@@ -1393,7 +1393,7 @@ impl_runtime_apis! {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use frame_system::offchain::CreateSignedTransaction;
+	use fabric_system::offchain::CreateSignedTransaction;
 
 	#[test]
 	fn validate_transaction_submitter_bounds() {

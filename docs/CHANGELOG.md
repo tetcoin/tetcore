@@ -23,12 +23,12 @@ Namely contains backports of
 Runtime
 -------
 
-* Rename `ModuleToIndex` to `PalletRuntimeSetup` (#7148)
+* Rename `ModuleToIndex` to `NobleRuntimeSetup` (#7148)
 * Bounties (#5715)
-* pallet-collective: allow customized default vote (#6984)
-* add instantiable support for treasury pallet (#7058)
-* frame/authority-discovery: Have authorities() return both current and next (#6788)
-* add generated weight info for pallet-collective (#6789)
+* noble-collective: allow customized default vote (#6984)
+* add instantiable support for treasury noble (#7058)
+* fabric/authority-discovery: Have authorities() return both current and next (#6788)
+* add generated weight info for noble-collective (#6789)
 * Support Staking Payout to Any Account (#6832)
 * Time-delay proxies (#6770)
 * Refcounts are now u32 (#7164)
@@ -55,7 +55,7 @@ API
 * grandpa-rpc: use FinalityProofProvider to check finality for rpc (#6215)
 * pow: replace the thread-base mining loop with a future-based mining worker (#7060)
 * Tracing for wasm with bridging to native (#6916)
-* Frame-support storage: make iterations and translate consistent (#5470)
+* Fabric-support storage: make iterations and translate consistent (#5470)
 * pow: support uniform tie breaking in fork choice (#7073)
 * Make decoding of `compact<perthing>` saturating instead of invalid (#7062)
 * Set reserved nodes with offchain worker. (#6996)
@@ -76,11 +76,11 @@ Runtime
 
 * Custom Codec Implenetation for NPoS Election (#6720)
 * Successful `note_imminent_preimage` is free (#6793)
-* pallet-democracy use of weightinfo (#6783)
-* Update Balances Pallet to use `WeightInfo` (#6610)
-* pallet-evm: add builtin support for the four basic Ethereum precompiles (#6743)
+* noble-democracy use of weightinfo (#6783)
+* Update Balances Noble to use `WeightInfo` (#6610)
+* noble-evm: add builtin support for the four basic Ethereum precompiles (#6743)
 * Allow `PostDispatchInfo` to disable fees (#6749)
-* pallet-evm: add support for tuple-based precompile declarations (#6681)
+* noble-evm: add support for tuple-based precompile declarations (#6681)
 * grandpa: allow noting that the set has stalled (#6725)
 
 Client
@@ -124,12 +124,12 @@ Runtime
 * allow to specify schedule time as a relative value (#6578)
 * Make signature batching use specialized methods (#6616)
 * Rename `CheckEra` to `CheckMortality` (#6619)
-* Add `WeightInfo` to all pallets with benchmarks. (#6575)
+* Add `WeightInfo` to all nobles with benchmarks. (#6575)
 * Don't require module name in inherents (#6576)
-* pallet-evm: return Ok(()) when EVM execution fails (#6493)
+* noble-evm: return Ok(()) when EVM execution fails (#6493)
 * Make the encoded-Call Vec<u8> explicitly so in metadata (#6566)
 * Allow specify schedule dispatch origin (#6387)
-* pallet-evm: customizable chain id (#6537)
+* noble-evm: customizable chain id (#6537)
 * Refactor as_sub to make things clearer. (#6503)
 
 Client
@@ -156,7 +156,7 @@ API
 * seal: Rework contracts API (#6573)
 * Make evm errors public (#6598)
 * Add log rotation (#6564)
-* decl_module! macro: use 'frame_system' instead of `system` as default ident (#6500)
+* decl_module! macro: use 'fabric_system' instead of `system` as default ident (#6500)
 * Restrict `Protected` to some heap types. (#6471)
 
 ## 2.0.0-rc3 -> 2.0.0-rc4 (Rhinoceros)
@@ -165,14 +165,14 @@ Runtime
 -------
 
 * Staking Payout Creates Controller (#6496)
-* `pallet-scheduler`: Check that `when` is not in the past (#6480)
+* `noble-scheduler`: Check that `when` is not in the past (#6480)
 * Fix `tp-api` handling of multiple arguments (#6484)
 * Fix issues with `Operational` transactions validity and prioritization. (#6435)
-* pallet-atomic-swap: generialized swap action (#6421)
+* noble-atomic-swap: generialized swap action (#6421)
 * Avoid multisig reentrancy (#6445)
 * Root origin use no filter by default. Scheduler and Democracy dispatch without asserting BaseCallFilter (#6408)
 * Scale and increase validator count (#6417)
-* Pallet: Atomic Swap (#6349)
+* Noble: Atomic Swap (#6349)
 * Restrict remove_proxies (#6383)
 * Stored call in multisig (#6319)
 * Allow Sudo to do anything (#6375)
@@ -256,7 +256,7 @@ Client
 ## 2.0.0-alpha.7 -> 2.0.0-alpha.8
 
 **License Changed**
-From this release forward, the code is released under a new – more relaxed – license scheme: Client (`tc-*`) is released under "GPL 3.0 or newer with the Classpath Exception", while primitives, FRAME, the pallets, utils and test-utils are released under "Apache 2.0". More details in the [Relax licensing scheme PR](https://github.com/tetcoin/tetcore/pull/5947).
+From this release forward, the code is released under a new – more relaxed – license scheme: Client (`tc-*`) is released under "GPL 3.0 or newer with the Classpath Exception", while primitives, FABRIC, the nobles, utils and test-utils are released under "Apache 2.0". More details in the [Relax licensing scheme PR](https://github.com/tetcoin/tetcore/pull/5947).
 
 Runtime
 -------
@@ -269,7 +269,7 @@ Client
 
 * Meter block import results via prometheus (#6025)
 * Added RuntimePublic for ecdsa public key. (#6029)
-* Benchmarks for elections-phragmen pallet (#5845)
+* Benchmarks for elections-phragmen noble (#5845)
 * Monitor transactions rejected from the pool as invalid (#5992)
 * client/network: Remove default Kademlia DHT in favor of per protocol DHT (#5993)
 * Allow passing multiple --log CLI options (#5982)
@@ -281,7 +281,7 @@ Runtime
 -------
 
 * Use `storage::append` in the implementation of the storage types (#5889)
-* pallet-sudo: Store `DispatchResult` in `Sudid` event (#5804)
+* noble-sudo: Store `DispatchResult` in `Sudid` event (#5804)
 * Enable Offchain Equalise (#5683)
 * Add support for custom runtime upgrade logic (#5782)
 * Require `fn` token in `decl_storage` `get` (#5717)
@@ -328,7 +328,7 @@ Runtime
 * Unsigned Validation best practices (#5563)
 * Generate Unit Tests for Benchmarks (#5527)
 * Mandate weight annotation  (#5357)
-* Make Staking pallet using a proper Time module. (#4662)
+* Make Staking noble using a proper Time module. (#4662)
 * Pass transaction source to validate_transaction (#5366)
 * on_initialize return weight consumed and default cost to default DispatchInfo instead of zero (#5382)
 
@@ -363,7 +363,7 @@ API
 Runtime
 -------
 
-* pallet-evm: configurable gasometer config (#5320)
+* noble-evm: configurable gasometer config (#5320)
 * Adds new event phase `Initialization` (#5302)
 
 ## 2.0.0-alpha.3 -> 2.0.0-alpha.4
@@ -371,13 +371,13 @@ Runtime
 Runtime
 -------
 
-* Move runtime upgrade to `frame-executive` (#5197)
+* Move runtime upgrade to `fabric-executive` (#5197)
 * Split fees and tips between author and treasury independently (#5207)
 * Refactor session away from needless double_maps (#5202)
 * Remove `secp256k1` from WASM build (#5187)
 * Introduce default-setting prime for collective (#5137)
-* Adds `vested_transfer` to Vesting pallet (#5029)
-* Change extrinsic_count to extrinsic_index in pallet-utility (#5044)
+* Adds `vested_transfer` to Vesting noble (#5029)
+* Change extrinsic_count to extrinsic_index in noble-utility (#5044)
 
 Client
 ------

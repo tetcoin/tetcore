@@ -48,7 +48,7 @@ parking_lot = "0.11.1"
 # primitives
 tp-authority-discovery = { version = "2.0.2",  path = "../../../primitives/authority-discovery" }
 tp-consensus-babe = { version = "0.8.2", path = "../../../primitives/consensus/babe" }
-grandpa-primitives = { version = "2.0.0", package = "tp-finality-grandpa", path = "../../../primitives/finality-grandpa" }
+grandpa-primitives = { version = "2.0.2", package = "tp-finality-grandpa", path = "../../../primitives/finality-grandpa" }
 tet-core = { version = "2.0.2", path = "../../../primitives/core" }
 tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
 tp-timestamp = { version = "2.0.2", default-features = false, path = "../../../primitives/timestamp" }
@@ -78,18 +78,18 @@ tc-telemetry = { version = "2.0.0", path = "../../../client/telemetry" }
 tc-authority-discovery = { version = "0.8.0",  path = "../../../client/authority-discovery" }
 tc-finality-grandpa-warp-sync = { version = "0.8.0", path = "../../../client/finality-grandpa-warp-sync", optional = true }
 
-# frame dependencies
-pallet-indices = { version = "2.0.0", path = "../../../frame/indices" }
-pallet-timestamp = { version = "2.0.0", default-features = false, path = "../../../frame/timestamp" }
-pallet-contracts = { version = "2.0.0", path = "../../../frame/contracts" }
-frame-system = { version = "2.0.0", path = "../../../frame/system" }
-pallet-balances = { version = "2.0.0", path = "../../../frame/balances" }
-pallet-transaction-payment = { version = "2.0.0", path = "../../../frame/transaction-payment" }
-frame-support = { version = "2.0.0", default-features = false, path = "../../../frame/support" }
-pallet-im-online = { version = "2.0.0", default-features = false, path = "../../../frame/im-online" }
-pallet-authority-discovery = { version = "2.0.0", path = "../../../frame/authority-discovery" }
-pallet-staking = { version = "2.0.0", path = "../../../frame/staking" }
-pallet-grandpa = { version = "2.0.0", path = "../../../frame/grandpa" }
+# fabric dependencies
+noble-indices = { version = "2.0.0", path = "../../../fabric/indices" }
+noble-timestamp = { version = "2.0.0", default-features = false, path = "../../../fabric/timestamp" }
+noble-contracts = { version = "2.0.0", path = "../../../fabric/contracts" }
+fabric-system = { version = "2.0.0", path = "../../../fabric/system" }
+noble-balances = { version = "2.0.1", path = "../../../fabric/balances" }
+noble-transaction-payment = { version = "2.0.0", path = "../../../fabric/transaction-payment" }
+fabric-support = { version = "2.0.0", default-features = false, path = "../../../fabric/support" }
+noble-im-online = { version = "2.0.0", default-features = false, path = "../../../fabric/im-online" }
+noble-authority-discovery = { version = "2.0.1", path = "../../../fabric/authority-discovery" }
+noble-staking = { version = "2.0.0", path = "../../../fabric/staking" }
+noble-grandpa = { version = "2.0.0", path = "../../../fabric/grandpa" }
 
 # node-specific dependencies
 node-runtime = { version = "2.0.0", path = "../runtime" }
@@ -99,12 +99,12 @@ node-executor = { version = "2.0.0", path = "../executor" }
 
 # CLI-specific dependencies
 tc-cli = { version = "0.8.0", optional = true, path = "../../../client/cli" }
-frame-benchmarking-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/benchmarking-cli" }
+fabric-benchmarking-cli = { version = "2.0.1", optional = true, path = "../../../utils/fabric/benchmarking-cli" }
 node-inspect = { version = "0.8.0", optional = true, path = "../inspect" }
 
 # WASM-specific dependencies
-wasm-bindgen = { version = "0.2.57", optional = true }
-wasm-bindgen-futures = { version = "0.4.18", optional = true }
+wasm-bindgen = { version = "0.2.73", optional = true }
+wasm-bindgen-futures = { version = "0.4.23", optional = true }
 browser-utils = { package = "tetcore-browser-utils", path = "../../../utils/browser", optional = true, version = "0.8.0"}
 
 [target.'cfg(target_arch="x86_64")'.dependencies]
@@ -130,9 +130,9 @@ platforms = "0.2.1"
 [build-dependencies]
 structopt = { version = "0.3.8", optional = true }
 node-inspect = { version = "0.8.0", optional = true, path = "../inspect" }
-frame-benchmarking-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/benchmarking-cli" }
+fabric-benchmarking-cli = { version = "2.0.1", optional = true, path = "../../../utils/fabric/benchmarking-cli" }
 build-script-utils = { version = "2.0.1", optional = true, path = "../../../utils/build-script-utils" }
-tetcore-frame-cli = { version = "2.0.0", optional = true, path = "../../../utils/frame/frame-utilities-cli" }
+tetcore-fabric-cli = { version = "2.0.1", optional = true, path = "../../../utils/fabric/fabric-utilities-cli" }
 
 [build-dependencies.tc-cli]
 version = "0.8.0"
@@ -151,8 +151,8 @@ cli = [
 	"node-executor/twasmi-errno",
 	"node-inspect",
 	"tc-cli",
-	"frame-benchmarking-cli",
-	"tetcore-frame-cli",
+	"fabric-benchmarking-cli",
+	"tetcore-fabric-cli",
 	"tc-service/db",
 	"tc-finality-grandpa-warp-sync",
 	"structopt",
@@ -160,5 +160,5 @@ cli = [
 ]
 runtime-benchmarks = [
 	"node-runtime/runtime-benchmarks",
-	"frame-benchmarking-cli",
+	"fabric-benchmarking-cli",
 ]

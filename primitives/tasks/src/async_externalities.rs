@@ -20,7 +20,7 @@
 
 use std::any::{TypeId, Any};
 use tet_core::{
-	storage::{ChildInfo, TrackedStorageKey},
+	storage::{ChildInfo, TnobleedStorageKey},
 	traits::{Externalities, SpawnNamed, TaskExecutorExt, RuntimeSpawnExt, RuntimeSpawn},
 };
 use externalities::{Extensions, ExternalitiesExt as _};
@@ -182,11 +182,11 @@ impl Externalities for AsyncExternalities {
 		unimplemented!("reset_read_write_count is not supported in AsyncExternalities")
 	}
 
-	fn get_whitelist(&self) -> Vec<TrackedStorageKey> {
+	fn get_whitelist(&self) -> Vec<TnobleedStorageKey> {
 		unimplemented!("get_whitelist is not supported in AsyncExternalities")
 	}
 
-	fn set_whitelist(&mut self, _: Vec<TrackedStorageKey>) {
+	fn set_whitelist(&mut self, _: Vec<TnobleedStorageKey>) {
 		unimplemented!("set_whitelist is not supported in AsyncExternalities")
 	}
 }

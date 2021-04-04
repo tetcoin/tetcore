@@ -17,7 +17,7 @@
 
 //! Some configurable implementations as associated type for the tetcore runtime.
 
-use frame_support::traits::{OnUnbalanced, Currency};
+use fabric_support::traits::{OnUnbalanced, Currency};
 use crate::{Balances, Authorship, NegativeImbalance};
 
 pub struct Author;
@@ -30,7 +30,7 @@ impl OnUnbalanced<NegativeImbalance> for Author {
 #[cfg(test)]
 mod multiplier_tests {
 	use tp_runtime::{assert_eq_error_rate, FixedPointNumber, traits::Convert};
-	use pallet_transaction_payment::{Multiplier, TargetedFeeAdjustment};
+	use noble_transaction_payment::{Multiplier, TargetedFeeAdjustment};
 
 	use crate::{
 		constants::{currency::*, time::*},
@@ -38,7 +38,7 @@ mod multiplier_tests {
 		AdjustmentVariable, System, MinimumMultiplier,
 		RuntimeBlockWeights as BlockWeights,
 	};
-	use frame_support::weights::{Weight, WeightToFeePolynomial, DispatchClass};
+	use fabric_support::weights::{Weight, WeightToFeePolynomial, DispatchClass};
 
 	fn max_normal() -> Weight {
 		BlockWeights::get().get(DispatchClass::Normal).max_total
@@ -89,7 +89,7 @@ mod multiplier_tests {
 
 	fn run_with_system_weight<F>(w: Weight, assertions: F) where F: Fn() -> () {
 		let mut t: tet_io::TestExternalities =
-			frame_system::GenesisConfig::default().build_storage::<Runtime>().unwrap().into();
+			fabric_system::GenesisConfig::default().build_storage::<Runtime>().unwrap().into();
 		t.execute_with(|| {
 			System::set_block_consumed_resources(w, 0);
 			assertions()
@@ -187,7 +187,7 @@ mod multiplier_tests {
 		let block_weight = BlockWeights::get().get(DispatchClass::Normal).max_total.unwrap() - 100;
 
 		// Default tetcore weight.
-		let tx_weight = frame_support::weights::constants::ExtrinsicBaseWeight::get();
+		let tx_weight = fabric_support::weights::constants::ExtrinsicBaseWeight::get();
 
 		run_with_system_weight(block_weight, || {
 			// initial value configured on module
@@ -202,7 +202,7 @@ mod multiplier_tests {
 				fm = next;
 				iterations += 1;
 				let fee =
-					<Runtime as pallet_transaction_payment::Config>::WeightToFee::calc(&tx_weight);
+					<Runtime as noble_transaction_payment::Config>::WeightToFee::calc(&tx_weight);
 				let adjusted_fee = fm.saturating_mul_acc_int(fee);
 				println!(
 					"iteration {}, new fm = {:?}. Fee at this point is: {} units / {} millicents, \

@@ -35,7 +35,7 @@ pub enum Subcommand {
 	/// Revert the chain to a previous state.
 	Revert(tc_cli::RevertCmd),
 
-	/// The custom benchmark subcommmand benchmarking runtime pallets.
-	#[structopt(name = "benchmark", about = "Benchmark runtime pallets.")]
-	Benchmark(frame_benchmarking_cli::BenchmarkCmd),
+	/// The custom benchmark subcommmand benchmarking runtime nobles.
+	#[structopt(name = "benchmark", about = "Benchmark runtime nobles.")]
+	Benchmark(fabric_benchmarking_cli::BenchmarkCmd),
 }

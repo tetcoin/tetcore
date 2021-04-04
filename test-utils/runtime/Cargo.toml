@@ -18,7 +18,7 @@ tp-consensus-aura = { version = "0.8.2", default-features = false, path = "../..
 tp-consensus-babe = { version = "0.8.2", default-features = false, path = "../../primitives/consensus/babe" }
 tp-block-builder = { version = "2.0.2", default-features = false, path = "../../primitives/block-builder" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-frame-executive = { version = "2.0.0", default-features = false, path = "../../frame/executive" }
+fabric-executive = { version = "2.0.0", default-features = false, path = "../../fabric/executive" }
 tp-inherents = { version = "2.0.2", default-features = false, path = "../../primitives/inherents" }
 tp-keyring = { version = "2.0.2", optional = true, path = "../../primitives/keyring" }
 tetsy-memory-db = { version = "0.26.0", default-features = false }
@@ -27,15 +27,15 @@ tet-core = { version = "2.0.2", default-features = false, path = "../../primitiv
 tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
 tp-runtime-interface = { path = "../../primitives/runtime-interface", default-features = false, version = "2.0.2"}
 tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
-frame-support = { version = "2.0.0", default-features = false, path = "../../frame/support" }
+fabric-support = { version = "2.0.0", default-features = false, path = "../../fabric/support" }
 tp-version = { version = "2.0.2", default-features = false, path = "../../primitives/version" }
 tp-session = { version = "2.0.2", default-features = false, path = "../../primitives/session" }
 tp-api = { version = "2.0.2", default-features = false, path = "../../primitives/api" }
 tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-pallet-babe = { version = "2.0.0", default-features = false, path = "../../frame/babe" }
-frame-system = { version = "2.0.0", default-features = false, path = "../../frame/system" }
-frame-system-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../frame/system/rpc/runtime-api" }
-pallet-timestamp = { version = "2.0.0", default-features = false, path = "../../frame/timestamp" }
+noble-babe = { version = "2.0.1", default-features = false, path = "../../fabric/babe" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../../fabric/system" }
+fabric-system-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../fabric/system/rpc/runtime-api" }
+noble-timestamp = { version = "2.0.0", default-features = false, path = "../../fabric/timestamp" }
 tp-finality-grandpa = { version = "2.0.2", default-features = false, path = "../../primitives/finality-grandpa" }
 tp-trie = { version = "2.0.2", default-features = false, path = "../../primitives/trie" }
 tp-transaction-pool = { version = "2.0.2", default-features = false, path = "../../primitives/transaction-pool" }
@@ -68,7 +68,7 @@ std = [
 	"tp-consensus-babe/std",
 	"tp-block-builder/std",
 	"codec/std",
-	"frame-executive/std",
+	"fabric-executive/std",
 	"tp-inherents/std",
 	"tp-keyring",
 	"log",
@@ -79,7 +79,7 @@ std = [
 	"tetcore-std/std",
 	"tp-runtime-interface/std",
 	"tet-io/std",
-	"frame-support/std",
+	"fabric-support/std",
 	"tp-version/std",
 	"serde",
 	"tp-session/std",
@@ -87,10 +87,10 @@ std = [
 	"tp-runtime/std",
 	"externalities/std",
 	"tp-state-machine/std",
-	"pallet-babe/std",
-	"frame-system-rpc-runtime-api/std",
-	"frame-system/std",
-	"pallet-timestamp/std",
+	"noble-babe/std",
+	"fabric-system-rpc-runtime-api/std",
+	"fabric-system/std",
+	"noble-timestamp/std",
 	"tc-service",
 	"tp-finality-grandpa/std",
 	"tp-trie/std",

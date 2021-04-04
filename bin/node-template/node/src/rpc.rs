@@ -32,13 +32,13 @@ pub fn create_full<C, P>(
 	C: ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error=BlockChainError> + 'static,
 	C: Send + Sync + 'static,
-	C::Api: tetcore_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
-	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
+	C::Api: tetcore_fabric_rpc_system::AccountNonceApi<Block, AccountId, Index>,
+	C::Api: noble_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: BlockBuilder<Block>,
 	P: TransactionPool + 'static,
 {
-	use tetcore_frame_rpc_system::{FullSystem, SystemApi};
-	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
+	use tetcore_fabric_rpc_system::{FullSystem, SystemApi};
+	use noble_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
 
 	let mut io = tetsy_jsonrpc_core::IoHandler::default();
 	let FullDeps {

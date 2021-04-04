@@ -16,8 +16,8 @@
 // limitations under the License.
 
 use codec::{Encode, Decode};
-use frame_system::offchain::AppCrypto;
-use frame_support::Hashable;
+use fabric_system::offchain::AppCrypto;
+use fabric_support::Hashable;
 use tp_state_machine::TestExternalities as CoreTestExternalities;
 use tet_core::{
 	NeverNativeValue, NativeOrEncoded,
@@ -85,8 +85,8 @@ pub fn sign(xt: CheckedExtrinsic) -> UncheckedExtrinsic {
 	node_testing::keyring::sign(xt, SPEC_VERSION, TRANSACTION_VERSION, GENESIS_HASH)
 }
 
-pub fn default_transfer_call() -> pallet_balances::Call<Runtime> {
-	pallet_balances::Call::transfer::<Runtime>(bob().into(), 69 * DOLLARS)
+pub fn default_transfer_call() -> noble_balances::Call<Runtime> {
+	noble_balances::Call::transfer::<Runtime>(bob().into(), 69 * DOLLARS)
 }
 
 pub fn from_block_number(n: u32) -> Header {

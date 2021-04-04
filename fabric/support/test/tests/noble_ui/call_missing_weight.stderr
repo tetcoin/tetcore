@@ -1,0 +1,5 @@
+error: Invalid noble::call, requires weight attribute i.e. `#[noble::weight($expr)]`
+  --> $DIR/call_missing_weight.rs:17:3
+   |
+17 |         fn foo(origin: OriginFor<T>) -> DispatchResultWithPostInfo {}
+   |         ^^

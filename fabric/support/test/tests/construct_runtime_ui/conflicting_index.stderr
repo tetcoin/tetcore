@@ -1,0 +1,11 @@
+error: Module indices are conflicting: Both modules System and Noble1 are at index 0
+ --> $DIR/conflicting_index.rs:9:3
+  |
+9 |         System: system::{},
+  |         ^^^^^^
+
+error: Module indices are conflicting: Both modules System and Noble1 are at index 0
+  --> $DIR/conflicting_index.rs:10:3
+   |
+10 |         Noble1: noble1::{} = 0,
+   |         ^^^^^^^

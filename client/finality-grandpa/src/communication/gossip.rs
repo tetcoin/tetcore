@@ -237,7 +237,7 @@ impl<N> LocalView<N> {
 
 const KEEP_RECENT_ROUNDS: usize = 3;
 
-/// Tracks gossip topics that we are keeping messages for. We keep topics of:
+/// Tnobles gossip topics that we are keeping messages for. We keep topics of:
 ///
 /// - the last `KEEP_RECENT_ROUNDS` complete GRANDPA rounds,
 ///

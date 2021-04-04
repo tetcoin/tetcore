@@ -42,7 +42,7 @@ pub enum Era {
 	/// greater than 1 << 12, then it will be a factor of the times greater than 1<<12 that
 	/// `period` is.
 	///
-	/// When used on `FRAME`-based runtimes, `period` cannot exceed `BlockHashCount` parameter
+	/// When used on `FABRIC`-based runtimes, `period` cannot exceed `BlockHashCount` parameter
 	/// of `system` module.
 	Mortal(Period, Phase),
 }
@@ -60,7 +60,7 @@ impl Era {
 	/// Create a new era based on a period (which should be a power of two between 4 and 65536 inclusive)
 	/// and a block number on which it should start (or, for long periods, be shortly after the start).
 	///
-	/// If using `Era` in the context of `FRAME` runtime, make sure that `period`
+	/// If using `Era` in the context of `FABRIC` runtime, make sure that `period`
 	/// does not exceed `BlockHashCount` parameter passed to `system` module, since that
 	/// prunes old blocks and renders transactions immediately invalid.
 	pub fn mortal(period: u64, current: u64) -> Self {

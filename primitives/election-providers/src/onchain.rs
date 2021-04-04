@@ -45,7 +45,7 @@ pub struct OnChainSequentialPhragmen<T: Config>(PhantomData<T>);
 
 /// Configuration trait of [`OnChainSequentialPhragmen`].
 ///
-/// Note that this is similar to a pallet traits, but [`OnChainSequentialPhragmen`] is not a pallet.
+/// Note that this is similar to a noble traits, but [`OnChainSequentialPhragmen`] is not a noble.
 pub trait Config {
 	/// The account identifier type.
 	type AccountId: IdentifierT;

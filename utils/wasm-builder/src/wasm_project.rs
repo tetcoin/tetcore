@@ -559,7 +559,7 @@ fn generate_rerun_if_changed_instructions(
 	println!("cargo:rerun-if-env-changed={}", crate::WASM_BUILD_TOOLCHAIN);
 }
 
-/// Track files and paths related to the given package to rerun `build.rs` on any relevant change.
+/// Tnoble files and paths related to the given package to rerun `build.rs` on any relevant change.
 fn package_rerun_if_changed(package: &DeduplicatePackage) {
 	let mut manifest_path = package.manifest_path.clone();
 	if manifest_path.ends_with("Cargo.toml") {

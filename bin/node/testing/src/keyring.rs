@@ -70,13 +70,13 @@ pub fn to_session_keys(
 /// Returns transaction extra.
 pub fn signed_extra(nonce: Index, extra_fee: Balance) -> SignedExtra {
 	(
-		frame_system::CheckSpecVersion::new(),
-		frame_system::CheckTxVersion::new(),
-		frame_system::CheckGenesis::new(),
-		frame_system::CheckEra::from(Era::mortal(256, 0)),
-		frame_system::CheckNonce::from(nonce),
-		frame_system::CheckWeight::new(),
-		pallet_transaction_payment::ChargeTransactionPayment::from(extra_fee),
+		fabric_system::CheckSpecVersion::new(),
+		fabric_system::CheckTxVersion::new(),
+		fabric_system::CheckGenesis::new(),
+		fabric_system::CheckEra::from(Era::mortal(256, 0)),
+		fabric_system::CheckNonce::from(nonce),
+		fabric_system::CheckWeight::new(),
+		noble_transaction_payment::ChargeTransactionPayment::from(extra_fee),
 	)
 }
 

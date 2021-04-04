@@ -69,7 +69,7 @@ pub type BlockId = generic::BlockId<Block>;
 /// account.
 pub mod report {
 	use super::{Signature, Verify};
-	use frame_system::offchain::AppCrypto;
+	use fabric_system::offchain::AppCrypto;
 	use tet_core::crypto::{key_types, KeyTypeId};
 
 	/// Key type for the reporting module. Used for reporting BABE and GRANDPA

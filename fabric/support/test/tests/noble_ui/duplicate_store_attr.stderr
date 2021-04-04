@@ -1,0 +1,5 @@
+error: Invalid noble::noble, multiple argument noble::generate_store found
+  --> $DIR/duplicate_store_attr.rs:12:33
+   |
+12 |     #[noble::generate_store(trait Store)]
+   |                                    ^^^^^

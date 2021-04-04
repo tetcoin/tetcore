@@ -1,6 +1,6 @@
 [package]
 name = "tc-keystore"
-version = "2.0.1"
+version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"

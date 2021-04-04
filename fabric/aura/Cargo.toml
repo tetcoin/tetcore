@@ -1,0 +1,53 @@
+[package]
+name = "noble-aura"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/noble-aura"
+description = "FABRIC AURA consensus noble"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../primitives/application-crypto" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+tp-inherents = { version = "2.0.2", default-features = false, path = "../../primitives/inherents" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+serde = { version = "1.0.101", optional = true }
+noble-session = { version = "2.0.0", default-features = false, path = "../session" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
+tp-consensus-aura = { version = "0.8.2", path = "../../primitives/consensus/aura", default-features = false }
+fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
+tp-timestamp = { version = "2.0.2", default-features = false, path = "../../primitives/timestamp" }
+noble-timestamp = { version = "2.0.0", default-features = false, path = "../timestamp" }
+
+
+[dev-dependencies]
+tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
+tet-io ={ version = "2.0.2", path = "../../primitives/io" }
+lazy_static = "1.4.0"
+parking_lot = "0.11.1"
+
+[features]
+default = ["std"]
+std = [
+	"tet-application-crypto/std",
+	"codec/std",
+	"tp-inherents/std",
+	"tetcore-std/std",
+	"serde",
+	"tp-runtime/std",
+	"fabric-support/std",
+	"tp-consensus-aura/std",
+	"fabric-system/std",
+	"tp-timestamp/std",
+	"noble-timestamp/std",
+]

@@ -1,0 +1,75 @@
+[package]
+name = "noble-contracts"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/noble-contracts"
+description = "FABRIC noble for WASM contracts"
+readme = "README.md"
+
+# Prevent publish until we are ready to release 3.0.0
+publish = false
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
+fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
+noble-contracts-primitives = { version = "2.0.0", default-features = false, path = "common" }
+noble-contracts-proc-macro = { version = "0.1.0", path = "proc-macro" }
+tetsy-wasm = { version = "0.41.0", default-features = false }
+# pwasm-utils = { version = "0.16", default-features = false }
+twasm-utils = { version = "0.16", default-features = false }
+serde = { version = "1.0.101", optional = true, features = ["derive"] }
+tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+tp-sandbox = { version = "0.8.2", default-features = false, path = "../../primitives/sandbox" }
+twasmi-validation = { version = "0.3.0", default-features = false }
+
+# Only used in benchmarking to generate random contract code
+rand = { version = "0.7.0", optional = true, default-features = false }
+rand_pcg = { version = "0.2.1", optional = true }
+
+[dev-dependencies]
+assert_matches = "1.3.0"
+hex-literal = "0.3.1"
+noble-balances = { version = "2.0.1", path = "../balances" }
+noble-timestamp = { version = "2.0.0", path = "../timestamp" }
+noble-randomness-collective-flip = { version = "2.0.0", path = "../randomness-collective-flip" }
+paste = "1.0"
+pretty_assertions = "0.6.1"
+wat = "1.0"
+
+[features]
+default = ["std"]
+std = [
+	"serde",
+	"codec/std",
+	"tet-core/std",
+	"tp-runtime/std",
+	"tet-io/std",
+	"tetcore-std/std",
+	"tp-sandbox/std",
+	"fabric-support/std",
+	"fabric-system/std",
+	"tetsy-wasm/std",
+	"twasm-utils/std",
+	"twasmi-validation/std",
+	"noble-contracts-primitives/std",
+	"noble-contracts-proc-macro/full",
+]
+runtime-benchmarks = [
+	"fabric-benchmarking",
+	"rand",
+	"rand_pcg",
+]

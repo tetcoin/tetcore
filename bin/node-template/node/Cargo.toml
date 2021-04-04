@@ -2,7 +2,7 @@
 name = "node-template"
 version = "2.0.0"
 authors = ["Anonymous"]
-description = "A new FRAME-based Tetcore node, ready for hacking."
+description = "A new fabric-based Tetcore node, ready for hacking."
 edition = "2018"
 license = "Unlicense"
 build = "build.rs"
@@ -46,12 +46,12 @@ tc-rpc-api = { version = "0.8.0", path = "../../../client/rpc-api" }
 tp-blockchain = { version = "2.0.2", path = "../../../primitives/blockchain" }
 tp-block-builder = { version = "2.0.2", path = "../../../primitives/block-builder" }
 tc-basic-authorship = { version = "0.8.0", path = "../../../client/basic-authorship" }
-tetcore-frame-rpc-system = { version = "2.0.0", path = "../../../utils/frame/rpc/system" }
-pallet-transaction-payment-rpc = { version = "2.0.0", path = "../../../frame/transaction-payment/rpc/" }
+tetcore-fabric-rpc-system = { version = "2.0.0", path = "../../../utils/fabric/rpc/system" }
+noble-transaction-payment-rpc = { version = "2.0.0", path = "../../../fabric/transaction-payment/rpc/" }
 
 # These dependencies are used for runtime benchmarking
-frame-benchmarking = { version = "2.0.0", path = "../../../frame/benchmarking" }
-frame-benchmarking-cli = { version = "2.0.0", path = "../../../utils/frame/benchmarking-cli" }
+fabric-benchmarking = { version = "2.0.0", path = "../../../fabric/benchmarking" }
+fabric-benchmarking-cli = { version = "2.0.1", path = "../../../utils/fabric/benchmarking-cli" }
 
 node-template-runtime = { version = "2.0.0", path = "../runtime" }
 

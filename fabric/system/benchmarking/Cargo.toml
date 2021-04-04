@@ -1,0 +1,41 @@
+[package]
+name = "fabric-system-benchmarking"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/system-benchmarking"
+description = "FABRIC System benchmarking"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../../primitives/std" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../../primitives/runtime" }
+fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../../benchmarking" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../../system" }
+fabric-support = { version = "2.0.0", default-features = false, path = "../../support" }
+tet-core = { version = "2.0.2", default-features = false, path = "../../../primitives/core" }
+
+[dev-dependencies]
+serde = { version = "1.0.101" }
+tet-io ={ version = "2.0.2", path = "../../../primitives/io" }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"tp-runtime/std",
+	"tetcore-std/std",
+	"fabric-benchmarking/std",
+	"fabric-system/std",
+	"fabric-support/std",
+	"tet-core/std",
+]

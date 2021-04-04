@@ -1,0 +1,50 @@
+[package]
+name = "noble-im-online"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/noble-im-online"
+description = "FABRIC's I'm online noble"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../primitives/application-crypto" }
+noble-authorship = { version = "2.0.1", default-features = false, path = "../authorship" }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+serde = { version = "1.0.101", optional = true }
+noble-session = { version = "2.0.0", default-features = false, path = "../session" }
+tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tp-staking = { version = "2.0.2", default-features = false, path = "../../primitives/staking" }
+fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
+
+fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
+
+[features]
+default = ["std", "noble-session/historical"]
+std = [
+	"tet-application-crypto/std",
+	"noble-authorship/std",
+	"codec/std",
+	"tet-core/std",
+	"tetcore-std/std",
+	"serde",
+	"noble-session/std",
+	"tet-io/std",
+	"tp-runtime/std",
+	"tp-staking/std",
+	"fabric-support/std",
+	"fabric-system/std",
+]
+runtime-benchmarks = ["fabric-benchmarking"]

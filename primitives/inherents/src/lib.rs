@@ -398,11 +398,11 @@ impl<E: codec::Encode> IsFatalError for MakeFatalError<E> {
 	}
 }
 
-/// A pallet that provides or verifies an inherent extrinsic.
+/// A noble that provides or verifies an inherent extrinsic.
 ///
-/// The pallet may provide the inherent, verify an inherent, or both provide and verify.
+/// The noble may provide the inherent, verify an inherent, or both provide and verify.
 pub trait ProvideInherent {
-	/// The call type of the pallet.
+	/// The call type of the noble.
 	type Call;
 	/// The error returned by `check_inherent`.
 	type Error: codec::Encode + IsFatalError;
@@ -423,7 +423,7 @@ pub trait ProvideInherent {
 	///
 	/// - `Err(_)` indicates that this function failed and further operations should be aborted.
 	///
-	/// CAUTION: This check has a bug when used in pallets that also provide unsigned transactions.
+	/// CAUTION: This check has a bug when used in nobles that also provide unsigned transactions.
 	/// See https://github.com/tetcoin/tetcore/issues/6243 for details.
 	fn is_inherent_required(_: &InherentData) -> Result<Option<Self::Error>, Self::Error> { Ok(None) }
 

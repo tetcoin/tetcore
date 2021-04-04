@@ -112,15 +112,15 @@ pub type DbHash = [u8; DB_HASH_LEN];
 ///
 /// It makes sure that the hash we are using stays pinned in storage
 /// until this structure is dropped.
-pub struct RefTrackingState<Block: BlockT> {
+pub struct RefTnobleingState<Block: BlockT> {
 	state: DbState<Block>,
 	storage: Arc<StorageDb<Block>>,
 	parent_hash: Option<Block::Hash>,
 }
 
-impl<B: BlockT> RefTrackingState<B> {
+impl<B: BlockT> RefTnobleingState<B> {
 	fn new(state: DbState<B>, storage: Arc<StorageDb<B>>, parent_hash: Option<B::Hash>) -> Self {
-		RefTrackingState {
+		RefTnobleingState {
 			state,
 			parent_hash,
 			storage,
@@ -128,7 +128,7 @@ impl<B: BlockT> RefTrackingState<B> {
 	}
 }
 
-impl<B: BlockT> Drop for RefTrackingState<B> {
+impl<B: BlockT> Drop for RefTnobleingState<B> {
 	fn drop(&mut self) {
 		if let Some(hash) = &self.parent_hash {
 			self.storage.state_db.unpin(hash);
@@ -136,13 +136,13 @@ impl<B: BlockT> Drop for RefTrackingState<B> {
 	}
 }
 
-impl<Block: BlockT> std::fmt::Debug for RefTrackingState<Block> {
+impl<Block: BlockT> std::fmt::Debug for RefTnobleingState<Block> {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 		write!(f, "Block {:?}", self.parent_hash)
 	}
 }
 
-impl<B: BlockT> StateBackend<HashFor<B>> for RefTrackingState<B> {
+impl<B: BlockT> StateBackend<HashFor<B>> for RefTnobleingState<B> {
 	type Error =  <DbState<B> as StateBackend<HashFor<B>>>::Error;
 	type Transaction = <DbState<B> as StateBackend<HashFor<B>>>::Transaction;
 	type TrieBackendStorage = <DbState<B> as StateBackend<HashFor<B>>>::TrieBackendStorage;
@@ -663,7 +663,7 @@ impl<Block: BlockT> ProvideChtRoots<Block> for BlockchainDb<Block> {
 
 /// Database transaction
 pub struct BlockImportOperation<Block: BlockT> {
-	old_state: SyncingCachingState<RefTrackingState<Block>, Block>,
+	old_state: SyncingCachingState<RefTnobleingState<Block>, Block>,
 	db_updates: PrefixedMemoryDB<HashFor<Block>>,
 	storage_updates: StorageCollection,
 	child_storage_updates: ChildStorageCollection,
@@ -702,7 +702,7 @@ impl<Block: BlockT> BlockImportOperation<Block> {
 }
 
 impl<Block: BlockT> tc_client_api::backend::BlockImportOperation<Block> for BlockImportOperation<Block> {
-	type State = SyncingCachingState<RefTrackingState<Block>, Block>;
+	type State = SyncingCachingState<RefTnobleingState<Block>, Block>;
 
 	fn state(&self) -> ClientResult<Option<&Self::State>> {
 		Ok(Some(&self.old_state))
@@ -1583,7 +1583,7 @@ impl<Block> tc_client_api::backend::AuxStore for Backend<Block> where Block: Blo
 impl<Block: BlockT> tc_client_api::backend::Backend<Block> for Backend<Block> {
 	type BlockImportOperation = BlockImportOperation<Block>;
 	type Blockchain = BlockchainDb<Block>;
-	type State = SyncingCachingState<RefTrackingState<Block>, Block>;
+	type State = SyncingCachingState<RefTnobleingState<Block>, Block>;
 	type OffchainStorage = offchain::LocalStorage;
 
 	fn begin_operation(&self) -> ClientResult<Self::BlockImportOperation> {
@@ -1819,7 +1819,7 @@ impl<Block: BlockT> tc_client_api::backend::Backend<Block> for Backend<Block> {
 				let genesis_storage = DbGenesisStorage::<Block>::new();
 				let root = genesis_storage.0.clone();
 				let db_state = DbState::<Block>::new(Arc::new(genesis_storage), root);
-				let state = RefTrackingState::new(db_state, self.storage.clone(), None);
+				let state = RefTnobleingState::new(db_state, self.storage.clone(), None);
 				let caching_state = CachingState::new(
 					state,
 					self.shared_cache.clone(),
@@ -1854,7 +1854,7 @@ impl<Block: BlockT> tc_client_api::backend::Backend<Block> for Backend<Block> {
 				if let Ok(()) = self.storage.state_db.pin(&hash) {
 					let root = hdr.state_root;
 					let db_state = DbState::<Block>::new(self.storage.clone(), root);
-					let state = RefTrackingState::new(
+					let state = RefTnobleingState::new(
 						db_state,
 						self.storage.clone(),
 						Some(hash.clone()),

@@ -34,7 +34,7 @@ use tp_transaction_pool::error;
 use crate::{
 	base_pool::Transaction,
 	future::WaitingTransaction,
-	tracked_map::{self, ReadOnlyTrackedMap, TrackedMap},
+	tracked_map::{self, ReadOnlyTnobleedMap, TnobleedMap},
 };
 
 /// An in-pool transaction reference.
@@ -115,7 +115,7 @@ pub struct ReadyTransactions<Hash: hash::Hash + Eq, Ex> {
 	/// tags that are provided by Ready transactions
 	provided_tags: HashMap<Tag, Hash>,
 	/// Transactions that are ready (i.e. don't have any requirements external to the pool)
-	ready: TrackedMap<Hash, ReadyTx<Hash, Ex>>,
+	ready: TnobleedMap<Hash, ReadyTx<Hash, Ex>>,
 	/// Best transactions that are ready to be included to the block without any other previous transaction.
 	best: BTreeSet<TransactionRef<Hash, Ex>>,
 }
@@ -485,7 +485,7 @@ impl<Hash: hash::Hash + Member + Serialize, Ex> ReadyTransactions<Hash, Ex> {
 
 /// Iterator of ready transactions ordered by priority.
 pub struct BestIterator<Hash, Ex> {
-	all: ReadOnlyTrackedMap<Hash, ReadyTx<Hash, Ex>>,
+	all: ReadOnlyTnobleedMap<Hash, ReadyTx<Hash, Ex>>,
 	awaiting: HashMap<Hash, (usize, TransactionRef<Hash, Ex>)>,
 	best: BTreeSet<TransactionRef<Hash, Ex>>,
 }

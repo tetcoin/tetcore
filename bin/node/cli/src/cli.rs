@@ -43,9 +43,9 @@ pub enum Subcommand {
 	)]
 	Inspect(node_inspect::cli::InspectCmd),
 
-	/// The custom benchmark subcommmand benchmarking runtime pallets.
-	#[structopt(name = "benchmark", about = "Benchmark runtime pallets.")]
-	Benchmark(frame_benchmarking_cli::BenchmarkCmd),
+	/// The custom benchmark subcommmand benchmarking runtime nobles.
+	#[structopt(name = "benchmark", about = "Benchmark runtime nobles.")]
+	Benchmark(fabric_benchmarking_cli::BenchmarkCmd),
 
 	/// Verify a signature for a message, provided on STDIN, with a given (public or secret) key.
 	Verify(VerifyCmd),

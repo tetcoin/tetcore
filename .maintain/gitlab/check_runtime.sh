@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 #
-# check for any changes in the node/src/runtime, frame/ and primitives/sr_* trees. if
+# check for any changes in the node/src/runtime, fabric/ and primitives/sr_* trees. if
 # there are any changes found, it should mark the PR breaksconsensus and
 # "auto-fail" the PR if there isn't a change in the runtime/src/lib.rs file
 # that alters the version.
@@ -40,7 +40,7 @@ git log -n1 release
 boldprint "check if the wasm sources changed"
 if ! git diff --name-only origin/master...${CI_COMMIT_SHA} \
 	| grep -v -e '^primitives/sr-arithmetic/fuzzer' \
-	| grep -q -e '^bin/node/src/runtime' -e '^frame/' -e '^primitives/sr-'
+	| grep -q -e '^bin/node/src/runtime' -e '^fabric/' -e '^primitives/sr-'
 then
 	boldcat <<-EOT
 
@@ -109,7 +109,7 @@ else
 
 	source file directories:
 	- bin/node/src/runtime
-	- frame
+	- fabric
 	- primitives/sr-*
 
 	versions file: ${VERSIONS_FILE}

@@ -1,0 +1,49 @@
+[package]
+name = "noble-mmr"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/noble-mmr"
+description = "FABRIC Merkle Mountain Range noble."
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
+fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
+fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
+mmr-lib = { package = "ckb-merkle-mountain-range", default-features = false, version = "0.3.1" }
+noble-mmr-primitives = { version = "2.0.0", default-features = false, path = "./primitives" }
+serde = { version = "1.0.101", optional = true }
+tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
+tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+
+[dev-dependencies]
+env_logger = "0.5"
+hex-literal = "0.3"
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"fabric-benchmarking/std",
+	"fabric-support/std",
+	"fabric-system/std",
+	"mmr-lib/std",
+	"noble-mmr-primitives/std",
+	"serde",
+	"tet-core/std",
+	"tet-io/std",
+	"tp-runtime/std",
+	"tetcore-std/std",
+]
+runtime-benchmarks = ["fabric-benchmarking"]

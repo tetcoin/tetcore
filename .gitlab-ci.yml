@@ -41,7 +41,7 @@ variables:                         &default-vars
   ARCH:                            "x86_64"
   # FIXME set to release
   CARGO_UNLEASH_INSTALL_PARAMS:    "--version 1.0.0-alpha.11"
-  CARGO_UNLEASH_PKG_DEF:           "--skip node node-* pallet-template pallet-example pallet-example-* tetkey chain-spec-builder"
+  CARGO_UNLEASH_PKG_DEF:           "--skip node node-* noble-template noble-example noble-example-* tetkey chain-spec-builder"
 
 default:
   cache:                           {}
@@ -251,7 +251,7 @@ test-linux-stable:                 &test-linux
     RUST_BACKTRACE:                1
     WASM_BUILD_NO_COLOR:           1
   script:
-    # this job runs all tests in former runtime-benchmarks, frame-staking and wasmtime tests
+    # this job runs all tests in former runtime-benchmarks, fabric-staking and wasmtime tests
     - time cargo test --workspace --locked --release --verbose --features runtime-benchmarks --manifest-path bin/node/cli/Cargo.toml
     - TETCORE_TEST_TIMEOUT=1 time cargo test -p tetcore-test-utils --release --verbose --locked -- --ignored timeout
     - sccache -s
@@ -270,7 +270,7 @@ unleash-check:
     - cargo install cargo-unleash ${CARGO_UNLEASH_INSTALL_PARAMS}
     - cargo unleash check ${CARGO_UNLEASH_PKG_DEF}
 
-test-frame-examples-compile-to-wasm:
+test-fabric-examples-compile-to-wasm:
   # into one job
   stage:                           test
   <<:                              *docker-env
@@ -282,7 +282,7 @@ test-frame-examples-compile-to-wasm:
     RUSTFLAGS: -Cdebug-assertions=y
     RUST_BACKTRACE: 1
   script:
-    - cd frame/example-offchain-worker/
+    - cd fabric/example-offchain-worker/
     - cargo +nightly build --target=wasm32-unknown-unknown --no-default-features
     - cd ../example
     - cargo +nightly build --target=wasm32-unknown-unknown --no-default-features

@@ -16,8 +16,8 @@ targets = ["x86_64-unknown-linux-gnu"]
 tetsy-jsonrpc-core = "15.1.0"
 node-primitives = { version = "2.0.0", path = "../primitives" }
 node-runtime = { version = "2.0.0", path = "../runtime" }
-pallet-contracts-rpc = { version = "0.8.0", path = "../../../frame/contracts/rpc/" }
-pallet-transaction-payment-rpc = { version = "2.0.0", path = "../../../frame/transaction-payment/rpc/" }
+noble-contracts-rpc = { version = "0.8.0", path = "../../../fabric/contracts/rpc/" }
+noble-transaction-payment-rpc = { version = "2.0.0", path = "../../../fabric/transaction-payment/rpc/" }
 tc-client-api = { version = "2.0.0", path = "../../../client/api" }
 tc-consensus-babe = { version = "0.8.0", path = "../../../client/consensus/babe" }
 tc-consensus-babe-rpc = { version = "0.8.0", path = "../../../client/consensus/babe/rpc" }
@@ -37,4 +37,4 @@ tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common
 tp-consensus-babe = { version = "0.8.2", path = "../../../primitives/consensus/babe" }
 tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
 tp-transaction-pool = { version = "2.0.2", path = "../../../primitives/transaction-pool" }
-tetcore-frame-rpc-system = { version = "2.0.0", path = "../../../utils/frame/rpc/system" }
+tetcore-fabric-rpc-system = { version = "2.0.0", path = "../../../utils/fabric/rpc/system" }

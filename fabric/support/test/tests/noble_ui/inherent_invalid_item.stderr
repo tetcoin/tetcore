@@ -1,0 +1,5 @@
+error: Invalid noble::inherent, expected impl<..> ProvideInherent for Noble<..>
+  --> $DIR/inherent_invalid_item.rs:19:2
+   |
+19 |     impl Foo {}
+   |     ^^^^

@@ -38,52 +38,52 @@ tp-session = { version = "2.0.2", default-features = false, path = "../../../pri
 tp-transaction-pool = { version = "2.0.2", default-features = false, path = "../../../primitives/transaction-pool" }
 tp-version = { version = "2.0.2", default-features = false, path = "../../../primitives/version" }
 
-# frame dependencies
-frame-executive = { version = "2.0.0", default-features = false, path = "../../../frame/executive" }
-frame-benchmarking = { version = "2.0.0", default-features = false, path = "../../../frame/benchmarking", optional = true }
-frame-support = { version = "2.0.0", default-features = false, path = "../../../frame/support" }
-frame-system = { version = "2.0.0", default-features = false, path = "../../../frame/system" }
-frame-system-benchmarking = { version = "2.0.0", default-features = false, path = "../../../frame/system/benchmarking", optional = true }
-frame-system-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../../frame/system/rpc/runtime-api/" }
-pallet-assets = { version = "2.0.0", default-features = false, path = "../../../frame/assets" }
-pallet-authority-discovery = { version = "2.0.0", default-features = false, path = "../../../frame/authority-discovery" }
-pallet-authorship = { version = "2.0.0", default-features = false, path = "../../../frame/authorship" }
-pallet-babe = { version = "2.0.0", default-features = false, path = "../../../frame/babe" }
-pallet-balances = { version = "2.0.0", default-features = false, path = "../../../frame/balances" }
-pallet-bounties = { version = "2.0.0", default-features = false, path = "../../../frame/bounties" }
-pallet-collective = { version = "2.0.0", default-features = false, path = "../../../frame/collective" }
-pallet-contracts = { version = "2.0.0", default-features = false, path = "../../../frame/contracts" }
-pallet-contracts-primitives = { version = "2.0.0", default-features = false, path = "../../../frame/contracts/common/" }
-pallet-contracts-rpc-runtime-api = { version = "0.8.0", default-features = false, path = "../../../frame/contracts/rpc/runtime-api/" }
-pallet-democracy = { version = "2.0.0", default-features = false, path = "../../../frame/democracy" }
-pallet-elections-phragmen = { version = "3.0.0", default-features = false, path = "../../../frame/elections-phragmen" }
-pallet-grandpa = { version = "2.0.0", default-features = false, path = "../../../frame/grandpa" }
-pallet-im-online = { version = "2.0.0", default-features = false, path = "../../../frame/im-online" }
-pallet-indices = { version = "2.0.0", default-features = false, path = "../../../frame/indices" }
-pallet-identity = { version = "2.0.0", default-features = false, path = "../../../frame/identity" }
-pallet-lottery = { version = "2.0.0", default-features = false, path = "../../../frame/lottery" }
-pallet-membership = { version = "2.0.0", default-features = false, path = "../../../frame/membership" }
-pallet-mmr = { version = "2.0.0", default-features = false, path = "../../../frame/merkle-mountain-range" }
-pallet-multisig = { version = "2.0.0", default-features = false, path = "../../../frame/multisig" }
-pallet-offences = { version = "2.0.0", default-features = false, path = "../../../frame/offences" }
-pallet-offences-benchmarking = { version = "2.0.0", path = "../../../frame/offences/benchmarking", default-features = false, optional = true }
-pallet-proxy = { version = "2.0.0", default-features = false, path = "../../../frame/proxy" }
-pallet-randomness-collective-flip = { version = "2.0.0", default-features = false, path = "../../../frame/randomness-collective-flip" }
-pallet-recovery = { version = "2.0.0", default-features = false, path = "../../../frame/recovery" }
-pallet-session = { version = "2.0.0", features = ["historical"], path = "../../../frame/session", default-features = false }
-pallet-session-benchmarking = { version = "2.0.0", path = "../../../frame/session/benchmarking", default-features = false, optional = true }
-pallet-staking = { version = "2.0.0", default-features = false, path = "../../../frame/staking" }
-pallet-staking-reward-curve = { version = "2.0.0", default-features = false, path = "../../../frame/staking/reward-curve" }
-pallet-scheduler = { version = "2.0.0", default-features = false, path = "../../../frame/scheduler" }
-pallet-society = { version = "2.0.0", default-features = false, path = "../../../frame/society" }
-pallet-sudo = { version = "2.0.0", default-features = false, path = "../../../frame/sudo" }
-pallet-timestamp = { version = "2.0.0", default-features = false, path = "../../../frame/timestamp" }
-pallet-tips = { version = "2.0.0", default-features = false, path = "../../../frame/tips" }
-pallet-treasury = { version = "2.0.0", default-features = false, path = "../../../frame/treasury" }
-pallet-utility = { version = "2.0.0", default-features = false, path = "../../../frame/utility" }
-pallet-transaction-payment = { version = "2.0.0", default-features = false, path = "../../../frame/transaction-payment" }
-pallet-transaction-payment-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../../frame/transaction-payment/rpc/runtime-api/" }
-pallet-vesting = { version = "2.0.0", default-features = false, path = "../../../frame/vesting" }
+# fabric dependencies
+fabric-executive = { version = "2.0.0", default-features = false, path = "../../../fabric/executive" }
+fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../../../fabric/benchmarking", optional = true }
+fabric-support = { version = "2.0.0", default-features = false, path = "../../../fabric/support" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../../../fabric/system" }
+fabric-system-benchmarking = { version = "2.0.0", default-features = false, path = "../../../fabric/system/benchmarking", optional = true }
+fabric-system-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../../fabric/system/rpc/runtime-api/" }
+noble-assets = { version = "2.0.1", default-features = false, path = "../../../fabric/assets" }
+noble-authority-discovery = { version = "2.0.1", default-features = false, path = "../../../fabric/authority-discovery" }
+noble-authorship = { version = "2.0.1", default-features = false, path = "../../../fabric/authorship" }
+noble-babe = { version = "2.0.1", default-features = false, path = "../../../fabric/babe" }
+noble-balances = { version = "2.0.1", default-features = false, path = "../../../fabric/balances" }
+noble-bounties = { version = "2.0.0", default-features = false, path = "../../../fabric/bounties" }
+noble-collective = { version = "2.0.0", default-features = false, path = "../../../fabric/collective" }
+noble-contracts = { version = "2.0.0", default-features = false, path = "../../../fabric/contracts" }
+noble-contracts-primitives = { version = "2.0.0", default-features = false, path = "../../../fabric/contracts/common/" }
+noble-contracts-rpc-runtime-api = { version = "0.8.0", default-features = false, path = "../../../fabric/contracts/rpc/runtime-api/" }
+noble-democracy = { version = "2.0.0", default-features = false, path = "../../../fabric/democracy" }
+noble-elections-phragmen = { version = "3.0.0", default-features = false, path = "../../../fabric/elections-phragmen" }
+noble-grandpa = { version = "2.0.0", default-features = false, path = "../../../fabric/grandpa" }
+noble-im-online = { version = "2.0.0", default-features = false, path = "../../../fabric/im-online" }
+noble-indices = { version = "2.0.0", default-features = false, path = "../../../fabric/indices" }
+noble-identity = { version = "2.0.0", default-features = false, path = "../../../fabric/identity" }
+noble-lottery = { version = "2.0.0", default-features = false, path = "../../../fabric/lottery" }
+noble-membership = { version = "2.0.0", default-features = false, path = "../../../fabric/membership" }
+noble-mmr = { version = "2.0.0", default-features = false, path = "../../../fabric/merkle-mountain-range" }
+noble-multisig = { version = "2.0.0", default-features = false, path = "../../../fabric/multisig" }
+noble-offences = { version = "2.0.0", default-features = false, path = "../../../fabric/offences" }
+noble-offences-benchmarking = { version = "2.0.1", path = "../../../fabric/offences/benchmarking", default-features = false, optional = true }
+noble-proxy = { version = "2.0.0", default-features = false, path = "../../../fabric/proxy" }
+noble-randomness-collective-flip = { version = "2.0.0", default-features = false, path = "../../../fabric/randomness-collective-flip" }
+noble-recovery = { version = "2.0.0", default-features = false, path = "../../../fabric/recovery" }
+noble-session = { version = "2.0.0", features = ["historical"], path = "../../../fabric/session", default-features = false }
+noble-session-benchmarking = { version = "2.0.1", path = "../../../fabric/session/benchmarking", default-features = false, optional = true }
+noble-staking = { version = "2.0.0", default-features = false, path = "../../../fabric/staking" }
+noble-staking-reward-curve = { version = "2.0.0", default-features = false, path = "../../../fabric/staking/reward-curve" }
+noble-scheduler = { version = "2.0.0", default-features = false, path = "../../../fabric/scheduler" }
+noble-society = { version = "2.0.0", default-features = false, path = "../../../fabric/society" }
+noble-sudo = { version = "2.0.0", default-features = false, path = "../../../fabric/sudo" }
+noble-timestamp = { version = "2.0.0", default-features = false, path = "../../../fabric/timestamp" }
+noble-tips = { version = "2.0.0", default-features = false, path = "../../../fabric/tips" }
+noble-treasury = { version = "2.0.0", default-features = false, path = "../../../fabric/treasury" }
+noble-utility = { version = "2.0.0", default-features = false, path = "../../../fabric/utility" }
+noble-transaction-payment = { version = "2.0.0", default-features = false, path = "../../../fabric/transaction-payment" }
+noble-transaction-payment-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../../fabric/transaction-payment/rpc/runtime-api/" }
+noble-vesting = { version = "2.0.0", default-features = false, path = "../../../fabric/vesting" }
 
 [build-dependencies]
 wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
@@ -93,98 +93,98 @@ tet-io = { version = "2.0.2", path = "../../../primitives/io" }
 
 [features]
 default = ["std"]
-with-tracing = [ "frame-executive/with-tracing" ]
+with-tracing = [ "fabric-executive/with-tracing" ]
 std = [
 	"tp-authority-discovery/std",
-	"pallet-assets/std",
-	"pallet-authority-discovery/std",
-	"pallet-authorship/std",
+	"noble-assets/std",
+	"noble-authority-discovery/std",
+	"noble-authorship/std",
 	"tp-consensus-babe/std",
-	"pallet-babe/std",
-	"pallet-balances/std",
-	"pallet-bounties/std",
+	"noble-babe/std",
+	"noble-balances/std",
+	"noble-bounties/std",
 	"tp-block-builder/std",
 	"codec/std",
-	"pallet-collective/std",
-	"pallet-contracts/std",
-	"pallet-contracts-primitives/std",
-	"pallet-contracts-rpc-runtime-api/std",
-	"pallet-democracy/std",
-	"pallet-elections-phragmen/std",
-	"frame-executive/std",
-	"pallet-grandpa/std",
-	"pallet-im-online/std",
-	"pallet-indices/std",
+	"noble-collective/std",
+	"noble-contracts/std",
+	"noble-contracts-primitives/std",
+	"noble-contracts-rpc-runtime-api/std",
+	"noble-democracy/std",
+	"noble-elections-phragmen/std",
+	"fabric-executive/std",
+	"noble-grandpa/std",
+	"noble-im-online/std",
+	"noble-indices/std",
 	"tp-inherents/std",
-	"pallet-lottery/std",
-	"pallet-membership/std",
-	"pallet-mmr/std",
-	"pallet-multisig/std",
-	"pallet-identity/std",
-	"pallet-scheduler/std",
+	"noble-lottery/std",
+	"noble-membership/std",
+	"noble-mmr/std",
+	"noble-multisig/std",
+	"noble-identity/std",
+	"noble-scheduler/std",
 	"node-primitives/std",
 	"tp-offchain/std",
-	"pallet-offences/std",
-	"pallet-proxy/std",
+	"noble-offences/std",
+	"noble-proxy/std",
 	"tet-core/std",
-	"pallet-randomness-collective-flip/std",
+	"noble-randomness-collective-flip/std",
 	"tetcore-std/std",
 	"serde",
-	"pallet-session/std",
+	"noble-session/std",
 	"tp-api/std",
 	"tp-runtime/std",
 	"tp-staking/std",
-	"pallet-staking/std",
+	"noble-staking/std",
 	"tp-keyring",
 	"tp-session/std",
-	"pallet-sudo/std",
-	"frame-support/std",
-	"frame-benchmarking/std",
-	"frame-system-rpc-runtime-api/std",
-	"frame-system/std",
-	"pallet-timestamp/std",
-	"pallet-tips/std",
-	"pallet-transaction-payment-rpc-runtime-api/std",
-	"pallet-transaction-payment/std",
-	"pallet-treasury/std",
+	"noble-sudo/std",
+	"fabric-support/std",
+	"fabric-benchmarking/std",
+	"fabric-system-rpc-runtime-api/std",
+	"fabric-system/std",
+	"noble-timestamp/std",
+	"noble-tips/std",
+	"noble-transaction-payment-rpc-runtime-api/std",
+	"noble-transaction-payment/std",
+	"noble-treasury/std",
 	"tp-transaction-pool/std",
-	"pallet-utility/std",
+	"noble-utility/std",
 	"tp-version/std",
-	"pallet-society/std",
-	"pallet-recovery/std",
-	"pallet-vesting/std",
+	"noble-society/std",
+	"noble-recovery/std",
+	"noble-vesting/std",
 ]
 runtime-benchmarks = [
-	"frame-benchmarking",
-	"frame-support/runtime-benchmarks",
-	"frame-system/runtime-benchmarks",
+	"fabric-benchmarking",
+	"fabric-support/runtime-benchmarks",
+	"fabric-system/runtime-benchmarks",
 	"tp-runtime/runtime-benchmarks",
-	"pallet-assets/runtime-benchmarks",
-	"pallet-babe/runtime-benchmarks",
-	"pallet-balances/runtime-benchmarks",
-	"pallet-bounties/runtime-benchmarks",
-	"pallet-collective/runtime-benchmarks",
-	"pallet-contracts/runtime-benchmarks",
-	"pallet-democracy/runtime-benchmarks",
-	"pallet-elections-phragmen/runtime-benchmarks",
-	"pallet-grandpa/runtime-benchmarks",
-	"pallet-identity/runtime-benchmarks",
-	"pallet-im-online/runtime-benchmarks",
-	"pallet-indices/runtime-benchmarks",
-	"pallet-lottery/runtime-benchmarks",
-	"pallet-mmr/runtime-benchmarks",
-	"pallet-multisig/runtime-benchmarks",
-	"pallet-proxy/runtime-benchmarks",
-	"pallet-scheduler/runtime-benchmarks",
-	"pallet-society/runtime-benchmarks",
-	"pallet-staking/runtime-benchmarks",
-	"pallet-timestamp/runtime-benchmarks",
-	"pallet-tips/runtime-benchmarks",
-	"pallet-treasury/runtime-benchmarks",
-	"pallet-utility/runtime-benchmarks",
-	"pallet-vesting/runtime-benchmarks",
-	"pallet-offences-benchmarking",
-	"pallet-session-benchmarking",
-	"frame-system-benchmarking",
+	"noble-assets/runtime-benchmarks",
+	"noble-babe/runtime-benchmarks",
+	"noble-balances/runtime-benchmarks",
+	"noble-bounties/runtime-benchmarks",
+	"noble-collective/runtime-benchmarks",
+	"noble-contracts/runtime-benchmarks",
+	"noble-democracy/runtime-benchmarks",
+	"noble-elections-phragmen/runtime-benchmarks",
+	"noble-grandpa/runtime-benchmarks",
+	"noble-identity/runtime-benchmarks",
+	"noble-im-online/runtime-benchmarks",
+	"noble-indices/runtime-benchmarks",
+	"noble-lottery/runtime-benchmarks",
+	"noble-mmr/runtime-benchmarks",
+	"noble-multisig/runtime-benchmarks",
+	"noble-proxy/runtime-benchmarks",
+	"noble-scheduler/runtime-benchmarks",
+	"noble-society/runtime-benchmarks",
+	"noble-staking/runtime-benchmarks",
+	"noble-timestamp/runtime-benchmarks",
+	"noble-tips/runtime-benchmarks",
+	"noble-treasury/runtime-benchmarks",
+	"noble-utility/runtime-benchmarks",
+	"noble-vesting/runtime-benchmarks",
+	"noble-offences-benchmarking",
+	"noble-session-benchmarking",
+	"fabric-system-benchmarking",
 	"hex-literal",
 ]

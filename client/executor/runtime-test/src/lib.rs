@@ -280,7 +280,7 @@ tet_core::wasm_export_functions! {
 	}
 
 	fn allocates_huge_stack_array(trap: bool) -> Vec<u8> {
-		// Allocate a stack frame that is approx. 75% of the stack (assuming it is 1MB).
+		// Allocate a stack fabric that is approx. 75% of the stack (assuming it is 1MB).
 		// This will just decrease (stacks in wasm32-u-u grow downwards) the stack
 		// pointer. This won't trap on the current compilers.
 		let mut data = [0u8; 1024 * 768];

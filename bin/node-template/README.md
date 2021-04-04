@@ -1,6 +1,6 @@
 # Tetcore Node Template
 
-A new FRAME-based Tetcore node, ready for hacking :rocket:
+A new FABRIC-based Tetcore node, ready for hacking :rocket:
 
 ## Local Development
 
@@ -146,43 +146,43 @@ In Tetcore, the terms
 "[state transition function](https://tetcoin.org/docs/en/knowledgebase/getting-started/glossary#stf-state-transition-function)"
 are analogous - they refer to the core logic of the blockchain that is responsible for validating
 blocks and executing the state changes they define. The Tetcore project in this repository uses
-the [FRAME](https://tetcoin.org/docs/en/knowledgebase/runtime/frame) framework to construct a
-blockchain runtime. FRAME allows runtime developers to declare domain-specific logic in modules
-called "pallets". At the heart of FRAME is a helpful
+the [FABRIC](https://tetcoin.org/docs/en/knowledgebase/runtime/fabric) framework to construct a
+blockchain runtime. FABRIC allows runtime developers to declare domain-specific logic in modules
+called "nobles". At the heart of FABRIC is a helpful
 [macro language](https://tetcoin.org/docs/en/knowledgebase/runtime/macros) that makes it easy to
-create pallets and flexibly compose them to create blockchains that can address
+create nobles and flexibly compose them to create blockchains that can address
 [a variety of needs](https://www.tetcore.io/tetcore-users/).
 
-Review the [FRAME runtime implementation](./runtime/src/lib.rs) included in this template and note
+Review the [FABRIC runtime implementation](./runtime/src/lib.rs) included in this template and note
 the following:
 
--   This file configures several pallets to include in the runtime. Each pallet configuration is
-    defined by a code block that begins with `impl $PALLET_NAME::Config for Runtime`.
--   The pallets are composed into a single runtime by way of the
-    [`construct_runtime!`](https://crates.tetcoin.org/frame_support/macro.construct_runtime.html)
+-   This file configures several nobles to include in the runtime. Each noble configuration is
+    defined by a code block that begins with `impl $NOBLE_NAME::Config for Runtime`.
+-   The nobles are composed into a single runtime by way of the
+    [`construct_runtime!`](https://crates.tetcoin.org/fabric_support/macro.construct_runtime.html)
     macro, which is part of the core
-    [FRAME Support](https://tetcoin.org/docs/en/knowledgebase/runtime/frame#support-library)
+    [FABRIC Support](https://tetcoin.org/docs/en/knowledgebase/runtime/fabric#support-library)
     library.
 
-### Pallets
+### Nobles
 
-The runtime in this project is constructed using many FRAME pallets that ship with the
-[core Tetcore repository](https://github.com/tetcoin/tetcore/tree/master/frame) and a
-template pallet that is [defined in the `pallets`](./pallets/template/src/lib.rs) directory.
+The runtime in this project is constructed using many FABRIC nobles that ship with the
+[core Tetcore repository](https://github.com/tetcoin/tetcore/tree/master/fabric) and a
+template noble that is [defined in the `nobles`](./nobles/template/src/lib.rs) directory.
 
-A FRAME pallet is compromised of a number of blockchain primitives:
+A FABRIC noble is compromised of a number of blockchain primitives:
 
--   Storage: FRAME defines a rich set of powerful
+-   Storage: FABRIC defines a rich set of powerful
     [storage abstractions](https://tetcoin.org/docs/en/knowledgebase/runtime/storage) that makes
     it easy to use Tetcore's efficient key-value database to manage the evolving state of a
     blockchain.
--   Dispatchables: FRAME pallets define special types of functions that can be invoked (dispatched)
+-   Dispatchables: FABRIC nobles define special types of functions that can be invoked (dispatched)
     from outside of the runtime in order to update its state.
 -   Events: Tetcore uses [events](https://tetcoin.org/docs/en/knowledgebase/runtime/events) to
     notify users of important changes in the runtime.
 -   Errors: When a dispatchable fails, it returns an error.
 -   Config: The `Config` configuration interface is used to define the types and parameters upon
-    which a FRAME pallet depends.
+    which a FABRIC noble depends.
 
 ## Generate a Custom Node Template
 

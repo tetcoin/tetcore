@@ -208,8 +208,8 @@ impl fmt::Display for Values {
 
 impl ProfilingLayer {
 	/// Takes a `TracingReceiver` and a comma separated list of targets,
-	/// either with a level: "pallet=trace,frame=debug"
-	/// or without: "pallet,frame" in which case the level defaults to `trace`.
+	/// either with a level: "noble=trace,fabric=debug"
+	/// or without: "noble,fabric" in which case the level defaults to `trace`.
 	/// wasm_tracing indicates whether to enable wasm traces
 	pub fn new(receiver: TracingReceiver, targets: &str) -> Self {
 		match receiver {
@@ -223,8 +223,8 @@ impl ProfilingLayer {
 
 	/// Allows use of a custom TraceHandler to create a new instance of ProfilingSubscriber.
 	/// Takes a comma separated list of targets,
-	/// either with a level, eg: "pallet=trace"
-	/// or without: "pallet" in which case the level defaults to `trace`.
+	/// either with a level, eg: "noble=trace"
+	/// or without: "noble" in which case the level defaults to `trace`.
 	/// wasm_tracing indicates whether to enable wasm traces
 	pub fn new_with_handler(trace_handler: Box<dyn TraceHandler>, targets: &str) -> Self {
 		let targets: Vec<_> = targets.split(',').map(|s| parse_target(s)).collect();

@@ -1491,6 +1491,197 @@ dependencies = [
 ]
 
 [[package]]
+name = "fabric-benchmarking"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "linregress",
+ "paste 0.1.18",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-storage",
+ "tetsy-scale-codec",
+ "tp-api",
+ "tp-runtime",
+ "tp-runtime-interface",
+]
+
+[[package]]
+name = "fabric-benchmarking-cli"
+version = "2.0.1"
+dependencies = [
+ "Inflector",
+ "chrono",
+ "externalities",
+ "fabric-benchmarking",
+ "handlebars",
+ "serde",
+ "structopt",
+ "tc-cli",
+ "tc-client-db",
+ "tc-executor",
+ "tc-service",
+ "tet-core",
+ "tetsy-scale-codec",
+ "tp-keystore",
+ "tp-runtime",
+ "tp-state-machine",
+]
+
+[[package]]
+name = "fabric-executive"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "noble-balances",
+ "noble-indices",
+ "noble-transaction-payment",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-tracing",
+ "tetsy-scale-codec",
+ "tp-runtime",
+ "tp-version",
+]
+
+[[package]]
+name = "fabric-metadata"
+version = "12.0.0"
+dependencies = [
+ "serde",
+ "tet-core",
+ "tetcore-std",
+ "tetsy-scale-codec",
+]
+
+[[package]]
+name = "fabric-support"
+version = "2.0.0"
+dependencies = [
+ "arithmetic",
+ "bitflags",
+ "fabric-metadata",
+ "fabric-support-procedural",
+ "fabric-system",
+ "impl-trait-for-tuples 0.2.1",
+ "log",
+ "once_cell",
+ "paste 0.1.18",
+ "pretty_assertions",
+ "serde",
+ "smallvec 1.6.1",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-test-runtime-client",
+ "tetcore-tracing",
+ "tetsy-scale-codec",
+ "tetsy-util-mem",
+ "tp-api",
+ "tp-inherents",
+ "tp-runtime",
+ "tp-state-machine",
+]
+
+[[package]]
+name = "fabric-support-procedural"
+version = "2.0.1"
+dependencies = [
+ "Inflector",
+ "fabric-support-procedural-tools",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "fabric-support-procedural-tools"
+version = "2.0.1"
+dependencies = [
+ "fabric-support-procedural-tools-derive",
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "fabric-support-procedural-tools-derive"
+version = "2.0.1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "fabric-support-test"
+version = "2.0.1"
+dependencies = [
+ "fabric-metadata",
+ "fabric-support",
+ "fabric-system",
+ "pretty_assertions",
+ "rustversion",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-inherents",
+ "tp-runtime",
+ "tp-state-machine",
+ "trybuild",
+]
+
+[[package]]
+name = "fabric-system"
+version = "2.0.0"
+dependencies = [
+ "criterion",
+ "externalities",
+ "fabric-support",
+ "impl-trait-for-tuples 0.2.1",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-test-runtime-client",
+ "tetsy-scale-codec",
+ "tp-runtime",
+ "tp-version",
+]
+
+[[package]]
+name = "fabric-system-benchmarking"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "fabric-system-rpc-runtime-api"
+version = "2.0.0"
+dependencies = [
+ "tetsy-scale-codec",
+ "tp-api",
+]
+
+[[package]]
 name = "failure"
 version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1592,197 +1783,6 @@ checksum = "5fc25a87fa4fd2094bffb06925852034d90a17f0d1e05197d4956d3555752191"
 dependencies = [
  "matches",
  "percent-encoding 2.1.0",
-]
-
-[[package]]
-name = "frame-benchmarking"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "hex-literal",
- "linregress",
- "paste 0.1.18",
- "tet-io",
- "tetcore-std",
- "tetcore-storage",
- "tetsy-scale-codec",
- "tp-api",
- "tp-runtime",
- "tp-runtime-interface",
-]
-
-[[package]]
-name = "frame-benchmarking-cli"
-version = "2.0.1"
-dependencies = [
- "Inflector",
- "chrono",
- "externalities",
- "frame-benchmarking",
- "handlebars",
- "serde",
- "structopt",
- "tc-cli",
- "tc-client-db",
- "tc-executor",
- "tc-service",
- "tet-core",
- "tetsy-scale-codec",
- "tp-keystore",
- "tp-runtime",
- "tp-state-machine",
-]
-
-[[package]]
-name = "frame-executive"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "hex-literal",
- "pallet-balances",
- "pallet-indices",
- "pallet-transaction-payment",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-tracing",
- "tetsy-scale-codec",
- "tp-runtime",
- "tp-version",
-]
-
-[[package]]
-name = "frame-metadata"
-version = "12.0.1"
-dependencies = [
- "serde",
- "tet-core",
- "tetcore-std",
- "tetsy-scale-codec",
-]
-
-[[package]]
-name = "frame-support"
-version = "2.0.1"
-dependencies = [
- "arithmetic",
- "bitflags",
- "frame-metadata",
- "frame-support-procedural",
- "frame-system",
- "impl-trait-for-tuples 0.2.1",
- "log",
- "once_cell",
- "paste 0.1.18",
- "pretty_assertions",
- "serde",
- "smallvec 1.6.1",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-test-runtime-client",
- "tetcore-tracing",
- "tetsy-scale-codec",
- "tetsy-util-mem",
- "tp-api",
- "tp-inherents",
- "tp-runtime",
- "tp-state-machine",
-]
-
-[[package]]
-name = "frame-support-procedural"
-version = "2.0.1"
-dependencies = [
- "Inflector",
- "frame-support-procedural-tools",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "frame-support-procedural-tools"
-version = "2.0.1"
-dependencies = [
- "frame-support-procedural-tools-derive",
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "frame-support-procedural-tools-derive"
-version = "2.0.1"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "frame-support-test"
-version = "2.0.1"
-dependencies = [
- "frame-metadata",
- "frame-support",
- "frame-system",
- "pretty_assertions",
- "rustversion",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-inherents",
- "tp-runtime",
- "tp-state-machine",
- "trybuild",
-]
-
-[[package]]
-name = "frame-system"
-version = "2.0.1"
-dependencies = [
- "criterion",
- "externalities",
- "frame-support",
- "impl-trait-for-tuples 0.2.1",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-test-runtime-client",
- "tetsy-scale-codec",
- "tp-runtime",
- "tp-version",
-]
-
-[[package]]
-name = "frame-system-benchmarking"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "frame-system-rpc-runtime-api"
-version = "2.0.1"
-dependencies = [
- "tetsy-scale-codec",
- "tp-api",
 ]
 
 [[package]]
@@ -2613,9 +2613,9 @@ dependencies = [
 
 [[package]]
 name = "js-sys"
-version = "0.3.46"
+version = "0.3.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf3d7383929f7c9c7c2d0fa596f325832df98c3704f2c60553080f7127a58175"
+checksum = "2d99f9e3e84b8f67f846ef5b4cbbc3b1c29f6c759fcbce6f01aa0e73d932a24c"
 dependencies = [
  "wasm-bindgen",
 ]
@@ -3107,6 +3107,945 @@ dependencies = [
 ]
 
 [[package]]
+name = "noble-assets"
+version = "2.0.1"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-atomic-swap"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-aura"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "lazy_static",
+ "noble-session",
+ "noble-timestamp",
+ "parking_lot 0.11.1",
+ "serde",
+ "tet-application-crypto",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-consensus-aura",
+ "tp-inherents",
+ "tp-runtime",
+ "tp-timestamp",
+]
+
+[[package]]
+name = "noble-authority-discovery"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "noble-session",
+ "serde",
+ "tet-application-crypto",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-authority-discovery",
+ "tp-runtime",
+ "tp-staking",
+]
+
+[[package]]
+name = "noble-authorship"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "impl-trait-for-tuples 0.2.1",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-authorship",
+ "tp-inherents",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-babe"
+version = "2.0.1"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-authorship",
+ "noble-balances",
+ "noble-offences",
+ "noble-session",
+ "noble-staking",
+ "noble-staking-reward-curve",
+ "noble-timestamp",
+ "serde",
+ "tet-application-crypto",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-consensus-babe",
+ "tp-consensus-vrf",
+ "tp-inherents",
+ "tp-runtime",
+ "tp-session",
+ "tp-staking",
+ "tp-timestamp",
+]
+
+[[package]]
+name = "noble-balances"
+version = "2.0.1"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-transaction-payment",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-bounties"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "noble-treasury",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-storage",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-collective"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-contracts"
+version = "2.0.0"
+dependencies = [
+ "assert_matches",
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "noble-balances",
+ "noble-contracts-primitives",
+ "noble-contracts-proc-macro",
+ "noble-randomness-collective-flip",
+ "noble-timestamp",
+ "paste 1.0.5",
+ "pretty_assertions",
+ "rand 0.7.3",
+ "rand_pcg",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tetsy-wasm 0.41.0",
+ "tp-runtime",
+ "tp-sandbox",
+ "twasm-utils",
+ "twasmi-validation",
+ "wat",
+]
+
+[[package]]
+name = "noble-contracts-primitives"
+version = "2.0.0"
+dependencies = [
+ "bitflags",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-contracts-proc-macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "noble-contracts-rpc"
+version = "0.8.0"
+dependencies = [
+ "noble-contracts-primitives",
+ "noble-contracts-rpc-runtime-api",
+ "serde",
+ "serde_json",
+ "tet-core",
+ "tetsy-jsonrpc-core",
+ "tetsy-jsonrpc-core-client",
+ "tetsy-jsonrpc-derive",
+ "tetsy-scale-codec",
+ "tp-api",
+ "tp-blockchain",
+ "tp-rpc",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-contracts-rpc-runtime-api"
+version = "0.8.0"
+dependencies = [
+ "noble-contracts-primitives",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-api",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-democracy"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "noble-balances",
+ "noble-scheduler",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-storage",
+ "tetcore-test-utils",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-elections"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-elections-phragmen"
+version = "3.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-test-utils",
+ "tetsy-scale-codec",
+ "tp-npos-elections",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-example"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-example-offchain-worker"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "lite-json",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-keystore",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-example-parallel"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+ "tp-tasks",
+]
+
+[[package]]
+name = "noble-grandpa"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-authorship",
+ "noble-balances",
+ "noble-offences",
+ "noble-session",
+ "noble-staking",
+ "noble-staking-reward-curve",
+ "noble-timestamp",
+ "serde",
+ "tet-application-crypto",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-finality-grandpa",
+ "tetsy-scale-codec",
+ "tp-finality-grandpa",
+ "tp-keyring",
+ "tp-runtime",
+ "tp-session",
+ "tp-staking",
+]
+
+[[package]]
+name = "noble-identity"
+version = "2.0.0"
+dependencies = [
+ "enumflags2",
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-im-online"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-authorship",
+ "noble-session",
+ "serde",
+ "tet-application-crypto",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+ "tp-staking",
+]
+
+[[package]]
+name = "noble-indices"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-keyring",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-lottery"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-membership"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-mmr"
+version = "2.0.0"
+dependencies = [
+ "ckb-merkle-mountain-range",
+ "env_logger 0.5.13",
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "noble-mmr-primitives",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-mmr-primitives"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "serde",
+ "tet-core",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-api",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-multisig"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-nicks"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-node-authorization"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-offences"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+ "tp-staking",
+]
+
+[[package]]
+name = "noble-offences-benchmarking"
+version = "2.0.1"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-babe",
+ "noble-balances",
+ "noble-grandpa",
+ "noble-im-online",
+ "noble-offences",
+ "noble-session",
+ "noble-staking",
+ "noble-staking-reward-curve",
+ "noble-timestamp",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+ "tp-staking",
+]
+
+[[package]]
+name = "noble-proxy"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "noble-utility",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-randomness-collective-flip"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "safe-mix",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-recovery"
+version = "2.0.0"
+dependencies = [
+ "enumflags2",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-scheduler"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-test-utils",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-scored-pool"
+version = "2.0.1"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-session"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "impl-trait-for-tuples 0.1.3",
+ "lazy_static",
+ "noble-timestamp",
+ "serde",
+ "tet-application-crypto",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+ "tp-session",
+ "tp-staking",
+ "tp-trie",
+]
+
+[[package]]
+name = "noble-session-benchmarking"
+version = "2.0.1"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "noble-session",
+ "noble-staking",
+ "noble-staking-reward-curve",
+ "noble-timestamp",
+ "rand 0.7.3",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+ "tp-session",
+]
+
+[[package]]
+name = "noble-society"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "rand_chacha 0.2.2",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-staking"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "hex",
+ "noble-authorship",
+ "noble-balances",
+ "noble-session",
+ "noble-staking-reward-curve",
+ "noble-timestamp",
+ "parking_lot 0.11.1",
+ "rand_chacha 0.2.2",
+ "serde",
+ "static_assertions",
+ "tet-application-crypto",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-storage",
+ "tetcore-test-utils",
+ "tetcore-tracing",
+ "tetsy-scale-codec",
+ "tp-npos-elections",
+ "tp-runtime",
+ "tp-staking",
+]
+
+[[package]]
+name = "noble-staking-fuzz"
+version = "0.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "honggfuzz",
+ "noble-balances",
+ "noble-indices",
+ "noble-session",
+ "noble-staking",
+ "noble-staking-reward-curve",
+ "noble-timestamp",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-npos-elections",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-staking-reward-curve"
+version = "2.0.0"
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-sudo"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-template"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-timestamp"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "impl-trait-for-tuples 0.2.1",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-inherents",
+ "tp-runtime",
+ "tp-timestamp",
+]
+
+[[package]]
+name = "noble-tips"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "noble-treasury",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-storage",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-transaction-payment"
+version = "2.0.0"
+dependencies = [
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "serde_json",
+ "smallvec 1.6.1",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-storage",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-transaction-payment-rpc"
+version = "2.0.0"
+dependencies = [
+ "noble-transaction-payment-rpc-runtime-api",
+ "tet-core",
+ "tetsy-jsonrpc-core",
+ "tetsy-jsonrpc-core-client",
+ "tetsy-jsonrpc-derive",
+ "tetsy-scale-codec",
+ "tp-api",
+ "tp-blockchain",
+ "tp-rpc",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-transaction-payment-rpc-runtime-api"
+version = "2.0.0"
+dependencies = [
+ "noble-transaction-payment",
+ "tetsy-scale-codec",
+ "tp-api",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-treasury"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "impl-trait-for-tuples 0.2.1",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-storage",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-utility"
+version = "2.0.0"
+dependencies = [
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
+name = "noble-vesting"
+version = "2.0.0"
+dependencies = [
+ "enumflags2",
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "hex-literal",
+ "noble-balances",
+ "serde",
+ "tet-core",
+ "tet-io",
+ "tetcore-std",
+ "tetcore-storage",
+ "tetsy-scale-codec",
+ "tp-runtime",
+]
+
+[[package]]
 name = "node-bench"
 version = "0.8.0"
 dependencies = [
@@ -3167,27 +4106,27 @@ version = "2.0.0"
 dependencies = [
  "assert_cmd",
  "build-script-utils",
- "frame-benchmarking-cli",
- "frame-support",
- "frame-system",
+ "fabric-benchmarking-cli",
+ "fabric-support",
+ "fabric-system",
  "futures 0.3.13",
  "hex-literal",
  "log",
  "nix",
+ "noble-authority-discovery",
+ "noble-balances",
+ "noble-contracts",
+ "noble-grandpa",
+ "noble-im-online",
+ "noble-indices",
+ "noble-staking",
+ "noble-timestamp",
+ "noble-transaction-payment",
  "node-executor",
  "node-inspect",
  "node-primitives",
  "node-rpc",
  "node-runtime",
- "pallet-authority-discovery",
- "pallet-balances",
- "pallet-contracts",
- "pallet-grandpa",
- "pallet-im-online",
- "pallet-indices",
- "pallet-staking",
- "pallet-timestamp",
- "pallet-transaction-payment",
  "parking_lot 0.11.1",
  "platforms",
  "rand 0.7.3",
@@ -3220,7 +4159,7 @@ dependencies = [
  "tet-core",
  "tet-io",
  "tetcore-browser-utils",
- "tetcore-frame-cli",
+ "tetcore-fabric-cli",
  "tetsy-scale-codec",
  "tp-authority-discovery",
  "tp-consensus",
@@ -3243,21 +4182,21 @@ version = "2.0.0"
 dependencies = [
  "criterion",
  "externalities",
- "frame-benchmarking",
- "frame-support",
- "frame-system",
+ "fabric-benchmarking",
+ "fabric-support",
+ "fabric-system",
+ "noble-balances",
+ "noble-contracts",
+ "noble-grandpa",
+ "noble-im-online",
+ "noble-indices",
+ "noble-session",
+ "noble-timestamp",
+ "noble-transaction-payment",
+ "noble-treasury",
  "node-primitives",
  "node-runtime",
  "node-testing",
- "pallet-balances",
- "pallet-contracts",
- "pallet-grandpa",
- "pallet-im-online",
- "pallet-indices",
- "pallet-session",
- "pallet-timestamp",
- "pallet-transaction-payment",
- "pallet-treasury",
  "tc-executor",
  "tet-application-crypto",
  "tet-core",
@@ -3292,7 +4231,7 @@ dependencies = [
 name = "node-primitives"
 version = "2.0.0"
 dependencies = [
- "frame-system",
+ "fabric-system",
  "pretty_assertions",
  "serializer",
  "tet-application-crypto",
@@ -3305,10 +4244,10 @@ dependencies = [
 name = "node-rpc"
 version = "2.0.0"
 dependencies = [
+ "noble-contracts-rpc",
+ "noble-transaction-payment-rpc",
  "node-primitives",
  "node-runtime",
- "pallet-contracts-rpc",
- "pallet-transaction-payment-rpc",
  "tc-chain-spec",
  "tc-client-api",
  "tc-consensus-babe",
@@ -3320,7 +4259,7 @@ dependencies = [
  "tc-rpc",
  "tc-rpc-api",
  "tc-sync-state-rpc",
- "tetcore-frame-rpc-system",
+ "tetcore-fabric-rpc-system",
  "tetsy-jsonrpc-core",
  "tp-api",
  "tp-block-builder",
@@ -3349,53 +4288,53 @@ dependencies = [
 name = "node-runtime"
 version = "2.0.1"
 dependencies = [
- "frame-benchmarking",
- "frame-executive",
- "frame-support",
- "frame-system",
- "frame-system-benchmarking",
- "frame-system-rpc-runtime-api",
+ "fabric-benchmarking",
+ "fabric-executive",
+ "fabric-support",
+ "fabric-system",
+ "fabric-system-benchmarking",
+ "fabric-system-rpc-runtime-api",
  "hex-literal",
+ "noble-assets",
+ "noble-authority-discovery",
+ "noble-authorship",
+ "noble-babe",
+ "noble-balances",
+ "noble-bounties",
+ "noble-collective",
+ "noble-contracts",
+ "noble-contracts-primitives",
+ "noble-contracts-rpc-runtime-api",
+ "noble-democracy",
+ "noble-elections-phragmen",
+ "noble-grandpa",
+ "noble-identity",
+ "noble-im-online",
+ "noble-indices",
+ "noble-lottery",
+ "noble-membership",
+ "noble-mmr",
+ "noble-multisig",
+ "noble-offences",
+ "noble-offences-benchmarking",
+ "noble-proxy",
+ "noble-randomness-collective-flip",
+ "noble-recovery",
+ "noble-scheduler",
+ "noble-session",
+ "noble-session-benchmarking",
+ "noble-society",
+ "noble-staking",
+ "noble-staking-reward-curve",
+ "noble-sudo",
+ "noble-timestamp",
+ "noble-tips",
+ "noble-transaction-payment",
+ "noble-transaction-payment-rpc-runtime-api",
+ "noble-treasury",
+ "noble-utility",
+ "noble-vesting",
  "node-primitives",
- "pallet-assets",
- "pallet-authority-discovery",
- "pallet-authorship",
- "pallet-babe",
- "pallet-balances",
- "pallet-bounties",
- "pallet-collective",
- "pallet-contracts",
- "pallet-contracts-primitives",
- "pallet-contracts-rpc-runtime-api",
- "pallet-democracy",
- "pallet-elections-phragmen",
- "pallet-grandpa",
- "pallet-identity",
- "pallet-im-online",
- "pallet-indices",
- "pallet-lottery",
- "pallet-membership",
- "pallet-mmr",
- "pallet-multisig",
- "pallet-offences",
- "pallet-offences-benchmarking",
- "pallet-proxy",
- "pallet-randomness-collective-flip",
- "pallet-recovery",
- "pallet-scheduler",
- "pallet-session",
- "pallet-session-benchmarking",
- "pallet-society",
- "pallet-staking",
- "pallet-staking-reward-curve",
- "pallet-sudo",
- "pallet-timestamp",
- "pallet-tips",
- "pallet-transaction-payment",
- "pallet-transaction-payment-rpc-runtime-api",
- "pallet-treasury",
- "pallet-utility",
- "pallet-vesting",
  "serde",
  "static_assertions",
  "tet-core",
@@ -3422,10 +4361,10 @@ name = "node-template"
 version = "2.0.0"
 dependencies = [
  "build-script-utils",
- "frame-benchmarking",
- "frame-benchmarking-cli",
+ "fabric-benchmarking",
+ "fabric-benchmarking-cli",
+ "noble-transaction-payment-rpc",
  "node-template-runtime",
- "pallet-transaction-payment-rpc",
  "structopt",
  "tc-basic-authorship",
  "tc-cli",
@@ -3441,7 +4380,7 @@ dependencies = [
  "tc-telemetry",
  "tc-transaction-pool",
  "tet-core",
- "tetcore-frame-rpc-system",
+ "tetcore-fabric-rpc-system",
  "tetsy-jsonrpc-core",
  "tp-api",
  "tp-block-builder",
@@ -3458,22 +4397,22 @@ dependencies = [
 name = "node-template-runtime"
 version = "2.0.0"
 dependencies = [
- "frame-benchmarking",
- "frame-executive",
- "frame-support",
- "frame-system",
- "frame-system-benchmarking",
- "frame-system-rpc-runtime-api",
+ "fabric-benchmarking",
+ "fabric-executive",
+ "fabric-support",
+ "fabric-system",
+ "fabric-system-benchmarking",
+ "fabric-system-rpc-runtime-api",
  "hex-literal",
- "pallet-aura",
- "pallet-balances",
- "pallet-grandpa",
- "pallet-randomness-collective-flip",
- "pallet-sudo",
- "pallet-template",
- "pallet-timestamp",
- "pallet-transaction-payment",
- "pallet-transaction-payment-rpc-runtime-api",
+ "noble-aura",
+ "noble-balances",
+ "noble-grandpa",
+ "noble-randomness-collective-flip",
+ "noble-sudo",
+ "noble-template",
+ "noble-timestamp",
+ "noble-transaction-payment",
+ "noble-transaction-payment-rpc-runtime-api",
  "serde",
  "tet-core",
  "tetcore-std",
@@ -3495,24 +4434,24 @@ name = "node-testing"
 version = "2.0.0"
 dependencies = [
  "criterion",
- "frame-support",
- "frame-system",
+ "fabric-support",
+ "fabric-system",
  "fs_extra",
  "futures 0.3.13",
  "log",
+ "noble-balances",
+ "noble-contracts",
+ "noble-grandpa",
+ "noble-indices",
+ "noble-session",
+ "noble-society",
+ "noble-staking",
+ "noble-timestamp",
+ "noble-transaction-payment",
+ "noble-treasury",
  "node-executor",
  "node-primitives",
  "node-runtime",
- "pallet-balances",
- "pallet-contracts",
- "pallet-grandpa",
- "pallet-indices",
- "pallet-session",
- "pallet-society",
- "pallet-staking",
- "pallet-timestamp",
- "pallet-transaction-payment",
- "pallet-treasury",
  "tc-block-builder",
  "tc-cli",
  "tc-client-api",
@@ -3697,945 +4636,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ff55baddef9e4ad00f88b6c743a2a8062d4c6ade126c2a528644b8e444d52ce"
 dependencies = [
  "stable_deref_trait",
-]
-
-[[package]]
-name = "pallet-assets"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-atomic-swap"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-aura"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "lazy_static",
- "pallet-session",
- "pallet-timestamp",
- "parking_lot 0.11.1",
- "serde",
- "tet-application-crypto",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-consensus-aura",
- "tp-inherents",
- "tp-runtime",
- "tp-timestamp",
-]
-
-[[package]]
-name = "pallet-authority-discovery"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "pallet-session",
- "serde",
- "tet-application-crypto",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-authority-discovery",
- "tp-runtime",
- "tp-staking",
-]
-
-[[package]]
-name = "pallet-authorship"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "impl-trait-for-tuples 0.2.1",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-authorship",
- "tp-inherents",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-babe"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-authorship",
- "pallet-balances",
- "pallet-offences",
- "pallet-session",
- "pallet-staking",
- "pallet-staking-reward-curve",
- "pallet-timestamp",
- "serde",
- "tet-application-crypto",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-consensus-babe",
- "tp-consensus-vrf",
- "tp-inherents",
- "tp-runtime",
- "tp-session",
- "tp-staking",
- "tp-timestamp",
-]
-
-[[package]]
-name = "pallet-balances"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-transaction-payment",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-bounties"
-version = "2.0.0"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "pallet-treasury",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-storage",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-collective"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "hex-literal",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-contracts"
-version = "2.0.1"
-dependencies = [
- "assert_matches",
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "hex-literal",
- "pallet-balances",
- "pallet-contracts-primitives",
- "pallet-contracts-proc-macro",
- "pallet-randomness-collective-flip",
- "pallet-timestamp",
- "paste 1.0.5",
- "pretty_assertions",
- "rand 0.7.3",
- "rand_pcg",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tetsy-wasm 0.41.0",
- "tp-runtime",
- "tp-sandbox",
- "twasm-utils",
- "twasmi-validation",
- "wat",
-]
-
-[[package]]
-name = "pallet-contracts-primitives"
-version = "2.0.1"
-dependencies = [
- "bitflags",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-contracts-proc-macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "pallet-contracts-rpc"
-version = "0.8.1"
-dependencies = [
- "pallet-contracts-primitives",
- "pallet-contracts-rpc-runtime-api",
- "serde",
- "serde_json",
- "tet-core",
- "tetsy-jsonrpc-core",
- "tetsy-jsonrpc-core-client",
- "tetsy-jsonrpc-derive",
- "tetsy-scale-codec",
- "tp-api",
- "tp-blockchain",
- "tp-rpc",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-contracts-rpc-runtime-api"
-version = "0.8.1"
-dependencies = [
- "pallet-contracts-primitives",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-api",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-democracy"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "hex-literal",
- "pallet-balances",
- "pallet-scheduler",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-storage",
- "tetcore-test-utils",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-elections"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "hex-literal",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-elections-phragmen"
-version = "3.0.0"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "hex-literal",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-test-utils",
- "tetsy-scale-codec",
- "tp-npos-elections",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-example"
-version = "2.0.0"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-example-offchain-worker"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "lite-json",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-keystore",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-example-parallel"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
- "tp-tasks",
-]
-
-[[package]]
-name = "pallet-grandpa"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-authorship",
- "pallet-balances",
- "pallet-offences",
- "pallet-session",
- "pallet-staking",
- "pallet-staking-reward-curve",
- "pallet-timestamp",
- "serde",
- "tet-application-crypto",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-finality-grandpa",
- "tetsy-scale-codec",
- "tp-finality-grandpa",
- "tp-keyring",
- "tp-runtime",
- "tp-session",
- "tp-staking",
-]
-
-[[package]]
-name = "pallet-identity"
-version = "2.0.1"
-dependencies = [
- "enumflags2",
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-im-online"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-authorship",
- "pallet-session",
- "serde",
- "tet-application-crypto",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
- "tp-staking",
-]
-
-[[package]]
-name = "pallet-indices"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-keyring",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-lottery"
-version = "2.0.0"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-membership"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-mmr"
-version = "2.0.1"
-dependencies = [
- "ckb-merkle-mountain-range",
- "env_logger 0.5.13",
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "hex-literal",
- "pallet-mmr-primitives",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-mmr-primitives"
-version = "2.0.0"
-dependencies = [
- "frame-support",
- "frame-system",
- "hex-literal",
- "serde",
- "tet-core",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-api",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-multisig"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-nicks"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-node-authorization"
-version = "2.0.0"
-dependencies = [
- "frame-support",
- "frame-system",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-offences"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
- "tp-staking",
-]
-
-[[package]]
-name = "pallet-offences-benchmarking"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-babe",
- "pallet-balances",
- "pallet-grandpa",
- "pallet-im-online",
- "pallet-offences",
- "pallet-session",
- "pallet-staking",
- "pallet-staking-reward-curve",
- "pallet-timestamp",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
- "tp-staking",
-]
-
-[[package]]
-name = "pallet-proxy"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "pallet-utility",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-randomness-collective-flip"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "safe-mix",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-recovery"
-version = "2.0.1"
-dependencies = [
- "enumflags2",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-scheduler"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-test-utils",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-scored-pool"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-session"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "impl-trait-for-tuples 0.1.3",
- "lazy_static",
- "pallet-timestamp",
- "serde",
- "tet-application-crypto",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
- "tp-session",
- "tp-staking",
- "tp-trie",
-]
-
-[[package]]
-name = "pallet-session-benchmarking"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "pallet-session",
- "pallet-staking",
- "pallet-staking-reward-curve",
- "pallet-timestamp",
- "rand 0.7.3",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
- "tp-session",
-]
-
-[[package]]
-name = "pallet-society"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "pallet-balances",
- "rand_chacha 0.2.2",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-staking"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "hex",
- "pallet-authorship",
- "pallet-balances",
- "pallet-session",
- "pallet-staking-reward-curve",
- "pallet-timestamp",
- "parking_lot 0.11.1",
- "rand_chacha 0.2.2",
- "serde",
- "static_assertions",
- "tet-application-crypto",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-storage",
- "tetcore-test-utils",
- "tetcore-tracing",
- "tetsy-scale-codec",
- "tp-npos-elections",
- "tp-runtime",
- "tp-staking",
-]
-
-[[package]]
-name = "pallet-staking-fuzz"
-version = "0.0.0"
-dependencies = [
- "frame-support",
- "frame-system",
- "honggfuzz",
- "pallet-balances",
- "pallet-indices",
- "pallet-session",
- "pallet-staking",
- "pallet-staking-reward-curve",
- "pallet-timestamp",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-npos-elections",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-staking-reward-curve"
-version = "2.0.1"
-dependencies = [
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-sudo"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-template"
-version = "2.0.0"
-dependencies = [
- "frame-support",
- "frame-system",
- "serde",
- "tet-core",
- "tet-io",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-timestamp"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "impl-trait-for-tuples 0.2.1",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-inherents",
- "tp-runtime",
- "tp-timestamp",
-]
-
-[[package]]
-name = "pallet-tips"
-version = "2.0.0"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "pallet-treasury",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-storage",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-transaction-payment"
-version = "2.0.1"
-dependencies = [
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "serde_json",
- "smallvec 1.6.1",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-storage",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-transaction-payment-rpc"
-version = "2.0.1"
-dependencies = [
- "pallet-transaction-payment-rpc-runtime-api",
- "tet-core",
- "tetsy-jsonrpc-core",
- "tetsy-jsonrpc-core-client",
- "tetsy-jsonrpc-derive",
- "tetsy-scale-codec",
- "tp-api",
- "tp-blockchain",
- "tp-rpc",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-transaction-payment-rpc-runtime-api"
-version = "2.0.1"
-dependencies = [
- "pallet-transaction-payment",
- "tetsy-scale-codec",
- "tp-api",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-treasury"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "impl-trait-for-tuples 0.2.1",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-storage",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-utility"
-version = "2.0.1"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetsy-scale-codec",
- "tp-runtime",
-]
-
-[[package]]
-name = "pallet-vesting"
-version = "2.0.1"
-dependencies = [
- "enumflags2",
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "hex-literal",
- "pallet-balances",
- "serde",
- "tet-core",
- "tet-io",
- "tetcore-std",
- "tetcore-storage",
- "tetsy-scale-codec",
- "tp-runtime",
 ]
 
 [[package]]
@@ -6253,7 +6253,7 @@ checksum = "ab0e7238dcc7b40a7be719a25365910f6807bd864f4cce6b2e6b873658e2b19d"
 
 [[package]]
 name = "tc-authority-discovery"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -6284,7 +6284,7 @@ dependencies = [
 
 [[package]]
 name = "tc-basic-authorship"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "futures 0.3.13",
  "futures-timer 3.0.2",
@@ -6309,7 +6309,7 @@ dependencies = [
 
 [[package]]
 name = "tc-block-builder"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "tc-client-api",
  "tet-core",
@@ -6327,7 +6327,7 @@ dependencies = [
 
 [[package]]
 name = "tc-chain-spec"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "impl-trait-for-tuples 0.2.1",
  "serde",
@@ -6347,7 +6347,7 @@ dependencies = [
 
 [[package]]
 name = "tc-chain-spec-derive"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -6357,7 +6357,7 @@ dependencies = [
 
 [[package]]
 name = "tc-cli"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "chrono",
  "fdlimit",
@@ -6395,7 +6395,7 @@ dependencies = [
 
 [[package]]
 name = "tc-client-api"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "derive_more",
  "externalities",
@@ -6432,7 +6432,7 @@ dependencies = [
 
 [[package]]
 name = "tc-client-db"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "arithmetic",
  "blake2-rfc",
@@ -6466,7 +6466,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "tc-client-api",
  "tp-blockchain",
@@ -6476,7 +6476,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-aura"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "derive_more",
  "futures 0.3.13",
@@ -6517,7 +6517,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-babe"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "derive_more",
  "forktree",
@@ -6572,7 +6572,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-babe-rpc"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "derive_more",
  "futures 0.3.13",
@@ -6601,7 +6601,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-epochs"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "forktree",
  "parking_lot 0.11.1",
@@ -6674,7 +6674,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-slots"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "arithmetic",
  "futures 0.3.13",
@@ -6700,7 +6700,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-uncles"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "log",
  "tc-client-api",
@@ -6753,7 +6753,7 @@ dependencies = [
 
 [[package]]
 name = "tc-executor-common"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "derive_more",
  "serializer",
@@ -6768,7 +6768,7 @@ dependencies = [
 
 [[package]]
 name = "tc-executor-twasmi"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "log",
  "tc-executor-common",
@@ -6782,7 +6782,7 @@ dependencies = [
 
 [[package]]
 name = "tc-executor-wasmtime"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "assert_matches",
  "log",
@@ -6800,7 +6800,7 @@ dependencies = [
 
 [[package]]
 name = "tc-finality-grandpa"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "arithmetic",
  "assert_matches",
@@ -6846,7 +6846,7 @@ dependencies = [
 
 [[package]]
 name = "tc-finality-grandpa-rpc"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "derive_more",
  "futures 0.3.13",
@@ -6895,7 +6895,7 @@ dependencies = [
 
 [[package]]
 name = "tc-informant"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "ansi_term 0.12.1",
  "futures 0.3.13",
@@ -6912,7 +6912,7 @@ dependencies = [
 
 [[package]]
 name = "tc-keystore"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -6932,7 +6932,7 @@ dependencies = [
 
 [[package]]
 name = "tc-light"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "externalities",
  "lazy_static",
@@ -6950,7 +6950,7 @@ dependencies = [
 
 [[package]]
 name = "tc-network"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "arithmetic",
  "assert_matches",
@@ -7009,7 +7009,7 @@ dependencies = [
 
 [[package]]
 name = "tc-network-gossip"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "async-std",
  "futures 0.3.13",
@@ -7055,7 +7055,7 @@ dependencies = [
 
 [[package]]
 name = "tc-offchain"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "bytes 0.5.6",
  "fnv",
@@ -7090,7 +7090,7 @@ dependencies = [
 
 [[package]]
 name = "tc-peerset"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "futures 0.3.13",
  "log",
@@ -7103,7 +7103,7 @@ dependencies = [
 
 [[package]]
 name = "tc-proposer-metrics"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "log",
  "prometheus-endpoint",
@@ -7111,7 +7111,7 @@ dependencies = [
 
 [[package]]
 name = "tc-rpc"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "assert_matches",
  "futures 0.1.31",
@@ -7152,7 +7152,7 @@ dependencies = [
 
 [[package]]
 name = "tc-rpc-api"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "derive_more",
  "futures 0.3.13",
@@ -7175,7 +7175,7 @@ dependencies = [
 
 [[package]]
 name = "tc-rpc-server"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "futures 0.1.31",
  "log",
@@ -7206,7 +7206,7 @@ dependencies = [
 
 [[package]]
 name = "tc-service"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "async-std",
  "directories 3.0.1",
@@ -7311,7 +7311,7 @@ dependencies = [
 
 [[package]]
 name = "tc-state-db"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "log",
  "parking_lot 0.11.1",
@@ -7344,7 +7344,7 @@ dependencies = [
 
 [[package]]
 name = "tc-telemetry"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "chrono",
  "futures 0.3.13",
@@ -7365,7 +7365,7 @@ dependencies = [
 
 [[package]]
 name = "tc-tracing"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "ansi_term 0.12.1",
  "atty",
@@ -7402,7 +7402,7 @@ dependencies = [
 
 [[package]]
 name = "tc-transaction-graph"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "assert_matches",
  "criterion",
@@ -7427,7 +7427,7 @@ dependencies = [
 
 [[package]]
 name = "tc-transaction-pool"
-version = "2.0.1"
+version = "2.0.0"
 dependencies = [
  "assert_matches",
  "futures 0.3.13",
@@ -7623,10 +7623,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "tetcore-frame-cli"
+name = "tetcore-fabric-cli"
 version = "2.0.1"
 dependencies = [
- "frame-system",
+ "fabric-system",
  "structopt",
  "tc-cli",
  "tet-core",
@@ -7634,11 +7634,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "tetcore-frame-rpc-support"
+name = "tetcore-fabric-rpc-support"
 version = "2.0.1"
 dependencies = [
- "frame-support",
- "frame-system",
+ "fabric-support",
+ "fabric-system",
  "futures 0.3.13",
  "serde",
  "tc-rpc-api",
@@ -7650,10 +7650,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "tetcore-frame-rpc-system"
+name = "tetcore-fabric-rpc-system"
 version = "2.0.1"
 dependencies = [
- "frame-system-rpc-runtime-api",
+ "fabric-system-rpc-runtime-api",
  "futures 0.3.13",
  "log",
  "serde",
@@ -7722,13 +7722,13 @@ version = "2.0.0"
 dependencies = [
  "cfg-if 0.1.10",
  "externalities",
- "frame-executive",
- "frame-support",
- "frame-system",
- "frame-system-rpc-runtime-api",
+ "fabric-executive",
+ "fabric-support",
+ "fabric-system",
+ "fabric-system-rpc-runtime-api",
  "log",
- "pallet-babe",
- "pallet-timestamp",
+ "noble-babe",
+ "noble-timestamp",
  "serde",
  "tc-block-builder",
  "tc-executor",
@@ -10124,9 +10124,9 @@ checksum = "1a143597ca7c7793eff794def352d41792a93c481eb1042423ff7ff72ba2c31f"
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.69"
+version = "0.2.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3cd364751395ca0f68cafb17666eee36b63077fb5ecd972bbcd74c90c4bf736e"
+checksum = "83240549659d187488f91f33c0f8547cbfef0b2088bc470c116d1d260ef623d9"
 dependencies = [
  "cfg-if 1.0.0",
  "serde",
@@ -10136,9 +10136,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-backend"
-version = "0.2.69"
+version = "0.2.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1114f89ab1f4106e5b55e688b828c0ab0ea593a1ea7c094b141b14cbaaec2d62"
+checksum = "ae70622411ca953215ca6d06d3ebeb1e915f0f6613e3b495122878d7ebec7dae"
 dependencies = [
  "bumpalo",
  "lazy_static",
@@ -10151,9 +10151,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-futures"
-version = "0.4.19"
+version = "0.4.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1fe9756085a84584ee9457a002b7cdfe0bfff169f45d2591d8be1345a6780e35"
+checksum = "81b8b767af23de6ac18bf2168b690bed2902743ddf0fb39252e36f9e2bfc63ea"
 dependencies = [
  "cfg-if 1.0.0",
  "js-sys",
@@ -10163,9 +10163,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.69"
+version = "0.2.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a6ac8995ead1f084a8dea1e65f194d0973800c7f571f6edd70adf06ecf77084"
+checksum = "3e734d91443f177bfdb41969de821e15c516931c3c3db3d318fa1b68975d0f6f"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -10173,9 +10173,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.69"
+version = "0.2.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5a48c72f299d80557c7c62e37e7225369ecc0c963964059509fbafe917c7549"
+checksum = "d53739ff08c8a68b0fdbcd54c372b8ab800b1449ab3c9d706503bc7dd1621b2c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -10186,15 +10186,15 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.69"
+version = "0.2.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e7811dd7f9398f14cc76efd356f98f03aa30419dea46aa810d71e819fc97158"
+checksum = "d9a543ae66aa233d14bb765ed9af4a33e81b8b58d1584cf1b47ff8cd0b9e4489"
 
 [[package]]
 name = "wasm-bindgen-test"
-version = "0.3.19"
+version = "0.3.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0355fa0c1f9b792a09b6dcb6a8be24d51e71e6d74972f9eb4a44c4c004d24a25"
+checksum = "e972e914de63aa53bd84865e54f5c761bd274d48e5be3a6329a662c0386aa67a"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
@@ -10206,9 +10206,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-test-macro"
-version = "0.3.19"
+version = "0.3.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27e07b46b98024c2ba2f9e83a10c2ef0515f057f2da299c1762a2017de80438b"
+checksum = "ea6153a8f9bf24588e9f25c87223414fff124049f68d3a442a0f0eab4768a8b6"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -10430,9 +10430,9 @@ dependencies = [
 
 [[package]]
 name = "web-sys"
-version = "0.3.46"
+version = "0.3.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "222b1ef9334f92a21d3fb53dc3fd80f30836959a90f9274a626d7e06315ba3c3"
+checksum = "a905d57e488fec8861446d3393670fb50d27a262344013181c2cdf9fff5481be"
 dependencies = [
  "js-sys",
  "wasm-bindgen",

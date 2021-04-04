@@ -1,0 +1,49 @@
+[package]
+name = "noble-proxy"
+version = "2.0.0"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
+categories = ["cryptography::cryptocurrencies"]
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore"
+documentation = "https://docs.rs/noble-membership"
+description = "FABRIC proxying noble"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+serde = { version = "1.0.101", optional = true }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
+fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
+tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
+tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+
+fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
+
+[dev-dependencies]
+tet-core = { version = "2.0.2", path = "../../primitives/core" }
+noble-balances = { version = "2.0.1", path = "../balances" }
+noble-utility = { version = "2.0.0", path = "../utility" }
+
+[features]
+default = ["std"]
+std = [
+	"serde",
+	"codec/std",
+	"tp-runtime/std",
+	"fabric-support/std",
+	"fabric-system/std",
+	"tetcore-std/std",
+	"tet-io/std"
+]
+runtime-benchmarks = [
+	"fabric-benchmarking",
+	"fabric-support/runtime-benchmarks",
+]

@@ -15,32 +15,32 @@ publish = true
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-pallet-balances = { version = "2.0.0", path = "../../../frame/balances" }
+noble-balances = { version = "2.0.1", path = "../../../fabric/balances" }
 tc-service = { version = "0.8.0", features = ["test-helpers", "db"],  path = "../../../client/service" }
 tc-client-db = { version = "0.8.0", path = "../../../client/db/", features = ["tetsy-kvdb-rocksdb", "tetsy-db"] }
 tc-client-api = { version = "2.0.0", path = "../../../client/api/" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
-pallet-contracts = { version = "2.0.0", path = "../../../frame/contracts" }
-pallet-grandpa = { version = "2.0.0", path = "../../../frame/grandpa" }
-pallet-indices = { version = "2.0.0", path = "../../../frame/indices" }
+noble-contracts = { version = "2.0.0", path = "../../../fabric/contracts" }
+noble-grandpa = { version = "2.0.0", path = "../../../fabric/grandpa" }
+noble-indices = { version = "2.0.0", path = "../../../fabric/indices" }
 tp-keyring = { version = "2.0.2", path = "../../../primitives/keyring" }
 node-executor = { version = "2.0.0", path = "../executor" }
 node-primitives = { version = "2.0.0", path = "../primitives" }
 node-runtime = { version = "2.0.0", path = "../runtime" }
 tet-core = { version = "2.0.2", path = "../../../primitives/core" }
 tet-io = { version = "2.0.2", path = "../../../primitives/io" }
-frame-support = { version = "2.0.0", path = "../../../frame/support" }
-pallet-session = { version = "2.0.0", path = "../../../frame/session" }
-pallet-society = { version = "2.0.0", path = "../../../frame/society" }
+fabric-support = { version = "2.0.0", path = "../../../fabric/support" }
+noble-session = { version = "2.0.0", path = "../../../fabric/session" }
+noble-society = { version = "2.0.0", path = "../../../fabric/society" }
 tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
-pallet-staking = { version = "2.0.0", path = "../../../frame/staking" }
+noble-staking = { version = "2.0.0", path = "../../../fabric/staking" }
 tc-executor = { version = "0.8.0", path = "../../../client/executor", features = ["wasmtime"] }
 tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
-frame-system = { version = "2.0.0", path = "../../../frame/system" }
+fabric-system = { version = "2.0.0", path = "../../../fabric/system" }
 tetcore-test-client = { version = "2.0.0", path = "../../../test-utils/client" }
-pallet-timestamp = { version = "2.0.0", path = "../../../frame/timestamp" }
-pallet-transaction-payment = { version = "2.0.0", path = "../../../frame/transaction-payment" }
-pallet-treasury = { version = "2.0.0", path = "../../../frame/treasury" }
+noble-timestamp = { version = "2.0.0", path = "../../../fabric/timestamp" }
+noble-transaction-payment = { version = "2.0.0", path = "../../../fabric/transaction-payment" }
+noble-treasury = { version = "2.0.0", path = "../../../fabric/treasury" }
 tp-api = { version = "2.0.2", path = "../../../primitives/api" }
 tp-timestamp = { version = "2.0.2", default-features = false, path = "../../../primitives/timestamp" }
 tp-block-builder = { version = "2.0.2", path = "../../../primitives/block-builder" }
@@ -53,5 +53,5 @@ fs_extra = "1"
 futures = "0.3.1"
 
 [dev-dependencies]
-criterion = "0.3.0"
+criterion = "0.3.3"
 tc-cli = { version = "0.8.0", path = "../../../client/cli" }

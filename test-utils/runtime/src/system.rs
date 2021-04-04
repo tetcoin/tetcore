@@ -23,8 +23,8 @@ use tet_io::{
 	storage::root as storage_root, storage::changes_root as storage_changes_root,
 	hashing::blake2_256, trie,
 };
-use frame_support::storage;
-use frame_support::{decl_storage, decl_module};
+use fabric_support::storage;
+use fabric_support::{decl_storage, decl_module};
 use tp_runtime::{
 	traits::Header as _, generic, ApplyExtrinsicResult,
 	transaction_validity::{
@@ -32,7 +32,7 @@ use tp_runtime::{
 	},
 };
 use codec::{KeyedVec, Encode, Decode};
-use frame_system::Config;
+use fabric_system::Config;
 use crate::{
 	AccountId, BlockNumber, Extrinsic, Transfer, H256 as Hash, Block, Header, Digest, AuthorityId
 };
@@ -147,7 +147,7 @@ fn execute_block_with_state_root_handler(block: &mut Block, mode: Mode) {
 /// The block executor.
 pub struct BlockExecutor;
 
-impl frame_executive::ExecuteBlock<Block> for BlockExecutor {
+impl fabric_executive::ExecuteBlock<Block> for BlockExecutor {
 	fn execute_block(block: Block) {
 		execute_block(block);
 	}

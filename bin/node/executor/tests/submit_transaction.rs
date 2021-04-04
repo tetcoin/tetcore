@@ -27,7 +27,7 @@ use tet_core::{
 	},
 };
 use tp_keystore::{KeystoreExt, SyncCryptoStore, testing::KeyStore};
-use frame_system::{
+use fabric_system::{
 	offchain::{
 		Signer,
 		SubmitTransaction,
@@ -47,7 +47,7 @@ fn should_submit_unsigned_transaction() {
 
 	t.execute_with(|| {
 		let signature = Default::default();
-		let heartbeat_data = pallet_im_online::Heartbeat {
+		let heartbeat_data = noble_im_online::Heartbeat {
 			block_number: 1,
 			network_state: Default::default(),
 			session_index: 1,
@@ -55,8 +55,8 @@ fn should_submit_unsigned_transaction() {
 			validators_len: 0,
 		};
 
-		let call = pallet_im_online::Call::heartbeat(heartbeat_data, signature);
-		SubmitTransaction::<Runtime, pallet_im_online::Call<Runtime>>::submit_unsigned_transaction(call.into())
+		let call = noble_im_online::Call::heartbeat(heartbeat_data, signature);
+		SubmitTransaction::<Runtime, noble_im_online::Call<Runtime>>::submit_unsigned_transaction(call.into())
 			.unwrap();
 
 		assert_eq!(state.read().transactions.len(), 1)
@@ -92,7 +92,7 @@ fn should_submit_signed_transaction() {
 	t.execute_with(|| {
 		let results = Signer::<Runtime, TestAuthorityId>::all_accounts()
 			.send_signed_transaction(|_| {
-				pallet_balances::Call::transfer(Default::default(), Default::default())
+				noble_balances::Call::transfer(Default::default(), Default::default())
 			});
 
 		let len = results.len();
@@ -124,7 +124,7 @@ fn should_submit_signed_twice_from_the_same_account() {
 	t.execute_with(|| {
 		let result = Signer::<Runtime, TestAuthorityId>::any_account()
 			.send_signed_transaction(|_| {
-				pallet_balances::Call::transfer(Default::default(), Default::default())
+				noble_balances::Call::transfer(Default::default(), Default::default())
 			});
 
 		assert!(result.is_some());
@@ -133,7 +133,7 @@ fn should_submit_signed_twice_from_the_same_account() {
 		// submit another one from the same account. The nonce should be incremented.
 		let result = Signer::<Runtime, TestAuthorityId>::any_account()
 			.send_signed_transaction(|_| {
-				pallet_balances::Call::transfer(Default::default(), Default::default())
+				noble_balances::Call::transfer(Default::default(), Default::default())
 			});
 
 		assert!(result.is_some());
@@ -141,7 +141,7 @@ fn should_submit_signed_twice_from_the_same_account() {
 
 		// now check that the transaction nonces are not equal
 		let s = state.read();
-		fn nonce(tx: UncheckedExtrinsic) -> frame_system::CheckNonce<Runtime> {
+		fn nonce(tx: UncheckedExtrinsic) -> fabric_system::CheckNonce<Runtime> {
 			let extra = tx.signature.unwrap().2;
 			extra.4
 		}
@@ -174,7 +174,7 @@ fn should_submit_signed_twice_from_all_accounts() {
 	t.execute_with(|| {
 		let results = Signer::<Runtime, TestAuthorityId>::all_accounts()
 			.send_signed_transaction(|_| {
-				pallet_balances::Call::transfer(Default::default(), Default::default())
+				noble_balances::Call::transfer(Default::default(), Default::default())
 			});
 
 		let len = results.len();
@@ -185,7 +185,7 @@ fn should_submit_signed_twice_from_all_accounts() {
 		// submit another one from the same account. The nonce should be incremented.
 		let results = Signer::<Runtime, TestAuthorityId>::all_accounts()
 			.send_signed_transaction(|_| {
-				pallet_balances::Call::transfer(Default::default(), Default::default())
+				noble_balances::Call::transfer(Default::default(), Default::default())
 			});
 
 		let len = results.len();
@@ -195,7 +195,7 @@ fn should_submit_signed_twice_from_all_accounts() {
 
 		// now check that the transaction nonces are not equal
 		let s = state.read();
-		fn nonce(tx: UncheckedExtrinsic) -> frame_system::CheckNonce<Runtime> {
+		fn nonce(tx: UncheckedExtrinsic) -> fabric_system::CheckNonce<Runtime> {
 			let extra = tx.signature.unwrap().2;
 			extra.4
 		}
@@ -234,7 +234,7 @@ fn submitted_transaction_should_be_valid() {
 	t.execute_with(|| {
 		let results = Signer::<Runtime, TestAuthorityId>::all_accounts()
 			.send_signed_transaction(|_| {
-				pallet_balances::Call::transfer(Default::default(), Default::default())
+				noble_balances::Call::transfer(Default::default(), Default::default())
 			});
 		let len = results.len();
 		assert_eq!(len, 1);
@@ -251,9 +251,9 @@ fn submitted_transaction_should_be_valid() {
 		// add balance to the account
 		let author = extrinsic.signature.clone().unwrap().0;
 		let address = Indices::lookup(author).unwrap();
-		let data = pallet_balances::AccountData { free: 5_000_000_000_000, ..Default::default() };
-		let account = frame_system::AccountInfo { nonce: 0, consumers: 0, providers: 0, data };
-		<frame_system::Account<Runtime>>::insert(&address, account);
+		let data = noble_balances::AccountData { free: 5_000_000_000_000, ..Default::default() };
+		let account = fabric_system::AccountInfo { nonce: 0, consumers: 0, providers: 0, data };
+		<fabric_system::Account<Runtime>>::insert(&address, account);
 
 		// check validity
 		let res = Executive::validate_transaction(source, extrinsic).unwrap();

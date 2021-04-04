@@ -34,8 +34,8 @@
 /primitives/offchain/ @tomusdrw
 
 # GRANDPA, BABE, consensus stuff
-/frame/babe/ @andresilva
-/frame/grandpa/ @andresilva
+/fabric/babe/ @andresilva
+/fabric/grandpa/ @andresilva
 /client/finality-grandpa/ @andresilva
 /client/consensus/babe/ @andresilva
 /client/consensus/slots/ @andresilva
@@ -43,23 +43,23 @@
 /primitives/consensus/pow/ @sorpaas
 
 # Contracts
-/frame/contracts/ @athei
+/fabric/contracts/ @athei
 
 # NPoS and election
-/frame/staking/ @kianenigma
-/frame/elections/ @kianenigma
-/frame/elections-phragmen/ @kianenigma
+/fabric/staking/ @kianenigma
+/fabric/elections/ @kianenigma
+/fabric/elections-phragmen/ @kianenigma
 /primitives/npos-elections/ @kianenigma
 
 # Fixed point arithmetic
 /primitives/arithmetic/ @kianenigma
 
 # Transaction weight stuff
-/frame/support/src/weights.rs @shawntabrizi
+/fabric/support/src/weights.rs @shawntabrizi
 
 # Authority discovery
 /client/authority-discovery/ @mxinden
-/frame/authority-discovery/ @mxinden
+/fabric/authority-discovery/ @mxinden
 
 # Prometheus endpoint
 /utils/prometheus/ @mxinden

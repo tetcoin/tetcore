@@ -17,7 +17,7 @@ native_executor_instance!(
 	pub Executor,
 	node_template_runtime::api::dispatch,
 	node_template_runtime::native_version,
-	frame_benchmarking::benchmarking::HostFunctions,
+	fabric_benchmarking::benchmarking::HostFunctions,
 );
 
 type FullClient = tc_service::TFullClient<Block, RuntimeApi, Executor>;

@@ -1,0 +1,26 @@
+[package]
+name = "fabric-support-procedural"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "Proc macro of Support code for the runtime."
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+fabric-support-procedural-tools = { version = "2.0.1", path = "./tools" }
+proc-macro2 = "1.0.6"
+quote = "1.0.3"
+Inflector = "0.11.4"
+syn = { version = "1.0.58", features = ["full"] }
+
+[features]
+default = ["std"]
+std = []

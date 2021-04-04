@@ -56,20 +56,20 @@ pub fn config_endowed(
 	);
 
 	GenesisConfig {
-		frame_system: Some(SystemConfig {
+		fabric_system: Some(SystemConfig {
 			changes_trie_config: if support_changes_trie { Some(ChangesTrieConfiguration {
 				digest_interval: 2,
 				digest_levels: 2,
 			}) } else { None },
 			code: code.map(|x| x.to_vec()).unwrap_or_else(|| wasm_binary_unwrap().to_vec()),
 		}),
-		pallet_indices: Some(IndicesConfig {
+		noble_indices: Some(IndicesConfig {
 			indices: vec![],
 		}),
-		pallet_balances: Some(BalancesConfig {
+		noble_balances: Some(BalancesConfig {
 			balances: endowed,
 		}),
-		pallet_session: Some(SessionConfig {
+		noble_session: Some(SessionConfig {
 			keys: vec![
 				(dave(), alice(), to_session_keys(
 					&Ed25519Keyring::Alice,
@@ -85,7 +85,7 @@ pub fn config_endowed(
 				)),
 			]
 		}),
-		pallet_staking: Some(StakingConfig {
+		noble_staking: Some(StakingConfig {
 			stakers: vec![
 				(dave(), alice(), 111 * DOLLARS, StakerStatus::Validator),
 				(eve(), bob(), 100 * DOLLARS, StakerStatus::Validator),
@@ -97,27 +97,27 @@ pub fn config_endowed(
 			invulnerables: vec![alice(), bob(), charlie()],
 			.. Default::default()
 		}),
-		pallet_contracts: Some(ContractsConfig {
+		noble_contracts: Some(ContractsConfig {
 			current_schedule: Default::default(),
 		}),
-		pallet_babe: Some(Default::default()),
-		pallet_grandpa: Some(GrandpaConfig {
+		noble_babe: Some(Default::default()),
+		noble_grandpa: Some(GrandpaConfig {
 			authorities: vec![],
 		}),
-		pallet_im_online: Some(Default::default()),
-		pallet_authority_discovery: Some(Default::default()),
-		pallet_democracy: Some(Default::default()),
-		pallet_collective_Instance1: Some(Default::default()),
-		pallet_collective_Instance2: Some(Default::default()),
-		pallet_membership_Instance1: Some(Default::default()),
-		pallet_elections_phragmen: Some(Default::default()),
-		pallet_sudo: Some(Default::default()),
-		pallet_treasury: Some(Default::default()),
-		pallet_society: Some(SocietyConfig {
+		noble_im_online: Some(Default::default()),
+		noble_authority_discovery: Some(Default::default()),
+		noble_democracy: Some(Default::default()),
+		noble_collective_Instance1: Some(Default::default()),
+		noble_collective_Instance2: Some(Default::default()),
+		noble_membership_Instance1: Some(Default::default()),
+		noble_elections_phragmen: Some(Default::default()),
+		noble_sudo: Some(Default::default()),
+		noble_treasury: Some(Default::default()),
+		noble_society: Some(SocietyConfig {
 			members: vec![alice(), bob()],
 			pot: 0,
 			max_members: 999,
 		}),
-		pallet_vesting: Some(Default::default()),
+		noble_vesting: Some(Default::default()),
 	}
 }

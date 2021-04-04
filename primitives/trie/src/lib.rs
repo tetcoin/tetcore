@@ -80,9 +80,9 @@ impl<H: Hasher> TrieConfiguration for Layout<H> {
 }
 
 #[cfg(not(feature = "memory-tracker"))]
-type MemTracker = tetsy_memory_db::NoopTracker<tetsy_trie_db::DBValue>;
+type MemTnobleer = tetsy_memory_db::NoopTracker<tetsy_trie_db::DBValue>;
 #[cfg(feature = "memory-tracker")]
-type MemTracker = tetsy_memory_db::MemCounter<tetsy_trie_db::DBValue>;
+type MemTnobleer = tetsy_memory_db::MemCounter<tetsy_trie_db::DBValue>;
 
 /// TrieDB error over `TrieConfiguration` trait.
 pub type TrieError<L> = tetsy_trie_db::TrieError<TrieHash<L>, CError<L>>;
@@ -95,17 +95,17 @@ pub type HashDB<'a, H> = dyn tetsy_hash_db::HashDB<H, tetsy_trie_db::DBValue> + 
 /// This uses a `KeyFunction` for prefixing keys internally (avoiding
 /// key conflict for non random keys).
 pub type PrefixedMemoryDB<H> = tetsy_memory_db::MemoryDB<
-	H, tetsy_memory_db::PrefixedKey<H>, tetsy_trie_db::DBValue, MemTracker
+	H, tetsy_memory_db::PrefixedKey<H>, tetsy_trie_db::DBValue, MemTnobleer
 >;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 /// This uses a noops `KeyFunction` (key addressing must be hashed or using
 /// an encoding scheme that avoid key conflict).
 pub type MemoryDB<H> = tetsy_memory_db::MemoryDB<
-	H, tetsy_memory_db::HashKey<H>, tetsy_trie_db::DBValue, MemTracker,
+	H, tetsy_memory_db::HashKey<H>, tetsy_trie_db::DBValue, MemTnobleer,
 >;
 /// Reexport from `hash_db`, with genericity set for `Hasher` trait.
 pub type GenericMemoryDB<H, KF> = tetsy_memory_db::MemoryDB<
-	H, KF, tetsy_trie_db::DBValue, MemTracker
+	H, KF, tetsy_trie_db::DBValue, MemTnobleer
 >;
 
 /// Persistent trie database read-access interface for the a given hasher.

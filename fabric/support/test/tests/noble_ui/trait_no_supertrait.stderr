@@ -1,0 +1,5 @@
+error: Invalid noble::trait, expected explicit `fabric_system::Config` as supertrait, found none. (try `pub trait Config: fabric_system::Config { ...` or `pub trait Config<I: 'static>: fabric_system::Config { ...`). To disable this check, use `#[noble::disable_fabric_system_supertrait_check]`
+ --> $DIR/trait_no_supertrait.rs:7:2
+  |
+7 |     pub trait Config {
+  |     ^^^

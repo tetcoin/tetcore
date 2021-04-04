@@ -57,7 +57,7 @@ pub enum InvalidTransaction {
 	///
 	/// # Possible causes
 	///
-	/// For `FRAME`-based runtimes this would be caused by `current block number
+	/// For `FABRIC`-based runtimes this would be caused by `current block number
 	/// - Era::birth block number > BlockHashCount`. (e.g. in Polkadot `BlockHashCount` = 2400, so a
 	/// transaction with birth block number 1337 would be valid up until block number 1337 + 2400,
 	/// after which point the transaction would be considered to have an ancient birth block.)
@@ -335,7 +335,7 @@ pub struct ValidTransactionBuilder {
 impl ValidTransactionBuilder {
 	/// Set the priority of a transaction.
 	///
-	/// Note that the final priority for `FRAME` is combined from all `SignedExtension`s.
+	/// Note that the final priority for `FABRIC` is combined from all `SignedExtension`s.
 	/// Most likely for unsigned transactions you want the priority to be higher
 	/// than for regular transactions. We recommend exposing a base priority for unsigned
 	/// transactions as a runtime module parameter, so that the runtime can tune inter-module

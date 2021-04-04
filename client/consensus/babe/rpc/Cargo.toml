@@ -1,6 +1,6 @@
 [package]
 name = "tc-consensus-babe-rpc"
-version = "0.8.1"
+version = "0.8.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "RPC extensions for the BABE consensus algorithm"
 edition = "2018"

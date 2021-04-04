@@ -51,12 +51,12 @@ use tp_version::RuntimeVersion;
 pub use tet_core::hash::H256;
 #[cfg(any(feature = "std", test))]
 use tp_version::NativeVersion;
-use frame_support::{
+use fabric_support::{
 	impl_outer_origin, parameter_types,
 	traits::KeyOwnerProofSystem,
 	weights::RuntimeDbWeight,
 };
-use frame_system::limits::{BlockWeights, BlockLength};
+use fabric_system::limits::{BlockWeights, BlockLength};
 use tp_inherents::{CheckInherentsResult, InherentData};
 use cfg_if::cfg_if;
 
@@ -421,14 +421,14 @@ impl GetRuntimeBlockType for Runtime {
 }
 
 impl_outer_origin!{
-	pub enum Origin for Runtime where system = frame_system {}
+	pub enum Origin for Runtime where system = fabric_system {}
 }
 
 #[derive(Clone, Encode, Decode, Eq, PartialEq, RuntimeDebug)]
 pub struct Event;
 
-impl From<frame_system::Event<Runtime>> for Event {
-	fn from(_evt: frame_system::Event<Runtime>) -> Self {
+impl From<fabric_system::Event<Runtime>> for Event {
+	fn from(_evt: fabric_system::Event<Runtime>) -> Self {
 		unimplemented!("Not required in tests!")
 	}
 }
@@ -446,7 +446,7 @@ parameter_types! {
 		BlockWeights::with_sensible_defaults(4 * 1024 * 1024, Perbill::from_percent(75));
 }
 
-impl frame_system::Config for Runtime {
+impl fabric_system::Config for Runtime {
 	type BaseCallFilter = ();
 	type BlockWeights = RuntimeBlockWeights;
 	type BlockLength = RuntimeBlockLength;
@@ -463,7 +463,7 @@ impl frame_system::Config for Runtime {
 	type BlockHashCount = BlockHashCount;
 	type DbWeight = ();
 	type Version = ();
-	type PalletInfo = ();
+	type NobleInfo = ();
 	type AccountData = ();
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
@@ -471,7 +471,7 @@ impl frame_system::Config for Runtime {
 	type SS58Prefix = ();
 }
 
-impl pallet_timestamp::Config for Runtime {
+impl noble_timestamp::Config for Runtime {
 	/// A timestamp: milliseconds since the unix epoch.
 	type Moment = u64;
 	type OnTimestampSet = ();
@@ -484,13 +484,13 @@ parameter_types! {
 	pub const ExpectedBlockTime: u64 = 10_000;
 }
 
-impl pallet_babe::Config for Runtime {
+impl noble_babe::Config for Runtime {
 	type EpochDuration = EpochDuration;
 	type ExpectedBlockTime = ExpectedBlockTime;
 	// there is no actual runtime in this test-runtime, so testing crates
 	// are manually adding the digests. normally in this situation you'd use
-	// pallet_babe::SameAuthoritiesForever.
-	type EpochChangeTrigger = pallet_babe::ExternalTrigger;
+	// noble_babe::SameAuthoritiesForever.
+	type EpochChangeTrigger = noble_babe::ExternalTrigger;
 
 	type KeyOwnerProofSystem = ();
 
@@ -711,8 +711,8 @@ cfg_if! {
 				}
 
 				fn do_trace_log() {
-					frame_support::debug::RuntimeLogger::init();
-					frame_support::debug::trace!("Hey I'm runtime");
+					fabric_support::debug::RuntimeLogger::init();
+					fabric_support::debug::trace!("Hey I'm runtime");
 				}
 			}
 
@@ -734,21 +734,21 @@ cfg_if! {
 						c: (3, 10),
 						genesis_authorities: system::authorities()
 							.into_iter().map(|x|(x, 1)).collect(),
-						randomness: <pallet_babe::Module<Runtime>>::randomness(),
+						randomness: <noble_babe::Module<Runtime>>::randomness(),
 						allowed_slots: AllowedSlots::PrimaryAndSecondaryPlainSlots,
 					}
 				}
 
 				fn current_epoch_start() -> Slot {
-					<pallet_babe::Module<Runtime>>::current_epoch_start()
+					<noble_babe::Module<Runtime>>::current_epoch_start()
 				}
 
 				fn current_epoch() -> tp_consensus_babe::Epoch {
-					<pallet_babe::Module<Runtime>>::current_epoch()
+					<noble_babe::Module<Runtime>>::current_epoch()
 				}
 
 				fn next_epoch() -> tp_consensus_babe::Epoch {
-					<pallet_babe::Module<Runtime>>::next_epoch()
+					<noble_babe::Module<Runtime>>::next_epoch()
 				}
 
 				fn submit_report_equivocation_unsigned_extrinsic(
@@ -810,7 +810,7 @@ cfg_if! {
 				}
 			}
 
-			impl frame_system_rpc_runtime_api::AccountNonceApi<Block, AccountId, Index> for Runtime {
+			impl fabric_system_rpc_runtime_api::AccountNonceApi<Block, AccountId, Index> for Runtime {
 				fn account_nonce(_account: AccountId) -> Index {
 					0
 				}
@@ -970,8 +970,8 @@ cfg_if! {
 				}
 
 				fn do_trace_log() {
-					frame_support::debug::RuntimeLogger::init();
-					frame_support::debug::trace!("Hey I'm runtime");
+					fabric_support::debug::RuntimeLogger::init();
+					fabric_support::debug::trace!("Hey I'm runtime");
 				}
 			}
 
@@ -993,21 +993,21 @@ cfg_if! {
 						c: (3, 10),
 						genesis_authorities: system::authorities()
 							.into_iter().map(|x|(x, 1)).collect(),
-						randomness: <pallet_babe::Module<Runtime>>::randomness(),
+						randomness: <noble_babe::Module<Runtime>>::randomness(),
 						allowed_slots: AllowedSlots::PrimaryAndSecondaryPlainSlots,
 					}
 				}
 
 				fn current_epoch_start() -> Slot {
-					<pallet_babe::Module<Runtime>>::current_epoch_start()
+					<noble_babe::Module<Runtime>>::current_epoch_start()
 				}
 
 				fn current_epoch() -> tp_consensus_babe::Epoch {
-					<pallet_babe::Module<Runtime>>::current_epoch()
+					<noble_babe::Module<Runtime>>::current_epoch()
 				}
 
 				fn next_epoch() -> tp_consensus_babe::Epoch {
-					<pallet_babe::Module<Runtime>>::next_epoch()
+					<noble_babe::Module<Runtime>>::next_epoch()
 				}
 
 				fn submit_report_equivocation_unsigned_extrinsic(
@@ -1046,7 +1046,7 @@ cfg_if! {
 				}
 			}
 
-			impl frame_system_rpc_runtime_api::AccountNonceApi<Block, AccountId, Index> for Runtime {
+			impl fabric_system_rpc_runtime_api::AccountNonceApi<Block, AccountId, Index> for Runtime {
 				fn account_nonce(_account: AccountId) -> Index {
 					0
 				}

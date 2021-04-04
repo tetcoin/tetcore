@@ -382,8 +382,8 @@ impl From<DispatchError> for DispatchOutcome {
 }
 
 /// This is the legacy return type of `Dispatchable`. It is still exposed for compatibility reasons.
-/// The new return type is `DispatchResultWithInfo`. FRAME runtimes should use
-/// `frame_support::dispatch::DispatchResult`.
+/// The new return type is `DispatchResultWithInfo`. FABRIC runtimes should use
+/// `fabric_support::dispatch::DispatchResult`.
 pub type DispatchResult = tetcore_std::result::Result<(), DispatchError>;
 
 /// Return type of a `Dispatchable` which contains the `DispatchResult` and additional information

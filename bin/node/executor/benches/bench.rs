@@ -27,7 +27,7 @@ use node_testing::keyring::*;
 use tet_core::{NativeOrEncoded, NeverNativeValue};
 use tet_core::storage::well_known_keys;
 use tet_core::traits::{CodeExecutor, RuntimeCode};
-use frame_support::Hashable;
+use fabric_support::Hashable;
 use tp_state_machine::TestExternalities as CoreTestExternalities;
 use tc_executor::{NativeExecutor, RuntimeInfo, WasmExecutionMethod, Externalities};
 use tp_runtime::traits::BlakeTwo256;
@@ -147,13 +147,13 @@ fn test_blocks(genesis_config: &GenesisConfig, executor: &NativeExecutor<Executo
 	let mut block1_extrinsics = vec![
 		CheckedExtrinsic {
 			signed: None,
-			function: Call::Timestamp(pallet_timestamp::Call::set(42 * 1000)),
+			function: Call::Timestamp(noble_timestamp::Call::set(42 * 1000)),
 		},
 	];
 	block1_extrinsics.extend((0..20).map(|i| {
 		CheckedExtrinsic {
 			signed: Some((alice(), signed_extra(i, 0))),
-			function: Call::Balances(pallet_balances::Call::transfer(bob().into(), 1 * DOLLARS)),
+			function: Call::Balances(noble_balances::Call::transfer(bob().into(), 1 * DOLLARS)),
 		}
 	}));
 	let block1 = construct_block(

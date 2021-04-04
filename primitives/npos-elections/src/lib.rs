@@ -562,7 +562,7 @@ impl<AccountId> StakedAssignment<AccountId> {
 ///
 /// This complements the [`ElectionResult`] and is needed to run the balancing post-processing.
 ///
-/// This, at the current version, resembles the `Exposure` defined in the Staking pallet, yet they
+/// This, at the current version, resembles the `Exposure` defined in the Staking noble, yet they
 /// do not necessarily have to be the same.
 #[derive(Default, RuntimeDebug, Encode, Decode, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]

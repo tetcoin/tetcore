@@ -1,0 +1,55 @@
+[package]
+name = "noble-offences-benchmarking"
+version = "2.0.1"
+authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://core.tetcoin.org"
+repository = "https://github.com/tetcoin/tetcore/"
+description = "FABRIC offences noble benchmarking"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
+fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../../benchmarking" }
+fabric-support = { version = "2.0.0", default-features = false, path = "../../support" }
+fabric-system = { version = "2.0.0", default-features = false, path = "../../system" }
+noble-babe = { version = "2.0.1", default-features = false, path = "../../babe" }
+noble-balances = { version = "2.0.1", default-features = false, path = "../../balances" }
+noble-grandpa = { version = "2.0.0", default-features = false, path = "../../grandpa" }
+noble-im-online = { version = "2.0.0", default-features = false, path = "../../im-online" }
+noble-offences = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../offences" }
+noble-session = { version = "2.0.0", default-features = false, path = "../../session" }
+noble-staking = { version = "2.0.0", default-features = false, features = ["runtime-benchmarks"], path = "../../staking" }
+tp-runtime = { version = "2.0.2", default-features = false, path = "../../../primitives/runtime" }
+tp-staking = { version = "2.0.2", default-features = false, path = "../../../primitives/staking" }
+tetcore-std = { version = "2.0.2", default-features = false, path = "../../../primitives/std" }
+
+[dev-dependencies]
+noble-staking-reward-curve = { version = "2.0.0", path = "../../staking/reward-curve" }
+noble-timestamp = { version = "2.0.0", path = "../../timestamp" }
+serde = { version = "1.0.101" }
+tet-core = { version = "2.0.2", path = "../../../primitives/core" }
+tet-io = { version = "2.0.2", path = "../../../primitives/io" }
+
+[features]
+default = ["std"]
+std = [
+	"fabric-benchmarking/std",
+	"fabric-support/std",
+	"fabric-system/std",
+	"noble-babe/std",
+	"noble-balances/std",
+	"noble-grandpa/std",
+	"noble-im-online/std",
+	"noble-offences/std",
+	"noble-session/std",
+	"noble-staking/std",
+	"tp-runtime/std",
+	"tp-staking/std",
+	"tetcore-std/std",
+	"codec/std",
+]

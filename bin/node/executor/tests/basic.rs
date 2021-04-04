@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use codec::{Encode, Decode, Joiner};
-use frame_support::{
+use fabric_support::{
 	StorageValue, StorageMap,
 	traits::Currency,
 	weights::{GetDispatchInfo, DispatchInfo, DispatchClass},
@@ -27,7 +27,7 @@ use tp_runtime::{
 	traits::Hash as HashT,
 	transaction_validity::InvalidTransaction,
 };
-use frame_system::{self, EventRecord, Phase};
+use fabric_system::{self, EventRecord, Phase};
 
 use node_runtime::{
 	Header, Block, UncheckedExtrinsic, CheckedExtrinsic, Call, Runtime, Balances,
@@ -83,11 +83,11 @@ fn changes_trie_block() -> (Vec<u8>, Hash) {
 		vec![
 			CheckedExtrinsic {
 				signed: None,
-				function: Call::Timestamp(pallet_timestamp::Call::set(42 * 1000)),
+				function: Call::Timestamp(noble_timestamp::Call::set(42 * 1000)),
 			},
 			CheckedExtrinsic {
 				signed: Some((alice(), signed_extra(0, 0))),
-				function: Call::Balances(pallet_balances::Call::transfer(bob().into(), 69 * DOLLARS)),
+				function: Call::Balances(noble_balances::Call::transfer(bob().into(), 69 * DOLLARS)),
 			},
 		]
 	)
@@ -105,11 +105,11 @@ fn blocks() -> ((Vec<u8>, Hash), (Vec<u8>, Hash)) {
 		vec![
 			CheckedExtrinsic {
 				signed: None,
-				function: Call::Timestamp(pallet_timestamp::Call::set(42 * 1000)),
+				function: Call::Timestamp(noble_timestamp::Call::set(42 * 1000)),
 			},
 			CheckedExtrinsic {
 				signed: Some((alice(), signed_extra(0, 0))),
-				function: Call::Balances(pallet_balances::Call::transfer(bob().into(), 69 * DOLLARS)),
+				function: Call::Balances(noble_balances::Call::transfer(bob().into(), 69 * DOLLARS)),
 			},
 		]
 	);
@@ -120,15 +120,15 @@ fn blocks() -> ((Vec<u8>, Hash), (Vec<u8>, Hash)) {
 		vec![
 			CheckedExtrinsic {
 				signed: None,
-				function: Call::Timestamp(pallet_timestamp::Call::set(52 * 1000)),
+				function: Call::Timestamp(noble_timestamp::Call::set(52 * 1000)),
 			},
 			CheckedExtrinsic {
 				signed: Some((bob(), signed_extra(0, 0))),
-				function: Call::Balances(pallet_balances::Call::transfer(alice().into(), 5 * DOLLARS)),
+				function: Call::Balances(noble_balances::Call::transfer(alice().into(), 5 * DOLLARS)),
 			},
 			CheckedExtrinsic {
 				signed: Some((alice(), signed_extra(1, 0))),
-				function: Call::Balances(pallet_balances::Call::transfer(bob().into(), 15 * DOLLARS)),
+				function: Call::Balances(noble_balances::Call::transfer(bob().into(), 15 * DOLLARS)),
 			}
 		]
 	);
@@ -148,11 +148,11 @@ fn block_with_size(time: u64, nonce: u32, size: usize) -> (Vec<u8>, Hash) {
 		vec![
 			CheckedExtrinsic {
 				signed: None,
-				function: Call::Timestamp(pallet_timestamp::Call::set(time * 1000)),
+				function: Call::Timestamp(noble_timestamp::Call::set(time * 1000)),
 			},
 			CheckedExtrinsic {
 				signed: Some((alice(), signed_extra(nonce, 0))),
-				function: Call::System(frame_system::Call::remark(vec![0; size])),
+				function: Call::System(fabric_system::Call::remark(vec![0; size])),
 			}
 		]
 	)
@@ -162,11 +162,11 @@ fn block_with_size(time: u64, nonce: u32, size: usize) -> (Vec<u8>, Hash) {
 fn panic_execution_with_foreign_code_gives_error() {
 	let mut t = new_test_ext(bloaty_code_unwrap(), false);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(alice()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(alice()),
 		(69u128, 0u32, 0u128, 0u128, 0u128).encode()
 	);
-	t.insert(<pallet_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(), 69_u128.encode());
-	t.insert(<frame_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
+	t.insert(<noble_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(), 69_u128.encode());
+	t.insert(<fabric_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
 
 	let r = executor_call::<NeverNativeValue, fn() -> _>(
 		&mut t,
@@ -191,11 +191,11 @@ fn panic_execution_with_foreign_code_gives_error() {
 fn bad_extrinsic_with_native_equivalent_code_gives_error() {
 	let mut t = new_test_ext(compact_code_unwrap(), false);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(alice()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(alice()),
 		(0u32, 0u32, 0u32, 69u128, 0u128, 0u128, 0u128).encode()
 	);
-	t.insert(<pallet_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(), 69_u128.encode());
-	t.insert(<frame_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
+	t.insert(<noble_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(), 69_u128.encode());
+	t.insert(<fabric_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
 
 	let r = executor_call::<NeverNativeValue, fn() -> _>(
 		&mut t,
@@ -220,18 +220,18 @@ fn bad_extrinsic_with_native_equivalent_code_gives_error() {
 fn successful_execution_with_native_equivalent_code_gives_ok() {
 	let mut t = new_test_ext(compact_code_unwrap(), false);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(alice()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(alice()),
 		(0u32, 0u32, 0u32, 111 * DOLLARS, 0u128, 0u128, 0u128).encode()
 	);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(bob()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(bob()),
 		(0u32, 0u32, 0u32, 0 * DOLLARS, 0u128, 0u128, 0u128).encode()
 	);
 	t.insert(
-		<pallet_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(),
+		<noble_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(),
 		(111 * DOLLARS).encode()
 	);
-	t.insert(<frame_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
+	t.insert(<fabric_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
 
 	let r = executor_call::<NeverNativeValue, fn() -> _>(
 		&mut t,
@@ -263,18 +263,18 @@ fn successful_execution_with_native_equivalent_code_gives_ok() {
 fn successful_execution_with_foreign_code_gives_ok() {
 	let mut t = new_test_ext(bloaty_code_unwrap(), false);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(alice()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(alice()),
 		(0u32, 0u32, 0u32, 111 * DOLLARS, 0u128, 0u128, 0u128).encode()
 	);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(bob()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(bob()),
 		(0u32, 0u32, 0u32, 0 * DOLLARS, 0u128, 0u128, 0u128).encode()
 	);
 	t.insert(
-		<pallet_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(),
+		<noble_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(),
 		(111 * DOLLARS).encode()
 	);
-	t.insert(<frame_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
+	t.insert(<fabric_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
 
 	let r = executor_call::<NeverNativeValue, fn() -> _>(
 		&mut t,
@@ -312,7 +312,7 @@ fn full_native_block_import_works() {
 	let mut fees = t.execute_with(|| transfer_fee(&xt()));
 
 	let transfer_weight = default_transfer_call().get_dispatch_info().weight;
-	let timestamp_weight = pallet_timestamp::Call::set::<Runtime>(Default::default()).get_dispatch_info().weight;
+	let timestamp_weight = noble_timestamp::Call::set::<Runtime>(Default::default()).get_dispatch_info().weight;
 
 	executor_call::<NeverNativeValue, fn() -> _>(
 		&mut t,
@@ -329,14 +329,14 @@ fn full_native_block_import_works() {
 		let events = vec![
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(0),
-				event: Event::frame_system(frame_system::Event::ExtrinsicSuccess(
+				event: Event::fabric_system(fabric_system::Event::ExtrinsicSuccess(
 					DispatchInfo { weight: timestamp_weight, class: DispatchClass::Mandatory, ..Default::default() }
 				)),
 				topics: vec![],
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(1),
-				event: Event::pallet_balances(pallet_balances::RawEvent::Transfer(
+				event: Event::noble_balances(noble_balances::RawEvent::Transfer(
 					alice().into(),
 					bob().into(),
 					69 * DOLLARS,
@@ -345,12 +345,12 @@ fn full_native_block_import_works() {
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(1),
-				event: Event::pallet_treasury(pallet_treasury::RawEvent::Deposit(fees * 8 / 10)),
+				event: Event::noble_treasury(noble_treasury::RawEvent::Deposit(fees * 8 / 10)),
 				topics: vec![],
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(1),
-				event: Event::frame_system(frame_system::Event::ExtrinsicSuccess(
+				event: Event::fabric_system(fabric_system::Event::ExtrinsicSuccess(
 					DispatchInfo { weight: transfer_weight, ..Default::default() }
 				)),
 				topics: vec![],
@@ -381,15 +381,15 @@ fn full_native_block_import_works() {
 		let events = vec![
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(0),
-				event: Event::frame_system(frame_system::Event::ExtrinsicSuccess(
+				event: Event::fabric_system(fabric_system::Event::ExtrinsicSuccess(
 					DispatchInfo { weight: timestamp_weight, class: DispatchClass::Mandatory, ..Default::default() }
 				)),
 				topics: vec![],
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(1),
-				event: Event::pallet_balances(
-					pallet_balances::RawEvent::Transfer(
+				event: Event::noble_balances(
+					noble_balances::RawEvent::Transfer(
 						bob().into(),
 						alice().into(),
 						5 * DOLLARS,
@@ -399,20 +399,20 @@ fn full_native_block_import_works() {
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(1),
-				event: Event::pallet_treasury(pallet_treasury::RawEvent::Deposit(fees * 8 / 10)),
+				event: Event::noble_treasury(noble_treasury::RawEvent::Deposit(fees * 8 / 10)),
 				topics: vec![],
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(1),
-				event: Event::frame_system(frame_system::Event::ExtrinsicSuccess(
+				event: Event::fabric_system(fabric_system::Event::ExtrinsicSuccess(
 					DispatchInfo { weight: transfer_weight, ..Default::default() }
 				)),
 				topics: vec![],
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(2),
-				event: Event::pallet_balances(
-					pallet_balances::RawEvent::Transfer(
+				event: Event::noble_balances(
+					noble_balances::RawEvent::Transfer(
 						alice().into(),
 						bob().into(),
 						15 * DOLLARS,
@@ -422,12 +422,12 @@ fn full_native_block_import_works() {
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(2),
-				event: Event::pallet_treasury(pallet_treasury::RawEvent::Deposit(fees * 8 / 10)),
+				event: Event::noble_treasury(noble_treasury::RawEvent::Deposit(fees * 8 / 10)),
 				topics: vec![],
 			},
 			EventRecord {
 				phase: Phase::ApplyExtrinsic(2),
-				event: Event::frame_system(frame_system::Event::ExtrinsicSuccess(
+				event: Event::fabric_system(fabric_system::Event::ExtrinsicSuccess(
 					DispatchInfo { weight: transfer_weight, ..Default::default() }
 				)),
 				topics: vec![],
@@ -580,15 +580,15 @@ const CODE_TRANSFER: &str = r#"
 #[test]
 fn deploying_wasm_contract_should_work() {
 	let transfer_code = wat::parse_str(CODE_TRANSFER).unwrap();
-	let transfer_ch = <Runtime as frame_system::Config>::Hashing::hash(&transfer_code);
+	let transfer_ch = <Runtime as fabric_system::Config>::Hashing::hash(&transfer_code);
 
-	let addr = pallet_contracts::Module::<Runtime>::contract_address(
+	let addr = noble_contracts::Module::<Runtime>::contract_address(
 		&charlie(),
 		&transfer_ch,
 		&[],
 	);
 
-	let subsistence = pallet_contracts::ConfigCache::<Runtime>::subsistence_threshold_uncached();
+	let subsistence = noble_contracts::ConfigCache::<Runtime>::subsistence_threshold_uncached();
 
 	let b = construct_block(
 		&mut new_test_ext(compact_code_unwrap(), false),
@@ -597,18 +597,18 @@ fn deploying_wasm_contract_should_work() {
 		vec![
 			CheckedExtrinsic {
 				signed: None,
-				function: Call::Timestamp(pallet_timestamp::Call::set(42 * 1000)),
+				function: Call::Timestamp(noble_timestamp::Call::set(42 * 1000)),
 			},
 			CheckedExtrinsic {
 				signed: Some((charlie(), signed_extra(0, 0))),
 				function: Call::Contracts(
-					pallet_contracts::Call::put_code::<Runtime>(transfer_code)
+					noble_contracts::Call::put_code::<Runtime>(transfer_code)
 				),
 			},
 			CheckedExtrinsic {
 				signed: Some((charlie(), signed_extra(1, 0))),
 				function: Call::Contracts(
-					pallet_contracts::Call::instantiate::<Runtime>(
+					noble_contracts::Call::instantiate::<Runtime>(
 						1 * DOLLARS + subsistence,
 						500_000_000,
 						transfer_ch,
@@ -620,7 +620,7 @@ fn deploying_wasm_contract_should_work() {
 			CheckedExtrinsic {
 				signed: Some((charlie(), signed_extra(2, 0))),
 				function: Call::Contracts(
-					pallet_contracts::Call::call::<Runtime>(
+					noble_contracts::Call::call::<Runtime>(
 						tp_runtime::MultiAddress::Id(addr.clone()),
 						10,
 						500_000_000,
@@ -644,7 +644,7 @@ fn deploying_wasm_contract_should_work() {
 	t.execute_with(|| {
 		// Verify that the contract constructor worked well and code of TRANSFER contract is actually deployed.
 		assert_eq!(
-			&pallet_contracts::ContractInfoOf::<Runtime>::get(addr)
+			&noble_contracts::ContractInfoOf::<Runtime>::get(addr)
 				.and_then(|c| c.get_alive())
 				.unwrap()
 				.code_hash,
@@ -701,11 +701,11 @@ fn native_big_block_import_fails_on_fallback() {
 fn panic_execution_gives_error() {
 	let mut t = new_test_ext(bloaty_code_unwrap(), false);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(alice()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(alice()),
 		(0u32, 0u32, 0u32, 0 * DOLLARS, 0u128, 0u128, 0u128).encode()
 	);
-	t.insert(<pallet_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(), 0_u128.encode());
-	t.insert(<frame_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
+	t.insert(<noble_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(), 0_u128.encode());
+	t.insert(<fabric_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
 
 	let r = executor_call::<NeverNativeValue, fn() -> _>(
 		&mut t,
@@ -730,18 +730,18 @@ fn panic_execution_gives_error() {
 fn successful_execution_gives_ok() {
 	let mut t = new_test_ext(compact_code_unwrap(), false);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(alice()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(alice()),
 		(0u32, 0u32, 0u32, 111 * DOLLARS, 0u128, 0u128, 0u128).encode()
 	);
 	t.insert(
-		<frame_system::Account<Runtime>>::hashed_key_for(bob()),
+		<fabric_system::Account<Runtime>>::hashed_key_for(bob()),
 		(0u32, 0u32, 0u32, 0 * DOLLARS, 0u128, 0u128, 0u128).encode()
 	);
 	t.insert(
-		<pallet_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(),
+		<noble_balances::TotalIssuance<Runtime>>::hashed_key().to_vec(),
 		(111 * DOLLARS).encode()
 	);
-	t.insert(<frame_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
+	t.insert(<fabric_system::BlockHash<Runtime>>::hashed_key_for(0), vec![0u8; 32]);
 
 	let r = executor_call::<NeverNativeValue, fn() -> _>(
 		&mut t,

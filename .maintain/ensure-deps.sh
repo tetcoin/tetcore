@@ -6,8 +6,8 @@
 # [top-lvl-dir] MESSAGE/[other-top-dir]
 
 # For instance no crate within `./client` directory
-# is allowed to import any crate with a directory path containing `frame`.
-# Such rule is just: `client crates must not depend on anything in /frame`.
+# is allowed to import any crate with a directory path containing `fabric`.
+# Such rule is just: `client crates must not depend on anything in /fabric`.
 
 # The script should be run from the main repo directory!
 
@@ -15,11 +15,11 @@ set -u
 
 # HARD FAILING
 MUST_NOT=(
-	"client crates must not depend on anything in /frame"
+	"client crates must not depend on anything in /fabric"
 	"client crates must not depend on anything in /node"
-	"frame crates must not depend on anything in /node"
-	"frame crates must not depend on anything in /client"
-	"primitives crates must not depend on anything in /frame"
+	"fabric crates must not depend on anything in /node"
+	"fabric crates must not depend on anything in /client"
+	"primitives crates must not depend on anything in /fabric"
 )
 
 # ONLY DISPLAYED, script still succeeds
