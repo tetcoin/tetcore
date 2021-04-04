@@ -44,7 +44,8 @@ prometheus-endpoint = { package = "prometheus-endpoint", version = "0.8.1", path
 [dev-dependencies]
 tp-keyring = { version = "2.0.2", path = "../../primitives/keyring" }
 tetcore-tracing = { version = "2.0.2", path = "../../primitives/tracing" }
-tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+# tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
 quickcheck = "0.9"
 tetsy-kvdb-rocksdb = "0.11.0"
 tempfile = "3"
