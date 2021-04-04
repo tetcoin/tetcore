@@ -6713,7 +6713,7 @@ dependencies = [
 
 [[package]]
 name = "tc-executor"
-version = "0.8.1"
+version = "0.8.0"
 dependencies = [
  "assert_matches",
  "derive_more",
