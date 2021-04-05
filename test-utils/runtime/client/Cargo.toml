@@ -2,11 +2,12 @@
 name = "tetcore-test-runtime-client"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+description = "Tetcore Client testing utilities."
 edition = "2018"
 license = "Apache-2.0"
 homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore/"
-publish = false
+# publish = false
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
