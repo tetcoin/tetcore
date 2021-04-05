@@ -2,6 +2,7 @@
 name = "node-primitives"
 version = "2.0.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+description = "Low-level types used throughout the Tetcore code."
 edition = "2018"
 license = "Apache-2.0"
 keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]

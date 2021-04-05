@@ -2,6 +2,7 @@
 name = "node-runtime"
 version = "2.0.1"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
+description = "The Tetcore runtime"
 edition = "2018"
 build = "build.rs"
 license = "Apache-2.0"
