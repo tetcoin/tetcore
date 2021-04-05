@@ -54,7 +54,8 @@ tet-io = { version = "2.0.2", path = "../../primitives/io" }
 tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
 tokio = "0.1.22"
 tc-transaction-pool = { version = "2.0.0", path = "../transaction-pool" }
-tc-cli = { version = "0.8.0", path = "../cli" }
+# tc-cli = { version = "0.8.0", path = "../cli" }
+tc-cli = { path = "../cli" }
 
 [features]
 test-helpers = ["lazy_static"]
