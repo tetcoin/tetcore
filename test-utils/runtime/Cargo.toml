@@ -54,7 +54,8 @@ serde = { version = "1.0.101", optional = true, features = ["derive"] }
 [dev-dependencies]
 tc-block-builder = { version = "0.8.0", path = "../../client/block-builder" }
 tc-executor = { version = "0.8.0", path = "../../client/executor" }
-tetcore-test-runtime-client = { version = "2.0.0", path = "./client" }
+# tetcore-test-runtime-client = { version = "2.0.0", path = "./client" }
+tetcore-test-runtime-client = { path = "./client" }
 
 [build-dependencies]
 wasm-builder = { version = "3.0.0", path = "../../utils/wasm-builder" }
