@@ -30,7 +30,8 @@ fabric-benchmarking = { version = "2.0.0", path = "../../../fabric/benchmarking"
 criterion = "0.3.3"
 fabric-support = { version = "2.0.0", path = "../../../fabric/support" }
 fabric-system = { version = "2.0.0", path = "../../../fabric/system" }
-node-testing = { version = "2.0.0", path = "../testing" }
+# node-testing = { version = "2.0.0", path = "../testing" }
+node-testing = { path = "../testing" }
 noble-balances = { version = "2.0.1", path = "../../../fabric/balances" }
 noble-contracts = { version = "2.0.0", path = "../../../fabric/contracts" }
 noble-grandpa = { version = "2.0.0", path = "../../../fabric/grandpa" }
