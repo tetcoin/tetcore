@@ -87,8 +87,10 @@ tempfile = "3.1.0"
 directories = "3.0.1"
 
 [dev-dependencies]
-tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
-tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime/" }
+# tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+# tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime/" }
+tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
+tetcore-test-runtime = { path = "../../test-utils/runtime/" }
 tp-consensus-babe = { version = "0.8.2", path = "../../primitives/consensus/babe" }
 grandpa = { version = "0.8.0", package = "tc-finality-grandpa", path = "../finality-grandpa" }
 grandpa-primitives = { version = "2.0.0", package = "tp-finality-grandpa", path = "../../primitives/finality-grandpa" }
