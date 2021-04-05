@@ -31,6 +31,7 @@ tp-block-builder = { version = "2.0.2", path = "../../../../primitives/block-bui
 tc-rpc-api = { version = "0.8.0", path = "../../../../client/rpc-api" }
 
 [dev-dependencies]
-tetcore-test-runtime-client = { version = "2.0.0", path = "../../../../test-utils/runtime/client" }
+# tetcore-test-runtime-client = { version = "2.0.0", path = "../../../../test-utils/runtime/client" }
+tetcore-test-runtime-client = { path = "../../../../test-utils/runtime/client" }
 tetcore-tracing = { version = "2.0.2", path = "../../../../primitives/tracing" }
 tc-transaction-pool = { version = "2.0.0", path = "../../../../client/transaction-pool" }
