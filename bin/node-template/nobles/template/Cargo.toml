@@ -2,7 +2,7 @@
 authors = ['Anonymous']
 edition = '2018'
 name = 'noble-template'
-version = "2.0.0"
+version = "2.0.1"
 license = "Unlicense"
 keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
 categories = ["cryptography::cryptocurrencies"]
@@ -32,17 +32,17 @@ path = "../../../../fabric/system"
 
 [dev-dependencies.tet-core]
 default-features = false
-version = "2.0.0"
+version = "2.0.2"
 path = "../../../../primitives/core"
 
 [dev-dependencies.tet-io]
 default-features = false
-version = "2.0.0"
+version = "2.0.2"
 path = "../../../../primitives/io"
 
 [dev-dependencies.tp-runtime]
 default-features = false
-version = "2.0.0"
+version = "2.0.2"
 path = "../../../../primitives/runtime"
 
 
