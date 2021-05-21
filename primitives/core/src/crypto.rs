@@ -442,8 +442,8 @@ macro_rules! ss58_address_format {
 
 #[cfg(feature = "full_crypto")]
 ss58_address_format!(
-	PolkadotAccount =>
-		(0, "polkadot", "Polkadot Relay-chain, standard account (*25519).")
+	TetcoinAccount =>
+		(0, "tetcoin", "Tetcoin Relay-chain, standard account (*25519).")
 	Reserved1 =>
 		(1, "reserved1", "Reserved for future use (1).")
 	KusamaAccount =>

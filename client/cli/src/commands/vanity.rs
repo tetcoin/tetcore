@@ -190,12 +190,12 @@ mod tests {
 
 	#[test]
 	fn generate_key_respects_network_override() {
-		let seed = generate_key::<sr25519::Pair>("ab", Ss58AddressFormat::PolkadotAccount).unwrap();
+		let seed = generate_key::<sr25519::Pair>("ab", Ss58AddressFormat::TetcoinAccount).unwrap();
 		assert!(
 			sr25519::Pair::from_seed_slice(&hex::decode(&seed[2..]).unwrap())
 				.unwrap()
 				.public()
-				.to_ss58check_with_version(Ss58AddressFormat::PolkadotAccount)
+				.to_ss58check_with_version(Ss58AddressFormat::TetcoinAccount)
 				.contains("ab")
 		);
 	}
