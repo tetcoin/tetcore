@@ -20,8 +20,8 @@ install:
   - rustup target add wasm32-unknown-unknown --toolchain nightly
 
 build_script:
-  - cargo check --tests
-  - cargo build --all
+  - cargo check --workspace --exclude tp-npos-elections-fuzzer --exclude arithmetic-fuzzer --exclude noble-staking-fuzz --tests
+  - cargo build --workspace --exclude tp-npos-elections-fuzzer --exclude arithmetic-fuzzer --exclude noble-staking-fuzz
 
 test_script:
-  - cargo test --all
+  - cargo test --workspace --exclude tp-npos-elections-fuzzer --exclude arithmetic-fuzzer --exclude noble-staking-fuzz
