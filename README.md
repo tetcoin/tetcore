@@ -1,5 +1,7 @@
 # Tetcore &middot; [![GitHub license](https://img.shields.io/badge/license-GPL3%2FApache2-blue)](#LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/CONTRIBUTING.adoc)
 
+[![appveyor](https://img.shields.io/appveyor/build/xdv/tetcore)](https://ci.appveyor.com/project/xdv/tetcore) [![Rust - Debug Build](https://github.com/tetcoin/tetcore/actions/workflows/rust-debug.yml/badge.svg)](https://github.com/tetcoin/tetcore/actions/workflows/rust-debug.yml) [![Rust - Release Build](https://github.com/tetcoin/tetcore/actions/workflows/rust-release.yml/badge.svg)](https://github.com/tetcoin/tetcore/actions/workflows/rust-release.yml)
+
 <p align="center">
   <img src="/docs/media/tetcore.png">
 </p>
