@@ -535,7 +535,9 @@ mod tests {
 					.. Default::default()
 				};
 				let r = prepare_contract::<env::Test, crate::tests::Test>(wasm.as_ref(), &schedule);
-				assert_matches!(r, $($expected)*);
+				// kedia: add self:: previously next line:
+				// assert_matches!(r, $($expected)*);
+				self::assert_matches!(r, $($expected)*);
 			}
 		};
 	}
@@ -946,7 +948,8 @@ mod tests {
 			let mut schedule = Schedule::default();
 			schedule.enable_println = true;
 			let r = prepare_contract::<env::Test, crate::tests::Test>(wasm.as_ref(), &schedule);
-			assert_matches!(r, Ok(_));
+			// kedia: add self::
+			self::assert_matches!(r, Ok(_));
 		}
 	}
 
