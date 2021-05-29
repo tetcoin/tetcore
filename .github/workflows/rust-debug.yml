@@ -30,11 +30,11 @@ jobs:
           rustup install nightly-2021-03-24
           rustup target add wasm32-unknown-unknown --toolchain nightly-2021-03-24
       - name: Run cargo check
-        run: cargo check --tests
+        run: WASM_BUILD_TOOLCHAIN=nightly-2021-03-24 cargo check --tests
 
       - name: Build
-        run: cargo build --all
+        run: WASM_BUILD_TOOLCHAIN=nightly-2021-03-24 cargo build --all
 
       - name: Run tests
         run: |
-          cargo test --all
+          WASM_BUILD_TOOLCHAIN=nightly-2021-03-24 cargo test --all
