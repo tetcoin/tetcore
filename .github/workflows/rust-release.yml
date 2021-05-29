@@ -25,6 +25,11 @@ jobs:
       # `cargo check` command here will use installed `nightly`
       # as it is set as an "override" for current directory
 
+      - name: Utilize Nightly 03-34-2021
+        run: |
+          rustup install nightly-2021-03-24
+          rustup target add wasm32-unknown-unknown --toolchain nightly-2021-03-24
+          
       - name: Run cargo check
         run: cargo check --tests
 
