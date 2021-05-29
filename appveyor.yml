@@ -1,0 +1,27 @@
+environment:
+  matrix:
+    - FEATURES: ""
+
+platform:
+  - x86_64-pc-windows-msvc
+
+# avoid running tests twice
+branches:
+  only:
+    - master
+
+install:
+  - curl -sSf -o rustup-init.exe https://win.rustup.rs/
+  - rustup-init.exe -y --default-host %PLATFORM%
+  - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
+  - rustc -vV
+  - cargo -vV
+  - rustup install nightly
+  - rustup target add wasm32-unknown-unknown --toolchain nightly
+
+build_script:
+  - cargo check --tests
+  - cargo build --all
+
+test_script:
+  - cargo test --all
