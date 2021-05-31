@@ -6,8 +6,8 @@
   <img src="/docs/media/tetcore.png">
 </p>
 
-
-🚀 Tetcore enables the rapid prototyping of blockchains built for any purpose.
+🚀
+Tetcore enables the rapid prototyping of blockchains built for any purpose.
 
 ## Trying it out
 
