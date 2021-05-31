@@ -7,7 +7,7 @@
 </p>
 
 
-Tetcore is the framework for blockchain innovation 🚀.
+🚀 Tetcore enables the rapid prototyping of blockchains built for any purpose.
 
 ## Trying it out
 
