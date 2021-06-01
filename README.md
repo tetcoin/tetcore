@@ -3,7 +3,7 @@
 [![appveyor](https://img.shields.io/appveyor/build/xdv/tetcore)](https://ci.appveyor.com/project/xdv/tetcore) [![Rust - Debug Build](https://github.com/tetcoin/tetcore/actions/workflows/rust-debug.yml/badge.svg)](https://github.com/tetcoin/tetcore/actions/workflows/rust-debug.yml) [![Rust - Release Build](https://github.com/tetcoin/tetcore/actions/workflows/rust-release.yml/badge.svg)](https://github.com/tetcoin/tetcore/actions/workflows/rust-release.yml)
 
 <p align="center">
-  <img src="https://tetcoin/img/tetcore/logo.png">
+  <img src="https://tetcoin.org/img/tetcore/logo.png">
 </p>
 
 🚀  
