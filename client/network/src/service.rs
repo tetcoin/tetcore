@@ -234,7 +234,7 @@ impl<B: BlockT + 'static, H: ExHashT> NetworkWorker<B, H> {
 			log::warn!(
 				"🙇 Sentry nodes are deprecated, and the `--sentry` and  `--sentry-nodes` \
 				CLI options will eventually be removed in a future version. The Tetcore \
-				and Polkadot networking protocol require validators to be \
+				and Tetcoin networking protocol require validators to be \
 				publicly-accessible. Please do not block access to your validator nodes. \
 				For details, see https://github.com/tetcoin/tetcore/issues/6845."
 			);

@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 //! Tetcore's client telemetry is a part of tetcore that allows ingesting telemetry data
-//! with for example [Polkadot telemetry](https://github.com/tetcoin/tetcore-telemetry).
+//! with for example [Tetcoin telemetry](https://github.com/tetcoin/tetcore-telemetry).
 //!
 //! It works using Tokio's [tracing](https://github.com/tokio-rs/tracing/) library. The telemetry
 //! information uses tracing's logging to report the telemetry data which is then retrieved by a

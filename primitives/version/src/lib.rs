@@ -64,7 +64,7 @@ pub struct RuntimeVersion {
 	/// Name of the implementation of the spec. This is of little consequence for the node
 	/// and serves only to differentiate code of different implementation teams. For this
 	/// codebase, it will be tetsy-tetcoin. If there were a non-Rust implementation of the
-	/// Polkadot runtime (e.g. C++), then it would identify itself with an accordingly different
+	/// Tetcoin runtime (e.g. C++), then it would identify itself with an accordingly different
 	/// `impl_name`.
 	pub impl_name: RuntimeString,
 

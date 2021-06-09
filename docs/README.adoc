@@ -18,13 +18,13 @@ See also https://www.tetcoin.org/what-is-tetcore/.
 
 == Usage
 
-Tetcore is still an early stage project, and while it has already been used as the basis of major projects like Polkadot, using it is still a significant undertaking. In particular, you should have a good knowledge of blockchain concepts and basic cryptography. Terminology like header, block, client, hash, transaction and signature should be familiar. At present you will need a working knowledge of Rust to be able to do anything interesting (though eventually, we aim for this not to be the case).
+Tetcore is still an early stage project, and while it has already been used as the basis of major projects like Tetcoin, using it is still a significant undertaking. In particular, you should have a good knowledge of blockchain concepts and basic cryptography. Terminology like header, block, client, hash, transaction and signature should be familiar. At present you will need a working knowledge of Rust to be able to do anything interesting (though eventually, we aim for this not to be the case).
 
 Tetcore is designed for use in one of three ways:
 
 **1. Trivial**: By running the Tetcore binary `tetcore` and configuring it with a genesis block that includes the current demonstration runtime. In this case, you just build Tetcore, configure a JSON file, and launch your own blockchain. This affords you the least amount of customizability, primarily allowing you to change the genesis parameters of the various included runtime modules such as balances, staking, block-period, fees, and governance.
 
-**2. Modular**: By hacking together nobles built with Tetcore FABRIC into a new runtime and possibly altering or reconfiguring the Tetcore client's block authoring logic. This affords you a very large amount of freedom over your blockchain's logic, letting you change data types, add or remove modules, and crucially, add your own modules. Much can be changed without touching the block authoring logic (since it is generic). If this is the case, then the existing Tetcore binary can be used for block authoring and syncing. If the block authoring logic needs to be tweaked, then a new, altered block authoring binary must be built as a separate project and used by validators. This is how the Polkadot relay chain is built and should suffice for almost all circumstances in the near to mid-term.
+**2. Modular**: By hacking together nobles built with Tetcore FABRIC into a new runtime and possibly altering or reconfiguring the Tetcore client's block authoring logic. This affords you a very large amount of freedom over your blockchain's logic, letting you change data types, add or remove modules, and crucially, add your own modules. Much can be changed without touching the block authoring logic (since it is generic). If this is the case, then the existing Tetcore binary can be used for block authoring and syncing. If the block authoring logic needs to be tweaked, then a new, altered block authoring binary must be built as a separate project and used by validators. This is how the Tetcoin relay chain is built and should suffice for almost all circumstances in the near to mid-term.
 
 **3. Generic**: The entire FABRIC can be ignored and the entire runtime designed and implemented from scratch. If desired, this can be done in a language other than Rust, provided it can target WebAssembly. If the runtime can be made compatible with the existing client's block authoring logic, then you can simply construct a new genesis block from your Wasm blob and launch your chain with the existing Rust-based Tetcore client. If not, then you'll need to alter the client's block authoring logic accordingly. This is probably a useless option for most projects right now, but provides complete flexibility allowing for a long-term, far-reaching upgrade path for the Tetcore paradigm.
 
@@ -45,7 +45,7 @@ Inherents, meanwhile, are not passed on the network and are not signed. They rep
 
 To give an example, there is the timestamp inherent, which sets the current timestamp of the block. This is not a fixed part of Tetcore, but does come as part of FABRIC to be used as desired. No signature could fundamentally prove that a block were authored at a given time in quite the same way that a signature can "prove" the desire to spend some particular funds. Rather, it is the business of each validator to ensure that they believe the timestamp is set to something reasonable before they agree that the block candidate is valid.
 
-Other examples include the parachain-heads extrinsic in Polkadot and the "note-missed-proposal" extrinsic used in FABRIC to determine and punish or deactivate offline validators.
+Other examples include the parachain-heads extrinsic in Tetcoin and the "note-missed-proposal" extrinsic used in FABRIC to determine and punish or deactivate offline validators.
 
 
 === Runtime and API
@@ -54,7 +54,7 @@ Tetcore chains all have a runtime. The runtime is a WebAssembly "blob" that incl
 
 If you want to develop a chain with Tetcore, you will need to implement the `Core` trait. This `Core` trait generates an API with the minimum necessary functionality to interact with your runtime. A special macro is provided called `impl_runtime_apis!` that help you implement runtime API traits. All runtime API trait implementations need to be done in one call of the `impl_runtime_apis!` macro. All parameters and return values need to implement https://crates.io/crates/tetsy-codec[`tetsy-codec`] to be encodable and decodable.
 
-Here's a snippet of the Polkadot API implementation as of PoC-3:
+Here's a snippet of the Tetcoin API implementation as of PoC-3:
 
 ```rust
 impl_runtime_apis! {

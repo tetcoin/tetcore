@@ -838,7 +838,7 @@ mod tests {
 	#[test]
 	fn discovery_working() {
 		let mut first_swarm_peer_id_and_addr = None;
-		let protocol_id = ProtocolId::from("dot");
+		let protocol_id = ProtocolId::from("tet");
 
 		// Build swarms whose behaviour is `DiscoveryBehaviour`, each aware of
 		// the first swarm via `with_user_defined`.

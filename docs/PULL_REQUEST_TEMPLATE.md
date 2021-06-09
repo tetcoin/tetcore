@@ -20,7 +20,7 @@ Before you submitting, please check that:
   - Any panickers have a proof or removed.
 - [ ] You bumped the runtime version if there are breaking changes in the **runtime**.
 - [ ] You updated any rustdocs which may have changed
-- [ ] Has the PR altered the external API or interfaces used by Polkadot? Do you have the corresponding Polkadot PR ready?
+- [ ] Has the PR altered the external API or interfaces used by Tetcoin? Do you have the corresponding Tetcoin PR ready?
 
 Refer to [the contributing guide](https://github.com/tetcoin/tetcore/blob/master/docs/CONTRIBUTING.adoc) for details.
 

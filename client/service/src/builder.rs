@@ -919,7 +919,7 @@ pub fn build_network<TBl, TExPool, TImpQu, TCl>(
 
 	// TODO: Normally, one is supposed to pass a list of notifications protocols supported by the
 	// node through the `NetworkConfiguration` struct. But because this function doesn't know in
-	// advance which components, such as GrandPa or Polkadot, will be plugged on top of the
+	// advance which components, such as GrandPa or Tetcoin, will be plugged on top of the
 	// service, it is unfortunately not possible to do so without some deep refactoring. To bypass
 	// this problem, the `NetworkService` provides a `register_notifications_protocol` method that
 	// can be called even after the network has been initialized. However, we want to avoid the

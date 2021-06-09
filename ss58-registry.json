@@ -13,7 +13,7 @@
 		{
 			"prefix": 0,
 			"network": "tetcoin",
-			"displayName": "Polkadot Relay Chain",
+			"displayName": "Tetcoin Relay Chain",
 			"symbols": ["TET"],
 			"decimals": [10],
 			"standardAccount": "*25519",

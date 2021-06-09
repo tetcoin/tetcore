@@ -60,30 +60,30 @@ When reviewing a pull request, the end-goal is to suggest useful changes to the 
 . There exists a somewhat cleaner/better/faster way of accomplishing the same feature/fix.
 . It does not fit well with some other contributors' longer-term vision for the project.
 
-=== Updating Polkadot as well
+=== Updating Tetcoin as well
 
-**All pull requests will be checked against either Polkadot master, or your provided Polkadot companion PR**. That is, If your PR changes the external APIs or interfaces used by Polkadot. If you tagged the PR with `breaksapi` or `breaksconsensus` this is most certainly the case, in all other cases check for it by running step 1 below.
+**All pull requests will be checked against either Tetcoin master, or your provided Tetcoin companion PR**. That is, If your PR changes the external APIs or interfaces used by Tetcoin. If you tagged the PR with `breaksapi` or `breaksconsensus` this is most certainly the case, in all other cases check for it by running step 1 below.
 
-To create a Polkadot companion PR:
+To create a Tetcoin companion PR:
 
-. Pull latest Polkadot master (or clone it, if you haven't yet).
+. Pull latest Tetcoin master (or clone it, if you haven't yet).
 . Override your local cargo config to point to your local tetcore (pointing to your WIP branch): place `paths = ["path/to/tetcore"]` in `~/.cargo/config`.
 . Make the changes required and build tetcoin locally.
-. Submit all this as a PR against the Polkadot Repo. Link to your Polkadot PR in the _description_ of your Tetcore PR as "tetcoin companion: [URL]"
-. Now you should see that the `check_tetcoin` CI job will build your Tetcore PR agains the mentioned Polkadot branch in your PR description.
-. Wait for reviews on both the Tetcore and the Polkadot pull request.
+. Submit all this as a PR against the Tetcoin Repo. Link to your Tetcoin PR in the _description_ of your Tetcore PR as "tetcoin companion: [URL]"
+. Now you should see that the `check_tetcoin` CI job will build your Tetcore PR agains the mentioned Tetcoin branch in your PR description.
+. Wait for reviews on both the Tetcore and the Tetcoin pull request.
 . Once the Tetcore pull request runs green, a member of the `tetsy` github group can comment on the Tetcore pull request with `bot merge` which will:
     - Merge the Tetcore pull request.
     - In case the pull request origins from https://github.com/tetcoin/tetcoin directly and not from a fork:
-        - The bot will push a commit to the Polkadot pull request updating its Tetcore reference.
-        - The bot will merge the Polkadot pull request once all its CI checks are green.
+        - The bot will push a commit to the Tetcoin pull request updating its Tetcore reference.
+        - The bot will merge the Tetcoin pull request once all its CI checks are green.
     - In case the pull request origins from a fork (relevant for pull requests by external contributors):
-        - You need to push a commit to the Polkadot pull request updating the Tetcore reference.
-        - You need to merge by commenting `bot merge` on the Polkadot pull request once all CI checks on the pull request are green.
+        - You need to push a commit to the Tetcoin pull request updating the Tetcore reference.
+        - You need to merge by commenting `bot merge` on the Tetcoin pull request once all CI checks on the pull request are green.
 
-If your PR is reviewed well, but a Polkadot PR is missing, signal it with https://github.com/tetcoin/tetcore/labels/A7-needstetcoinpr[`A7-needstetcoinpr`] to prevent it from getting automatically merged.
+If your PR is reviewed well, but a Tetcoin PR is missing, signal it with https://github.com/tetcoin/tetcore/labels/A7-needstetcoinpr[`A7-needstetcoinpr`] to prevent it from getting automatically merged.
 
-As there might be multiple pending PRs that might conflict with one another, a) you should not merge the tetcore PR until the Polkadot PR has also been reviewed and b) both should be merged pretty quickly after another to not block others.
+As there might be multiple pending PRs that might conflict with one another, a) you should not merge the tetcore PR until the Tetcoin PR has also been reviewed and b) both should be merged pretty quickly after another to not block others.
 
 == Helping out
 
