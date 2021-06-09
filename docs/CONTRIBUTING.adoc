@@ -68,20 +68,20 @@ To create a Polkadot companion PR:
 
 . Pull latest Polkadot master (or clone it, if you haven't yet).
 . Override your local cargo config to point to your local tetcore (pointing to your WIP branch): place `paths = ["path/to/tetcore"]` in `~/.cargo/config`.
-. Make the changes required and build polkadot locally.
-. Submit all this as a PR against the Polkadot Repo. Link to your Polkadot PR in the _description_ of your Tetcore PR as "polkadot companion: [URL]"
-. Now you should see that the `check_polkadot` CI job will build your Tetcore PR agains the mentioned Polkadot branch in your PR description.
+. Make the changes required and build tetcoin locally.
+. Submit all this as a PR against the Polkadot Repo. Link to your Polkadot PR in the _description_ of your Tetcore PR as "tetcoin companion: [URL]"
+. Now you should see that the `check_tetcoin` CI job will build your Tetcore PR agains the mentioned Polkadot branch in your PR description.
 . Wait for reviews on both the Tetcore and the Polkadot pull request.
 . Once the Tetcore pull request runs green, a member of the `tetsy` github group can comment on the Tetcore pull request with `bot merge` which will:
     - Merge the Tetcore pull request.
-    - In case the pull request origins from https://github.com/tetcoin/polkadot directly and not from a fork:
+    - In case the pull request origins from https://github.com/tetcoin/tetcoin directly and not from a fork:
         - The bot will push a commit to the Polkadot pull request updating its Tetcore reference.
         - The bot will merge the Polkadot pull request once all its CI checks are green.
     - In case the pull request origins from a fork (relevant for pull requests by external contributors):
         - You need to push a commit to the Polkadot pull request updating the Tetcore reference.
         - You need to merge by commenting `bot merge` on the Polkadot pull request once all CI checks on the pull request are green.
 
-If your PR is reviewed well, but a Polkadot PR is missing, signal it with https://github.com/tetcoin/tetcore/labels/A7-needspolkadotpr[`A7-needspolkadotpr`] to prevent it from getting automatically merged.
+If your PR is reviewed well, but a Polkadot PR is missing, signal it with https://github.com/tetcoin/tetcore/labels/A7-needstetcoinpr[`A7-needstetcoinpr`] to prevent it from getting automatically merged.
 
 As there might be multiple pending PRs that might conflict with one another, a) you should not merge the tetcore PR until the Polkadot PR has also been reviewed and b) both should be merged pretty quickly after another to not block others.
 

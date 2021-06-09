@@ -1,9 +1,9 @@
-name: Check Polkadot Companion and Label
+name: Check Tetcoin Companion and Label
 
 on:
   pull_request:
     types: [opened, synchronize]
-  
+
 jobs:
   check_status:
     runs-on: ubuntu-latest
@@ -14,7 +14,7 @@ jobs:
         with:
           authToken: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event.pull_request.head.sha }}
-          contexts: 'continuous-integration/gitlab-check-polkadot-companion-build'
+          contexts: 'continuous-integration/gitlab-check-tetcoin-companion-build'
           timeout: 1800
           notPresentTimeout: 3600 # It can take quite a while before the job starts on Gitlab when the CI queue is large
           failureStates: failure
@@ -24,9 +24,9 @@ jobs:
         uses: andymckay/labeler@master
         if: steps.check-companion-status.outputs.result == 'success'
         with:
-          remove-labels: 'A7-needspolkadotpr'
+          remove-labels: 'A7-needstetcoinpr'
       - name: Label failure
         uses: andymckay/labeler@master
         if: steps.check-companion-status.outputs.result == 'failure'
         with:
-          add-labels: 'A7-needspolkadotpr'
+          add-labels: 'A7-needstetcoinpr'

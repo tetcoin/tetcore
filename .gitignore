@@ -10,7 +10,7 @@ bin/node/runtime/wasm/target/
 **/._*
 **/.criterion/
 .vscode
-polkadot.*
+tetcoin.*
 .DS_Store
 .idea/
 nohup.out

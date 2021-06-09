@@ -71,7 +71,7 @@ cargo run -- \
   --chain=local \
   --alice \
   --node-key 0000000000000000000000000000000000000000000000000000000000000001 \
-  --telemetry-url 'ws://telemetry.polkadot.io:1024 0' \
+  --telemetry-url 'ws://telemetry.tetcoin.io:1024 0' \
   --validator
 ```
 
@@ -87,7 +87,7 @@ cargo run -- \
   --bob \
   --port 30334 \
   --ws-port 9945 \
-  --telemetry-url 'ws://telemetry.polkadot.io:1024 0' \
+  --telemetry-url 'ws://telemetry.tetcoin.io:1024 0' \
   --validator
 ```
 
@@ -109,7 +109,7 @@ Tetcore-based blockchain nodes expose a number of capabilities:
     [consensus](https://tetcoin.org/docs/en/knowledgebase/advanced/consensus) on the state of the
     network. Tetcore makes it possible to supply custom consensus engines and also ships with
     several consensus mechanisms that have been built on top of
-    [Web3 Foundation research](https://research.web3.foundation/en/latest/polkadot/NPoS/index.html).
+    [Web3 Foundation research](https://research.web3.foundation/en/latest/tetcoin/NPoS/index.html).
 -   RPC Server: A remote procedure call (RPC) server is used to interact with Tetcore nodes.
 
 There are several files in the `node` directory - take special note of the following:

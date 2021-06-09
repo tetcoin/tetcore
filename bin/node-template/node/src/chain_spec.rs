@@ -9,7 +9,7 @@ use tp_runtime::traits::{Verify, IdentifyAccount};
 use tc_service::ChainType;
 
 // The URL for the telemetry server.
-// const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
+// const STAGING_TELEMETRY_URL: &str = "wss://telemetry.tetcoin.org/submit/";
 
 /// Specialized `ChainSpec`. This is a specialization of the general Tetcore ChainSpec type.
 pub type ChainSpec = tc_service::GenericChainSpec<GenesisConfig>;

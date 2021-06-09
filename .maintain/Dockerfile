@@ -1,5 +1,5 @@
 # Note: We don't use Alpine and its packaged Rust/Cargo because they're too often out of date,
-# preventing them from being used to build Tetcore/Polkadot.
+# preventing them from being used to build Tetcore/Tetcoin.
 
 FROM phusion/baseimage:0.11 as builder
 LABEL maintainer="chevdor@gmail.com"

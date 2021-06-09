@@ -17,7 +17,7 @@
 
 //! # Authority discovery module.
 //!
-//! This module is used by the `client/authority-discovery` and by polkadot's parachain logic
+//! This module is used by the `client/authority-discovery` and by tetcoin's parachain logic
 //! to retrieve the current and the next set of authorities.
 
 // Ensure we're `no_std` when compiling for Wasm.

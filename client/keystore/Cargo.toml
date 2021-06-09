@@ -8,7 +8,7 @@ keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
 categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
-description = "Keystore (and session key management) for ed25519 based chains like Polkadot."
+description = "Keystore (and session key management) for ed25519 based chains like Tetcoin."
 documentation = "https://docs.rs/tc-keystore"
 readme = "README.md"
 

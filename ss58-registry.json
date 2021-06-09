@@ -2,7 +2,7 @@
 	"specification": "https://github.com/tetcoin/tetcore/wiki/External-Address-Format-(SS58)",
 	"schema": {
 		"prefix": "The address prefix. Must be an integer and unique.",
-		"network": "Unique identifier for the network that will use this prefix, string, no spaces. To integrate with CLI tools, e.g. `--network polkadot`.",
+		"network": "Unique identifier for the network that will use this prefix, string, no spaces. To integrate with CLI tools, e.g. `--network tetcoin`.",
 		"displayName": "The name of the network that will use this prefix, in a format friendly for display.",
 		"symbols": "Array of symbols of any tokens the chain uses, usually 2-5 characters. Most chains will only have one. Chains that have multiple instances of the Balances noble should order the array by instance.",
 		"decimals": "Array of integers representing the number of decimals that represent a single unit to the end user. Must be same length as `symbols` to represent each token's denomination.",
@@ -12,12 +12,12 @@
 	"registry": [
 		{
 			"prefix": 0,
-			"network": "polkadot",
+			"network": "tetcoin",
 			"displayName": "Polkadot Relay Chain",
-			"symbols": ["DOT"],
+			"symbols": ["TET"],
 			"decimals": [10],
 			"standardAccount": "*25519",
-			"website": "https://polkadot.network"
+			"website": "https://tetcoin.network"
 		},
 		{
 			"prefix": 1,
@@ -30,12 +30,12 @@
 		},
 		{
 			"prefix": 2,
-			"network": "kusama",
-			"displayName": "Kusama Relay Chain",
-			"symbols": ["KSM"],
+			"network": "metrocoin",
+			"displayName": "Metrocoin Relay Chain",
+			"symbols": ["TET"],
 			"decimals": [12],
 			"standardAccount": "*25519",
-			"website": "https://kusama.network"
+			"website": "https://metrocoin.dev"
 		},
 		{
 			"prefix": 3,
@@ -248,7 +248,7 @@
 			"prefix": 26,
 			"network": "jupiter",
 			"displayName": "Jupiter",
-			"symbols": ["jDOT"],
+			"symbols": ["jTET"],
 			"decimals": [10],
 			"standardAccount": "*25519",
 			"website": "https://jupiter.patract.io"
@@ -257,7 +257,7 @@
 			"prefix": 27,
 			"network": "patract",
 			"displayName": "Patract",
-			"symbols": ["pDOT", "pKSM"],
+			"symbols": ["pTET", "pTET"],
 			"decimals": [10, 12],
 			"standardAccount": "*25519",
 			"website": "https://patract.network"

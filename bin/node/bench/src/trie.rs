@@ -58,8 +58,8 @@ pub enum DatabaseSize {
 }
 
 lazy_static! {
-	static ref KUSAMA_STATE_DISTRIBUTION: SizePool =
-		SizePool::from_histogram(crate::state_sizes::KUSAMA_STATE_DISTRIBUTION);
+	static ref METROCOIN_STATE_DISTRIBUTION: SizePool =
+		SizePool::from_histogram(crate::state_sizes::METROCOIN_STATE_DISTRIBUTION);
 }
 
 impl DatabaseSize {
@@ -115,7 +115,7 @@ impl core::BenchmarkDescription for TrieReadBenchmarkDescription {
 		let mut database = TempDatabase::new();
 
 		let mut rng = rand::thread_rng();
-		let warmup_prefix = KUSAMA_STATE_DISTRIBUTION.key(&mut rng);
+		let warmup_prefix = METROCOIN_STATE_DISTRIBUTION.key(&mut rng);
 
 		let mut key_values = KeyValues::new();
 		let mut warmup_keys = KeyValues::new();
@@ -123,8 +123,8 @@ impl core::BenchmarkDescription for TrieReadBenchmarkDescription {
 		let every_x_key = self.database_size.keys() / SAMPLE_SIZE;
 		for idx in 0..self.database_size.keys() {
 			let kv = (
-				KUSAMA_STATE_DISTRIBUTION.key(&mut rng).to_vec(),
-				KUSAMA_STATE_DISTRIBUTION.value(&mut rng),
+				METROCOIN_STATE_DISTRIBUTION.key(&mut rng).to_vec(),
+				METROCOIN_STATE_DISTRIBUTION.value(&mut rng),
 			);
 			if idx % every_x_key == 0 {
 				// warmup keys go to separate tree with high prob
@@ -230,15 +230,15 @@ impl core::BenchmarkDescription for TrieWriteBenchmarkDescription {
 		let mut database = TempDatabase::new();
 
 		let mut rng = rand::thread_rng();
-		let warmup_prefix = KUSAMA_STATE_DISTRIBUTION.key(&mut rng);
+		let warmup_prefix = METROCOIN_STATE_DISTRIBUTION.key(&mut rng);
 
 		let mut key_values = KeyValues::new();
 		let mut warmup_keys = KeyValues::new();
 		let every_x_key = self.database_size.keys() / SAMPLE_SIZE;
 		for idx in 0..self.database_size.keys() {
 			let kv = (
-				KUSAMA_STATE_DISTRIBUTION.key(&mut rng).to_vec(),
-				KUSAMA_STATE_DISTRIBUTION.value(&mut rng),
+				METROCOIN_STATE_DISTRIBUTION.key(&mut rng).to_vec(),
+				METROCOIN_STATE_DISTRIBUTION.value(&mut rng),
 			);
 			if idx % every_x_key == 0 {
 				// warmup keys go to separate tree with high prob

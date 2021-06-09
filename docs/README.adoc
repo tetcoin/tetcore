@@ -10,7 +10,7 @@ Tetcore is a framework for blockchain innovation.
 
 == Description
 
-At its heart, Tetcore is a combination of three technologies: https://webassembly.org/[WebAssembly], https://libp2p.io/[Libp2p] and GRANDPA Consensus. About GRANDPA, see this https://hackmd.io/Jd0byWX0RiqFiXUVC78Bdw?view#GRANDPA[definition], https://medium.com/polkadot-network/grandpa-block-finality-in-polkadot-an-introduction-part-1-d08a24a021b5[introduction] and https://github.com/w3f/consensus/blob/master/pdf/grandpa.pdf[formal specification]. It is both a library for building new blockchains and a "skeleton key" of a blockchain client, able to synchronize to any Tetcore-based chain.
+At its heart, Tetcore is a combination of three technologies: https://webassembly.org/[WebAssembly], https://libp2p.io/[Libp2p] and GRANDPA Consensus. About GRANDPA, see this https://hackmd.io/Jd0byWX0RiqFiXUVC78Bdw?view#GRANDPA[definition], https://medium.com/tetcoin-network/grandpa-block-finality-in-tetcoin-an-introduction-part-1-d08a24a021b5[introduction] and https://github.com/w3f/consensus/blob/master/pdf/grandpa.pdf[formal specification]. It is both a library for building new blockchains and a "skeleton key" of a blockchain client, able to synchronize to any Tetcore-based chain.
 
 Tetcore chains have three distinct features that make them "next-generation": a dynamic, self-defining state-transition function; light-client functionality from day one; and a progressive consensus algorithm with fast block production and adaptive, definite finality. The STF, encoded in WebAssembly, is known as the "runtime". This defines the `execute_block` function, and can specify everything from the staking algorithm, transaction semantics, logging mechanisms and procedures for replacing any aspect of itself or of the blockchain's state ("governance"). Because the runtime is entirely dynamic all of these can be switched out or upgraded at any time. A Tetcore chain is very much a "living organism".
 
@@ -281,7 +281,7 @@ cargo run --release -- --dev
 
 Detailed logs may be shown by running the node with the following environment variables set: `RUST_LOG=debug RUST_BACKTRACE=1 cargo run --release \-- --dev`.
 
-If you want to see the multi-node consensus algorithm in action locally, then you can create a local testnet with two validator nodes for Alice and Bob, who are the initial authorities of the genesis chain specification that have been endowed with a testnet DOTs. We'll give each node a name and expose them so they are listed on link:https://telemetry.polkadot.io/#/Local%20Testnet[Telemetry]. You'll need two terminal windows open.
+If you want to see the multi-node consensus algorithm in action locally, then you can create a local testnet with two validator nodes for Alice and Bob, who are the initial authorities of the genesis chain specification that have been endowed with a testnet TETs. We'll give each node a name and expose them so they are listed on link:https://telemetry.tetcoin.io/#/Local%20Testnet[Telemetry]. You'll need two terminal windows open.
 
 We'll start Alice's Tetcore node first on default TCP port 30333 with her chain database stored locally at `/tmp/alice`. The Bootnode ID of her node is `QmRpheLN4JWdAnY7HGJfWFNbfkQCb6tFf4vvA6hgjMZKrR`, which is generated from the `--node-key` value that we specify below:
 
@@ -291,7 +291,7 @@ cargo run --release \-- \
   --chain=local \
   --alice \
   --node-key 0000000000000000000000000000000000000000000000000000000000000001 \
-  --telemetry-url 'ws://telemetry.polkadot.io:1024 0' \
+  --telemetry-url 'ws://telemetry.tetcoin.io:1024 0' \
   --validator
 
 In the second terminal, we'll run the following to start Bob's Tetcore node on a different TCP port of 30334, and with his chain database stored locally at `/tmp/bob`. We'll specify a value for the `--bootnodes` option that will connect his node to Alice's Bootnode ID on TCP port 30333:
@@ -303,7 +303,7 @@ cargo run --release \-- \
   --chain=local \
   --bob \
   --port 30334 \
-  --telemetry-url 'ws://telemetry.polkadot.io:1024 0' \
+  --telemetry-url 'ws://telemetry.tetcoin.io:1024 0' \
   --validator
 
 Additional Tetcore CLI usage options are available and may be shown by running `cargo run \-- --help`.
@@ -344,7 +344,7 @@ For example, you can choose a custom node name:
 [source, shell]
 cargo run --release \-- --name my_custom_name
 
-If you are successful, you will see your node syncing at https://telemetry.polkadot.io/#/Flaming%20Fir
+If you are successful, you will see your node syncing at https://telemetry.tetcoin.io/#/Flaming%20Fir
 
 === Joining the Emberic Elm Testnet
 

@@ -353,16 +353,16 @@ cargo-check-macos:
 
 #### stage:                        build
 
-check-polkadot-companion-status:
+check-tetcoin-companion-status:
   stage:                           build
   image:                           tetcoin/tools:latest
   <<:                              *kubernetes-build
   rules:
     - if: $CI_COMMIT_REF_NAME =~ /^[0-9]+$/                         # PRs
   script:
-    - ./.maintain/gitlab/check_polkadot_companion_status.sh
+    - ./.maintain/gitlab/check_tetcoin_companion_status.sh
 
-check-polkadot-companion-build:
+check-tetcoin-companion-build:
   stage:                           build
   <<:                              *docker-env
   <<:                              *test-refs
@@ -370,9 +370,9 @@ check-polkadot-companion-build:
     - job:                         test-linux-stable-int
       artifacts:                   false
   script:
-    - ./.maintain/gitlab/check_polkadot_companion_build.sh
+    - ./.maintain/gitlab/check_tetcoin_companion_build.sh
   after_script:
-    - cd polkadot && git rev-parse --abbrev-ref HEAD
+    - cd tetcoin && git rev-parse --abbrev-ref HEAD
   allow_failure:                   true
 
 test-browser-node:
@@ -625,10 +625,10 @@ deploy-prometheus-alerting-rules:
     - kubernetes-tetsy-build
   image:                           tetcoin/kubetools:latest
   environment:
-    name: tetsy-mgmt-polkadot-alerting
+    name: tetsy-mgmt-tetcoin-alerting
   variables:
     NAMESPACE:                     monitoring
-    PROMETHEUSRULE:                prometheus-k8s-rules-polkadot-alerting
+    PROMETHEUSRULE:                prometheus-k8s-rules-tetcoin-alerting
     RULES:                         .maintain/monitoring/alerting-rules/alerting-rules.yaml
   script:
     - echo "deploying prometheus alerting rules"

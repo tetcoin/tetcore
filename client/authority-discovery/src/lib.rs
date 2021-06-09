@@ -71,7 +71,7 @@ impl Default for WorkerConfig {
 			// interval on which to trigger new queries for the current and next authorities is a trade
 			// off between efficiency and performance.
 			//
-			// Querying 700 [`AuthorityId`]s takes ~8m on the Kusama DHT (16th Nov 2020) when
+			// Querying 700 [`AuthorityId`]s takes ~8m on the Metrocoin DHT (16th Nov 2020) when
 			// comparing `authority_discovery_authority_addresses_requested_total` and
 			// `authority_discovery_dht_event_received`.
 			max_query_interval: Duration::from_secs(10 * 60),

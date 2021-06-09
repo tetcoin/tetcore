@@ -14,7 +14,7 @@
   ],
   "telemetryEndpoints": [
     [
-      "/dns/telemetry.polkadot.io/tcp/443/x-tetsy-wss/%2Fsubmit%2F",
+      "/dns/telemetry.tetcoin.io/tcp/443/x-tetsy-wss/%2Fsubmit%2F",
       0
     ]
   ],

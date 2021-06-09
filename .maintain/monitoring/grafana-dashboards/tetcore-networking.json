@@ -4,7 +4,7 @@
       "name": "VAR_METRIC_NAMESPACE",
       "type": "constant",
       "label": "Prefix of the metrics",
-      "value": "polkadot",
+      "value": "tetcoin",
       "description": ""
     }
   ],
@@ -851,7 +851,7 @@
           "refId": "A"
         },
         {
-          "expr": "polkadot_sub_libp2p_peers_count{instance=~\"${nodename}.*\"}",
+          "expr": "tetcoin_sub_libp2p_peers_count{instance=~\"${nodename}.*\"}",
           "interval": "",
           "legendFormat": "peers-count",
           "refId": "B"

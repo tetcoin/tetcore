@@ -16,7 +16,7 @@
 		"/ip4/35.198.114.154/tcp/30334/ws/p2p/QmQJmDorK9c8KjMF5PdWiH2WGUXyzJtgTeJ55S5gggdju6"
 	],
 	"telemetryEndpoints": [
-		["wss://telemetry.polkadot.io/submit/", 0]
+		["wss://telemetry.tetcoin.io/submit/", 0]
 	],
 	"protocolId": "fir",
 	"consensusEngine": null,

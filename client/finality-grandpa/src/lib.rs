@@ -673,7 +673,7 @@ pub struct GrandpaParams<Block: BlockT, C, N, SC, VR> {
 pub fn grandpa_peers_set_config() -> tc_network::config::NonDefaultSetConfig {
 	tc_network::config::NonDefaultSetConfig {
 		notifications_protocol: communication::GRANDPA_PROTOCOL_NAME.into(),
-		// Notifications reach ~256kiB in size at the time of writing on Kusama and Polkadot.
+		// Notifications reach ~256kiB in size at the time of writing on Metrocoin and Tetcoin.
 		max_notification_size: 1024 * 1024,
 		set_config: tc_network::config::SetConfig {
 			in_peers: 25,

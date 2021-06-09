@@ -98,7 +98,7 @@
 //! to use on that given substream.
 //!
 //! Protocols that are specific to a certain chain have a `<protocol-id>` in their name. This
-//! "protocol ID" is defined in the chain specifications. For example, the protocol ID of Polkadot
+//! "protocol ID" is defined in the chain specifications. For example, the protocol ID of Tetcoin
 //! is "dot". In the protocol names below, `<protocol-id>` must be replaced with the corresponding
 //! protocol ID.
 //!

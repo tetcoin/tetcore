@@ -1,8 +1,8 @@
 = Tetkey
 
-Tetkey is a commandline utility included with Tetcore that generates or restores Tetcore keys. 
+Tetkey is a commandline utility included with Tetcore that generates or restores Tetcore keys.
 
-`tetkey` will use the http://wiki.polkadot.network/en/latest/polkadot/learn/cryptography/#keypairs-and-signing[sr25519] cryptography by default. If you need to use the older ed25519 cryptography to generate or restore your key pass the `--ed25519` flag to any of the commands.
+`tetkey` will use the http://wiki.tetcoin.network/en/latest/tetcoin/learn/cryptography/#keypairs-and-signing[sr25519] cryptography by default. If you need to use the older ed25519 cryptography to generate or restore your key pass the `--ed25519` flag to any of the commands.
 
 == Usage
 
@@ -72,11 +72,11 @@ Will output a signed and encoded `UncheckedMortalCompactExtrinsic` as hex.
 === Inspecting a module ID
 
 ```bash
-tetkey module-id "py/trsry" --network kusama
+tetkey module-id "py/trsry" --network metrocoin
 
 OUTPUT:
 Public Key URI `F3opxRbN5ZbjJNU511Kj2TLuzFcDq9BGduA9TgiECafpg29` is account:
-  Network ID/version: kusama
+  Network ID/version: metrocoin
   Public key (hex):   0x6d6f646c70792f74727372790000000000000000000000000000000000000000
   Account ID:         0x6d6f646c70792f74727372790000000000000000000000000000000000000000
   SS58 Address:       F3opxRbN5ZbjJNU511Kj2TLuzFcDq9BGduA9TgiECafpg29

@@ -11,4 +11,4 @@ You can see an example setup [here](../../../.maintain/sentry-node).
 - `instance` referring to a single scrape target (see [Prometheus docs for
   details](https://prometheus.io/docs/concepts/jobs_instances/)).
 
-- `network` referring to the Blockchain network e.g. Kusama.
+- `network` referring to the Blockchain network e.g. Metrocoin.

@@ -1456,11 +1456,11 @@
           },
           {
             "selected": false,
-            "text": "polkadot",
-            "value": "polkadot"
+            "text": "tetcoin",
+            "value": "tetcoin"
           }
         ],
-        "query": "tetcore, polkadot",
+        "query": "tetcore, tetcoin",
         "skipUrlSync": false,
         "type": "custom"
       },

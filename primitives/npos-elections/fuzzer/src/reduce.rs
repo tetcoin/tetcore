@@ -41,7 +41,7 @@ type Balance = u128;
 type AccountId = u64;
 
 /// Or any other token type.
-const KSM: Balance = 1_000_000_000_000;
+const MTC: Balance = 1_000_000_000_000;
 
 fn main() {
 	loop {
@@ -92,7 +92,7 @@ fn generate_random_phragmen_assignment(
 			if winners.iter().find(|w| **w == target).is_none() {
 				winners.push(target.clone());
 			}
-			(target, rng.gen_range(1 * KSM, 100 * KSM))
+			(target, rng.gen_range(1 * MTC, 100 * MTC))
 		}).collect::<Vec<(AccountId, ExtendedBalance)>>();
 
 		assignments.push(StakedAssignment {

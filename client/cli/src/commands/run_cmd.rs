@@ -143,7 +143,7 @@ pub struct RunCmd {
 	///
 	/// A comma-separated list of origins (protocol://domain or special `null`
 	/// value). Value of `all` will disable origin validation. Default is to
-	/// allow localhost and <https://polkadot.js.org> origins. When running in
+	/// allow localhost and <https://tetcoin.js.org> origins. When running in
 	/// --dev mode the default is to allow all origins.
 	#[structopt(long = "rpc-cors", value_name = "ORIGINS", parse(try_from_str = parse_cors))]
 	pub rpc_cors: Option<Cors>,
@@ -424,7 +424,7 @@ impl CliConfiguration for RunCmd {
 						"http://127.0.0.1:*".into(),
 						"https://localhost:*".into(),
 						"https://127.0.0.1:*".into(),
-						"https://polkadot.js.org".into(),
+						"https://tetcoin.js.org".into(),
 					])
 				}
 			})

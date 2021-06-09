@@ -446,8 +446,8 @@ ss58_address_format!(
 		(0, "tetcoin", "Tetcoin Relay-chain, standard account (*25519).")
 	Reserved1 =>
 		(1, "reserved1", "Reserved for future use (1).")
-	KusamaAccount =>
-		(2, "kusama", "Kusama Relay-chain, standard account (*25519).")
+	MetrocoinAccount =>
+		(2, "Metrocoin", "Metrocoin Relay-chain, standard account (*25519).")
 	Reserved3 =>
 		(3, "reserved3", "Reserved for future use (3).")
 	KatalChainAccount =>
@@ -1266,36 +1266,36 @@ mod tests {
 			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::soft(1)]})
 		);
 		assert_eq!(
-			TestPair::from_string("hello world/DOT", None),
-			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::soft("DOT")]})
+			TestPair::from_string("hello world/TET", None),
+			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::soft("TET")]})
 		);
 		assert_eq!(
 			TestPair::from_string("hello world//1", None),
 			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::hard(1)]})
 		);
 		assert_eq!(
-			TestPair::from_string("hello world//DOT", None),
-			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::hard("DOT")]})
+			TestPair::from_string("hello world//TET", None),
+			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::hard("TET")]})
 		);
 		assert_eq!(
-			TestPair::from_string("hello world//1/DOT", None),
-			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::hard(1), DeriveJunction::soft("DOT")]})
+			TestPair::from_string("hello world//1/TET", None),
+			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::hard(1), DeriveJunction::soft("TET")]})
 		);
 		assert_eq!(
-			TestPair::from_string("hello world//DOT/1", None),
-			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::hard("DOT"), DeriveJunction::soft(1)]})
+			TestPair::from_string("hello world//TET/1", None),
+			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: None, path: vec![DeriveJunction::hard("TET"), DeriveJunction::soft(1)]})
 		);
 		assert_eq!(
 			TestPair::from_string("hello world///password", None),
 			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: Some("password".to_owned()), path: vec![]})
 		);
 		assert_eq!(
-			TestPair::from_string("hello world//1/DOT///password", None),
-			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: Some("password".to_owned()), path: vec![DeriveJunction::hard(1), DeriveJunction::soft("DOT")]})
+			TestPair::from_string("hello world//1/TET///password", None),
+			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: Some("password".to_owned()), path: vec![DeriveJunction::hard(1), DeriveJunction::soft("TET")]})
 		);
 		assert_eq!(
-			TestPair::from_string("hello world/1//DOT///password", None),
-			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: Some("password".to_owned()), path: vec![DeriveJunction::soft(1), DeriveJunction::hard("DOT")]})
+			TestPair::from_string("hello world/1//TET///password", None),
+			Ok(TestPair::Standard{phrase: "hello world".to_owned(), password: Some("password".to_owned()), path: vec![DeriveJunction::soft(1), DeriveJunction::hard("TET")]})
 		);
 	}
 
