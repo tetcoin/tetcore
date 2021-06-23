@@ -46,7 +46,7 @@ tp-finality-grandpa = { version = "2.1.2", path = "../../primitives/finality-gra
 prometheus-endpoint = { version = "2.1.2", package = "prometheus-endpoint", path = "../../utils/prometheus" }
 tc-block-builder = { version = "2.1.2", path = "../block-builder" }
 tetsy-finality-grandpa = { version = "0.13.0", features = ["derive-codec"] }
-pin-project = "0.4.6"
+pin-project = "1.0.7"
 linked-hash-map = "0.5.2"
 
 [dev-dependencies]
