@@ -61,7 +61,7 @@ pub trait TetcoreCli: Sized {
 
 	/// Implementation version.
 	///
-	/// By default this will look like this: 2.0.0-b950f731c-x86_64-linux-gnu where the hash is the
+	/// By default this will look like this: 2.1.2-b950f731c-x86_64-linux-gnu where the hash is the
 	/// short commit hash of the commit of in the Git repository.
 	fn impl_version() -> String;
 

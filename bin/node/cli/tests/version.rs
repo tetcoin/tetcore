@@ -57,27 +57,27 @@ fn test_regex_matches_properly() {
 	let expected = expected_regex();
 
 	let captures = expected
-		.captures("tetcore 2.0.0-da487d19d-x86_64-linux-gnu")
+		.captures("tetcore 2.1.2-da487d19d-x86_64-linux-gnu")
 		.unwrap();
-	assert_eq!(&captures[1], "2.0.0");
+	assert_eq!(&captures[1], "2.1.2");
 	assert_eq!(&captures[2], "da487d19d");
 	assert_eq!(&captures[3], "x86_64");
 	assert_eq!(&captures[4], "linux");
 	assert_eq!(captures.get(5).map(|x| x.as_str()), Some("gnu"));
 
 	let captures = expected
-		.captures("tetcore 2.0.0-alpha.5-da487d19d-x86_64-linux-gnu")
+		.captures("tetcore 2.1.2-alpha.5-da487d19d-x86_64-linux-gnu")
 		.unwrap();
-	assert_eq!(&captures[1], "2.0.0-alpha.5");
+	assert_eq!(&captures[1], "2.1.2-alpha.5");
 	assert_eq!(&captures[2], "da487d19d");
 	assert_eq!(&captures[3], "x86_64");
 	assert_eq!(&captures[4], "linux");
 	assert_eq!(captures.get(5).map(|x| x.as_str()), Some("gnu"));
 
 	let captures = expected
-		.captures("tetcore 2.0.0-alpha.5-da487d19d-x86_64-linux")
+		.captures("tetcore 2.1.2-alpha.5-da487d19d-x86_64-linux")
 		.unwrap();
-	assert_eq!(&captures[1], "2.0.0-alpha.5");
+	assert_eq!(&captures[1], "2.1.2-alpha.5");
 	assert_eq!(&captures[2], "da487d19d");
 	assert_eq!(&captures[3], "x86_64");
 	assert_eq!(&captures[4], "linux");

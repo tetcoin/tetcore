@@ -1,6 +1,6 @@
 [package]
 name = "node-template-release"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "GPL-3.0"

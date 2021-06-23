@@ -158,7 +158,7 @@ impl<C: TetcoreCli> Runner<C> {
 	///
 	/// ```text
 	/// 2020-06-03 16:14:21 Tetcore Node
-	/// 2020-06-03 16:14:21 ✌️  version 2.0.0-rc3-f4940588c-x86_64-linux-gnu
+	/// 2020-06-03 16:14:21 ✌️  version 2.1.2-rc3-f4940588c-x86_64-linux-gnu
 	/// 2020-06-03 16:14:21 ❤️  by Parity Technologies <admin@parity.io>, 2017-2020
 	/// 2020-06-03 16:14:21 📋 Chain specification: Flaming Fir
 	/// 2020-06-03 16:14:21 🏷 Node name: jolly-rod-7462

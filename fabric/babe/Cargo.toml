@@ -38,9 +38,9 @@ tp-timestamp = { version = "2.1.2", default-features = false, path = "../../prim
 [dev-dependencies]
 fabric-benchmarking = { version = "2.1.2", path = "../benchmarking" }
 noble-balances = { version = "2.1.2", path = "../balances" }
-noble-offences = { version = "2.1.2', path = "../offences" }
+noble-offences = { version = "2.1.2", path = "../offences" }
 noble-staking = { version = "2.1.2", path = "../staking" }
-noble-staking-reward-curve = { version = "2.1.2', path = "../staking/reward-curve" }
+noble-staking-reward-curve = { version = "2.1.2", path = "../staking/reward-curve" }
 tet-core = { version = "2.1.2", path = "../../primitives/core" }
 
 [features]
