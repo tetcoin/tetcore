@@ -35,7 +35,7 @@ tetcore-std = { version = "2.1.2", default-features = false, path = "../std" }
 [dev-dependencies]
 hex-literal = "0.3.1"
 tp-runtime = { path = "../runtime" }
-pretty_assertions = "0.6.1"
+pretty_assertions = "0.7.2"
 
 [features]
 default = ["std"]

@@ -22,7 +22,7 @@ tp-runtime = { version = "2.1.2", default-features = false, path = "../../../pri
 tet-core = { version = "2.1.2", default-features = false, path = "../../../primitives/core" }
 tetcore-std = { version = "2.1.2", default-features = false, path = "../../../primitives/std" }
 trybuild = "1.0.38"
-pretty_assertions = "0.6.1"
+pretty_assertions = "0.7.2"
 rustversion = "1.0.0"
 fabric-metadata = { version = "2.1.2", default-features = false, path = "../../metadata" }
 fabric-system = { version = "2.1.2", default-features = false, path = "../../system" }

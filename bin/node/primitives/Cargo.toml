@@ -22,7 +22,7 @@ tp-runtime = { version = "2.1.2", default-features = false, path = "../../../pri
 
 [dev-dependencies]
 serializer = { version = "2.1.2", path = "../../../primitives/serializer" }
-pretty_assertions = "0.6.1"
+pretty_assertions = "0.7.2"
 
 [features]
 default = ["std"]

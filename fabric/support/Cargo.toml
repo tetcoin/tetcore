@@ -36,7 +36,7 @@ impl-trait-for-tuples = "0.2.0"
 smallvec = "1.4.1"
 
 [dev-dependencies]
-pretty_assertions = "0.6.1"
+pretty_assertions = "0.7.2"
 fabric-system = { path = "../system" }
 tetsy-util-mem = { version = "0.9.1", default-features = false, features = ["tetsy-primitive-types"] }
 tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }

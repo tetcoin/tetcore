@@ -46,7 +46,7 @@ noble-balances = { version = "2.1.2", path = "../balances" }
 noble-timestamp = { version = "2.1.2", path = "../timestamp" }
 noble-randomness-collective-flip = { version = "2.1.2", path = "../randomness-collective-flip" }
 paste = "1.0"
-pretty_assertions = "0.6.1"
+pretty_assertions = "0.7.2"
 wat = "1.0"
 
 [features]
