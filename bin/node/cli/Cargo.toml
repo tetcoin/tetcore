@@ -122,7 +122,7 @@ tc-service-test = { path = "../../../client/service/test" }
 futures = "0.3.9"
 tempfile = "3.1.0"
 assert_cmd = "1.0"
-nix = "0.17"
+nix = "0.21"
 serde_json = "1.0"
 regex = "1"
 platforms = "0.2.1"
