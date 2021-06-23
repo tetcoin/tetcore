@@ -1,6 +1,6 @@
 [package]
 name = "tetcore-fabric-rpc-support"
-version = "2.0.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>", "Andrew Dirksen <andrew@dirksen.com>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -17,10 +17,10 @@ tetsy-jsonrpc-client-transports = { version = "15.1.0", default-features = false
 tetsy-jsonrpc-core = "15.1.0"
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 serde = "1"
-fabric-support = { version = "2.0.0", path = "../../../../fabric/support" }
-tetcore-storage = { version = "2.0.2", path = "../../../../primitives/storage" }
-tc-rpc-api = { version = "0.8.0", path = "../../../../client/rpc-api" }
+fabric-support = { version = "2.1.2", path = "../../../../fabric/support" }
+tetcore-storage = { version = "2.1.2", path = "../../../../primitives/storage" }
+tc-rpc-api = { version = "2.1.2", path = "../../../../client/rpc-api" }
 
 [dev-dependencies]
-fabric-system = { version = "2.0.0", path = "../../../../fabric/system" }
+fabric-system = { version = "2.1.2", path = "../../../../fabric/system" }
 tokio = "0.2"

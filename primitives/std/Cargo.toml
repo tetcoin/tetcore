@@ -1,6 +1,6 @@
 [package]
 name = "tetcore-std"
-version = "2.0.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -8,7 +8,7 @@ keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
 categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
-description = "Lowest-abstraction level for the Tetcore runtime: just exports useful primitives from std or client/alloc to be used with any code that depends on the runtime."
+description = "Lowest-abstraction level for the Tetcore runtime"
 documentation = "https://docs.rs/tetcore-std"
 readme = "README.md"
 

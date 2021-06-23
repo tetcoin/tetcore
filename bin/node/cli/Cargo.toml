@@ -1,6 +1,6 @@
 [package]
 name = "node-cli"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Generic Tetcore node implementation in Rust."
 build = "build.rs"
@@ -46,79 +46,78 @@ structopt = { version = "0.3.8", optional = true }
 parking_lot = "0.11.1"
 
 # primitives
-tp-authority-discovery = { version = "2.0.2",  path = "../../../primitives/authority-discovery" }
-tp-consensus-babe = { version = "0.8.2", path = "../../../primitives/consensus/babe" }
-grandpa-primitives = { version = "2.0.2", package = "tp-finality-grandpa", path = "../../../primitives/finality-grandpa" }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
-tp-timestamp = { version = "2.0.2", default-features = false, path = "../../../primitives/timestamp" }
-tp-inherents = { version = "2.0.2", path = "../../../primitives/inherents" }
-tp-keyring = { version = "2.0.2", path = "../../../primitives/keyring" }
-tp-keystore = { version = "0.8.1", path = "../../../primitives/keystore" }
-tet-io = { version = "2.0.2", path = "../../../primitives/io" }
-tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
-tp-transaction-pool = { version = "2.0.2", path = "../../../primitives/transaction-pool" }
+tp-authority-discovery = { version = "2.1.2",  path = "../../../primitives/authority-discovery" }
+tp-consensus-babe = { version = "2.1.2", path = "../../../primitives/consensus/babe" }
+grandpa-primitives = { version = "2.1.2", package = "tp-finality-grandpa", path = "../../../primitives/finality-grandpa" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }
+tp-timestamp = { version = "2.1.2", default-features = false, path = "../../../primitives/timestamp" }
+tp-inherents = { version = "2.1.2", path = "../../../primitives/inherents" }
+tp-keyring = { version = "2.1.2", path = "../../../primitives/keyring" }
+tp-keystore = { version = "2.1.2", path = "../../../primitives/keystore" }
+tet-io = { version = "2.1.2", path = "../../../primitives/io" }
+tp-consensus = { version = "2.1.2", path = "../../../primitives/consensus/common" }
+tp-transaction-pool = { version = "2.1.2", path = "../../../primitives/transaction-pool" }
 
 # client dependencies
-tc-client-api = { version = "2.0.0", path = "../../../client/api" }
-tc-chain-spec = { version = "2.0.0", path = "../../../client/chain-spec" }
-tc-consensus = { version = "0.8.0", path = "../../../client/consensus/common" }
-tc-transaction-pool = { version = "2.0.0", path = "../../../client/transaction-pool" }
-tc-network = { version = "0.8.0", path = "../../../client/network" }
-tc-consensus-slots = { version = "0.8.0", path = "../../../client/consensus/slots" }
-tc-consensus-babe = { version = "0.8.0", path = "../../../client/consensus/babe" }
-grandpa = { version = "0.8.0", package = "tc-finality-grandpa", path = "../../../client/finality-grandpa" }
-tc-client-db = { version = "0.8.0", default-features = false, path = "../../../client/db" }
-tc-offchain = { version = "2.0.0", path = "../../../client/offchain" }
-tc-rpc = { version = "2.0.0", path = "../../../client/rpc" }
-tc-basic-authorship = { version = "0.8.0", path = "../../../client/basic-authorship" }
-tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
-tc-tracing = { version = "2.0.0", path = "../../../client/tracing" }
-tc-telemetry = { version = "2.0.0", path = "../../../client/telemetry" }
-tc-authority-discovery = { version = "0.8.0",  path = "../../../client/authority-discovery" }
-tc-finality-grandpa-warp-sync = { version = "0.8.0", path = "../../../client/finality-grandpa-warp-sync", optional = true }
+tc-client-api = { version = "2.1.2", path = "../../../client/api" }
+tc-chain-spec = { version = "2.1.2", path = "../../../client/chain-spec" }
+tc-consensus = { version = "2.1.2", path = "../../../client/consensus/common" }
+tc-transaction-pool = { version = "2.1.2", path = "../../../client/transaction-pool" }
+tc-network = { version = "2.1.2", path = "../../../client/network" }
+tc-consensus-slots = { version = "2.1.2", path = "../../../client/consensus/slots" }
+tc-consensus-babe = { version = "2.1.2", path = "../../../client/consensus/babe" }
+grandpa = { version = "2.1.2", package = "tc-finality-grandpa", path = "../../../client/finality-grandpa" }
+tc-client-db = { version = "2.1.2", default-features = false, path = "../../../client/db" }
+tc-offchain = { version = "2.1.2", path = "../../../client/offchain" }
+tc-rpc = { version = "2.1.2", path = "../../../client/rpc" }
+tc-basic-authorship = { version = "2.1.2", path = "../../../client/basic-authorship" }
+tc-service = { version = "2.1.2", default-features = false, path = "../../../client/service" }
+tc-tracing = { version = "2.1.2", path = "../../../client/tracing" }
+tc-telemetry = { version = "2.1.2", path = "../../../client/telemetry" }
+tc-authority-discovery = { version = "2.1.2",  path = "../../../client/authority-discovery" }
+tc-finality-grandpa-warp-sync = { version = "2.1.2", path = "../../../client/finality-grandpa-warp-sync", optional = true }
 
 # fabric dependencies
-noble-indices = { version = "2.0.0", path = "../../../fabric/indices" }
-noble-timestamp = { version = "2.0.0", default-features = false, path = "../../../fabric/timestamp" }
-noble-contracts = { version = "2.0.0", path = "../../../fabric/contracts" }
-fabric-system = { version = "2.0.0", path = "../../../fabric/system" }
-noble-balances = { version = "2.0.1", path = "../../../fabric/balances" }
-noble-transaction-payment = { version = "2.0.0", path = "../../../fabric/transaction-payment" }
-fabric-support = { version = "2.0.0", default-features = false, path = "../../../fabric/support" }
-noble-im-online = { version = "2.0.0", default-features = false, path = "../../../fabric/im-online" }
-noble-authority-discovery = { version = "2.0.1", path = "../../../fabric/authority-discovery" }
-noble-staking = { version = "2.0.0", path = "../../../fabric/staking" }
-noble-grandpa = { version = "2.0.0", path = "../../../fabric/grandpa" }
+noble-indices = { version = "2.1.2", path = "../../../fabric/indices" }
+noble-timestamp = { version = "2.1.2", default-features = false, path = "../../../fabric/timestamp" }
+noble-contracts = { version = "2.1.2", path = "../../../fabric/contracts" }
+fabric-system = { version = "2.1.2", path = "../../../fabric/system" }
+noble-balances = { version = "2.1.2", path = "../../../fabric/balances" }
+noble-transaction-payment = { version = "2.1.2", path = "../../../fabric/transaction-payment" }
+fabric-support = { version = "2.1.2", default-features = false, path = "../../../fabric/support" }
+noble-im-online = { version = "2.1.2", default-features = false, path = "../../../fabric/im-online" }
+noble-authority-discovery = { version = "2.1.2", path = "../../../fabric/authority-discovery" }
+noble-staking = { version = "2.1.2", path = "../../../fabric/staking" }
+noble-grandpa = { version = "2.1.2", path = "../../../fabric/grandpa" }
 
 # node-specific dependencies
-node-runtime = { version = "2.0.0", path = "../runtime" }
-node-rpc = { version = "2.0.0", path = "../rpc" }
-node-primitives = { version = "2.0.0", path = "../primitives" }
-node-executor = { version = "2.0.0", path = "../executor" }
+node-runtime = { version = "2.1.2", path = "../runtime" }
+node-rpc = { version = "2.1.2", path = "../rpc" }
+node-primitives = { version = "2.1.2", path = "../primitives" }
+node-executor = { version = "2.1.2", path = "../executor" }
 
 # CLI-specific dependencies
-tc-cli = { version = "0.8.0", optional = true, path = "../../../client/cli" }
-fabric-benchmarking-cli = { version = "2.0.1", optional = true, path = "../../../utils/fabric/benchmarking-cli" }
-node-inspect = { version = "0.8.0", optional = true, path = "../inspect" }
+tc-cli = { version = "2.1.2", optional = true, path = "../../../client/cli" }
+fabric-benchmarking-cli = { version = "2.1.2", optional = true, path = "../../../utils/fabric/benchmarking-cli" }
+node-inspect = { version = "2.1.2", optional = true, path = "../inspect" }
 
 # WASM-specific dependencies
 wasm-bindgen = { version = "0.2.73", optional = true }
 wasm-bindgen-futures = { version = "0.4.23", optional = true }
-browser-utils = { package = "tetcore-browser-utils", path = "../../../utils/browser", optional = true, version = "0.8.0"}
+browser-utils = { version = "2.1.2", package = "tetcore-browser-utils", path = "../../../utils/browser", optional = true }
 
 [target.'cfg(target_arch="x86_64")'.dependencies]
-node-executor = { version = "2.0.0", path = "../executor", features = [ "wasmtime" ] }
-tc-cli = { version = "0.8.0", optional = true, path = "../../../client/cli", features = [ "wasmtime" ] }
-tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service", features = [ "wasmtime" ] }
-tp-trie = { version = "2.0.2", default-features = false, path = "../../../primitives/trie", features = ["memory-tracker"] }
+node-executor = { version = "2.1.2", path = "../executor", features = [ "wasmtime" ] }
+tc-cli = { version = "2.1.2", optional = true, path = "../../../client/cli", features = [ "wasmtime" ] }
+tc-service = { version = "2.1.2", default-features = false, path = "../../../client/service", features = [ "wasmtime" ] }
+tp-trie = { version = "2.1.2", default-features = false, path = "../../../primitives/trie", features = ["memory-tracker"] }
 
 [dev-dependencies]
-tc-keystore = { version = "2.0.0", path = "../../../client/keystore" }
-tc-consensus = { version = "0.8.0", path = "../../../client/consensus/common" }
-tc-consensus-babe = { version = "0.8.0", features = ["test-helpers"], path = "../../../client/consensus/babe" }
-tc-consensus-epochs = { version = "0.8.0", path = "../../../client/consensus/epochs" }
-# tc-service-test = { version = "2.0.0", path = "../../../client/service/test" }
+tc-keystore = { version = "2.1.2", path = "../../../client/keystore" }
+tc-consensus = { version = "2.1.2", path = "../../../client/consensus/common" }
+tc-consensus-babe = { version = "2.1.2", features = ["test-helpers"], path = "../../../client/consensus/babe" }
+tc-consensus-epochs = { version = "2.1.2", path = "../../../client/consensus/epochs" }
 tc-service-test = { path = "../../../client/service/test" }
 futures = "0.3.9"
 tempfile = "3.1.0"
@@ -130,13 +129,13 @@ platforms = "0.2.1"
 
 [build-dependencies]
 structopt = { version = "0.3.8", optional = true }
-node-inspect = { version = "0.8.0", optional = true, path = "../inspect" }
-fabric-benchmarking-cli = { version = "2.0.1", optional = true, path = "../../../utils/fabric/benchmarking-cli" }
-build-script-utils = { version = "2.0.1", optional = true, path = "../../../utils/build-script-utils" }
-tetcore-fabric-cli = { version = "2.0.1", optional = true, path = "../../../utils/fabric/fabric-utilities-cli" }
+node-inspect = { version = "0.8.1", optional = true, path = "../inspect" }
+fabric-benchmarking-cli = { version = "2.1.2", optional = true, path = "../../../utils/fabric/benchmarking-cli" }
+build-script-utils = { version = "2.1.2", optional = true, path = "../../../utils/build-script-utils" }
+tetcore-fabric-cli = { version = "2.1.2", optional = true, path = "../../../utils/fabric/fabric-utilities-cli" }
 
 [build-dependencies.tc-cli]
-version = "0.8.0"
+version = "2.1.2"
 package = "tc-cli"
 path = "../../../client/cli"
 optional = true

@@ -1,6 +1,6 @@
 [package]
 name = "noble-bounties"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -18,19 +18,19 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
-noble-treasury = { version = "2.0.0", default-features = false, path = "../treasury" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
+noble-treasury = { version = "2.1.2", default-features = false, path = "../treasury" }
 
-fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
+fabric-benchmarking = { version = "2.1.2", default-features = false, path = "../benchmarking", optional = true }
 
 [dev-dependencies]
-tet-io ={ version = "2.0.2", path = "../../primitives/io" }
-tet-core = { version = "2.0.2", path = "../../primitives/core" }
-tetcore-storage = { version = "2.0.2", path = "../../primitives/storage" }
-noble-balances = { version = "2.0.1", path = "../balances" }
+tet-io ={ version = "2.1.2", path = "../../primitives/io" }
+tet-core = { version = "2.1.2", path = "../../primitives/core" }
+tetcore-storage = { version = "2.1.2", path = "../../primitives/storage" }
+noble-balances = { version = "2.1.2", path = "../balances" }
 
 [features]
 default = ["std"]

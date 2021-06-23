@@ -21,12 +21,12 @@ codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = f
 grandpa = { package = "tetsy-finality-grandpa", version = "0.13.0", default-features = false, features = ["derive-codec"] }
 log = { version = "0.4.8", optional = true }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-tp-api = { version = "2.0.2", default-features = false, path = "../api" }
-tet-application-crypto = { version = "2.0.2", default-features = false, path = "../application-crypto" }
-tet-core = { version = "2.0.2", default-features = false, path = "../core" }
-tp-keystore = { version = "0.8.1", default-features = false, path = "../keystore", optional = true }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../runtime" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../std" }
+tp-api = { version = "2.1.2", default-features = false, path = "../api" }
+tet-application-crypto = { version = "2.1.2", default-features = false, path = "../application-crypto" }
+tet-core = { version = "2.1.2", default-features = false, path = "../core" }
+tp-keystore = { version = "2.1.2", default-features = false, path = "../keystore", optional = true }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../runtime" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../std" }
 
 [features]
 default = ["std"]

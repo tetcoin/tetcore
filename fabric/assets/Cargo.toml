@@ -1,6 +1,6 @@
 [package]
 name = "noble-assets"
-version = "2.0.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -18,20 +18,20 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
 # Needed for various traits. In our case, `OnFinalize`.
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
 # Needed for type-safe access to storage DB.
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
 # `system` module provides us with all sorts of useful stuff and macros depend on it being around.
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
-fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
+fabric-benchmarking = { version = "2.1.2", default-features = false, path = "../benchmarking", optional = true }
 
 [dev-dependencies]
-tet-core = { version = "2.0.2", path = "../../primitives/core" }
-tetcore-std = { version = "2.0.2", path = "../../primitives/std" }
-tet-io = { version = "2.0.2", path = "../../primitives/io" }
-noble-balances = { version = "2.0.1", path = "../balances" }
+tet-core = { version = "2.1.2", path = "../../primitives/core" }
+tetcore-std = { version = "2.1.2", path = "../../primitives/std" }
+tet-io = { version = "2.1.2", path = "../../primitives/io" }
+noble-balances = { version = "2.1.2", path = "../balances" }
 
 [features]
 default = ["std"]

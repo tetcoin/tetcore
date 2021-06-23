@@ -1,6 +1,6 @@
 [package]
 name = "arithmetic-fuzzer"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -16,7 +16,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 arithmetic = { version = "2.0.2", path = ".." }
 honggfuzz = "0.5.49"
-tetsy-primitive-types = "0.9.0"
+tetsy-primitive-types = "0.9.1"
 num-bigint = "0.2"
 num-traits = "0.2"
 

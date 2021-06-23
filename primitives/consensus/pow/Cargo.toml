@@ -1,6 +1,6 @@
 [package]
 name = "tp-consensus-pow"
-version = "0.8.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Primitives for Aura consensus"
 edition = "2018"
@@ -16,10 +16,10 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-api = { version = "2.0.2", default-features = false, path = "../../api" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../std" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../runtime" }
-tet-core = { version = "2.0.2", default-features = false, path = "../../core" }
+tp-api = { version = "2.1.2", default-features = false, path = "../../api" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../std" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../runtime" }
+tet-core = { version = "2.1.2", default-features = false, path = "../../core" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 
 [features]

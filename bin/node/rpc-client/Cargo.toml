@@ -1,8 +1,8 @@
 [package]
 name = "node-rpc-client"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
-description = "Example tetcore RPC client code."
+description = "Example Tetcore RPC client code."
 edition = "2018"
 license = "Apache-2.0"
 keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
@@ -18,6 +18,6 @@ futures = "0.1.29"
 hyper = "~0.12.35"
 tetsy-jsonrpc-core-client = { version = "15.1.0", default-features = false, features = ["http"] }
 log = "0.4.8"
-node-primitives = { version = "2.0.0", path = "../primitives" }
-tetcore-tracing = { version = "2.0.2", path = "../../../primitives/tracing" }
-tc-rpc = { version = "2.0.0", path = "../../../client/rpc" }
+node-primitives = { version = "2.1.2", path = "../primitives" }
+tetcore-tracing = { version = "2.1.2", path = "../../../primitives/tracing" }
+tc-rpc = { version = "2.1.2", path = "../../../client/rpc" }

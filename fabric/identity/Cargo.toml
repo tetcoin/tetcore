@@ -1,6 +1,6 @@
 [package]
 name = "noble-identity"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -19,16 +19,16 @@ targets = ["x86_64-unknown-linux-gnu"]
 serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 enumflags2 = { version = "0.6.2" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
-tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
+tet-io = { version = "2.1.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+fabric-benchmarking = { version = "2.1.2", default-features = false, path = "../benchmarking", optional = true }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
 
 [dev-dependencies]
-tet-core = { version = "2.0.2", path = "../../primitives/core" }
-noble-balances = { version = "2.0.1", path = "../balances" }
+tet-core = { version = "2.1.2", path = "../../primitives/core" }
+noble-balances = { version = "2.1.2", path = "../balances" }
 
 [features]
 default = ["std"]

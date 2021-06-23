@@ -1,8 +1,8 @@
 [package]
 name = "node-browser-testing"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
-description = "Tests for the in-browser light client."
+description = "Tetcore tests for the in-browser light client."
 edition = "2018"
 license = "Apache-2.0"
 keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
@@ -13,7 +13,6 @@ repository = "https://github.com/tetcoin/tetcore"
 [dependencies]
 futures-timer = "3.0.2"
 tetsy-libp2p = { version = "0.34.2", default-features = false }
-# tetsy-libp2p = { version = "0.34.0", default-features = false, git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
 tetsy-jsonrpc-core = "15.1.0"
 serde = "1.0.106"
 serde_json = "1.0.48"
@@ -22,5 +21,5 @@ wasm-bindgen-futures = "0.4.23"
 wasm-bindgen-test = "0.3.18"
 futures = "0.3.9"
 
-node-cli = { path = "../cli", default-features = false, features = ["browser"] , version = "2.0.0"}
-tc-rpc-api = { path = "../../../client/rpc-api" , version = "0.8.0"}
+node-cli = { version = "2.1.2", path = "../cli", default-features = false, features = ["browser"] }
+tc-rpc-api = { version = "2.1.2", path = "../../../client/rpc-api" }

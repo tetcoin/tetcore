@@ -1,6 +1,6 @@
 [package]
 name = "tetkey"
-version = "2.0.0"
+version = "2.1.2"
 description = "Tetkey utility, based on node_runtime."
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
@@ -20,5 +20,5 @@ name = "tetkey"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-cli = { version = "0.8.0", path = "../../../client/cli" }
+tc-cli = { version = "2.1.2", path = "../../../client/cli" }
 structopt = "0.3.14"

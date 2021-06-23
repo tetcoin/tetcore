@@ -1,6 +1,6 @@
 [package]
 name = "noble-babe"
-version = "2.0.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -17,31 +17,31 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
-noble-authorship = { version = "2.0.1", default-features = false, path = "../authorship" }
-noble-session = { version = "2.0.0", default-features = false, path = "../session" }
-noble-timestamp = { version = "2.0.0", default-features = false, path = "../timestamp" }
+fabric-benchmarking = { version = "2.1.2", default-features = false, path = "../benchmarking", optional = true }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
+noble-authorship = { version = "2.1.2", default-features = false, path = "../authorship" }
+noble-session = { version = "2.1.2", default-features = false, path = "../session" }
+noble-timestamp = { version = "2.1.2", default-features = false, path = "../timestamp" }
 serde = { version = "1.0.101", optional = true }
-tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../primitives/application-crypto" }
-tp-consensus-babe = { version = "0.8.2", default-features = false, path = "../../primitives/consensus/babe" }
-tp-consensus-vrf = { version = "0.8.2", default-features = false, path = "../../primitives/consensus/vrf" }
-tp-inherents = { version = "2.0.2", default-features = false, path = "../../primitives/inherents" }
-tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-tp-session = { version = "2.0.2", default-features = false, path = "../../primitives/session" }
-tp-staking = { version = "2.0.2", default-features = false, path = "../../primitives/staking" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
-tp-timestamp = { version = "2.0.2", default-features = false, path = "../../primitives/timestamp" }
+tet-application-crypto = { version = "2.1.2", default-features = false, path = "../../primitives/application-crypto" }
+tp-consensus-babe = { version = "2.1.2", default-features = false, path = "../../primitives/consensus/babe" }
+tp-consensus-vrf = { version = "2.1.2", default-features = false, path = "../../primitives/consensus/vrf" }
+tp-inherents = { version = "2.1.2", default-features = false, path = "../../primitives/inherents" }
+tet-io = { version = "2.1.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+tp-session = { version = "2.1.2", default-features = false, path = "../../primitives/session" }
+tp-staking = { version = "2.1.2", default-features = false, path = "../../primitives/staking" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
+tp-timestamp = { version = "2.1.2", default-features = false, path = "../../primitives/timestamp" }
 
 [dev-dependencies]
-fabric-benchmarking = { version = "2.0.0", path = "../benchmarking" }
-noble-balances = { version = "2.0.1", path = "../balances" }
-noble-offences = { version = "2.0.0", path = "../offences" }
-noble-staking = { version = "2.0.0", path = "../staking" }
-noble-staking-reward-curve = { version = "2.0.0", path = "../staking/reward-curve" }
-tet-core = { version = "2.0.2", path = "../../primitives/core" }
+fabric-benchmarking = { version = "2.1.2", path = "../benchmarking" }
+noble-balances = { version = "2.1.2", path = "../balances" }
+noble-offences = { version = "2.1.2', path = "../offences" }
+noble-staking = { version = "2.1.2", path = "../staking" }
+noble-staking-reward-curve = { version = "2.1.2', path = "../staking/reward-curve" }
+tet-core = { version = "2.1.2", path = "../../primitives/core" }
 
 [features]
 default = ["std"]

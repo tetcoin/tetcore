@@ -1,6 +1,6 @@
 [package]
 name = "tc-executor-wasmtime"
-version = "0.8.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
@@ -17,11 +17,11 @@ log = "0.4.8"
 scoped-tls = "1.0"
 tetsy-wasm = "0.41.0"
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
-tc-executor-common = { version = "0.8.0", path = "../common" }
-tetcore-wasm-interface = { version = "2.0.2", path = "../../../primitives/wasm-interface" }
-tp-runtime-interface = { version = "2.0.2", path = "../../../primitives/runtime-interface" }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tp-allocator = { version = "2.0.2", path = "../../../primitives/allocator" }
+tc-executor-common = { version = "2.1.2", path = "../common" }
+tetcore-wasm-interface = { version = "2.1.2", path = "../../../primitives/wasm-interface" }
+tp-runtime-interface = { version = "2.1.2", path = "../../../primitives/runtime-interface" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tp-allocator = { version = "2.1.2", path = "../../../primitives/allocator" }
 wasmtime = "0.19"
 # pwasm-utils = "0.14.0"
 twasm-utils = "0.16.0"

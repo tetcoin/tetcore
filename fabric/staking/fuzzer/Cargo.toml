@@ -15,19 +15,19 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 honggfuzz = "0.5"
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-noble-staking = { version = "2.0.0", path = "..", features = ["runtime-benchmarks"] }
-noble-staking-reward-curve = { version = "2.0.0",  path = "../reward-curve" }
-noble-session = { version = "2.0.0", path = "../../session" }
-noble-indices = { version = "2.0.0", path = "../../indices" }
-noble-balances = { version = "2.0.1", path = "../../balances" }
-noble-timestamp = { version = "2.0.0", path = "../../timestamp" }
-fabric-system = { version = "2.0.0", path = "../../system" }
-fabric-support = { version = "2.0.0", path = "../../support" }
-tetcore-std = { version = "2.0.2", path = "../../../primitives/std" }
-tet-io ={ version = "2.0.2", path = "../../../primitives/io" }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tp-npos-elections = { version = "2.0.2", path = "../../../primitives/npos-elections" }
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+noble-staking = { version = "2.1.2", path = "..", features = ["runtime-benchmarks"] }
+noble-staking-reward-curve = { version = "2.1.2",  path = "../reward-curve" }
+noble-session = { version = "2.1.2", path = "../../session" }
+noble-indices = { version = "2.1.2", path = "../../indices" }
+noble-balances = { version = "2.1.2", path = "../../balances" }
+noble-timestamp = { version = "2.1.2", path = "../../timestamp" }
+fabric-system = { version = "2.1.2", path = "../../system" }
+fabric-support = { version = "2.1.2", path = "../../support" }
+tetcore-std = { version = "2.1.2", path = "../../../primitives/std" }
+tet-io ={ version = "2.1.2", path = "../../../primitives/io" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tp-npos-elections = { version = "2.1.2", path = "../../../primitives/npos-elections" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }
 
 [[bin]]
 name = "submit_solution"

@@ -1,6 +1,6 @@
 [package]
 name = "tp-runtime-interface"
-version = "2.0.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -16,25 +16,21 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tetcore-wasm-interface = { version = "2.0.2", path = "../wasm-interface", default-features = false }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../std" }
-tetcore-tracing = { version = "2.0.2", default-features = false, path = "../tracing" }
-tp-runtime-interface-proc-macro = { version = "2.0.2", path = "proc-macro" }
-externalities = { version = "0.8.2", optional = true, path = "../externalities" }
+tetcore-wasm-interface = { version = "2.1.2", path = "../wasm-interface", default-features = false }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../std" }
+tetcore-tracing = { version = "2.1.2", default-features = false, path = "../tracing" }
+tp-runtime-interface-proc-macro = { version = "2.1.2", path = "proc-macro" }
+externalities = { version = "2.1.2", optional = true, path = "../externalities" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 static_assertions = "1.0.0"
-tetsy-primitive-types = { version = "0.9.0", default-features = false }
-tetcore-storage = { version = "2.0.2", default-features = false, path = "../storage" }
+tetsy-primitive-types = { version = "0.9.1", default-features = false }
+tetcore-storage = { version = "2.1.2", default-features = false, path = "../storage" }
 impl-trait-for-tuples = "0.2.0"
 
 [dev-dependencies]
-# tp-runtime-interface-test-wasm = { version = "2.0.0", path = "test-wasm" }
 tp-runtime-interface-test-wasm = { path = "test-wasm" }
-# tp-state-machine = { version = "0.8.2", path = "../state-machine" }
 tp-state-machine = { path = "../state-machine" }
-# tet-core = { version = "2.0.2", path = "../core" }
 tet-core = { path = "../core" }
-# tet-io = { version = "2.0.2", path = "../io" }
 tet-io = { path = "../io" }
 rustversion = "1.0.0"
 trybuild = "1.0.38"

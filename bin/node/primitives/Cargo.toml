@@ -1,6 +1,6 @@
 [package]
 name = "node-primitives"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Low-level types used throughout the Tetcore code."
 edition = "2018"
@@ -15,13 +15,13 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-fabric-system = { version = "2.0.0", default-features = false, path = "../../../fabric/system" }
-tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../../primitives/application-crypto" }
-tet-core = { version = "2.0.2", default-features = false, path = "../../../primitives/core" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../../primitives/runtime" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../../../fabric/system" }
+tet-application-crypto = { version = "2.1.2", default-features = false, path = "../../../primitives/application-crypto" }
+tet-core = { version = "2.1.2", default-features = false, path = "../../../primitives/core" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../../primitives/runtime" }
 
 [dev-dependencies]
-serializer = { version = "2.0.2", path = "../../../primitives/serializer" }
+serializer = { version = "2.1.2", path = "../../../primitives/serializer" }
 pretty_assertions = "0.6.1"
 
 [features]

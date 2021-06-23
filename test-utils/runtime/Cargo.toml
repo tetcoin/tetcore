@@ -1,6 +1,6 @@
 [package]
 name = "tetcore-test-runtime"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "The Tetcore test runtime"
 edition = "2018"
@@ -14,37 +14,37 @@ repository = "https://github.com/tetcoin/tetcore/"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../primitives/application-crypto" }
-tp-consensus-aura = { version = "0.8.2", default-features = false, path = "../../primitives/consensus/aura" }
-tp-consensus-babe = { version = "0.8.2", default-features = false, path = "../../primitives/consensus/babe" }
-tp-block-builder = { version = "2.0.2", default-features = false, path = "../../primitives/block-builder" }
-codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-fabric-executive = { version = "2.0.0", default-features = false, path = "../../fabric/executive" }
-tp-inherents = { version = "2.0.2", default-features = false, path = "../../primitives/inherents" }
-tp-keyring = { version = "2.0.2", optional = true, path = "../../primitives/keyring" }
+tet-application-crypto = { version = "2.1.2", default-features = false, path = "../../primitives/application-crypto" }
+tp-consensus-aura = { version = "2.1.2", default-features = false, path = "../../primitives/consensus/aura" }
+tp-consensus-babe = { version = "2.1.2", default-features = false, path = "../../primitives/consensus/babe" }
+tp-block-builder = { version = "2.1.2", default-features = false, path = "../../primitives/block-builder" }
+codec = { package = "tetsy-scale-codec", version = "2.1.2", default-features = false, features = ["derive"] }
+fabric-executive = { version = "2.1.2", default-features = false, path = "../../fabric/executive" }
+tp-inherents = { version = "2.1.2", default-features = false, path = "../../primitives/inherents" }
+tp-keyring = { version = "2.1.2", optional = true, path = "../../primitives/keyring" }
 tetsy-memory-db = { version = "0.26.0", default-features = false }
-tp-offchain = { path = "../../primitives/offchain", default-features = false, version = "2.0.2"}
-tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
-tp-runtime-interface = { path = "../../primitives/runtime-interface", default-features = false, version = "2.0.2"}
-tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
-fabric-support = { version = "2.0.0", default-features = false, path = "../../fabric/support" }
-tp-version = { version = "2.0.2", default-features = false, path = "../../primitives/version" }
-tp-session = { version = "2.0.2", default-features = false, path = "../../primitives/session" }
-tp-api = { version = "2.0.2", default-features = false, path = "../../primitives/api" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-noble-babe = { version = "2.0.1", default-features = false, path = "../../fabric/babe" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../../fabric/system" }
-fabric-system-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../fabric/system/rpc/runtime-api" }
-noble-timestamp = { version = "2.0.0", default-features = false, path = "../../fabric/timestamp" }
-tp-finality-grandpa = { version = "2.0.2", default-features = false, path = "../../primitives/finality-grandpa" }
-tp-trie = { version = "2.0.2", default-features = false, path = "../../primitives/trie" }
-tp-transaction-pool = { version = "2.0.2", default-features = false, path = "../../primitives/transaction-pool" }
+tp-offchain = { version = "2.1.2", path = "../../primitives/offchain", default-features = false }
+tet-core = { version = "2.1.2", default-features = false, path = "../../primitives/core" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
+tp-runtime-interface = { versio = "2.1.2", path = "../../primitives/runtime-interface", default-features = false }
+tet-io = { version = "2.1.2", default-features = false, path = "../../primitives/io" }
+fabric-support = { version = "2.1.2", default-features = false, path = "../../fabric/support" }
+tp-version = { version = "2.1.2", default-features = false, path = "../../primitives/version" }
+tp-session = { version = "2.1.2", default-features = false, path = "../../primitives/session" }
+tp-api = { version = "2.1.2", default-features = false, path = "../../primitives/api" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+noble-babe = { version = "2.1.2", default-features = false, path = "../../fabric/babe" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../../fabric/system" }
+fabric-system-rpc-runtime-api = { version = "2.1.2", default-features = false, path = "../../fabric/system/rpc/runtime-api" }
+noble-timestamp = { version = "2.1.2", default-features = false, path = "../../fabric/timestamp" }
+tp-finality-grandpa = { version = "2.1.2", default-features = false, path = "../../primitives/finality-grandpa" }
+tp-trie = { version = "2.1.2", default-features = false, path = "../../primitives/trie" }
+tp-transaction-pool = { version = "2.1.2", default-features = false, path = "../../primitives/transaction-pool" }
 tetsy-trie-db = { version = "0.22.2", default-features = false }
-tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
-tc-service = { version = "0.8.0", default-features = false, optional = true, features = ["test-helpers"], path = "../../client/service" }
-tp-state-machine = { version = "0.8.2", default-features = false, path = "../../primitives/state-machine" }
-externalities = { version = "0.8.2", default-features = false, path = "../../primitives/externalities" }
+tetsy-util-mem = { version = "0.9.1", default-features = false, features = ["tetsy-primitive-types"] }
+tc-service = { version = "2.1.2", default-features = false, optional = true, features = ["test-helpers"], path = "../../client/service" }
+tp-state-machine = { version = "2.1.2", default-features = false, path = "../../primitives/state-machine" }
+externalities = { version = "2.1.2", default-features = false, path = "../../primitives/externalities" }
 
 # 3rd party
 cfg-if = "0.1.10"
@@ -52,13 +52,12 @@ log = { version = "0.4.8", optional = true }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 
 [dev-dependencies]
-tc-block-builder = { version = "0.8.0", path = "../../client/block-builder" }
-tc-executor = { version = "0.8.0", path = "../../client/executor" }
-# tetcore-test-runtime-client = { version = "2.0.0", path = "./client" }
+tc-block-builder = { version = "2.1.2", path = "../../client/block-builder" }
+tc-executor = { version = "2.1.2", path = "../../client/executor" }
 tetcore-test-runtime-client = { path = "./client" }
 
 [build-dependencies]
-wasm-builder = { version = "3.0.0", path = "../../utils/wasm-builder" }
+wasm-builder = { version = "2.1.2", path = "../../utils/wasm-builder" }
 
 [features]
 default = [

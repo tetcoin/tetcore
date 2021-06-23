@@ -1,6 +1,6 @@
 [package]
 name = "tp-test-primitives"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -12,12 +12,12 @@ publish = false
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tet-application-crypto = { version = "2.0.2", default-features = false, path = "../application-crypto" }
+tet-application-crypto = { version = "2.1.2", default-features = false, path = "../application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tet-core = { version = "2.0.2", default-features = false, path = "../core" }
+tet-core = { version = "2.1.2", default-features = false, path = "../core" }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../runtime" }
-tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../runtime" }
+tetsy-util-mem = { version = "0.9.1", default-features = false, features = ["tetsy-primitive-types"] }
 
 [features]
 default = [

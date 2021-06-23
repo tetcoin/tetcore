@@ -2,7 +2,7 @@
 description = "Connectivity manager based on reputation"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 name = "tc-peerset"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 keywords = ["tetcoin", "tetcore", "crypto", "blockchain", "framework"]
@@ -19,8 +19,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 futures = "0.3.9"
 tetsy-libp2p = { version = "0.34.2", default-features = false }
-# tetsy-libp2p = { version = "0.34.0", default-features = false, git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
-tetcore-utils = { version = "2.0.2", path = "../../primitives/utils"}
+tetcore-utils = { version = "2.1.2", path = "../../primitives/utils"}
 log = "0.4.8"
 serde_json = "1.0.41"
 wasm-timer = "0.2"

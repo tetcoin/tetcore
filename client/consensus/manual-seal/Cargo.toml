@@ -1,6 +1,6 @@
 [package]
 name = "tc-consensus-manual-seal"
-version = "0.8.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Manual sealing engine for Tetcore"
 edition = "2018"
@@ -27,31 +27,29 @@ codec = { package = "tetsy-scale-codec", version = "2.0.1" }
 serde = { version = "1.0", features=["derive"] }
 assert_matches = "1.3.0"
 
-tc-client-api = { path = "../../api", version = "2.0.0" }
-tc-consensus-babe = { path = "../../consensus/babe", version = "0.8.0" }
-tc-consensus-epochs = { path = "../../consensus/epochs", version = "0.8.0" }
-tp-consensus-babe = { path = "../../../primitives/consensus/babe", version = "0.8.2" }
+tc-client-api = { version = "2.1.2", path = "../../api" }
+tc-consensus-babe = { version ="2.1.2", path = "../../consensus/babe" }
+tc-consensus-epochs = { version ="2.1.2", path = "../../consensus/epochs" }
+tp-consensus-babe = { version ="2.1.2", path = "../../../primitives/consensus/babe" }
 
-tc-transaction-pool = { path = "../../transaction-pool", version = "2.0.0" }
-tp-blockchain = { path = "../../../primitives/blockchain", version = "2.0.2" }
-tp-consensus = { path = "../../../primitives/consensus/common", version = "0.8.2" }
-tp-consensus-slots = { path = "../../../primitives/consensus/slots", version = "0.8.2" }
-tp-inherents = { path = "../../../primitives/inherents", version = "2.0.2" }
-tp-runtime = {  path = "../../../primitives/runtime", version = "2.0.0" }
-tet-core = {  path = "../../../primitives/core", version = "2.0.2" }
-tp-keystore = {  path = "../../../primitives/keystore", version = "0.8.1" }
-tp-keyring = {  path = "../../../primitives/keyring", version = "2.0.2" }
-tp-api = {  path = "../../../primitives/api", version = "2.0.2" }
-tp-transaction-pool = { path = "../../../primitives/transaction-pool", version = "2.0.2" }
-tp-timestamp = { path = "../../../primitives/timestamp", version = "2.0.2" }
+tc-transaction-pool = { version ="2.1.2", path = "../../transaction-pool" }
+tp-blockchain = { version ="2.1.2", path = "../../../primitives/blockchain" }
+tp-consensus = { version ="2.1.2", path = "../../../primitives/consensus/common" }
+tp-consensus-slots = { version ="2.1.2", path = "../../../primitives/consensus/slots" }
+tp-inherents = { version ="2.1.2", path = "../../../primitives/inherents" }
+tp-runtime = { version ="2.1.2", path = "../../../primitives/runtime" }
+tet-core = { version ="2.1.2", path = "../../../primitives/core" }
+tp-keystore = { version ="2.1.2", path = "../../../primitives/keystore" }
+tp-keyring = { version ="2.1.2", path = "../../../primitives/keyring" }
+tp-api = { version ="2.1.2", path = "../../../primitives/api" }
+tp-transaction-pool = { version ="2.1.2", path = "../../../primitives/transaction-pool" }
+tp-timestamp = { version ="2.1.2", path = "../../../primitives/timestamp" }
 
-prometheus-endpoint = { package = "prometheus-endpoint", path = "../../../utils/prometheus", version = "0.8.1" }
+prometheus-endpoint = { version ="2.1.2", package = "prometheus-endpoint", path = "../../../utils/prometheus" }
 
 [dev-dependencies]
 tokio = { version = "0.2", features = ["rt-core", "macros"] }
-tc-basic-authorship = { path = "../../basic-authorship", version = "0.8.0" }
-# tetcore-test-runtime-client = { path = "../../../test-utils/runtime/client", version = "2.0.0" }
-# tetcore-test-runtime-transaction-pool = { path = "../../../test-utils/runtime/transaction-pool", version = "2.0.0" }
+tc-basic-authorship = { version ="2.1.2", path = "../../basic-authorship" }
 tetcore-test-runtime-client = { path = "../../../test-utils/runtime/client" }
 tetcore-test-runtime-transaction-pool = { path = "../../../test-utils/runtime/transaction-pool" }
 tempfile = "3.1.0"

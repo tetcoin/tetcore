@@ -1,6 +1,6 @@
 [package]
 name = "fabric-system-rpc-runtime-api"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -13,7 +13,7 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-api = { version = "2.0.2", default-features = false, path = "../../../../primitives/api" }
+tp-api = { version = "2.1.2", default-features = false, path = "../../../../primitives/api" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
 
 [features]

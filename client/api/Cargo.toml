@@ -1,6 +1,6 @@
 [package]
 name = "tc-client-api"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
@@ -17,37 +17,35 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tp-consensus = { version = "0.8.2", path = "../../primitives/consensus/common" }
+tp-consensus = { version = "2.1.2", path = "../../primitives/consensus/common" }
 derive_more = "0.99.2"
-tc-executor = { version = "0.8.0", path = "../executor" }
-externalities = { version = "0.8.2", path = "../../primitives/externalities" }
+tc-executor = { version = "2.1.2", path = "../executor" }
+externalities = { version = "2.1.2", path = "../../primitives/externalities" }
 fnv = "1.0.6"
 futures = "0.3.1"
 tetsy-hash-db = { version = "0.15.2", default-features = false }
-tp-blockchain = { version = "2.0.2", path = "../../primitives/blockchain" }
-tp-inherents = { version = "2.0.2", default-features = false, path = "../../primitives/inherents" }
-tetsy-kvdb = "0.9.0"
+tp-blockchain = { version = "2.1.2", path = "../../primitives/blockchain" }
+tp-inherents = { version = "2.1.2", default-features = false, path = "../../primitives/inherents" }
+tetsy-kvdb = "0.9.1"
 log = "0.4.8"
 parking_lot = "0.11.1"
 lazy_static =  "1.4.0"
-tetcore-database = { version = "2.0.2", path = "../../primitives/database" }
-tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
-tp-keystore = { version = "0.8.1", default-features = false, path = "../../primitives/keystore" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
-tp-version = { version = "2.0.2", default-features = false, path = "../../primitives/version" }
-tp-api = { version = "2.0.2", path = "../../primitives/api" }
-tetcore-utils = { version = "2.0.2", path = "../../primitives/utils" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-tp-state-machine = { version = "0.8.2", path = "../../primitives/state-machine" }
-tp-trie = { version = "2.0.2", path = "../../primitives/trie" }
-tetcore-storage = { version = "2.0.2", path = "../../primitives/storage" }
-tp-transaction-pool = { version = "2.0.2", path = "../../primitives/transaction-pool" }
-prometheus-endpoint = { package = "prometheus-endpoint", version = "0.8.1", path = "../../utils/prometheus" }
+tetcore-database = { version = "2.1.2", path = "../../primitives/database" }
+tet-core = { version = "2.1.2", default-features = false, path = "../../primitives/core" }
+tp-keystore = { version = "2.1.2", default-features = false, path = "../../primitives/keystore" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
+tp-version = { version = "2.1.2", default-features = false, path = "../../primitives/version" }
+tp-api = { version = "2.1.2", path = "../../primitives/api" }
+tetcore-utils = { version = "2.1.2", path = "../../primitives/utils" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+tp-state-machine = { version = "2.1.2", path = "../../primitives/state-machine" }
+tp-trie = { version = "2.1.2", path = "../../primitives/trie" }
+tetcore-storage = { version = "2.1.2", path = "../../primitives/storage" }
+tp-transaction-pool = { version = "2.1.2", path = "../../primitives/transaction-pool" }
+prometheus-endpoint = { version = "2.1.2", package = "prometheus-endpoint", path = "../../utils/prometheus" }
 
 [dev-dependencies]
-tetsy-kvdb-memorydb = "0.9.0"
-# tp-test-primitives = { version = "2.0.0", path = "../../primitives/test-primitives" }
+tetsy-kvdb-memorydb = "0.9.1"
 tp-test-primitives = { path = "../../primitives/test-primitives" }
-# tetcore-test-runtime = { version = "2.0.0", path = "../../test-utils/runtime"  }
 tetcore-test-runtime = { path = "../../test-utils/runtime"  }
 thiserror = "1.0.21"

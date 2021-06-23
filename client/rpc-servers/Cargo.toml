@@ -1,6 +1,6 @@
 [package]
 name = "tc-rpc-server"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
@@ -20,10 +20,10 @@ futures = "0.1.6"
 tetsy-jsonrpc-core = "15.1.0"
 pubsub = { package = "tetsy-jsonrpc-pubsub", version = "15.1.0" }
 log = "0.4.8"
-prometheus-endpoint = { package = "prometheus-endpoint", path = "../../utils/prometheus", version = "0.8.1"}
+prometheus-endpoint = { version = "2.1.2", package = "prometheus-endpoint", path = "../../utils/prometheus" }
 serde = "1.0.101"
 serde_json = "1.0.41"
-tp-runtime = { version = "2.0.2", path = "../../primitives/runtime" }
+tp-runtime = { version = "2.1.2", path = "../../primitives/runtime" }
 
 [target.'cfg(not(target_os = "unknown"))'.dependencies]
 http = { package = "tetsy-jsonrpc-http-server", version = "15.1.0" }

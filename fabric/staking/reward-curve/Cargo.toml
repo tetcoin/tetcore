@@ -1,6 +1,6 @@
 [package]
 name = "noble-staking-reward-curve"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -9,7 +9,7 @@ categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
 documentation = "https://docs.rs/noble-staking-reward-curve"
-description = "Reward Curve for FABRIC staking noble"
+description = "Reward Curve for Tetcore FABRIC staking noble"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
@@ -24,4 +24,4 @@ proc-macro2 = "1.0.6"
 proc-macro-crate = "0.1.4"
 
 [dev-dependencies]
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }

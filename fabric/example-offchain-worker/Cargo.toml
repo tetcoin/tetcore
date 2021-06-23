@@ -1,6 +1,6 @@
 [package]
 name = "noble-example-offchain-worker"
-version = "2.0.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Unlicense"
@@ -17,14 +17,14 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false }
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
 serde = { version = "1.0.101", optional = true }
-tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
-tp-keystore = { version = "0.8.1", path = "../../primitives/keystore", optional = true }
-tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+tet-core = { version = "2.1.2", default-features = false, path = "../../primitives/core" }
+tp-keystore = { version = "2.1.2", path = "../../primitives/keystore", optional = true }
+tet-io = { version = "2.1.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
 lite-json = { version = "0.1", default-features = false }
 
 [features]

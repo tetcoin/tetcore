@@ -1,6 +1,6 @@
 [package]
 name = "tetcore-database"
-version = "2.0.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -14,4 +14,4 @@ readme = "README.md"
 
 [dependencies]
 parking_lot = "0.11.1"
-tetsy-kvdb = "0.9.0"
+tetsy-kvdb = "0.9.1"

@@ -1,6 +1,6 @@
 [package]
 name = "tc-cli"
-version = "0.8.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Tetcore CLI interface."
 edition = "2018"
@@ -22,28 +22,27 @@ tokio = { version = "0.2.21", features = [ "signal", "rt-core", "rt-threaded", "
 futures = "0.3.9"
 fdlimit = "0.2.1"
 tetsy-libp2p = "0.34.2"
-# tetsy-libp2p = { version = "0.34.0", git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
 tetsy-scale-codec = "2.0.1"
 hex = "0.4.2"
 rand = "0.7.3"
 tiny-bip39 = "0.8.0"
 serde_json = "1.0.41"
-tc-keystore = { version = "2.0.0", path = "../keystore" }
-panic-handler = { version = "2.0.2", path = "../../primitives/panic-handler" }
-tc-client-api = { version = "2.0.0", path = "../api" }
-tp-blockchain = { version = "2.0.2", path = "../../primitives/blockchain" }
-tc-network = { version = "0.8.0", path = "../network" }
-tp-runtime = { version = "2.0.2", path = "../../primitives/runtime" }
-tetcore-utils = { version = "2.0.2", path = "../../primitives/utils" }
-tp-version = { version = "2.0.2", path = "../../primitives/version" }
-tet-core = { version = "2.0.2", path = "../../primitives/core" }
-tp-keystore = { version = "0.8.1", path = "../../primitives/keystore" }
-tc-service = { version = "0.8.0", default-features = false, path = "../service" }
-tc-telemetry = { version = "2.0.0", path = "../telemetry" }
-tp-keyring = { version = "2.0.2", path = "../../primitives/keyring" }
+tc-keystore = { version = "2.1.2", path = "../keystore" }
+panic-handler = { version = "2.1.2", path = "../../primitives/panic-handler" }
+tc-client-api = { version = "2.1.2", path = "../api" }
+tp-blockchain = { version = "2.1.2", path = "../../primitives/blockchain" }
+tc-network = { version = "2.1.2", path = "../network" }
+tp-runtime = { version = "2.1.2", path = "../../primitives/runtime" }
+tetcore-utils = { version = "2.1.2", path = "../../primitives/utils" }
+tp-version = { version = "2.1.2", path = "../../primitives/version" }
+tet-core = { version = "2.1.2", path = "../../primitives/core" }
+tp-keystore = { version = "2.1.2", path = "../../primitives/keystore" }
+tc-service = { version = "2.1.2", default-features = false, path = "../service" }
+tc-telemetry = { version = "2.1.2", path = "../telemetry" }
+tp-keyring = { version = "2.1.2", path = "../../primitives/keyring" }
 names = "0.11.0"
 structopt = "0.3.8"
-tc-tracing = { version = "2.0.0", path = "../tracing" }
+tc-tracing = { version = "2.1.2", path = "../tracing" }
 chrono = "0.4.10"
 serde = "1.0.111"
 thiserror = "1.0.21"

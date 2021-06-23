@@ -1,6 +1,6 @@
 [package]
 name = "node-executor"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Tetcore node implementation in Rust."
 edition = "2018"
@@ -15,36 +15,34 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1" }
-node-primitives = { version = "2.0.0", path = "../primitives" }
-node-runtime = { version = "2.0.0", path = "../runtime" }
-tc-executor = { version = "0.8.0", path = "../../../client/executor" }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tp-keystore = { version = "0.8.1", path = "../../../primitives/keystore" }
-tet-io = { version = "2.0.2", path = "../../../primitives/io" }
-tp-state-machine = { version = "0.8.2", path = "../../../primitives/state-machine" }
-tp-trie = { version = "2.0.2", path = "../../../primitives/trie" }
+node-primitives = { version = "2.1.2", path = "../primitives" }
+node-runtime = { version = "2.1.2", path = "../runtime" }
+tc-executor = { version = "2.1.2", path = "../../../client/executor" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tp-keystore = { version = "2.1.2", path = "../../../primitives/keystore" }
+tet-io = { version = "2.1.2", path = "../../../primitives/io" }
+tp-state-machine = { version = "2.1.2", path = "../../../primitives/state-machine" }
+tp-trie = { version = "2.1.2", path = "../../../primitives/trie" }
 tetsy-trie-root = "0.16.0"
-fabric-benchmarking = { version = "2.0.0", path = "../../../fabric/benchmarking" }
+fabric-benchmarking = { version = "2.1.2", path = "../../../fabric/benchmarking" }
 
 [dev-dependencies]
 criterion = "0.3.3"
-fabric-support = { version = "2.0.0", path = "../../../fabric/support" }
-fabric-system = { version = "2.0.0", path = "../../../fabric/system" }
-# node-testing = { version = "2.0.0", path = "../testing" }
+fabric-support = { version = "2.1.2", path = "../../../fabric/support" }
+fabric-system = { version = "2.1.2", path = "../../../fabric/system" }
 node-testing = { path = "../testing" }
-noble-balances = { version = "2.0.1", path = "../../../fabric/balances" }
-noble-contracts = { version = "2.0.0", path = "../../../fabric/contracts" }
-noble-grandpa = { version = "2.0.0", path = "../../../fabric/grandpa" }
-noble-im-online = { version = "2.0.0", path = "../../../fabric/im-online" }
-noble-indices = { version = "2.0.0", path = "../../../fabric/indices" }
-noble-session = { version = "2.0.0", path = "../../../fabric/session" }
-noble-timestamp = { version = "2.0.0", path = "../../../fabric/timestamp" }
-noble-transaction-payment = { version = "2.0.0", path = "../../../fabric/transaction-payment" }
-noble-treasury = { version = "2.0.0", path = "../../../fabric/treasury" }
-tet-application-crypto = { version = "2.0.2", path = "../../../primitives/application-crypto" }
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
-externalities = { version = "0.8.2", path = "../../../primitives/externalities" }
-# tetcore-test-client = { version = "2.0.0", path = "../../../test-utils/client" }
+noble-balances = { version = "2.1.2", path = "../../../fabric/balances" }
+noble-contracts = { version = "2.1.2", path = "../../../fabric/contracts" }
+noble-grandpa = { version = "2.1.2", path = "../../../fabric/grandpa" }
+noble-im-online = { version = "2.1.2", path = "../../../fabric/im-online" }
+noble-indices = { version = "2.1.2", path = "../../../fabric/indices" }
+noble-session = { version = "2.1.2", path = "../../../fabric/session" }
+noble-timestamp = { version = "2.1.2", path = "../../../fabric/timestamp" }
+noble-transaction-payment = { version = "2.1.2", path = "../../../fabric/transaction-payment" }
+noble-treasury = { version = "2.1.2", path = "../../../fabric/treasury" }
+tet-application-crypto = { version = "2.1.2", path = "../../../primitives/application-crypto" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }
+externalities = { version = "2.1.2", path = "../../../primitives/externalities" }
 tetcore-test-client = { path = "../../../test-utils/client" }
 wat = "1.0"
 

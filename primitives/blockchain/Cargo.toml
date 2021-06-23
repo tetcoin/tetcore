@@ -1,6 +1,6 @@
 [package]
 name = "tp-blockchain"
-version = "2.0.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -22,8 +22,8 @@ parking_lot = "0.11.1"
 thiserror = "1.0.21"
 futures = "0.3.9"
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tp-consensus = { version = "0.8.2", path = "../consensus/common" }
-tp-runtime = { version = "2.0.2", path = "../runtime" }
-tp-state-machine = { version = "0.8.2", path = "../state-machine" }
-tetcore-database = { version = "2.0.2", path = "../database" }
-tp-api = { version = "2.0.2", path = "../api" }
+tp-consensus = { version = "2.1.2", path = "../consensus/common" }
+tp-runtime = { version = "2.1.2", path = "../runtime" }
+tp-state-machine = { version = "2.1.2", path = "../state-machine" }
+tetcore-database = { version = "2.1.2", path = "../database" }
+tp-api = { version = "2.1.2", path = "../api" }

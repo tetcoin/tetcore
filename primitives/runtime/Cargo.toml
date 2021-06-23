@@ -1,6 +1,6 @@
 [package]
 name = "tp-runtime"
-version = "2.0.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -19,23 +19,23 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tet-core = { version = "2.0.2", default-features = false, path = "../core" }
-tet-application-crypto = { version = "2.0.2", default-features = false, path = "../application-crypto" }
-arithmetic = { version = "2.0.2", default-features = false, path = "../arithmetic" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../std" }
-tet-io = { version = "2.0.2", default-features = false, path = "../io" }
+tet-core = { version = "2.1.2", default-features = false, path = "../core" }
+tet-application-crypto = { version = "2.1.2", default-features = false, path = "../application-crypto" }
+arithmetic = { version = "2.1.2", default-features = false, path = "../arithmetic" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../std" }
+tet-io = { version = "2.1.2", default-features = false, path = "../io" }
 log = { version = "0.4.8", optional = true }
 paste = "0.1.6"
 rand = { version = "0.7.2", optional = true }
 impl-trait-for-tuples = "0.2.0"
-tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
+tetsy-util-mem = { version = "0.9.1", default-features = false, features = ["tetsy-primitive-types"] }
 tetsy-hash256-std-hasher = { version = "0.15.2", default-features = false }
 either = { version = "1.5", default-features = false }
 
 [dev-dependencies]
 serde_json = "1.0.41"
 rand = "0.7.2"
-tp-state-machine = { version = "0.8.2", path = "../state-machine" }
+tp-state-machine = { version = "2.1.2", path = "../state-machine" }
 
 [features]
 bench = []

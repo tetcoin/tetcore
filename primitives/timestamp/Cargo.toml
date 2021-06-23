@@ -1,6 +1,6 @@
 [package]
 name = "tp-timestamp"
-version = "2.0.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -16,11 +16,11 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-api = { version = "2.0.2", default-features = false, path = "../api" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../std" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../runtime" }
+tp-api = { version = "2.1.2", default-features = false, path = "../api" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../std" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../runtime" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tp-inherents = { version = "2.0.2", default-features = false, path = "../inherents" }
+tp-inherents = { version = "2.1.2", default-features = false, path = "../inherents" }
 impl-trait-for-tuples = "0.2.0"
 wasm-timer = { version = "0.2", optional = true }
 

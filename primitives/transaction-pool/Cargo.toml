@@ -1,6 +1,6 @@
 [package]
 name = "tp-transaction-pool"
-version = "2.0.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -22,9 +22,9 @@ derive_more = { version = "0.99.11", optional = true }
 futures = { version = "0.3.1", optional = true }
 log = { version = "0.4.8", optional = true }
 serde = { version = "1.0.101", features = ["derive"], optional = true}
-tp-api = { version = "2.0.2", default-features = false, path = "../api" }
-tp-blockchain = { version = "2.0.2", optional = true, path = "../blockchain" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../runtime" }
+tp-api = { version = "2.1.2", default-features = false, path = "../api" }
+tp-blockchain = { version = "2.1.2", optional = true, path = "../blockchain" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../runtime" }
 
 [features]
 default = [ "std" ]

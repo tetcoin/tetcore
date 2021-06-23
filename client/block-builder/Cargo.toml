@@ -1,6 +1,6 @@
 [package]
 name = "tc-block-builder"
-version = "0.8.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
@@ -17,17 +17,17 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 
 [dependencies]
-tp-state-machine = { version = "0.8.2", path = "../../primitives/state-machine" }
-tp-runtime = { version = "2.0.2", path = "../../primitives/runtime" }
-tp-api = { version = "2.0.2", path = "../../primitives/api" }
-tp-consensus = { version = "0.8.2", path = "../../primitives/consensus/common" }
-tp-blockchain = { version = "2.0.2", path = "../../primitives/blockchain" }
-tet-core = { version = "2.0.2", path = "../../primitives/core" }
-tp-block-builder = { version = "2.0.2", path = "../../primitives/block-builder" }
-tp-inherents = { version = "2.0.2", path = "../../primitives/inherents" }
-tc-client-api = { version = "2.0.0", path = "../api" }
-codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
+tp-state-machine = { version = "2.1.2", path = "../../primitives/state-machine" }
+tp-runtime = { version = "2.1.2", path = "../../primitives/runtime" }
+tp-api = { version = "2.1.2", path = "../../primitives/api" }
+tp-consensus = { version = "2.1.2", path = "../../primitives/consensus/common" }
+tp-blockchain = { version = "2.1.2", path = "../../primitives/blockchain" }
+tet-core = { version = "2.1.2", path = "../../primitives/core" }
+tp-block-builder = { version = "2.1.2", path = "../../primitives/block-builder" }
+tp-inherents = { version = "2.1.2", path = "../../primitives/inherents" }
+tc-client-api = { version = "2.1.2", path = "../api" }
+codec = { package = "tetsy-scale-codec", version = "2.1.2", features = ["derive"] }
 
 [dev-dependencies]
 tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
-tp-trie = { version = "2.0.2", path = "../../primitives/trie" }
+tp-trie = { version = "2.1.2", path = "../../primitives/trie" }

@@ -1,6 +1,6 @@
 [package]
 name = "fabric-benchmarking-cli"
-version = "2.0.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -9,23 +9,23 @@ categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
 documentation = "https://docs.rs/benchmarking-cli"
-description = "CLI for benchmarking FABRIC"
+description = "Tetcore CLI for benchmarking FABRIC"
 readme = "README.md"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-fabric-benchmarking = { version = "2.0.0", path = "../../../fabric/benchmarking" }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tc-service = { version = "0.8.0", default-features = false, path = "../../../client/service" }
-tc-cli = { version = "0.8.0", path = "../../../client/cli" }
-tc-client-db = { version = "0.8.0", path = "../../../client/db" }
-tc-executor = { version = "0.8.0", path = "../../../client/executor" }
-externalities = { version = "0.8.2", path = "../../../primitives/externalities" }
-tp-keystore = { version = "0.8.1", path = "../../../primitives/keystore" }
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
-tp-state-machine = { version = "0.8.2", path = "../../../primitives/state-machine" }
+fabric-benchmarking = { version = "2.1.2", path = "../../../fabric/benchmarking" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tc-service = { version = "2.1.2", default-features = false, path = "../../../client/service" }
+tc-cli = { version = "2.1.2", path = "../../../client/cli" }
+tc-client-db = { version = "2.1.2", path = "../../../client/db" }
+tc-executor = { version = "2.1.2", path = "../../../client/executor" }
+externalities = { version = "2.1.2", path = "../../../primitives/externalities" }
+tp-keystore = { version = "2.1.2", path = "../../../primitives/keystore" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }
+tp-state-machine = { version = "2.1.2", path = "../../../primitives/state-machine" }
 codec = { version = "2.0.1", package = "tetsy-scale-codec" }
 structopt = "0.3.8"
 chrono = "0.4"

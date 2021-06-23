@@ -1,6 +1,6 @@
 [package]
 name = "noble-authority-discovery"
-version = "2.0.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -16,20 +16,20 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tp-authority-discovery = { version = "2.0.2", default-features = false, path = "../../primitives/authority-discovery" }
-tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../primitives/application-crypto" }
+tp-authority-discovery = { version = "2.1.2", default-features = false, path = "../../primitives/authority-discovery" }
+tet-application-crypto = { version = "2.1.2", default-features = false, path = "../../primitives/application-crypto" }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
 serde = { version = "1.0.101", optional = true }
-noble-session = { version = "2.0.0", features = ["historical" ], path = "../session", default-features = false }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
+noble-session = { version = "2.1.2", features = ["historical" ], path = "../session", default-features = false }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
 
 [dev-dependencies]
-tet-core = { version = "2.0.2", path = "../../primitives/core" }
-tet-io = { version = "2.0.2", path = "../../primitives/io" }
-tp-staking = { version = "2.0.2", default-features = false, path = "../../primitives/staking" }
+tet-core = { version = "2.1.2", path = "../../primitives/core" }
+tet-io = { version = "2.1.2", path = "../../primitives/io" }
+tp-staking = { version = "2.1.2", default-features = false, path = "../../primitives/staking" }
 
 [features]
 default = ["std"]

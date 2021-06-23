@@ -1,6 +1,6 @@
 [package]
 name = "noble-session"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -18,20 +18,20 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
-tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-tp-session = { version = "2.0.2", default-features = false, path = "../../primitives/session" }
-tp-staking = { version = "2.0.2", default-features = false, path = "../../primitives/staking" }
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
-noble-timestamp = { version = "2.0.0", default-features = false, path = "../timestamp" }
-tp-trie = { version = "2.0.2", optional = true, default-features = false, path = "../../primitives/trie" }
+tet-core = { version = "2.1.2", default-features = false, path = "../../primitives/core" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
+tet-io = { version = "2.1.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+tp-session = { version = "2.1.2", default-features = false, path = "../../primitives/session" }
+tp-staking = { version = "2.1.2", default-features = false, path = "../../primitives/staking" }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
+noble-timestamp = { version = "2.1.2", default-features = false, path = "../timestamp" }
+tp-trie = { version = "2.1.2", optional = true, default-features = false, path = "../../primitives/trie" }
 impl-trait-for-tuples = "0.1"
 
 [dev-dependencies]
-tet-application-crypto = { version = "2.0.2", path = "../../primitives/application-crypto" }
+tet-application-crypto = { version = "2.1.2", path = "../../primitives/application-crypto" }
 lazy_static = "1.4.0"
 
 [features]

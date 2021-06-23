@@ -1,6 +1,6 @@
 [package]
 name = "fabric-support"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -19,30 +19,28 @@ targets = ["x86_64-unknown-linux-gnu"]
 log = "0.4"
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-fabric-metadata = { version = "12.0.0", default-features = false, path = "../metadata" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
-tet-io = { version = "2.0.2", default-features = false, path = "../../primitives/io" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-tetcore-tracing = { version = "2.0.2", default-features = false, path = "../../primitives/tracing" }
-tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
-arithmetic = { version = "2.0.2", default-features = false, path = "../../primitives/arithmetic" }
-tp-inherents = { version = "2.0.2", default-features = false, path = "../../primitives/inherents" }
-fabric-support-procedural = { version = "2.0.1", default-features = false, path = "./procedural" }
+fabric-metadata = { version = "2.1.2", default-features = false, path = "../metadata" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
+tet-io = { version = "2.1.2", default-features = false, path = "../../primitives/io" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+tetcore-tracing = { version = "2.1.2", default-features = false, path = "../../primitives/tracing" }
+tet-core = { version = "2.1.2", default-features = false, path = "../../primitives/core" }
+arithmetic = { version = "2.1.2", default-features = false, path = "../../primitives/arithmetic" }
+tp-inherents = { version = "2.1.2", default-features = false, path = "../../primitives/inherents" }
+fabric-support-procedural = { version = "2.1.2", default-features = false, path = "./procedural" }
 paste = "0.1.6"
 once_cell = { version = "1", default-features = false, optional = true }
-tp-state-machine = { version = "0.8.2", optional = true, path = "../../primitives/state-machine" }
+tp-state-machine = { version = "2.1.2", optional = true, path = "../../primitives/state-machine" }
 bitflags = "1.2"
 impl-trait-for-tuples = "0.2.0"
 smallvec = "1.4.1"
 
 [dev-dependencies]
 pretty_assertions = "0.6.1"
-# fabric-system = { version = "2.0.0", path = "../system" }
 fabric-system = { path = "../system" }
-tetsy-util-mem = { version = "0.9.0", default-features = false, features = ["tetsy-primitive-types"] }
-# tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
+tetsy-util-mem = { version = "0.9.1", default-features = false, features = ["tetsy-primitive-types"] }
 tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
-tp-api = { version = "2.0.2", default-features = false, path = "../../primitives/api" }
+tp-api = { version = "2.1.2", default-features = false, path = "../../primitives/api" }
 
 [features]
 default = ["std"]

@@ -1,6 +1,6 @@
 [package]
 name = "tp-consensus-slots"
-version = "0.8.2"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Primitives for slots-based consensus"
 edition = "2018"
@@ -17,8 +17,8 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../runtime" }
-arithmetic = { version = "2.0.2", default-features = false, path = "../../arithmetic" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../runtime" }
+arithmetic = { version = "2.1.2", default-features = false, path = "../../arithmetic" }
 
 [features]
 default = ["std"]

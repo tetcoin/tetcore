@@ -1,6 +1,6 @@
 [package]
 name = "tc-finality-grandpa-rpc"
-version = "0.8.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "RPC extensions for the GRANDPA finality gadget"
 repository = "https://github.com/tetcoin/tetcore/"
@@ -9,11 +9,11 @@ license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 readme = "README.md"
 
 [dependencies]
-tc-finality-grandpa = { version = "0.8.0", path = "../" }
-tc-rpc = { version = "2.0.0", path = "../../rpc" }
-tp-blockchain = { version = "2.0.2", path = "../../../primitives/blockchain" }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+tc-finality-grandpa = { version = "2.1.2", path = "../" }
+tc-rpc = { version = "2.1.2", path = "../../rpc" }
+tp-blockchain = { version = "2.1.2", path = "../../../primitives/blockchain" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }
 tetsy-finality-grandpa = { version = "0.13.0", features = ["derive-codec"] }
 tetsy-jsonrpc-core = "15.1.0"
 tetsy-jsonrpc-core-client = "15.1.0"
@@ -25,17 +25,15 @@ serde_json = "1.0.50"
 log = "0.4.8"
 derive_more = "0.99.2"
 tetsy-scale-codec = { version = "2.0.1", features = ["derive"] }
-tc-client-api = { version = "2.0.0", path = "../../api" }
+tc-client-api = { version = "2.1.2", path = "../../api" }
 
 [dev-dependencies]
-tc-block-builder = { version = "0.8.0", path = "../../block-builder" }
-# tc-network-test = { version = "0.8.0", path = "../../network/test" }
+tc-block-builder = { version = "2.1.2", path = "../../block-builder" }
 tc-network-test = { path = "../../network/test" }
-tc-rpc = { version = "2.0.0", path = "../../rpc", features = ["test-helpers"] }
-tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tp-finality-grandpa = { version = "2.0.2", path = "../../../primitives/finality-grandpa" }
-tp-keyring = { version = "2.0.2", path = "../../../primitives/keyring" }
-# tetcore-test-runtime-client = { version = "2.0.0",  path = "../../../test-utils/runtime/client" }
+tc-rpc = { version = "2.1.2", path = "../../rpc", features = ["test-helpers"] }
+tp-consensus = { version = "2.1.2", path = "../../../primitives/consensus/common" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tp-finality-grandpa = { version = "2.1.2", path = "../../../primitives/finality-grandpa" }
+tp-keyring = { version = "2.1.2", path = "../../../primitives/keyring" }
 tetcore-test-runtime-client = { path = "../../../test-utils/runtime/client" }
 lazy_static = "1.4"

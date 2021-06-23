@@ -1,6 +1,6 @@
 [package]
 name = "noble-randomness-collective-flip"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -18,14 +18,14 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 safe-mix = { version = "1.0", default-features = false }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
 
 [dev-dependencies]
-tet-core = { version = "2.0.2", path = "../../primitives/core" }
-tet-io = { version = "2.0.2", path = "../../primitives/io" }
+tet-core = { version = "2.1.2", path = "../../primitives/core" }
+tet-io = { version = "2.1.2", path = "../../primitives/io" }
 serde = { version = "1.0.101" }
 
 [features]

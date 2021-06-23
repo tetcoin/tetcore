@@ -1,6 +1,6 @@
 [package]
 name = "noble-grandpa"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -9,7 +9,7 @@ categories = ["cryptography::cryptocurrencies"]
 homepage = "https://core.tetcoin.org"
 repository = "https://github.com/tetcoin/tetcore"
 documentation = "https://docs.rs/noble-grandpa"
-description = "FABRIC noble for GRANDPA finality gadget"
+description = "FABRIC Noble for GRANDPA finality gadget"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -18,29 +18,29 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
-tet-application-crypto = { version = "2.0.2", default-features = false, path = "../../primitives/application-crypto" }
-tet-core = { version = "2.0.2", default-features = false, path = "../../primitives/core" }
-tp-finality-grandpa = { version = "2.0.2", default-features = false, path = "../../primitives/finality-grandpa" }
-tp-session = { version = "2.0.2", default-features = false, path = "../../primitives/session" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../primitives/std" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../primitives/runtime" }
-tp-staking = { version = "2.0.2", default-features = false, path = "../../primitives/staking" }
-fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../benchmarking", optional = true }
-fabric-support = { version = "2.0.0", default-features = false, path = "../support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../system" }
-noble-authorship = { version = "2.0.1", default-features = false, path = "../authorship" }
-noble-session = { version = "2.0.0", default-features = false, path = "../session" }
+tet-application-crypto = { version = "2.1.2", default-features = false, path = "../../primitives/application-crypto" }
+tet-core = { version = "2.1.2", default-features = false, path = "../../primitives/core" }
+tp-finality-grandpa = { version = "2.1.2", default-features = false, path = "../../primitives/finality-grandpa" }
+tp-session = { version = "2.1.2", default-features = false, path = "../../primitives/session" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../primitives/std" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../primitives/runtime" }
+tp-staking = { version = "2.1.2", default-features = false, path = "../../primitives/staking" }
+fabric-benchmarking = { version = "2.1.2", default-features = false, path = "../benchmarking", optional = true }
+fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
+noble-authorship = { version = "2.1.2", default-features = false, path = "../authorship" }
+noble-session = { version = "2.1.2", default-features = false, path = "../session" }
 
 [dev-dependencies]
-fabric-benchmarking = { version = "2.0.0", path = "../benchmarking" }
+fabric-benchmarking = { version = "2.1.2", path = "../benchmarking" }
 grandpa = { package = "tetsy-finality-grandpa", version = "0.13.0", features = ["derive-codec"] }
-tet-io = { version = "2.0.2", path = "../../primitives/io" }
-tp-keyring = { version = "2.0.2", path = "../../primitives/keyring" }
-noble-balances = { version = "2.0.1", path = "../balances" }
-noble-offences = { version = "2.0.0", path = "../offences" }
-noble-staking = { version = "2.0.0", path = "../staking" }
-noble-staking-reward-curve = { version = "2.0.0", path = "../staking/reward-curve" }
-noble-timestamp = { version = "2.0.0", path = "../timestamp" }
+tet-io = { version = "2.1.2", path = "../../primitives/io" }
+tp-keyring = { version = "2.1.2", path = "../../primitives/keyring" }
+noble-balances = { version = "2.1.2", path = "../balances" }
+noble-offences = { version = "2.1.2", path = "../offences" }
+noble-staking = { version = "2.1.2", path = "../staking" }
+noble-staking-reward-curve = { version = "2.1.2", path = "../staking/reward-curve" }
+noble-timestamp = { version = "2.1.2", path = "../timestamp" }
 
 [features]
 default = ["std"]

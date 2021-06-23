@@ -1,6 +1,6 @@
 [package]
 name = "tc-consensus-uncles"
-version = "0.8.0"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "Generic uncle inclusion utilities for consensus"
 edition = "2018"
@@ -16,10 +16,10 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-tc-client-api = { version = "2.0.0", path = "../../api" }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
-tp-authorship = { version = "2.0.2", path = "../../../primitives/authorship" }
-tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
-tp-inherents = { version = "2.0.2", path = "../../../primitives/inherents" }
+tc-client-api = { version = "2.1.2", path = "../../api" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }
+tp-authorship = { version = "2.1.2", path = "../../../primitives/authorship" }
+tp-consensus = { version = "2.1.2", path = "../../../primitives/consensus/common" }
+tp-inherents = { version = "2.1.2", path = "../../../primitives/inherents" }
 log = "0.4.8"

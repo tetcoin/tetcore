@@ -1,6 +1,6 @@
 [package]
 name = "node-runtime"
-version = "2.0.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 description = "The Tetcore runtime"
 edition = "2018"
@@ -23,74 +23,74 @@ static_assertions = "1.1.0"
 hex-literal = { version = "0.3.1", optional = true }
 
 # primitives
-tp-authority-discovery = { version = "2.0.2", default-features = false, path = "../../../primitives/authority-discovery" }
-tp-consensus-babe = { version = "0.8.2", default-features = false, path = "../../../primitives/consensus/babe" }
-tp-block-builder = { path = "../../../primitives/block-builder", default-features = false, version = "2.0.2"}
-tp-inherents = { version = "2.0.2", default-features = false, path = "../../../primitives/inherents" }
-node-primitives = { version = "2.0.0", default-features = false, path = "../primitives" }
-tp-offchain = { version = "2.0.2", default-features = false, path = "../../../primitives/offchain" }
-tet-core = { version = "2.0.2", default-features = false, path = "../../../primitives/core" }
-tetcore-std = { version = "2.0.2", default-features = false, path = "../../../primitives/std" }
-tp-api = { version = "2.0.2", default-features = false, path = "../../../primitives/api" }
-tp-runtime = { version = "2.0.2", default-features = false, path = "../../../primitives/runtime" }
-tp-staking = { version = "2.0.2", default-features = false, path = "../../../primitives/staking" }
-tp-keyring = { version = "2.0.2", optional = true, path = "../../../primitives/keyring" }
-tp-session = { version = "2.0.2", default-features = false, path = "../../../primitives/session" }
-tp-transaction-pool = { version = "2.0.2", default-features = false, path = "../../../primitives/transaction-pool" }
-tp-version = { version = "2.0.2", default-features = false, path = "../../../primitives/version" }
+tp-authority-discovery = { version = "2.1.2", default-features = false, path = "../../../primitives/authority-discovery" }
+tp-consensus-babe = { version = "2.1.2", default-features = false, path = "../../../primitives/consensus/babe" }
+tp-block-builder = { path = "../../../primitives/block-builder", default-features = false, version = "2.1.2"}
+tp-inherents = { version = "2.1.2", default-features = false, path = "../../../primitives/inherents" }
+node-primitives = { version = "2.1.2", default-features = false, path = "../primitives" }
+tp-offchain = { version = "2.1.2", default-features = false, path = "../../../primitives/offchain" }
+tet-core = { version = "2.1.2", default-features = false, path = "../../../primitives/core" }
+tetcore-std = { version = "2.1.2", default-features = false, path = "../../../primitives/std" }
+tp-api = { version = "2.1.2", default-features = false, path = "../../../primitives/api" }
+tp-runtime = { version = "2.1.2", default-features = false, path = "../../../primitives/runtime" }
+tp-staking = { version = "2.1.2", default-features = false, path = "../../../primitives/staking" }
+tp-keyring = { version = "2.1.2", optional = true, path = "../../../primitives/keyring" }
+tp-session = { version = "2.1.2", default-features = false, path = "../../../primitives/session" }
+tp-transaction-pool = { version = "2.1.2", default-features = false, path = "../../../primitives/transaction-pool" }
+tp-version = { version = "2.1.2", default-features = false, path = "../../../primitives/version" }
 
 # fabric dependencies
-fabric-executive = { version = "2.0.0", default-features = false, path = "../../../fabric/executive" }
-fabric-benchmarking = { version = "2.0.0", default-features = false, path = "../../../fabric/benchmarking", optional = true }
-fabric-support = { version = "2.0.0", default-features = false, path = "../../../fabric/support" }
-fabric-system = { version = "2.0.0", default-features = false, path = "../../../fabric/system" }
-fabric-system-benchmarking = { version = "2.0.0", default-features = false, path = "../../../fabric/system/benchmarking", optional = true }
-fabric-system-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../../fabric/system/rpc/runtime-api/" }
-noble-assets = { version = "2.0.1", default-features = false, path = "../../../fabric/assets" }
-noble-authority-discovery = { version = "2.0.1", default-features = false, path = "../../../fabric/authority-discovery" }
-noble-authorship = { version = "2.0.1", default-features = false, path = "../../../fabric/authorship" }
-noble-babe = { version = "2.0.1", default-features = false, path = "../../../fabric/babe" }
-noble-balances = { version = "2.0.1", default-features = false, path = "../../../fabric/balances" }
-noble-bounties = { version = "2.0.0", default-features = false, path = "../../../fabric/bounties" }
-noble-collective = { version = "2.0.0", default-features = false, path = "../../../fabric/collective" }
-noble-contracts = { version = "2.0.0", default-features = false, path = "../../../fabric/contracts" }
-noble-contracts-primitives = { version = "2.0.0", default-features = false, path = "../../../fabric/contracts/common/" }
-noble-contracts-rpc-runtime-api = { version = "0.8.0", default-features = false, path = "../../../fabric/contracts/rpc/runtime-api/" }
-noble-democracy = { version = "2.0.0", default-features = false, path = "../../../fabric/democracy" }
-noble-elections-phragmen = { version = "3.0.0", default-features = false, path = "../../../fabric/elections-phragmen" }
-noble-grandpa = { version = "2.0.0", default-features = false, path = "../../../fabric/grandpa" }
-noble-im-online = { version = "2.0.0", default-features = false, path = "../../../fabric/im-online" }
-noble-indices = { version = "2.0.0", default-features = false, path = "../../../fabric/indices" }
-noble-identity = { version = "2.0.0", default-features = false, path = "../../../fabric/identity" }
-noble-lottery = { version = "2.0.0", default-features = false, path = "../../../fabric/lottery" }
-noble-membership = { version = "2.0.0", default-features = false, path = "../../../fabric/membership" }
-noble-mmr = { version = "2.0.0", default-features = false, path = "../../../fabric/merkle-mountain-range" }
-noble-multisig = { version = "2.0.0", default-features = false, path = "../../../fabric/multisig" }
-noble-offences = { version = "2.0.0", default-features = false, path = "../../../fabric/offences" }
-noble-offences-benchmarking = { version = "2.0.1", path = "../../../fabric/offences/benchmarking", default-features = false, optional = true }
-noble-proxy = { version = "2.0.0", default-features = false, path = "../../../fabric/proxy" }
-noble-randomness-collective-flip = { version = "2.0.0", default-features = false, path = "../../../fabric/randomness-collective-flip" }
-noble-recovery = { version = "2.0.0", default-features = false, path = "../../../fabric/recovery" }
-noble-session = { version = "2.0.0", features = ["historical"], path = "../../../fabric/session", default-features = false }
-noble-session-benchmarking = { version = "2.0.1", path = "../../../fabric/session/benchmarking", default-features = false, optional = true }
-noble-staking = { version = "2.0.0", default-features = false, path = "../../../fabric/staking" }
-noble-staking-reward-curve = { version = "2.0.0", default-features = false, path = "../../../fabric/staking/reward-curve" }
-noble-scheduler = { version = "2.0.0", default-features = false, path = "../../../fabric/scheduler" }
-noble-society = { version = "2.0.0", default-features = false, path = "../../../fabric/society" }
-noble-sudo = { version = "2.0.0", default-features = false, path = "../../../fabric/sudo" }
-noble-timestamp = { version = "2.0.0", default-features = false, path = "../../../fabric/timestamp" }
-noble-tips = { version = "2.0.0", default-features = false, path = "../../../fabric/tips" }
-noble-treasury = { version = "2.0.0", default-features = false, path = "../../../fabric/treasury" }
-noble-utility = { version = "2.0.0", default-features = false, path = "../../../fabric/utility" }
-noble-transaction-payment = { version = "2.0.0", default-features = false, path = "../../../fabric/transaction-payment" }
-noble-transaction-payment-rpc-runtime-api = { version = "2.0.0", default-features = false, path = "../../../fabric/transaction-payment/rpc/runtime-api/" }
-noble-vesting = { version = "2.0.0", default-features = false, path = "../../../fabric/vesting" }
+fabric-executive = { version = "2.1.2", default-features = false, path = "../../../fabric/executive" }
+fabric-benchmarking = { version = "2.1.2", default-features = false, path = "../../../fabric/benchmarking", optional = true }
+fabric-support = { version = "2.1.2", default-features = false, path = "../../../fabric/support" }
+fabric-system = { version = "2.1.2", default-features = false, path = "../../../fabric/system" }
+fabric-system-benchmarking = { version = "2.1.2", default-features = false, path = "../../../fabric/system/benchmarking", optional = true }
+fabric-system-rpc-runtime-api = { version = "2.1.2", default-features = false, path = "../../../fabric/system/rpc/runtime-api/" }
+noble-assets = { version = "2.1.2", default-features = false, path = "../../../fabric/assets" }
+noble-authority-discovery = { version = "2.1.2", default-features = false, path = "../../../fabric/authority-discovery" }
+noble-authorship = { version = "2.1.2", default-features = false, path = "../../../fabric/authorship" }
+noble-babe = { version = "2.1.2", default-features = false, path = "../../../fabric/babe" }
+noble-balances = { version = "2.1.2", default-features = false, path = "../../../fabric/balances" }
+noble-bounties = { version = "2.1.2", default-features = false, path = "../../../fabric/bounties" }
+noble-collective = { version = "2.1.2", default-features = false, path = "../../../fabric/collective" }
+noble-contracts = { version = "2.1.2", default-features = false, path = "../../../fabric/contracts" }
+noble-contracts-primitives = { version = "2.1.2", default-features = false, path = "../../../fabric/contracts/common/" }
+noble-contracts-rpc-runtime-api = { version = "2.1.2", default-features = false, path = "../../../fabric/contracts/rpc/runtime-api/" }
+noble-democracy = { version = "2.1.2", default-features = false, path = "../../../fabric/democracy" }
+noble-elections-phragmen = { version = "2.1.2", default-features = false, path = "../../../fabric/elections-phragmen" }
+noble-grandpa = { version = "2.1.2", default-features = false, path = "../../../fabric/grandpa" }
+noble-im-online = { version = "2.1.2", default-features = false, path = "../../../fabric/im-online" }
+noble-indices = { version = "2.1.2", default-features = false, path = "../../../fabric/indices" }
+noble-identity = { version = "2.1.2", default-features = false, path = "../../../fabric/identity" }
+noble-lottery = { version = "2.1.2", default-features = false, path = "../../../fabric/lottery" }
+noble-membership = { version = "2.1.2", default-features = false, path = "../../../fabric/membership" }
+noble-mmr = { version = "2.1.2", default-features = false, path = "../../../fabric/merkle-mountain-range" }
+noble-multisig = { version = "2.1.2", default-features = false, path = "../../../fabric/multisig" }
+noble-offences = { version = "2.1.2", default-features = false, path = "../../../fabric/offences" }
+noble-offences-benchmarking = { version = "2.1.2", path = "../../../fabric/offences/benchmarking", default-features = false, optional = true }
+noble-proxy = { version = "2.1.2", default-features = false, path = "../../../fabric/proxy" }
+noble-randomness-collective-flip = { version = "2.1.2", default-features = false, path = "../../../fabric/randomness-collective-flip" }
+noble-recovery = { version = "2.1.2", default-features = false, path = "../../../fabric/recovery" }
+noble-session = { version = "2.1.2", features = ["historical"], path = "../../../fabric/session", default-features = false }
+noble-session-benchmarking = { version = "2.1.2", path = "../../../fabric/session/benchmarking", default-features = false, optional = true }
+noble-staking = { version = "2.1.2", default-features = false, path = "../../../fabric/staking" }
+noble-staking-reward-curve = { version = "2.1.2", default-features = false, path = "../../../fabric/staking/reward-curve" }
+noble-scheduler = { version = "2.1.2", default-features = false, path = "../../../fabric/scheduler" }
+noble-society = { version = "2.1.2", default-features = false, path = "../../../fabric/society" }
+noble-sudo = { version = "2.1.2", default-features = false, path = "../../../fabric/sudo" }
+noble-timestamp = { version = "2.1.2", default-features = false, path = "../../../fabric/timestamp" }
+noble-tips = { version = "2.1.2", default-features = false, path = "../../../fabric/tips" }
+noble-treasury = { version = "2.1.2", default-features = false, path = "../../../fabric/treasury" }
+noble-utility = { version = "2.1.2", default-features = false, path = "../../../fabric/utility" }
+noble-transaction-payment = { version = "2.1.2", default-features = false, path = "../../../fabric/transaction-payment" }
+noble-transaction-payment-rpc-runtime-api = { version = "2.1.2", default-features = false, path = "../../../fabric/transaction-payment/rpc/runtime-api/" }
+noble-vesting = { version = "2.1.2", default-features = false, path = "../../../fabric/vesting" }
 
 [build-dependencies]
-wasm-builder = { version = "3.0.0", path = "../../../utils/wasm-builder" }
+wasm-builder = { version = "2.1.2", path = "../../../utils/wasm-builder" }
 
 [dev-dependencies]
-tet-io = { version = "2.0.2", path = "../../../primitives/io" }
+tet-io = { version = "2.1.2", path = "../../../primitives/io" }
 
 [features]
 default = ["std"]

@@ -1,6 +1,6 @@
 [package]
 name = "tetcore-fabric-cli"
-version = "2.0.1"
+version = "2.1.2"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -13,11 +13,11 @@ documentation = "https://docs.rs/tetcore-fabric-cli"
 readme = "README.md"
 
 [dependencies]
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tc-cli = { version = "0.8.0", path = "../../../client/cli" }
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tc-cli = { version = "2.1.2", path = "../../../client/cli" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }
 structopt = "0.3.8"
-fabric-system = { version = "2.0.0", path = "../../../fabric/system" }
+fabric-system = { version = "2.1.2", path = "../../../fabric/system" }
 
 [dev-dependencies]
 

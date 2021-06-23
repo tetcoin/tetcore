@@ -1,6 +1,6 @@
 [package]
 name = "node-template"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Anonymous"]
 description = "A new fabric-based Tetcore node, ready for hacking."
 edition = "2018"
@@ -20,43 +20,43 @@ name = "node-template"
 [dependencies]
 structopt = "0.3.8"
 
-tc-cli = { version = "0.8.0", path = "../../../client/cli", features = ["wasmtime"] }
-tet-core = { version = "2.0.2", path = "../../../primitives/core" }
-tc-executor = { version = "0.8.0", path = "../../../client/executor", features = ["wasmtime"] }
-tc-service = { version = "0.8.0", path = "../../../client/service", features = ["wasmtime"] }
-tc-telemetry = { version = "2.0.0", path = "../../../client/telemetry" }
-tc-keystore = { version = "2.0.0", path = "../../../client/keystore" }
-tp-inherents = { version = "2.0.2", path = "../../../primitives/inherents" }
-tc-transaction-pool = { version = "2.0.0", path = "../../../client/transaction-pool" }
-tp-transaction-pool = { version = "2.0.2", path = "../../../primitives/transaction-pool" }
-tc-consensus-aura = { version = "0.8.0", path = "../../../client/consensus/aura" }
-tp-consensus-aura = { version = "0.8.2", path = "../../../primitives/consensus/aura" }
-tp-consensus = { version = "0.8.2", path = "../../../primitives/consensus/common" }
-tc-consensus = { version = "0.8.0", path = "../../../client/consensus/common" }
-tc-finality-grandpa = { version = "0.8.0", path = "../../../client/finality-grandpa" }
-tp-finality-grandpa = { version = "2.0.2", path = "../../../primitives/finality-grandpa" }
-tc-client-api = { version = "2.0.0", path = "../../../client/api" }
-tp-runtime = { version = "2.0.2", path = "../../../primitives/runtime" }
+tc-cli = { version = "2.1.2", path = "../../../client/cli", features = ["wasmtime"] }
+tet-core = { version = "2.1.2", path = "../../../primitives/core" }
+tc-executor = { version = "2.1.2", path = "../../../client/executor", features = ["wasmtime"] }
+tc-service = { version = "2.1.2", path = "../../../client/service", features = ["wasmtime"] }
+tc-telemetry = { version = "2.1.2", path = "../../../client/telemetry" }
+tc-keystore = { version = "2.1.2", path = "../../../client/keystore" }
+tp-inherents = { version = "2.1.2", path = "../../../primitives/inherents" }
+tc-transaction-pool = { version = "2.1.2", path = "../../../client/transaction-pool" }
+tp-transaction-pool = { version = "2.1.2", path = "../../../primitives/transaction-pool" }
+tc-consensus-aura = { version = "2.1.2", path = "../../../client/consensus/aura" }
+tp-consensus-aura = { version = "2.1.2", path = "../../../primitives/consensus/aura" }
+tp-consensus = { version = "2.1.2", path = "../../../primitives/consensus/common" }
+tc-consensus = { version = "2.1.2", path = "../../../client/consensus/common" }
+tc-finality-grandpa = { version = "2.1.2", path = "../../../client/finality-grandpa" }
+tp-finality-grandpa = { version = "2.1.2", path = "../../../primitives/finality-grandpa" }
+tc-client-api = { version = "2.1.2", path = "../../../client/api" }
+tp-runtime = { version = "2.1.2", path = "../../../primitives/runtime" }
 
 # These dependencies are used for the node template's RPCs
 tetsy-jsonrpc-core = "15.1.0"
-tc-rpc = { version = "2.0.0", path = "../../../client/rpc" }
-tp-api = { version = "2.0.2", path = "../../../primitives/api" }
-tc-rpc-api = { version = "0.8.0", path = "../../../client/rpc-api" }
-tp-blockchain = { version = "2.0.2", path = "../../../primitives/blockchain" }
-tp-block-builder = { version = "2.0.2", path = "../../../primitives/block-builder" }
-tc-basic-authorship = { version = "0.8.0", path = "../../../client/basic-authorship" }
-tetcore-fabric-rpc-system = { version = "2.0.0", path = "../../../utils/fabric/rpc/system" }
-noble-transaction-payment-rpc = { version = "2.0.0", path = "../../../fabric/transaction-payment/rpc/" }
+tc-rpc = { version = "2.1.2", path = "../../../client/rpc" }
+tp-api = { version = "2.1.2", path = "../../../primitives/api" }
+tc-rpc-api = { version = "2.1.2", path = "../../../client/rpc-api" }
+tp-blockchain = { version = "2.1.2", path = "../../../primitives/blockchain" }
+tp-block-builder = { version = "2.1.2", path = "../../../primitives/block-builder" }
+tc-basic-authorship = { version = "2.1.2", path = "../../../client/basic-authorship" }
+tetcore-fabric-rpc-system = { version = "2.1.2", path = "../../../utils/fabric/rpc/system" }
+noble-transaction-payment-rpc = { version = "2.1.2", path = "../../../fabric/transaction-payment/rpc/" }
 
 # These dependencies are used for runtime benchmarking
-fabric-benchmarking = { version = "2.0.0", path = "../../../fabric/benchmarking" }
-fabric-benchmarking-cli = { version = "2.0.1", path = "../../../utils/fabric/benchmarking-cli" }
+fabric-benchmarking = { version = "2.1.2", path = "../../../fabric/benchmarking" }
+fabric-benchmarking-cli = { version = "2.1.2", path = "../../../utils/fabric/benchmarking-cli" }
 
-node-template-runtime = { version = "2.0.0", path = "../runtime" }
+node-template-runtime = { version = "2.1.2", path = "../runtime" }
 
 [build-dependencies]
-build-script-utils = { version = "2.0.1", path = "../../../utils/build-script-utils" }
+build-script-utils = { version = "2.1.2", path = "../../../utils/build-script-utils" }
 
 [features]
 default = []

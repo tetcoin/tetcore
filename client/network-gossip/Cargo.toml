@@ -1,7 +1,7 @@
 [package]
 description = "Gossiping for the Tetcore network protocol"
 name = "tc-network-gossip"
-version = "0.8.0"
+version = "2.1.2"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 authors = ["Parity Technologies <admin@parity.io>", "Tetcoin Developers <support@tetcoin.org>"]
 edition = "2018"
@@ -20,17 +20,15 @@ targets = ["x86_64-unknown-linux-gnu"]
 futures = "0.3.9"
 futures-timer = "3.0.1"
 tetsy-libp2p = { version = "0.34.2", default-features = false }
-# tetsy-libp2p = { version = "0.34.0", default-features = false, git = "https://github.com/tetcoin/tetsy-libp2p.git", rev = "bc2e822ef4c5f69225112b461018212a18782e4a" }
 log = "0.4.8"
 lru = "0.6.1"
-prometheus-endpoint = { package = "prometheus-endpoint", version = "0.8.1", path = "../../utils/prometheus" }
-tc-network = { version = "0.8.0", path = "../network" }
-tp-runtime = { version = "2.0.2", path = "../../primitives/runtime" }
+prometheus-endpoint = { version = "2.1.2", package = "prometheus-endpoint", path = "../../utils/prometheus" }
+tc-network = { version = "2.1.2", path = "../network" }
+tp-runtime = { version = "2.1.2", path = "../../primitives/runtime" }
 wasm-timer = "0.2"
 
 [dev-dependencies]
 async-std = "1.6.5"
 quickcheck = "0.9.0"
 rand = "0.7.2"
-# tetcore-test-runtime-client = { version = "2.0.0", path = "../../test-utils/runtime/client" }
 tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }
