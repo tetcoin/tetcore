@@ -157,7 +157,7 @@ checksum = "237430fd6ed3740afe94eefcc278ae21e050285be882804e0d6e8695f0c94691"
 
 [[package]]
 name = "arithmetic"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "criterion",
  "debug-derive",
@@ -173,7 +173,7 @@ dependencies = [
 
 [[package]]
 name = "arithmetic-fuzzer"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "honggfuzz",
@@ -617,7 +617,7 @@ dependencies = [
 
 [[package]]
 name = "build-script-utils"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "platforms",
 ]
@@ -761,7 +761,7 @@ dependencies = [
 
 [[package]]
 name = "chain-spec-builder"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "ansi_term 0.12.1",
  "node-cli",
@@ -1244,7 +1244,7 @@ checksum = "3ee2393c4a91429dffb4bedf19f4d6abf27d8a732c8ce4980305d782e5426d57"
 
 [[package]]
 name = "debug-derive"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1491,7 +1491,7 @@ checksum = "f7531096570974c3a9dcf9e4b8e1cede1ec26cf5046219fb3b9d897503b9be59"
 
 [[package]]
 name = "externalities"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "environ",
  "tetcore-std",
@@ -1501,7 +1501,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-benchmarking"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -1519,7 +1519,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-benchmarking-cli"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "Inflector",
  "chrono",
@@ -1541,7 +1541,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-executive"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -1561,7 +1561,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-metadata"
-version = "12.0.0"
+version = "2.1.2"
 dependencies = [
  "serde",
  "tet-core",
@@ -1571,7 +1571,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-support"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "bitflags",
@@ -1600,7 +1600,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-support-procedural"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "Inflector",
  "fabric-support-procedural-tools",
@@ -1611,7 +1611,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-support-procedural-tools"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support-procedural-tools-derive",
  "proc-macro-crate 0.1.5",
@@ -1622,7 +1622,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-support-procedural-tools-derive"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1631,7 +1631,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-support-test"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-metadata",
  "fabric-support",
@@ -1651,7 +1651,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-system"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "criterion",
  "externalities",
@@ -1669,7 +1669,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-system-benchmarking"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -1684,7 +1684,7 @@ dependencies = [
 
 [[package]]
 name = "fabric-system-rpc-runtime-api"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "tetsy-scale-codec",
  "tp-api",
@@ -1779,7 +1779,7 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
 name = "forktree"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "tetsy-scale-codec",
 ]
@@ -3145,7 +3145,7 @@ dependencies = [
 
 [[package]]
 name = "noble-assets"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3161,7 +3161,7 @@ dependencies = [
 
 [[package]]
 name = "noble-atomic-swap"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3176,7 +3176,7 @@ dependencies = [
 
 [[package]]
 name = "noble-aura"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3198,7 +3198,7 @@ dependencies = [
 
 [[package]]
 name = "noble-authority-discovery"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3216,7 +3216,7 @@ dependencies = [
 
 [[package]]
 name = "noble-authorship"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3233,7 +3233,7 @@ dependencies = [
 
 [[package]]
 name = "noble-babe"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3262,7 +3262,7 @@ dependencies = [
 
 [[package]]
 name = "noble-balances"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3278,7 +3278,7 @@ dependencies = [
 
 [[package]]
 name = "noble-bounties"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3296,7 +3296,7 @@ dependencies = [
 
 [[package]]
 name = "noble-collective"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3313,7 +3313,7 @@ dependencies = [
 
 [[package]]
 name = "noble-contracts"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "assert_matches",
  "fabric-benchmarking",
@@ -3344,7 +3344,7 @@ dependencies = [
 
 [[package]]
 name = "noble-contracts-primitives"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "bitflags",
  "tetcore-std",
@@ -3354,7 +3354,7 @@ dependencies = [
 
 [[package]]
 name = "noble-contracts-proc-macro"
-version = "0.1.0"
+version = "2.1.2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3363,7 +3363,7 @@ dependencies = [
 
 [[package]]
 name = "noble-contracts-rpc"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "noble-contracts-primitives",
  "noble-contracts-rpc-runtime-api",
@@ -3382,7 +3382,7 @@ dependencies = [
 
 [[package]]
 name = "noble-contracts-rpc-runtime-api"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "noble-contracts-primitives",
  "tetcore-std",
@@ -3393,7 +3393,7 @@ dependencies = [
 
 [[package]]
 name = "noble-democracy"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3413,7 +3413,7 @@ dependencies = [
 
 [[package]]
 name = "noble-elections"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3429,7 +3429,7 @@ dependencies = [
 
 [[package]]
 name = "noble-elections-phragmen"
-version = "3.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3448,7 +3448,7 @@ dependencies = [
 
 [[package]]
 name = "noble-example"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3464,7 +3464,7 @@ dependencies = [
 
 [[package]]
 name = "noble-example-offchain-worker"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3480,7 +3480,7 @@ dependencies = [
 
 [[package]]
 name = "noble-example-parallel"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3494,7 +3494,7 @@ dependencies = [
 
 [[package]]
 name = "noble-grandpa"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3522,7 +3522,7 @@ dependencies = [
 
 [[package]]
 name = "noble-identity"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "enumflags2",
  "fabric-benchmarking",
@@ -3539,7 +3539,7 @@ dependencies = [
 
 [[package]]
 name = "noble-im-online"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3558,7 +3558,7 @@ dependencies = [
 
 [[package]]
 name = "noble-indices"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3575,7 +3575,7 @@ dependencies = [
 
 [[package]]
 name = "noble-lottery"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3590,7 +3590,7 @@ dependencies = [
 
 [[package]]
 name = "noble-membership"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3604,7 +3604,7 @@ dependencies = [
 
 [[package]]
 name = "noble-mmr"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "ckb-merkle-mountain-range",
  "env_logger 0.5.13",
@@ -3623,7 +3623,7 @@ dependencies = [
 
 [[package]]
 name = "noble-mmr-primitives"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3638,7 +3638,7 @@ dependencies = [
 
 [[package]]
 name = "noble-multisig"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3654,7 +3654,7 @@ dependencies = [
 
 [[package]]
 name = "noble-nicks"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3669,7 +3669,7 @@ dependencies = [
 
 [[package]]
 name = "noble-node-authorization"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3683,7 +3683,7 @@ dependencies = [
 
 [[package]]
 name = "noble-offences"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3699,7 +3699,7 @@ dependencies = [
 
 [[package]]
 name = "noble-offences-benchmarking"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3724,7 +3724,7 @@ dependencies = [
 
 [[package]]
 name = "noble-proxy"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3741,7 +3741,7 @@ dependencies = [
 
 [[package]]
 name = "noble-randomness-collective-flip"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3756,7 +3756,7 @@ dependencies = [
 
 [[package]]
 name = "noble-recovery"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "enumflags2",
  "fabric-support",
@@ -3772,7 +3772,7 @@ dependencies = [
 
 [[package]]
 name = "noble-scheduler"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3788,7 +3788,7 @@ dependencies = [
 
 [[package]]
 name = "noble-scored-pool"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3803,7 +3803,7 @@ dependencies = [
 
 [[package]]
 name = "noble-session"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3824,7 +3824,7 @@ dependencies = [
 
 [[package]]
 name = "noble-session-benchmarking"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3846,7 +3846,7 @@ dependencies = [
 
 [[package]]
 name = "noble-society"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3862,7 +3862,7 @@ dependencies = [
 
 [[package]]
 name = "noble-staking"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3913,7 +3913,7 @@ dependencies = [
 
 [[package]]
 name = "noble-staking-reward-curve"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "proc-macro-crate 0.1.5",
  "proc-macro2",
@@ -3924,7 +3924,7 @@ dependencies = [
 
 [[package]]
 name = "noble-sudo"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3938,7 +3938,7 @@ dependencies = [
 
 [[package]]
 name = "noble-template"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -3951,7 +3951,7 @@ dependencies = [
 
 [[package]]
 name = "noble-timestamp"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3969,7 +3969,7 @@ dependencies = [
 
 [[package]]
 name = "noble-tips"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -3987,7 +3987,7 @@ dependencies = [
 
 [[package]]
 name = "noble-transaction-payment"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -4005,7 +4005,7 @@ dependencies = [
 
 [[package]]
 name = "noble-transaction-payment-rpc"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "noble-transaction-payment-rpc-runtime-api",
  "tet-core",
@@ -4021,7 +4021,7 @@ dependencies = [
 
 [[package]]
 name = "noble-transaction-payment-rpc-runtime-api"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "noble-transaction-payment",
  "tetsy-scale-codec",
@@ -4031,7 +4031,7 @@ dependencies = [
 
 [[package]]
 name = "noble-treasury"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -4049,7 +4049,7 @@ dependencies = [
 
 [[package]]
 name = "noble-utility"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-support",
@@ -4065,7 +4065,7 @@ dependencies = [
 
 [[package]]
 name = "noble-vesting"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "enumflags2",
  "fabric-benchmarking",
@@ -4084,7 +4084,7 @@ dependencies = [
 
 [[package]]
 name = "node-bench"
-version = "0.8.1"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "fs_extra",
@@ -4122,7 +4122,7 @@ dependencies = [
 
 [[package]]
 name = "node-browser-testing"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "futures 0.3.15",
  "futures-timer 3.0.2",
@@ -4139,7 +4139,7 @@ dependencies = [
 
 [[package]]
 name = "node-cli"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "assert_cmd",
  "build-script-utils",
@@ -4215,7 +4215,7 @@ dependencies = [
 
 [[package]]
 name = "node-executor"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "criterion",
  "externalities",
@@ -4250,7 +4250,7 @@ dependencies = [
 
 [[package]]
 name = "node-inspect"
-version = "0.8.1"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "log",
@@ -4266,7 +4266,7 @@ dependencies = [
 
 [[package]]
 name = "node-primitives"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-system",
  "pretty_assertions",
@@ -4279,7 +4279,7 @@ dependencies = [
 
 [[package]]
 name = "node-rpc"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "noble-contracts-rpc",
  "noble-transaction-payment-rpc",
@@ -4310,7 +4310,7 @@ dependencies = [
 
 [[package]]
 name = "node-rpc-client"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "futures 0.1.31",
  "hyper 0.12.36",
@@ -4323,7 +4323,7 @@ dependencies = [
 
 [[package]]
 name = "node-runtime"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-executive",
@@ -4395,7 +4395,7 @@ dependencies = [
 
 [[package]]
 name = "node-template"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "build-script-utils",
  "fabric-benchmarking",
@@ -4432,7 +4432,7 @@ dependencies = [
 
 [[package]]
 name = "node-template-runtime"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "fabric-benchmarking",
  "fabric-executive",
@@ -4468,7 +4468,7 @@ dependencies = [
 
 [[package]]
 name = "node-testing"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "criterion",
  "fabric-support",
@@ -4700,7 +4700,7 @@ dependencies = [
 
 [[package]]
 name = "panic-handler"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "backtrace",
 ]
@@ -5163,7 +5163,7 @@ dependencies = [
 
 [[package]]
 name = "prometheus-endpoint"
-version = "0.8.1"
+version = "2.1.2"
 dependencies = [
  "async-std",
  "derive_more",
@@ -5970,7 +5970,7 @@ dependencies = [
 
 [[package]]
 name = "serializer"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -6319,7 +6319,7 @@ checksum = "ab0e7238dcc7b40a7be719a25365910f6807bd864f4cce6b2e6b873658e2b19d"
 
 [[package]]
 name = "tc-authority-discovery"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -6350,7 +6350,7 @@ dependencies = [
 
 [[package]]
 name = "tc-basic-authorship"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "futures 0.3.15",
  "futures-timer 3.0.2",
@@ -6375,7 +6375,7 @@ dependencies = [
 
 [[package]]
 name = "tc-block-builder"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "tc-client-api",
  "tet-core",
@@ -6393,7 +6393,7 @@ dependencies = [
 
 [[package]]
 name = "tc-chain-spec"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "impl-trait-for-tuples 0.2.1",
  "serde",
@@ -6413,7 +6413,7 @@ dependencies = [
 
 [[package]]
 name = "tc-chain-spec-derive"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "proc-macro-crate 0.1.5",
  "proc-macro2",
@@ -6423,7 +6423,7 @@ dependencies = [
 
 [[package]]
 name = "tc-cli"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "chrono",
  "fdlimit",
@@ -6461,7 +6461,7 @@ dependencies = [
 
 [[package]]
 name = "tc-client-api"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "externalities",
@@ -6498,7 +6498,7 @@ dependencies = [
 
 [[package]]
 name = "tc-client-db"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "blake2-rfc",
@@ -6532,7 +6532,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "tc-client-api",
  "tp-blockchain",
@@ -6542,7 +6542,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-aura"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "futures 0.3.15",
@@ -6583,7 +6583,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-babe"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "forktree",
@@ -6638,7 +6638,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-babe-rpc"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "futures 0.3.15",
@@ -6667,7 +6667,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-epochs"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "forktree",
  "parking_lot 0.11.1",
@@ -6679,7 +6679,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-manual-seal"
-version = "0.8.1"
+version = "2.1.2"
 dependencies = [
  "assert_matches",
  "derive_more",
@@ -6717,7 +6717,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-pow"
-version = "0.8.1"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "futures 0.3.15",
@@ -6740,7 +6740,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-slots"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "futures 0.3.15",
@@ -6766,7 +6766,7 @@ dependencies = [
 
 [[package]]
 name = "tc-consensus-uncles"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "log",
  "tc-client-api",
@@ -6779,7 +6779,7 @@ dependencies = [
 
 [[package]]
 name = "tc-executor"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "assert_matches",
  "derive_more",
@@ -6819,7 +6819,7 @@ dependencies = [
 
 [[package]]
 name = "tc-executor-common"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "serializer",
@@ -6834,7 +6834,7 @@ dependencies = [
 
 [[package]]
 name = "tc-executor-twasmi"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "log",
  "tc-executor-common",
@@ -6848,7 +6848,7 @@ dependencies = [
 
 [[package]]
 name = "tc-executor-wasmtime"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "assert_matches",
  "log",
@@ -6866,7 +6866,7 @@ dependencies = [
 
 [[package]]
 name = "tc-finality-grandpa"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "assert_matches",
@@ -6912,7 +6912,7 @@ dependencies = [
 
 [[package]]
 name = "tc-finality-grandpa-rpc"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "futures 0.3.15",
@@ -6942,7 +6942,7 @@ dependencies = [
 
 [[package]]
 name = "tc-finality-grandpa-warp-sync"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "futures 0.3.15",
@@ -6961,7 +6961,7 @@ dependencies = [
 
 [[package]]
 name = "tc-informant"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "ansi_term 0.12.1",
  "futures 0.3.15",
@@ -6978,7 +6978,7 @@ dependencies = [
 
 [[package]]
 name = "tc-keystore"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -6998,7 +6998,7 @@ dependencies = [
 
 [[package]]
 name = "tc-light"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "externalities",
  "lazy_static",
@@ -7016,7 +7016,7 @@ dependencies = [
 
 [[package]]
 name = "tc-network"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "assert_matches",
@@ -7075,7 +7075,7 @@ dependencies = [
 
 [[package]]
 name = "tc-network-gossip"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "async-std",
  "futures 0.3.15",
@@ -7094,7 +7094,7 @@ dependencies = [
 
 [[package]]
 name = "tc-network-test"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "async-std",
  "futures 0.3.15",
@@ -7121,7 +7121,7 @@ dependencies = [
 
 [[package]]
 name = "tc-offchain"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "bytes 0.5.6",
  "fnv",
@@ -7156,7 +7156,7 @@ dependencies = [
 
 [[package]]
 name = "tc-peerset"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "futures 0.3.15",
  "log",
@@ -7169,7 +7169,7 @@ dependencies = [
 
 [[package]]
 name = "tc-proposer-metrics"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "log",
  "prometheus-endpoint",
@@ -7177,7 +7177,7 @@ dependencies = [
 
 [[package]]
 name = "tc-rpc"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "assert_matches",
  "futures 0.1.31",
@@ -7218,7 +7218,7 @@ dependencies = [
 
 [[package]]
 name = "tc-rpc-api"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "futures 0.3.15",
@@ -7241,7 +7241,7 @@ dependencies = [
 
 [[package]]
 name = "tc-rpc-server"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "futures 0.1.31",
  "log",
@@ -7258,7 +7258,7 @@ dependencies = [
 
 [[package]]
 name = "tc-runtime-test"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "tet-core",
  "tet-io",
@@ -7272,7 +7272,7 @@ dependencies = [
 
 [[package]]
 name = "tc-service"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "async-std",
  "directories 3.0.2",
@@ -7341,7 +7341,7 @@ dependencies = [
 
 [[package]]
 name = "tc-service-test"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "externalities",
  "fdlimit",
@@ -7377,7 +7377,7 @@ dependencies = [
 
 [[package]]
 name = "tc-state-db"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "log",
  "parking_lot 0.11.1",
@@ -7391,7 +7391,7 @@ dependencies = [
 
 [[package]]
 name = "tc-sync-state-rpc"
-version = "0.8.0"
+version = "2.1.2"
 dependencies = [
  "serde_json",
  "tc-chain-spec",
@@ -7410,7 +7410,7 @@ dependencies = [
 
 [[package]]
 name = "tc-telemetry"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "chrono",
  "futures 0.3.15",
@@ -7431,7 +7431,7 @@ dependencies = [
 
 [[package]]
 name = "tc-tracing"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "ansi_term 0.12.1",
  "atty",
@@ -7458,7 +7458,7 @@ dependencies = [
 
 [[package]]
 name = "tc-tracing-proc-macro"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "proc-macro-crate 0.1.5",
  "proc-macro2",
@@ -7468,7 +7468,7 @@ dependencies = [
 
 [[package]]
 name = "tc-transaction-graph"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "assert_matches",
  "criterion",
@@ -7493,7 +7493,7 @@ dependencies = [
 
 [[package]]
 name = "tc-transaction-pool"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "assert_matches",
  "futures 0.3.15",
@@ -7548,7 +7548,7 @@ dependencies = [
 
 [[package]]
 name = "tet-application-crypto"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "serde",
  "tet-core",
@@ -7559,7 +7559,7 @@ dependencies = [
 
 [[package]]
 name = "tet-application-crypto-test"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "tet-application-crypto",
  "tet-core",
@@ -7571,7 +7571,7 @@ dependencies = [
 
 [[package]]
 name = "tet-core"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "base58",
  "blake2-rfc",
@@ -7620,7 +7620,7 @@ dependencies = [
 
 [[package]]
 name = "tet-io"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "externalities",
  "futures 0.3.15",
@@ -7656,7 +7656,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-browser-utils"
-version = "0.8.1"
+version = "2.1.2"
 dependencies = [
  "chrono",
  "console_error_panic_hook",
@@ -7682,7 +7682,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-database"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "parking_lot 0.11.1",
  "tetsy-kvdb",
@@ -7690,7 +7690,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-fabric-cli"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-system",
  "structopt",
@@ -7701,7 +7701,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-fabric-rpc-support"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-support",
  "fabric-system",
@@ -7717,7 +7717,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-fabric-rpc-system"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "fabric-system-rpc-runtime-api",
  "futures 0.3.15",
@@ -7742,11 +7742,11 @@ dependencies = [
 
 [[package]]
 name = "tetcore-std"
-version = "2.0.2"
+version = "2.1.2"
 
 [[package]]
 name = "tetcore-storage"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "debug-derive",
  "impl-serde",
@@ -7758,7 +7758,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-test-client"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "futures 0.1.31",
  "futures 0.3.15",
@@ -7784,7 +7784,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-test-runtime"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "cfg-if 0.1.10",
  "externalities",
@@ -7828,7 +7828,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-test-runtime-client"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "futures 0.3.15",
  "tc-block-builder",
@@ -7848,7 +7848,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-test-runtime-transaction-pool"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "futures 0.3.15",
@@ -7863,7 +7863,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-test-utils"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "futures 0.3.15",
  "tc-service",
@@ -7874,7 +7874,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-test-utils-derive"
-version = "0.8.1"
+version = "2.1.2"
 dependencies = [
  "proc-macro-crate 0.1.5",
  "quote",
@@ -7883,7 +7883,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-test-utils-test-crate"
-version = "0.1.0"
+version = "2.1.2"
 dependencies = [
  "tc-service",
  "tetcore-test-utils",
@@ -7892,7 +7892,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-tracing"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "log",
  "tetcore-std",
@@ -7904,7 +7904,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-utils"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "futures 0.3.15",
  "futures-core",
@@ -7915,7 +7915,7 @@ dependencies = [
 
 [[package]]
 name = "tetcore-wasm-interface"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "impl-trait-for-tuples 0.2.1",
  "tetcore-std",
@@ -7925,7 +7925,7 @@ dependencies = [
 
 [[package]]
 name = "tetkey"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "structopt",
  "tc-cli",
@@ -9240,7 +9240,7 @@ checksum = "360dfd1d6d30e05fda32ace2c8c70e9c0a9da713275777f5a4dbb8a1893930c6"
 
 [[package]]
 name = "tp-allocator"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "log",
  "tet-core",
@@ -9251,7 +9251,7 @@ dependencies = [
 
 [[package]]
 name = "tp-api"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "tet-core",
  "tetcore-std",
@@ -9267,7 +9267,7 @@ dependencies = [
 
 [[package]]
 name = "tp-api-proc-macro"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "blake2-rfc",
  "proc-macro-crate 0.1.5",
@@ -9278,7 +9278,7 @@ dependencies = [
 
 [[package]]
 name = "tp-api-test"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "criterion",
  "rustversion",
@@ -9297,7 +9297,7 @@ dependencies = [
 
 [[package]]
 name = "tp-authority-discovery"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "tet-application-crypto",
  "tetcore-std",
@@ -9308,7 +9308,7 @@ dependencies = [
 
 [[package]]
 name = "tp-authorship"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "tetcore-std",
  "tetsy-scale-codec",
@@ -9318,7 +9318,7 @@ dependencies = [
 
 [[package]]
 name = "tp-block-builder"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "tetcore-std",
  "tetsy-scale-codec",
@@ -9329,7 +9329,7 @@ dependencies = [
 
 [[package]]
 name = "tp-blockchain"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "futures 0.3.15",
  "log",
@@ -9346,7 +9346,7 @@ dependencies = [
 
 [[package]]
 name = "tp-chain-spec"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -9354,7 +9354,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "futures 0.3.15",
  "futures-timer 3.0.2",
@@ -9380,7 +9380,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-aura"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "tet-application-crypto",
  "tetcore-std",
@@ -9394,7 +9394,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-babe"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "merlin",
  "tet-application-crypto",
@@ -9413,7 +9413,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-pow"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "tet-core",
  "tetcore-std",
@@ -9424,7 +9424,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-slots"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "tetsy-scale-codec",
@@ -9433,7 +9433,7 @@ dependencies = [
 
 [[package]]
 name = "tp-consensus-vrf"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "schnorrkel",
  "tet-core",
@@ -9444,7 +9444,7 @@ dependencies = [
 
 [[package]]
 name = "tp-election-providers"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "tetcore-std",
@@ -9455,7 +9455,7 @@ dependencies = [
 
 [[package]]
 name = "tp-finality-grandpa"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "log",
  "serde",
@@ -9471,7 +9471,7 @@ dependencies = [
 
 [[package]]
 name = "tp-inherents"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "parking_lot 0.11.1",
  "tet-core",
@@ -9482,7 +9482,7 @@ dependencies = [
 
 [[package]]
 name = "tp-keyring"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "lazy_static",
  "strum",
@@ -9492,7 +9492,7 @@ dependencies = [
 
 [[package]]
 name = "tp-keystore"
-version = "0.8.1"
+version = "2.1.2"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -9510,7 +9510,7 @@ dependencies = [
 
 [[package]]
 name = "tp-npos-elections"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "rand 0.7.3",
@@ -9525,7 +9525,7 @@ dependencies = [
 
 [[package]]
 name = "tp-npos-elections-compact"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "proc-macro-crate 0.1.5",
  "proc-macro2",
@@ -9535,7 +9535,7 @@ dependencies = [
 
 [[package]]
 name = "tp-npos-elections-fuzzer"
-version = "2.0.0-alpha.5"
+version = "2.1.2"
 dependencies = [
  "honggfuzz",
  "rand 0.7.3",
@@ -9547,7 +9547,7 @@ dependencies = [
 
 [[package]]
 name = "tp-offchain"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "tet-core",
  "tp-api",
@@ -9557,7 +9557,7 @@ dependencies = [
 
 [[package]]
 name = "tp-rpc"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -9566,7 +9566,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "arithmetic",
  "either",
@@ -9588,7 +9588,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime-interface"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "externalities",
  "impl-trait-for-tuples 0.2.1",
@@ -9610,7 +9610,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime-interface-proc-macro"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "Inflector",
  "proc-macro-crate 0.1.5",
@@ -9621,7 +9621,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime-interface-test"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "tc-executor",
  "tet-core",
@@ -9637,7 +9637,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime-interface-test-wasm"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "tet-core",
  "tet-io",
@@ -9648,7 +9648,7 @@ dependencies = [
 
 [[package]]
 name = "tp-runtime-interface-test-wasm-deprecated"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "tet-core",
  "tet-io",
@@ -9659,7 +9659,7 @@ dependencies = [
 
 [[package]]
 name = "tp-sandbox"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "assert_matches",
  "tet-core",
@@ -9673,7 +9673,7 @@ dependencies = [
 
 [[package]]
 name = "tp-session"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "tet-core",
  "tetcore-std",
@@ -9685,7 +9685,7 @@ dependencies = [
 
 [[package]]
 name = "tp-staking"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "tetcore-std",
  "tetsy-scale-codec",
@@ -9694,7 +9694,7 @@ dependencies = [
 
 [[package]]
 name = "tp-state-machine"
-version = "0.8.2"
+version = "2.1.2"
 dependencies = [
  "externalities",
  "hex-literal",
@@ -9718,7 +9718,7 @@ dependencies = [
 
 [[package]]
 name = "tp-tasks"
-version = "2.0.1"
+version = "2.1.2"
 dependencies = [
  "externalities",
  "log",
@@ -9731,7 +9731,7 @@ dependencies = [
 
 [[package]]
 name = "tp-test-primitives"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "serde",
  "tet-application-crypto",
@@ -9743,7 +9743,7 @@ dependencies = [
 
 [[package]]
 name = "tp-timestamp"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "impl-trait-for-tuples 0.2.1",
  "tetcore-std",
@@ -9756,7 +9756,7 @@ dependencies = [
 
 [[package]]
 name = "tp-transaction-pool"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "derive_more",
  "futures 0.3.15",
@@ -9771,7 +9771,7 @@ dependencies = [
 
 [[package]]
 name = "tp-trie"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "criterion",
  "hex-literal",
@@ -9789,7 +9789,7 @@ dependencies = [
 
 [[package]]
 name = "tp-version"
-version = "2.0.2"
+version = "2.1.2"
 dependencies = [
  "impl-serde",
  "serde",
@@ -10277,7 +10277,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-builder"
-version = "3.0.1"
+version = "2.1.2"
 dependencies = [
  "ansi_term 0.12.1",
  "atty",

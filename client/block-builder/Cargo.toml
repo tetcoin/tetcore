@@ -26,7 +26,7 @@ tet-core = { version = "2.1.2", path = "../../primitives/core" }
 tp-block-builder = { version = "2.1.2", path = "../../primitives/block-builder" }
 tp-inherents = { version = "2.1.2", path = "../../primitives/inherents" }
 tc-client-api = { version = "2.1.2", path = "../api" }
-codec = { package = "tetsy-scale-codec", version = "2.1.2", features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", features = ["derive"] }
 
 [dev-dependencies]
 tetcore-test-runtime-client = { path = "../../test-utils/runtime/client" }

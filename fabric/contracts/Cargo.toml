@@ -24,9 +24,8 @@ fabric-benchmarking = { version = "2.1.2", default-features = false, path = "../
 fabric-support = { version = "2.1.2", default-features = false, path = "../support" }
 fabric-system = { version = "2.1.2", default-features = false, path = "../system" }
 noble-contracts-primitives = { version = "2.1.2", default-features = false, path = "common" }
-noble-contracts-proc-macro = { version = "0.1.0", path = "proc-macro" }
+noble-contracts-proc-macro = { version = "2.1.2", path = "proc-macro" }
 tetsy-wasm = { version = "0.41.0", default-features = false }
-# pwasm-utils = { version = "0.16", default-features = false }
 twasm-utils = { version = "0.16", default-features = false }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 tet-core = { version = "2.1.2", default-features = false, path = "../../primitives/core" }

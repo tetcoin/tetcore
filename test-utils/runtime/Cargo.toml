@@ -18,7 +18,7 @@ tet-application-crypto = { version = "2.1.2", default-features = false, path = "
 tp-consensus-aura = { version = "2.1.2", default-features = false, path = "../../primitives/consensus/aura" }
 tp-consensus-babe = { version = "2.1.2", default-features = false, path = "../../primitives/consensus/babe" }
 tp-block-builder = { version = "2.1.2", default-features = false, path = "../../primitives/block-builder" }
-codec = { package = "tetsy-scale-codec", version = "2.1.2", default-features = false, features = ["derive"] }
+codec = { package = "tetsy-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
 fabric-executive = { version = "2.1.2", default-features = false, path = "../../fabric/executive" }
 tp-inherents = { version = "2.1.2", default-features = false, path = "../../primitives/inherents" }
 tp-keyring = { version = "2.1.2", optional = true, path = "../../primitives/keyring" }
