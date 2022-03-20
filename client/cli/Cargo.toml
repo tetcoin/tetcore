@@ -47,6 +47,9 @@ chrono = "0.4.10"
 serde = "1.0.111"
 thiserror = "1.0.21"
 
+[patch.crates-io]
+tetsy-libp2p = { git = 'https://github.com/tetcoin/tetsy-libp2p', branch = 'tet-hotfix-aesni' }
+
 [target.'cfg(not(target_os = "unknown"))'.dependencies]
 rpassword = "5.0.0"
 

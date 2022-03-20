@@ -41,6 +41,9 @@ tp-keystore = { version = "2.1.2", path = "../../primitives/keystore" }
 tp-runtime = { version = "2.1.2", path = "../../primitives/runtime" }
 tp-api = { version = "2.1.2", path = "../../primitives/api" }
 
+[patch.crates-io]
+tetsy-libp2p = { git = 'https://github.com/tetcoin/tetsy-libp2p', branch = 'tet-hotfix-aesni' }
+
 [dev-dependencies]
 quickcheck = "0.9.0"
 tetcore-tracing = { version = "2.1.2", path = "../../primitives/tracing" }
