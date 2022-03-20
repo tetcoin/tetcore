@@ -20,7 +20,7 @@ parking_lot = "0.11.1"
 futures = "0.3.9"
 futures-timer = "3.0.1"
 rand = "0.7.2"
-tetsy-libp2p = { version = "0.34.2", default-features = false }
+tetsy-libp2p = { version = "0.36.0", default-features = false }
 tp-consensus = { version = "2.1.2", path = "../../../primitives/consensus/common" }
 tc-consensus = { version = "2.1.2", path = "../../consensus/common" }
 tc-client-api = { version = "2.1.2", path = "../../api" }

@@ -397,6 +397,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "asynchronous-codec"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f0de5164e5edbf51c45fb8c2d9664ae1c095cce1b265ecf7569093c0d66ef690"
+dependencies = [
+ "bytes 1.0.1",
+ "futures-sink",
+ "futures-util",
+ "memchr",
+ "pin-project-lite 0.2.6",
+]
+
+[[package]]
 name = "atomic"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2456,22 +2469,6 @@ dependencies = [
 
 [[package]]
 name = "if-watch"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97b8538953a3f0d0d3868f0a706eb4273535e10d72acb5c82c1c23ae48835c85"
-dependencies = [
- "async-io",
- "futures 0.3.15",
- "futures-lite",
- "if-addrs",
- "ipnet",
- "libc",
- "log",
- "winapi 0.3.9",
-]
-
-[[package]]
-name = "if-watch"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ae8ab7f67bad3240049cb24fb9cb0b4c2c6af4c245840917fbbdededeee91179"
@@ -2705,6 +2702,19 @@ name = "libm"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c7d73b3f436185384286bd8098d17ec07c9a7d2388a6599f824d8502b529702a"
+
+[[package]]
+name = "libp2p-remux"
+version = "0.30.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9fc55972c2c2282a6b01e3e4f8b18126187a6b8aee05a65116761568002a0e27"
+dependencies = [
+ "futures 0.3.15",
+ "parking_lot 0.11.1",
+ "remux",
+ "tetsy-libp2p-core",
+ "thiserror",
+]
 
 [[package]]
 name = "librocksdb-sys"
@@ -4972,6 +4982,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3831453b3449ceb48b6d9c7ad7c96d5ea673e9b470a1dc578c2ce6521230884c"
 
 [[package]]
+name = "plaintext"
+version = "0.27.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8e9d9162423c176d477d494fb5c592caa5cc4f802ef6b40de9de40e52fd484b"
+dependencies = [
+ "asynchronous-codec 0.6.0",
+ "bytes 1.0.1",
+ "futures 0.3.15",
+ "log",
+ "prost 0.7.0",
+ "prost-build",
+ "tetsy-libp2p-core",
+ "unsigned-varint 0.7.0",
+ "void",
+]
+
+[[package]]
 name = "platforms"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5602,6 +5629,26 @@ dependencies = [
  "parking_lot 0.11.1",
  "rand 0.7.3",
  "static_assertions",
+]
+
+[[package]]
+name = "request-response"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0281074ab73c896233a337c995cf30c66654770bab3adb8694a621efe9eef827"
+dependencies = [
+ "async-trait",
+ "bytes 1.0.1",
+ "futures 0.3.15",
+ "log",
+ "lru",
+ "minicbor",
+ "rand 0.7.3",
+ "smallvec 1.6.1",
+ "tetsy-libp2p-core",
+ "tetsy-libp2p-swarm",
+ "unsigned-varint 0.7.0",
+ "wasm-timer",
 ]
 
 [[package]]
@@ -6275,6 +6322,16 @@ name = "subtle"
 version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1e81da0851ada1f3e9d4312c704aa4f8806f0f9d69faaf8df2f3464b4a9437c2"
+
+[[package]]
+name = "swarm-derive"
+version = "0.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c1e846d72294b1b1ec9becf52b12988f1802cf5643b852988f86cc2743b44a8b"
+dependencies = [
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "syn"
@@ -7022,7 +7079,7 @@ dependencies = [
  "assert_matches",
  "async-std",
  "async-trait",
- "asynchronous-codec",
+ "asynchronous-codec 0.5.0",
  "bitflags",
  "bs58",
  "bytes 1.0.1",
@@ -8208,19 +8265,22 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p"
-version = "0.34.3"
+version = "0.36.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3bc0b83e2f2a5e6efb37abdaffbd56612c91d69cc8ea19bda89e62c8091ca392"
+checksum = "85ff2e32f06cd452048fa5b3ad7f0fde306f8fd348f7ec5a2968c33784c1ff5d"
 dependencies = [
  "atomic",
  "bytes 1.0.1",
  "futures 0.3.15",
  "lazy_static",
+ "libp2p-remux",
  "parking_lot 0.11.1",
  "pin-project 1.0.7",
+ "plaintext",
+ "request-response",
  "smallvec 1.6.1",
+ "swarm-derive",
  "tetsy-libp2p-core",
- "tetsy-libp2p-core-derive",
  "tetsy-libp2p-deflate",
  "tetsy-libp2p-dns",
  "tetsy-libp2p-floodsub",
@@ -8231,16 +8291,14 @@ dependencies = [
  "tetsy-libp2p-mplex",
  "tetsy-libp2p-noise",
  "tetsy-libp2p-ping",
- "tetsy-libp2p-plaintext",
  "tetsy-libp2p-pnet",
- "tetsy-libp2p-remux",
- "tetsy-libp2p-request-response",
+ "tetsy-libp2p-relay",
  "tetsy-libp2p-swarm",
  "tetsy-libp2p-tcp",
  "tetsy-libp2p-uds",
- "tetsy-libp2p-wasm-ext",
  "tetsy-libp2p-websocket",
  "tetsy-multiaddr",
+ "wasm-ext",
  "wasm-timer",
 ]
 
@@ -8279,16 +8337,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tetsy-libp2p-core-derive"
-version = "0.21.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73f1e7933b09879fa32030cbdc0a3c0db1237c5402a130b16b05b2c5e92a3fdb"
-dependencies = [
- "quote",
- "syn",
-]
-
-[[package]]
 name = "tetsy-libp2p-deflate"
 version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8312,9 +8360,9 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-floodsub"
-version = "0.27.1"
+version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "921b24cb1c9ea5bfefb6176fd83ca7f71768cfed1d886a0bc633fd3c5cd2f3d1"
+checksum = "f6da37f37857937b74afc1e54cb3102e8c337eff718e4abe1aa12f68d84f7ee6"
 dependencies = [
  "cuckoofilter",
  "fnv",
@@ -8330,11 +8378,11 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-gossipsub"
-version = "0.27.1"
+version = "0.29.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42173a34584d7da7769cc8c72d4c3f018bbf6068d2383deb1849b3d259cb14db"
+checksum = "8ecedb59892f8bad04ee4cd20d065548e9900de4959679f1db0e1cbac15bd8d0"
 dependencies = [
- "asynchronous-codec",
+ "asynchronous-codec 0.6.0",
  "base64 0.13.0",
  "byteorder",
  "bytes 1.0.1",
@@ -8350,15 +8398,15 @@ dependencies = [
  "smallvec 1.6.1",
  "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
- "unsigned-varint 0.6.0",
+ "unsigned-varint 0.7.0",
  "wasm-timer",
 ]
 
 [[package]]
 name = "tetsy-libp2p-identify"
-version = "0.27.1"
+version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c06a5651cf0c33983e9d5ad923602f72a075d68c651f7cdae7bf2177ef08e20b"
+checksum = "67526b8005815bd19f15088b6de42cb23c2d84693eb3883abf4aa571f38303e9"
 dependencies = [
  "futures 0.3.15",
  "log",
@@ -8372,12 +8420,12 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-kad"
-version = "0.28.2"
+version = "0.29.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca8b5336fb033c7bf8162bb255379329cfbd3a28976cd782480dfe5dbe2267a5"
+checksum = "72d1b8e7ec9e1570ef0fe937415cc66dc90c71cc7212842377ec3fdfa9d88510"
 dependencies = [
  "arrayvec 0.5.2",
- "asynchronous-codec",
+ "asynchronous-codec 0.6.0",
  "bytes 1.0.1",
  "either",
  "fnv",
@@ -8390,26 +8438,26 @@ dependencies = [
  "smallvec 1.6.1",
  "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
- "uint-crate",
- "unsigned-varint 0.6.0",
+ "uint",
+ "unsigned-varint 0.7.0",
  "void",
  "wasm-timer",
 ]
 
 [[package]]
 name = "tetsy-libp2p-mdns"
-version = "0.28.1"
+version = "0.29.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c1395b2aa257cc5f8519af0e8338a67d0f72e5df249a1405fdc3c273eb9d001"
+checksum = "bb649caff50bc6afac8f1afb61ad09980b2bd0b442692e036e8366c2f0b943d0"
 dependencies = [
  "async-io",
  "data-encoding",
  "dns-parser",
  "futures 0.3.15",
- "if-watch 0.1.8",
+ "if-watch",
  "lazy_static",
  "log",
- "rand 0.7.3",
+ "rand 0.8.3",
  "smallvec 1.6.1",
  "socket2 0.3.19",
  "tetsy-libp2p-core",
@@ -8423,7 +8471,7 @@ version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2ae1b59104a2bc8b3a583c12dfae4812b48a33d83421a01550d3893d14985f33"
 dependencies = [
- "asynchronous-codec",
+ "asynchronous-codec 0.5.0",
  "bytes 1.0.1",
  "futures 0.3.15",
  "log",
@@ -8459,9 +8507,9 @@ dependencies = [
 
 [[package]]
 name = "tetsy-libp2p-ping"
-version = "0.27.1"
+version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5fd52cd7170e070eaf25dff7b9a6aaac54303f71c2355a988abc7734c3987f9"
+checksum = "6be7ea6cc6f16550522110f427c51cfa1e7e2ce93e5c882fe21ca50aefb1b4bc"
 dependencies = [
  "futures 0.3.15",
  "log",
@@ -8470,23 +8518,6 @@ dependencies = [
  "tetsy-libp2p-swarm",
  "void",
  "wasm-timer",
-]
-
-[[package]]
-name = "tetsy-libp2p-plaintext"
-version = "0.27.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "093280ee4beee1b5ee240c9de651f02c678c1dfc9c5eea14177069ff2d109b70"
-dependencies = [
- "asynchronous-codec",
- "bytes 1.0.1",
- "futures 0.3.15",
- "log",
- "prost 0.7.0",
- "prost-build",
- "tetsy-libp2p-core",
- "unsigned-varint 0.6.0",
- "void",
 ]
 
 [[package]]
@@ -8504,43 +8535,33 @@ dependencies = [
 ]
 
 [[package]]
-name = "tetsy-libp2p-remux"
-version = "0.30.1"
+name = "tetsy-libp2p-relay"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "748cd9ac8454e5af9aad13377d607ed84bd7c9a4169c9d15a4670ae61650fb89"
+checksum = "3bb88b7daf3b8c5e6b8cd68ed8d34daa9f8abf09dbf585de5b2d103ae71a3141"
 dependencies = [
- "futures 0.3.15",
- "parking_lot 0.11.1",
- "remux",
- "tetsy-libp2p-core",
- "thiserror",
-]
-
-[[package]]
-name = "tetsy-libp2p-request-response"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b13cb40f79778ad9622b37a597c8e31bc147a0215baf614f485a9d01e5dcee73"
-dependencies = [
- "async-trait",
+ "asynchronous-codec 0.6.0",
  "bytes 1.0.1",
  "futures 0.3.15",
+ "futures-timer 3.0.2",
  "log",
- "lru",
- "minicbor",
+ "pin-project 1.0.7",
+ "prost 0.7.0",
+ "prost-build",
  "rand 0.7.3",
- "smallvec 1.6.1",
+ "smallvec 0.6.14",
  "tetsy-libp2p-core",
  "tetsy-libp2p-swarm",
- "unsigned-varint 0.6.0",
+ "unsigned-varint 0.7.0",
+ "void",
  "wasm-timer",
 ]
 
 [[package]]
 name = "tetsy-libp2p-swarm"
-version = "0.27.1"
+version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f9c96e4cf06359d813594f3c6cc3491d00bb25737558773efe7e2002b8d65d8"
+checksum = "f561ce1409488b5be9a2c774c231d8d1610ed72196ba909508bc168c2506ccdd"
 dependencies = [
  "either",
  "futures 0.3.15",
@@ -8561,7 +8582,7 @@ dependencies = [
  "async-io",
  "futures 0.3.15",
  "futures-timer 3.0.2",
- "if-watch 0.2.2",
+ "if-watch",
  "ipnet",
  "libc",
  "log",
@@ -9971,6 +9992,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56dee185309b50d1f11bfedef0fe6d036842e3fb77413abef29f8f8d1c5d4c1c"
 
 [[package]]
+name = "uint"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "12f03af7ccf01dd611cc450a0d10dbc9b745770d096473e2faf0ca6e2d66d1e0"
+dependencies = [
+ "byteorder",
+ "crunchy",
+ "hex",
+ "static_assertions",
+]
+
+[[package]]
 name = "uint-crate"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -10049,7 +10082,7 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35581ff83d4101e58b582e607120c7f5ffb17e632a980b1f38334d76b36908b2"
 dependencies = [
- "asynchronous-codec",
+ "asynchronous-codec 0.5.0",
  "bytes 1.0.1",
  "futures-io",
  "futures-util",
@@ -10060,6 +10093,12 @@ name = "unsigned-varint"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5f8d425fafb8cd76bc3f22aace4af471d3156301d7508f2107e98fbeae10bc7f"
+dependencies = [
+ "asynchronous-codec 0.6.0",
+ "bytes 1.0.1",
+ "futures-io",
+ "futures-util",
+]
 
 [[package]]
 name = "untrusted"
@@ -10287,6 +10326,20 @@ dependencies = [
  "tetsy-wasm-gc-api",
  "toml",
  "walkdir",
+]
+
+[[package]]
+name = "wasm-ext"
+version = "0.27.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "827797837fe4a24cbf3fb98fec133f1f20f264b478cfdbdd1bfb93eec1f2c6f6"
+dependencies = [
+ "futures 0.3.15",
+ "js-sys",
+ "tetsy-libp2p-core",
+ "tetsy-send-wrapper",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
 ]
 
 [[package]]

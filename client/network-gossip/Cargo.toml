@@ -19,7 +19,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 futures = "0.3.9"
 futures-timer = "3.0.1"
-tetsy-libp2p = { version = "0.34.2", default-features = false }
+tetsy-libp2p = { version = "0.36.0", default-features = false }
 log = "0.4.8"
 lru = "0.6.1"
 prometheus-endpoint = { version = "2.1.2", package = "prometheus-endpoint", path = "../../utils/prometheus" }

@@ -64,13 +64,13 @@ wasm-timer = "0.2"
 zeroize = "1.2.0"
 
 [dependencies.tetsy-libp2p]
-version = "0.34.2"
+version = "0.36.0"
 default-features = false
 features = ["dns", "identify", "kad", "mdns", "mplex", "noise", "ping", "request-response", "tcp-async-io", "websocket", "remux", "wasm-ext"]
 
 [dev-dependencies]
 assert_matches = "1.3"
-tetsy-libp2p = { version = "0.34.2", default-features = false }
+tetsy-libp2p = { version = "0.36.0", default-features = false }
 quickcheck = "0.9.0"
 rand = "0.7.2"
 tp-keyring = { version = "2.1.2", path = "../../primitives/keyring" }
